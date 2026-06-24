@@ -8,7 +8,7 @@ import {
 import {
   useDeals, useDealStages, useMoveDealStage, useCloseDeal,
   useCreateDealStage, useUpdateDealStage, useDeleteDealStage, usePipelines,
-  useImportDealsCsv, useCreateDeal,
+  useImportDealsCsv, useCreateDeal, useAccounts,
 } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
@@ -171,6 +171,7 @@ export function Component() {
   const [ndAmount, setNdAmount] = useState('');
   const [ndCloseDate, setNdCloseDate] = useState('');
   const [ndOwnerId, setNdOwnerId] = useState('');
+  const [ndAccountId, setNdAccountId] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filterOwnerId, setFilterOwnerId] = useState('');
   const [filterCloseDateFrom, setFilterCloseDateFrom] = useState('');
@@ -216,8 +217,11 @@ export function Component() {
 
   const activeFiltersCount = [filterOwnerId, filterCloseDateFrom, filterCloseDateTo, filterInactive ? 'inactive' : ''].filter(Boolean).length;
 
+  const { data: accountsRaw } = useAccounts({ pageSize: 200 });
+  const accountsList = (accountsRaw as any)?.items ?? [];
+
   function resetNewDeal() {
-    setNdName(''); setNdStageId(''); setNdAmount(''); setNdCloseDate(''); setNdOwnerId('');
+    setNdName(''); setNdStageId(''); setNdAmount(''); setNdCloseDate(''); setNdOwnerId(''); setNdAccountId('');
   }
 
   function submitNewDeal() {
@@ -229,6 +233,7 @@ export function Component() {
       amount: ndAmount ? parseFloat(ndAmount) : undefined,
       closeDate: ndCloseDate || undefined,
       ownedByUserId: ndOwnerId || undefined,
+      accountId: ndAccountId || undefined,
     };
     createDeal.mutate(payload, {
       onSuccess: () => { setShowNewDeal(false); resetNewDeal(); toast.success('Deal created'); },
@@ -677,6 +682,14 @@ export function Component() {
                   {teamMembers.map(u => (
                     <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
                   ))}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-text-secondary block mb-1">Account</label>
+                <select value={ndAccountId} onChange={e => setNdAccountId(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                  <option value="">No account linked</option>
+                  {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
                 </select>
               </div>
             </div>

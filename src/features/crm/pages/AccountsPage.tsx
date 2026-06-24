@@ -8,7 +8,7 @@ import {
   useAccounts, useAccountById, useAccountContacts,
   useCreateAccount, useUpdateAccount, useDeleteAccount,
   useAddAccountContact, useRemoveAccountContact,
-  useContacts,
+  useContacts, useOrganizations,
 } from '../api/crm.queries';
 import type {
   CrmAccountFilter, CrmAccountSummaryDto, CrmAccountDetailDto,
@@ -83,10 +83,11 @@ type AccountFormState = {
   currency: string;
   renewalDate: string;
   notes: string;
+  organizationId: string;
 };
 
 const EMPTY_ACCOUNT: AccountFormState = {
-  name: '', status: '1', tier: '', contractValue: '', currency: 'USD', renewalDate: '', notes: '',
+  name: '', status: '1', tier: '', contractValue: '', currency: 'USD', renewalDate: '', notes: '', organizationId: '',
 };
 
 function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
@@ -114,12 +115,21 @@ function AccountForm({
   const set = (k: keyof AccountFormState) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value }));
+  const { data: orgsRaw } = useOrganizations({ pageSize: 200 });
+  const orgsList = (orgsRaw as any)?.items ?? [];
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div>
         <label className="block text-xs font-semibold text-text-muted mb-1.5">Account Name *</label>
         <input required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" className={inputCls} />
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-text-muted mb-1.5">Organization</label>
+        <select value={form.organizationId} onChange={set('organizationId')} className={inputCls}>
+          <option value="">No organization</option>
+          {orgsList.map((o: any) => <option key={o.id} value={o.id}>{o.name}</option>)}
+        </select>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
@@ -488,6 +498,7 @@ export function Component() {
   const handleCreate = (f: AccountFormState) => {
     const req: CrmAccountCreateRequest = {
       name: f.name,
+      organizationId: f.organizationId || undefined,
       status: Number(f.status) as CrmAccountStatus,
       tier: f.tier ? (Number(f.tier) as CrmAccountTier) : undefined,
       contractValue: f.contractValue ? Number(f.contractValue) : undefined,

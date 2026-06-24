@@ -10,7 +10,7 @@ export const router = createBrowserRouter([
     lazy: async () => {
       const token = localStorage.getItem('omniflow_token');
       if (token) {
-        return { Component: () => <Navigate to="/dashboard/chat" replace /> };
+        return { Component: () => <Navigate to="/dashboard/crm/analytics" replace /> };
       }
       return import('@/features/landing/pages/LandingPage');
     },
@@ -152,7 +152,7 @@ export const router = createBrowserRouter([
       { path: 'crm/dedup', lazy: () => import('@/features/crm/pages/CrmDeduplicationPage') },
       // ── Flow A/B Experiments ──
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
-      { index: true, element: <Navigate to="chat" replace /> },
+      { index: true, element: <Navigate to="analytics" replace /> },
       // OLD: { index: true, element: <Navigate to="setup" replace /> },
     ],
   },

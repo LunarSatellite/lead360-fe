@@ -917,6 +917,7 @@ export interface CreateManualLeadRequest {
   assignedToUserId?: string;
   adSource?: string;
   notes?: string;
+  score?: number;
 }
 
 export interface ConvertLeadRequest {

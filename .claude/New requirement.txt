@@ -1,0 +1,274 @@
+Add a new card/section to the existing tenant Settings page that lets the business owner set, view, and clear the credentials OmniFlow uses to
+  ▎  call their external API. Plaintext credentials must never be displayed back to the user — the backend doesn't return them.
+  ▎
+  ▎ Backend contract
+  ▎
+  ▎ Base URL: same origin as the rest of the app. Auth: existing Bearer <jwt>. Tenant resolved from the token — frontend never sends tenantId. All
+  ▎  responses use the standard envelope: { success, data, message, correlationId }.
+  ▎
+  ▎ Three endpoints:
+  ▎
+  ▎ GET    /api/v1/settings/api-credentials
+  ▎ PUT    /api/v1/settings/api-credentials
+  ▎ DELETE /api/v1/settings/api-credentials
+  ▎
+  ▎ TypeScript types (drop-in)
+  ▎
+  ▎ export type ApiAuthType = "Bearer" | "ApiKey" | "Basic" | "OAuth2";
+  ▎
+  ▎ export interface ApiCredentialsStatusDto {
+  ▎   configured: boolean;
+  ▎   baseUrl: string | null;
+  ▎   authType: ApiAuthType | null;
+  ▎   healthStatus: "Unknown" | "Healthy" | "Degraded" | "Unhealthy" | null;
+  ▎   lastHealthCheckAt: string | null;
+  ▎ }
+  ▎
+  ▎ export interface SetApiCredentialsRequest {
+  ▎   baseUrl: string;        // absolute http(s) URL
+  ▎   authType: ApiAuthType;
+  ▎   credentials: Record<string, string>;
+  ▎ }
+  ▎ The shape of credentials depends on authType:
+  ▎
+  ▎ | authType | required keys      | optional                                    |
+  ▎ |----------|--------------------|---------------------------------------------|
+  ▎ | Bearer   | token              | —                                           |
+  ▎ | ApiKey   | apiKey             | headerName (default X-API-Key)              |
+  ▎ | Basic    | username, password | —                                           |
+  ▎ | OAuth2   | accessToken        | — (no refresh — token must be pre-obtained) |
+  ▎
+  ▎ UI — one card on the existing Settings page
+  ▎
+  ▎ Empty state (Configured = false)
+  ▎
+  ▎ ┌──────────────────────────────────────────────────────────────────┐
+  ▎ │ 🔌  External API connection                                       │
+  ▎ │     Not configured                                                │
+  ▎ │                                                                   │
+  ▎ │     OmniFlow will call your business's API once flows include     │
+  ▎ │     api-call steps. Add the URL and auth credentials so we can    │
+  ▎ │     reach it on your behalf.                                      │
+  ▎ │                                                                   │
+  ▎ │                                              [+ Configure API]    │
+  ▎ └──────────────────────────────────────────────────────────────────┘
+  ▎
+  ▎ Configured state
+  ▎
+  ▎ ┌──────────────────────────────────────────────────────────────────┐
+  ▎ │ 🔌  External API connection                          🟢 Healthy   │
+  ▎ │     https://api.bikersgang.com/v1                                 │
+  ▎ │     Auth: Bearer · last checked 2h ago                            │
+  ▎ │                                                                   │
+  ▎ │                              [Edit]  [Test connection]  [⋯]      │
+  ▎ └──────────────────────────────────────────────────────────────────┘
+ ▎
+  ▎ Status pill colour map: Healthy → green, Degraded → amber, Unhealthy → red, Unknown → grey. Hide the pill until lastHealthCheckAt != null.
+  ▎
+  ▎ The ⋯ menu has one item: Disconnect (calls DELETE, with a confirm dialog: "This will remove stored credentials. Flows that depend on this API
+  ▎ will start failing until you reconfigure.").
+  ▎
+  ▎ Test connection is a placeholder for now — wire it as disabled with a tooltip "Coming soon". There is no backend test endpoint yet.
+  ▎
+  ▎ Configure / Edit modal
+  ▎
+  ▎ Three sections:
+  ▎
+  ▎ Connection
+  ▎ - baseUrl — text input, label "API base URL", placeholder https://api.example.com/v1. Validate client-side: must be an absolute http(s) URL.
+  ▎ Trim trailing slash on submit.
+  ▎
+  ▎ Authentication
+  ▎ - authType — radio group of four options: Bearer Token, API Key, Basic Auth, OAuth2. Default: Bearer.
+  ▎ - The credential fields below switch based on this radio.
+  ▎
+  ▎ Credentials — render based on authType:
+  ▎
+  ▎ | If authType is | Fields shown
+  ▎                                                            |
+  ▎ |----------------|----------------------------------------------------------------------------------------------------------------------------
+  ▎ -----------------------------------------------------------|
+  ▎ | Bearer         | token (password input, monospace)
+  ▎                                                            |
+  ▎ | ApiKey         | apiKey (password input), headerName (text input, default value X-API-Key)
+  ▎                                                            |
+  ▎ | Basic          | username (text), password (password input)
+  ▎                                                            |
+  ▎ | OAuth2         | accessToken (password input) + helper text: "OAuth2 token-exchange and refresh aren't supported yet — paste a pre-obtained
+  ▎ access token. You'll need to update it before it expires." |
+ ▎ All credential inputs:
+  ▎ - Use <input type="password"> with a "show/hide" eye toggle.
+  ▎ - Mark autocomplete="off", spellcheck={false}, autocorrect="off".
+  ▎ - Never echo back from the server. When opening the Edit modal, the credential fields must be empty (don't try to "preserve" the previous
+  ▎ value — the backend doesn't expose it). Treat Edit as Re-enter.
+  ▎
+  ▎ Submit button copy: "Save credentials" on Configure, "Update credentials" on Edit. Disable while the PUT is in-flight.
+  ▎
+  ▎ Submit flow
+  ▎
+  ▎ await fetch("/api/v1/settings/api-credentials", {
+  ▎   method: "PUT",
+  ▎   headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
+  ▎   body: JSON.stringify({
+  ▎     baseUrl: "https://api.bikersgang.com/v1",
+  ▎     authType: "Bearer",
+  ▎     credentials: { token: "<value from form>" },
+  ▎   }),
+  ▎ });
+  ▎
+  ▎ On success: close modal, refetch GET, replace the card with the configured state, show a toast "API credentials saved." On error: render the
+  ▎ message field from the envelope inline next to the offending field where possible (e.g. invalid URL → on baseUrl).
+  ▎
+  ▎ Backend error cases to handle by message text:
+  ▎ - 400 "BaseUrl must be an absolute http(s) URL." → highlight baseUrl field.
+  ▎ - 400 "Credentials must include non-empty 'token'." (and analogous) → highlight the relevant credential field.
+  ▎ - 400 "Unsupported authType …" → shouldn't happen if the radio is wired correctly; show as a top-of-form toast if it does.
+  ▎ - 401 → existing global handler (token expired → refresh → retry).
+  ▎ Role gating
+  ▎
+  ▎ Only Owner and Admin roles see the Configure / Edit / Disconnect affordances. The card itself (status display) is visible to all authed tenant
+  ▎  users — they should be able to see whether the API is hooked up, just not modify it. Parse role from the JWT (existing pattern in your auth
+  ▎ store).
+  ▎
+  ▎ What NOT to do
+  ▎
+  ▎ - Do not persist the credential in any frontend state, localStorage, sessionStorage, or analytics event.
+  ▎ - Do not include the credential value in any error report or sentry breadcrumb — strip it before logging.
+  ▎ - Do not display the credential after submission, even briefly. The eye-toggle on the input field is fine while the user is typing; clear the
+  ▎ value once submission succeeds.
+  ▎ - Do not prefill credential fields when opening the Edit modal.
+  ▎
+  ▎ V1 checklist
+  ▎
+  ▎ - New card on Settings page with empty + configured states
+  ▎ - Configure modal with auth-type-aware credential fields
+  ▎ - Edit modal that requires re-entry (does not prefill)
+  ▎ - Disconnect with confirm dialog → DELETE endpoint
+  ▎ - Health pill driven by healthStatus (hidden when null)
+  ▎ - Role gating per the table above
+  ▎ - Inline error mapping for the four backend error messages
+  ▎ - No credential leakage to logs / storage / analytics
+  ▎
+  ▎ Out of scope (deferred — don't build)
+  ▎
+  ▎ - "Test connection" button (no backend endpoint yet — render disabled).
+  ▎ - OAuth2 token-exchange / refresh flow (backend doesn't support it).
+  ▎ - Multiple APIs per tenant (current schema is one-API-per-tenant).
+  ▎ - Per-endpoint credential override (current schema is tenant-level only).
+
+Prompt: Add the "Store API response bodies" toggle to Settings
+  ▎
+  ▎ This is additive to the existing /settings page. The earlier "API Credentials" card prompt is unchanged — just add a new card (or row)
+  ▎ immediately below it.
+  ▎
+  ▎ Backend contract
+  ▎
+  ▎ Two endpoints, same auth/envelope conventions as the rest of /settings:
+  ▎
+  ▎ GET /api/v1/settings/response-storage
+  ▎ PUT /api/v1/settings/response-storage
+  ▎
+  ▎ TypeScript types
+  ▎
+  ▎ export interface ResponseStorageSettingsDto {
+  ▎   enabled: boolean;
+  ▎ }
+  ▎
+  ▎ export interface SetResponseStorageRequest {
+  ▎   enabled: boolean;
+  ▎ }
+  ▎
+  ▎ What this setting actually does (write the helper text exactly like this)
+  ▎
+  ▎ When enabled, OmniFlow stores the full response body of every successful external-API call as JSONB. This makes future analytics, debugging,
+  ▎ and cross-tenant reporting possible. Disabled by default because response bodies often contain customer/business data (names, amounts, IDs).
+  ▎
+  ▎ Important wording for the UI:
+  ▎
+  ▎ - When off: "Only call metadata (URL, status, timing) is logged. Response bodies are discarded."
+  ▎ - When on: "Response bodies are saved as JSON for analytics and debugging."
+  ▎
+  ▎ UI — one row inside or below the API Credentials card
+  ▎ Two acceptable layouts (pick whichever fits your design system better):
+  ▎
+  ▎ Layout A — sibling card under API Credentials:
+  ▎ ┌──────────────────────────────────────────────────────────────────┐
+  ▎ │ 📦  Store API response bodies                    [ ⬤    ] OFF    │
+  ▎ │     Save the full JSON response of every API call for analytics  │
+  ▎ │     and debugging. Disabled by default.                          │
+  ▎ │                                                                   │
+  ▎ │     ⚠ Response bodies often contain customer or business data.   │
+  ▎ │       Make sure your privacy policy covers this before enabling. │
+  ▎ └──────────────────────────────────────────────────────────────────┘
+  ▎
+  ▎ Layout B — toggle row inside the API Credentials card (under the auth fields, separated by a divider):
+  ▎ ─────────────────────────────────────────────────────────────────
+  ▎   Store response bodies for analytics  [ ⬤    ] OFF
+  ▎   Saves full JSON responses to a queryable table.
+  ▎ ─────────────────────────────────────────────────────────────────
+  ▎
+  ▎ Behaviour
+  ▎
+  ▎ On mount of the Settings page
+  ▎
+  ▎ Fetch GET /settings/response-storage alongside the existing GET /settings/api-credentials (parallel, both already needed for the page).
+  ▎
+  ▎ Flipping the toggle ON (off → on)
+  ▎
+  ▎ Show a confirmation dialog before the PUT call:
+  ▎
+  ▎ ┌────────────────────────────────────────────────────┐
+  ▎ │ Enable response-body storage?                       │
+  ▎ │ ─────────────────────────────────────────────────   │
+  ▎ │ OmniFlow will save the full JSON of every API       │
+  ▎ │ response. This may include customer names, IDs,     │
+  ▎ │ amounts, or other sensitive data.                   │
+  ▎ │                                                     │
+  ▎ │ Make sure your privacy policy and any compliance    │
+  ▎ │ obligations (GDPR, HIPAA, PCI) cover this before    │
+  ▎ │ continuing.                                         │
+  ▎ │                                                     │
+  ▎ │              [Cancel]   [Enable storage]            │
+  ▎ └────────────────────────────────────────────────────┘
+  ▎
+  ▎ Only on confirm: PUT { "enabled": true }. On cancel: revert the toggle visually.
+  ▎
+  ▎ Flipping the toggle OFF (on → off)
+  ▎
+  ▎ No confirmation needed. Just PUT { "enabled": false }. Show a quiet toast: "Response storage disabled. Existing rows are kept; no new bodies
+  ▎ will be saved."
+  ▎
+  ▎ Important nuance to surface in the toast (not a separate dialog): disabling does not delete existing rows — the backend has no automatic
+  ▎ cleanup yet. If the user needs deletion, that's a manual DB action today.
+  ▎
+  ▎ Optimistic UI
+  ▎
+  ▎ Flip the toggle visually before the PUT resolves. If the PUT fails, revert and show an inline error.
+  ▎
+  ▎ Role gating
+  ▎
+  ▎ Same as API Credentials: only Owner and Admin can flip the toggle. Others see it as read-only with a tooltip "Only owners and admins can
+  ▎ change this setting."
+  ▎
+  ▎ What NOT to do
+  ▎
+  ▎ - Do not show a count of stored rows in the UI yet — there's no GET endpoint for that. Adding one would tempt FE devs to expose the data, and
+  ▎ we haven't built the redaction/permissioning for that surface yet.
+  ▎ - Do not auto-enable based on heuristics (e.g. "this tenant uses a banking-style API, suggest enabling"). The default-off is deliberate.
+  ▎ - Do not persist the toggle state in any frontend cache that survives logout — always re-fetch from the server on Settings page mount.
+  ▎
+  ▎ V1 checklist
+  ▎
+  ▎ - Toggle component bound to enabled from GET /settings/response-storage
+  ▎ - Confirmation dialog ONLY on the off→on transition, with the exact PII warning copy above
+  ▎ - No confirmation on on→off; toast that explains existing rows are kept
+  ▎ - Role gating identical to API Credentials
+  ▎ - Reverts on PUT failure with inline error
+  ▎ - Helper text matches the on/off copy above
+  ▎
+  ▎ Out of scope (deferred)
+  ▎
+  ▎ - Viewing or browsing stored response rows in the UI (no FE-facing GET endpoint yet — query Postgres directly).
+  ▎ - Per-endpoint storage overrides (current schema is tenant-wide only).
+  ▎ - Manual purge button (no backend endpoint yet).
+  ▎ - Retention-window picker (no backend support — rows live forever in v1).

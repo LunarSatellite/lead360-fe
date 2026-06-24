@@ -1,0 +1,224 @@
+# Prompt: Render typed UI cards in the chat
+
+The backend now lets the LLM attach a structured input control to any reply
+(radio, dropdown, multi-select, slider, date, button row). The validated card
+payload arrives in the existing `inlineCardJson` field on `AssistantDone` SSE
+events — same field the existing `AgentCreated` card uses. Build a generic
+switch component that renders the right control based on `card.type`.
+**No hardcoded per-question logic — the backend decides which control to show,
+frontend just renders.**
+
+## Where the data comes from
+
+Every assistant message in the SSE stream already has these fields:
+
+```ts
+interface AssistantMessage {
+  id: string;
+  sessionId: string;
+  content: string;            // Markdown prose — render with react-markdown
+  inlineCardJson: string | null;  // ← when present, parse and render below
+  toolCallJson: string | null;
+  toolResultJson: string | null;
+  // ...existing fields
+}
+```
+
+No new endpoint, no SSE change. The signal is presence of `inlineCardJson`.
+
+## Card type contract
+
+```ts
+type InlineCard =
+  | RadioCard | DropdownCard | MultiSelectCard
+  | SliderCard | DateCard | ButtonRowCard
+  | { type: string };  // unknown types → render nothing (forward-compat)
+
+interface OptionItem {
+  value: string;
+  label: string;
+  description?: string;
+  icon?: string;
+}
+
+interface RadioCard {
+  type: "Radio";
+  questionId: string;
+  options: OptionItem[];      // 2-50 items
+  allowOther?: boolean;       // when true, render an "Other…" free-text input
+}
+
+interface DropdownCard {
+  type: "Dropdown";
+  questionId: string;
+  options: OptionItem[];
+  placeholder?: string;
+  allowOther?: boolean;
+}
+
+interface MultiSelectCard {
+  type: "MultiSelect";
+  questionId: string;
+  options: OptionItem[];
+  minSelections?: number;     // default 1
+  maxSelections?: number;     // default = options.length
+}
+
+interface SliderCard {
+  type: "Slider";
+  questionId: string;
+  min: number;
+  max: number;
+  step: number;               // server always provides (defaults to 1)
+  unit?: string;              // "$", "days", "min" — show after the number
+}
+
+interface DateCard {
+  type: "Date";
+  questionId: string;
+  minDate?: string;           // ISO-8601, e.g. "2026-01-01"
+  maxDate?: string;
+}
+
+interface ButtonRowCard {
+  type: "ButtonRow";
+  questionId?: string;        // optional for ButtonRow
+  buttons: {                  // 1-5 buttons
+    value: string;            // sent as the user reply when clicked
+    label: string;
+    style: "primary" | "secondary" | "ghost" | "danger";
+  }[];
+}
+```
+
+## Component structure
+
+### 1. Update the assistant-message renderer
+
+Render Markdown for `content`, then render `<InlineCard>` underneath when
+`inlineCardJson` is non-null:
+
+```tsx
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+function ChatAssistantMessage({ msg, onReply }: {
+  msg: AssistantMessage;
+  onReply: (replyText: string) => void;
+}) {
+  const card: InlineCard | null = msg.inlineCardJson
+    ? JSON.parse(msg.inlineCardJson)
+    : null;
+
+  return (
+    <div className="chat-msg chat-msg--assistant">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+      {card && <InlineCard card={card} onSubmit={onReply} />}
+    </div>
+  );
+}
+```
+
+### 2. The generic switch
+
+```tsx
+function InlineCard({ card, onSubmit }: {
+  card: InlineCard;
+  onSubmit: (replyText: string) => void;
+}) {
+  switch (card.type) {
+    case "Radio":       return <RadioControl       card={card} onSubmit={onSubmit} />;
+    case "Dropdown":    return <DropdownControl    card={card} onSubmit={onSubmit} />;
+    case "MultiSelect": return <MultiSelectControl card={card} onSubmit={onSubmit} />;
+    case "Slider":      return <SliderControl      card={card} onSubmit={onSubmit} />;
+    case "Date":        return <DateControl        card={card} onSubmit={onSubmit} />;
+    case "ButtonRow":   return <ButtonRowControl   card={card} onSubmit={onSubmit} />;
+    default:            return null;
+  }
+}
+```
+
+### 3. Six control components
+
+Build each one against your design system. Functional requirements per control:
+
+| Control     | UX                                                                                                                                                                       | Validation                                                       | Reply text on submit                                              |
+|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------|-------------------------------------------------------------------|
+| Radio       | Vertical stack of clickable rows, each showing `label` + optional `description`. One selected at a time. "Submit" button below. If `allowOther`, an "Other…" radio reveals a text input. | One option must be selected.                                     | `option.value` (or `Other: <text>` if Other was chosen)           |
+| Dropdown    | Native-feeling select with `placeholder`. If `allowOther`, free-text input appears when "Other" is picked.                                                               | One option selected.                                             | `option.value` (or `Other: <text>`)                               |
+| MultiSelect | Stack of checkboxes, each showing `label` + optional `description`. Counter at bottom: "Pick 2-6 (you've picked 3)".                                                     | Selection count between `minSelections` and `maxSelections`.     | comma-joined values: `"goal_a, goal_b, goal_c"`                   |
+| Slider      | Range slider showing current value with `unit` suffix. Optional numeric input next to it for keyboard entry.                                                             | Value within `[min, max]`, snapped to `step`.                    | `"500"` (or `"500 $"` if unit is present)                          |
+| Date        | Calendar picker. Disable dates outside `[minDate, maxDate]`.                                                                                                             | Date within bounds.                                              | ISO-8601: `"2026-05-15"`                                          |
+| ButtonRow   | Horizontal row of buttons. Tap a button → submits immediately (no separate submit step). Buttons wrap to a new row on narrow screens. Style maps: primary = brand button, secondary = neutral, ghost = outlined/text, danger = destructive. | n/a — clicking is the submit.                                    | `button.value`                                                    |
+
+### 4. How answers flow back
+
+When the user submits, **send the reply text as a regular user chat message**
+through the existing chat-message API. The LLM is already in the loop and will
+read it as the user's reply.
+
+Do **not** include `questionId` in the reply text — it's a backend-internal id,
+not for the user to see or send.
+
+## Behaviour rules
+
+1. **Cards become non-interactive once the user replies.** As soon as the user
+   sends any message after a card was shown, that card is "consumed". Either
+   grey it out (disabled state, no cursor) or collapse it visually. Don't let
+   the user click again.
+2. **Card sits *under* the prose, not in place of it.** Both render — the card
+   is an interactive supplement, not a replacement.
+3. **Mobile-first.** Radio rows full-width on narrow screens. ButtonRow wraps.
+   Slider thumb large enough for thumb taps.
+4. **Style ownership is 100% yours.** The backend never sends colors, sizes, or
+   fonts. Use your existing design tokens. The only style hint from backend is
+   `ButtonRow.style`.
+5. **Accessibility.** `<fieldset>` + `<legend>` for Radio/MultiSelect groups,
+   `aria-labelledby` on dropdowns, full keyboard nav (Tab, Arrow keys for
+   radio/dropdown, Space/Enter to select), visible focus rings, screen-reader
+   labels for slider/date.
+6. **Validate before submitting.** Show inline errors; don't submit until valid.
+   Don't disable the submit button without explanation — show *why* it's
+   disabled.
+7. **Optimistic message handling.** When the user clicks Submit (or a ButtonRow
+   button), append their reply to the chat *immediately* and call the chat-send
+   API. Match your existing optimistic-update pattern.
+
+## What NOT to do
+
+- **Don't render unknown card types** as raw JSON or debug output. Return
+  `null`. New types ship via backend deploys; any type your code doesn't
+  recognize is something you don't know how to render — silence is correct.
+- **Don't echo `questionId` to the user** — it's a backend-internal id.
+- **Don't auto-submit on selection** for Radio/Dropdown/MultiSelect/Slider/Date.
+  Let the user confirm with a Submit button. (ButtonRow is the exception:
+  clicking *is* the submit.)
+- **Don't treat `inlineCardJson` as HTML** — it's always JSON. Parse once. Never
+  use `dangerouslySetInnerHTML` for any of this.
+- **Don't mutate the card payload** before rendering — pass it through
+  read-only.
+- **Don't store card state across reconnects** — if SSE drops, the message will
+  re-stream from the server, including the card.
+
+## V1 checklist
+
+- [ ] `<InlineCard>` generic switch component
+- [ ] Six controls: Radio, Dropdown, MultiSelect, Slider, Date, ButtonRow
+- [ ] Cards render below Markdown content, not in place of it
+- [ ] Reply text mapping per the table above (no `questionId` echoed)
+- [ ] Cards consumed (disabled or hidden) once the next user message is sent
+- [ ] Mobile responsive
+- [ ] Full keyboard + screen-reader navigation
+- [ ] Validation enforced client-side; inline errors
+- [ ] Unknown `type` renders nothing — no errors, no debug JSON
+- [ ] Style uses existing design tokens — no hardcoded colors
+
+## Out of scope (deferred — don't build)
+
+- Custom card styling per tenant.
+- Rich format validators (email, phone) — the backend doesn't emit format hints
+  yet.
+- Multi-step wizards inside one card — use multiple turns instead.
+- Persisting partial card state across SSE drops — re-stream is the recovery
+  path.
+- Backend-provided color overrides — backend stays presentation-agnostic.

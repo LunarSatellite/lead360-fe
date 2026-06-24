@@ -1,0 +1,766 @@
+import { apiClient } from '@/shared/lib/api-client';
+import type { AnnouncementSummaryDto, AnnouncementDetailDto, AnnouncementCreateRequest, AnnouncementUpdateRequest, AnnouncementStatus, CrmPipelineSummaryDto, CrmPipelineDetailDto, CrmPipelineCreateRequest, CrmPipelineUpdateRequest, CrmStageGateSummaryDto, CrmStageGateCreateRequest, CrmStageGateUpdateRequest, CrmExitGateEvaluationDto, CrmDealGateStatusDto } from '../types/crm.types';
+import type {
+  LeadSummaryDto,
+  LeadDetailDto,
+  LeadStatsDto,
+  LeadFilter,
+  NurtureSequenceDto,
+  NurtureSequenceCreateRequest,
+  NurtureSequenceUpdateRequest,
+  NurtureEnrollmentDto,
+  LeadCampaignDto,
+  LeadCampaignCreateRequest,
+  LeadSegmentFilter,
+  LeadSegmentPreviewDto,
+  StaffNotificationDto,
+  PagedResult,
+  CrmContactSummaryDto,
+  CrmContactDetailDto,
+  CrmContactCreateRequest,
+  CrmContactUpdateRequest,
+  CrmContactFilter,
+  CrmOrganizationSummaryDto,
+  CrmOrganizationDetailDto,
+  CrmOrganizationCreateRequest,
+  CrmOrganizationUpdateRequest,
+  CrmOrganizationFilter,
+  CrmAccountSummaryDto,
+  CrmAccountDetailDto,
+  CrmAccountCreateRequest,
+  CrmAccountUpdateRequest,
+  CrmAccountFilter,
+  CrmAccountContactDto,
+  AddAccountContactRequest,
+  CrmDealStageSummaryDto,
+  CrmDealStageCreateRequest,
+  CrmDealStageUpdateRequest,
+  CrmDealSummaryDto,
+  CrmDealDetailDto,
+  CrmDealCreateRequest,
+  CrmDealUpdateRequest,
+  CrmDealFilter,
+  MoveDealStageRequest,
+  CloseDealRequest,
+  CrmSignalDto,
+  CrmManualSignalCreateRequest,
+  CrmSignalFilter,
+  CrmCampaignSummaryDto,
+  CrmCampaignDetailDto,
+  CrmCampaignCreateRequest,
+  CrmCampaignUpdateRequest,
+  CrmCampaignBudgetUpdateRequest,
+  CrmCampaignPreviewDto,
+  CrmCampaignStatsDto,
+  CrmCampaignPerformanceDashboardDto,
+  CrmCampaignAttributionDto,
+  CrmCampaignAttributionCreateRequest,
+  CrmCampaignRecipientDto,
+  CrmCampaignAggregateDto,
+  DealPipelineDto,
+  DealStatsDto,
+  ContactStatsDto,
+  RevenueAnalyticsDto,
+  ActivityAnalyticsDto,
+  VelocityAnalyticsDto,
+  LeadFunnelAnalyticsDto,
+  NurtureAnalyticsDto,
+  CrmNurtureEnrollmentDto,
+  FlowExperimentSummaryDto,
+  FlowExperimentDetailDto,
+  FlowExperimentCreateRequest,
+  FlowExperimentUpdateRequest,
+  ExperimentVariantKind,
+} from '../types/crm.types';
+
+const BASE = '/v1/crm';
+const EXPERIMENTS_BASE = '/v1/flows/experiments';
+const ANN_BASE = '/v1/announcements';
+
+export const crmApi = {
+  // ─── Leads ───────────────────────────────────────────────────────────────
+  getLeads: (filter: LeadFilter = {}) =>
+    apiClient.get<PagedResult<LeadSummaryDto>>(`${BASE}/leads`, { params: filter }),
+
+  getLeadStats: () =>
+    apiClient.get<LeadStatsDto>(`${BASE}/leads/stats`),
+
+  getLeadById: (id: string) =>
+    apiClient.get<LeadDetailDto>(`${BASE}/leads/${id}`),
+
+  createLead: (data: import('../types/crm.types').CreateManualLeadRequest) =>
+    apiClient.post<import('../types/crm.types').LeadDetailDto>(`${BASE}/leads`, data),
+
+  updateLeadStage: (id: string, stage: number, reason?: string) =>
+    apiClient.put<LeadDetailDto>(`${BASE}/leads/${id}/stage`, { stage, reason }),
+
+  assignLead: (id: string, userId: string | null) =>
+    apiClient.put<LeadDetailDto>(`${BASE}/leads/${id}/assign`, { userId }),
+
+  addNote: (id: string, note: string) =>
+    apiClient.post(`${BASE}/leads/${id}/notes`, { note }),
+
+  // ─── Notifications ────────────────────────────────────────────────────────
+  getNotifications: (page = 1, pageSize = 20) =>
+    apiClient.get<PagedResult<StaffNotificationDto>>(`${BASE}/notifications`, {
+      params: { page, pageSize },
+    }),
+
+  markRead: (id: string) =>
+    apiClient.put(`${BASE}/notifications/${id}/read`, {}),
+
+  markAllRead: () =>
+    apiClient.put(`${BASE}/notifications/read-all`, {}),
+
+  // ─── Nurture Sequences ────────────────────────────────────────────────────
+  getNurtureSequences: () =>
+    apiClient.get<NurtureSequenceDto[]>(`${BASE}/nurture-sequences`),
+
+  createNurtureSequence: (data: NurtureSequenceCreateRequest) =>
+    apiClient.post<NurtureSequenceDto>(`${BASE}/nurture-sequences`, data),
+
+  updateNurtureSequence: (id: string, data: NurtureSequenceUpdateRequest) =>
+    apiClient.put<NurtureSequenceDto>(`${BASE}/nurture-sequences/${id}`, data),
+
+  deleteNurtureSequence: (id: string) =>
+    apiClient.delete(`${BASE}/nurture-sequences/${id}`),
+
+  enrollLead: (sequenceId: string, leadId: string) =>
+    apiClient.post(`${BASE}/nurture-sequences/${sequenceId}/enroll/${leadId}`, {}),
+
+  getLeadEnrollments: (leadId: string) =>
+    apiClient.get<NurtureEnrollmentDto[]>(`${BASE}/nurture-sequences/lead/${leadId}`),
+
+  // ─── Campaigns ────────────────────────────────────────────────────────────
+  getCampaigns: (page = 1, pageSize = 20) =>
+    apiClient.get<PagedResult<LeadCampaignDto>>(`${BASE}/campaigns`, {
+      params: { page, pageSize },
+    }),
+
+  getCampaignById: (id: string) =>
+    apiClient.get<LeadCampaignDto>(`${BASE}/campaigns/${id}`),
+
+  createCampaign: (data: LeadCampaignCreateRequest) =>
+    apiClient.post<LeadCampaignDto>(`${BASE}/campaigns`, data),
+
+  previewSegment: (filter: LeadSegmentFilter) =>
+    apiClient.post<LeadSegmentPreviewDto>(`${BASE}/campaigns/preview-segment`, filter),
+
+  executeCampaign: (id: string) =>
+    apiClient.post(`${BASE}/campaigns/${id}/execute`, {}),
+
+  // ─── Contacts ─────────────────────────────────────────────────────────────
+  getContacts: (filter: CrmContactFilter = {}) =>
+    apiClient.get<PagedResult<CrmContactSummaryDto>>(`${BASE}/contacts`, { params: filter }),
+
+  getContactById: (id: string) =>
+    apiClient.get<CrmContactDetailDto>(`${BASE}/contacts/${id}`),
+
+  createContact: (data: CrmContactCreateRequest) =>
+    apiClient.post<CrmContactDetailDto>(`${BASE}/contacts`, data),
+
+  updateContact: (id: string, data: CrmContactUpdateRequest) =>
+    apiClient.put<CrmContactDetailDto>(`${BASE}/contacts/${id}`, data),
+
+  deleteContact: (id: string) =>
+    apiClient.delete(`${BASE}/contacts/${id}`),
+
+  setContactLanguage: (id: string, language: string | null) =>
+    apiClient.put(`${BASE}/contacts/${id}/language`, { language }),
+
+  // ─── Organizations ────────────────────────────────────────────────────────
+  getOrganizations: (filter: CrmOrganizationFilter = {}) =>
+    apiClient.get<PagedResult<CrmOrganizationSummaryDto>>(`${BASE}/organizations`, { params: filter }),
+
+  getOrganizationById: (id: string) =>
+    apiClient.get<CrmOrganizationDetailDto>(`${BASE}/organizations/${id}`),
+
+  createOrganization: (data: CrmOrganizationCreateRequest) =>
+    apiClient.post<CrmOrganizationDetailDto>(`${BASE}/organizations`, data),
+
+  updateOrganization: (id: string, data: CrmOrganizationUpdateRequest) =>
+    apiClient.put<CrmOrganizationDetailDto>(`${BASE}/organizations/${id}`, data),
+
+  deleteOrganization: (id: string) =>
+    apiClient.delete(`${BASE}/organizations/${id}`),
+
+  // ─── Accounts ─────────────────────────────────────────────────────────────
+  getAccounts: (filter: CrmAccountFilter = {}) =>
+    apiClient.get<PagedResult<CrmAccountSummaryDto>>(`${BASE}/accounts`, { params: filter }),
+
+  getAccountById: (id: string) =>
+    apiClient.get<CrmAccountDetailDto>(`${BASE}/accounts/${id}`),
+
+  createAccount: (data: CrmAccountCreateRequest) =>
+    apiClient.post<CrmAccountDetailDto>(`${BASE}/accounts`, data),
+
+  updateAccount: (id: string, data: CrmAccountUpdateRequest) =>
+    apiClient.put<CrmAccountDetailDto>(`${BASE}/accounts/${id}`, data),
+
+  deleteAccount: (id: string) =>
+    apiClient.delete(`${BASE}/accounts/${id}`),
+
+  getAccountContacts: (id: string) =>
+    apiClient.get<CrmAccountContactDto[]>(`${BASE}/accounts/${id}/contacts`),
+
+  addAccountContact: (id: string, data: AddAccountContactRequest) =>
+    apiClient.post<CrmAccountContactDto>(`${BASE}/accounts/${id}/contacts`, data),
+
+  removeAccountContact: (accountId: string, linkId: string) =>
+    apiClient.delete(`${BASE}/accounts/${accountId}/contacts/${linkId}`),
+
+  // ─── Stage Exit Gates ─────────────────────────────────────────────────────
+  getStageGates: (stageId: string) =>
+    apiClient.get<CrmStageGateSummaryDto[]>(`${BASE}/stages/${stageId}/gates`),
+
+  createStageGate: (stageId: string, data: CrmStageGateCreateRequest) =>
+    apiClient.post<CrmStageGateSummaryDto>(`${BASE}/stages/${stageId}/gates`, data),
+
+  updateStageGate: (gateId: string, data: CrmStageGateUpdateRequest) =>
+    apiClient.put<CrmStageGateSummaryDto>(`${BASE}/stages/gates/${gateId}`, data),
+
+  deleteStageGate: (gateId: string) =>
+    apiClient.delete(`${BASE}/stages/gates/${gateId}`),
+
+  getDealGateStatus: (dealId: string) =>
+    apiClient.get<CrmExitGateEvaluationDto>(`${BASE}/deals/${dealId}/gate-status`),
+
+  toggleGateCheck: (dealId: string, gateId: string, isChecked: boolean) =>
+    apiClient.post<CrmDealGateStatusDto>(`${BASE}/deals/${dealId}/gates/${gateId}/check`, { isChecked }),
+
+  // ─── Pipelines ────────────────────────────────────────────────────────────
+  getPipelines: () =>
+    apiClient.get<CrmPipelineSummaryDto[]>(`${BASE}/pipelines`),
+
+  getPipelineById: (id: string) =>
+    apiClient.get<CrmPipelineDetailDto>(`${BASE}/pipelines/${id}`),
+
+  createPipeline: (data: CrmPipelineCreateRequest) =>
+    apiClient.post<CrmPipelineSummaryDto>(`${BASE}/pipelines`, data),
+
+  updatePipeline: (id: string, data: CrmPipelineUpdateRequest) =>
+    apiClient.put<CrmPipelineSummaryDto>(`${BASE}/pipelines/${id}`, data),
+
+  deletePipeline: (id: string) =>
+    apiClient.delete(`${BASE}/pipelines/${id}`),
+
+  setPipelineDefault: (id: string) =>
+    apiClient.post<CrmPipelineSummaryDto>(`${BASE}/pipelines/${id}/set-default`, {}),
+
+  getPipelineStages: (pipelineId: string) =>
+    apiClient.get<CrmDealStageSummaryDto[]>(`${BASE}/pipelines/${pipelineId}/stages`),
+
+  // ─── Deal Stages ──────────────────────────────────────────────────────────
+  getDealStages: (params?: { dealType?: number; pipelineId?: string }) =>
+    apiClient.get<CrmDealStageSummaryDto[]>(`${BASE}/deals/stages`, { params }),
+
+  createDealStage: (data: CrmDealStageCreateRequest) =>
+    apiClient.post<CrmDealStageSummaryDto>(`${BASE}/deals/stages`, data),
+
+  updateDealStage: (id: string, data: CrmDealStageUpdateRequest) =>
+    apiClient.put<CrmDealStageSummaryDto>(`${BASE}/deals/stages/${id}`, data),
+
+  deleteDealStage: (id: string) =>
+    apiClient.delete(`${BASE}/deals/stages/${id}`),
+
+  // ─── Deals ────────────────────────────────────────────────────────────────
+  getDeals: (filter: CrmDealFilter = {}) =>
+    apiClient.get<PagedResult<CrmDealSummaryDto>>(`${BASE}/deals`, { params: filter }),
+
+  getDealById: (id: string) =>
+    apiClient.get<CrmDealDetailDto>(`${BASE}/deals/${id}`),
+
+  createDeal: (data: CrmDealCreateRequest) =>
+    apiClient.post<CrmDealDetailDto>(`${BASE}/deals`, data),
+
+  updateDeal: (id: string, data: CrmDealUpdateRequest) =>
+    apiClient.put<CrmDealDetailDto>(`${BASE}/deals/${id}`, data),
+
+  deleteDeal: (id: string) =>
+    apiClient.delete(`${BASE}/deals/${id}`),
+
+  moveDealStage: (id: string, data: MoveDealStageRequest) =>
+    apiClient.put<CrmDealDetailDto>(`${BASE}/deals/${id}/stage`, data),
+  convertLead: (id: string, data: import('../types/crm.types').ConvertLeadRequest) =>
+    apiClient.post<import('../types/crm.types').ConvertLeadResponse>(`${BASE}/leads/${id}/convert`, data),
+
+  closeDeal: (id: string, data: CloseDealRequest) =>
+    apiClient.post<CrmDealDetailDto>(`${BASE}/deals/${id}/close`, data),
+
+  refreshDealSummary: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmDealAiSummaryDto>(`${BASE}/deals/${id}/summary/refresh`),
+
+  getDealTimeline: (id: string) =>
+    apiClient.get<DealTimelineDto>(`${BASE}/deals/${id}/timeline`),
+
+  getDealStrategy: (id: string) =>
+    apiClient.get<DealStrategyDto>(`${BASE}/deals/${id}/strategy`),
+
+  updateDealStrategy: (id: string, data: DealStrategyDto) =>
+    apiClient.put(`${BASE}/deals/${id}/strategy`, data),
+
+  getTimeline: (kind: number, entityId: string, page = 1, pageSize = 50) =>
+    apiClient.get<PagedResult<ActivityEventDto>>(`${BASE}/timeline/${kind}/${entityId}`, { params: { page, pageSize } }),
+
+  logActivity: (data: ActivityLogRequest) =>
+    apiClient.post<ActivityEventDto>(`${BASE}/activities`, data),
+
+  // ─── Signals ──────────────────────────────────────────────────────────────
+  getSignals: (filter: CrmSignalFilter = {}) =>
+    apiClient.get<PagedResult<CrmSignalDto>>(`${BASE}/signals`, { params: filter }),
+
+  createSignal: (data: CrmManualSignalCreateRequest) =>
+    apiClient.post<CrmSignalDto>(`${BASE}/signals`, data),
+
+  // ─── CRM Campaigns (B2B) ─────────────────────────────────────────────────
+  getCrmCampaigns: () =>
+    apiClient.get<CrmCampaignSummaryDto[]>(`${BASE}/campaigns`),
+
+  getCrmCampaignById: (id: string) =>
+    apiClient.get<CrmCampaignDetailDto>(`${BASE}/campaigns/${id}`),
+
+  createCrmCampaign: (data: CrmCampaignCreateRequest) =>
+    apiClient.post<CrmCampaignDetailDto>(`${BASE}/campaigns`, data),
+
+  updateCrmCampaign: (id: string, data: CrmCampaignUpdateRequest) =>
+    apiClient.put<CrmCampaignDetailDto>(`${BASE}/campaigns/${id}`, data),
+
+  deleteCrmCampaign: (id: string) =>
+    apiClient.delete(`${BASE}/campaigns/${id}`),
+
+  previewCrmCampaign: (targetFilterJson: string) =>
+    apiClient.post<CrmCampaignPreviewDto>(`${BASE}/campaigns/preview`, { targetFilterJson }),
+
+  scheduleCrmCampaign: (id: string, scheduledAt: string) =>
+    apiClient.post<CrmCampaignDetailDto>(`${BASE}/campaigns/${id}/schedule`, { scheduledAt }),
+
+  launchCrmCampaign: (id: string) =>
+    apiClient.post<CrmCampaignDetailDto>(`${BASE}/campaigns/${id}/launch`, {}),
+
+  cancelCrmCampaign: (id: string) =>
+    apiClient.post(`${BASE}/campaigns/${id}/cancel`, {}),
+
+  getCrmCampaignStats: (id: string) =>
+    apiClient.get<CrmCampaignStatsDto>(`${BASE}/campaigns/${id}/stats`),
+
+  getCrmCampaignPerformance: (id: string) =>
+    apiClient.get<CrmCampaignPerformanceDashboardDto>(`${BASE}/campaigns/${id}/performance`),
+
+  getCrmCampaignsAggregate: () =>
+    apiClient.get<CrmCampaignAggregateDto>(`${BASE}/campaigns/aggregate`),
+
+  getCrmCampaignRecipients: (id: string) =>
+    apiClient.get<CrmCampaignRecipientDto[]>(`${BASE}/campaigns/${id}/recipients`),
+
+  updateCrmCampaignBudget: (id: string, data: CrmCampaignBudgetUpdateRequest) =>
+    apiClient.put<CrmCampaignDetailDto>(`${BASE}/campaigns/${id}/budget`, data),
+
+  getCrmCampaignAttributions: (id: string) =>
+    apiClient.get<CrmCampaignAttributionDto[]>(`${BASE}/campaigns/${id}/attributions`),
+
+  addCrmCampaignAttribution: (id: string, data: CrmCampaignAttributionCreateRequest) =>
+    apiClient.post<CrmCampaignAttributionDto>(`${BASE}/campaigns/${id}/attributions`, data),
+
+  deleteCrmCampaignAttribution: (campaignId: string, attributionId: string) =>
+    apiClient.delete(`${BASE}/campaigns/${campaignId}/attributions/${attributionId}`),
+
+  // ─── CRM Analytics ────────────────────────────────────────────────────────
+  getPipelineAnalytics: () =>
+    apiClient.get<DealPipelineDto>(`${BASE}/analytics/pipeline`),
+
+  getDealStats: () =>
+    apiClient.get<DealStatsDto>(`${BASE}/analytics/deals`),
+
+  getContactStats: () =>
+    apiClient.get<ContactStatsDto>(`${BASE}/analytics/contacts`),
+
+  getCampaignAnalytics: () =>
+    apiClient.get<CrmCampaignAggregateDto>(`${BASE}/campaigns/aggregate`),
+
+  getRevenueAnalytics: () =>
+    apiClient.get<RevenueAnalyticsDto>(`${BASE}/analytics/revenue`),
+
+  getActivityAnalytics: () =>
+    apiClient.get<ActivityAnalyticsDto>(`${BASE}/analytics/activity`),
+
+  getVelocityAnalytics: () =>
+    apiClient.get<VelocityAnalyticsDto>(`${BASE}/analytics/velocity`),
+
+  getLeadFunnelAnalytics: () =>
+    apiClient.get<LeadFunnelAnalyticsDto>(`${BASE}/analytics/leads/funnel`),
+
+  getNurtureAnalytics: () =>
+    apiClient.get<NurtureAnalyticsDto>(`${BASE}/analytics/nurture`),
+
+  // ─── CRM Nurture (B2B contacts — Phase 3C) ────────────────────────────────
+  enrollCrmContact: (contactId: string, sequenceId: string) =>
+    apiClient.post(`${BASE}/nurture/enroll`, { contactId, sequenceId }),
+
+  getCrmContactEnrollments: (contactId: string) =>
+    apiClient.get<CrmNurtureEnrollmentDto[]>(`${BASE}/nurture/contacts/${contactId}`),
+
+  cancelCrmContactEnrollments: (contactId: string) =>
+    apiClient.delete(`${BASE}/nurture/contacts/${contactId}`),
+
+  // ─── Flow A/B Experiments ─────────────────────────────────────────────────
+  getExperiments: () =>
+    apiClient.get<FlowExperimentSummaryDto[]>(EXPERIMENTS_BASE),
+
+  getExperimentById: (id: string) =>
+    apiClient.get<FlowExperimentDetailDto>(`${EXPERIMENTS_BASE}/${id}`),
+
+  createExperiment: (data: FlowExperimentCreateRequest) =>
+    apiClient.post<FlowExperimentDetailDto>(EXPERIMENTS_BASE, data),
+
+  updateExperiment: (id: string, data: FlowExperimentUpdateRequest) =>
+    apiClient.put<FlowExperimentDetailDto>(`${EXPERIMENTS_BASE}/${id}`, data),
+
+  deleteExperiment: (id: string) =>
+    apiClient.delete(`${EXPERIMENTS_BASE}/${id}`),
+
+  startExperiment: (id: string) =>
+    apiClient.post<FlowExperimentDetailDto>(`${EXPERIMENTS_BASE}/${id}/start`, {}),
+
+  pauseExperiment: (id: string) =>
+    apiClient.post<FlowExperimentDetailDto>(`${EXPERIMENTS_BASE}/${id}/pause`, {}),
+
+  resumeExperiment: (id: string) =>
+    apiClient.post<FlowExperimentDetailDto>(`${EXPERIMENTS_BASE}/${id}/resume`, {}),
+
+  completeExperiment: (id: string) =>
+    apiClient.post<FlowExperimentDetailDto>(`${EXPERIMENTS_BASE}/${id}/complete`, {}),
+
+  declareExperimentWinner: (id: string, winner: ExperimentVariantKind) =>
+    apiClient.post<FlowExperimentDetailDto>(`${EXPERIMENTS_BASE}/${id}/winner`, { winner }),
+
+  // ─── Support Cases ────────────────────────────────────────────────────────
+  getSupportCases: (filter: import('../types/crm.types').CrmSupportCaseFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmSupportCaseSummaryDto>>(`${BASE}/support-cases`, { params: filter }),
+  getSupportCaseById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmSupportCaseDetailDto>(`${BASE}/support-cases/${id}`),
+  createSupportCase: (data: import('../types/crm.types').CrmSupportCaseCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmSupportCaseDetailDto>(`${BASE}/support-cases`, data),
+  transitionSupportCaseStatus: (id: string, status: number, reason?: string) =>
+    apiClient.patch(`${BASE}/support-cases/${id}/status`, { status, reason }),
+  addSupportCaseMessage: (id: string, body: string) =>
+    apiClient.post(`${BASE}/support-cases/${id}/messages`, { body }),
+  escalateSupportCase: (id: string) =>
+    apiClient.post(`${BASE}/support-cases/${id}/escalate`, {}),
+  assignSupportCase: (id: string, userId: string) =>
+    apiClient.post(`${BASE}/support-cases/${id}/assign/${userId}`, {}),
+  resolveSupportCase: (id: string) =>
+    apiClient.post(`${BASE}/support-cases/${id}/resolve`, {}),
+  closeSupportCase: (id: string) =>
+    apiClient.post(`${BASE}/support-cases/${id}/close`, {}),
+  getSlaPolicies: () =>
+    apiClient.get<import('../types/crm.types').CrmSlaPolicySummaryDto[]>(`${BASE}/sla-policies`),
+  createSlaPolicy: (data: import('../types/crm.types').CrmSlaPolicyCreateRequest) =>
+    apiClient.post(`${BASE}/sla-policies`, data),
+  deleteSlaPolicy: (id: string) =>
+    apiClient.delete(`${BASE}/sla-policies/${id}`),
+
+  // ─── Tasks ────────────────────────────────────────────────────────────────
+  getTasks: (filter: import('../types/crm.types').CrmTaskFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmTaskSummaryDto>>(`${BASE}/tasks`, { params: filter }),
+  getTaskById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmTaskDetailDto>(`${BASE}/tasks/${id}`),
+  createTask: (data: import('../types/crm.types').CrmTaskCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTaskDetailDto>(`${BASE}/tasks`, data),
+  updateTask: (id: string, data: import('../types/crm.types').CrmTaskUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmTaskDetailDto>(`${BASE}/tasks/${id}`, data),
+  deleteTask: (id: string) =>
+    apiClient.delete(`${BASE}/tasks/${id}`),
+  completeTask: (id: string) =>
+    apiClient.post(`${BASE}/tasks/${id}/complete`, {}),
+
+  // ─── Quotes ───────────────────────────────────────────────────────────────
+  getQuotes: (filter: import('../types/crm.types').CrmQuoteFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmQuoteSummaryDto>>(`${BASE}/quotes`, { params: filter }),
+  getQuoteById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmQuoteDetailDto>(`${BASE}/quotes/${id}`),
+  createQuote: (data: import('../types/crm.types').CrmQuoteCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmQuoteDetailDto>(`${BASE}/quotes`, data),
+  updateQuote: (id: string, data: import('../types/crm.types').CrmQuoteUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmQuoteDetailDto>(`${BASE}/quotes/${id}`, data),
+  sendQuote: (id: string) =>
+    apiClient.post(`${BASE}/quotes/${id}/send`, {}),
+  acceptQuote: (id: string) =>
+    apiClient.post(`${BASE}/quotes/${id}/accept`, {}),
+  rejectQuote: (id: string) =>
+    apiClient.post(`${BASE}/quotes/${id}/reject`, {}),
+  updateQuoteStatus: (id: string, status: number) =>
+    apiClient.patch(`${BASE}/quotes/${id}/status`, { status }),
+  deleteQuote: (id: string) =>
+    apiClient.delete(`${BASE}/quotes/${id}`),
+
+  // ─── Proposals ────────────────────────────────────────────────────────────
+  getProposals: (filter: import('../types/crm.types').CrmProposalFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmProposalSummaryDto>>(`${BASE}/proposals`, { params: filter }),
+  getProposalById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmProposalDetailDto>(`${BASE}/proposals/${id}`),
+  generateProposal: (data: import('../types/crm.types').CrmProposalGenerateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProposalDetailDto>(`${BASE}/proposals/generate`, data),
+  createProposal: (data: import('../types/crm.types').CrmProposalCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProposalDetailDto>(`${BASE}/proposals/manual`, data),
+  createProposalFromLead: (data: import('../types/crm.types').CrmProposalFromLeadRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProposalDetailDto>(`${BASE}/proposals/from-lead`, data),
+  sendProposal: (id: string) =>
+    apiClient.post(`${BASE}/proposals/${id}/send`, {}),
+  acceptProposal: (id: string) =>
+    apiClient.post(`${BASE}/proposals/${id}/accept`, {}),
+  rejectProposal: (id: string) =>
+    apiClient.post(`${BASE}/proposals/${id}/reject`, {}),
+  getProposalTemplates: () =>
+    apiClient.get<import('../types/crm.types').CrmProposalTemplateSummaryDto[]>(`${BASE}/proposals/templates`),
+  regenerateProposalSection: (proposalId: string, sectionId: string) =>
+    apiClient.post(`${BASE}/proposals/${proposalId}/sections/${sectionId}/regenerate`, {}),
+
+  // ─── Invoices ─────────────────────────────────────────────────────────────
+  getInvoices: (filter: import('../types/crm.types').CrmInvoiceFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmInvoiceSummaryDto>>(`${BASE}/invoices`, { params: filter }),
+  getInvoiceById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/${id}`),
+  generateInvoiceFromDeal: (dealId: string) =>
+    apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-deal/${dealId}`, {}),
+  recordInvoicePayment: (id: string, data: import('../types/crm.types').CrmRecordPaymentRequest) =>
+    apiClient.post(`${BASE}/invoices/${id}/payment`, data),
+  disputeInvoice: (id: string) =>
+    apiClient.post(`${BASE}/invoices/${id}/dispute`, {}),
+  voidInvoice: (id: string) =>
+    apiClient.post(`${BASE}/invoices/${id}/void`, {}),
+  sendInvoice: (id: string) =>
+    apiClient.post(`${BASE}/invoices/${id}/send`, {}),
+
+  // ─── Subscriptions ────────────────────────────────────────────────────────
+  getSubscriptions: (filter: import('../types/crm.types').CrmSubscriptionFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmSubscriptionSummaryDto>>(`${BASE}/subscriptions`, { params: filter }),
+  getSubscriptionById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmSubscriptionDetailDto>(`${BASE}/subscriptions/${id}`),
+  createSubscription: (data: import('../types/crm.types').CrmSubscriptionCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmSubscriptionDetailDto>(`${BASE}/subscriptions`, data),
+  updateSubscription: (id: string, data: import('../types/crm.types').CrmSubscriptionUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmSubscriptionDetailDto>(`${BASE}/subscriptions/${id}`, data),
+  cancelSubscription: (id: string) =>
+    apiClient.post(`${BASE}/subscriptions/${id}/cancel`, {}),
+  pauseSubscription: (id: string) =>
+    apiClient.post(`${BASE}/subscriptions/${id}/pause`, {}),
+  resumeSubscription: (id: string) =>
+    apiClient.post(`${BASE}/subscriptions/${id}/resume`, {}),
+
+  // ─── Orders ───────────────────────────────────────────────────────────────
+  getOrders: (filter: import('../types/crm.types').CrmOrderFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmOrderSummaryDto>>(`${BASE}/orders`, { params: filter }),
+  getOrderById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}`),
+  createOrder: (data: import('../types/crm.types').CrmOrderCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders`, data),
+  confirmOrder: (id: string) =>
+    apiClient.post(`${BASE}/orders/${id}/confirm`, {}),
+  fulfillOrder: (id: string) =>
+    apiClient.post(`${BASE}/orders/${id}/fulfill`, {}),
+  cancelOrder: (id: string) =>
+    apiClient.post(`${BASE}/orders/${id}/cancel`, {}),
+
+  // ─── Meetings ─────────────────────────────────────────────────────────────
+  getMeetings: (filter: import('../types/crm.types').CrmMeetingFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmMeetingSummaryDto>>(`${BASE}/meetings`, { params: filter }),
+  getMeetingById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmMeetingDetailDto>(`${BASE}/meetings/${id}`),
+  initiateMeeting: (data: import('../types/crm.types').CrmMeetingInitiateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmMeetingDetailDto>(`${BASE}/meetings`, data),
+  bookMeeting: (id: string, selectedSlot: string, durationMinutes: number) =>
+    apiClient.post(`${BASE}/meetings/${id}/book`, { selectedSlot, durationMinutes }),
+  cancelMeeting: (id: string) =>
+    apiClient.post(`${BASE}/meetings/${id}/cancel`, {}),
+  updateMeeting: (id: string, data: { status?: number; notes?: string }) =>
+    apiClient.put<import('../types/crm.types').CrmMeetingDetailDto>(`${BASE}/meetings/${id}`, data),
+  createTaskFromMeeting: (id: string) =>
+    apiClient.post(`${BASE}/meetings/${id}/tasks`, {}),
+
+  // ─── Public Scheduling (no-auth) ─────────────────────────────────────────
+  getPublicSchedule: (token: string) =>
+    apiClient.get<import('../types/crm.types').PublicScheduleDto>(`/v1/public/schedule/${token}`),
+  confirmPublicSlot: (token: string, data: import('../types/crm.types').PublicScheduleConfirmRequest) =>
+    apiClient.post<import('../types/crm.types').PublicScheduleConfirmedDto>(`/v1/public/schedule/${token}/confirm`, data),
+
+  // ─── Call Summaries ───────────────────────────────────────────────────────
+  getCallSummaries: (filter: import('../types/crm.types').CrmCallSummaryFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmCallSummarySummaryDto>>(`${BASE}/call-summaries`, { params: filter }),
+  getCallSummaryById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmCallSummaryDetailDto>(`${BASE}/call-summaries/${id}`),
+  requestCallSummary: (data: import('../types/crm.types').CrmCallSummaryRequestDto) =>
+    apiClient.post<import('../types/crm.types').CrmCallSummaryDetailDto>(`${BASE}/call-summaries`, data),
+  generateCallSummary: (id: string) =>
+    apiClient.post(`${BASE}/call-summaries/${id}/generate`, {}),
+
+  // ─── NPS Surveys ─────────────────────────────────────────────────────────
+  getNpsSurveys: (filter: import('../types/crm.types').CrmNpsFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmNpsSurveySummaryDto>>(`${BASE}/nps`, { params: filter }),
+  getNpsTenantSummary: () =>
+    apiClient.get<import('../types/crm.types').CrmNpsTenantSummaryDto>(`${BASE}/nps/summary`),
+  sendNpsSurvey: (data: import('../types/crm.types').CrmNpsSendRequest) =>
+    apiClient.post<import('../types/crm.types').CrmNpsSurveySummaryDto>(`${BASE}/nps/send`, data),
+
+  // ─── Time Tracking ────────────────────────────────────────────────────────
+  getTimeEntries: (filter: import('../types/crm.types').CrmTimeEntryFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmTimeEntrySummaryDto>>(`${BASE}/time-tracking`, { params: filter }),
+  getTimeSummary: () =>
+    apiClient.get<import('../types/crm.types').CrmTimeSummaryDto>(`${BASE}/time-tracking/summary`),
+  logTime: (data: import('../types/crm.types').CrmLogTimeRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTimeEntrySummaryDto>(`${BASE}/time-tracking`, data),
+  deleteTimeEntry: (id: string) =>
+    apiClient.delete(`${BASE}/time-tracking/${id}`),
+
+  // ─── Comments ─────────────────────────────────────────────────────────────
+  getComments: (kind: number, entityId: string, page = 1, pageSize = 50) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmCommentDto>>(`${BASE}/comments/${kind}/${entityId}`, { params: { page, pageSize } }),
+  addComment: (kind: number, entityId: string, data: import('../types/crm.types').CrmCommentCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCommentDto>(`${BASE}/comments/${kind}/${entityId}`, data),
+  editComment: (commentId: string, data: import('../types/crm.types').CrmCommentEditRequest) =>
+    apiClient.put<import('../types/crm.types').CrmCommentDto>(`${BASE}/comments/${commentId}`, data),
+  deleteComment: (commentId: string) =>
+    apiClient.delete(`${BASE}/comments/${commentId}`),
+
+  // ─── Workflows ────────────────────────────────────────────────────────────
+  getWorkflows: (filter: import('../types/crm.types').CrmWorkflowFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmWorkflowSummaryDto>>(`${BASE}/workflows`, { params: filter }),
+  getWorkflowById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmWorkflowDetailDto>(`${BASE}/workflows/${id}`),
+  createWorkflow: (data: import('../types/crm.types').CrmWorkflowCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmWorkflowDetailDto>(`${BASE}/workflows`, data),
+  updateWorkflow: (id: string, data: import('../types/crm.types').CrmWorkflowUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmWorkflowDetailDto>(`${BASE}/workflows/${id}`, data),
+  deleteWorkflow: (id: string) =>
+    apiClient.delete(`${BASE}/workflows/${id}`),
+  triggerWorkflow: (data: import('../types/crm.types').CrmWorkflowTriggerRequest) =>
+    apiClient.post(`${BASE}/workflows/trigger`, data),
+  runWorkflow: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmWorkflowExecutionDto>(`${BASE}/workflows/${id}/run`),
+  getWorkflowExecutions: (workflowId: string, page = 1, pageSize = 20) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmWorkflowExecutionDto>>(`${BASE}/workflows/${workflowId}/executions`, { params: { page, pageSize } }),
+  generateWorkflow: (data: { Instruction: string; WorkflowName?: string }) =>
+    apiClient.post<import('../types/crm.types').CrmWorkflowDetailDto>(`${BASE}/workflows/generate`, data),
+  chatWorkflow: (id: string, data: { Message: string }) =>
+    apiClient.post<import('../types/crm.types').CrmWorkflowDetailDto>(`${BASE}/workflows/${id}/chat`, data),
+
+  // ─── Workflow Campaigns ──────────────────────────────────────────────────
+  getWorkflowCampaigns: () =>
+    apiClient.get<import('../types/crm.types').CrmWorkflowCampaignDto[]>(`${BASE}/workflow-campaigns`),
+  getWorkflowCampaignById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmWorkflowCampaignDto>(`${BASE}/workflow-campaigns/${id}`),
+  createWorkflowCampaign: (data: import('../types/crm.types').CrmWorkflowCampaignCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmWorkflowCampaignDto>(`${BASE}/workflow-campaigns`, data),
+  updateWorkflowCampaign: (id: string, data: import('../types/crm.types').CrmWorkflowCampaignUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmWorkflowCampaignDto>(`${BASE}/workflow-campaigns/${id}`, data),
+  executeWorkflowCampaign: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmWorkflowCampaignDto>(`${BASE}/workflow-campaigns/${id}/execute`),
+
+  // ─── AI Actions ───────────────────────────────────────────────────────────
+  getAiActions: (page = 1, pageSize = 20) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmAiActionDto>>(`${BASE}/ai-actions`, { params: { page, pageSize } }),
+  getPendingAiActions: () =>
+    apiClient.get<import('../types/crm.types').CrmAiActionDto[]>(`${BASE}/ai-actions/pending`),
+  approveAiAction: (id: string) =>
+    apiClient.post(`${BASE}/ai-actions/${id}/approve`, {}),
+  rejectAiAction: (id: string) =>
+    apiClient.post(`${BASE}/ai-actions/${id}/reject`, {}),
+  undoAiAction: (id: string) =>
+    apiClient.post(`${BASE}/ai-actions/${id}/undo`, {}),
+
+  // ─── Facebook / Instagram Ads ─────────────────────────────────────────────
+  getFbAdAccount: () =>
+    apiClient.get<import('../types/crm.types').FbAdAccountDto | null>(`${BASE}/fb-ads/account`),
+  connectFbAdAccount: (data: import('../types/crm.types').FbAdAccountConnectRequest) =>
+    apiClient.post<import('../types/crm.types').FbAdAccountDto>(`${BASE}/fb-ads/account`, data),
+  disconnectFbAdAccount: () =>
+    apiClient.delete(`${BASE}/fb-ads/account`),
+  getFbAdCampaigns: () =>
+    apiClient.get<import('../types/crm.types').FbAdCampaignDto[]>(`${BASE}/fb-ads/campaigns`),
+  syncFbAdCampaigns: () =>
+    apiClient.post<import('../types/crm.types').FbAdSyncResultDto>(`${BASE}/fb-ads/campaigns/sync`, {}),
+  getFbAdAggregate: () =>
+    apiClient.get<import('../types/crm.types').FbAdAggregateDto>(`${BASE}/fb-ads/aggregate`),
+
+  // ─── Announcements ────────────────────────────────────────────────────────
+  getAnnouncements: (status?: AnnouncementStatus) =>
+    apiClient.get<AnnouncementSummaryDto[]>(ANN_BASE, { params: status != null ? { status } : undefined }),
+  getAnnouncementById: (id: string) =>
+    apiClient.get<AnnouncementDetailDto>(`${ANN_BASE}/${id}`),
+  createAnnouncement: (data: AnnouncementCreateRequest) =>
+    apiClient.post<AnnouncementDetailDto>(ANN_BASE, data),
+  updateAnnouncement: (id: string, data: AnnouncementUpdateRequest) =>
+    apiClient.put<AnnouncementDetailDto>(`${ANN_BASE}/${id}`, data),
+  deleteAnnouncement: (id: string) =>
+    apiClient.delete(`${ANN_BASE}/${id}`),
+  publishAnnouncement: (id: string) =>
+    apiClient.post<AnnouncementDetailDto>(`${ANN_BASE}/${id}/publish`, {}),
+  archiveAnnouncement: (id: string) =>
+    apiClient.post<AnnouncementDetailDto>(`${ANN_BASE}/${id}/archive`, {}),
+  scheduleAnnouncement: (id: string, scheduledAt: string) =>
+    apiClient.post<AnnouncementDetailDto>(`${ANN_BASE}/${id}/schedule`, { scheduledAt }),
+
+  // ─── Approval Workflows ───────────────────────────────────────────────────
+  getApprovals: (status?: import('../types/crm.types').ApprovalStatus) =>
+    apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto[]>(`${BASE}/approvals`, { params: status != null ? { status } : undefined }),
+  getPendingApprovals: () =>
+    apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto[]>(`${BASE}/approvals/pending`),
+  getApprovalById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto>(`${BASE}/approvals/${id}`),
+  getApprovalForEntity: (entityType: number, entityId: string) =>
+    apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto | null>(`${BASE}/approvals/entity/${entityType}/${entityId}`),
+  submitApproval: (data: import('../types/crm.types').CrmSubmitApprovalRequest) =>
+    apiClient.post<import('../types/crm.types').CrmApprovalSummaryDto>(`${BASE}/approvals`, data),
+  approveRequest: (id: string, data: import('../types/crm.types').CrmReviewApprovalRequest) =>
+    apiClient.post(`${BASE}/approvals/${id}/approve`, data),
+  rejectRequest: (id: string, data: import('../types/crm.types').CrmReviewApprovalRequest) =>
+    apiClient.post(`${BASE}/approvals/${id}/reject`, data),
+  cancelApproval: (id: string) =>
+    apiClient.post(`${BASE}/approvals/${id}/cancel`, {}),
+
+  // ─── Custom Fields — Definitions ─────────────────────────────────────────
+  getCustomFieldDefinitions: (entityType: number) =>
+    apiClient.get<import('../types/crm.types').CustomFieldDefinitionDto[]>(`${BASE}/custom-fields`, { params: { entityType } }),
+  createCustomFieldDefinition: (data: import('../types/crm.types').CreateCustomFieldDefinitionRequest) =>
+    apiClient.post<import('../types/crm.types').CustomFieldDefinitionDto>(`${BASE}/custom-fields`, data),
+  updateCustomFieldDefinition: (id: string, data: import('../types/crm.types').UpdateCustomFieldDefinitionRequest) =>
+    apiClient.put<import('../types/crm.types').CustomFieldDefinitionDto>(`${BASE}/custom-fields/${id}`, data),
+  deleteCustomFieldDefinition: (id: string) =>
+    apiClient.delete(`${BASE}/custom-fields/${id}`),
+
+  // ─── Custom Fields — Values ───────────────────────────────────────────────
+  getCustomFieldValues: (recordId: string, entityType: number) =>
+    apiClient.get<import('../types/crm.types').CustomFieldValueDto[]>(`${BASE}/custom-field-values/${recordId}`, { params: { entityType } }),
+  setCustomFieldValues: (recordId: string, entityType: number, data: import('../types/crm.types').SetCustomFieldValuesRequest) =>
+    apiClient.put(`${BASE}/custom-field-values/${recordId}`, data, { params: { entityType } }),
+
+  // ─── CSV Export ───────────────────────────────────────────────────────────
+  getContactsCsvTemplate: () => `${BASE}/contacts/csv-template`,
+  getLeadsCsvTemplate:    () => `${BASE}/leads/csv-template`,
+  getDealsCsvTemplate:    () => `${BASE}/deals/csv-template`,
+  exportContactsCsv: () => `${BASE}/contacts/export-csv`,
+  exportLeadsCsv:    () => `${BASE}/leads/export-csv`,
+  exportDealsCsv:    () => `${BASE}/deals/export-csv`,
+
+  // ─── CSV Import ───────────────────────────────────────────────────────────
+  importContactsCsv: (file: File) => {
+    const form = new FormData(); form.append('file', file);
+    return apiClient.post<import('../types/crm.types').CsvImportResultDto>(`${BASE}/contacts/import-csv`, form, { headers: { 'Content-Type': undefined } });
+  },
+  importLeadsCsv: (file: File) => {
+    const form = new FormData(); form.append('file', file);
+    return apiClient.post<import('../types/crm.types').CsvImportResultDto>(`${BASE}/leads/import-csv`, form, { headers: { 'Content-Type': undefined } });
+  },
+  importDealsCsv: (file: File) => {
+    const form = new FormData(); form.append('file', file);
+    return apiClient.post<import('../types/crm.types').CsvImportResultDto>(`${BASE}/deals/import-csv`, form, { headers: { 'Content-Type': undefined } });
+  },
+
+  // ─── Deduplication ──────────────────────────────────────────────────────────
+  getDedupPending: () =>
+    apiClient.get<import('../types/crm.types').CrmDedupCandidateDto[]>(`${BASE}/deduplication/pending`),
+  resolveDedup: (candidateId: string, data: import('../types/crm.types').CrmDedupResolutionRequest) =>
+    apiClient.post<import('../types/crm.types').CrmDedupCandidateDto>(`${BASE}/deduplication/${candidateId}/resolve`, data),
+  scanDedup: () =>
+    apiClient.post<number>(`${BASE}/deduplication/scan`),
+
+} as const;

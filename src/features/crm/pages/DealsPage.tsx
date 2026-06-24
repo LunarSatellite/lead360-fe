@@ -1,0 +1,765 @@
+import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Briefcase, Plus, Loader2, LayoutGrid, List, Trophy,
+  CheckCircle, XCircle, DollarSign, Calendar, ChevronLeft, ChevronRight, Search,
+  Settings, Trash2, ChevronUp, ChevronDown, X, GitBranch, Filter, User,
+} from 'lucide-react';
+import {
+  useDeals, useDealStages, useMoveDealStage, useCloseDeal,
+  useCreateDealStage, useUpdateDealStage, useDeleteDealStage, usePipelines,
+  useImportDealsCsv, useCreateDeal,
+} from '../api/crm.queries';
+import { useTeamMembers } from '@/features/team/api/team.queries';
+import type { UserDto } from '@/features/auth/types/auth.types';
+import { CsvToolbar } from '../components/CsvToolbar';
+import type { CrmDealStageCreateRequest, CrmDealCreateRequest } from '../types/crm.types';
+import type {
+  CrmDealSummaryDto, CrmDealStageSummaryDto, CrmDealFilter, PagedResult,
+} from '../types/crm.types';
+import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS } from '../types/crm.types';
+import { ROUTES } from '@/app/router/route-paths';
+import { format, formatDistanceToNow, isPast, differenceInDays } from 'date-fns';
+import { toast } from 'sonner';
+
+type View = 'kanban' | 'list';
+const LIST_PAGE_SIZE = 20;
+
+// ─── Deal Card ────────────────────────────────────────────────────────────────
+
+interface DealCardProps {
+  deal: CrmDealSummaryDto;
+  isCloseMenuOpen: boolean;
+  onToggleCloseMenu: (e: React.MouseEvent) => void;
+  onCloseWon: () => void;
+  onCloseLost: () => void;
+  onDragStart: () => void;
+  onClick: () => void;
+}
+
+function DealCard({
+  deal, isCloseMenuOpen, onToggleCloseMenu, onCloseWon, onCloseLost, onDragStart, onClick,
+}: DealCardProps) {
+  const isOpen = deal.status === 1; // CrmDealStatus.Open
+
+  let closeDateColor = 'text-text-muted';
+  let closeDateLabel: string | null = null;
+  if (deal.closeDate) {
+    const d = new Date(deal.closeDate);
+    const daysLeft = differenceInDays(d, new Date());
+    if (isPast(d)) {
+      closeDateColor = 'text-danger';
+      closeDateLabel = `${format(d, 'MMM d')} (overdue)`;
+    } else if (daysLeft <= 7) {
+      closeDateColor = 'text-[#F59E0B]';
+      closeDateLabel = format(d, 'MMM d');
+    } else {
+      closeDateLabel = format(d, 'MMM d');
+    }
+  }
+
+  return (
+    <div
+      draggable
+      onDragStart={(e) => { e.stopPropagation(); onDragStart(); }}
+      onClick={onClick}
+      className="group relative rounded-xl border border-border-subtle bg-bg-elevated p-3 cursor-pointer hover:border-border-medium hover:shadow-sm transition-all"
+    >
+      <div className="font-semibold text-sm text-text-primary leading-snug pr-6">{deal.name}</div>
+      {deal.accountName && (
+        <div className="text-xs text-text-muted mt-0.5 truncate">{deal.accountName}</div>
+      )}
+
+      <div className="flex items-center gap-3 mt-2.5 text-xs flex-wrap">
+        {deal.amount != null && (
+          <span className="flex items-center gap-1 text-text-secondary font-semibold">
+            <DollarSign className="w-3 h-3 text-text-muted" strokeWidth={1.5} />
+            {deal.currency} {deal.amount.toLocaleString()}
+          </span>
+        )}
+        {closeDateLabel && (
+          <span className={`flex items-center gap-1 ${closeDateColor}`}>
+            <Calendar className="w-3 h-3" strokeWidth={1.5} />
+            {closeDateLabel}
+          </span>
+        )}
+        {deal.ownedByUserName && (
+          <span className="flex items-center gap-1 text-text-muted">
+            <User className="w-3 h-3" strokeWidth={1.5} />
+            {deal.ownedByUserName}
+          </span>
+        )}
+      </div>
+
+      {/* Close deal quick action — only for open deals */}
+      {isOpen && (
+        <div
+          className="absolute top-2.5 right-2.5"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {isCloseMenuOpen ? (
+            <div className="flex items-center gap-1">
+              <button
+                onClick={onCloseWon}
+                className="p-1 rounded-md bg-success-soft text-success hover:bg-success hover:text-bg transition-all"
+                title="Won"
+              >
+                <CheckCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
+              </button>
+              <button
+                onClick={onCloseLost}
+                className="p-1 rounded-md bg-danger-soft text-danger hover:bg-danger hover:text-bg transition-all"
+                title="Lost"
+              >
+                <XCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={onToggleCloseMenu}
+              className="p-1 rounded-md text-text-muted opacity-0 group-hover:opacity-100 hover:bg-bg-card hover:text-text-secondary transition-all"
+              title="Close deal"
+            >
+              <Trophy className="w-3.5 h-3.5" strokeWidth={1.5} />
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Closed badge */}
+      {!isOpen && (
+        <div className="mt-2">
+          <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${CRM_DEAL_STATUS_COLORS[deal.status]}`}>
+            {CRM_DEAL_STATUS_LABELS[deal.status]}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── CSV Toolbar ──────────────────────────────────────────────────────────────
+
+function CsvDealsToolbar() {
+  const importCsv = useImportDealsCsv();
+  return (
+    <CsvToolbar
+      exportUrl="/v1/crm/deals/export-csv"
+      templateUrl="/v1/crm/deals/csv-template"
+      entityLabel="deals"
+      onImport={file => importCsv.mutateAsync(file)}
+      isImporting={importCsv.isPending}
+    />
+  );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
+export function Component() {
+  const navigate = useNavigate();
+  const [view, setView] = useState<View>('kanban');
+  const [search, setSearch] = useState('');
+  const [selectedPipelineId, setSelectedPipelineId] = useState<string | null>(null);
+  const [listFilter, setListFilter] = useState<CrmDealFilter>({ page: 1, pageSize: LIST_PAGE_SIZE });
+  const [dragOverStageId, setDragOverStageId] = useState<string | null>(null);
+  const [closeMenuId, setCloseMenuId] = useState<string | null>(null);
+  const dragDealRef = useRef<string | null>(null);
+
+  const [showNewDeal, setShowNewDeal] = useState(false);
+  const [ndName, setNdName] = useState('');
+  const [ndStageId, setNdStageId] = useState('');
+  const [ndAmount, setNdAmount] = useState('');
+  const [ndCloseDate, setNdCloseDate] = useState('');
+  const [ndOwnerId, setNdOwnerId] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterOwnerId, setFilterOwnerId] = useState('');
+  const [filterCloseDateFrom, setFilterCloseDateFrom] = useState('');
+  const [filterCloseDateTo, setFilterCloseDateTo] = useState('');
+  const [filterInactive, setFilterInactive] = useState(false);
+
+  function toggleInactive() {
+    const next = !filterInactive;
+    setFilterInactive(next);
+    setListFilter((f) => ({ ...f, inactiveSinceDays: next ? 7 : undefined, page: 1 }));
+  }
+
+  const { data: rawPipelines } = usePipelines();
+  const pipelines = (rawPipelines as any) ?? [];
+  const activePipelineId = selectedPipelineId ?? (pipelines[0]?.id ?? null);
+
+  const { data: rawStages } = useDealStages(activePipelineId ? { pipelineId: activePipelineId } : undefined);
+  const stages = (rawStages as unknown as CrmDealStageSummaryDto[] | undefined)
+    ?.slice()
+    .sort((a, b) => a.order - b.order) ?? [];
+
+  const { data: teamRaw } = useTeamMembers();
+  const teamMembers = (teamRaw as unknown as UserDto[] | undefined) ?? [];
+
+  const kanbanFilter: CrmDealFilter = {
+    pageSize: 500,
+    pipelineId: activePipelineId ?? undefined,
+    ownedByUserId: filterOwnerId || undefined,
+    closeDateFrom: filterCloseDateFrom || undefined,
+    closeDateTo: filterCloseDateTo || undefined,
+    inactiveSinceDays: filterInactive ? 7 : undefined,
+  };
+
+  const { data: rawKanban, isLoading: kanbanLoading } = useDeals(kanbanFilter);
+  const kanbanData = rawKanban as unknown as PagedResult<CrmDealSummaryDto> | undefined;
+
+  const { data: rawList, isLoading: listLoading } = useDeals(listFilter);
+  const listData = rawList as unknown as PagedResult<CrmDealSummaryDto> | undefined;
+
+  const moveStage = useMoveDealStage();
+  const closeDeal = useCloseDeal();
+  const createDeal = useCreateDeal();
+
+  const activeFiltersCount = [filterOwnerId, filterCloseDateFrom, filterCloseDateTo, filterInactive ? 'inactive' : ''].filter(Boolean).length;
+
+  function resetNewDeal() {
+    setNdName(''); setNdStageId(''); setNdAmount(''); setNdCloseDate(''); setNdOwnerId('');
+  }
+
+  function submitNewDeal() {
+    if (!ndName.trim() || !ndStageId) return;
+    const payload: CrmDealCreateRequest = {
+      name: ndName.trim(),
+      stageId: ndStageId,
+      pipelineId: activePipelineId ?? undefined,
+      amount: ndAmount ? parseFloat(ndAmount) : undefined,
+      closeDate: ndCloseDate || undefined,
+      ownedByUserId: ndOwnerId || undefined,
+    };
+    createDeal.mutate(payload, {
+      onSuccess: () => { setShowNewDeal(false); resetNewDeal(); toast.success('Deal created'); },
+      onError: () => toast.error('Failed to create deal'),
+    });
+  }
+  const createStage = useCreateDealStage();
+  const updateStage = useUpdateDealStage();
+  const deleteStage = useDeleteDealStage();
+  const [showPipeline, setShowPipeline] = useState(false);
+  const [editingStageId, setEditingStageId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState('');
+  const [editingColor, setEditingColor] = useState('');
+  const [newStageName, setNewStageName] = useState('');
+  const [newStageColor, setNewStageColor] = useState('#6366f1');
+
+  const dealsByStage = (kanbanData?.items ?? []).reduce<Record<string, CrmDealSummaryDto[]>>(
+    (acc, d) => {
+      if (!acc[d.stageId]) acc[d.stageId] = [];
+      acc[d.stageId].push(d);
+      return acc;
+    },
+    {}
+  );
+
+  // Sort deals within each column by closeDate ascending (nulls last)
+  Object.values(dealsByStage).forEach((arr) => {
+    arr.sort((a, b) => {
+      if (!a.closeDate && !b.closeDate) return 0;
+      if (!a.closeDate) return 1;
+      if (!b.closeDate) return -1;
+      return new Date(a.closeDate).getTime() - new Date(b.closeDate).getTime();
+    });
+  });
+
+  const handleDrop = (stageId: string) => {
+    const dealId = dragDealRef.current;
+    if (!dealId) return;
+    dragDealRef.current = null;
+    setDragOverStageId(null);
+    moveStage.mutate({ id: dealId, data: { stageId } });
+  };
+
+  const totalPages = listData ? Math.ceil(listData.totalCount / LIST_PAGE_SIZE) : 1;
+  const currentPage = listFilter.page ?? 1;
+
+  return (
+    <div className="flex flex-col space-y-4" style={{ minHeight: 0 }}>
+      {/* Header */}
+      <div className="flex items-center justify-between gap-4 shrink-0">
+        <div>
+          <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Deals</h2>
+          <p className="text-xs text-text-muted mt-0.5">
+            {kanbanData ? `${kanbanData.totalCount.toLocaleString()} total` : 'Pipeline'}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href="/dashboard/crm/pipelines"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary transition-all"
+          >
+            <GitBranch className="w-3.5 h-3.5" /> Manage Pipelines
+          </a>
+          <div className="flex rounded-xl border border-border-subtle overflow-hidden">
+            <button
+              onClick={() => setView('kanban')}
+              className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+                view === 'kanban' ? 'bg-brand text-bg' : 'bg-bg-elevated text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5" strokeWidth={1.5} /> Kanban
+            </button>
+            <button
+              onClick={() => setView('list')}
+              className={`px-3 py-1.5 text-xs font-semibold flex items-center gap-1.5 transition-colors border-l border-border-subtle ${
+                view === 'list' ? 'bg-brand text-bg' : 'bg-bg-elevated text-text-secondary hover:text-text-primary'
+              }`}
+            >
+              <List className="w-3.5 h-3.5" strokeWidth={1.5} /> List
+            </button>
+          </div>
+          <button onClick={() => setShowPipeline(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary transition-all">
+            <Settings className="w-3.5 h-3.5" /> Pipeline
+          </button>
+          <CsvDealsToolbar />
+          <button
+            onClick={() => setShowFilters(v => !v)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${showFilters || activeFiltersCount > 0 ? 'border-brand bg-brand/10 text-brand' : 'border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary'}`}
+          >
+            <Filter className="w-3.5 h-3.5" />
+            Filter{activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}
+          </button>
+          <button
+            onClick={() => setShowNewDeal(true)}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+            <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Deal
+          </button>
+        </div>
+      </div>
+
+      {/* ── Filter Bar ── */}
+      {showFilters && (
+        <div className="flex flex-wrap items-end gap-3 p-3 rounded-xl bg-bg-elevated border border-border-subtle shrink-0">
+          <div className="flex flex-col gap-1 min-w-[180px]">
+            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Owner / Rep</label>
+            <select
+              value={filterOwnerId}
+              onChange={e => setFilterOwnerId(e.target.value)}
+              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
+            >
+              <option value="">All reps</option>
+              {teamMembers.map(u => (
+                <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date From</label>
+            <input type="date" value={filterCloseDateFrom} onChange={e => setFilterCloseDateFrom(e.target.value)}
+              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date To</label>
+            <input type="date" value={filterCloseDateTo} onChange={e => setFilterCloseDateTo(e.target.value)}
+              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+          </div>
+          <div className="flex flex-col gap-1 justify-end">
+            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Stale Deals</label>
+            <button
+              onClick={toggleInactive}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${filterInactive ? 'bg-warning/10 border-warning text-warning' : 'bg-bg border-border-subtle text-text-secondary hover:text-text-primary'}`}
+            >
+              {filterInactive ? '⚠ No activity 7+ days' : 'No activity 7+ days'}
+            </button>
+          </div>
+          {activeFiltersCount > 0 && (
+            <button
+              onClick={() => { setFilterOwnerId(''); setFilterCloseDateFrom(''); setFilterCloseDateTo(''); setFilterInactive(false); setListFilter((f) => ({ ...f, ownedByUserId: undefined, closeDateFrom: undefined, closeDateTo: undefined, inactiveSinceDays: undefined, page: 1 })); }}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-danger border border-danger/30 hover:bg-danger-soft transition-all self-end"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* ── Pipeline Tabs ── */}
+      {pipelines.length > 0 && (
+        <div className="flex items-center gap-1 shrink-0 border-b border-border-subtle pb-0 -mb-2">
+          {pipelines.map((p: any) => (
+            <button
+              key={p.id}
+              onClick={() => setSelectedPipelineId(p.id)}
+              className={`px-4 py-2 text-xs font-semibold rounded-t-lg border-b-2 transition-colors ${
+                activePipelineId === p.id
+                  ? 'border-brand text-brand bg-brand/5'
+                  : 'border-transparent text-text-secondary hover:text-text-primary hover:border-border-medium'
+              }`}
+            >
+              {p.color && (
+                <span
+                  className="inline-block w-2 h-2 rounded-full mr-1.5"
+                  style={{ background: p.color }}
+                />
+              )}
+              {p.name}
+              {p.isDefault && (
+                <span className="ml-1.5 text-[9px] font-bold text-text-muted uppercase tracking-wide">default</span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ── Kanban ── */}
+      {view === 'kanban' && (
+        <div className="overflow-x-auto pb-4 -mx-1 px-1">
+          {kanbanLoading ? (
+            <div className="flex items-center justify-center h-64 text-text-muted">
+              <Loader2 className="w-5 h-5 animate-spin" />
+            </div>
+          ) : (
+            <div className="flex gap-4" style={{ minWidth: 'max-content', minHeight: 520 }}>
+              {stages.map((stage) => {
+                const stageDeals = dealsByStage[stage.id] ?? [];
+                const totalValue = stageDeals.reduce((s, d) => s + (d.amount ?? 0), 0);
+                const isDragOver = dragOverStageId === stage.id;
+
+                return (
+                  <div
+                    key={stage.id}
+                    className={`flex flex-col w-72 rounded-2xl border transition-colors ${
+                      isDragOver ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card'
+                    }`}
+                    onDragOver={(e) => { e.preventDefault(); setDragOverStageId(stage.id); }}
+                    onDragLeave={(e) => {
+                      if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                        setDragOverStageId(null);
+                      }
+                    }}
+                    onDrop={() => handleDrop(stage.id)}
+                  >
+                    {/* Column header */}
+                    <div className="px-4 py-3 border-b border-border-subtle flex items-center justify-between gap-2 shrink-0">
+                      <div className="flex items-center gap-2 min-w-0">
+                        {stage.color ? (
+                          <div
+                            className="w-2.5 h-2.5 rounded-full shrink-0"
+                            style={{ background: stage.color }}
+                          />
+                        ) : (
+                          <div className="w-2.5 h-2.5 rounded-full shrink-0 bg-border-subtle" />
+                        )}
+                        <span className="font-bold text-sm text-text-primary truncate">{stage.name}</span>
+                        {stage.isWon && (
+                          <Trophy className="w-3.5 h-3.5 text-success shrink-0" strokeWidth={1.5} />
+                        )}
+                        {stage.isClosed && !stage.isWon && (
+                          <XCircle className="w-3.5 h-3.5 text-danger shrink-0" strokeWidth={1.5} />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs text-text-muted font-semibold">{stageDeals.length}</span>
+                        {totalValue > 0 && (
+                          <span className="text-xs text-brand font-bold">
+                            ${totalValue.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Cards */}
+                    <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
+                      {stageDeals.map((deal) => (
+                        <DealCard
+                          key={deal.id}
+                          deal={deal}
+                          isCloseMenuOpen={closeMenuId === deal.id}
+                          onToggleCloseMenu={(e) => {
+                            e.stopPropagation();
+                            setCloseMenuId(closeMenuId === deal.id ? null : deal.id);
+                          }}
+                          onCloseWon={() => {
+                            closeDeal.mutate({ id: deal.id, data: { isWon: true } });
+                            setCloseMenuId(null);
+                          }}
+                          onCloseLost={() => {
+                            closeDeal.mutate({ id: deal.id, data: { isWon: false } });
+                            setCloseMenuId(null);
+                          }}
+                          onDragStart={() => { dragDealRef.current = deal.id; }}
+                          onClick={() => navigate(ROUTES.dashboard.crmDealDetail(deal.id))}
+                        />
+                      ))}
+
+                      {stageDeals.length === 0 && (
+                        <div
+                          className={`flex items-center justify-center h-16 rounded-xl border-2 border-dashed text-xs transition-colors ${
+                            isDragOver
+                              ? 'border-brand text-brand bg-brand-soft'
+                              : 'border-border-subtle text-text-muted'
+                          }`}
+                        >
+                          {isDragOver ? 'Drop here' : 'No deals'}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {stages.length === 0 && (
+                <div className="flex flex-col items-center justify-center w-full h-64 gap-3 text-text-muted rounded-2xl border border-border-subtle">
+                  <Briefcase className="w-8 h-8 opacity-30" strokeWidth={1.2} />
+                  <p className="text-sm">No pipeline stages configured</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── List ── */}
+      {view === 'list' && (
+        <div className="space-y-4">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              setListFilter((f) => ({
+                ...f,
+                search: search || undefined,
+                ownedByUserId: filterOwnerId || undefined,
+                closeDateFrom: filterCloseDateFrom || undefined,
+                closeDateTo: filterCloseDateTo || undefined,
+                inactiveSinceDays: filterInactive ? 7 : undefined,
+                page: 1,
+              }));
+            }}
+            className="flex flex-wrap gap-2"
+          >
+            <div className="relative flex-1 min-w-[200px]">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" strokeWidth={1.5} />
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals..."
+                className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium" />
+            </div>
+            <select value={filterOwnerId} onChange={e => setFilterOwnerId(e.target.value)}
+              className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium">
+              <option value="">All reps</option>
+              {teamMembers.map(u => (
+                <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
+              ))}
+            </select>
+            <button type="submit"
+              className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+              Search
+            </button>
+          </form>
+
+          <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
+            {listLoading ? (
+              <div className="flex items-center justify-center h-48 text-text-muted">
+                <Loader2 className="w-5 h-5 animate-spin" />
+              </div>
+            ) : !listData?.items.length ? (
+              <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
+                <Briefcase className="w-8 h-8 opacity-30" strokeWidth={1.2} />
+                <p className="text-sm">No deals found</p>
+              </div>
+            ) : (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border-subtle">
+                    <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider">Deal</th>
+                    <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden md:table-cell">Stage</th>
+                    <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden lg:table-cell">Amount</th>
+                    <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden md:table-cell">Status</th>
+                    <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden lg:table-cell">Close Date</th>
+                    <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden xl:table-cell">Owner</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {listData.items.map((d: CrmDealSummaryDto) => (
+                    <tr
+                      key={d.id}
+                      onClick={() => navigate(ROUTES.dashboard.crmDealDetail(d.id))}
+                      className="border-b border-border-subtle last:border-0 hover:bg-bg-elevated cursor-pointer transition-colors"
+                    >
+                      <td className="px-4 py-3">
+                        <div className="font-semibold text-text-primary">{d.name}</div>
+                        {d.accountName && (
+                          <div className="text-xs text-text-muted">{d.accountName}</div>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-text-secondary hidden md:table-cell">
+                        {d.stageName ?? '—'}
+                      </td>
+                      <td className="px-4 py-3 text-text-secondary hidden lg:table-cell">
+                        {d.amount != null ? `${d.currency} ${d.amount.toLocaleString()}` : '—'}
+                      </td>
+                      <td className="px-4 py-3 hidden md:table-cell">
+                        <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${CRM_DEAL_STATUS_COLORS[d.status]}`}>
+                          {CRM_DEAL_STATUS_LABELS[d.status]}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-text-muted text-xs hidden lg:table-cell">
+                        {d.closeDate
+                          ? formatDistanceToNow(new Date(d.closeDate), { addSuffix: true })
+                          : '—'}
+                      </td>
+                      <td className="px-4 py-3 text-text-secondary text-xs hidden xl:table-cell">
+                        {d.ownedByUserName ?? '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between text-xs text-text-muted">
+              <span>Page {currentPage} of {totalPages}</span>
+              <div className="flex gap-2">
+                <button
+                  disabled={currentPage <= 1}
+                  onClick={() => setListFilter((f) => ({ ...f, page: (f.page ?? 1) - 1 }))}
+                  className="p-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setListFilter((f) => ({ ...f, page: (f.page ?? 1) + 1 }))}
+                  className="p-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── New Deal Slide-over ── */}
+      {showNewDeal && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/40" onClick={() => { setShowNewDeal(false); resetNewDeal(); }} />
+          <div className="relative w-full max-w-md bg-bg-card border-l border-border-subtle h-full overflow-y-auto shadow-2xl flex flex-col">
+            <div className="p-5 border-b border-border-subtle flex items-center justify-between shrink-0">
+              <div>
+                <h2 className="text-sm font-bold text-text-primary">New Deal</h2>
+                <p className="text-xs text-text-muted mt-0.5">Create a deal directly</p>
+              </div>
+              <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+            </div>
+            <div className="p-5 space-y-4 flex-1">
+              <div>
+                <label className="text-xs font-semibold text-text-secondary block mb-1">Deal Name *</label>
+                <input value={ndName} onChange={e => setNdName(e.target.value)} placeholder="e.g. Acme Corp — Enterprise"
+                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-text-secondary block mb-1">Stage *</label>
+                <select value={ndStageId} onChange={e => setNdStageId(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                  <option value="">Select stage</option>
+                  {stages.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-text-secondary block mb-1">Amount</label>
+                <input type="number" value={ndAmount} onChange={e => setNdAmount(e.target.value)} placeholder="0"
+                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-text-secondary block mb-1">Expected Close Date</label>
+                <input type="date" value={ndCloseDate} onChange={e => setNdCloseDate(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-text-secondary block mb-1">Owner</label>
+                <select value={ndOwnerId} onChange={e => setNdOwnerId(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                  <option value="">Assign to me (default)</option>
+                  {teamMembers.map(u => (
+                    <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="p-5 border-t border-border-subtle shrink-0 flex gap-3">
+              <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }}
+                className="flex-1 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+                Cancel
+              </button>
+              <button onClick={submitNewDeal} disabled={!ndName.trim() || !ndStageId || createDeal.isPending}
+                className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                {createDeal.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+                Create Deal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Pipeline Management Panel ── */}
+      {showPipeline && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setShowPipeline(false)} />
+          <div className="relative w-full max-w-md bg-bg-card border-l border-border-subtle h-full overflow-y-auto shadow-2xl">
+            <div className="p-5 border-b border-border-subtle flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-bold text-text-primary">Manage Pipeline</h2>
+                <p className="text-xs text-text-muted mt-0.5">Add, edit or reorder deal stages</p>
+              </div>
+              <button onClick={() => setShowPipeline(false)} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+            </div>
+            <div className="p-5 space-y-3">
+              {stages.map((stage, idx) => (
+                <div key={stage.id} className="border border-border-subtle rounded-xl overflow-hidden">
+                  {editingStageId === stage.id ? (
+                    <div className="p-3 space-y-2 bg-bg-elevated">
+                      <input value={editingName} onChange={e => setEditingName(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                      <div className="flex items-center gap-2">
+                        <input type="color" value={editingColor} onChange={e => setEditingColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
+                        <span className="text-xs text-text-muted">Color</span>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor } }); setEditingStageId(null); }}
+                          className="flex-1 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold">Save</button>
+                        <button onClick={() => setEditingStageId(null)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 px-3 py-2.5">
+                      <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: stage.color ?? '#6366f1' }} />
+                      <span className="flex-1 text-sm text-text-primary">{stage.name}</span>
+                      {stage.isClosed && <span className="text-2xs text-text-muted border border-border-subtle px-1.5 py-0.5 rounded">{stage.isWon ? 'Won' : 'Lost'}</span>}
+                      <div className="flex items-center gap-1">
+                        <button disabled={idx === 0} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order - 1 } })}
+                          className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
+                        <button disabled={idx === stages.length - 1} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order + 1 } })}
+                          className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); }}
+                          className="p-1 text-text-muted hover:text-text-primary"><Settings className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+              <div className="border border-dashed border-border-subtle rounded-xl p-3 space-y-2">
+                <p className="text-xs font-semibold text-text-muted">Add Stage</p>
+                <input value={newStageName} onChange={e => setNewStageName(e.target.value)} placeholder="Stage name"
+                  className="w-full px-3 py-2 rounded-lg bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                <div className="flex items-center gap-2">
+                  <input type="color" value={newStageColor} onChange={e => setNewStageColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
+                  <span className="text-xs text-text-muted">Color</span>
+                </div>
+                <button disabled={!newStageName.trim() || createStage.isPending}
+                  onClick={() => createStage.mutate({ name: newStageName.trim(), order: stages.length + 1, color: newStageColor, pipelineId: activePipelineId ?? undefined } as CrmDealStageCreateRequest, { onSuccess: () => setNewStageName('') })}
+                  className="w-full py-2 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold disabled:opacity-50 flex items-center justify-center gap-1.5">
+                  {createStage.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />} Add Stage
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

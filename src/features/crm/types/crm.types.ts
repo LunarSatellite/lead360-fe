@@ -190,6 +190,26 @@ export interface LeadFilter {
   pageSize?: number;
 }
 
+export enum BulkLeadAction {
+  Stage = 1,
+  Assign = 2,
+  Delete = 3,
+}
+
+export interface BulkLeadActionRequest {
+  leadIds: string[];
+  action: BulkLeadAction;
+  stage?: LeadStage;
+  assignToUserId?: string | null;
+}
+
+export interface BulkLeadActionResult {
+  requested: number;
+  succeeded: number;
+  skipped: number;
+  errors: string[];
+}
+
 export interface NurtureStepDto {
   id: string;
   sequenceId: string;

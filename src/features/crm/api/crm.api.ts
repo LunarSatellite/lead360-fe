@@ -97,6 +97,9 @@ export const crmApi = {
   assignLead: (id: string, userId: string | null) =>
     apiClient.put<LeadDetailDto>(`${BASE}/leads/${id}/assign`, { userId }),
 
+  bulkLeadAction: (req: import('../types/crm.types').BulkLeadActionRequest) =>
+    apiClient.post<import('../types/crm.types').BulkLeadActionResult>(`${BASE}/leads/bulk`, req),
+
   addNote: (id: string, note: string) =>
     apiClient.post(`${BASE}/leads/${id}/notes`, { note }),
 

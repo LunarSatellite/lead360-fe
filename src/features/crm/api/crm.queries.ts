@@ -224,6 +224,24 @@ export function useAssignLead() {
   });
 }
 
+export function useBulkLeadAction() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (req: import('../types/crm.types').BulkLeadActionRequest) =>
+      crmApi.bulkLeadAction(req),
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries({ queryKey: CRM_KEYS.leads() });
+      queryClient.invalidateQueries({ queryKey: CRM_KEYS.leadStats() });
+      const r = (res ?? {}) as import('../types/crm.types').BulkLeadActionResult;
+      const skipped = r.skipped ? `, ${r.skipped} skipped` : '';
+      toast.success(`${r.succeeded ?? 0} lead(s) updated${skipped}.`);
+    },
+    onError: (err: any) => {
+      toast.error(err?.message || 'Bulk action failed.');
+    },
+  });
+}
+
 export function useAddNote() {
   const queryClient = useQueryClient();
   return useMutation({

@@ -40,6 +40,7 @@ import {
   CalendarClock,
   BookOpen,
   FileSignature,
+  Search,
   Star,
   Clock,
   Facebook,
@@ -53,6 +54,7 @@ import {
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
 import { NotificationBell } from '@/features/crm/components/NotificationBell';
+import { CommandPalette, openCommandPalette } from '@/shared/ui/CommandPalette';
 import { useLeadAlerts } from '@/features/crm/hooks/useLeadAlerts';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -533,6 +535,15 @@ export function DashboardLayout() {
             {getPageTitle()}
           </h1>
           <div className="ml-auto flex items-center gap-2 shrink-0">
+            <button
+              onClick={openCommandPalette}
+              className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold border border-border-subtle text-text-muted hover:text-text-primary hover:border-border-medium hover:bg-bg-elevated transition-all"
+              title="Search (Ctrl/Cmd + K)"
+            >
+              <Search className="w-3.5 h-3.5" strokeWidth={1.8} />
+              <span>Search</span>
+              <kbd className="text-[10px] border border-border-medium rounded px-1 py-0.5">⌘K</kbd>
+            </button>
             <NotificationBell />
             <button
               onClick={() => navigate(ROUTES.dashboard.flows)}
@@ -672,6 +683,7 @@ export function DashboardLayout() {
           </div>
         </div>
       )}
+      <CommandPalette />
     </div>
   );
 }

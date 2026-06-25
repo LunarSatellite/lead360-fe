@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   Calendar,
   Copy,
@@ -373,9 +374,7 @@ function BookingPageSettingsPage() {
                     <Pencil className="w-3.5 h-3.5" />
                   </button>
                   <button
-                    onClick={() => {
-                      if (window.confirm(`Delete "${et.title}"?`)) deleteEventType.mutate(et.id);
-                    }}
+                    onClick={() => confirmDialog({ message: `Delete "${et.title}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteEventType.mutate(et.id); })}
                     className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />

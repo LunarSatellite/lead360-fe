@@ -1,4 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
+import { confirmDialog } from '@/shared/ui/confirm';
 // ComplianceSettings — Full CRUD Management
 // View current profile, view rules, switch profiles,
 // create custom, edit custom, delete custom.
@@ -73,9 +74,9 @@ export function ComplianceSettings() {
     );
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!currentProfile || currentProfile.isSystem) return;
-    if (!confirm(`Delete custom profile "${currentProfile.name}"? This will revert to no profile assigned.`))
+    if (!(await confirmDialog({ message: `Delete custom profile "${currentProfile.name}"? This will revert to no profile assigned.`, confirmText: 'Delete', danger: true })))
       return;
     deleteProfile.mutate(currentProfile.id, { onSuccess: () => setView('card') });
   };

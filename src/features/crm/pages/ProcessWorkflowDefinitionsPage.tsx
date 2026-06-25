@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import { createPortal } from 'react-dom';
 import {
   ListChecks, Plus, Trash2, Loader2, X, ChevronDown, ChevronUp, Pencil,
@@ -420,8 +421,8 @@ function ProcessWorkflowDefinitionsPage() {
   const editingDef = editingId ? definitions.find(d => d.id === editingId) ?? null : null;
   const startingDef = startingId ? definitions.find(d => d.id === startingId) ?? null : null;
 
-  const handleDelete = (id: string, name: string) => {
-    if (!confirm(`Delete definition "${name}"? This cannot be undone.`)) return;
+  const handleDelete = async (id: string, name: string) => {
+    if (!(await confirmDialog({ message: `Delete definition "${name}"? This cannot be undone.`, confirmText: 'Delete', danger: true }))) return;
     deleteDef.mutate(id);
   };
 

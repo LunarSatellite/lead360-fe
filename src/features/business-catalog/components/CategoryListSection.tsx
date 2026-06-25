@@ -1,4 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
+import { confirmDialog } from '@/shared/ui/confirm';
 // CategoryListSection — Lists categories with create/edit/delete
 // ═══════════════════════════════════════════════════════════════
 
@@ -21,8 +22,8 @@ export function CategoryListSection({ parentLabel, onSelectCategory }: Props) {
 
   const categories: CatalogCategory[] = (data as any) ?? [];
 
-  const handleDelete = (c: CatalogCategory) => {
-    if (!confirm(`Delete "${c.name}"? This cannot be undone.`)) return;
+  const handleDelete = async (c: CatalogCategory) => {
+    if (!(await confirmDialog({ message: `Delete "${c.name}"? This cannot be undone.`, confirmText: 'Delete', danger: true }))) return;
     deleteMutation.mutate(c.id);
   };
 

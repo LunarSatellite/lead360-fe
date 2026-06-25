@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   ReactFlowProvider,
   ReactFlow,
@@ -1359,7 +1360,7 @@ function FlowListOverlay({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (confirm(`Delete "${f.name}"?`)) onDelete(f.id);
+                        confirmDialog({ message: `Delete "${f.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) onDelete(f.id); });
                       }}
                       disabled={f.isActive}
                       className="p-1.5 rounded-md hover:bg-danger-soft disabled:opacity-30"

@@ -1,4 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
+import { confirmDialog } from '@/shared/ui/confirm';
 // ItemListSection — Lists items with filter / create / edit / delete
 // ═══════════════════════════════════════════════════════════════
 
@@ -46,8 +47,8 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
   const items: CatalogItem[] = ((data as any)?.items as CatalogItem[]) ?? [];
   const total: number = ((data as any)?.totalCount as number) ?? 0;
 
-  const handleDelete = (i: CatalogItem) => {
-    if (!confirm(`Delete "${i.name}"? This cannot be undone.`)) return;
+  const handleDelete = async (i: CatalogItem) => {
+    if (!(await confirmDialog({ message: `Delete "${i.name}"? This cannot be undone.`, confirmText: 'Delete', danger: true }))) return;
     deleteMutation.mutate(i.id);
   };
 

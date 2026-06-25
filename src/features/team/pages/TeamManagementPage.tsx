@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Users, Mail, XCircle, RefreshCw, UserMinus, Plus, Send } from 'lucide-react';
@@ -112,7 +113,7 @@ function MembersSection() {
                       <option value={UserRole.Admin} className="bg-bg">Admin</option>
                       <option value={UserRole.Agent} className="bg-bg">Agent</option>
                     </select>
-                    <button onClick={() => { if (confirm(`Deactivate ${user.firstName}?`)) deactivate.mutate(user.id); }} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all" title="Deactivate">
+                    <button onClick={() => confirmDialog({ message: `Deactivate ${user.firstName}?`, confirmText: 'Deactivate', danger: true }).then((ok) => { if (ok) deactivate.mutate(user.id); })} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all" title="Deactivate">
                       <UserMinus className="w-4 h-4" />
                     </button>
                   </div>

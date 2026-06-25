@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
 import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook } from '../api/crm.queries';
 import { crmApi } from '../api/crm.api';
+import { confirmDialog } from '@/shared/ui/confirm';
 import type {
   CrmQuoteSummaryDto, CrmQuoteCreateRequest, CrmQuoteUpdateRequest, CrmQuoteFilter,
   CrmQuoteLineItemRequest, CrmDealSummaryDto, CrmContactSummaryDto, CrmPriceBookDto,
@@ -206,7 +207,7 @@ export function Component() {
                           <Send className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       )}
-                      <button onClick={() => { if (confirm('Delete this quote?')) deleteQuote.mutate(q.id); }} title="Delete" className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors">
+                      <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteQuote.mutate(q.id); })} title="Delete" className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors">
                         <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                       </button>
                     </div>
@@ -270,7 +271,7 @@ export function Component() {
                 </button>
               </div>
             )}
-            <button onClick={() => { if (confirm('Delete this quote?')) { deleteQuote.mutate(selected.id); setSelected(null); } }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger text-sm font-bold hover:bg-danger hover:text-bg transition-all">
+            <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) { deleteQuote.mutate(selected.id); setSelected(null); } })} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger text-sm font-bold hover:bg-danger hover:text-bg transition-all">
               <Trash2 className="w-4 h-4" strokeWidth={1.5} /> Delete Quote
             </button>
           </div>

@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import { queryClient } from '@/shared/config/query-client';
 import { router } from '@/app/router/routes';
 import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
+import { ConfirmHost } from '@/shared/ui/confirm';
 
 export function App() {
   return (
@@ -11,6 +12,7 @@ export function App() {
       <ErrorBoundary label="app">
         <RouterProvider router={router} />
       </ErrorBoundary>
+      <ConfirmHost />
       <Toaster
         position="top-right"
         theme="dark"

@@ -8,7 +8,7 @@ export function OnboardingComplete() {
       <div className="text-6xl mb-4">🎉</div>
       <h2 className="text-2xl font-extrabold text-text-primary mb-2">You're Live!</h2>
       <p className="text-sm text-text-muted mb-8">
-        Your OmniFlow chatbot is set up and ready to handle conversations.
+        Your Lead360 chatbot is set up and ready to handle conversations.
         Monitor performance in the Analytics dashboard.
       </p>
       <div className="flex items-center justify-center gap-3">

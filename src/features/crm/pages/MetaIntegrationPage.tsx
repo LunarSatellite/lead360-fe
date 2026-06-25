@@ -220,7 +220,7 @@ function CampaignList({
                 <p className="text-xs font-bold text-text-primary truncate">{c.name}</p>
                 <p className="text-[10px] text-text-muted mt-0.5">
                   {OBJECTIVE_LABELS[c.objective ?? ''] ?? c.objective ?? '—'}
-                  {c.createdFromOmniFlow && ' · OmniFlow'}
+                  {c.createdFromOmniFlow && ' · Lead360'}
                 </p>
               </div>
               <StatusBadge status={c.fbStatus} />
@@ -254,7 +254,7 @@ function EmptyState({ aggregate, account }: { aggregate: FbAggregate | null; acc
           <Metric label="Total Spend"   value={fmtMoney(aggregate.totalSpend, account.currency || 'USD')} accent="text-text-primary" />
           <Metric label="Impressions"   value={fmtN(aggregate.totalImpressions)} sub="lifetime" />
           <Metric label="Clicks"        value={fmtN(aggregate.totalClicks)} sub={aggregate.overallCtr != null ? `CTR ${aggregate.overallCtr.toFixed(2)}%` : undefined} />
-          <Metric label="CRM Leads"     value={aggregate.totalCrmLeads} sub="via OmniFlow" accent="text-brand" />
+          <Metric label="CRM Leads"     value={aggregate.totalCrmLeads} sub="via Lead360" accent="text-brand" />
           <Metric label="Active Campaigns" value={aggregate.activeCampaigns} sub={`of ${aggregate.totalCampaigns} total`} />
           <Metric label="Reach"         value={fmtN(aggregate.totalReach)} />
           <Metric label="CPC"           value={aggregate.overallCpc != null ? fmtMoney(aggregate.overallCpc, account.currency || 'USD') : '—'} />
@@ -270,7 +270,7 @@ function EmptyState({ aggregate, account }: { aggregate: FbAggregate | null; acc
             </div>
             <p className="text-base font-bold text-text-primary">Connect Your Ad Account</p>
             <p className="text-sm text-text-muted">
-              Pull live campaign analytics, create campaigns, manage budgets and targeting — all from OmniFlow.
+              Pull live campaign analytics, create campaigns, manage budgets and targeting — all from Lead360.
             </p>
           </div>
         </div>
@@ -363,7 +363,7 @@ function CampaignDetail({
               <StatusBadge status={campaign.fbStatus} />
               {campaign.createdFromOmniFlow && (
                 <span className="text-[10px] font-bold text-brand bg-brand-soft border border-border-glow px-2 py-0.5 rounded-full">
-                  OmniFlow
+                  Lead360
                 </span>
               )}
             </div>

@@ -49,7 +49,7 @@ const STEP_META: Record<number, { badge: string; badgeColor: string }> = {
 };
 
 const STEP_DESCS: Record<number, string> = {
-  1: 'Upload your OpenAPI / Swagger spec so OmniFlow can map your endpoints and understand your business logic.',
+  1: 'Upload your OpenAPI / Swagger spec so Lead360 can map your endpoints and understand your business logic.',
   2: 'Teach your bot what customers will ask. You need at least 3 intents — use AI suggestions, import a file, or create manually.',
   3: 'Connect your product catalog so customers can browse, search, and purchase through the chatbot. This step is optional.',
   4: 'Describe your chatbot in plain English and AI generates the entire conversation flow. Or build it manually in the visual editor.',
@@ -683,7 +683,7 @@ function AllComplete() {
         <div className="text-6xl mb-5">🎉</div>
         <h2 className="text-2xl font-extrabold text-text-primary mb-2">You're Live!</h2>
         <p className="text-sm text-text-muted mb-8">
-          Your OmniFlow chatbot is deployed and ready for customers.
+          Your Lead360 chatbot is deployed and ready for customers.
         </p>
         <div className="flex items-center justify-center gap-3">
           <button

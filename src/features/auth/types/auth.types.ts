@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// Auth types — exact mirror of OmniFlow Swagger spec
+// Auth types — exact mirror of Lead360 Swagger spec
 // Source: /api/v1/auth/* + /api/v1/users/*
 // ═══════════════════════════════════════════════════════════════
 

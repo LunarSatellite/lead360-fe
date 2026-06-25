@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, X, Loader2, Receipt, DollarSign, Send, Link2 } from 'lucide-react';
 import { format, parseISO, isPast } from 'date-fns';
 import { toast } from 'sonner';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   useInvoices, useGenerateInvoiceFromDeal, useRecordPayment,
   useDisputeInvoice, useSendInvoice, useVoidInvoice, useGenerateInvoicePaymentLink,
@@ -241,7 +242,7 @@ export function Component() {
                 {disputeInvoice.isPending ? <Loader2 className="w-4 h-4 animate-spin inline" /> : 'Dispute'}
               </button>
               <button
-                onClick={() => { if (confirm('Void this invoice?')) { voidInvoice.mutate(selected.id); setSelected(null); } }}
+                onClick={() => confirmDialog({ message: 'Void this invoice? This cannot be undone.', confirmText: 'Void invoice', danger: true }).then((ok) => { if (ok) { voidInvoice.mutate(selected.id); setSelected(null); } })}
                 disabled={voidInvoice.isPending || selected.status === CrmInvoiceStatus.Void}
                 className="flex-1 py-2 rounded-xl text-sm font-bold border border-border-subtle text-text-secondary bg-bg-elevated hover:bg-bg-card disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                 {voidInvoice.isPending ? <Loader2 className="w-4 h-4 animate-spin inline" /> : 'Void'}

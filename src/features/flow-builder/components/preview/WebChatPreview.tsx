@@ -14,7 +14,7 @@ interface WebChatPreviewProps {
   botName?: string;
 }
 
-export function WebChatPreview({ messages, onButtonClick, botName = 'OmniFlow Support' }: WebChatPreviewProps) {
+export function WebChatPreview({ messages, onButtonClick, botName = 'Lead360 Support' }: WebChatPreviewProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -284,7 +284,7 @@ function PublicBookingEventPage() {
           </div>
         )}
 
-        <p className="text-center text-xs text-text-muted opacity-30 mt-8">Powered by OmniFlow</p>
+        <p className="text-center text-xs text-text-muted opacity-30 mt-8">Powered by Lead360</p>
       </div>
     </div>
   );

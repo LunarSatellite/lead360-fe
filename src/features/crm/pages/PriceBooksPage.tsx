@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plus, Trash2, Star, BookOpen, Loader2, X } from 'lucide-react';
 import { DataView } from '@/shared/ui/DataView';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   usePriceBooks, usePriceBook, useCreatePriceBook, useDeletePriceBook,
   useAddPriceBookEntry, useDeletePriceBookEntry,
@@ -87,7 +88,7 @@ export function Component() {
                       <p className="text-xs text-text-muted">{book.currency}{book.description ? ` · ${book.description}` : ''}</p>
                     </div>
                     <button
-                      onClick={() => { if (confirm(`Delete price book "${book.name}"?`)) deleteBook.mutate(book.id, { onSuccess: () => setSelectedId(undefined) }); }}
+                      onClick={() => confirmDialog({ message: `Delete price book "${book.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteBook.mutate(book.id, { onSuccess: () => setSelectedId(undefined) }); })}
                       className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger hover:border-danger/40 transition-all">
                       <Trash2 className="w-3 h-3" /> Delete book
                     </button>

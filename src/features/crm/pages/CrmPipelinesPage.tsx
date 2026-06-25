@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { GitBranch, Plus, Trash2, Star, Loader2, Check, X, Pencil, ChevronRight, Shield, Lock } from 'lucide-react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   usePipelines, useCreatePipeline, useUpdatePipeline, useDeletePipeline, useSetPipelineDefault,
   usePipelineStages, useStageGates, useCreateStageGate, useDeleteStageGate,
@@ -257,8 +258,12 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
     });
   };
 
-  const handleDelete = () => {
-    if (!confirm(`Delete pipeline "${pipeline.name}"? Stages will be unlinked but not deleted.`)) return;
+  const handleDelete = async () => {
+    const ok = await confirmDialog({
+      message: `Delete pipeline "${pipeline.name}"? Stages will be unlinked but not deleted.`,
+      confirmText: 'Delete', danger: true,
+    });
+    if (!ok) return;
     deletePipeline.mutate(pipeline.id);
   };
 

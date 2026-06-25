@@ -16,7 +16,7 @@ export function Step1ApiConnect({ onComplete }: Step1Props) {
       <div className="text-center mb-6">
         <div className="text-3xl mb-2">🔌</div>
         <h2 className="text-lg font-bold text-text-primary">Connect Your API</h2>
-        <p className="text-sm text-text-muted mt-1">Upload your OpenAPI/Swagger spec so OmniFlow can understand your business endpoints.</p>
+        <p className="text-sm text-text-muted mt-1">Upload your OpenAPI/Swagger spec so Lead360 can understand your business endpoints.</p>
       </div>
 
       {hasSpecs ? (
@@ -35,7 +35,7 @@ export function Step1ApiConnect({ onComplete }: Step1Props) {
         <>
           <SpecUploadZone />
           <p className="text-2xs text-text-muted text-center mt-3">
-            After uploading, OmniFlow will analyze your API and suggest intents.
+            After uploading, Lead360 will analyze your API and suggest intents.
           </p>
         </>
       )}

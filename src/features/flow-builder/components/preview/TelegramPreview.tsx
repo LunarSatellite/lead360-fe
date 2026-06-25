@@ -33,7 +33,7 @@ export function TelegramPreview({ messages, onButtonClick }: TelegramPreviewProp
       <div className="flex items-center gap-2 px-2.5 py-1.5 flex-shrink-0" style={{ background: '#517DA2' }}>
         <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs flex-shrink-0 font-bold" style={{ background: '#65B9F4' }}>🤖</div>
         <div className="flex-1 min-w-0">
-          <div className="text-[11px] font-semibold text-white truncate leading-tight">OmniFlow Bot</div>
+          <div className="text-[11px] font-semibold text-white truncate leading-tight">Lead360 Bot</div>
           <div className="text-[9px] leading-tight" style={{ color: 'rgba(255,255,255,0.6)' }}>bot</div>
         </div>
         <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="rgba(255,255,255,0.7)" strokeWidth={2}>

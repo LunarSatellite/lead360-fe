@@ -59,7 +59,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
         </div>
         <div>
           <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Personal message <span className="opacity-40">(optional)</span></label>
-          <textarea {...form.register('personalMessage')} placeholder="Hey, join our team on OmniFlow!" rows={2} className={`${input} resize-none`} />
+          <textarea {...form.register('personalMessage')} placeholder="Hey, join our team on Lead360!" rows={2} className={`${input} resize-none`} />
         </div>
         {send.isError && <div className="px-4 py-3 rounded-lg bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">{send.error?.message || 'Failed.'}</div>}
         <div className="flex justify-end gap-3">

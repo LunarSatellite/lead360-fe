@@ -139,7 +139,7 @@ const WEBHOOK_INSTRUCTIONS: Record<ChannelTypeValue, string> = {
   [ChannelType.Voice]:     'Paste this webhook URL in Twilio Console → Phone Numbers → Voice Webhook.',
   [ChannelType.Messenger]: 'Paste this webhook URL in Meta Developer Console → Messenger → Webhooks.',
   [ChannelType.Instagram]: 'Paste this webhook URL in Meta Developer Console → Instagram → Webhooks.',
-  [ChannelType.WebChat]:   'Embed the OmniFlow chat widget script on your website using this endpoint.',
+  [ChannelType.WebChat]:   'Embed the Lead360 chat widget script on your website using this endpoint.',
   [ChannelType.Email]:     'Configure your email provider to forward incoming emails to this webhook URL.',
   [ChannelType.Viber]:     'Paste this webhook URL in Viber Admin Panel → Webhooks.',
 };

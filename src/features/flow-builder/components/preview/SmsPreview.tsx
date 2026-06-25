@@ -19,7 +19,7 @@ export function SmsPreview({ messages, onButtonClick }: SmsPreviewProps) {
       <div className="flex items-center gap-2 px-3 py-2 bg-bg-elevated text-white">
         <div className="text-xs font-semibold">📱 SMS</div>
         <div className="flex-1" />
-        <div className="text-[10px] opacity-60">OmniFlow Bot</div>
+        <div className="text-[10px] opacity-60">Lead360 Bot</div>
       </div>
 
       {/* Messages */}

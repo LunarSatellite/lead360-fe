@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plus, FileSignature, Loader2, X, Trash2 } from 'lucide-react';
 import { DataView } from '@/shared/ui/DataView';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   useContracts, useCreateContract, useUpdateContractStatus, useDeleteContract,
 } from '../api/crm.queries';
@@ -111,7 +112,7 @@ export function Component() {
                             {t.label}
                           </button>
                         ))}
-                        <button onClick={() => { if (confirm('Delete this contract?')) del.mutate(c.id); }} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => confirmDialog({ message: 'Delete this contract?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) del.mutate(c.id); })} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </td>
                   </tr>

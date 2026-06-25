@@ -575,7 +575,7 @@ export function ApiCredentialsCard() {
         {/* Empty state description */}
         {!configured && (
           <p className="text-xs text-text-muted leading-relaxed mt-3 ml-12">
-            OmniFlow will call your business's API once flows include api-call steps. Add the URL and auth
+            Lead360 will call your business's API once flows include api-call steps. Add the URL and auth
             credentials so we can reach it on your behalf.
           </p>
         )}

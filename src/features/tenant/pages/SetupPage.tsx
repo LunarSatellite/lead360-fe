@@ -61,7 +61,7 @@ const HERO_TITLES = [
   'Go live',
 ];
 const HERO_DESCS = [
-  'Upload your OpenAPI spec so OmniFlow understands your endpoints.',
+  'Upload your OpenAPI spec so Lead360 understands your endpoints.',
   'Tell your bot what customers might ask. Need at least 3 intents.',
   'Build conversation flows with AI or the visual editor.',
   'Connect WhatsApp, Instagram, Email, Voice, and more.',

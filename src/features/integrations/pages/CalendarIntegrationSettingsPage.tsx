@@ -114,12 +114,12 @@ function CalendarIntegrationSettingsPage() {
             <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <p className="text-sm text-amber-300">
               Connect Google Calendar to enable the "Generate available slots" feature when scheduling meetings with contacts.
-              OmniFlow only reads your free/busy data — it cannot modify your calendar.
+              Lead360 only reads your free/busy data — it cannot modify your calendar.
             </p>
           </div>
 
           <div className="space-y-2 text-sm text-text-muted">
-            <p className="font-medium text-text-primary">What OmniFlow does with access:</p>
+            <p className="font-medium text-text-primary">What Lead360 does with access:</p>
             <ul className="space-y-1.5 list-disc list-inside text-text-muted">
               <li>Reads your free/busy times to generate open slots</li>
               <li>Never reads event titles, descriptions, or attendees</li>

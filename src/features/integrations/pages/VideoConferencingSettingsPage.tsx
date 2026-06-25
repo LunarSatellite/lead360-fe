@@ -277,7 +277,7 @@ export function Component() {
         <p>• Connect your preferred provider using the OAuth button above.</p>
         <p>• When a CRM meeting is booked, a video link is automatically created and included in the calendar invite sent to the contact.</p>
         <p>• You can connect multiple providers and set one as the default.</p>
-        <p>• Credentials are encrypted at rest — OmniFlow only stores the OAuth access token, never your password.</p>
+        <p>• Credentials are encrypted at rest — Lead360 only stores the OAuth access token, never your password.</p>
       </div>
     </div>
   );

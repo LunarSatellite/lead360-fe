@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { crmApi } from './crm.api';
+import { getApiError } from '@/shared/lib/get-api-error';
 import type {
   LeadFilter,
   LeadStage,
@@ -431,7 +432,143 @@ export function useCreateContact() {
       queryClient.invalidateQueries({ queryKey: CRM_KEYS.contacts() });
       toast.success('Contact created.');
     },
-    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+    onError: (err: unknown) => {
+      const { message, errors } = getApiError(err, 'Failed to create contact.');
+      toast.error(errors.length ? `${message}: ${errors.join(', ')}` : message);
+    },
+  });
+}
+
+/**
+ * Real-time duplicate check for the contact create flow. Enabled only when an email or phone is
+ * present; debounce in the calling component. Returns existing contacts/leads that match.
+ */
+export function useFindContactDuplicates(email?: string, phone?: string) {
+  const e = email?.trim() || undefined;
+  const p = phone?.trim() || undefined;
+  return useQuery({
+    queryKey: ['crm', 'contact-duplicates', e ?? '', p ?? ''],
+    queryFn: () => crmApi.findContactDuplicates(e, p),
+    enabled: !!(e || p),
+    staleTime: 10_000,
+  });
+}
+
+// ── Contracts (CLM) ─────────────────────────────────────────────────────────────
+const CONTRACT_KEY = ['crm', 'contracts'] as const;
+
+export function useContracts(params?: { status?: number; accountId?: string }) {
+  return useQuery({ queryKey: [...CONTRACT_KEY, params ?? {}], queryFn: () => crmApi.getContracts(params) });
+}
+export function useCreateContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (d: import('../types/crm.types').CrmContractCreateRequest) => crmApi.createContract(d),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CONTRACT_KEY }); toast.success('Contract created.'); },
+    onError: (err: unknown) => toast.error(getApiError(err, 'Failed to create contract.').message),
+  });
+}
+export function useUpdateContractStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: number }) => crmApi.updateContractStatus(id, status),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CONTRACT_KEY }); toast.success('Contract updated.'); },
+    onError: (err: unknown) => toast.error(getApiError(err).message),
+  });
+}
+export function useDeleteContract() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.deleteContract(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CONTRACT_KEY }); toast.success('Contract deleted.'); },
+    onError: (err: unknown) => toast.error(getApiError(err).message),
+  });
+}
+export function useGenerateInvoicePaymentLink() {
+  return useMutation({
+    mutationFn: (id: string) => crmApi.generateInvoicePaymentLink(id),
+    onError: (err: unknown) => toast.error(getApiError(err, 'Could not create payment link.').message),
+  });
+}
+
+// ── CPQ Price Books ─────────────────────────────────────────────────────────────
+const PRICEBOOK_KEY = ['crm', 'price-books'] as const;
+
+export function usePriceBooks() {
+  return useQuery({ queryKey: PRICEBOOK_KEY, queryFn: () => crmApi.getPriceBooks() });
+}
+export function usePriceBook(id: string | undefined) {
+  return useQuery({
+    queryKey: [...PRICEBOOK_KEY, id],
+    queryFn: () => crmApi.getPriceBookById(id!),
+    enabled: !!id,
+  });
+}
+function priceBookMutation<TArgs>(fn: (a: TArgs) => Promise<unknown>, okMsg: string) {
+  return () => {
+    const qc = useQueryClient();
+    return useMutation({
+      mutationFn: fn,
+      onSuccess: () => { qc.invalidateQueries({ queryKey: PRICEBOOK_KEY }); toast.success(okMsg); },
+      onError: (err: unknown) => toast.error(getApiError(err).message),
+    });
+  };
+}
+export const useCreatePriceBook = priceBookMutation(
+  (d: import('../types/crm.types').CrmPriceBookCreateRequest) => crmApi.createPriceBook(d), 'Price book created.');
+export const useDeletePriceBook = priceBookMutation((id: string) => crmApi.deletePriceBook(id), 'Price book deleted.');
+export const useAddPriceBookEntry = priceBookMutation(
+  (a: { id: string; data: import('../types/crm.types').CrmPriceBookEntryRequest }) => crmApi.addPriceBookEntry(a.id, a.data),
+  'Entry added.');
+export const useUpdatePriceBookEntry = priceBookMutation(
+  (a: { entryId: string; data: import('../types/crm.types').CrmPriceBookEntryRequest }) => crmApi.updatePriceBookEntry(a.entryId, a.data),
+  'Entry updated.');
+export const useDeletePriceBookEntry = priceBookMutation((entryId: string) => crmApi.deletePriceBookEntry(entryId), 'Entry removed.');
+
+// ── Renewals ───────────────────────────────────────────────────────────────────
+const RENEWAL_KEY = ['crm', 'renewals'] as const;
+
+export function useRenewals(filter: import('../types/crm.types').CrmRenewalFilter = {}) {
+  return useQuery({
+    queryKey: [...RENEWAL_KEY, filter],
+    queryFn: () => crmApi.getRenewals(filter),
+  });
+}
+
+export function useInitiateRenewalOutreach() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.initiateRenewalOutreach(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: RENEWAL_KEY });
+      toast.success('Renewal outreach sent.');
+    },
+    onError: (err: unknown) => toast.error(getApiError(err, 'Failed to send outreach.').message),
+  });
+}
+
+export function useRecordRenewalOutcome() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').CrmRenewalOutcomeRequest }) =>
+      crmApi.recordRenewalOutcome(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: RENEWAL_KEY });
+      toast.success('Outcome recorded.');
+    },
+    onError: (err: unknown) => toast.error(getApiError(err, 'Failed to record outcome.').message),
+  });
+}
+
+export function useEvaluateRenewals() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => crmApi.evaluateRenewals(),
+    onSuccess: (n) => {
+      qc.invalidateQueries({ queryKey: RENEWAL_KEY });
+      toast.success(`Evaluated ${n ?? 0} renewal${n === 1 ? '' : 's'}.`);
+    },
+    onError: (err: unknown) => toast.error(getApiError(err, 'Evaluation failed.').message),
   });
 }
 

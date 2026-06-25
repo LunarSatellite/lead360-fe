@@ -3,11 +3,11 @@ import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check } from 'lucide-
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
-import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useDeleteQuote, useDeals, useContacts } from '../api/crm.queries';
+import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook } from '../api/crm.queries';
 import { crmApi } from '../api/crm.api';
 import type {
   CrmQuoteSummaryDto, CrmQuoteCreateRequest, CrmQuoteUpdateRequest, CrmQuoteFilter,
-  CrmQuoteLineItemRequest, CrmDealSummaryDto, CrmContactSummaryDto,
+  CrmQuoteLineItemRequest, CrmDealSummaryDto, CrmContactSummaryDto, CrmPriceBookDto,
 } from '../types/crm.types';
 import { CrmQuoteStatus, CRM_QUOTE_STATUS_LABELS, CRM_QUOTE_STATUS_COLORS } from '../types/crm.types';
 
@@ -80,6 +80,12 @@ export function Component() {
   const [validityDays, setValidityDays] = useState(30);
   const [notes, setNotes] = useState('');
   const [lines, setLines] = useState<CrmQuoteLineItemRequest[]>([emptyLine()]);
+  const [priceBookId, setPriceBookId] = useState('');
+
+  const { data: priceBooks } = usePriceBooks();
+  const priceBookList: CrmPriceBookDto[] = priceBooks ?? [];
+  const { data: bookDetail } = usePriceBook(priceBookId || undefined);
+  const bookEntries = bookDetail?.entries ?? [];
 
   const { data: raw, isLoading } = useQuotes(filter);
   const items: CrmQuoteSummaryDto[] = (raw as any)?.items ?? [];
@@ -96,7 +102,7 @@ export function Component() {
 
   function resetForm() {
     setEditingId(null); setDealId(''); setContactId(''); setCurrency('USD');
-    setValidityDays(30); setNotes(''); setLines([emptyLine()]);
+    setValidityDays(30); setNotes(''); setLines([emptyLine()]); setPriceBookId('');
   }
 
   async function openEdit(id: string) {
@@ -130,6 +136,7 @@ export function Component() {
       const req: CrmQuoteCreateRequest = {
         dealId: dealId || undefined, contactId: contactId || undefined,
         lineItems: items, currency, validityDays, notes: notes || undefined,
+        priceBookId: priceBookId || undefined,
       };
       createQuote.mutate(req, { onSuccess: () => { setCreateOpen(false); resetForm(); } });
     }
@@ -286,6 +293,20 @@ export function Component() {
                 {contactsList.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
               </select>
             </Field>
+            <Field label="Price Book">
+              <select
+                value={priceBookId}
+                onChange={e => {
+                  setPriceBookId(e.target.value);
+                  const pb = priceBookList.find(b => b.id === e.target.value);
+                  if (pb) setCurrency(pb.currency);
+                }}
+                className={selectCls}
+              >
+                <option value="">No price book (manual pricing)</option>
+                {priceBookList.map(pb => <option key={pb.id} value={pb.id}>{pb.name} ({pb.currency})</option>)}
+              </select>
+            </Field>
           </>
         )}
         <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} className={inputCls} placeholder="USD" /></Field>
@@ -299,13 +320,33 @@ export function Component() {
           </div>
           <div className="space-y-2">
             {lines.map((l, i) => (
-              <div key={i} className="grid grid-cols-[1fr_80px_100px_32px] gap-2">
-                <input value={l.description} onChange={e => updateLine(i, 'description', e.target.value)} placeholder="Description" className={inputCls} />
-                <input type="number" value={l.quantity} onChange={e => updateLine(i, 'quantity', Number(e.target.value))} placeholder="Qty" className={inputCls} min={1} />
-                <input type="number" value={l.unitPrice} onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))} placeholder="Price" className={inputCls} min={0} step={0.01} />
-                <button onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))} className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors" disabled={lines.length === 1}>
-                  <X className="w-3.5 h-3.5" />
-                </button>
+              <div key={i} className="space-y-1.5">
+                {!editingId && priceBookId && bookEntries.length > 0 && (
+                  <select
+                    value=""
+                    onChange={e => {
+                      const en = bookEntries.find(x => x.id === e.target.value);
+                      if (!en) return;
+                      setLines(ls => ls.map((x, idx) => idx === i
+                        ? { ...x, productId: en.productId ?? undefined, description: en.productName, unitPrice: en.unitPrice }
+                        : x));
+                    }}
+                    className={selectCls + ' text-xs'}
+                  >
+                    <option value="">＋ Pick from {bookDetail?.name ?? 'price book'}…</option>
+                    {bookEntries.map(en => (
+                      <option key={en.id} value={en.id}>{en.productName} — {currency} {en.unitPrice.toLocaleString()}</option>
+                    ))}
+                  </select>
+                )}
+                <div className="grid grid-cols-[1fr_80px_100px_32px] gap-2">
+                  <input value={l.description} onChange={e => updateLine(i, 'description', e.target.value)} placeholder="Description" className={inputCls} />
+                  <input type="number" value={l.quantity} onChange={e => updateLine(i, 'quantity', Number(e.target.value))} placeholder="Qty" className={inputCls} min={1} />
+                  <input type="number" value={l.unitPrice} onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))} placeholder="Price" className={inputCls} min={0} step={0.01} />
+                  <button onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))} className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors" disabled={lines.length === 1}>
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>

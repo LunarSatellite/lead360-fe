@@ -589,6 +589,97 @@ export interface CrmContactCreateRequest {
   tagsJson?: string;
   notes?: string;
   sourceLeadId?: string;
+  /** Resend with true to override the duplicate guard ("create anyway"). */
+  allowDuplicate?: boolean;
+}
+
+/** A possible duplicate (contact or lead) surfaced at create time. */
+export interface CrmDuplicateMatchDto {
+  id: string;
+  kind: 'contact' | 'lead';
+  name?: string;
+  email?: string;
+  phone?: string;
+  matchField: 'email' | 'phone';
+}
+
+// ── Renewals ──────────────────────────────────────────────────────────────────
+export enum RenewalSegment { LowRiskRoutine = 1, ExpansionCandidate = 2, AtRisk = 3, LostCause = 4 }
+export enum RenewalStatus {
+  Upcoming = 1, OutreachInProgress = 2, Stalled = 3, Renewed = 4,
+  Expanded = 5, Churned = 6, Lapsed = 7, InGracePeriod = 8,
+}
+export enum RenewalOutcome { AutoRenewed = 1, ManualRenewed = 2, Expanded = 3, Downgraded = 4, Churned = 5, Lapsed = 6 }
+
+export const RENEWAL_SEGMENT_LABELS: Record<RenewalSegment, string> = {
+  [RenewalSegment.LowRiskRoutine]: 'Low risk', [RenewalSegment.ExpansionCandidate]: 'Expansion',
+  [RenewalSegment.AtRisk]: 'At risk', [RenewalSegment.LostCause]: 'Lost cause',
+};
+export const RENEWAL_STATUS_LABELS: Record<RenewalStatus, string> = {
+  [RenewalStatus.Upcoming]: 'Upcoming', [RenewalStatus.OutreachInProgress]: 'Outreach in progress',
+  [RenewalStatus.Stalled]: 'Stalled', [RenewalStatus.Renewed]: 'Renewed', [RenewalStatus.Expanded]: 'Expanded',
+  [RenewalStatus.Churned]: 'Churned', [RenewalStatus.Lapsed]: 'Lapsed', [RenewalStatus.InGracePeriod]: 'Grace period',
+};
+export const RENEWAL_OUTCOME_LABELS: Record<RenewalOutcome, string> = {
+  [RenewalOutcome.AutoRenewed]: 'Auto-renewed', [RenewalOutcome.ManualRenewed]: 'Manually renewed',
+  [RenewalOutcome.Expanded]: 'Expanded', [RenewalOutcome.Downgraded]: 'Downgraded',
+  [RenewalOutcome.Churned]: 'Churned', [RenewalOutcome.Lapsed]: 'Lapsed',
+};
+
+export interface CrmRenewalListItemDto {
+  id: string; dealId: string; contactId: string; renewalDate: string;
+  daysUntilRenewal: number; segment: RenewalSegment; status: RenewalStatus;
+  contractValue: number; createdAt: string;
+}
+export interface CrmRenewalFilter {
+  segment?: RenewalSegment; status?: RenewalStatus; dueBefore?: string; page?: number; pageSize?: number;
+}
+export interface CrmRenewalOutcomeRequest { outcome: RenewalOutcome; newDealId?: string }
+
+// ── CPQ: Price Books ──────────────────────────────────────────────────────────
+export interface CrmPriceBookDto {
+  id: string; name: string; description?: string; currency: string;
+  isActive: boolean; isDefault: boolean; entryCount: number; createdAt: string;
+}
+export interface CrmPriceBookEntryDto {
+  id: string; priceBookId: string; productId?: string; productName: string;
+  sku?: string; unitPrice: number; minQuantity?: number;
+}
+export interface CrmPriceBookDetailDto {
+  id: string; name: string; description?: string; currency: string;
+  isActive: boolean; isDefault: boolean; entries: CrmPriceBookEntryDto[]; createdAt: string;
+}
+export interface CrmPriceBookCreateRequest { name: string; description?: string; currency?: string; isDefault?: boolean }
+export interface CrmPriceBookEntryRequest {
+  productId?: string; productName: string; sku?: string; unitPrice: number; minQuantity?: number;
+}
+
+// ── Contracts (CLM) ───────────────────────────────────────────────────────────
+export enum CrmContractStatus {
+  Draft = 1, PendingSignature = 2, Active = 3, Expired = 4, Terminated = 5, Renewed = 6,
+}
+export const CRM_CONTRACT_STATUS_LABELS: Record<CrmContractStatus, string> = {
+  [CrmContractStatus.Draft]: 'Draft', [CrmContractStatus.PendingSignature]: 'Pending signature',
+  [CrmContractStatus.Active]: 'Active', [CrmContractStatus.Expired]: 'Expired',
+  [CrmContractStatus.Terminated]: 'Terminated', [CrmContractStatus.Renewed]: 'Renewed',
+};
+export interface CrmContractDto {
+  id: string; contractNumber: string; title: string; status: CrmContractStatus;
+  accountId?: string; contactId?: string; dealId?: string; subscriptionId?: string;
+  value: number; currency: string; startDate?: string; endDate?: string;
+  renewalTermMonths?: number; autoRenew: boolean; signedAt?: string;
+  documentUrl?: string; notes?: string; createdAt: string;
+}
+export interface CrmContractCreateRequest {
+  title: string; accountId?: string; contactId?: string; dealId?: string; subscriptionId?: string;
+  value?: number; currency?: string; startDate?: string; endDate?: string;
+  renewalTermMonths?: number; autoRenew?: boolean; documentUrl?: string; notes?: string;
+}
+
+// ── Public pay (payment links) ────────────────────────────────────────────────
+export interface CrmInvoicePublicDto {
+  invoiceNumber: string; totalAmount: number; currencyCode: string;
+  status: string; dueDate: string; isPaid: boolean;
 }
 
 export interface CrmContactUpdateRequest {
@@ -1593,7 +1684,7 @@ export const CRM_QUOTE_STATUS_COLORS: Record<CrmQuoteStatus, string> = {
   5: 'text-text-muted bg-bg-card border-border-subtle',
 };
 export interface CrmQuoteLineItemDto { id: string; description: string; quantity: number; unitPrice: number; lineTotal: number; }
-export interface CrmQuoteLineItemRequest { description: string; quantity: number; unitPrice: number; }
+export interface CrmQuoteLineItemRequest { description: string; quantity: number; unitPrice: number; productId?: string; }
 export interface CrmQuoteSummaryDto {
   id: string; quoteNumber: string; dealId: string | null; dealName: string | null;
   contactId: string | null; contactName: string | null;
@@ -1603,7 +1694,7 @@ export interface CrmQuoteSummaryDto {
 export interface CrmQuoteDetailDto extends CrmQuoteSummaryDto { lineItems: CrmQuoteLineItemDto[]; notes: string | null; }
 export interface CrmQuoteCreateRequest {
   dealId?: string; contactId?: string; lineItems: CrmQuoteLineItemRequest[];
-  currency?: string; validityDays?: number; notes?: string;
+  currency?: string; validityDays?: number; notes?: string; priceBookId?: string;
 }
 export interface CrmQuoteUpdateRequest {
   lineItems?: CrmQuoteLineItemRequest[];

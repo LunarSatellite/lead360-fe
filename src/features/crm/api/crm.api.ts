@@ -159,6 +159,11 @@ export const crmApi = {
   createContact: (data: CrmContactCreateRequest) =>
     apiClient.post<CrmContactDetailDto>(`${BASE}/contacts`, data),
 
+  findContactDuplicates: (email?: string, phone?: string) =>
+    apiClient.get<import('../types/crm.types').CrmDuplicateMatchDto[]>(`${BASE}/contacts/duplicates`, {
+      params: { email: email || undefined, phone: phone || undefined },
+    }),
+
   updateContact: (id: string, data: CrmContactUpdateRequest) =>
     apiClient.put<CrmContactDetailDto>(`${BASE}/contacts/${id}`, data),
 
@@ -754,6 +759,56 @@ export const crmApi = {
     const form = new FormData(); form.append('file', file);
     return apiClient.post<import('../types/crm.types').CsvImportResultDto>(`${BASE}/deals/import-csv`, form, { headers: { 'Content-Type': undefined } });
   },
+
+  // ─── Contracts (CLM) ──────────────────────────────────────────────────────
+  getContracts: (params?: { status?: number; accountId?: string }) =>
+    apiClient.get<import('../types/crm.types').CrmContractDto[]>(`${BASE}/contracts`, { params }),
+  getContractById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts/${id}`),
+  createContract: (data: import('../types/crm.types').CrmContractCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts`, data),
+  updateContractStatus: (id: string, status: number) =>
+    apiClient.patch<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts/${id}/status`, { status }),
+  deleteContract: (id: string) =>
+    apiClient.delete(`${BASE}/contracts/${id}`),
+
+  // ─── Invoice payment links ────────────────────────────────────────────────
+  generateInvoicePaymentLink: (id: string) =>
+    apiClient.post<string>(`${BASE}/invoices/${id}/payment-link`, {}),
+
+  // public, no-auth (token is the secret)
+  getPublicInvoice: (token: string) =>
+    apiClient.get<import('../types/crm.types').CrmInvoicePublicDto>(`/v1/public/pay/${token}`),
+  payPublicInvoice: (token: string, reference?: string) =>
+    apiClient.post<boolean>(`/v1/public/pay/${token}`, { reference }),
+
+  // ─── CPQ Price Books ──────────────────────────────────────────────────────
+  getPriceBooks: () =>
+    apiClient.get<import('../types/crm.types').CrmPriceBookDto[]>(`${BASE}/price-books`),
+  getPriceBookById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmPriceBookDetailDto>(`${BASE}/price-books/${id}`),
+  createPriceBook: (data: import('../types/crm.types').CrmPriceBookCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmPriceBookDto>(`${BASE}/price-books`, data),
+  updatePriceBook: (id: string, data: Partial<import('../types/crm.types').CrmPriceBookDto>) =>
+    apiClient.put<import('../types/crm.types').CrmPriceBookDto>(`${BASE}/price-books/${id}`, data),
+  deletePriceBook: (id: string) =>
+    apiClient.delete(`${BASE}/price-books/${id}`),
+  addPriceBookEntry: (id: string, data: import('../types/crm.types').CrmPriceBookEntryRequest) =>
+    apiClient.post<import('../types/crm.types').CrmPriceBookEntryDto>(`${BASE}/price-books/${id}/entries`, data),
+  updatePriceBookEntry: (entryId: string, data: import('../types/crm.types').CrmPriceBookEntryRequest) =>
+    apiClient.put<import('../types/crm.types').CrmPriceBookEntryDto>(`${BASE}/price-books/entries/${entryId}`, data),
+  deletePriceBookEntry: (entryId: string) =>
+    apiClient.delete(`${BASE}/price-books/entries/${entryId}`),
+
+  // ─── Renewals ─────────────────────────────────────────────────────────────
+  getRenewals: (filter: import('../types/crm.types').CrmRenewalFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmRenewalListItemDto>>(`${BASE}/renewals`, { params: filter }),
+  initiateRenewalOutreach: (id: string) =>
+    apiClient.post(`${BASE}/renewals/${id}/initiate-outreach`, {}),
+  recordRenewalOutcome: (id: string, data: import('../types/crm.types').CrmRenewalOutcomeRequest) =>
+    apiClient.post(`${BASE}/renewals/${id}/outcome`, data),
+  evaluateRenewals: () =>
+    apiClient.post<number>(`${BASE}/renewals/evaluate-all`, {}),
 
   // ─── Deduplication ──────────────────────────────────────────────────────────
   getDedupPending: () =>

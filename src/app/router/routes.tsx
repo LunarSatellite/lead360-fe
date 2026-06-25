@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { DashboardLayout } from '@/app/layouts/DashboardLayout';
 import { RequireAuth, RedirectIfAuth } from './guards';
+import { RouteErrorBoundary } from '@/shared/ui/RouteErrorBoundary';
 
 export const router = createBrowserRouter([
   // ─── Landing — logged in users skip to dashboard ───
@@ -52,6 +53,12 @@ export const router = createBrowserRouter([
     lazy: () => import('@/features/crm/pages/PublicSchedulePage'),
   },
 
+  // ─── Public pay-online page — no auth ───
+  {
+    path: '/pay/:token',
+    lazy: () => import('@/features/crm/pages/PublicPayPage'),
+  },
+
   // ─── Public booking pages — no auth ───
   {
     path: '/book/:slug',
@@ -81,6 +88,7 @@ export const router = createBrowserRouter([
         <DashboardLayout />
       </RequireAuth>
     ),
+    errorElement: <RouteErrorBoundary />,
     children: [
       // ── Chat-first primary surfaces (new) ──
       { path: 'chat', lazy: () => import('@/features/chat/pages/ChatPage') },
@@ -138,6 +146,9 @@ export const router = createBrowserRouter([
       { path: 'crm/proposals', lazy: () => import('@/features/crm/pages/CrmProposalsPage') },
       { path: 'crm/invoices', lazy: () => import('@/features/crm/pages/CrmInvoicesPage') },
       { path: 'crm/subscriptions', lazy: () => import('@/features/crm/pages/CrmSubscriptionsPage') },
+      { path: 'crm/renewals', lazy: () => import('@/features/crm/pages/RenewalsPage') },
+      { path: 'crm/price-books', lazy: () => import('@/features/crm/pages/PriceBooksPage') },
+      { path: 'crm/contracts', lazy: () => import('@/features/crm/pages/ContractsPage') },
       { path: 'crm/orders', lazy: () => import('@/features/crm/pages/CrmOrdersPage') },
       { path: 'crm/meetings', lazy: () => import('@/features/crm/pages/CrmMeetingsPage') },
       { path: 'crm/workflows', lazy: () => import('@/features/crm/pages/CrmWorkflowsPage') },

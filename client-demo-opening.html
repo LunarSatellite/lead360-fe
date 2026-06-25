@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lead360 × Katmandu Coffee — B2B CRM</title>
+<style>
+  :root{
+    --bg:#0A0F0D; --shell:#0D1410; --card:#111916; --elevated:#162019;
+    --g1:#182420; --g2:#1E2E26; --g3:#253D32;
+    --b-subtle:#1E2E26; --b-medium:#253D32; --b-glow:rgba(0,255,136,0.22);
+    --gold:#FFD84D; --gold-dim:#BFA200; --olive:#665C1A;
+    --brand:#00D97E; --brand-light:#00FF94; --brand-dark:#00B368;
+    --rose:#fb7185; --amber:#fbbf24; --blue:#60a5fa; --emerald:#34d399;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--gold);font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased}
+  .orb{position:fixed;border-radius:50%;filter:blur(120px);opacity:.5;pointer-events:none;z-index:0}
+  .orb.a{width:520px;height:520px;background:radial-gradient(circle,#00B368,transparent 70%);top:-160px;right:-120px}
+  .orb.b{width:600px;height:600px;background:radial-gradient(circle,#3b1d6e,transparent 70%);bottom:-220px;left:-160px;opacity:.35}
+  .orb.c{width:380px;height:380px;background:radial-gradient(circle,#00FFAA,transparent 70%);top:40%;left:45%;opacity:.12}
+
+  .deck{position:relative;z-index:1;height:100vh;width:100vw;display:flex;align-items:center;justify-content:center}
+  .slide{display:none;width:min(1140px,94vw);max-height:90vh;overflow:auto;padding:42px 52px;background:linear-gradient(180deg,rgba(17,25,22,.8),rgba(13,20,16,.9));border:.5px solid var(--b-subtle);border-radius:20px;backdrop-filter:blur(8px);animation:fade .5s ease}
+  .slide.active{display:block}
+  .slide::-webkit-scrollbar{width:6px}.slide::-webkit-scrollbar-thumb{background:var(--g3);border-radius:3px}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .kicker{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--brand);margin-bottom:14px;font-weight:600;display:flex;align-items:center;gap:10px}
+  .kicker::before{content:"";width:24px;height:.5px;background:var(--brand)}
+  h1{font-size:clamp(30px,4.6vw,56px);font-weight:900;line-height:1.05;letter-spacing:-.02em;color:var(--gold)}
+  h2{font-size:clamp(23px,3vw,36px);font-weight:900;line-height:1.1;letter-spacing:-.015em;margin-bottom:4px}
+  .lead{font-size:clamp(15px,1.55vw,19px);color:var(--gold-dim);font-weight:500;line-height:1.5;margin-top:14px;max-width:54ch}
+  .accent{background:linear-gradient(135deg,#00FFAA,#00B368);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+  .grid{display:grid;gap:13px;margin-top:22px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--g1);border:.5px solid var(--b-subtle);border-radius:13px;padding:15px 17px;transition:.2s}
+  .card:hover{background:var(--g2);border-color:var(--b-medium)}
+  .card .t{font-weight:800;font-size:14.5px;color:var(--brand-light);margin-bottom:5px}
+  .card .d{font-size:13px;color:var(--gold-dim);line-height:1.42;font-weight:500}
+  .card .biz{font-size:12.5px;color:var(--gold);line-height:1.42;font-weight:600;margin-top:7px;padding-top:7px;border-top:.5px solid var(--b-subtle)}
+  .card .biz::before{content:"→ ";color:var(--brand);font-weight:800}
+
+  .statband{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:24px}
+  .stat{background:var(--g1);border:.5px solid var(--b-subtle);border-radius:13px;padding:18px;text-align:center}
+  .stat .n{font-size:clamp(30px,4vw,46px);font-weight:900;color:var(--brand-light);line-height:1;letter-spacing:-.02em}
+  .stat .l{font-size:12px;color:var(--olive);margin-top:8px;font-weight:600;line-height:1.3}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .chip{background:var(--g1);border:.5px solid var(--b-medium);border-radius:7px;padding:7px 12px;font-size:12.5px;font-weight:700;color:var(--gold);white-space:nowrap}
+  .chip.hot{background:rgba(0,217,126,.1);border-color:var(--b-glow);color:var(--brand-light)}
+  .arrow-row{display:flex;flex-wrap:wrap;gap:7px;margin-top:22px;align-items:center}
+  .pill{background:var(--g1);border:.5px solid var(--b-medium);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;color:var(--gold);white-space:nowrap}
+  .pill.hot{background:rgba(0,217,126,.1);border-color:var(--b-glow);color:var(--brand-light)}
+  .chev{color:var(--olive);font-weight:900}
+
+  ul.flow{list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:8px}
+  ul.flow li{display:flex;align-items:center;gap:13px;font-size:15px;color:var(--gold-dim);font-weight:500}
+  ul.flow .step{flex:0 0 auto;width:27px;height:27px;border-radius:8px;background:rgba(0,217,126,.1);border:.5px solid var(--b-glow);color:var(--brand-light);font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace}
+  ul.flow b{color:var(--gold)}
+
+  table.cmp{width:100%;border-collapse:collapse;margin-top:22px;font-size:13.5px}
+  table.cmp th,table.cmp td{padding:11px 14px;text-align:left;border-bottom:.5px solid var(--b-subtle)}
+  table.cmp th{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--olive);font-weight:700}
+  table.cmp td:first-child{color:var(--gold);font-weight:700}
+  table.cmp .yes{color:var(--brand-light);font-weight:800}
+  table.cmp .no{color:var(--olive)}
+  table.cmp .col-l360{background:rgba(0,217,126,.06)}
+
+  .cta{display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:linear-gradient(135deg,#00FFAA,#00B368);color:#06120c;font-weight:800;font-size:17px;padding:14px 26px;border-radius:10px}
+  .footnote{margin-top:16px;font-size:12px;color:var(--olive);font-weight:500;font-family:'JetBrains Mono',monospace}
+
+  .brand-tag{position:fixed;top:20px;left:26px;z-index:3;display:flex;align-items:center;gap:10px}
+  .logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#00FFAA,#00B368);display:flex;align-items:center;justify-content:center;font-weight:900;color:#06120c;font-size:15px}
+  .brand-tag span{font-weight:800;letter-spacing:-.01em;font-size:14.5px;color:var(--gold)}
+  .brand-tag em{color:var(--olive);font-style:normal;font-weight:500;font-size:11.5px;font-family:'JetBrains Mono',monospace}
+
+  .nav{position:fixed;bottom:18px;right:26px;z-index:3;display:flex;align-items:center;gap:8px}
+  .nav button{background:var(--g1);border:.5px solid var(--b-medium);color:var(--gold);width:37px;height:37px;border-radius:9px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:.15s}
+  .nav button:hover{background:var(--g2);border-color:var(--b-glow);color:var(--brand-light)}
+  .counter{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--olive);margin-right:6px;min-width:48px;text-align:center}
+  .progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#00FFAA,#00B368);z-index:4;transition:width .4s ease}
+  .hint{position:fixed;bottom:22px;left:26px;z-index:3;font-size:12px;color:var(--olive);font-family:'JetBrains Mono',monospace}
+  .svgc{stroke:#00FF94;stroke-width:2.4;fill:none}
+</style>
+</head>
+<body>
+  <div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
+  <div class="progress" id="bar"></div>
+
+  <div class="brand-tag">
+    <div class="logo">L</div>
+    <div><span>Lead360</span> &nbsp;<em>B2B CRM for Katmandu Coffee</em></div>
+  </div>
+
+  <div class="deck" id="deck">
+
+    <!-- 1 — TITLE -->
+    <section class="slide active">
+      <div class="kicker">Proposed for Katmandu Coffee · Wholesale &amp; Trade</div>
+      <h1>The operating system for<br>Katmandu Coffee's <span class="accent">entire B2B business.</span></h1>
+      <p class="lead">Not a contact list. A complete platform that captures every wholesale lead, runs every deal, gets you paid, keeps every café reordering — and puts an AI on watch over all of it. Everything here is live, shipped, and we'll prove it in the demo.</p>
+      <div class="footnote">A walkthrough for Katmandu Coffee leadership &amp; trade-sales team</div>
+    </section>
+
+    <!-- 2 — YOUR B2B REALITY -->
+    <section class="slide">
+      <div class="kicker">Your B2B reality</div>
+      <h2>Roasting is the craft. <span class="accent">Wholesale is the business.</span></h2>
+      <p class="lead">Your growth isn't in walk-in cups — it's in supplying cafés, hotels, restaurants and offices, month after month. Today that engine runs on spreadsheets, WhatsApp threads and memory. Three things quietly bleed money:</p>
+      <div class="grid g3">
+        <div class="card"><div class="t">Leads fall through</div><div class="d">An enquiry on Instagram, a hotel that called, a café that asked for a sample — captured nowhere, followed up never.</div></div>
+        <div class="card"><div class="t">Reorders go cold</div><div class="d">A café that ordered every 3 weeks goes silent. Nobody notices until they've moved to another roaster.</div></div>
+        <div class="card"><div class="t">No one can see the whole</div><div class="d">Who owes you money? Which accounts are growing? What's the pipeline worth? Nobody can answer in under a day.</div></div>
+      </div>
+    </section>
+
+    <!-- 3 — THE COST -->
+    <section class="slide">
+      <div class="kicker">What it's costing you</div>
+      <h2>A lost café isn't one sale. It's <span class="accent">every bag they'd ever buy.</span></h2>
+      <div class="statband">
+        <div class="stat"><div class="n">#1</div><div class="l">churn cause: no follow-up in time</div></div>
+        <div class="stat"><div class="n">~3 wk</div><div class="l">reorder cycle, invisible without tracking</div></div>
+        <div class="stat"><div class="n">5+</div><div class="l">disconnected places your data lives now</div></div>
+        <div class="stat"><div class="n">0</div><div class="l">live view of revenue at risk today</div></div>
+      </div>
+      <p class="lead">Every leak on this slide becomes visible — and actionable — the moment you run on Lead360.</p>
+    </section>
+
+    <!-- 4 — WHAT LEAD360 IS (SCALE) -->
+    <section class="slide">
+      <div class="kicker">What Lead360 actually is</div>
+      <h2>A full B2B CRM, an AI engine, and a messaging platform — <span class="accent">in one.</span></h2>
+      <div class="statband">
+        <div class="stat"><div class="n">35</div><div class="l">CRM screens — lead to cash, all shipped</div></div>
+        <div class="stat"><div class="n">9</div><div class="l">live channels incl. WhatsApp &amp; Voice</div></div>
+        <div class="stat"><div class="n">50+</div><div class="l">AI capabilities woven through every stage</div></div>
+        <div class="stat"><div class="n">100%</div><div class="l">multi-tenant, audited &amp; access-controlled</div></div>
+      </div>
+      <p class="lead">Most vendors give you one of these and bolt the rest on. Lead360 is a single platform where the AI, the channels and the CRM share the same data — so nothing is ever out of sync.</p>
+      <p class="footnote">No stubs — every capability shown maps to real code, verified against the backend.</p>
+    </section>
+
+    <!-- 5 — THE JOURNEY -->
+    <section class="slide">
+      <div class="kicker">How it models your business</div>
+      <h2>One unbroken path: <span class="accent">enquiry → paid → reorder forever.</span></h2>
+      <p class="lead">A café DMs you on Instagram, a hotel asks for a quote, an office wants a machine — every one follows the same trail, with full history attached and nothing re-keyed.</p>
+      <div class="arrow-row">
+        <span class="pill">Lead (any channel)</span><span class="chev">›</span>
+        <span class="pill">Qualify</span><span class="chev">›</span>
+        <span class="pill">Contact &amp; Account</span><span class="chev">›</span>
+        <span class="pill hot">Deal + gates</span><span class="chev">›</span>
+        <span class="pill">Quote / Proposal</span><span class="chev">›</span>
+        <span class="pill hot">Won</span><span class="chev">›</span>
+        <span class="pill">Invoice → Paid</span><span class="chev">›</span>
+        <span class="pill hot">Subscription</span><span class="chev">›</span>
+        <span class="pill">Renewal &amp; upsell</span>
+      </div>
+      <p class="footnote">The next 9 slides walk this path and show the real feature behind every step.</p>
+    </section>
+
+    <!-- 6 — CAPTURE & QUALIFY -->
+    <section class="slide">
+      <div class="kicker">Stage 1 — Capture &amp; qualify</div>
+      <h2>Every enquiry caught, scored and ranked automatically.</h2>
+      <div class="grid g2">
+        <div class="card"><div class="t">Omnichannel ingestion + identity resolution</div><div class="d">Messages from WhatsApp, Instagram, Messenger, email, web chat &amp; calls land in one inbox; the same café across two channels is merged into one contact.</div><div class="biz">A hotel that DMs and later emails is one record, not two.</div></div>
+        <div class="card"><div class="t">AI lead scoring — explainable</div><div class="d">Every lead gets a score with the <i>top factors and evidence quotes behind it</i> — not a black box.</div><div class="biz">Your rep calls the café most likely to buy first, not alphabetically.</div></div>
+        <div class="card"><div class="t">AI lead qualification</div><div class="d">Evaluates each enquiry against <i>your</i> criteria (volume, location, type) → qualified / needs-info, with reasoning.</div><div class="biz">A 200-cover hotel jumps the queue; a one-off home buyer is gently deflected.</div></div>
+        <div class="card"><div class="t">Lead funnel &amp; channel analytics</div><div class="d">See where leads come from and where they stall.</div><div class="biz">Know if Instagram or referrals bring your best wholesale accounts.</div></div>
+      </div>
+    </section>
+
+    <!-- 7 — FOUNDATION -->
+    <section class="slide">
+      <div class="kicker">Stage 2 — Structure the relationship</div>
+      <h2>Who you sell to, modelled the way B2B really works.</h2>
+      <div class="grid g3">
+        <div class="card"><div class="t">Organizations</div><div class="d">Company records — industry, size, location, domain.</div><div class="biz">Each café group, hotel chain &amp; office as one entity.</div></div>
+        <div class="card"><div class="t">Contacts + AI summary</div><div class="d">People, titles, timelines; a 5-second AI catch-up per contact.</div><div class="biz">Owner, F&amp;B manager, head barista — all tracked.</div></div>
+        <div class="card"><div class="t">Accounts + buyer roles</div><div class="d">Status, tier, value; contacts tagged Economic Buyer / Champion / User.</div><div class="biz">Know who signs vs. who pours before every renewal.</div></div>
+        <div class="card"><div class="t">Account hierarchy</div><div class="d">Parent–subsidiary relationships mapped.</div><div class="biz">One hotel group, ten properties, one rolled-up view.</div></div>
+        <div class="card"><div class="t">Smart deduplication</div><div class="d">Fuzzy-match &amp; merge duplicate contacts.</div><div class="biz">Keep the customer list clean as it grows.</div></div>
+        <div class="card"><div class="t">Custom fields</div><div class="d">Add coffee-specific data to any record.</div><div class="biz">Track "roast preference" or "grinder model" per café.</div></div>
+      </div>
+    </section>
+
+    <!-- 8 — SALES ENGINE -->
+    <section class="slide">
+      <div class="kicker">Stage 3 — Run the deal your way</div>
+      <h2>A pipeline that enforces your standards, not just stores them.</h2>
+      <div class="grid g3">
+        <div class="card"><div class="t">Pipelines &amp; stage gates</div><div class="d">Custom stages; gates (ManualCheck, RequiredField) block progress until conditions pass.</div><div class="biz">No deal reaches "Won" until the sample tasting is approved.</div></div>
+        <div class="card"><div class="t">Deals — Kanban &amp; List</div><div class="d">Drag across stages; value, owner, close date at a glance.</div><div class="biz">Your whole wholesale pipeline on one board, Monday morning.</div></div>
+        <div class="card"><div class="t">Deal strategy</div><div class="d">Champion, Win Plan, Next Steps on every deal.</div><div class="biz">"Win plan: free sample + machine lease. Next: book tasting."</div></div>
+        <div class="card"><div class="t">Activity timeline + auto-logging</div><div class="d">Calls, notes, meetings; AI logs activity it detects in conversations.</div><div class="biz">Every visit &amp; tasting on the deal — even if the rep forgets.</div></div>
+        <div class="card"><div class="t">Task auto-creation</div><div class="d">"Customer wants delivery in Q1" → a dated follow-up task appears.</div><div class="biz">Promises to cafés never slip through the cracks.</div></div>
+        <div class="card"><div class="t">Pipeline-stage AI</div><div class="d">Suggests the next stage from conversation signals; you approve.</div><div class="biz">The system nudges stalled deals forward.</div></div>
+      </div>
+    </section>
+
+    <!-- 9 — AI SELLING LAYER -->
+    <section class="slide">
+      <div class="kicker">Stage 4 — The AI that sells with you</div>
+      <h2>Your best salesperson's instinct — on <span class="accent">every</span> deal.</h2>
+      <div class="grid g2">
+        <div class="card"><div class="t">Deal health scoring</div><div class="d">Risk level, what's stalling it, the next action — with the evidence behind it.</div><div class="biz">The supply deal going quiet is flagged before you lose it.</div></div>
+        <div class="card"><div class="t">AI forecasting (deal-by-deal)</div><div class="d">Close probability &amp; predicted value per deal, aggregated with a confidence range — not crude stage guesses.</div><div class="biz">A forecast you can actually take to the board.</div></div>
+        <div class="card"><div class="t">Win-loss analysis</div><div class="d">Every closed deal auto-analysed: why won/lost, objections, competitors — aggregated weekly.</div><div class="biz">Learn exactly why cafés choose you — or a rival roaster.</div></div>
+        <div class="card"><div class="t">Negotiation engine</div><div class="d">Customer asks for a discount → AI counters within your policy or escalates; every concession logged.</div><div class="biz">Protect your margin even when a junior rep is negotiating.</div></div>
+      </div>
+    </section>
+
+    <!-- 10 — CLOSING & CASH -->
+    <section class="slide">
+      <div class="kicker">Stage 5 — Quote to cash</div>
+      <h2>From handshake to money in the bank — one flow.</h2>
+      <div class="grid g3">
+        <div class="card"><div class="t">Quotes</div><div class="d">Line items, auto-totals, multi-currency; Draft → Sent → Accepted.</div><div class="biz">Beans + machine on one quote, sent in a minute.</div></div>
+        <div class="card"><div class="t">AI proposals</div><div class="d">Sectioned docs (summary, solution, pricing, terms); regenerate any section; approval-gated.</div><div class="biz">A branded wholesale partnership proposal for a hotel group.</div></div>
+        <div class="card"><div class="t">Invoices + dunning</div><div class="d">Generate from deal, send, record payment; auto-chase overdue invoices.</div><div class="biz">Stop being your own collections department.</div></div>
+        <div class="card"><div class="t">Subscriptions</div><div class="d">Recurring plans linked to a deal.</div><div class="biz">"10kg every 3 weeks" becomes predictable revenue.</div></div>
+        <div class="card"><div class="t">Orders</div><div class="d">Order creation &amp; fulfilment tracking from deals.</div><div class="biz">Every delivery to every café, tracked.</div></div>
+        <div class="card"><div class="t">Business catalog</div><div class="d">Your SKUs, blends &amp; equipment as a reusable catalog.</div><div class="biz">Consistent pricing across every quote.</div></div>
+      </div>
+    </section>
+
+    <!-- 11 — RETENTION & GROWTH -->
+    <section class="slide">
+      <div class="kicker">Stage 6 — Keep them &amp; grow them</div>
+      <h2>The part that makes wholesale <span class="accent">profitable for years.</span></h2>
+      <div class="grid g3">
+        <div class="card"><div class="t">Churn watcher</div><div class="d">Monitors every customer's engagement &amp; sentiment; 4 risk levels; auto-drafts an intervention.</div><div class="biz">"Café X hasn't reordered in 5 weeks — reach out now."</div></div>
+        <div class="card"><div class="t">Renewal management</div><div class="d">Risk-segments renewals; timed outreach; AI-drafted renewal pitch.</div><div class="biz">No annual supply contract ever lapses unnoticed.</div></div>
+        <div class="card"><div class="t">Upsell &amp; cross-sell detection</div><div class="d">Spots volume growth, capability gaps &amp; new use-cases; readiness score.</div><div class="biz">"This café could add a single-origin or a second location."</div></div>
+        <div class="card"><div class="t">Nurture sequences</div><div class="d">AI-drafted, adaptive sequences; enrolment &amp; conversion tracked.</div><div class="biz">Auto-warm cold café leads until they're ready to order.</div></div>
+        <div class="card"><div class="t">NPS &amp; CSAT-from-conversation</div><div class="d">Satisfaction inferred from conversation sentiment — no surveys needed.</div><div class="biz">Know which cafés love you before they leave.</div></div>
+        <div class="card"><div class="t">Referral tracking</div><div class="d">Who referred whom; revenue attributed to the source.</div><div class="biz">Reward the cafés that bring you new ones.</div></div>
+      </div>
+    </section>
+
+    <!-- 12 — THE INTELLIGENCE LAYER -->
+    <section class="slide">
+      <div class="kicker">The differentiator — intelligence on top of everything</div>
+      <h2>Lead360 doesn't just store your business. <span class="accent">It explains it to you.</span></h2>
+      <div class="grid g2">
+        <div class="card"><div class="t">Living Account Briefs</div><div class="d">A self-updating summary per account — stakeholders, relationship arc, risks, opportunities, recommended moves.</div><div class="biz">Open any café &amp; instantly know the whole story.</div></div>
+        <div class="card"><div class="t">Dashboard narration</div><div class="d">A Monday-morning written digest of the 3–5 things that actually mattered this week.</div><div class="biz">Leadership reads the story, not 20 charts.</div></div>
+        <div class="card"><div class="t">Natural-language BI</div><div class="d">Ask <i>"what's our win rate with hotels this quarter?"</i> and get a real answer.</div><div class="biz">No analyst needed to question your own data.</div></div>
+        <div class="card"><div class="t">Handoff notes &amp; narrative timeline</div><div class="d">AI writes a full context doc when accounts change hands.</div><div class="biz">A rep leaves; the next picks up the café seamlessly.</div></div>
+      </div>
+    </section>
+
+    <!-- 13 — OMNICHANNEL + BOT -->
+    <section class="slide">
+      <div class="kicker">Reach — meet customers where they are</div>
+      <h2>Nine channels and a bot that <span class="accent">takes orders at 2am.</span></h2>
+      <div class="chips">
+        <span class="chip hot">WhatsApp</span><span class="chip">Messenger</span><span class="chip">Instagram</span>
+        <span class="chip">Telegram</span><span class="chip">SMS</span><span class="chip hot">Voice</span>
+        <span class="chip">Email</span><span class="chip">Web Chat</span><span class="chip">Viber</span>
+      </div>
+      <div class="grid g3" style="margin-top:18px">
+        <div class="card"><div class="t">Visual flow builder</div><div class="d">Drag-and-drop bot designer — 6 node types, branching, live simulator.</div><div class="biz">Build a wholesale-reorder bot with no developers.</div></div>
+        <div class="card"><div class="t">Slot filling &amp; menu/chat modes</div><div class="d">Collects order details deterministically or via free AI chat.</div><div class="biz">"10kg house blend, Thursday delivery" — captured by bot.</div></div>
+        <div class="card"><div class="t">A/B experiments</div><div class="d">Test bot flows &amp; messages; measure what converts.</div><div class="biz">Find the reorder prompt cafés actually respond to.</div></div>
+      </div>
+      <p class="footnote">A café messages "reorder" on WhatsApp at midnight → the bot confirms it → a deal &amp; order appear in your CRM by morning.</p>
+    </section>
+
+    <!-- 14 — MARKETING / SERVICE / OPS -->
+    <section class="slide">
+      <div class="kicker">Around the deal — demand, service &amp; operations</div>
+      <h2>Everything else a real B2B operation needs.</h2>
+      <div class="grid g4">
+        <div class="card"><div class="t">Campaigns</div><div class="d">B2B, Leads &amp; Meta Ads; sent / open / reply + attributed ROI.</div><div class="biz">Email every hotel buyer about a new single-origin.</div></div>
+        <div class="card"><div class="t">Support cases</div><div class="d">Severity, threads, escalate, resolve + SLA &amp; escalation prediction.</div><div class="biz">"Grinder issue at Café Y" tracked to resolution.</div></div>
+        <div class="card"><div class="t">Meetings &amp; booking</div><div class="d">Proposed slots, public self-booking pages.</div><div class="biz">Cafés book a tasting or barista-school slot themselves.</div></div>
+        <div class="card"><div class="t">Workflows &amp; approvals</div><div class="d">Trigger automations; route approvals for gates &amp; high-value deals.</div><div class="biz">Auto-task a rep when a deal stalls 7 days.</div></div>
+        <div class="card"><div class="t">Tasks &amp; time tracking</div><div class="d">Prioritised tasks; billable time against accounts.</div><div class="biz">Track effort spent winning a big hotel account.</div></div>
+        <div class="card"><div class="t">Analytics</div><div class="d">Revenue forecast, deal velocity, pipeline, signals, funnel.</div><div class="biz">The whole wholesale business in one dashboard.</div></div>
+        <div class="card"><div class="t">Event ingestion</div><div class="d">Webhooks capture activity from your other systems.</div><div class="biz">Website &amp; POS events flow into the CRM.</div></div>
+        <div class="card"><div class="t">Announcements &amp; KB</div><div class="d">Internal comms; self-writing knowledge base.</div><div class="biz">Onboard new trade reps fast.</div></div>
+      </div>
+    </section>
+
+    <!-- 15 — ENTERPRISE / TRUST -->
+    <section class="slide">
+      <div class="kicker">Built to be trusted</div>
+      <h2>Enterprise-grade, and the AI never acts <span class="accent">behind your back.</span></h2>
+      <div class="grid g3">
+        <div class="card"><div class="t">Human-in-the-loop autonomy</div><div class="d">Confidence-tiered: AI acts only when sure, else routes to an approval queue.</div><div class="biz">AI drafts; your team approves before anything reaches a customer.</div></div>
+        <div class="card"><div class="t">Full audit trail + AI action log</div><div class="d">Every change &amp; every AI decision logged with reasoning &amp; who did it.</div><div class="biz">Total accountability across your team.</div></div>
+        <div class="card"><div class="t">Roles &amp; permissions</div><div class="d">Granular RBAC; access anomaly detection.</div><div class="biz">Reps see their accounts; leadership sees everything.</div></div>
+        <div class="card"><div class="t">Multi-tenant &amp; secure</div><div class="d">Your data fully isolated; encryption &amp; soft-delete (recoverable, GDPR-safe).</div><div class="biz">Your customer list is yours alone — and never truly lost.</div></div>
+        <div class="card"><div class="t">Resilient AI (3-tier fallback)</div><div class="d">If one AI provider fails, two more take over; cached scores stay live.</div><div class="biz">The system keeps working even when a model is down.</div></div>
+        <div class="card"><div class="t">Undo / redo + cost controls</div><div class="d">Reverse AI actions; per-feature AI cost visibility &amp; caps.</div><div class="biz">You're always in control — of decisions and of spend.</div></div>
+      </div>
+    </section>
+
+    <!-- 16 — WHY LEAD360 (POSITIONING) -->
+    <section class="slide">
+      <div class="kicker">Why Lead360 — and not the alternatives</div>
+      <h2>The honest comparison for a wholesale coffee business.</h2>
+      <table class="cmp">
+        <tr><th>What you need</th><th>Spreadsheets / WhatsApp</th><th>Generic CRM</th><th class="col-l360">Lead360</th></tr>
+        <tr><td>Full lead-to-cash flow</td><td class="no">Manual, fragmented</td><td class="no">Sales only — add-ons for the rest</td><td class="col-l360 yes">Built in, end to end</td></tr>
+        <tr><td>AI that watches accounts</td><td class="no">None</td><td class="no">Generic, bolted on</td><td class="col-l360 yes">Native, 50+ capabilities</td></tr>
+        <tr><td>WhatsApp / Instagram orders</td><td class="no">In someone's phone</td><td class="no">Not a channel</td><td class="col-l360 yes">9 channels + reorder bot</td></tr>
+        <tr><td>Recurring / subscription revenue</td><td class="no">Tracked in your head</td><td class="no">Often a separate tool</td><td class="col-l360 yes">First-class feature</td></tr>
+        <tr><td>Fits a coffee wholesaler</td><td class="no">You bend to it</td><td class="no">Built for software sales</td><td class="col-l360 yes">Configured to your trade</td></tr>
+        <tr><td>Setup &amp; support in Nepal</td><td class="no">—</td><td class="no">Remote, generic</td><td class="col-l360 yes">Local, hands-on pilot</td></tr>
+      </table>
+    </section>
+
+    <!-- 17 — OUTCOMES -->
+    <section class="slide">
+      <div class="kicker">What it means for Katmandu Coffee</div>
+      <h2>More accounts. More reorders. <span class="accent">More cups.</span></h2>
+      <div class="grid g3" style="margin-top:26px">
+        <div class="card"><div class="t">Win more leads</div><div class="d">Every enquiry caught, scored &amp; followed up — across all channels.</div></div>
+        <div class="card"><div class="t">Keep more accounts</div><div class="d">Churn watcher &amp; renewals protect the revenue you already won.</div></div>
+        <div class="card"><div class="t">Grow each account</div><div class="d">Upsell signals turn a small café into a multi-blend partner.</div></div>
+        <div class="card"><div class="t">Close faster, get paid sooner</div><div class="d">Quote → order → invoice → payment in one flow, with auto-dunning.</div></div>
+        <div class="card"><div class="t">See everything</div><div class="d">A forecast &amp; a written weekly story for leadership.</div></div>
+        <div class="card"><div class="t">Run lean</div><div class="d">AI does the admin so your small team sells like a big one.</div></div>
+      </div>
+    </section>
+
+    <!-- 18 — LIVE DEMO -->
+    <section class="slide">
+      <div class="kicker">Let's see it live</div>
+      <h1>Let's win a wholesale café —<br><span class="accent">live, right now.</span></h1>
+      <p class="lead">We'll take a new café from first contact to a paid, recurring order — touching the real features you just saw.</p>
+      <ul class="flow">
+        <li><span class="step">1</span><div>Capture &amp; qualify the lead → create the <b>account</b> with buyer roles</div></li>
+        <li><span class="step">2</span><div>Run a <b>deal</b> through the pipeline with <b>stage gates</b>, <b>timeline</b> &amp; <b>AI deal health</b></div></li>
+        <li><span class="step">3</span><div>Read the <b>AI account brief</b>, send a <b>quote</b>, close it <b>Won</b></div></li>
+        <li><span class="step">4</span><div>Raise the <b>invoice</b>, record <b>payment</b>, set up the <b>subscription</b> &amp; show <b>analytics</b></div></li>
+      </ul>
+      <div class="cta">Start the live demo →</div>
+    </section>
+
+    <!-- 19 — NEXT STEPS -->
+    <section class="slide">
+      <div class="kicker">Next steps</div>
+      <h2>From demo to <span class="accent">your trade team selling in Lead360.</span></h2>
+      <p class="lead">A simple, low-risk path to get Katmandu Coffee's wholesale operation running — on your real accounts, not a sandbox.</p>
+      <div class="grid g3" style="margin-top:28px">
+        <div class="card"><div class="t">1 · Guided pilot</div><div class="d">We load your real cafés, hotels &amp; office accounts so you evaluate on live data.</div></div>
+        <div class="card"><div class="t">2 · Team onboarding</div><div class="d">Hands-on training for your trade-sales team — live in days, not months.</div></div>
+        <div class="card"><div class="t">3 · Go live</div><div class="d">Your full wholesale pipeline running in Lead360, with local support beside you.</div></div>
+      </div>
+      <div class="cta">Let's start the pilot →</div>
+    </section>
+
+  </div>
+
+  <div class="hint">← → or Space to navigate · F for fullscreen</div>
+  <div class="nav">
+    <span class="counter" id="counter">01 / 19</span>
+    <button id="prev" aria-label="Previous">‹</button>
+    <button id="next" aria-label="Next">›</button>
+  </div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let i=0;
+  const bar=document.getElementById('bar');
+  const counter=document.getElementById('counter');
+  const pad=n=>String(n).padStart(2,'0');
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    bar.style.width=((i+1)/slides.length*100)+'%';
+    counter.textContent=pad(i+1)+' / '+pad(slides.length);
+    slides[i].scrollTop=0;
+  }
+  document.getElementById('next').onclick=()=>show(i+1);
+  document.getElementById('prev').onclick=()=>show(i-1);
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight','PageDown'].includes(e.key)){e.preventDefault();show(i+1)}
+    else if(e.key===' '){e.preventDefault();show(i+1)}
+    else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(i-1)}
+    else if(e.key==='Home'){show(0)} else if(e.key==='End'){show(slides.length-1)}
+    else if(e.key.toLowerCase()==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+  });
+  show(0);
+</script>
+</body>
+</html>

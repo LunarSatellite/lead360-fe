@@ -3,11 +3,14 @@ import { RouterProvider } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { queryClient } from '@/shared/config/query-client';
 import { router } from '@/app/router/routes';
+import { ErrorBoundary } from '@/shared/ui/ErrorBoundary';
 
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <ErrorBoundary label="app">
+        <RouterProvider router={router} />
+      </ErrorBoundary>
       <Toaster
         position="top-right"
         theme="dark"

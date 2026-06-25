@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Plus, X, Loader2, Receipt, DollarSign, Send } from 'lucide-react';
+import { Plus, X, Loader2, Receipt, DollarSign, Send, Link2 } from 'lucide-react';
 import { format, parseISO, isPast } from 'date-fns';
+import { toast } from 'sonner';
 import {
   useInvoices, useGenerateInvoiceFromDeal, useRecordPayment,
-  useDisputeInvoice, useSendInvoice, useVoidInvoice,
+  useDisputeInvoice, useSendInvoice, useVoidInvoice, useGenerateInvoicePaymentLink,
 } from '../api/crm.queries';
 import type {
   CrmInvoiceSummaryDto, CrmInvoiceFilter, CrmRecordPaymentRequest,
@@ -79,6 +80,7 @@ export function Component() {
   const disputeInvoice = useDisputeInvoice();
   const sendInvoice = useSendInvoice();
   const voidInvoice = useVoidInvoice();
+  const genPayLink = useGenerateInvoicePaymentLink();
 
   function handleGenerate() {
     if (!genDealId.trim()) return;
@@ -211,6 +213,22 @@ export function Component() {
               <button onClick={() => { sendInvoice.mutate(selected.id); setSelected(null); }} disabled={sendInvoice.isPending}
                 className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
                 {sendInvoice.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Send Invoice
+              </button>
+            )}
+
+            {/* Payment link — share a pay-online URL with the customer */}
+            {selected.status !== CrmInvoiceStatus.Paid && selected.status !== CrmInvoiceStatus.Void && (
+              <button
+                onClick={() => genPayLink.mutate(selected.id, {
+                  onSuccess: (tk) => {
+                    const url = `${window.location.origin}/pay/${tk}`;
+                    navigator.clipboard?.writeText(url).catch(() => {});
+                    toast.success('Payment link copied to clipboard');
+                  },
+                })}
+                disabled={genPayLink.isPending}
+                className="flex items-center justify-center gap-2 w-full py-2 rounded-xl border border-border-medium text-text-secondary bg-bg-elevated hover:bg-bg-card hover:text-text-primary disabled:opacity-60 transition-all text-sm font-bold">
+                {genPayLink.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />} Copy payment link
               </button>
             )}
 

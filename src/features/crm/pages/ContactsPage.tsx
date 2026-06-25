@@ -6,8 +6,11 @@ import {
 } from 'lucide-react';
 import {
   useContacts, useCreateContact, useDeleteContact, useImportContactsCsv,
+  useFindContactDuplicates,
 } from '../api/crm.queries';
 import { CsvToolbar } from '../components/CsvToolbar';
+import { DuplicateWarning } from '../components/DuplicateWarning';
+import { useDebounce } from '@/shared/hooks/useDebounce';
 import type {
   CrmContactFilter, CrmContactSummaryDto, CrmContactCreateRequest, PagedResult,
 } from '../types/crm.types';
@@ -198,8 +201,14 @@ function ContactCreateForm({
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // ── Real-time dedup check (debounced) ──
+  const debouncedEmail = useDebounce(form.email, 400);
+  const debouncedPhone = useDebounce(form.phone, 400);
+  const { data: dupes } = useFindContactDuplicates(debouncedEmail, debouncedPhone);
+  const matches = dupes ?? [];
+  const hasDupes = matches.length > 0;
+
+  const submit = (allowDuplicate: boolean) => {
     const req: CrmContactCreateRequest = {
       fullName: form.fullName,
       email: form.email || undefined,
@@ -207,8 +216,14 @@ function ContactCreateForm({
       jobTitle: form.jobTitle || undefined,
       linkedIn: form.linkedIn || undefined,
       notes: form.notes || undefined,
+      allowDuplicate,
     };
     onSave(req);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submit(false);
   };
 
   return (
@@ -276,13 +291,21 @@ function ContactCreateForm({
         />
       </div>
 
+      {hasDupes && (
+        <DuplicateWarning
+          matches={matches}
+          onCreateAnyway={() => submit(true)}
+          isSaving={isSaving}
+        />
+      )}
+
       <div className="flex gap-3 pt-2">
         <button
           type="submit"
-          disabled={isSaving || !form.fullName.trim()}
+          disabled={isSaving || !form.fullName.trim() || hasDupes}
           className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Create Contact'}
+          {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : hasDupes ? 'Review duplicates above' : 'Create Contact'}
         </button>
         <button
           type="button"

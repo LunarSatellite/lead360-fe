@@ -14,8 +14,10 @@ import {
   X,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead } from '../api/crm.queries';
+import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead, useFindContactDuplicates } from '../api/crm.queries';
 import { CsvToolbar } from '../components/CsvToolbar';
+import { DuplicateWarning } from '../components/DuplicateWarning';
+import { useDebounce } from '@/shared/hooks/useDebounce';
 import type {
   LeadSummaryDto,
   LeadStatsDto,
@@ -99,6 +101,16 @@ export function Component() {
   const [showCreate, setShowCreate]   = useState(false);
   const [form, setForm]               = useState<CreateManualLeadRequest>({ stage: LeadStage.New });
   const createLead                    = useCreateLead();
+
+  // Advisory dedup check while creating a lead (debounced). Non-blocking: leads can legitimately
+  // recur per channel, so we surface existing contacts/leads but don't prevent creation.
+  const dupEmail = useDebounce(form.customerEmail ?? '', 400);
+  const dupPhone = useDebounce(form.customerPhone ?? '', 400);
+  const { data: leadDupes } = useFindContactDuplicates(
+    showCreate ? dupEmail : undefined,
+    showCreate ? dupPhone : undefined,
+  );
+  const leadMatches = leadDupes ?? [];
 
   // Debounce search 300ms
   useEffect(() => {
@@ -234,6 +246,13 @@ export function Component() {
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                 />
               </div>
+              {leadMatches.length > 0 && (
+                <DuplicateWarning
+                  matches={leadMatches}
+                  onCreateAnyway={() => createLead.mutate(form, { onSuccess: () => setShowCreate(false) })}
+                  isSaving={createLead.isPending}
+                />
+              )}
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
               <button

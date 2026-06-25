@@ -44,6 +44,7 @@ const NO_REDIRECT_PATHS = [
   '/v1/compliance/profiles', // ★ list profiles (may be called without auth)
   '/v1/users/me/change-password', // ★ wrong current password returns 401 — show error, don't redirect
   '/v1/public/schedule', // ★ contact-facing scheduling page — no auth required
+  '/v1/public/pay',     // ★ customer-facing pay-online page — no auth required
   '/v1/book/',          // ★ public booking pages — no auth required
 ];
 

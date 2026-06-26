@@ -166,15 +166,16 @@ export function Component() {
 
       {/* Create Lead Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-          <div className="w-full max-w-md bg-bg-card border border-border-subtle rounded-2xl shadow-2xl flex flex-col">
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCreate(false)} />
+          <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
               <h2 className="text-sm font-bold text-text-primary">New Lead</h2>
               <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary">
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="px-6 py-5 space-y-4 overflow-y-auto">
+            <div className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Full Name</label>
                 <input

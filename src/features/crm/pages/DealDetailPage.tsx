@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { CrmDealAiSummaryDto } from '../types/crm.types';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, ClipboardList, Phone, Video, MessageSquare, Save, Users, Target, Sword, TrendingUp, GitBranch, Sparkles, RefreshCw, Building2, Pencil, X } from 'lucide-react';
+import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, ClipboardList, Package, Phone, Video, MessageSquare, Save, Users, Target, Sword, TrendingUp, GitBranch, Sparkles, RefreshCw, Building2, Pencil, X } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useDealById, useTimeline, useLogActivity, useDealStrategy, useUpdateDealStrategy, useMoveDealStage, useDealStages, useRefreshDealSummary, useUpdateDeal } from '../api/crm.queries';
 import type { CrmDealDetailDto, CrmDealUpdateRequest } from '../types/crm.types';
@@ -308,6 +308,12 @@ export function Component() {
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-elevated border border-border-subtle text-text-primary text-sm font-bold hover:bg-bg-card transition-all">
             <ClipboardList className="w-4 h-4" strokeWidth={1.5} /> Generate Proposal
           </button>
+          {deal.status === 2 && (
+            <button onClick={() => navigate(`${ROUTES.dashboard.crmOrders}?dealId=${id}&accountId=${deal.accountId ?? ''}`)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 transition-all">
+              <Package className="w-4 h-4" strokeWidth={1.5} /> Create Order
+            </button>
+          )}
         </div>
       </div>
 
@@ -406,9 +412,9 @@ export function Component() {
 
       {/* ── Edit Deal Slide-over ── */}
       {showEdit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex justify-end">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowEdit(false)} />
-          <div className="relative w-full max-w-md bg-bg-elevated shadow-2xl flex flex-col border border-border-subtle rounded-2xl max-h-[90vh]">
+          <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
               <h3 className="font-bold text-text-primary">Edit Deal</h3>
               <button onClick={() => setShowEdit(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors">

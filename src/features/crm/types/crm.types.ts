@@ -864,6 +864,7 @@ export interface CrmDealAiSummaryDto {
 export interface CrmDealCreateRequest {
   name: string;
   accountId?: string;
+  contactId?: string;
   stageId: string;
   dealType?: CrmDealType;
   pipelineId?: string;
@@ -1763,37 +1764,103 @@ export interface CrmSubscriptionFilter { search?: string; status?: CrmSubscripti
 // ─── Orders ───────────────────────────────────────────────────────────────────
 
 export const CrmOrderStatus = {
-  Pending: 1, Confirmed: 2, Processing: 3, Shipped: 4, Delivered: 5, Cancelled: 6,
+  Draft: 1, Confirmed: 2, Fulfilling: 3, Fulfilled: 4, Cancelled: 5, Refunded: 6,
 } as const;
 export type CrmOrderStatus = (typeof CrmOrderStatus)[keyof typeof CrmOrderStatus];
 export const CRM_ORDER_STATUS_LABELS: Record<CrmOrderStatus, string> = {
-  1: 'Pending', 2: 'Confirmed', 3: 'Processing', 4: 'Shipped', 5: 'Delivered', 6: 'Cancelled',
+  1: 'Draft', 2: 'Confirmed', 3: 'Fulfilling', 4: 'Fulfilled', 5: 'Cancelled', 6: 'Refunded',
 };
 export const CRM_ORDER_STATUS_COLORS: Record<CrmOrderStatus, string> = {
   1: 'text-text-secondary bg-bg-elevated border-border-subtle',
   2: 'text-brand bg-brand-soft border-border-glow',
   3: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
-  5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
-  6: 'text-text-muted bg-bg-card border-border-subtle',
+  4: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  5: 'text-text-muted bg-bg-card border-border-subtle',
+  6: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
 };
+
 export const CrmOrderFulfillmentStatus = {
-  Unfulfilled: 1, PartiallyFulfilled: 2, Fulfilled: 3, Returned: 4, Void: 5,
+  Pending: 1, InProgress: 2, Shipped: 3, OutForDelivery: 4, Delivered: 5, DeliveryFailed: 6, NotApplicable: 7,
 } as const;
 export type CrmOrderFulfillmentStatus = (typeof CrmOrderFulfillmentStatus)[keyof typeof CrmOrderFulfillmentStatus];
 export const CRM_ORDER_FULFILLMENT_LABELS: Record<CrmOrderFulfillmentStatus, string> = {
-  1: 'Unfulfilled', 2: 'Partially Fulfilled', 3: 'Fulfilled', 4: 'Returned', 5: 'Void',
+  1: 'Pending', 2: 'In Progress', 3: 'Shipped', 4: 'Out for Delivery', 5: 'Delivered', 6: 'Delivery Failed', 7: 'N/A',
 };
-export interface CrmOrderLineItemDto { id: string; productName: string; quantity: number; unitPrice: number; totalPrice: number; }
-export interface CrmOrderLineItemRequest { productName: string; quantity: number; unitPrice: number; }
+
+export const CrmOrderPaymentStatus = {
+  Unpaid: 1, PartiallyPaid: 2, Paid: 3, Refunded: 4,
+} as const;
+export type CrmOrderPaymentStatus = (typeof CrmOrderPaymentStatus)[keyof typeof CrmOrderPaymentStatus];
+export const CRM_ORDER_PAYMENT_LABELS: Record<CrmOrderPaymentStatus, string> = {
+  1: 'Unpaid', 2: 'Partially Paid', 3: 'Paid', 4: 'Refunded',
+};
+export const CRM_ORDER_PAYMENT_COLORS: Record<CrmOrderPaymentStatus, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  3: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+};
+
+export interface CrmOrderLineItemDto {
+  id: string; productId: string | null; productName: string; sku: string | null;
+  quantity: number; unitPrice: number; totalPrice: number; notes: string | null;
+}
+export interface CrmOrderLineItemRequest {
+  productId?: string; productName: string; sku?: string; quantity: number; unitPrice: number; notes?: string;
+}
+
 export interface CrmOrderSummaryDto {
   id: string; orderNumber: string; contactId: string; contactName: string | null;
   totalAmount: number; currency: string; status: CrmOrderStatus;
-  fulfillmentStatus: CrmOrderFulfillmentStatus; orderedAt: string; createdAt: string;
+  fulfillmentStatus: CrmOrderFulfillmentStatus; paymentStatus: CrmOrderPaymentStatus;
+  orderedAt: string; createdAt: string;
 }
-export interface CrmOrderDetailDto extends CrmOrderSummaryDto { lineItems: CrmOrderLineItemDto[]; notes: string | null; }
-export interface CrmOrderCreateRequest { contactId: string; lineItems: CrmOrderLineItemRequest[]; currency?: string; notes?: string; }
-export interface CrmOrderFilter { search?: string; status?: CrmOrderStatus; page?: number; pageSize?: number; }
+
+export interface CrmOrderDetailDto {
+  id: string; orderNumber: string; contactId: string; contactName: string | null;
+  status: CrmOrderStatus; fulfillmentStatus: CrmOrderFulfillmentStatus; paymentStatus: CrmOrderPaymentStatus;
+  orderDate: string; subtotal: number; taxAmount: number; discountAmount: number;
+  totalAmount: number; currency: string;
+  shippingAddressLine1: string | null; shippingAddressLine2: string | null;
+  shippingCity: string | null; shippingState: string | null;
+  shippingPostalCode: string | null; shippingCountry: string | null;
+  billingSameAsShipping: boolean;
+  billingAddressLine1: string | null; billingAddressLine2: string | null;
+  billingCity: string | null; billingState: string | null;
+  billingPostalCode: string | null; billingCountry: string | null;
+  paymentMethod: string | null; paidAt: string | null; paymentReference: string | null;
+  shippingMethod: string | null; carrier: string | null; trackingNumber: string | null;
+  requestedDeliveryDate: string | null; actualDeliveryDate: string | null; shippedAt: string | null;
+  erpOrderId: string | null; cancellationReason: string | null;
+  notes: string | null; lineItems: CrmOrderLineItemDto[]; createdAt: string;
+}
+
+export interface CrmOrderCreateRequest {
+  contactId: string; accountId?: string; dealId?: string; quoteId?: string;
+  currency: string;
+  shippingAddressLine1?: string; shippingAddressLine2?: string;
+  shippingCity?: string; shippingState?: string; shippingPostalCode?: string; shippingCountry?: string;
+  billingSameAsShipping?: boolean;
+  billingAddressLine1?: string; billingAddressLine2?: string;
+  billingCity?: string; billingState?: string; billingPostalCode?: string; billingCountry?: string;
+  shippingMethod?: string; carrier?: string; requestedDeliveryDate?: string; erpOrderId?: string;
+  notes?: string; lineItems: CrmOrderLineItemRequest[];
+}
+
+export interface CrmOrderUpdateRequest {
+  notes?: string; lineItems?: CrmOrderLineItemRequest[];
+  shippingAddressLine1?: string; shippingAddressLine2?: string;
+  shippingCity?: string; shippingState?: string; shippingPostalCode?: string; shippingCountry?: string;
+  carrier?: string; trackingNumber?: string; shippingMethod?: string;
+}
+
+export interface CrmOrderFilter {
+  search?: string; status?: CrmOrderStatus; fulfillmentStatus?: CrmOrderFulfillmentStatus;
+  paymentStatus?: CrmOrderPaymentStatus; contactId?: string; accountId?: string;
+  page?: number; pageSize?: number;
+}
+
+
 
 // ─── Meetings ─────────────────────────────────────────────────────────────────
 
@@ -2345,4 +2412,44 @@ export interface DealStrategyDto {
 export interface DealTimelineDto {
   dealId: string;
   events: ActivityEventDto[];
+}
+
+// ─── Delivery / Shipments ─────────────────────────────────────────────────────
+
+export const CrmDeliveryStatus = {
+  LabelCreated: 1, PickedUp: 2, InTransit: 3, OutForDelivery: 4, Delivered: 5, Failed: 6, Returned: 7,
+} as const;
+export type CrmDeliveryStatus = (typeof CrmDeliveryStatus)[keyof typeof CrmDeliveryStatus];
+export const CRM_DELIVERY_STATUS_LABELS: Record<CrmDeliveryStatus, string> = {
+  1: 'Label Created', 2: 'Picked Up', 3: 'In Transit', 4: 'Out for Delivery',
+  5: 'Delivered', 6: 'Failed', 7: 'Returned',
+};
+export const CRM_DELIVERY_STATUS_COLORS: Record<CrmDeliveryStatus, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  3: 'text-brand bg-brand-soft border-border-glow',
+  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  6: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  7: 'text-text-muted bg-bg-card border-border-subtle',
+};
+
+export interface CrmDeliveryDto {
+  id: string; orderId: string; shipmentNumber: string; status: CrmDeliveryStatus;
+  carrier: string | null; trackingNumber: string | null;
+  estimatedDeliveryDate: string | null; shippedAt: string | null;
+  outForDeliveryAt: string | null; deliveredAt: string | null;
+  recipientName: string | null; proofPhotoUrl: string | null;
+  signatureUrl: string | null; failureReason: string | null;
+  notes: string | null; createdAt: string;
+}
+
+export interface CrmCreateDeliveryRequest {
+  carrier?: string; trackingNumber?: string; estimatedDeliveryDate?: string;
+  recipientName?: string; notes?: string;
+}
+
+export interface CrmUpdateDeliveryStatusRequest {
+  status: CrmDeliveryStatus; carrier?: string; trackingNumber?: string;
+  recipientName?: string; proofPhotoUrl?: string; signatureUrl?: string; failureReason?: string;
 }

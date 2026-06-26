@@ -110,6 +110,7 @@ const CRM_KEYS = {
   subscriptionById: (id: string) => ['crm', 'subscriptions', id] as const,
   orders: () => ['crm', 'orders'] as const,
   orderById: (id: string) => ['crm', 'orders', id] as const,
+  deliveries: (orderId: string) => ['crm', 'orders', orderId, 'deliveries'] as const,
   meetings: () => ['crm', 'meetings'] as const,
   meetingById: (id: string) => ['crm', 'meetings', id] as const,
   callSummaries: () => ['crm', 'call-summaries'] as const,
@@ -120,6 +121,7 @@ const CRM_KEYS = {
   timeSummary: () => ['crm', 'time-entries', 'summary'] as const,
   comments: (kind: number, entityId: string) => ['crm', 'comments', kind, entityId] as const,
   workflows: () => ['crm', 'workflows'] as const,
+  workflowTriggerDefinitions: () => ['crm', 'workflows', 'trigger-definitions'] as const,
   workflowById: (id: string) => ['crm', 'workflows', id] as const,
   workflowExecutions: (id: string) => ['crm', 'workflows', id, 'executions'] as const,
   workflowCampaigns: () => ['crm', 'workflow-campaigns'] as const,
@@ -1686,6 +1688,14 @@ export function useCreateOrder() {
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
+export function useUpdateOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').CrmOrderUpdateRequest }) => crmApi.updateOrder(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Order updated.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
 export function useConfirmOrder() {
   const qc = useQueryClient();
   return useMutation({
@@ -1707,6 +1717,47 @@ export function useCancelOrder() {
   return useMutation({
     mutationFn: (id: string) => crmApi.cancelOrder(id),
     onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Order cancelled.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useRecordOrderPayment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { amount: number; paymentMethod?: string; paymentReference?: string } }) => crmApi.recordOrderPayment(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Payment recorded.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useUpdateOrderFulfillment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { status: number; carrier?: string; trackingNumber?: string; actualDeliveryDate?: string; failureReason?: string } }) => crmApi.updateOrderFulfillment(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Fulfillment updated.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Deliveries ──────────────────────────────────────────────────────────────
+export function useDeliveries(orderId: string | undefined) {
+  return useQuery({
+    queryKey: [...CRM_KEYS.deliveries(orderId ?? ''), 'deliveries'] as const,
+    queryFn: () => crmApi.getDeliveries(orderId!),
+    enabled: !!orderId,
+  });
+}
+export function useCreateDelivery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ orderId, data }: { orderId: string; data: import('../types/crm.types').CrmCreateDeliveryRequest }) => crmApi.createDelivery(orderId, data),
+    onSuccess: (_d, { orderId }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.deliveries(orderId) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(orderId) }); toast.success('Shipment created.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useUpdateDeliveryStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ deliveryId, data }: { deliveryId: string; data: import('../types/crm.types').CrmUpdateDeliveryStatusRequest }) => crmApi.updateDeliveryStatus(deliveryId, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'orders'] }); toast.success('Delivery status updated.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
@@ -1867,6 +1918,9 @@ export function useWorkflowById(id: string | undefined) {
 }
 export function useWorkflowExecutions(workflowId: string | undefined) {
   return useQuery({ queryKey: CRM_KEYS.workflowExecutions(workflowId ?? ''), queryFn: () => crmApi.getWorkflowExecutions(workflowId!), enabled: !!workflowId });
+}
+export function useWorkflowTriggerDefinitions() {
+  return useQuery({ queryKey: CRM_KEYS.workflowTriggerDefinitions(), queryFn: () => crmApi.getTriggerDefinitions(), staleTime: 5 * 60 * 1000 });
 }
 export function useCreateWorkflow() {
   const qc = useQueryClient();

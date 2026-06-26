@@ -392,6 +392,14 @@ export const crmApi = {
   getNurtureAnalytics: () =>
     apiClient.get<NurtureAnalyticsDto>(`${BASE}/analytics/nurture`),
 
+  // ─── Deliveries ──────────────────────────────────────────────────────────
+  getDeliveries: (orderId: string) =>
+    apiClient.get<import('../types/crm.types').CrmDeliveryDto[]>(`${BASE}/orders/${orderId}/deliveries`),
+  createDelivery: (orderId: string, data: import('../types/crm.types').CrmCreateDeliveryRequest) =>
+    apiClient.post<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/orders/${orderId}/deliveries`, data),
+  updateDeliveryStatus: (deliveryId: string, data: import('../types/crm.types').CrmUpdateDeliveryStatusRequest) =>
+    apiClient.patch<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/deliveries/${deliveryId}/status`, data),
+
   // ─── CRM Nurture (B2B contacts — Phase 3C) ────────────────────────────────
   enrollCrmContact: (contactId: string, sequenceId: string) =>
     apiClient.post(`${BASE}/nurture/enroll`, { contactId, sequenceId }),
@@ -549,17 +557,23 @@ export const crmApi = {
 
   // ─── Orders ───────────────────────────────────────────────────────────────
   getOrders: (filter: import('../types/crm.types').CrmOrderFilter = {}) =>
-    apiClient.get<PagedResult<import('../types/crm.types').CrmOrderSummaryDto>>(`${BASE}/orders`, { params: filter }),
+    apiClient.get<PagedResult<import('../types/crm.types').CrmOrderDetailDto>>(`${BASE}/orders`, { params: filter }),
   getOrderById: (id: string) =>
     apiClient.get<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}`),
   createOrder: (data: import('../types/crm.types').CrmOrderCreateRequest) =>
     apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders`, data),
+  updateOrder: (id: string, data: import('../types/crm.types').CrmOrderUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}`, data),
   confirmOrder: (id: string) =>
-    apiClient.post(`${BASE}/orders/${id}/confirm`, {}),
+    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}/confirm`, {}),
   fulfillOrder: (id: string) =>
-    apiClient.post(`${BASE}/orders/${id}/fulfill`, {}),
-  cancelOrder: (id: string) =>
-    apiClient.post(`${BASE}/orders/${id}/cancel`, {}),
+    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}/fulfill`, {}),
+  cancelOrder: (id: string, reason?: string) =>
+    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}/cancel`, {}, { params: { reason } }),
+  recordOrderPayment: (id: string, data: { amount: number; paymentMethod?: string; paymentReference?: string }) =>
+    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}/payment`, data),
+  updateOrderFulfillment: (id: string, data: { status: number; carrier?: string; trackingNumber?: string; actualDeliveryDate?: string; failureReason?: string }) =>
+    apiClient.patch<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}/fulfillment`, data),
 
   // ─── Meetings ─────────────────────────────────────────────────────────────
   getMeetings: (filter: import('../types/crm.types').CrmMeetingFilter = {}) =>
@@ -642,6 +656,8 @@ export const crmApi = {
     apiClient.post<import('../types/crm.types').CrmWorkflowDetailDto>(`${BASE}/workflows/generate`, data),
   chatWorkflow: (id: string, data: { Message: string }) =>
     apiClient.post<import('../types/crm.types').CrmWorkflowDetailDto>(`${BASE}/workflows/${id}/chat`, data),
+  getTriggerDefinitions: () =>
+    apiClient.get<{ triggerType: string; displayName: string }[]>(`${BASE}/workflows/trigger-definitions`),
 
   // ─── Workflow Campaigns ──────────────────────────────────────────────────
   getWorkflowCampaigns: () =>

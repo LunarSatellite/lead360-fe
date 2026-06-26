@@ -506,6 +506,8 @@ export function Component() {
                 );
               })}
 
+
+
               {stages.length === 0 && (
                 <div className="flex flex-col items-center justify-center w-full h-64 gap-3 text-text-muted rounded-2xl border border-border-subtle">
                   <Briefcase className="w-8 h-8 opacity-30" strokeWidth={1.2} />

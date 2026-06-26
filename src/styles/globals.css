@@ -922,6 +922,18 @@ select:-webkit-autofill {
   transition: background-color 9999s ease-in-out 0s;
 }
 
+/* ═══════════════════════════════════════════════════════
+   Right-side drawer slide-in
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes drawerSlideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+.drawer-slide-in {
+  animation: drawerSlideIn 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* App Launcher — iOS-style jiggle in edit mode */
 @keyframes app-launcher-jiggle {
   0%, 100% { transform: rotate(-1.5deg); }

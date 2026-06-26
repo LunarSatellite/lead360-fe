@@ -221,6 +221,8 @@ export interface TenantFeatureSettings {
   ragEnrichmentAtIngestEnabled: boolean;
   dedupScanAtIngestEnabled: boolean;
   agentRuntimeEnabled: boolean;
+  rerankerEnabled: boolean;
+  correctiveRagEnabled: boolean;
 }
 
 /** Generic bulk-operation outcome shared by contact/deal bulk-delete endpoints. */

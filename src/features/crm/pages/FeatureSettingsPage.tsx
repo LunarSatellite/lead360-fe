@@ -36,6 +36,14 @@ const GROUPS: Group[] = [
       { key: 'agentRuntimeEnabled', label: 'Agent runtime', help: 'Enable the internal CRM copilot that answers questions and takes scoped actions.' },
     ],
   },
+  {
+    title: 'Search quality',
+    icon: Sparkles,
+    items: [
+      { key: 'rerankerEnabled', label: 'Reranker', help: 'Re-rank search results with the cross-encoder for better relevance. Runs only when a reranker service is deployed.' },
+      { key: 'correctiveRagEnabled', label: 'Corrective RAG', help: 'Grade retrieved results and refine the query once when they don’t answer it.' },
+    ],
+  },
 ];
 
 export function Component() {

@@ -313,6 +313,12 @@ export const crmApi = {
   updateDealStrategy: (id: string, data: DealStrategyDto) =>
     apiClient.put(`${BASE}/deals/${id}/strategy`, data),
 
+  getFeatureSettings: () =>
+    apiClient.get<import('../types/crm.types').TenantFeatureSettings>(`${BASE}/feature-settings`),
+
+  updateFeatureSettings: (settings: import('../types/crm.types').TenantFeatureSettings) =>
+    apiClient.put<import('../types/crm.types').TenantFeatureSettings>(`${BASE}/feature-settings`, settings),
+
   getTimeline: (kind: number, entityId: string, page = 1, pageSize = 50) =>
     apiClient.get<PagedResult<ActivityEventDto>>(`${BASE}/timeline/${kind}/${entityId}`, { params: { page, pageSize } }),
 

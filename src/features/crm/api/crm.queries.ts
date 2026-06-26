@@ -76,6 +76,7 @@ const CRM_KEYS = {
   dealById: (id: string) => ['crm', 'deals', id] as const,
   timeline: (kind: number, entityId: string) => ['crm', 'timeline', kind, entityId] as const,
   activityFeed: (filter: import('../types/crm.types').CrmActivityFeedFilter) => ['crm', 'activity-feed', filter] as const,
+  featureSettings: () => ['crm', 'feature-settings'] as const,
   dealStrategy: (id: string) => ['crm', 'deals', id, 'strategy'] as const,
   signals: (filter: CrmSignalFilter) => ['crm', 'signals', filter] as const,
   crmCampaigns: (page: number) => ['crm', 'crm-campaigns', page] as const,
@@ -1095,6 +1096,27 @@ export function useTimeline(kind: number, entityId: string | undefined) {
     enabled: !!entityId,
   });
 }
+export function useFeatureSettings() {
+  return useQuery({
+    queryKey: CRM_KEYS.featureSettings(),
+    queryFn: () => crmApi.getFeatureSettings(),
+    staleTime: 30_000,
+  });
+}
+
+export function useUpdateFeatureSettings() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (settings: import('../types/crm.types').TenantFeatureSettings) =>
+      crmApi.updateFeatureSettings(settings),
+    onSuccess: (data: any) => {
+      queryClient.setQueryData(CRM_KEYS.featureSettings(), data);
+      toast.success('Feature settings saved.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Could not save settings.'),
+  });
+}
+
 export function useActivityFeed(filter: import('../types/crm.types').CrmActivityFeedFilter) {
   return useQuery({
     queryKey: CRM_KEYS.activityFeed(filter),

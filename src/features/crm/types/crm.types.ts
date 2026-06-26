@@ -210,6 +210,19 @@ export interface BulkLeadActionResult {
   errors: string[];
 }
 
+/** Per-tenant feature toggles (mirrors backend TenantFeatureSettingsDto). */
+export interface TenantFeatureSettings {
+  unifiedLeadPipelineEnabled: boolean;
+  webChatPipelineEnabled: boolean;
+  conversationalPipelineEnabled: boolean;
+  emailPipelineEnabled: boolean;
+  eventApiPipelineEnabled: boolean;
+  scoringAtIngestEnabled: boolean;
+  ragEnrichmentAtIngestEnabled: boolean;
+  dedupScanAtIngestEnabled: boolean;
+  agentRuntimeEnabled: boolean;
+}
+
 /** Generic bulk-operation outcome shared by contact/deal bulk-delete endpoints. */
 export interface CrmBulkResult {
   requested: number;

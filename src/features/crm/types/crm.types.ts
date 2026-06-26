@@ -210,6 +210,14 @@ export interface BulkLeadActionResult {
   errors: string[];
 }
 
+/** Generic bulk-operation outcome shared by contact/deal bulk-delete endpoints. */
+export interface CrmBulkResult {
+  requested: number;
+  succeeded: number;
+  skipped: number;
+  errors: string[];
+}
+
 export interface NurtureStepDto {
   id: string;
   sequenceId: string;

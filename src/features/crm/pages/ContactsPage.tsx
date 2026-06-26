@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import {
-  Search, UserCheck, Plus, Loader2, ChevronLeft, ChevronRight, X, Trash2,
+  Search, UserCheck, Plus, Loader2, ChevronLeft, ChevronRight, X, Trash2, Check,
 } from 'lucide-react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
-  useContacts, useCreateContact, useDeleteContact, useImportContactsCsv,
+  useContacts, useCreateContact, useDeleteContact, useBulkDeleteContacts, useImportContactsCsv,
   useFindContactDuplicates,
 } from '../api/crm.queries';
 import { CsvToolbar } from '../components/CsvToolbar';
@@ -33,6 +34,8 @@ interface ContactCardProps {
   contact: CrmContactSummaryDto;
   deleteId: string | null;
   isDeleting: boolean;
+  selected: boolean;
+  onToggle: () => void;
   onClick: () => void;
   onDeleteRequest: (id: string) => void;
   onDeleteConfirm: (id: string) => void;
@@ -43,6 +46,8 @@ function ContactCard({
   contact: c,
   deleteId,
   isDeleting,
+  selected,
+  onToggle,
   onClick,
   onDeleteRequest,
   onDeleteConfirm,
@@ -54,12 +59,25 @@ function ContactCard({
   return (
     <div
       onClick={onClick}
-      className="bg-glass-1 border-thin border-border-subtle rounded-card p-3.5 flex flex-col gap-3 cursor-pointer hover:bg-glass-2 hover:border-border-medium transition-all group"
+      className={`bg-glass-1 border-thin rounded-card p-3.5 flex flex-col gap-3 cursor-pointer hover:bg-glass-2 transition-all group ${
+        selected ? 'border-border-glow bg-brand-soft' : 'border-border-subtle hover:border-border-medium'
+      }`}
     >
       {/* Avatar + source badge */}
       <div className="flex items-start justify-between">
-        <div className="w-10 h-10 rounded-card bg-brand-soft border-thin border-border-glow flex items-center justify-center text-sm font-black text-brand">
-          {initial}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggle(); }}
+            className={`w-5 h-5 rounded-[5px] border flex items-center justify-center transition-all shrink-0 ${
+              selected ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'
+            }`}
+            title={selected ? 'Deselect' : 'Select'}
+          >
+            <Check className="w-3 h-3" strokeWidth={3} />
+          </button>
+          <div className="w-10 h-10 rounded-card bg-brand-soft border-thin border-border-glow flex items-center justify-center text-sm font-black text-brand">
+            {initial}
+          </div>
         </div>
         <span className="px-1.5 py-0.5 rounded-xs text-[10px] font-semibold border-thin border-border-subtle bg-bg-elevated text-text-secondary">
           {CRM_CONTACT_SOURCE_LABELS[c.sourceKind]}
@@ -328,13 +346,34 @@ export function Component() {
   const [sourceFilter, setSourceFilter] = useState<string>('');
   const [showCreate, setShowCreate] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
 
   const { data: raw, isLoading } = useContacts(filter);
   const data = raw as unknown as PagedResult<CrmContactSummaryDto> | undefined;
 
   const createContact = useCreateContact();
   const deleteContact = useDeleteContact();
+  const bulkDelete = useBulkDeleteContacts();
   const importCsv = useImportContactsCsv();
+
+  const items = data?.items ?? [];
+  const toggleSelect = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  const clearSelection = () => setSelected(new Set());
+  const runBulkDelete = async () => {
+    if (selected.size === 0) return;
+    const ok = await confirmDialog({
+      message: `Delete ${selected.size} selected contact${selected.size > 1 ? 's' : ''}? This can't be undone from here.`,
+      confirmText: 'Delete',
+      danger: true,
+    });
+    if (!ok) return;
+    bulkDelete.mutate([...selected], { onSuccess: () => clearSelection() });
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -357,6 +396,9 @@ export function Component() {
       onSuccess: () => setDeleteId(null),
     });
   };
+
+  // Drop selections whenever the visible set changes.
+  useEffect(() => { setSelected(new Set()); }, [filter]);
 
   const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
   const currentPage = filter.page ?? 1;
@@ -432,19 +474,65 @@ export function Component() {
             <p className="text-sm">No contacts found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {data.items.map((c: CrmContactSummaryDto) => (
-              <ContactCard
-                key={c.id}
-                contact={c}
-                deleteId={deleteId}
-                isDeleting={deleteContact.isPending}
-                onClick={() => navigate(ROUTES.dashboard.crmContactDetail(c.id))}
-                onDeleteRequest={(id) => setDeleteId(id)}
-                onDeleteConfirm={handleDelete}
-                onDeleteCancel={() => setDeleteId(null)}
-              />
-            ))}
+          <>
+            <div className="flex items-center gap-3 -mb-1">
+              <button
+                onClick={() =>
+                  setSelected((prev) =>
+                    prev.size === items.length ? new Set() : new Set(items.map((c) => c.id)),
+                  )
+                }
+                className="flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-text-primary transition-colors"
+              >
+                <span
+                  className={`w-4 h-4 rounded-[5px] border flex items-center justify-center transition-all ${
+                    selected.size === items.length ? 'bg-brand border-brand text-bg' : 'border-border-medium'
+                  }`}
+                >
+                  {selected.size === items.length && <Check className="w-3 h-3" strokeWidth={3} />}
+                </span>
+                {selected.size === items.length ? 'Deselect all' : 'Select all on page'}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {items.map((c: CrmContactSummaryDto) => (
+                <ContactCard
+                  key={c.id}
+                  contact={c}
+                  deleteId={deleteId}
+                  isDeleting={deleteContact.isPending}
+                  selected={selected.has(c.id)}
+                  onToggle={() => toggleSelect(c.id)}
+                  onClick={() => navigate(ROUTES.dashboard.crmContactDetail(c.id))}
+                  onDeleteRequest={(id) => setDeleteId(id)}
+                  onDeleteConfirm={handleDelete}
+                  onDeleteCancel={() => setDeleteId(null)}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Bulk action bar */}
+        {selected.size > 0 && (
+          <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl bg-bg-elevated border border-border-medium shadow-2xl">
+            <span className="text-xs font-bold text-text-primary whitespace-nowrap">{selected.size} selected</span>
+            <div className="h-5 w-px bg-border-subtle" />
+            <button
+              onClick={runBulkDelete}
+              disabled={bulkDelete.isPending}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+            >
+              {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+              Delete
+            </button>
+            <button
+              onClick={clearSelection}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+            >
+              <X className="w-3.5 h-3.5" /> Clear
+            </button>
           </div>
         )}
 

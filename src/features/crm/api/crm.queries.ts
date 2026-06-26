@@ -615,6 +615,20 @@ export function useDeleteContact() {
   });
 }
 
+export function useBulkDeleteContacts() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (ids: string[]) => crmApi.bulkDeleteContacts(ids),
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries({ queryKey: CRM_KEYS.contacts() });
+      const r = (res ?? {}) as import('../types/crm.types').CrmBulkResult;
+      const skipped = r.skipped ? `, ${r.skipped} skipped` : '';
+      toast.success(`${r.succeeded ?? 0} contact(s) deleted${skipped}.`);
+    },
+    onError: (err: any) => toast.error(err?.message || 'Bulk delete failed.'),
+  });
+}
+
 export function useSetContactLanguage() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -1019,6 +1033,20 @@ export function useDeleteDeal() {
       toast.success('Deal deleted.');
     },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useBulkDeleteDeals() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (ids: string[]) => crmApi.bulkDeleteDeals(ids),
+    onSuccess: (res: any) => {
+      queryClient.invalidateQueries({ queryKey: CRM_KEYS.deals() });
+      const r = (res ?? {}) as import('../types/crm.types').CrmBulkResult;
+      const skipped = r.skipped ? `, ${r.skipped} skipped` : '';
+      toast.success(`${r.succeeded ?? 0} deal(s) deleted${skipped}.`);
+    },
+    onError: (err: any) => toast.error(err?.message || 'Bulk delete failed.'),
   });
 }
 

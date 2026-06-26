@@ -173,6 +173,9 @@ export const crmApi = {
   deleteContact: (id: string) =>
     apiClient.delete(`${BASE}/contacts/${id}`),
 
+  bulkDeleteContacts: (ids: string[]) =>
+    apiClient.post<import('../types/crm.types').CrmBulkResult>(`${BASE}/contacts/bulk-delete`, { ids }),
+
   setContactLanguage: (id: string, language: string | null) =>
     apiClient.put(`${BASE}/contacts/${id}/language`, { language }),
 
@@ -286,6 +289,9 @@ export const crmApi = {
 
   deleteDeal: (id: string) =>
     apiClient.delete(`${BASE}/deals/${id}`),
+
+  bulkDeleteDeals: (ids: string[]) =>
+    apiClient.post<import('../types/crm.types').CrmBulkResult>(`${BASE}/deals/bulk-delete`, { ids }),
 
   moveDealStage: (id: string, data: MoveDealStageRequest) =>
     apiClient.put<CrmDealDetailDto>(`${BASE}/deals/${id}/stage`, data),

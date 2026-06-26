@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Search,
@@ -12,9 +12,17 @@ import {
   GitBranch,
   Plus,
   X,
+  User,
+  Phone,
+  Mail,
+  Layers,
+  Star,
+  Radio,
+  FileText,
+  ChevronDown,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead } from '../api/crm.queries';
+import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead, useContacts } from '../api/crm.queries';
 import { CsvToolbar } from '../components/CsvToolbar';
 import type {
   LeadSummaryDto,
@@ -22,6 +30,7 @@ import type {
   LeadFilter,
   PagedResult,
   CreateManualLeadRequest,
+  CrmContactSummaryDto,
 } from '../types/crm.types';
 import {
   LeadStage,
@@ -81,7 +90,7 @@ function CsvLeadsToolbar() {
       exportUrl="/v1/crm/leads/export-csv"
       templateUrl="/v1/crm/leads/csv-template"
       entityLabel="leads"
-      onImport={file => importCsv.mutateAsync(file)}
+      onImport={async file => { await importCsv.mutateAsync(file); }}
       isImporting={importCsv.isPending}
     />
   );
@@ -97,14 +106,41 @@ export function Component() {
   const [search, setSearch]           = useState('');
   const [minScore, setMinScore]       = useState<number | undefined>(undefined);
   const [showCreate, setShowCreate]   = useState(false);
+  const [stageOpen, setStageOpen]         = useState(false);
+  const [contactSearch, setContactSearch] = useState('');
+  const [contactQuery, setContactQuery]   = useState('');
+  const [showContactDrop, setShowContactDrop] = useState(false);
+  const contactDropRef = useRef<HTMLDivElement>(null);
   const [form, setForm]               = useState<CreateManualLeadRequest>({ stage: LeadStage.New });
   const createLead                    = useCreateLead();
 
-  // Debounce search 300ms
+  const { data: rawContactData } = useContacts({ search: contactQuery || undefined, pageSize: 6 });
+  const contactSuggestions = ((rawContactData as unknown as PagedResult<CrmContactSummaryDto> | undefined)?.items ?? [])
+    .slice()
+    .sort((a, b) => a.fullName.localeCompare(b.fullName));
+
+  // Debounce main search 300ms
   useEffect(() => {
     const timer = setTimeout(() => setSearch(searchInput), 300);
     return () => clearTimeout(timer);
   }, [searchInput]);
+
+  // Debounce contact search 300ms
+  useEffect(() => {
+    const t = setTimeout(() => setContactQuery(contactSearch), 300);
+    return () => clearTimeout(t);
+  }, [contactSearch]);
+
+  // Close contact dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (contactDropRef.current && !contactDropRef.current.contains(e.target as Node)) {
+        setShowContactDrop(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -155,7 +191,7 @@ export function Component() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => { setForm({ stage: LeadStage.New }); setShowCreate(true); }}
+            onClick={() => { setForm({ stage: LeadStage.New }); setContactSearch(''); setShowCreate(true); }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Lead
@@ -166,86 +202,255 @@ export function Component() {
 
       {/* Create Lead Modal */}
       {showCreate && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCreate(false)} />
-          <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-            <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
-              <h2 className="text-sm font-bold text-text-primary">New Lead</h2>
-              <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary">
+        <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCreate(false)} />
+          <div
+            className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+            style={{
+              borderRadius: 18,
+              background: 'var(--bg-card)',
+              border: '1px solid rgba(0,217,138,0.2)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+              maxHeight: 'calc(100vh - 16px)',
+            }}
+          >
+            {/* Accent bar — mirrors AuroraBI notification panel top stripe */}
+            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+            <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
+              <div>
+                <h2
+                  className="text-base font-extrabold leading-tight"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >New Lead</h2>
+                <p className="text-xs text-text-muted mt-0.5">Capture a new lead into your pipeline</p>
+              </div>
+              <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
             <div className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
-              <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Full Name</label>
+              {/* Contact search combobox */}
+              <div className="relative" ref={contactDropRef}>
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
-                  placeholder="John Doe"
-                  value={form.customerName ?? ''}
-                  onChange={e => setForm(f => ({ ...f, customerName: e.target.value }))}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Search existing contacts…"
+                  autoComplete="off"
+                  value={contactSearch}
+                  onChange={e => { setContactSearch(e.target.value); setShowContactDrop(true); }}
+                  onFocus={() => setShowContactDrop(true)}
                 />
+                {contactSearch && (
+                  <button
+                    type="button"
+                    onClick={() => { setContactSearch(''); setContactQuery(''); setShowContactDrop(false); }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+                  >
+                    <X className="w-3.5 h-3.5" strokeWidth={2} />
+                  </button>
+                )}
+                {showContactDrop && (
+                  <div
+                    className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                    style={{
+                      borderRadius: 12,
+                      background: '#132420',
+                      border: '1px solid rgba(0,217,138,0.20)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)',
+                    }}
+                  >
+                    {contactSuggestions.length > 0 ? contactSuggestions.map(c => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                          setForm(f => ({ ...f, customerName: c.fullName, customerPhone: c.phone ?? '', customerEmail: c.email ?? '' }));
+                          setContactSearch('');
+                          setContactQuery('');
+                          setShowContactDrop(false);
+                        }}
+                        className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                      >
+                        <div className="relative shrink-0">
+                          <div
+                            className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center"
+                            style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}
+                          >
+                            <span className="text-xs font-bold text-brand">
+                              {c.fullName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-semibold text-text-primary truncate">{c.fullName}</div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {c.phone && <span className="text-xs text-text-muted">{c.phone}</span>}
+                            {c.phone && c.email && <span className="text-xs text-text-muted">·</span>}
+                            {c.email && <span className="text-xs text-text-muted truncate">{c.email}</span>}
+                          </div>
+                        </div>
+                        <span
+                          className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }}
+                        />
+                      </button>
+                    )) : (
+                      <div className="px-4 py-3 text-xs text-text-muted">No contacts found</div>
+                    )}
+                  </div>
+                )}
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Phone</label>
-                <input
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
-                  placeholder="+977 98XXXXXXXX"
-                  value={form.customerPhone ?? ''}
-                  onChange={e => setForm(f => ({ ...f, customerPhone: e.target.value }))}
-                />
+
+              {/* Divider */}
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-px bg-border-subtle" />
+                <span className="text-2xs text-text-muted">or fill manually</span>
+                <div className="flex-1 h-px bg-border-subtle" />
               </div>
+
+              {/* Full Name + Phone — two columns */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="John Doe"
+                      value={form.customerName ?? ''}
+                      onChange={e => setForm(f => ({ ...f, customerName: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Phone</label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="+977 98XXXXXXXX"
+                      value={form.customerPhone ?? ''}
+                      onChange={e => setForm(f => ({ ...f, customerPhone: e.target.value }))}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Email */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
-                <input
-                  type="email"
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
-                  placeholder="john@example.com"
-                  value={form.customerEmail ?? ''}
-                  onChange={e => setForm(f => ({ ...f, customerEmail: e.target.value }))}
-                />
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                  <input
+                    type="email"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    placeholder="john@example.com"
+                    value={form.customerEmail ?? ''}
+                    onChange={e => setForm(f => ({ ...f, customerEmail: e.target.value }))}
+                  />
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Stage</label>
-                <select
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium"
-                  value={form.stage ?? LeadStage.New}
-                  onChange={e => setForm(f => ({ ...f, stage: Number(e.target.value) as LeadStage }))}
-                >
-                  <option value={LeadStage.New}>New</option>
-                  <option value={LeadStage.Warm}>Warm</option>
-                  <option value={LeadStage.Hot}>Hot</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Lead Score (0–100)</label>
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
-                  placeholder="e.g. 75 — leave blank to start at 0"
-                  value={form.score ?? ''}
-                  onChange={e => setForm(f => ({ ...f, score: e.target.value ? Math.min(100, Math.max(0, Number(e.target.value))) : undefined }))}
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Stage</label>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setStageOpen(o => !o)}
+                      className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl bg-bg-elevated border text-sm text-text-primary focus:outline-none transition-all"
+                      style={{
+                        backgroundColor: '#1A332C',
+                        borderColor: stageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)',
+                        boxShadow: stageOpen
+                          ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                          : 'none',
+                      }}
+                    >
+                      <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                      <span className={`flex-1 text-left font-medium ${
+                        form.stage === LeadStage.Hot  ? 'text-danger' :
+                        form.stage === LeadStage.Warm ? 'text-[#F59E0B]' : 'text-text-secondary'
+                      }`}>
+                        {LEAD_STAGE_LABELS[form.stage ?? LeadStage.New]}
+                      </span>
+                      <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${stageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                    </button>
+                    {stageOpen && (
+                      <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                        style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                      >
+                        {([
+                          { value: LeadStage.New,  label: 'New',  dot: '#B8E6D5', hover: 'hover:bg-[rgba(184,230,213,0.08)]',  text: 'text-text-secondary' },
+                          { value: LeadStage.Warm, label: 'Warm', dot: '#F59E0B', hover: 'hover:bg-[rgba(245,158,11,0.10)]',   text: 'text-[#F59E0B]' },
+                          { value: LeadStage.Hot,  label: 'Hot',  dot: '#F43F5E', hover: 'hover:bg-[rgba(244,63,94,0.10)]',    text: 'text-danger' },
+                        ] as const).map(opt => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => { setForm(f => ({ ...f, stage: opt.value })); setStageOpen(false); }}
+                            className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.stage === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                          >
+                            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                            {opt.label}
+                            {form.stage === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Lead Score (0–100)</label>
+                  <div className="relative">
+                    <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      type="number"
+                      min={0}
+                      max={100}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="e.g. 75"
+                      value={form.score ?? ''}
+                      onChange={e => setForm(f => ({ ...f, score: e.target.value ? Math.min(100, Math.max(0, Number(e.target.value))) : undefined }))}
+                    />
+                  </div>
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Source / How did you meet?</label>
-                <input
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
-                  placeholder="Trade show, Referral, Cold outreach…"
-                  value={form.adSource ?? ''}
-                  onChange={e => setForm(f => ({ ...f, adSource: e.target.value }))}
-                />
+                <div className="relative">
+                  <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                  <input
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    placeholder="Trade show, Referral, Cold outreach…"
+                    value={form.adSource ?? ''}
+                    onChange={e => setForm(f => ({ ...f, adSource: e.target.value }))}
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-                <textarea
-                  rows={3}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium resize-none"
-                  placeholder="Interested in enterprise plan, follow up next week…"
-                  value={form.notes ?? ''}
-                  onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                />
+                <div className="relative">
+                  <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                  <textarea
+                    rows={3}
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    placeholder="Interested in enterprise plan, follow up next week…"
+                    value={form.notes ?? ''}
+                    onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                  />
+                </div>
               </div>
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">

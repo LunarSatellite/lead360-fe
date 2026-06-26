@@ -54,6 +54,7 @@ export const ROUTES = {
     crmNurture: '/dashboard/crm/nurture',
     crmCampaigns: '/dashboard/crm/campaigns',
     crmAnalytics: '/dashboard/crm/analytics',
+    crmAuditLog: '/dashboard/crm/audit-log',
     crmSupport: '/dashboard/crm/support',
     crmTasks: '/dashboard/crm/tasks',
     crmQuotes: '/dashboard/crm/quotes',

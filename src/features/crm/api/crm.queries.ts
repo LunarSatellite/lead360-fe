@@ -75,6 +75,7 @@ const CRM_KEYS = {
   dealList: (filter: CrmDealFilter) => ['crm', 'deals', filter] as const,
   dealById: (id: string) => ['crm', 'deals', id] as const,
   timeline: (kind: number, entityId: string) => ['crm', 'timeline', kind, entityId] as const,
+  activityFeed: (filter: import('../types/crm.types').CrmActivityFeedFilter) => ['crm', 'activity-feed', filter] as const,
   dealStrategy: (id: string) => ['crm', 'deals', id, 'strategy'] as const,
   signals: (filter: CrmSignalFilter) => ['crm', 'signals', filter] as const,
   crmCampaigns: (page: number) => ['crm', 'crm-campaigns', page] as const,
@@ -1092,6 +1093,13 @@ export function useTimeline(kind: number, entityId: string | undefined) {
     queryKey: CRM_KEYS.timeline(kind, entityId ?? ''),
     queryFn: () => crmApi.getTimeline(kind, entityId!),
     enabled: !!entityId,
+  });
+}
+export function useActivityFeed(filter: import('../types/crm.types').CrmActivityFeedFilter) {
+  return useQuery({
+    queryKey: CRM_KEYS.activityFeed(filter),
+    queryFn: () => crmApi.getActivityFeed(filter),
+    placeholderData: (prev) => prev,
   });
 }
 export function useLogActivity() {

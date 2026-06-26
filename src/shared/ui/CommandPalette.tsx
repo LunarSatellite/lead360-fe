@@ -40,6 +40,7 @@ const NAV_COMMANDS: NavCommand[] = [
   { label: 'Organizations', to: ROUTES.dashboard.crmOrganizations },
   { label: 'Support', to: ROUTES.dashboard.crmSupport, keywords: 'cases tickets' },
   { label: 'Analytics', to: ROUTES.dashboard.crmAnalytics, keywords: 'reports' },
+  { label: 'Audit Log', to: ROUTES.dashboard.crmAuditLog, keywords: 'history changes who changed' },
   { label: 'Team', to: ROUTES.dashboard.team, keywords: 'users members' },
   { label: 'Settings', to: ROUTES.dashboard.settings },
 ].filter((c) => !!c.to);

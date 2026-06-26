@@ -316,6 +316,14 @@ export const crmApi = {
   getTimeline: (kind: number, entityId: string, page = 1, pageSize = 50) =>
     apiClient.get<PagedResult<ActivityEventDto>>(`${BASE}/timeline/${kind}/${entityId}`, { params: { page, pageSize } }),
 
+  getActivityFeed: (filter: import('../types/crm.types').CrmActivityFeedFilter) =>
+    // `indexes: null` => arrays serialize as repeated `eventKinds=1&eventKinds=2`,
+    // which ASP.NET model-binds to List<T> (the default `eventKinds[]=` form does not).
+    apiClient.get<PagedResult<ActivityEventDto>>(`${BASE}/activity-feed`, {
+      params: filter,
+      paramsSerializer: { indexes: null },
+    }),
+
   logActivity: (data: ActivityLogRequest) =>
     apiClient.post<ActivityEventDto>(`${BASE}/activities`, data),
 

@@ -2449,11 +2449,58 @@ export interface ActivityEventDto {
 }
 export interface ActivityLogRequest {
   entityKind: number;
-  entityId: string;
   eventKind: number;
+  entityId: string;
   summary: string;
   occurredAt?: string;
 }
+
+export interface CrmActivityFeedFilter {
+  from?: string;
+  to?: string;
+  eventKinds?: number[];
+  entityKind?: number;
+  actorUserId?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+/** Mirrors backend CrmActivityEntityKind. */
+export const CRM_ACTIVITY_ENTITY_LABELS: Record<number, string> = {
+  1: 'Contact',
+  2: 'Deal',
+  3: 'Support Case',
+  4: 'Lead',
+  5: 'Account',
+  6: 'Organization',
+  7: 'Task',
+};
+
+/** Mirrors backend CrmActivityEventKind. */
+export const CRM_ACTIVITY_EVENT_LABELS: Record<number, string> = {
+  1: 'Comment added',
+  2: 'Stage changed',
+  3: 'Deal created',
+  4: 'Assignment changed',
+  5: 'Task completed',
+  6: 'Signal received',
+  7: 'Field edited',
+  8: 'Quote drafted',
+  9: 'Quote sent',
+  10: 'Quote accepted',
+  11: 'Quote rejected',
+  12: 'Proposal drafted',
+  13: 'Proposal sent',
+  14: 'Proposal accepted',
+  15: 'Proposal rejected',
+  16: 'Task created',
+  17: 'Call',
+  18: 'Meeting',
+  19: 'Note',
+  20: 'Record created',
+  21: 'Record updated',
+  22: 'Record deleted',
+};
 export interface DealStrategyDto {
   champion?: string;
   competition?: string;

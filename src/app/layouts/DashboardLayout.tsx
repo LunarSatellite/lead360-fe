@@ -57,6 +57,7 @@ import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
 import { NotificationBell } from '@/features/crm/components/NotificationBell';
 import { CommandPalette, openCommandPalette } from '@/shared/ui/CommandPalette';
+import { CopilotPanel, openCopilot } from '@/features/crm/components/CopilotPanel';
 import { useLeadAlerts } from '@/features/crm/hooks/useLeadAlerts';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -550,6 +551,13 @@ export function DashboardLayout() {
             </button>
             <NotificationBell />
             <button
+              onClick={openCopilot}
+              className="flex px-3 py-2 rounded-xl text-xs font-semibold border border-border-glow text-brand hover:bg-brand-soft transition-all items-center gap-1.5"
+              title="CRM Copilot"
+            >
+              <Bot className="w-3.5 h-3.5" strokeWidth={1.8} /> <span className="hidden sm:inline">Copilot</span>
+            </button>
+            <button
               onClick={() => navigate(ROUTES.dashboard.flows)}
               className="hidden md:flex px-4 py-2 rounded-xl text-xs font-semibold border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-medium hover:bg-bg-elevated transition-all items-center gap-1.5"
             >
@@ -688,6 +696,7 @@ export function DashboardLayout() {
         </div>
       )}
       <CommandPalette />
+      <CopilotPanel />
     </div>
   );
 }

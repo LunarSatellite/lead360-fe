@@ -223,6 +223,7 @@ export interface TenantFeatureSettings {
   agentRuntimeEnabled: boolean;
   rerankerEnabled: boolean;
   correctiveRagEnabled: boolean;
+  knowledgeRerankerEnabled: boolean;
 }
 
 /** Generic bulk-operation outcome shared by contact/deal bulk-delete endpoints. */

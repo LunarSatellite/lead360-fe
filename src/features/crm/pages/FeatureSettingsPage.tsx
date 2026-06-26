@@ -40,7 +40,8 @@ const GROUPS: Group[] = [
     title: 'Search quality',
     icon: Sparkles,
     items: [
-      { key: 'rerankerEnabled', label: 'Reranker', help: 'Re-rank search results with the cross-encoder for better relevance. Runs only when a reranker service is deployed.' },
+      { key: 'rerankerEnabled', label: 'Product reranker', help: 'Re-rank product-search results with the cross-encoder for better relevance. Runs only when a reranker service is deployed.' },
+      { key: 'knowledgeRerankerEnabled', label: 'Knowledge reranker', help: 'Also re-rank knowledge-base search results. Off by default; requires a deployed reranker service.' },
       { key: 'correctiveRagEnabled', label: 'Corrective RAG', help: 'Grade retrieved results and refine the query once when they don’t answer it.' },
     ],
   },

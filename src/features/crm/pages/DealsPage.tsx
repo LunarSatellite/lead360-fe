@@ -1,14 +1,15 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Briefcase, Plus, Loader2, LayoutGrid, List, Trophy,
   CheckCircle, XCircle, DollarSign, Calendar, ChevronLeft, ChevronRight, Search,
-  Settings, Trash2, ChevronUp, ChevronDown, X, GitBranch, Filter, User,
+  Settings, Trash2, ChevronUp, ChevronDown, X, GitBranch, Filter, User, Check,
 } from 'lucide-react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   useDeals, useDealStages, useMoveDealStage, useCloseDeal,
   useCreateDealStage, useUpdateDealStage, useDeleteDealStage, usePipelines,
-  useImportDealsCsv, useCreateDeal,
+  useImportDealsCsv, useCreateDeal, useBulkDeleteDeals,
 } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
@@ -213,6 +214,29 @@ export function Component() {
   const moveStage = useMoveDealStage();
   const closeDeal = useCloseDeal();
   const createDeal = useCreateDeal();
+  const bulkDelete = useBulkDeleteDeals();
+
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const listItems = listData?.items ?? [];
+  const toggleSelect = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  const clearSelection = () => setSelected(new Set());
+  // Drop selections when the visible list changes (filter/page) or the view switches.
+  useEffect(() => { setSelected(new Set()); }, [listFilter, view]);
+  const runBulkDelete = async () => {
+    if (selected.size === 0) return;
+    const ok = await confirmDialog({
+      message: `Delete ${selected.size} selected deal${selected.size > 1 ? 's' : ''}? This can't be undone from here.`,
+      confirmText: 'Delete',
+      danger: true,
+    });
+    if (!ok) return;
+    bulkDelete.mutate([...selected], { onSuccess: () => clearSelection() });
+  };
 
   const activeFiltersCount = [filterOwnerId, filterCloseDateFrom, filterCloseDateTo, filterInactive ? 'inactive' : ''].filter(Boolean).length;
 
@@ -562,6 +586,23 @@ export function Component() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border-subtle">
+                    <th className="w-10 px-4 py-3">
+                      <button
+                        onClick={() =>
+                          setSelected((prev) =>
+                            prev.size === listItems.length ? new Set() : new Set(listItems.map((d) => d.id)),
+                          )
+                        }
+                        className={`w-4 h-4 rounded-[5px] border flex items-center justify-center transition-all ${
+                          listItems.length > 0 && selected.size === listItems.length
+                            ? 'bg-brand border-brand text-bg'
+                            : 'border-border-medium text-transparent hover:border-brand'
+                        }`}
+                        title="Select all on page"
+                      >
+                        <Check className="w-3 h-3" strokeWidth={3} />
+                      </button>
+                    </th>
                     <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider">Deal</th>
                     <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden md:table-cell">Stage</th>
                     <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden lg:table-cell">Amount</th>
@@ -575,8 +616,21 @@ export function Component() {
                     <tr
                       key={d.id}
                       onClick={() => navigate(ROUTES.dashboard.crmDealDetail(d.id))}
-                      className="border-b border-border-subtle last:border-0 hover:bg-bg-elevated cursor-pointer transition-colors"
+                      className={`border-b border-border-subtle last:border-0 cursor-pointer transition-colors ${
+                        selected.has(d.id) ? 'bg-brand-soft' : 'hover:bg-bg-elevated'
+                      }`}
                     >
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => toggleSelect(d.id)}
+                          className={`w-4 h-4 rounded-[5px] border flex items-center justify-center transition-all ${
+                            selected.has(d.id) ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'
+                          }`}
+                          title={selected.has(d.id) ? 'Deselect' : 'Select'}
+                        >
+                          <Check className="w-3 h-3" strokeWidth={3} />
+                        </button>
+                      </td>
                       <td className="px-4 py-3">
                         <div className="font-semibold text-text-primary">{d.name}</div>
                         {d.accountName && (
@@ -628,6 +682,28 @@ export function Component() {
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
+            </div>
+          )}
+
+          {/* Bulk action bar */}
+          {selected.size > 0 && (
+            <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl bg-bg-elevated border border-border-medium shadow-2xl">
+              <span className="text-xs font-bold text-text-primary whitespace-nowrap">{selected.size} selected</span>
+              <div className="h-5 w-px bg-border-subtle" />
+              <button
+                onClick={runBulkDelete}
+                disabled={bulkDelete.isPending}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+              >
+                {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                Delete
+              </button>
+              <button
+                onClick={clearSelection}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+              >
+                <X className="w-3.5 h-3.5" /> Clear
+              </button>
             </div>
           )}
         </div>

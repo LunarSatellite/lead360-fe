@@ -123,5 +123,5 @@ export function RedirectIfAuth({ children }: { children: ReactNode }) {
     return <>{children}</>;
   }
 
-  return <Navigate to="/dashboard/chat" replace />;
+  return <Navigate to="/dashboard/crm/analytics" replace />;
 }

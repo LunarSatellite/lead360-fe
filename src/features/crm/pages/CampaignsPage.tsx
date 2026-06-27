@@ -983,9 +983,9 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
   const preview = previewSegment.data as any;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-bg-elevated border-thin border-border-subtle rounded-card p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="drawer-slide-in relative w-[600px] h-full bg-bg-shell border-l border-thin border-border-subtle overflow-y-auto p-6" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-base font-bold text-text-primary">New Lead Outreach Campaign</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">

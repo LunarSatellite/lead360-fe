@@ -1,14 +1,16 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { GitBranch, Plus, Trash2, Star, Loader2, Check, X, Pencil, ChevronRight, Shield, Lock } from 'lucide-react';
 import { confirmDialog } from '@/shared/ui/confirm';
 import {
   usePipelines, useCreatePipeline, useUpdatePipeline, useDeletePipeline, useSetPipelineDefault,
   usePipelineStages, useStageGates, useCreateStageGate, useDeleteStageGate,
+  useCustomFieldDefinitions,
 } from '../api/crm.queries';
 import type {
-  CrmPipelineSummaryDto, CrmDealStageSummaryDto, CrmStageGateSummaryDto,
+  CrmPipelineSummaryDto, CrmDealStageSummaryDto, CrmStageGateSummaryDto, CustomFieldDefinitionDto,
 } from '../types/crm.types';
-import { StageGateType, STAGE_GATE_TYPE_LABELS, GATE_REQUIRED_FIELDS } from '../types/crm.types';
+import { StageGateType, STAGE_GATE_TYPE_LABELS, GATE_REQUIRED_FIELDS, CrmEntityType } from '../types/crm.types';
 
 const DEAL_TYPE_LABELS: Record<number, string> = { 1: 'Sales', 2: 'Service', 3: 'Support', 4: 'Renewal' };
 const DEAL_TYPE_COLORS: Record<number, string> = { 1: '#3B82F6', 2: '#8B5CF6', 3: '#EF4444', 4: '#10B981' };
@@ -24,9 +26,18 @@ interface AddGateFormProps {
 function AddGateForm({ stageId, onDone }: AddGateFormProps) {
   const [gateType, setGateType] = useState<StageGateType>(StageGateType.ManualCheck);
   const [label, setLabel] = useState('');
-  const [fieldName, setFieldName] = useState<string>(GATE_REQUIRED_FIELDS[0]?.value ?? '');
   const [isRequired, setIsRequired] = useState(true);
   const create = useCreateStageGate();
+
+  // Load custom fields defined for Deals so they appear alongside native fields
+  const { data: cfRaw } = useCustomFieldDefinitions(CrmEntityType.Deal);
+  const customFields: CustomFieldDefinitionDto[] = (cfRaw as unknown as CustomFieldDefinitionDto[] | undefined) ?? [];
+  const allRequiredFields: { value: string; label: string }[] = [
+    ...(GATE_REQUIRED_FIELDS as readonly { value: string; label: string }[]),
+    ...customFields.filter(f => f.isActive).map(f => ({ value: f.name, label: `${f.name} must be set` })),
+  ];
+
+  const [fieldName, setFieldName] = useState<string>(GATE_REQUIRED_FIELDS[0]?.value ?? '');
 
   const handleSubmit = () => {
     if (!label.trim()) return;
@@ -77,7 +88,7 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
             onChange={(e) => setFieldName(e.target.value)}
             className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
           >
-            {GATE_REQUIRED_FIELDS.map((f) => (
+            {allRequiredFields.map((f) => (
               <option key={f.value} value={f.value}>{f.label}</option>
             ))}
           </select>
@@ -99,7 +110,7 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          placeholder={`Label (e.g. "${GATE_REQUIRED_FIELDS.find(f => f.value === fieldName)?.label ?? fieldName} must be set")`}
+          placeholder={`Label (e.g. "${allRequiredFields.find(f => f.value === fieldName)?.label ?? fieldName}")`}
           className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
         />
       )}
@@ -236,6 +247,103 @@ function StageGateConfigPanel({ pipelineId }: { pipelineId: string }) {
   );
 }
 
+// ─── Edit Pipeline Modal ───────────────────────────────────────────────────────
+
+interface EditPipelineModalProps {
+  pipeline: CrmPipelineSummaryDto;
+  onClose: () => void;
+}
+
+function EditPipelineModal({ pipeline, onClose }: EditPipelineModalProps) {
+  const [editName, setEditName] = useState(pipeline.name);
+  const [editDescription, setEditDescription] = useState(pipeline.description ?? '');
+  const [editColor, setEditColor] = useState(pipeline.color ?? '#3B82F6');
+  const update = useUpdatePipeline();
+
+  const handleSave = () => {
+    if (!editName.trim()) return;
+    update.mutate(
+      { id: pipeline.id, data: { name: editName.trim(), color: editColor, description: editDescription.trim() || undefined } },
+      { onSuccess: onClose },
+    );
+  };
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-md bg-bg rounded-2xl border border-border-subtle shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
+          <div className="flex items-center gap-2">
+            <Pencil className="w-4 h-4 text-brand" strokeWidth={1.5} />
+            <h3 className="text-sm font-bold text-text-primary">Edit Pipeline</h3>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-5 space-y-4">
+          <div>
+            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</label>
+            <input
+              autoFocus
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></label>
+            <input
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+              placeholder="Short description…"
+              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-2">Color</label>
+            <div className="flex items-center gap-3">
+              {PRESET_COLORS.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setEditColor(c)}
+                  className={`w-6 h-6 rounded-full transition-transform ${editColor === c ? 'scale-125 ring-2 ring-offset-2 ring-offset-bg ring-brand' : 'hover:scale-110'}`}
+                  style={{ background: c }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border-subtle">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={!editName.trim() || update.isPending}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          >
+            {update.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> Save</>}
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 // ─── Pipeline Row ──────────────────────────────────────────────────────────────
 
 interface PipelineRowProps {
@@ -245,10 +353,7 @@ interface PipelineRowProps {
 }
 
 function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
-  const [editing, setEditing] = useState(false);
-  const [editName, setEditName] = useState(pipeline.name);
-  const [editColor, setEditColor] = useState(pipeline.color ?? '#3B82F6');
-  const update = useUpdatePipeline();
+  const [showEdit, setShowEdit] = useState(false);
   const deletePipeline = useDeletePipeline();
   const setDefault = useSetPipelineDefault();
 
@@ -268,122 +373,97 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
   };
 
   return (
-    <div className={`rounded-2xl border transition-all ${pipeline.isDefault ? 'border-brand/40 bg-brand/5' : 'border-border-subtle bg-bg-elevated'} ${expanded ? 'shadow-sm' : ''}`}>
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <button
-            onClick={() => { if (!editing) onToggle(); }}
-            className="flex items-center gap-3 min-w-0 flex-1 text-left"
-          >
-            <div
-              className="w-3 h-3 rounded-full shrink-0"
-              style={{ background: editing ? editColor : (pipeline.color ?? '#6B7280') }}
-            />
-            {editing ? (
-              <input
-                autoFocus
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
-                className="text-sm font-bold text-text-primary bg-transparent border-b border-brand focus:outline-none"
+    <>
+      {showEdit && (
+        <EditPipelineModal pipeline={pipeline} onClose={() => setShowEdit(false)} />
+      )}
+      <div className={`rounded-2xl border transition-all ${pipeline.isDefault ? 'border-brand/40 bg-brand/5' : 'border-border-subtle bg-bg-elevated'} ${expanded ? 'shadow-sm' : ''}`}>
+        <div className="p-4">
+          <div className="flex items-start justify-between gap-3">
+            <button
+              onClick={onToggle}
+              className="flex items-center gap-3 min-w-0 flex-1 text-left"
+            >
+              <div
+                className="w-3 h-3 rounded-full shrink-0"
+                style={{ background: pipeline.color ?? '#6B7280' }}
               />
-            ) : (
               <span className="text-sm font-bold text-text-primary">{pipeline.name}</span>
-            )}
-            {pipeline.isDefault && (
-              <span className="flex items-center gap-0.5 text-[10px] font-bold text-brand uppercase tracking-wide shrink-0">
-                <Star className="w-3 h-3" /> default
-              </span>
-            )}
-            {pipeline.dealType != null && (
-              <span
-                className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white shrink-0"
-                style={{ background: DEAL_TYPE_COLORS[pipeline.dealType] ?? '#6B7280' }}
-              >
-                {DEAL_TYPE_LABELS[pipeline.dealType] ?? 'Custom'}
-              </span>
-            )}
-          </button>
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            {editing ? (
-              <>
-                {PRESET_COLORS.map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setEditColor(c)}
-                    className={`w-4 h-4 rounded-full transition-transform ${editColor === c ? 'scale-125 ring-1 ring-offset-1 ring-brand' : ''}`}
-                    style={{ background: c }}
-                  />
-                ))}
-                <button onClick={handleSave} disabled={update.isPending} className="ml-2 p-1 rounded-lg text-success hover:bg-success/10">
-                  <Check className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={() => setEditing(false)} className="p-1 rounded-lg text-text-muted hover:bg-bg-card">
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </>
-            ) : (
-              <>
-                {!pipeline.isDefault && (
-                  <button
-                    onClick={() => setDefault.mutate(pipeline.id)}
-                    disabled={setDefault.isPending}
-                    className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand/10 transition-colors"
-                    title="Set as default"
-                  >
-                    <Star className="w-3.5 h-3.5" />
-                  </button>
-                )}
-                <button
-                  onClick={() => setEditing(true)}
-                  className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors"
+              {pipeline.isDefault && (
+                <span className="flex items-center gap-0.5 text-[10px] font-bold text-brand uppercase tracking-wide shrink-0">
+                  <Star className="w-3 h-3" /> default
+                </span>
+              )}
+              {pipeline.dealType != null && (
+                <span
+                  className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white shrink-0"
+                  style={{ background: DEAL_TYPE_COLORS[pipeline.dealType] ?? '#6B7280' }}
                 >
-                  <Pencil className="w-3.5 h-3.5" />
-                </button>
-                {!pipeline.isDefault && (
-                  <button
-                    onClick={handleDelete}
-                    className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                )}
+                  {DEAL_TYPE_LABELS[pipeline.dealType] ?? 'Custom'}
+                </span>
+              )}
+            </button>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              {!pipeline.isDefault && (
                 <button
-                  onClick={onToggle}
+                  onClick={() => setDefault.mutate(pipeline.id)}
+                  disabled={setDefault.isPending}
                   className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand/10 transition-colors"
-                  title={expanded ? 'Hide stage gates' : 'Configure stage gates'}
+                  title="Set as default"
                 >
-                  <ChevronRight className={`w-3.5 h-3.5 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+                  <Star className="w-3.5 h-3.5" />
                 </button>
-              </>
-            )}
+              )}
+              <button
+                onClick={() => setShowEdit(true)}
+                className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors"
+                title="Edit pipeline"
+              >
+                <Pencil className="w-3.5 h-3.5" />
+              </button>
+              {!pipeline.isDefault && (
+                <button
+                  onClick={handleDelete}
+                  className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              )}
+              <button
+                onClick={onToggle}
+                className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand/10 transition-colors"
+                title={expanded ? 'Hide stage gates' : 'Configure stage gates'}
+              >
+                <ChevronRight className={`w-3.5 h-3.5 transition-transform ${expanded ? 'rotate-90' : ''}`} />
+              </button>
+            </div>
           </div>
+
+          {pipeline.description && (
+            <p className="text-xs text-text-muted mt-1.5 ml-6">{pipeline.description}</p>
+          )}
+
+          <div className="flex items-center gap-4 mt-2 ml-6 text-xs text-text-muted">
+            <span>{pipeline.stageCount} stage{pipeline.stageCount !== 1 ? 's' : ''}</span>
+            {!pipeline.isActive && <span className="text-danger font-semibold">Inactive</span>}
+          </div>
+
+          {expanded && <StageGateConfigPanel pipelineId={pipeline.id} />}
         </div>
-
-        {pipeline.description && (
-          <p className="text-xs text-text-muted mt-1.5 ml-6">{pipeline.description}</p>
-        )}
-
-        <div className="flex items-center gap-4 mt-2 ml-6 text-xs text-text-muted">
-          <span>{pipeline.stageCount} stage{pipeline.stageCount !== 1 ? 's' : ''}</span>
-          {!pipeline.isActive && <span className="text-danger font-semibold">Inactive</span>}
-        </div>
-
-        {expanded && <StageGateConfigPanel pipelineId={pipeline.id} />}
       </div>
-    </div>
+    </>
   );
 }
 
-// ─── Create Pipeline Form ──────────────────────────────────────────────────────
+// ─── Create Pipeline Modal ─────────────────────────────────────────────────────
 
 interface CreateFormProps {
   onCreated: () => void;
   onCancel: () => void;
 }
 
-function CreatePipelineForm({ onCreated, onCancel }: CreateFormProps) {
+function CreatePipelineModal({ onCreated, onCancel }: CreateFormProps) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [color, setColor] = useState('#3B82F6');
@@ -396,46 +476,80 @@ function CreatePipelineForm({ onCreated, onCancel }: CreateFormProps) {
     });
   };
 
-  return (
-    <div className="rounded-2xl border border-brand/40 bg-brand/5 p-4 space-y-3">
-      <p className="text-sm font-bold text-text-primary">New Pipeline</p>
-      <input
-        autoFocus
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Pipeline name"
-        className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-      />
-      <input
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="Description (optional)"
-        className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-      />
-      <div className="flex items-center gap-2">
-        <span className="text-xs text-text-muted">Color:</span>
-        {PRESET_COLORS.map((c) => (
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onCancel} />
+      <div className="relative w-full max-w-md bg-bg rounded-2xl border border-border-subtle shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
+          <div className="flex items-center gap-2">
+            <GitBranch className="w-4 h-4 text-brand" strokeWidth={1.5} />
+            <h3 className="text-sm font-bold text-text-primary">New Pipeline</h3>
+          </div>
           <button
-            key={c}
-            onClick={() => setColor(c)}
-            className={`w-5 h-5 rounded-full transition-transform ${color === c ? 'scale-125 ring-2 ring-offset-1 ring-brand' : ''}`}
-            style={{ background: c }}
-          />
-        ))}
+            onClick={onCancel}
+            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 py-5 space-y-4">
+          <div>
+            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</label>
+            <input
+              autoFocus
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+              placeholder="e.g. Sales Pipeline"
+              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></label>
+            <input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Short description…"
+              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+            />
+          </div>
+          <div>
+            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-2">Color</label>
+            <div className="flex items-center gap-2">
+              {PRESET_COLORS.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setColor(c)}
+                  className={`w-6 h-6 rounded-full transition-transform ${color === c ? 'scale-125 ring-2 ring-offset-2 ring-offset-bg ring-brand' : 'hover:scale-110'}`}
+                  style={{ background: c }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border-subtle">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={!name.trim() || create.isPending}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          >
+            {create.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Create</>}
+          </button>
+        </div>
       </div>
-      <div className="flex gap-2 justify-end">
-        <button onClick={onCancel} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">
-          Cancel
-        </button>
-        <button
-          onClick={handleSubmit}
-          disabled={!name.trim() || create.isPending}
-          className="px-4 py-1.5 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50"
-        >
-          {create.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Create'}
-        </button>
-      </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
@@ -458,7 +572,7 @@ export function Component() {
     setExpandedPipelineId((prev) => (prev === id ? null : id));
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight flex items-center gap-2">
@@ -478,7 +592,7 @@ export function Component() {
       </div>
 
       {showCreate && (
-        <CreatePipelineForm
+        <CreatePipelineModal
           onCreated={() => setShowCreate(false)}
           onCancel={() => setShowCreate(false)}
         />
@@ -489,7 +603,7 @@ export function Component() {
           <Loader2 className="w-5 h-5 animate-spin" />
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="grid grid-cols-2 gap-6">
           {Object.entries(grouped).map(([group, items]) => (
             <div key={group}>
               <p className="text-xs font-bold text-text-muted uppercase tracking-widest mb-3">{group}</p>

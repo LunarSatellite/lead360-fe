@@ -37,9 +37,9 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function SlideOver({ title, onClose, wide, children }: { title: string; onClose: () => void; wide?: boolean; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className={`relative w-full ${wide ? 'max-w-2xl' : 'max-w-md'} bg-bg-elevated shadow-2xl flex flex-col border-thin border-border-subtle rounded-card max-h-[90vh]`}>
+      <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[480px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
           <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
@@ -65,7 +65,9 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
   const policies: CrmSlaPolicySummaryDto[] = (rawSla as any)?.items ?? (Array.isArray(rawSla) ? rawSla : []);
   const createPolicy = useCreateSlaPolicy();
   const deletePolicy = useDeleteSlaPolicy();
-  const [form, setForm] = useState<CrmSlaPolicyCreateRequest>({ name: '', initialResponseSlaHours: 4, resolutionSlaHours: 48, isDefault: false });
+  const [form, setForm] = useState<CrmSlaPolicyCreateRequest>({ name: '', initialResponseSlaHours: 4, resolutionSlaHours: 48, isDefault: false, applicablePriority: undefined });
+
+  const priorityLabel = (p?: number) => p != null ? CRM_SUPPORT_PRIORITY_LABELS[p as CrmSupportCasePriority] : 'All';
 
   return (
     <SlideOver title="SLA Policies" onClose={onClose}>
@@ -76,7 +78,10 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
             <div key={p.id} className="flex items-center justify-between p-3 rounded-xl bg-bg-elevated border border-border-subtle">
               <div>
                 <p className="text-sm font-semibold text-text-primary">{p.name}</p>
-                <p className="text-xs text-text-muted mt-0.5">First response: {p.firstResponseMinutes}m · Resolution: {p.resolutionMinutes}m</p>
+                <p className="text-xs text-text-muted mt-0.5">
+                  First response: {p.firstResponseMinutes}m · Resolution: {p.resolutionMinutes}m
+                  {p.applicablePriority != null && <> · Priority: <span className="text-text-secondary font-medium">{priorityLabel(p.applicablePriority)}</span></>}
+                </p>
               </div>
               <button onClick={() => deletePolicy.mutate(p.id)} disabled={deletePolicy.isPending} className="p-1.5 text-text-muted hover:text-danger transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
@@ -87,12 +92,18 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
         <div className="border-t border-border-subtle pt-4 space-y-3">
           <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Add New Policy</p>
           <div><label className="block text-xs font-semibold text-text-muted mb-1">Name *</label>
-            <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Standard, Premium" className={inputCls} /></div>
+            <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Enterprise SLA, Standard" className={inputCls} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><label className="block text-xs font-semibold text-text-muted mb-1">First Response (hrs)</label>
               <input type="number" min={0.5} step={0.5} value={form.initialResponseSlaHours} onChange={e => setForm(f => ({ ...f, initialResponseSlaHours: Number(e.target.value) }))} className={inputCls} /></div>
             <div><label className="block text-xs font-semibold text-text-muted mb-1">Resolution (hrs)</label>
               <input type="number" min={1} step={1} value={form.resolutionSlaHours} onChange={e => setForm(f => ({ ...f, resolutionSlaHours: Number(e.target.value) }))} className={inputCls} /></div>
+          </div>
+          <div><label className="block text-xs font-semibold text-text-muted mb-1">Applies to Priority</label>
+            <select value={form.applicablePriority ?? ''} onChange={e => setForm(f => ({ ...f, applicablePriority: e.target.value ? Number(e.target.value) : undefined }))} className={`${selectCls} w-full`}>
+              <option value="">All priorities (default fallback)</option>
+              {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+            </select>
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={form.isDefault} onChange={e => setForm(f => ({ ...f, isDefault: e.target.checked }))} className="rounded" />
@@ -100,7 +111,7 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
           </label>
           <button
             disabled={!form.name.trim() || createPolicy.isPending}
-            onClick={() => createPolicy.mutate(form, { onSuccess: () => setForm({ name: '', initialResponseSlaHours: 4, resolutionSlaHours: 48, isDefault: false }) })}
+            onClick={() => createPolicy.mutate(form, { onSuccess: () => setForm({ name: '', initialResponseSlaHours: 4, resolutionSlaHours: 48, isDefault: false, applicablePriority: undefined }) })}
             className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all flex items-center justify-center gap-2"
           >
             {createPolicy.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Add Policy'}

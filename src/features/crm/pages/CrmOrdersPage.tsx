@@ -1,19 +1,32 @@
 import { useState } from 'react';
-import { Plus, X, Loader2, Package, CheckCircle, Truck, XCircle } from 'lucide-react';
+import { Plus, X, Loader2, Package, CheckCircle, Truck, XCircle, DollarSign, MapPin, Hash } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useOrders, useCreateOrder, useConfirmOrder, useFulfillOrder, useCancelOrder,
+  useRecordOrderPayment, useUpdateOrderFulfillment,
+  useDeliveries, useCreateDelivery, useUpdateDeliveryStatus,
 } from '../api/crm.queries';
 import type {
-  CrmOrderSummaryDto, CrmOrderCreateRequest, CrmOrderLineItemRequest, CrmOrderFilter,
+  CrmOrderDetailDto, CrmOrderCreateRequest, CrmOrderLineItemRequest,
+  CrmOrderFilter,
 } from '../types/crm.types';
 import {
-  CrmOrderStatus,
   CRM_ORDER_STATUS_LABELS, CRM_ORDER_STATUS_COLORS,
-  CRM_ORDER_FULFILLMENT_LABELS,
+  CRM_ORDER_FULFILLMENT_LABELS, CRM_ORDER_PAYMENT_LABELS, CRM_ORDER_PAYMENT_COLORS,
+  CRM_DELIVERY_STATUS_LABELS, CRM_DELIVERY_STATUS_COLORS,
 } from '../types/crm.types';
 
-const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
+const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
+
+const FULFILLMENT_COLORS: Record<number, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  3: 'text-brand bg-brand-soft border-border-glow',
+  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  6: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  7: 'text-text-muted bg-bg-card border-border-subtle',
+};
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return (
@@ -26,9 +39,9 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function SlideOver({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-bg-elevated shadow-2xl flex flex-col border-thin border-border-subtle rounded-card max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="drawer-slide-in relative w-[560px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
           <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all">
@@ -50,14 +63,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-const FULFILLMENT_COLORS: Record<number, string> = {
-  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
-  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  3: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
-  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
-  5: 'text-text-muted bg-bg-card border-border-subtle',
-};
-
 type LineItem = { productName: string; quantity: string; unitPrice: string };
 const emptyLine = (): LineItem => ({ productName: '', quantity: '1', unitPrice: '' });
 
@@ -70,20 +75,39 @@ export function Component() {
   const [contactId, setContactId] = useState('');
   const [currency, setCurrency] = useState('USD');
   const [notes, setNotes] = useState('');
+  const [shippingLine1, setShippingLine1] = useState('');
+  const [shippingCity, setShippingCity] = useState('');
+  const [shippingState, setShippingState] = useState('');
+  const [shippingPostalCode, setShippingPostalCode] = useState('');
+  const [shippingCountry, setShippingCountry] = useState('');
   const [lines, setLines] = useState<LineItem[]>([emptyLine()]);
 
-  const [selectedOrder, setSelectedOrder] = useState<CrmOrderSummaryDto | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<CrmOrderDetailDto | null>(null);
+  const [showPayment, setShowPayment] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [paymentRef, setPaymentRef] = useState('');
+  const [showNewShipment, setShowNewShipment] = useState(false);
+  const [shipCarrier, setShipCarrier] = useState('');
+  const [shipTracking, setShipTracking] = useState('');
 
   const { data: raw, isLoading } = useOrders(filter);
-  const items: CrmOrderSummaryDto[] = (raw as any)?.items ?? [];
+  const items: CrmOrderDetailDto[] = (raw as any)?.items ?? [];
+
+  const { data: deliveries } = useDeliveries(selectedOrder?.id);
+  const deliveryList: import('../types/crm.types').CrmDeliveryDto[] = (deliveries as any) ?? [];
 
   const createOrder = useCreateOrder();
   const confirmOrder = useConfirmOrder();
   const fulfillOrder = useFulfillOrder();
   const cancelOrder = useCancelOrder();
+  const recordPayment = useRecordOrderPayment();
+  const updateFulfillment = useUpdateOrderFulfillment();
+  const createDelivery = useCreateDelivery();
+  const updateDeliveryStatus = useUpdateDeliveryStatus();
 
   const applyFilter = () => {
-    setFilter({ page: 1, pageSize: 20, search: search || undefined, status: statusF ? Number(statusF) as CrmOrderStatus : undefined });
+    setFilter((f: CrmOrderFilter) => ({ ...f, page: 1, search: search || undefined, status: statusF ? Number(statusF) as any : undefined }));
   };
 
   const lineTotal = lines.reduce((acc, l) => acc + (Number(l.quantity) || 0) * (Number(l.unitPrice) || 0), 0);
@@ -93,13 +117,50 @@ export function Component() {
     const lineItems: CrmOrderLineItemRequest[] = lines
       .filter(l => l.productName.trim())
       .map(l => ({ productName: l.productName.trim(), quantity: Number(l.quantity), unitPrice: Number(l.unitPrice) }));
-    const req: CrmOrderCreateRequest = { contactId: contactId.trim(), lineItems, currency: currency || 'USD', notes: notes || undefined };
+    const req: CrmOrderCreateRequest = {
+      contactId: contactId.trim(),
+      lineItems,
+      currency: currency || 'USD',
+      notes: notes || undefined,
+      shippingAddressLine1: shippingLine1 || undefined,
+      shippingCity: shippingCity || undefined,
+      shippingState: shippingState || undefined,
+      shippingPostalCode: shippingPostalCode || undefined,
+      shippingCountry: shippingCountry || undefined,
+    };
     createOrder.mutate(req, {
       onSuccess: () => {
         setShowCreate(false);
         setContactId(''); setCurrency('USD'); setNotes(''); setLines([emptyLine()]);
+        setShippingLine1(''); setShippingCity(''); setShippingState(''); setShippingPostalCode(''); setShippingCountry('');
       },
     });
+  };
+
+  const handlePayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedOrder) return;
+    recordPayment.mutate({
+      id: selectedOrder.id,
+      data: { amount: Number(paymentAmount), paymentMethod: paymentMethod || undefined, paymentReference: paymentRef || undefined },
+    });
+    setShowPayment(false);
+  };
+
+  const handleFulfillStatus = (id: string, status: number) => {
+    updateFulfillment.mutate({ id, data: { status } });
+  };
+
+  const handleCreateShipment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedOrder) return;
+    createDelivery.mutate({
+      orderId: selectedOrder.id,
+      data: { carrier: shipCarrier || undefined, trackingNumber: shipTracking || undefined },
+    });
+    setShowNewShipment(false);
+    setShipCarrier('');
+    setShipTracking('');
   };
 
   const addLine = () => setLines(ls => [...ls, emptyLine()]);
@@ -137,36 +198,42 @@ export function Component() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
-                  {['Order #', 'Contact', 'Total', 'Status', 'Fulfillment', 'Ordered', 'Actions'].map(h => (
+                  {['Order #', 'Contact', 'Total', 'Status', 'Fulfillment', 'Payment', 'Date', 'Actions'].map(h => (
                     <th key={h} className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {items.map((o: CrmOrderSummaryDto) => (
+                {items.map((o: CrmOrderDetailDto) => (
                   <tr key={o.id} onClick={() => setSelectedOrder(o)} className="border-b border-border-subtle last:border-0 hover:bg-bg-elevated cursor-pointer transition-colors">
                     <td className="px-4 py-3 font-mono text-xs text-text-secondary">{o.orderNumber}</td>
-                    <td className="px-4 py-3 font-medium text-text-primary">{o.contactName ?? o.contactId}</td>
+                    <td className="px-4 py-3 font-medium text-text-primary truncate max-w-[140px]">{o.contactName ?? o.contactId}</td>
                     <td className="px-4 py-3 text-text-secondary">{o.currency} {o.totalAmount.toLocaleString()}</td>
                     <td className="px-4 py-3"><Badge value={o.status} labels={CRM_ORDER_STATUS_LABELS} colors={CRM_ORDER_STATUS_COLORS} /></td>
                     <td className="px-4 py-3"><Badge value={o.fulfillmentStatus} labels={CRM_ORDER_FULFILLMENT_LABELS} colors={FULFILLMENT_COLORS} /></td>
-                    <td className="px-4 py-3 text-text-muted text-xs">{format(parseISO(o.orderedAt), 'MMM d, yyyy')}</td>
+                    <td className="px-4 py-3"><Badge value={o.paymentStatus} labels={CRM_ORDER_PAYMENT_LABELS} colors={CRM_ORDER_PAYMENT_COLORS} /></td>
+                    <td className="px-4 py-3 text-text-muted text-xs">{o.orderDate ? format(parseISO(o.orderDate), 'MMM d, yyyy') : '-'}</td>
                     <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
                       <div className="flex items-center gap-1.5">
-                        {o.status === CrmOrderStatus.Pending && (
+                        {o.status === 1 && (
                           <button onClick={() => confirmOrder.mutate(o.id)} disabled={confirmOrder.isPending} title="Confirm" className="p-1.5 rounded-lg text-text-muted hover:text-success hover:bg-success-soft transition-all disabled:opacity-50">
                             <CheckCircle className="w-4 h-4" />
                           </button>
                         )}
-                        {o.status === CrmOrderStatus.Confirmed && (
-                          <button onClick={() => fulfillOrder.mutate(o.id)} disabled={fulfillOrder.isPending} title="Fulfill" className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all disabled:opacity-50">
+                        {o.status === 2 && (
+                          <button onClick={() => fulfillOrder.mutate(o.id)} disabled={fulfillOrder.isPending} title="Mark Delivered" className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all disabled:opacity-50">
                             <Truck className="w-4 h-4" />
                           </button>
                         )}
-                        {o.status !== CrmOrderStatus.Delivered && o.status !== CrmOrderStatus.Cancelled && (
-                          <button onClick={() => cancelOrder.mutate(o.id)} disabled={cancelOrder.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50">
-                            <XCircle className="w-4 h-4" />
-                          </button>
+                        {o.status >= 1 && o.status <= 3 && (
+                          <>
+                            <button onClick={() => { setSelectedOrder(o); setShowPayment(true); setPaymentAmount(String(o.totalAmount)); }} title="Record Payment" className="p-1.5 rounded-lg text-text-muted hover:text-success hover:bg-success-soft transition-all">
+                              <DollarSign className="w-4 h-4" />
+                            </button>
+                            <button onClick={() => cancelOrder.mutate(o.id)} disabled={cancelOrder.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50">
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                          </>
                         )}
                       </div>
                     </td>
@@ -182,8 +249,17 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Order">
         <form onSubmit={handleCreate} className="space-y-4">
           <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} /></Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} /></Field>
+          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} /></Field>
+
+          <div className="border-t border-border-subtle pt-3">
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-2"><MapPin className="w-3 h-3" /> Shipping Address</label>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="col-span-2"><input value={shippingLine1} onChange={e => setShippingLine1(e.target.value)} placeholder="Address line 1" className={inputCls} /></div>
+              <input value={shippingCity} onChange={e => setShippingCity(e.target.value)} placeholder="City" className={inputCls} />
+              <input value={shippingState} onChange={e => setShippingState(e.target.value)} placeholder="State" className={inputCls} />
+              <input value={shippingPostalCode} onChange={e => setShippingPostalCode(e.target.value)} placeholder="Postal code" className={inputCls} />
+              <input value={shippingCountry} onChange={e => setShippingCountry(e.target.value)} placeholder="Country" className={inputCls} />
+            </div>
           </div>
 
           <div>
@@ -223,47 +299,193 @@ export function Component() {
         </form>
       </SlideOver>
 
+      {/* Payment SlideOver */}
+      <SlideOver open={showPayment} onClose={() => setShowPayment(false)} title="Record Payment">
+        <form onSubmit={handlePayment} className="space-y-4">
+          {selectedOrder && (
+            <>
+              <p className="text-sm text-text-muted">Order <span className="font-mono text-text-primary">{selectedOrder.orderNumber}</span></p>
+              <Field label="Amount *">
+                <input required type="number" min="0" step="0.01" value={paymentAmount} onChange={e => setPaymentAmount(e.target.value)} className={inputCls} />
+              </Field>
+              <Field label="Payment Method">
+                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className={inputCls}>
+                  <option value="">Select...</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Credit Card">Credit Card</option>
+                  <option value="Mobile Payment">Mobile Payment</option>
+                  <option value="Cheque">Cheque</option>
+                </select>
+              </Field>
+              <Field label="Reference">
+                <input value={paymentRef} onChange={e => setPaymentRef(e.target.value)} placeholder="transaction-id" className={inputCls} />
+              </Field>
+              <div className="flex gap-3 pt-2">
+                <button type="submit" disabled={recordPayment.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+                  {recordPayment.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Record Payment'}
+                </button>
+                <button type="button" onClick={() => setShowPayment(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+              </div>
+            </>
+          )}
+        </form>
+      </SlideOver>
+
+      {/* New Shipment SlideOver */}
+      <SlideOver open={showNewShipment} onClose={() => setShowNewShipment(false)} title="New Shipment">
+        <form onSubmit={handleCreateShipment} className="space-y-4">
+          <p className="text-sm text-text-muted">Order <span className="font-mono text-text-primary">{selectedOrder?.orderNumber}</span></p>
+          <Field label="Carrier"><input value={shipCarrier} onChange={e => setShipCarrier(e.target.value)} placeholder="DHL, FedEx, etc." className={inputCls} /></Field>
+          <Field label="Tracking Number"><input value={shipTracking} onChange={e => setShipTracking(e.target.value)} placeholder="tracking-number" className={inputCls} /></Field>
+          <div className="flex gap-3 pt-2">
+            <button type="submit" disabled={createDelivery.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+              {createDelivery.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Shipment'}
+            </button>
+            <button type="button" onClick={() => setShowNewShipment(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+          </div>
+        </form>
+      </SlideOver>
+
       {/* Detail SlideOver */}
-      <SlideOver open={!!selectedOrder} onClose={() => setSelectedOrder(null)} title="Order">
+      <SlideOver open={!!selectedOrder && !showPayment && !showNewShipment} onClose={() => setSelectedOrder(null)} title="Order Detail">
         {selectedOrder && (
           <div className="space-y-5">
             <div>
               <div className="font-mono text-xs text-text-muted mb-1">{selectedOrder.orderNumber}</div>
-              <div className="font-extrabold text-base text-text-primary">{selectedOrder.contactName ?? selectedOrder.contactId}</div>
+              <div className="font-extrabold text-lg text-text-primary">{selectedOrder.contactName ?? selectedOrder.contactId}</div>
               <div className="flex items-center gap-2 mt-2 flex-wrap">
                 <Badge value={selectedOrder.status} labels={CRM_ORDER_STATUS_LABELS} colors={CRM_ORDER_STATUS_COLORS} />
                 <Badge value={selectedOrder.fulfillmentStatus} labels={CRM_ORDER_FULFILLMENT_LABELS} colors={FULFILLMENT_COLORS} />
+                <Badge value={selectedOrder.paymentStatus} labels={CRM_ORDER_PAYMENT_LABELS} colors={CRM_ORDER_PAYMENT_COLORS} />
               </div>
             </div>
 
-            <div className="space-y-2 text-sm">
-              {[
-                ['Total', `${selectedOrder.currency} ${selectedOrder.totalAmount.toLocaleString()}`],
-                ['Ordered', format(parseISO(selectedOrder.orderedAt), 'MMM d, yyyy')],
-                ['Created', format(parseISO(selectedOrder.createdAt), 'MMM d, yyyy')],
-              ].map(([k, v]) => (
-                <div key={String(k)} className="flex justify-between py-1.5 border-b border-border-subtle last:border-0">
-                  <span className="text-text-muted">{k}</span>
-                  <span className="text-text-primary font-medium">{String(v)}</span>
-                </div>
-              ))}
+            {/* Financials */}
+            <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+              <div className="flex justify-between"><span className="text-text-muted">Subtotal</span><span className="text-text-primary">{selectedOrder.currency} {selectedOrder.subtotal.toLocaleString()}</span></div>
+              <div className="flex justify-between"><span className="text-text-muted">Tax</span><span className="text-text-primary">{selectedOrder.currency} {selectedOrder.taxAmount.toLocaleString()}</span></div>
+              <div className="flex justify-between"><span className="text-text-muted">Discount</span><span className="text-text-primary">-{selectedOrder.currency} {selectedOrder.discountAmount.toLocaleString()}</span></div>
+              <div className="flex justify-between font-bold border-t border-border-subtle pt-2"><span>Total</span><span>{selectedOrder.currency} {selectedOrder.totalAmount.toLocaleString()}</span></div>
+              {selectedOrder.paidAt && <div className="flex justify-between text-success text-xs"><span>Paid</span><span>{format(parseISO(selectedOrder.paidAt), 'MMM d, yyyy')} ({selectedOrder.paymentMethod ?? '-'})</span></div>}
             </div>
 
-            <div className="flex gap-2 pt-2 border-t border-border-subtle">
-              {selectedOrder.status === CrmOrderStatus.Pending && (
-                <button onClick={() => { confirmOrder.mutate(selectedOrder.id); }} disabled={confirmOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success hover:bg-success-soft transition-all disabled:opacity-50">
+            {/* Shipping */}
+            {selectedOrder.shippingAddressLine1 && (
+              <div>
+                <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-1.5"><MapPin className="w-3 h-3" /> Shipping Address</label>
+                <div className="text-sm text-text-primary bg-bg-surface rounded-xl p-3">
+                  <p>{selectedOrder.shippingAddressLine1}</p>
+                  {selectedOrder.shippingAddressLine2 && <p>{selectedOrder.shippingAddressLine2}</p>}
+                  <p>{[selectedOrder.shippingCity, selectedOrder.shippingState, selectedOrder.shippingPostalCode].filter(Boolean).join(', ')}</p>
+                  {selectedOrder.shippingCountry && <p>{selectedOrder.shippingCountry}</p>}
+                </div>
+              </div>
+            )}
+
+            {/* Tracking */}
+            {selectedOrder.trackingNumber && (
+              <div>
+                <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-1.5"><Hash className="w-3 h-3" /> Tracking</label>
+                <div className="text-sm text-text-primary bg-bg-surface rounded-xl p-3">
+                  <p>Carrier: {selectedOrder.carrier ?? '-'}</p>
+                  <p className="font-mono">{selectedOrder.trackingNumber}</p>
+                  {selectedOrder.shippedAt && <p className="text-xs text-text-muted mt-1">Shipped: {format(parseISO(selectedOrder.shippedAt), 'MMM d, yyyy')}</p>}
+                  {selectedOrder.actualDeliveryDate && <p className="text-xs text-text-muted">Delivered: {format(parseISO(selectedOrder.actualDeliveryDate), 'MMM d, yyyy')}</p>}
+                </div>
+              </div>
+            )}
+
+            {/* Shipments / Deliveries */}
+            {deliveryList.length > 0 && (
+              <div>
+                <label className="text-xs font-semibold text-text-muted mb-1.5">Shipments ({deliveryList.length})</label>
+                <div className="space-y-2">
+                  {deliveryList.map(d => (
+                    <div key={d.id} className="bg-bg-surface rounded-xl p-3 text-sm space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs text-text-secondary">{d.shipmentNumber}</span>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${CRM_DELIVERY_STATUS_COLORS[d.status] ?? ''}`}>
+                          {CRM_DELIVERY_STATUS_LABELS[d.status] ?? d.status}
+                        </span>
+                      </div>
+                      {d.carrier && <div className="flex justify-between text-xs"><span className="text-text-muted">Carrier</span><span className="text-text-primary">{d.carrier}</span></div>}
+                      {d.trackingNumber && <div className="flex justify-between text-xs"><span className="text-text-muted">Tracking</span><span className="font-mono text-text-primary">{d.trackingNumber}</span></div>}
+                      {d.shippedAt && <div className="text-xs text-text-muted">Shipped: {format(parseISO(d.shippedAt), 'MMM d, yyyy')}</div>}
+                      {d.deliveredAt && <div className="text-xs text-success">Delivered: {format(parseISO(d.deliveredAt), 'MMM d, yyyy')}</div>}
+                      {d.failureReason && <div className="text-xs text-danger">Failed: {d.failureReason}</div>}
+                      {d.status >= 1 && d.status <= 4 && (
+                        <div className="flex gap-1 mt-1.5">
+                          {d.status === 1 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 2 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">Pick Up</button>}
+                          {d.status === 2 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 3 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">In Transit</button>}
+                          {d.status === 3 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 4 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">Out for Delivery</button>}
+                          {d.status === 4 && (
+                            <>
+                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} className="text-[10px] px-2 py-1 rounded bg-success/10 text-success border border-success/20 hover:bg-success/20">Delivered</button>
+                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} className="text-[10px] px-2 py-1 rounded bg-danger/10 text-danger border border-danger/20 hover:bg-danger/20">Failed</button>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Line Items */}
+            {selectedOrder.lineItems?.length > 0 && (
+              <div>
+                <label className="text-xs font-semibold text-text-muted mb-1.5">Line Items</label>
+                <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle">
+                  {selectedOrder.lineItems.map(li => (
+                    <div key={li.id} className="flex justify-between items-center px-3 py-2 text-sm">
+                      <div>
+                        <span className="text-text-primary font-medium">{li.productName}</span>
+                        {li.sku && <span className="text-text-muted text-xs ml-2">SKU: {li.sku}</span>}
+                      </div>
+                      <div className="text-right">
+                        <span className="text-text-muted">{li.quantity} × {selectedOrder.currency} {li.unitPrice}</span>
+                        <span className="text-text-primary font-medium ml-3">= {selectedOrder.currency} {li.totalPrice}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedOrder.notes && <div><label className="text-xs font-semibold text-text-muted mb-1">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selectedOrder.notes}</p></div>}
+            {selectedOrder.cancellationReason && <div><label className="text-xs font-semibold text-danger mb-1">Cancellation Reason</label><p className="text-sm text-danger bg-danger-soft rounded-xl p-3">{selectedOrder.cancellationReason}</p></div>}
+
+            {/* Actions */}
+            <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
+              {selectedOrder.status === 1 && (
+                <button onClick={() => confirmOrder.mutate(selectedOrder.id)} disabled={confirmOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success hover:bg-success-soft transition-all disabled:opacity-50">
                   <CheckCircle className="w-3.5 h-3.5" /> Confirm
                 </button>
               )}
-              {selectedOrder.status === CrmOrderStatus.Confirmed && (
-                <button onClick={() => { fulfillOrder.mutate(selectedOrder.id); }} disabled={fulfillOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand hover:bg-brand-soft transition-all disabled:opacity-50">
-                  <Truck className="w-3.5 h-3.5" /> Fulfill
-                </button>
+              {selectedOrder.status === 2 && (
+                <>
+                  <button onClick={() => handleFulfillStatus(selectedOrder.id, 3)} disabled={updateFulfillment.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
+                    <Truck className="w-3.5 h-3.5" /> Mark Shipped
+                  </button>
+                  <button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 transition-all disabled:opacity-50">
+                    <CheckCircle className="w-3.5 h-3.5" /> Mark Delivered
+                  </button>
+                </>
               )}
-              {selectedOrder.status !== CrmOrderStatus.Delivered && selectedOrder.status !== CrmOrderStatus.Cancelled && (
-                <button onClick={() => { cancelOrder.mutate(selectedOrder.id, { onSuccess: () => setSelectedOrder(null) }); }} disabled={cancelOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(244,63,94,0.2)] text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
-                  <XCircle className="w-3.5 h-3.5" /> Cancel
-                </button>
+              {selectedOrder.status >= 1 && selectedOrder.status <= 3 && (
+                <>
+                  <button onClick={() => { setShowNewShipment(true); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all">
+                    <Truck className="w-3.5 h-3.5" /> New Shipment
+                  </button>
+                  <button onClick={() => { setShowPayment(true); setPaymentAmount(String(selectedOrder.totalAmount)); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success transition-all">
+                    <DollarSign className="w-3.5 h-3.5" /> Record Payment
+                  </button>
+                  <button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(244,63,94,0.2)] text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
+                    <XCircle className="w-3.5 h-3.5" /> Cancel
+                  </button>
+                </>
               )}
             </div>
           </div>

@@ -67,9 +67,9 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
     'w-full px-4 py-2.5 rounded-lg bg-glass-2 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg mx-4 bg-bg-shell border border-border-medium rounded-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-b-border-subtle">
           <h2 className="text-lg font-extrabold text-text-primary tracking-tight">Add channel connection</h2>
@@ -82,7 +82,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
         </div>
 
         {/* Form */}
-        <form onSubmit={form.handleSubmit(onSubmit)} className="p-6 space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-6 space-y-4">
           {/* Channel type */}
           <div>
             <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">

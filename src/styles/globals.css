@@ -4,6 +4,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════
+   Dark Green Theme — ported from AuroraBI
+   RGB channel format allows opacity compositing:
+   e.g. rgb(var(--color-surface-card) / 0.5)
+   ═══════════════════════════════════════════════════════ */
+:root {
+  /* ── Surfaces (RGB) ── */
+  --color-surface-app:       10  22  18;   /* #0A1612 — page body        */
+  --color-surface-card:      19  36  32;   /* #132420 — card base        */
+  --color-surface-elevated:  26  51  44;   /* #1A332C — modal / popover  */
+  --color-surface-inset:     15  30  26;   /* #0F1E1A — shell / input bg */
+  --color-surface-overlay:    0   0   0;   /* #000000 — backdrop         */
+
+  /* ── Text (RGB) ── */
+  --color-text-primary:     255 255 255;   /* #FFFFFF                    */
+  --color-text-body:        184 230 213;   /* #B8E6D5                    */
+  --color-text-secondary:   184 230 213;   /* #B8E6D5                    */
+  --color-text-muted:       122 155 142;   /* #7A9B8E                    */
+  --color-text-inverted:     10  22  18;   /* #0A1612 — text on brand bg */
+
+  /* ── Borders (RGB) ── */
+  --color-border-default:    28  65  50;   /* subtle green separator     */
+  --color-border-subtle:     20  48  37;   /* very faint border          */
+  --color-border-strong:     42  90  68;   /* visible dark green border  */
+
+  /* ── Accent / Ring (RGB) ── */
+  --color-accent-text:        0 217 138;   /* #00D98A — brand primary    */
+  --color-ring-offset:       10  22  18;   /* #0A1612 — focus ring       */
+
+  /* ── Legacy direct-value aliases (hex / rgba) ── */
+  --bg-primary:             #0A1612;
+  --bg-secondary:           #0F1E1A;
+  --bg-card:                #132420;
+  --bg-elevated:            #1A332C;
+
+  --primary:                #00D98A;
+  --primary-dark:           #00B872;
+  --primary-light:          #00FFA3;
+  --glow-primary:           rgba(0, 217, 138, 0.25);
+
+  --border-primary:         rgba(0, 217, 138, 0.20);
+  --border-subtle:          rgba(184, 230, 213, 0.10);
+
+  --text-primary:           #FFFFFF;
+  --text-secondary:         #B8E6D5;
+  --text-muted:             #7A9B8E;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -42,6 +90,25 @@
   :focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px #0A1612, 0 0 0 4px rgba(0, 217, 138, 0.4);
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(0, 217, 138, 0.50),
+                0 0 10px rgba(0, 217, 138, 0.20),
+                0 0 20px rgba(0, 217, 138, 0.08);
+  }
+
+  /* Remove number input spinners */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type=number] {
+    -moz-appearance: textfield;
   }
 
   /* Top-to-bottom gradient on every button — lime-yellow hint at top fades
@@ -914,12 +981,32 @@ select:-webkit-autofill {
   -webkit-text-fill-color: #ffffff !important;
 
   /* Match your .form-input background */
-  -webkit-box-shadow: 0 0 0px 1000px #0F1E1A inset !important;
-  box-shadow: 0 0 0px 1000px #0F1E1A inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px #132420 inset !important;
+  box-shadow: 0 0 0px 1000px #132420 inset !important;
 
   border: 0.5px solid #1C4132 !important;
 
   transition: background-color 9999s ease-in-out 0s;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Right-side drawer slide-in
+   ═══════════════════════════════════════════════════════ */
+
+@keyframes drawerSlideIn {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+.drawer-slide-in {
+  animation: drawerSlideIn 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes floatPanelIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+.float-panel-in {
+  animation: floatPanelIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* App Launcher — iOS-style jiggle in edit mode */

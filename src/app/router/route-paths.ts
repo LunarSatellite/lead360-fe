@@ -48,6 +48,7 @@ export const ROUTES = {
     crmContactDetail: (id: string) => `/dashboard/crm/contacts/${id}`,
     crmOrganizations: '/dashboard/crm/organizations',
     crmAccounts: '/dashboard/crm/accounts',
+    crmDealsHub: '/dashboard/crm/deals-hub',
     crmDeals: '/dashboard/crm/deals',
     crmDealDetail: (id: string) => `/dashboard/crm/deals/${id}`,
     crmPipelines: '/dashboard/crm/pipelines',
@@ -77,6 +78,19 @@ export const ROUTES = {
     crmProcessDefinitions: '/dashboard/crm/process-definitions',
     crmProcessInstances: '/dashboard/crm/process-instances',
     crmEventIngestion: '/dashboard/crm/event-ingestion',
+    crmReturns: '/dashboard/crm/returns',
+    crmWorkOrders: '/dashboard/crm/work-orders',
+    crmCustomerOnboarding: '/dashboard/crm/customer-onboarding',
+    crmOpsDashboard: '/dashboard/crm/ops-dashboard',
+    crmDispatchCalendar: '/dashboard/crm/dispatch',
+    crmTimePeriods: '/dashboard/crm/time-periods',
+    crmApprovalChains: '/dashboard/crm/approval-chains',
+    crmAssignmentRotation: '/dashboard/crm/assignment-rotation',
+    // ── Procurement ──
+    crmVendors: '/dashboard/crm/vendors',
+    crmPurchaseOrders: '/dashboard/crm/purchase-orders',
+    crmGoodsReceipts: '/dashboard/crm/goods-receipts',
+    crmSupplierInvoices: '/dashboard/crm/supplier-invoices',
     // ── Flow A/B Experiments ──
     flowExperiments: '/dashboard/flows/experiments',
     // ── Integrations ──

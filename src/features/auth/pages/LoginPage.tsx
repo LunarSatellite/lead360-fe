@@ -29,7 +29,7 @@ export function Component() {
   //   2. location.state.from.pathname — set by the RequireAuth guard
   //      when an authed-only route bounces an anonymous visitor here.
   //      Pathname only — guard doesn't preserve the query string.
-  //   3. /dashboard/chat — the primary surface fallback.
+  //   3. /dashboard/analytics — the primary surface fallback.
   // Returned values are kept relative — we never honour an absolute
   // URL here (open-redirect protection: external return targets are
   // ignored).
@@ -41,7 +41,7 @@ export function Component() {
   const from =
     safeReturn ||
     (location.state as { from?: { pathname: string } })?.from?.pathname ||
-    '/dashboard/chat';
+    '/dashboard/crm/analytics';
 
   const onSubmit = (data: LoginFormData) => {
     login.mutate(data, { onSuccess: () => navigate(from, { replace: true }) });

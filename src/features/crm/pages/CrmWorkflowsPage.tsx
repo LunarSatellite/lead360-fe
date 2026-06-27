@@ -21,7 +21,7 @@ import { format, parseISO } from 'date-fns';
 import {
   useWorkflows, useCreateWorkflow, useUpdateWorkflow, useDeleteWorkflow,
   useRunWorkflow, useWorkflowExecutions, useGenerateWorkflow, useChatWorkflow,
-  useDealStages, useNurtureSequences,
+  useDealStages, useNurtureSequences, useWorkflowTriggerDefinitions,
 } from '../api/crm.queries';
 import { useProcessDefinitions } from '../api/process-workflow.queries';
 import type { ProcessDefinitionDto } from '../types/process-workflow.types';
@@ -430,9 +430,10 @@ const API_TO_TRIGGER: Record<string, CrmWorkflowTriggerType> = Object.fromEntrie
 );
 
 function stepsToGraph(steps: Array<CrmWorkflowStepRequest | { id?: string; stepOrder: number; actionType: string; actionConfigJson?: string | null; delayMinutes?: number }> | undefined, triggerType: CrmWorkflowTriggerType | string, conditionsJson = ''): { nodes: Node[]; edges: Edge[] } {
-  const triggerTypeNum: CrmWorkflowTriggerType = typeof triggerType === 'string' ? (API_TO_TRIGGER[triggerType] ?? CrmWorkflowTriggerType.Manual) : triggerType;
+  // Preserve the dot-notation string directly; only fall back to numeric→string mapping when given a numeric enum.
+  const apiTriggerType: string = typeof triggerType === 'string' ? triggerType : (TRIGGER_TO_API[triggerType] ?? 'manual');
   const nodes: Node[] = [
-    { id: 'node-trigger', type: 'trigger', position: { x: 0, y: 0 }, data: { subtype: 'trigger', label: 'Trigger', config: { apiTriggerType: TRIGGER_TO_API[triggerTypeNum] ?? triggerType ?? 'manual', conditionsJson } } },
+    { id: 'node-trigger', type: 'trigger', position: { x: 0, y: 0 }, data: { subtype: 'trigger', label: 'Trigger', config: { apiTriggerType, conditionsJson } } },
     { id: 'node-end', type: 'end', position: { x: 0, y: 240 }, data: { subtype: 'end', label: 'End' } },
   ];
   const edges: Edge[] = [];
@@ -732,8 +733,10 @@ function ActionConfigEditor({ actionType, value, onChange }: {
 }
 
 function CreateWorkflowForm({ onGenerate }: {
-  onGenerate: (triggerType: CrmWorkflowTriggerType, conditionsJson: string, steps: CrmWorkflowStepRequest[]) => void;
+  onGenerate: (triggerType: string, conditionsJson: string, steps: CrmWorkflowStepRequest[]) => void;
 }) {
+  const { data: triggerDefsRaw } = useWorkflowTriggerDefinitions();
+  const triggerDefs = triggerDefsRaw as unknown as { triggerType: string; displayName: string }[] | undefined;
   const [description, setDescription] = useState('');
   const [triggerType, setTriggerType] = useState('deal.stage_changed');
   const [triggerConditionsJson, setTriggerConditionsJson] = useState('');
@@ -768,7 +771,8 @@ function CreateWorkflowForm({ onGenerate }: {
           <label className="block text-2xs font-semibold mb-1 text-text-secondary">Trigger</label>
           <select value={triggerType} onChange={(e) => { setTriggerType(e.target.value); setTriggerConditionsJson('{}'); }}
             className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary outline-none focus:border-brand">
-            {Object.entries(CRM_WORKFLOW_TRIGGER_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+            {(triggerDefs ?? Object.entries(CRM_WORKFLOW_TRIGGER_LABELS).map(([k, l]) => ({ triggerType: k, displayName: l })))
+              .map((d) => <option key={d.triggerType} value={d.triggerType}>{d.displayName}</option>)}
           </select>
         </div>
 
@@ -818,7 +822,7 @@ function CreateWorkflowForm({ onGenerate }: {
       </div>
 
       <div className="px-3 py-2 border-t border-border-subtle shrink-0">
-        <button onClick={() => onGenerate(API_TO_TRIGGER[triggerType] ?? CrmWorkflowTriggerType.Manual, triggerConditionsJson, steps)}
+        <button onClick={() => onGenerate(triggerType, triggerConditionsJson, steps)}
           className="w-full py-1.5 rounded-lg text-[10px] font-bold text-white transition-all"
           style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}>
           Generate to Canvas

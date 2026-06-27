@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
     lazy: async () => {
       const token = localStorage.getItem('omniflow_token');
       if (token) {
-        return { Component: () => <Navigate to="/dashboard/chat" replace /> };
+        return { Component: () => <Navigate to="/dashboard/crm/analytics" replace /> };
       }
       return import('@/features/landing/pages/LandingPage');
     },
@@ -133,6 +133,7 @@ export const router = createBrowserRouter([
       { path: 'crm/contacts/:id', lazy: () => import('@/features/crm/pages/ContactDetailPage') },
       { path: 'crm/organizations', lazy: () => import('@/features/crm/pages/OrganizationsPage') },
       { path: 'crm/accounts', lazy: () => import('@/features/crm/pages/AccountsPage') },
+      { path: 'crm/deals-hub', lazy: () => import('@/features/crm/pages/CrmDealsHubPage') },
       { path: 'crm/deals', lazy: () => import('@/features/crm/pages/DealsPage') },
       { path: 'crm/deals/:id', lazy: () => import('@/features/crm/pages/DealDetailPage') },
       { path: 'crm/pipelines', lazy: () => import('@/features/crm/pages/CrmPipelinesPage') },
@@ -148,9 +149,6 @@ export const router = createBrowserRouter([
       { path: 'crm/proposals', lazy: () => import('@/features/crm/pages/CrmProposalsPage') },
       { path: 'crm/invoices', lazy: () => import('@/features/crm/pages/CrmInvoicesPage') },
       { path: 'crm/subscriptions', lazy: () => import('@/features/crm/pages/CrmSubscriptionsPage') },
-      { path: 'crm/renewals', lazy: () => import('@/features/crm/pages/RenewalsPage') },
-      { path: 'crm/price-books', lazy: () => import('@/features/crm/pages/PriceBooksPage') },
-      { path: 'crm/contracts', lazy: () => import('@/features/crm/pages/ContractsPage') },
       { path: 'crm/orders', lazy: () => import('@/features/crm/pages/CrmOrdersPage') },
       { path: 'crm/meetings', lazy: () => import('@/features/crm/pages/CrmMeetingsPage') },
       { path: 'crm/workflows', lazy: () => import('@/features/crm/pages/CrmWorkflowsPage') },
@@ -163,6 +161,14 @@ export const router = createBrowserRouter([
       { path: 'crm/time-tracking', lazy: () => import('@/features/crm/pages/CrmTimeTrackingPage') },
       { path: 'crm/custom-fields', lazy: () => import('@/features/crm/pages/CustomFieldsPage') },
       { path: 'crm/dedup', lazy: () => import('@/features/crm/pages/CrmDeduplicationPage') },
+      { path: 'crm/ops-dashboard', lazy: () => import('@/features/crm/pages/CrmOpsDashboardPage') },
+      { path: 'crm/time-periods', lazy: () => import('@/features/crm/pages/CrmTimePeriodsPage') },
+      { path: 'crm/approval-chains', lazy: () => import('@/features/crm/pages/CrmApprovalChainsPage') },
+      { path: 'crm/assignment-rotation', lazy: () => import('@/features/crm/pages/CrmAssignmentRotationPage') },
+      { path: 'crm/vendors', lazy: () => import('@/features/crm/pages/VendorsPage') },
+      { path: 'crm/purchase-orders', lazy: () => import('@/features/crm/pages/PurchaseOrdersPage') },
+      { path: 'crm/goods-receipts', lazy: () => import('@/features/crm/pages/GoodsReceiptsPage') },
+      { path: 'crm/supplier-invoices', lazy: () => import('@/features/crm/pages/SupplierInvoicesPage') },
       // ── Flow A/B Experiments ──
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
       { index: true, element: <Navigate to="chat" replace /> },

@@ -201,10 +201,10 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
   const labelClass = 'text-2xs font-bold uppercase tracking-[2px] text-text-secondary block mb-1.5 pl-2';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleClose} />
 
-      <div className="relative w-full max-w-xl mx-4 bg-bg-shell border-thin border-border-medium rounded-frame overflow-hidden max-h-[90vh] flex flex-col">
+      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
 
         {/* Channel-coloured accent bar */}
         <div
@@ -307,7 +307,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
           </form>
         ) : (
           /* ─── Step 2: Webhook setup ─── */
-          <div className="p-5 space-y-4">
+          <div className="flex-1 overflow-y-auto p-5 space-y-4">
 
             {/* Success banner */}
             <div className="flex items-center gap-3 px-4 py-3.5 rounded-card bg-glass-1 border-thin border-border-glow">

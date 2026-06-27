@@ -1,11 +1,11 @@
 // Lead stages matching backend LeadStage enum
 export const LeadStage = {
-  New: 1, Warm: 2, Hot: 3, Nurturing: 4, Converted: 5, Lost: 6,
+  New: 1, Warm: 2, Hot: 3, Nurturing: 4, Converted: 5, Lost: 6, Qualified: 7,
 } as const;
 export type LeadStage = (typeof LeadStage)[keyof typeof LeadStage];
 
 export const LEAD_STAGE_LABELS: Record<LeadStage, string> = {
-  1: 'New', 2: 'Warm', 3: 'Hot', 4: 'Nurturing', 5: 'Converted', 6: 'Lost',
+  1: 'New', 2: 'Warm', 3: 'Hot', 4: 'Nurturing', 5: 'Converted', 6: 'Lost', 7: 'Qualified',
 };
 
 export const LEAD_STAGE_COLORS: Record<LeadStage, string> = {
@@ -15,6 +15,7 @@ export const LEAD_STAGE_COLORS: Record<LeadStage, string> = {
   4: 'text-brand bg-brand-soft border-border-glow',
   5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
   6: 'text-text-muted bg-bg-card border-border-subtle',
+  7: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
 };
 
 export const ChannelType = {
@@ -939,8 +940,9 @@ export interface ConvertLeadRequest {
   closeDate?: string;
   ownedByUserId?: string;
   notes?: string;
+  companyName?: string;
 }
-export interface ConvertLeadResponse { contactId: string; dealId: string; }
+export interface ConvertLeadResponse { contactId: string; dealId: string; organizationId?: string; accountId?: string; }
 
 // ─── Signal DTOs ──────────────────────────────────────────────────────────────
 
@@ -1546,8 +1548,8 @@ export interface CrmSupportCaseFilter {
   page?: number;
   pageSize?: number;
 }
-export interface CrmSlaPolicySummaryDto { id: string; name: string; firstResponseMinutes: number; resolutionMinutes: number; }
-export interface CrmSlaPolicyCreateRequest { name: string; initialResponseSlaHours: number; resolutionSlaHours: number; isDefault?: boolean; }
+export interface CrmSlaPolicySummaryDto { id: string; name: string; firstResponseMinutes: number; resolutionMinutes: number; applicablePriority?: number; }
+export interface CrmSlaPolicyCreateRequest { name: string; initialResponseSlaHours: number; resolutionSlaHours: number; isDefault?: boolean; applicablePriority?: number; }
 
 // ─── Tasks ────────────────────────────────────────────────────────────────────
 
@@ -2234,14 +2236,14 @@ export interface FbAdAccountConnectRequest {
 
 // ─── Announcements ────────────────────────────────────────────────────────────
 
-export const AnnouncementType = { General: 1, Maintenance: 2, Feature: 3, Alert: 4 } as const;
+export const AnnouncementType = { General: 1, Maintenance: 2, Feature: 3, Alert: 4, Urgent: 5 } as const;
 export type AnnouncementType = (typeof AnnouncementType)[keyof typeof AnnouncementType];
 
 export const AnnouncementStatus = { Draft: 1, Scheduled: 2, Published: 3, Archived: 4 } as const;
 export type AnnouncementStatus = (typeof AnnouncementStatus)[keyof typeof AnnouncementStatus];
 
 export const ANNOUNCEMENT_TYPE_LABELS: Record<AnnouncementType, string> = {
-  1: 'General', 2: 'Maintenance', 3: 'Feature', 4: 'Alert',
+  1: 'General', 2: 'Maintenance', 3: 'Feature', 4: 'Alert', 5: 'Urgent',
 };
 export const ANNOUNCEMENT_STATUS_LABELS: Record<AnnouncementStatus, string> = {
   1: 'Draft', 2: 'Scheduled', 3: 'Published', 4: 'Archived',
@@ -2282,6 +2284,18 @@ export interface AnnouncementUpdateRequest {
   content?: string;
   type?: AnnouncementType;
   scheduledAt?: string;
+}
+
+// ─── Web Events ────────────────────────────────────────────────────────────────
+
+export interface WebEventSummaryDto {
+  id: string;
+  eventType: string;
+  contactEmail?: string;
+  contactId?: string;
+  workflowsTriggered: number;
+  receivedAt: string;
+  propertiesJson?: string;
 }
 
 // ── Custom Fields ─────────────────────────────────────────────────────────────
@@ -2461,4 +2475,468 @@ export interface CrmCreateDeliveryRequest {
 export interface CrmUpdateDeliveryStatusRequest {
   status: CrmDeliveryStatus; carrier?: string; trackingNumber?: string;
   recipientName?: string; proofPhotoUrl?: string; signatureUrl?: string; failureReason?: string;
+}
+
+export interface CrmDeliveryFilter {
+  status?: CrmDeliveryStatus; orderId?: string; search?: string; page?: number; pageSize?: number;
+}
+
+// ─── Equipment / Asset ────────────────────────────────────────────────────────
+
+export const CrmEquipmentStatus = {
+  Active: 1, UnderRepair: 2, Decommissioned: 3, Returned: 4, Standby: 5,
+} as const;
+export type CrmEquipmentStatus = (typeof CrmEquipmentStatus)[keyof typeof CrmEquipmentStatus];
+export const CRM_EQUIPMENT_STATUS_LABELS: Record<CrmEquipmentStatus, string> = {
+  1: 'Active', 2: 'Under Repair', 3: 'Decommissioned', 4: 'Returned', 5: 'Standby',
+};
+export const CRM_EQUIPMENT_STATUS_COLORS: Record<CrmEquipmentStatus, string> = {
+  1: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  3: 'text-text-muted bg-bg-card border-border-subtle',
+  4: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  5: 'text-brand bg-brand-soft border-border-glow',
+};
+
+export const CrmEquipmentCondition = {
+  New: 1, Good: 2, Fair: 3, Poor: 4, Damaged: 5,
+} as const;
+export type CrmEquipmentCondition = (typeof CrmEquipmentCondition)[keyof typeof CrmEquipmentCondition];
+export const CRM_EQUIPMENT_CONDITION_LABELS: Record<CrmEquipmentCondition, string> = {
+  1: 'New', 2: 'Good', 3: 'Fair', 4: 'Poor', 5: 'Damaged',
+};
+
+export const CrmEquipmentNoteKind = {
+  General: 1, ServiceNote: 2, WarrantyNote: 3, InspectionNote: 4, InstallNote: 5,
+} as const;
+export type CrmEquipmentNoteKind = (typeof CrmEquipmentNoteKind)[keyof typeof CrmEquipmentNoteKind];
+export const CRM_EQUIPMENT_NOTE_KIND_LABELS: Record<CrmEquipmentNoteKind, string> = {
+  1: 'General', 2: 'Service Note', 3: 'Warranty Note', 4: 'Inspection Note', 5: 'Install Note',
+};
+
+export interface CrmEquipmentNoteDto {
+  id: string; equipmentId: string; authoredByUserId: string | null;
+  kind: CrmEquipmentNoteKind; note: string; createdAt: string;
+}
+
+export interface CrmEquipmentSummaryDto {
+  id: string; serialNumber: string; model: string; brand: string | null; category: string | null;
+  contactId: string; contactName: string | null; accountId: string | null; accountName: string | null;
+  orderId: string | null; siteLabel: string | null;
+  status: CrmEquipmentStatus; condition: CrmEquipmentCondition | null;
+  warrantyEndDate: string | null; nextServiceDue: string | null; createdAt: string;
+}
+
+export interface CrmEquipmentDetailDto extends CrmEquipmentSummaryDto {
+  description: string | null; siteAddress: string | null;
+  purchasedAt: string | null; installedAt: string | null; decommissionedAt: string | null;
+  warrantyStartDate: string | null; warrantyTerms: string | null;
+  serviceIntervalDays: number | null; lastServicedAt: string | null;
+  purchasePrice: number | null; currency: string;
+  dealId: string | null;
+  notes: CrmEquipmentNoteDto[]; updatedAt: string | null;
+}
+
+export interface CrmEquipmentFilter {
+  search?: string; status?: CrmEquipmentStatus; contactId?: string;
+  accountId?: string; orderId?: string; category?: string; page?: number; pageSize?: number;
+}
+
+export interface CrmEquipmentCreateRequest {
+  serialNumber: string; model: string; brand?: string; category?: string; description?: string;
+  contactId: string; accountId?: string; orderId?: string; dealId?: string;
+  siteLabel?: string; siteAddress?: string;
+  purchasedAt?: string; installedAt?: string; warrantyStartDate?: string;
+  warrantyEndDate?: string; warrantyTerms?: string; nextServiceDue?: string;
+  serviceIntervalDays?: number; purchasePrice?: number; currency?: string;
+  condition?: CrmEquipmentCondition;
+}
+
+export interface CrmEquipmentUpdateRequest {
+  model?: string; brand?: string; category?: string; description?: string;
+  siteLabel?: string; siteAddress?: string; installedAt?: string;
+  warrantyStartDate?: string; warrantyEndDate?: string; warrantyTerms?: string;
+  nextServiceDue?: string; serviceIntervalDays?: number; lastServicedAt?: string;
+  purchasePrice?: number; currency?: string; condition?: CrmEquipmentCondition;
+}
+
+export interface CrmEquipmentStatusRequest { status: CrmEquipmentStatus; reason?: string; }
+export interface AddEquipmentNoteRequest { kind: CrmEquipmentNoteKind; note: string; }
+
+// ─── Returns / RMA ────────────────────────────────────────────────────────────
+
+export const CrmReturnStatus = {
+  PendingApproval: 1, Approved: 2, Rejected: 3, AwaitingReceive: 4,
+  Received: 5, Inspecting: 6, Resolved: 7, Cancelled: 8,
+} as const;
+export type CrmReturnStatus = (typeof CrmReturnStatus)[keyof typeof CrmReturnStatus];
+export const CRM_RETURN_STATUS_LABELS: Record<CrmReturnStatus, string> = {
+  1: 'Pending Approval', 2: 'Approved', 3: 'Rejected', 4: 'Awaiting Receive',
+  5: 'Received', 6: 'Inspecting', 7: 'Resolved', 8: 'Cancelled',
+};
+export const CRM_RETURN_STATUS_COLORS: Record<CrmReturnStatus, string> = {
+  1: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  2: 'text-brand bg-brand-soft border-border-glow',
+  3: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  5: 'text-[#60A5FA] bg-[rgba(96,165,250,0.1)] border-[rgba(96,165,250,0.2)]',
+  6: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  7: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  8: 'text-text-muted bg-bg-card border-border-subtle',
+};
+
+export const CrmReturnReason = {
+  Defective: 1, NotAsDescribed: 2, WrongItem: 3, DamagedInTransit: 4,
+  NoLongerNeeded: 5, Exchange: 6, Other: 7,
+} as const;
+export type CrmReturnReason = (typeof CrmReturnReason)[keyof typeof CrmReturnReason];
+export const CRM_RETURN_REASON_LABELS: Record<CrmReturnReason, string> = {
+  1: 'Defective', 2: 'Not As Described', 3: 'Wrong Item', 4: 'Damaged in Transit',
+  5: 'No Longer Needed', 6: 'Exchange', 7: 'Other',
+};
+
+export const CrmReturnResolution = {
+  Replace: 1, Refund: 2, Credit: 3, Repair: 4, Restock: 5, Scrap: 6,
+} as const;
+export type CrmReturnResolution = (typeof CrmReturnResolution)[keyof typeof CrmReturnResolution];
+export const CRM_RETURN_RESOLUTION_LABELS: Record<CrmReturnResolution, string> = {
+  1: 'Replace', 2: 'Refund', 3: 'Credit', 4: 'Repair', 5: 'Restock', 6: 'Scrap',
+};
+
+export const CrmReturnInspectionResult = { Passed: 1, Failed: 2, PartialPass: 3 } as const;
+export type CrmReturnInspectionResult = (typeof CrmReturnInspectionResult)[keyof typeof CrmReturnInspectionResult];
+export const CRM_RETURN_INSPECTION_LABELS: Record<CrmReturnInspectionResult, string> = {
+  1: 'Passed', 2: 'Failed', 3: 'Partial Pass',
+};
+
+export interface CrmReturnLineItemDto {
+  id: string; productId: string | null; productName: string; sku: string | null;
+  quantityOrdered: number; quantityReturned: number; unitPrice: number; totalPrice: number; notes: string | null;
+}
+
+export interface CrmReturnInspectionDto {
+  id: string; returnRequestId: string; result: CrmReturnInspectionResult;
+  findings: string | null; photoUrls: string | null; disposition: string | null;
+  inspectedByUserId: string | null; inspectedAt: string | null;
+}
+
+export interface CrmReturnRequestDto {
+  id: string; orderId: string; contactId: string; accountId: string | null;
+  dealId: string | null; equipmentId: string | null;
+  rmaNumber: string; status: CrmReturnStatus; returnReason: CrmReturnReason;
+  resolution: CrmReturnResolution | null; customerNotes: string | null; staffNotes: string | null;
+  rejectionReason: string | null; approvedAt: string | null; approvedBy: string | null;
+  receivedAt: string | null; receivedBy: string | null;
+  refundAmount: number | null; creditAmount: number | null; currency: string;
+  replacementOrderId: string | null; returnCarrier: string | null; returnTrackingNumber: string | null;
+  returnShippedAt: string | null; resolvedAt: string | null; createdAt: string;
+  lineItems: CrmReturnLineItemDto[]; inspections: CrmReturnInspectionDto[];
+}
+
+export interface CrmReturnFilter {
+  status?: CrmReturnStatus; contactId?: string; accountId?: string;
+  orderId?: string; search?: string; page?: number; pageSize?: number;
+}
+
+export interface CrmReturnLineItemRequest {
+  productId?: string; productName: string; sku?: string;
+  quantityOrdered: number; quantityReturned: number; unitPrice: number;
+}
+
+export interface CrmCreateReturnRequest {
+  orderId: string; contactId: string; accountId?: string; dealId?: string; equipmentId?: string;
+  returnReason: CrmReturnReason; customerNotes?: string;
+  returnCarrier?: string; returnTrackingNumber?: string;
+  lineItems: CrmReturnLineItemRequest[];
+}
+
+export interface CrmUpdateReturnRequest {
+  staffNotes?: string; resolution?: CrmReturnResolution;
+  refundAmount?: number; creditAmount?: number;
+  replacementOrderId?: string; returnCarrier?: string; returnTrackingNumber?: string;
+}
+
+export interface CrmRecordInspectionRequest {
+  result: CrmReturnInspectionResult; findings?: string; photoUrls?: string; disposition?: string;
+}
+
+// ─── Field Service Work Orders ────────────────────────────────────────────────
+
+export const CrmWorkOrderStatus = {
+  Draft: 1, Scheduled: 2, EnRoute: 3, InProgress: 4, Completed: 5, Cancelled: 6,
+} as const;
+export type CrmWorkOrderStatus = (typeof CrmWorkOrderStatus)[keyof typeof CrmWorkOrderStatus];
+export const CRM_WORK_ORDER_STATUS_LABELS: Record<CrmWorkOrderStatus, string> = {
+  1: 'Draft', 2: 'Scheduled', 3: 'En Route', 4: 'In Progress', 5: 'Completed', 6: 'Cancelled',
+};
+export const CRM_WORK_ORDER_STATUS_COLORS: Record<CrmWorkOrderStatus, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-brand bg-brand-soft border-border-glow',
+  3: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  4: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  6: 'text-text-muted bg-bg-card border-border-subtle',
+};
+
+export const CrmWorkOrderType = {
+  Repair: 1, Maintenance: 2, Installation: 3, Inspection: 4, Removal: 5,
+} as const;
+export type CrmWorkOrderType = (typeof CrmWorkOrderType)[keyof typeof CrmWorkOrderType];
+export const CRM_WORK_ORDER_TYPE_LABELS: Record<CrmWorkOrderType, string> = {
+  1: 'Repair', 2: 'Maintenance', 3: 'Installation', 4: 'Inspection', 5: 'Removal',
+};
+
+export const CrmWorkOrderPriority = { Low: 1, Normal: 2, High: 3, Urgent: 4 } as const;
+export type CrmWorkOrderPriority = (typeof CrmWorkOrderPriority)[keyof typeof CrmWorkOrderPriority];
+export const CRM_WORK_ORDER_PRIORITY_LABELS: Record<CrmWorkOrderPriority, string> = {
+  1: 'Low', 2: 'Normal', 3: 'High', 4: 'Urgent',
+};
+export const CRM_WORK_ORDER_PRIORITY_COLORS: Record<CrmWorkOrderPriority, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-brand bg-brand-soft border-border-glow',
+  3: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  4: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+};
+
+export const CrmWorkOrderNoteKind = {
+  General: 1, ProgressUpdate: 2, PartUsed: 3, CustomerFeedback: 4,
+} as const;
+export type CrmWorkOrderNoteKind = (typeof CrmWorkOrderNoteKind)[keyof typeof CrmWorkOrderNoteKind];
+export const CRM_WORK_ORDER_NOTE_KIND_LABELS: Record<CrmWorkOrderNoteKind, string> = {
+  1: 'General', 2: 'Progress Update', 3: 'Part Used', 4: 'Customer Feedback',
+};
+
+export interface CrmWorkOrderNoteDto {
+  id: string; workOrderId: string; authoredByUserId: string | null;
+  kind: CrmWorkOrderNoteKind; note: string; createdAt: string;
+}
+
+export interface CrmWorkOrderSummaryDto {
+  id: string; workOrderNumber: string; title: string;
+  type: CrmWorkOrderType; status: CrmWorkOrderStatus; priority: CrmWorkOrderPriority;
+  contactId: string; contactName: string | null;
+  accountId: string | null; equipmentId: string | null;
+  equipmentModel: string | null; equipmentSerial: string | null;
+  assignedToUserId: string | null; scheduledAt: string | null;
+  completedAt: string | null; siteLabel: string | null; createdAt: string;
+}
+
+export interface CrmWorkOrderDetailDto extends CrmWorkOrderSummaryDto {
+  description: string | null; supportCaseId: string | null; returnRequestId: string | null;
+  startedAt: string | null; siteAddress: string | null;
+  estimatedMinutes: number | null; actualMinutes: number | null;
+  resolutionNotes: string | null; partsUsed: string | null;
+  notes: CrmWorkOrderNoteDto[]; updatedAt: string | null;
+}
+
+export interface CrmWorkOrderFilter {
+  search?: string; status?: CrmWorkOrderStatus; type?: CrmWorkOrderType;
+  priority?: CrmWorkOrderPriority; equipmentId?: string; contactId?: string;
+  assignedToUserId?: string; scheduledFrom?: string; scheduledTo?: string;
+  page?: number; pageSize?: number;
+}
+
+export interface CrmCreateWorkOrderRequest {
+  title: string; description?: string; type: CrmWorkOrderType; priority: CrmWorkOrderPriority;
+  contactId: string; accountId?: string; equipmentId?: string;
+  supportCaseId?: string; returnRequestId?: string;
+  assignedToUserId?: string; scheduledAt?: string;
+  siteLabel?: string; siteAddress?: string; estimatedMinutes?: number;
+}
+
+export interface CrmUpdateWorkOrderRequest {
+  title?: string; description?: string; type?: CrmWorkOrderType; priority?: CrmWorkOrderPriority;
+  assignedToUserId?: string; scheduledAt?: string;
+  siteLabel?: string; siteAddress?: string; estimatedMinutes?: number; partsUsed?: string;
+}
+
+export interface CrmWorkOrderStatusRequest {
+  status: CrmWorkOrderStatus; notes?: string; resolutionNotes?: string; actualMinutes?: number;
+}
+
+export interface CrmAddWorkOrderNoteRequest { kind: CrmWorkOrderNoteKind; note: string; }
+
+// ─── Customer Onboarding ──────────────────────────────────────────────────────
+
+export const CrmOnboardingStatus = {
+  NotStarted: 1, InProgress: 2, Completed: 3, Blocked: 4,
+} as const;
+export type CrmOnboardingStatus = (typeof CrmOnboardingStatus)[keyof typeof CrmOnboardingStatus];
+export const CRM_ONBOARDING_STATUS_LABELS: Record<CrmOnboardingStatus, string> = {
+  1: 'Not Started', 2: 'In Progress', 3: 'Completed', 4: 'Blocked',
+};
+export const CRM_ONBOARDING_STATUS_COLORS: Record<CrmOnboardingStatus, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-brand bg-brand-soft border-border-glow',
+  3: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  4: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+};
+
+export const CrmOnboardingMilestoneKind = {
+  Kickoff: 1, EquipmentDelivered: 2, Installation: 3, StaffTraining: 4,
+  FirstOrder: 5, GoLive: 6, Custom: 7,
+} as const;
+export type CrmOnboardingMilestoneKind = (typeof CrmOnboardingMilestoneKind)[keyof typeof CrmOnboardingMilestoneKind];
+export const CRM_MILESTONE_KIND_LABELS: Record<CrmOnboardingMilestoneKind, string> = {
+  1: 'Kickoff', 2: 'Equipment Delivered', 3: 'Installation', 4: 'Staff Training',
+  5: 'First Order', 6: 'Go Live', 7: 'Custom',
+};
+
+export interface CrmOnboardingMilestoneDto {
+  id: string; onboardingId: string; kind: CrmOnboardingMilestoneKind;
+  status: CrmOnboardingStatus; title: string; description: string | null;
+  sortOrder: number; dueDate: string | null; completedAt: string | null;
+  assignedToUserId: string | null; blockerReason: string | null;
+}
+
+export interface CrmCustomerOnboardingDto {
+  id: string; dealId: string; contactId: string; accountId: string | null;
+  title: string; status: CrmOnboardingStatus;
+  startedAt: string; completedAt: string | null; progressPercent: number;
+  notes: string | null; blockerReason: string | null; createdAt: string;
+  milestones: CrmOnboardingMilestoneDto[];
+}
+
+export interface CrmOnboardingFilter {
+  status?: CrmOnboardingStatus; contactId?: string; accountId?: string;
+  dealId?: string; page?: number; pageSize?: number;
+}
+
+export interface CrmCreateMilestoneRequest {
+  kind: CrmOnboardingMilestoneKind; title: string; description?: string;
+  sortOrder: number; dueDate?: string; assignedToUserId?: string;
+}
+
+export interface CrmStartOnboardingRequest {
+  dealId: string; contactId: string; accountId?: string;
+  title: string; milestones: CrmCreateMilestoneRequest[];
+}
+
+export interface CrmUpdateMilestoneRequest {
+  status: CrmOnboardingStatus; blockerReason?: string;
+  completedAt?: string; assignedToUserId?: string;
+}
+
+export interface CrmUpdateOnboardingRequest { title?: string; notes?: string; blockerReason?: string; }
+
+// ─── Ops Dashboard ──────────────────────────────────────────────────────────────
+export interface OpsDashboardDto {
+  totalReturns: number;
+  returnsByStatus: Record<number, number>;
+  returnsAwaitingAction: number;
+  totalWorkOrders: number;
+  workOrdersByStatus: Record<number, number>;
+  workOrdersScheduledToday: number;
+  workOrdersOverdue: number;
+  totalOnboardings: number;
+  onboardingsByStatus: Record<number, number>;
+  onboardingsBlocked: number;
+}
+
+// ─── Dispatch Calendar ──────────────────────────────────────────────────────────
+export interface DispatchCalendarDto {
+  from: string;
+  to: string;
+  days: DispatchDayDto[];
+}
+export interface DispatchDayDto {
+  date: string;
+  slots: DispatchSlotDto[];
+}
+export interface DispatchSlotDto {
+  workOrderId: string;
+  workOrderNumber: string;
+  title: string;
+  status: number;
+  priority: number;
+  assignedToUserId?: string;
+  assignedToUserName?: string;
+  scheduledAt?: string;
+  siteLabel?: string;
+  siteAddress?: string;
+  estimatedMinutes?: number;
+  contactId?: string;
+  contactName?: string;
+}
+
+// ─── Time Periods ────────────────────────────────────────────────────────────────
+export const CrmTimePeriodStatus = { Draft: 1, Submitted: 2, Approved: 3, Rejected: 4 } as const;
+export type CrmTimePeriodStatus = (typeof CrmTimePeriodStatus)[keyof typeof CrmTimePeriodStatus];
+export const CRM_TIME_PERIOD_STATUS_LABELS: Record<CrmTimePeriodStatus, string> = {
+  1: 'Draft', 2: 'Submitted', 3: 'Approved', 4: 'Rejected',
+};
+export interface CrmTimePeriodDto {
+  id: string;
+  userId: string;
+  periodStart: string;
+  periodEnd: string;
+  totalMinutes: number;
+  billableMinutes: number;
+  entryCount: number;
+  status: CrmTimePeriodStatus;
+  notes?: string;
+  submittedAt?: string;
+  approvedAt?: string;
+  rejectionReason?: string;
+  createdAt: string;
+}
+export interface CrmCreateTimePeriodRequest {
+  periodStart: string;
+  periodEnd: string;
+  notes?: string;
+}
+export interface CrmSubmitTimePeriodRequest { notes?: string; }
+export interface CrmReviewTimePeriodRequest { comment?: string; rejectionReason?: string; }
+export interface CrmTimePeriodFilter {
+  userId?: string; status?: CrmTimePeriodStatus; from?: string; to?: string;
+  page?: number; pageSize?: number;
+}
+
+// ─── Multi-Level Approval Chains ────────────────────────────────────────────────
+export interface CrmApprovalChainDefinitionDto {
+  id: string;
+  name: string;
+  description?: string;
+  entityType: number;
+  isActive: boolean;
+  stepCount: number;
+  createdAt: string;
+  steps: CrmApprovalChainStepDto[];
+}
+export interface CrmApprovalChainStepDto {
+  id: string;
+  stepOrder: number;
+  stepName: string;
+  approverUserId?: string;
+  approverRoleName?: string;
+  requiredApprovals: number;
+}
+export interface CrmCreateApprovalChainRequest {
+  name: string;
+  description?: string;
+  entityType: number;
+  steps: CrmCreateApprovalChainStepRequest[];
+}
+export interface CrmCreateApprovalChainStepRequest {
+  stepOrder: number;
+  stepName: string;
+  approverUserId?: string;
+  approverRoleName?: string;
+  requiredApprovals: number;
+}
+export interface CrmSubmitForChainRequest {
+  entityType: number;
+  entityId: string;
+  entityName: string;
+  chainDefinitionId: string;
+}
+
+// ─── Round-Robin Assignment Rotation ────────────────────────────────────────────
+export interface CrmRoundRobinStateDto {
+  id: string;
+  entityType: string;
+  userId: string;
+  lastAssignedAt?: string;
+  assignmentCount: number;
+  isActive: boolean;
 }

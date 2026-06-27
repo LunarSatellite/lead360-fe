@@ -48,6 +48,13 @@ import {
   ShieldCheck,
   SlidersHorizontal,
   GitMerge,
+  RotateCw,
+  Wrench,
+  UserPlus,
+  LayoutDashboard,
+  Calendar,
+  ArrowRight,
+  Shuffle,
 } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
@@ -96,6 +103,9 @@ const crmNav = [
   { label: 'Invoices',      href: ROUTES.dashboard.crmInvoices,      icon: Receipt },
   { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },
   { label: 'Orders',        href: ROUTES.dashboard.crmOrders,        icon: Package },
+  { label: 'Returns',       href: ROUTES.dashboard.crmReturns,       icon: RotateCw },
+  { label: 'Work Orders',   href: ROUTES.dashboard.crmWorkOrders,    icon: Wrench },
+  { label: 'Onboarding',    href: ROUTES.dashboard.crmCustomerOnboarding, icon: UserPlus },
   { label: 'Meetings',      href: ROUTES.dashboard.crmMeetings,      icon: CalendarCheck },
   { label: 'NPS',           href: ROUTES.dashboard.crmNps,           icon: Star },
   { label: 'Time Tracking', href: ROUTES.dashboard.crmTimeTracking,  icon: Clock },
@@ -106,6 +116,10 @@ const crmNav = [
   { label: 'Announcements', href: ROUTES.dashboard.crmAnnouncements,  icon: Newspaper },
   { label: 'Process Workflows', href: ROUTES.dashboard.crmProcessTasks,      icon: ListChecks },
   { label: 'Event Tracking',  href: ROUTES.dashboard.crmEventIngestion,     icon: Globe },
+  { label: 'Ops Dashboard',  href: ROUTES.dashboard.crmOpsDashboard,       icon: LayoutDashboard },
+  { label: 'Time Periods',   href: ROUTES.dashboard.crmTimePeriods,        icon: Calendar },
+  { label: 'Approval Chains', href: ROUTES.dashboard.crmApprovalChains,    icon: ArrowRight },
+  { label: 'Assignment Rotation', href: ROUTES.dashboard.crmAssignmentRotation, icon: Shuffle },
 ];
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───

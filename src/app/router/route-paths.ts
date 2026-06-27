@@ -71,6 +71,14 @@ export const ROUTES = {
     crmProcessDefinitions: '/dashboard/crm/process-definitions',
     crmProcessInstances: '/dashboard/crm/process-instances',
     crmEventIngestion: '/dashboard/crm/event-ingestion',
+    crmReturns: '/dashboard/crm/returns',
+    crmWorkOrders: '/dashboard/crm/work-orders',
+    crmCustomerOnboarding: '/dashboard/crm/customer-onboarding',
+    crmOpsDashboard: '/dashboard/crm/ops-dashboard',
+    crmDispatchCalendar: '/dashboard/crm/dispatch',
+    crmTimePeriods: '/dashboard/crm/time-periods',
+    crmApprovalChains: '/dashboard/crm/approval-chains',
+    crmAssignmentRotation: '/dashboard/crm/assignment-rotation',
     // ── Flow A/B Experiments ──
     flowExperiments: '/dashboard/flows/experiments',
     // ── Integrations ──

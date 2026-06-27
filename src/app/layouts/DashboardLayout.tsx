@@ -13,6 +13,8 @@ import {
   LogOut,
   User,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Terminal,
   Bot,
   Plug,
@@ -189,6 +191,10 @@ export function DashboardLayout() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [moreSheetOpen, setMoreSheetOpen] = useState(false);
+  const [openSections, setOpenSections] = useState({ yourBot: true, crm: true, system: true });
+
+  const toggleSection = (key: keyof typeof openSections) =>
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -351,32 +357,38 @@ export function DashboardLayout() {
           width: showExpanded ? 240 : 64,
           transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
-        onMouseEnter={() => setSidebarExpanded(true)}
-        onMouseLeave={() => {
-          setSidebarExpanded(false);
-          setMenuOpen(false);
-        }}
       >
-        {/* Logo */}
-        <div
-          className="flex items-center gap-3 border-b border-border-subtle overflow-hidden"
-          style={{
-            padding: showExpanded ? '14px 16px' : '14px 0',
-            justifyContent: showExpanded ? 'flex-start' : 'center',
-          }}
-        >
-          <div className="w-9 h-9 rounded-xl bg-[#050808] flex items-center justify-center p-0.5 shrink-0">
-            <img src="/Lead360logo/1.png" alt="Lead360" className="w-full h-full object-contain" />
-          </div>
-          {showExpanded && (
-            <div className="min-w-0">
-              <div className="text-sm font-extrabold text-text-primary tracking-tight leading-tight">
-                Lead360
-              </div>
+        {/* Logo + toggle */}
+        {showExpanded ? (
+          <div className="flex items-center gap-3 border-b border-border-subtle overflow-hidden" style={{ padding: '14px 12px' }}>
+            <div className="w-9 h-9 rounded-xl bg-[#050808] flex items-center justify-center p-0.5 shrink-0">
+              <img src="/Lead360logo/1.png" alt="Lead360" className="w-full h-full object-contain" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-extrabold text-text-primary tracking-tight leading-tight">Lead360</div>
               <div className="text-2xs text-text-muted">CRM & automation</div>
             </div>
-          )}
-        </div>
+            <button
+              type="button"
+              onClick={() => { setSidebarExpanded(v => !v); setMenuOpen(false); }}
+              aria-label="Collapse sidebar"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-glass-1 transition-all shrink-0"
+            >
+              <ChevronLeft className="w-4 h-4" strokeWidth={2} />
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center border-b border-border-subtle" style={{ padding: '14px 0' }}>
+            <button
+              type="button"
+              onClick={() => { setSidebarExpanded(v => !v); setMenuOpen(false); }}
+              aria-label="Expand sidebar"
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-glass-1 transition-all"
+            >
+              <ChevronRight className="w-4 h-4" strokeWidth={2} />
+            </button>
+          </div>
+        )}
 
         {/* AI status */}
         <div className="overflow-hidden" style={{ padding: showExpanded ? '8px 8px 0' : '8px 8px 0' }}>
@@ -403,16 +415,27 @@ export function DashboardLayout() {
           style={{ padding: showExpanded ? '8px 8px' : '8px 6px' }}
         >
           {/* ── Primary (chat-first rail) ── */}
-          {showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-1">
+          {showExpanded ? (
+            <button
+              type="button"
+              onClick={() => toggleSection('yourBot')}
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-1 hover:bg-glass-2 transition-colors"
+            >
               <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                 <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
               </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">Your Bot</span>
-            </div>
+              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px] flex-1 text-left">Your Bot</span>
+              <ChevronDown
+                className={`w-3 h-3 text-text-muted transition-transform duration-200 ${openSections.yourBot ? '' : '-rotate-90'}`}
+                strokeWidth={2}
+              />
+            </button>
+          ) : (
+            <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />
           )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />}
-          <div className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</div>
+          {(!showExpanded || openSections.yourBot) && (
+            <div className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</div>
+          )}
 
           {/* ── OLD: Build / Configure sections (commented for now) ─────────
           {showExpanded && (
@@ -433,28 +456,50 @@ export function DashboardLayout() {
           ─────────────────────────────────────────────────────────────── */}
 
           {/* ── CRM ── */}
-          {showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
+          {showExpanded ? (
+            <button
+              type="button"
+              onClick={() => toggleSection('crm')}
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3 hover:bg-glass-2 transition-colors"
+            >
               <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                 <Users className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
               </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">CRM</span>
-            </div>
+              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px] flex-1 text-left">CRM</span>
+              <ChevronDown
+                className={`w-3 h-3 text-text-muted transition-transform duration-200 ${openSections.crm ? '' : '-rotate-90'}`}
+                strokeWidth={2}
+              />
+            </button>
+          ) : (
+            <div className="w-6 h-px bg-border-subtle mx-auto my-2" />
           )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          <div className="flex flex-col gap-0.5">{crmNav.map(renderNavItem)}</div>
+          {(!showExpanded || openSections.crm) && (
+            <div className="flex flex-col gap-0.5">{crmNav.map(renderNavItem)}</div>
+          )}
 
           {/* ── System / Settings ── */}
-          {showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
+          {showExpanded ? (
+            <button
+              type="button"
+              onClick={() => toggleSection('system')}
+              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3 hover:bg-glass-2 transition-colors"
+            >
               <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                 <Settings className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
               </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">System</span>
-            </div>
+              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px] flex-1 text-left">System</span>
+              <ChevronDown
+                className={`w-3 h-3 text-text-muted transition-transform duration-200 ${openSections.system ? '' : '-rotate-90'}`}
+                strokeWidth={2}
+              />
+            </button>
+          ) : (
+            <div className="w-6 h-px bg-border-subtle mx-auto my-2" />
           )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          <div className="flex flex-col gap-0.5">{settingsNav.map(renderNavItem)}</div>
+          {(!showExpanded || openSections.system) && (
+            <div className="flex flex-col gap-0.5">{settingsNav.map(renderNavItem)}</div>
+          )}
         </nav>
 
         {/* User */}

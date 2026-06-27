@@ -238,7 +238,7 @@ export function Component() {
               background: 'var(--bg-card)',
               border: '1px solid rgba(0,217,138,0.2)',
               boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
-              maxHeight: 'calc(100vh - 16px)',
+              maxHeight: 'calc(100vh - 32px)',
             }}
           >
             {/* Accent bar — mirrors AuroraBI notification panel top stripe */}
@@ -261,6 +261,12 @@ export function Component() {
               </button>
             </div>
             <div className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
+              {/* ── Contact Details ── */}
+              <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+                <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Contact Details</span>
+                <div className="h-px bg-brand/20" />
+              </div>
+
               {/* Contact search combobox */}
               <div className="relative" ref={contactDropRef}>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
@@ -386,11 +392,10 @@ export function Component() {
                   />
                 </div>
               </div>
-              {/* ── Organization section ────────────────────────────────────── */}
-              <div className="flex items-center gap-2">
-                <div className="flex-1 h-px bg-border-subtle" />
-                <span className="text-2xs text-text-muted">organization details</span>
-                <div className="flex-1 h-px bg-border-subtle" />
+              {/* ── Organization Details ── */}
+              <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+                <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Organization Details</span>
+                <div className="h-[1.5px] bg-brand/20" />
               </div>
 
               {/* Org search combobox */}
@@ -566,6 +571,12 @@ export function Component() {
                     onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))}
                   />
                 </div>
+              </div>
+
+              {/* ── Lead ── */}
+              <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+                <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Lead</span>
+                <div className="h-px bg-brand/20" />
               </div>
 
               <div className="grid grid-cols-2 gap-3">

@@ -147,7 +147,7 @@ function CsvDealsToolbar() {
       exportUrl="/v1/crm/deals/export-csv"
       templateUrl="/v1/crm/deals/csv-template"
       entityLabel="deals"
-      onImport={file => importCsv.mutateAsync(file)}
+      onImport={async (file) => { await importCsv.mutateAsync(file); }}
       isImporting={importCsv.isPending}
     />
   );

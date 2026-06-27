@@ -371,7 +371,9 @@ export function Component() {
               exportUrl="/v1/crm/contacts/export-csv"
               templateUrl="/v1/crm/contacts/csv-template"
               entityLabel="contacts"
-              onImport={file => importCsv.mutateAsync(file)}
+              onImport={async (file) => {
+                await importCsv.mutateAsync(file);
+              }}
               isImporting={importCsv.isPending}
             />
             <button

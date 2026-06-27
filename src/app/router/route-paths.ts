@@ -48,6 +48,7 @@ export const ROUTES = {
     crmContactDetail: (id: string) => `/dashboard/crm/contacts/${id}`,
     crmOrganizations: '/dashboard/crm/organizations',
     crmAccounts: '/dashboard/crm/accounts',
+    crmDealsHub: '/dashboard/crm/deals-hub',
     crmDeals: '/dashboard/crm/deals',
     crmDealDetail: (id: string) => `/dashboard/crm/deals/${id}`,
     crmNurture: '/dashboard/crm/nurture',

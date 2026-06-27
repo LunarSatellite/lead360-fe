@@ -92,9 +92,7 @@ const crmNav = [
   { label: 'Leads',         href: ROUTES.dashboard.crmLeads,         icon: Users },
   { label: 'Contacts',      href: ROUTES.dashboard.crmContacts,      icon: UserCheck },
   { label: 'Duplicates',    href: ROUTES.dashboard.crmDedup,         icon: GitMerge },
-  { label: 'Deals',         href: ROUTES.dashboard.crmDeals,         icon: Briefcase },
-  { label: 'Pipelines',     href: '/dashboard/crm/pipelines',        icon: GitBranch },
-  { label: 'Approvals',    href: '/dashboard/crm/approvals',        icon: ShieldCheck },
+  { label: 'Deals',         href: ROUTES.dashboard.crmDealsHub,      icon: Briefcase },
   { label: 'Organizations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
   { label: 'Accounts',      href: ROUTES.dashboard.crmAccounts,      icon: Building },
   { label: 'Nurture',       href: ROUTES.dashboard.crmNurture,       icon: Workflow },
@@ -260,6 +258,7 @@ export function DashboardLayout() {
     if (path.includes('/crm/dedup')) return 'Duplicate Contacts';
     if (path.includes('/crm/contacts')) return 'Contacts';
     if (path.includes('/crm/leads')) return 'Leads';
+    if (path.includes('/crm/deals-hub')) return 'Deals';
     if (path.includes('/crm/deals')) return 'Deals';
     if (path.includes('/crm/organizations')) return 'Organizations';
     if (path.includes('/crm/accounts')) return 'Accounts';
@@ -300,6 +299,7 @@ export function DashboardLayout() {
     if (path.includes('/settings')) return Settings;
     if (path.includes('/crm/contacts')) return UserCheck;
     if (path.includes('/crm/leads')) return Users;
+    if (path.includes('/crm/deals-hub')) return Briefcase;
     if (path.includes('/crm/deals')) return Briefcase;
     if (path.includes('/crm/organizations')) return Building2;
     if (path.includes('/crm/accounts')) return Building;

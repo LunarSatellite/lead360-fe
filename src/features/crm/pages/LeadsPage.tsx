@@ -20,9 +20,10 @@ import {
   Radio,
   FileText,
   ChevronDown,
+  Building2,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead, useContacts } from '../api/crm.queries';
+import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead, useContacts, useOrganizations } from '../api/crm.queries';
 import { CsvToolbar } from '../components/CsvToolbar';
 import type {
   LeadSummaryDto,
@@ -31,6 +32,7 @@ import type {
   PagedResult,
   CreateManualLeadRequest,
   CrmContactSummaryDto,
+  CrmOrganizationSummaryDto,
 } from '../types/crm.types';
 import {
   LeadStage,
@@ -111,6 +113,11 @@ export function Component() {
   const [contactQuery, setContactQuery]   = useState('');
   const [showContactDrop, setShowContactDrop] = useState(false);
   const contactDropRef = useRef<HTMLDivElement>(null);
+  const [orgSearch, setOrgSearch]         = useState('');
+  const [orgQuery, setOrgQuery]           = useState('');
+  const [showOrgDrop, setShowOrgDrop]     = useState(false);
+  const orgDropRef                        = useRef<HTMLDivElement>(null);
+  const [orgDetails, setOrgDetails]       = useState({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' });
   const [form, setForm]               = useState<CreateManualLeadRequest>({ stage: LeadStage.New });
   const createLead                    = useCreateLead();
 
@@ -118,6 +125,9 @@ export function Component() {
   const contactSuggestions = ((rawContactData as unknown as PagedResult<CrmContactSummaryDto> | undefined)?.items ?? [])
     .slice()
     .sort((a, b) => a.fullName.localeCompare(b.fullName));
+
+  const { data: rawOrgData } = useOrganizations({ search: orgQuery || undefined, pageSize: 6 });
+  const orgSuggestions = (rawOrgData as unknown as PagedResult<CrmOrganizationSummaryDto> | undefined)?.items ?? [];
 
   // Debounce main search 300ms
   useEffect(() => {
@@ -131,11 +141,28 @@ export function Component() {
     return () => clearTimeout(t);
   }, [contactSearch]);
 
+  // Debounce org search 300ms
+  useEffect(() => {
+    const t = setTimeout(() => setOrgQuery(orgSearch), 300);
+    return () => clearTimeout(t);
+  }, [orgSearch]);
+
   // Close contact dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (contactDropRef.current && !contactDropRef.current.contains(e.target as Node)) {
         setShowContactDrop(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // Close org dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (orgDropRef.current && !orgDropRef.current.contains(e.target as Node)) {
+        setShowOrgDrop(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -191,7 +218,7 @@ export function Component() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => { setForm({ stage: LeadStage.New }); setContactSearch(''); setShowCreate(true); }}
+            onClick={() => { setForm({ stage: LeadStage.New }); setContactSearch(''); setOrgSearch(''); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); setShowCreate(true); }}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Lead
@@ -359,6 +386,188 @@ export function Component() {
                   />
                 </div>
               </div>
+              {/* ── Organization section ────────────────────────────────────── */}
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-px bg-border-subtle" />
+                <span className="text-2xs text-text-muted">organization details</span>
+                <div className="flex-1 h-px bg-border-subtle" />
+              </div>
+
+              {/* Org search combobox */}
+              <div className="relative" ref={orgDropRef}>
+                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Search existing organizations…"
+                  autoComplete="off"
+                  value={orgSearch}
+                  onChange={e => { setOrgSearch(e.target.value); setShowOrgDrop(true); }}
+                  onFocus={() => setShowOrgDrop(true)}
+                />
+                {orgSearch && (
+                  <button
+                    type="button"
+                    onClick={() => { setOrgSearch(''); setOrgQuery(''); setShowOrgDrop(false); setForm(f => ({ ...f, organizationId: undefined })); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+                  >
+                    <X className="w-3.5 h-3.5" strokeWidth={2} />
+                  </button>
+                )}
+                {showOrgDrop && (
+                  <div
+                    className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                    style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    {orgSuggestions.length > 0 ? orgSuggestions.map(org => (
+                      <button
+                        key={org.id}
+                        type="button"
+                        onClick={() => {
+                          setForm(f => ({ ...f, organizationId: org.id }));
+                          setOrgDetails({ name: org.name, domain: org.domain ?? '', industry: org.industry ?? '', employeeCount: org.employeeCount?.toString() ?? '', country: org.country ?? '', city: '', website: '' });
+                          setOrgSearch('');
+                          setOrgQuery('');
+                          setShowOrgDrop(false);
+                        }}
+                        className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                      >
+                        <div
+                          className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0"
+                          style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}
+                        >
+                          <Building2 className="w-4 h-4 text-brand" strokeWidth={1.6} />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-semibold text-text-primary truncate">{org.name}</div>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {org.domain && <span className="text-xs text-text-muted">{org.domain}</span>}
+                            {org.domain && org.industry && <span className="text-xs text-text-muted">·</span>}
+                            {org.industry && <span className="text-xs text-text-muted truncate">{org.industry}</span>}
+                          </div>
+                        </div>
+                        <span
+                          className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }}
+                        />
+                      </button>
+                    )) : (
+                      <div className="px-4 py-3 text-xs text-text-muted">No organizations found</div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Org "or fill manually" divider */}
+              <div className="flex items-center gap-2">
+                <div className="flex-1 h-px bg-border-subtle" />
+                <span className="text-2xs text-text-muted">or fill manually</span>
+                <div className="flex-1 h-px bg-border-subtle" />
+              </div>
+
+              {/* Company Name + Domain */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Company Name</label>
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="Acme Corp"
+                      value={orgDetails.name}
+                      onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
+                  <div className="relative">
+                    <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="acme.com"
+                      value={orgDetails.domain}
+                      onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))}
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* Industry + Employees */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
+                  <div className="relative">
+                    <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="SaaS, Retail…"
+                      value={orgDetails.industry}
+                      onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
+                  <div className="relative">
+                    <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      type="number" min={0}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="250"
+                      value={orgDetails.employeeCount}
+                      onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))}
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* Country + City */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
+                  <div className="relative">
+                    <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="US"
+                      value={orgDetails.country}
+                      onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
+                  <div className="relative">
+                    <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="New York"
+                      value={orgDetails.city}
+                      onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))}
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* Website */}
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
+                <div className="relative">
+                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                  <input
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    placeholder="https://acme.com"
+                    value={orgDetails.website}
+                    onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))}
+                  />
+                </div>
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Stage</label>

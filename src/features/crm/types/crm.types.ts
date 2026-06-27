@@ -142,6 +142,14 @@ export interface LeadSummaryDto {
   lastActivityAt: string;
   convertedAt: string | null;
   createdAt: string;
+  organizationId?: string;
+  organizationName?: string;
+  organizationDomain?: string;
+  organizationIndustry?: string;
+  organizationEmployeeCount?: number;
+  organizationCountry?: string;
+  organizationCity?: string;
+  organizationWebsite?: string;
 }
 
 export interface LeadNurtureStatusDto {
@@ -919,6 +927,7 @@ export interface CreateManualLeadRequest {
   adSource?: string;
   notes?: string;
   score?: number;
+  organizationId?: string;
 }
 
 export interface ConvertLeadRequest {

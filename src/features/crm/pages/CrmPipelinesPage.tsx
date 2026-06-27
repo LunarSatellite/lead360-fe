@@ -3,11 +3,12 @@ import { GitBranch, Plus, Trash2, Star, Loader2, Check, X, Pencil, ChevronRight,
 import {
   usePipelines, useCreatePipeline, useUpdatePipeline, useDeletePipeline, useSetPipelineDefault,
   usePipelineStages, useStageGates, useCreateStageGate, useDeleteStageGate,
+  useCustomFieldDefinitions,
 } from '../api/crm.queries';
 import type {
-  CrmPipelineSummaryDto, CrmDealStageSummaryDto, CrmStageGateSummaryDto,
+  CrmPipelineSummaryDto, CrmDealStageSummaryDto, CrmStageGateSummaryDto, CustomFieldDefinitionDto,
 } from '../types/crm.types';
-import { StageGateType, STAGE_GATE_TYPE_LABELS, GATE_REQUIRED_FIELDS } from '../types/crm.types';
+import { StageGateType, STAGE_GATE_TYPE_LABELS, GATE_REQUIRED_FIELDS, CrmEntityType } from '../types/crm.types';
 
 const DEAL_TYPE_LABELS: Record<number, string> = { 1: 'Sales', 2: 'Service', 3: 'Support', 4: 'Renewal' };
 const DEAL_TYPE_COLORS: Record<number, string> = { 1: '#3B82F6', 2: '#8B5CF6', 3: '#EF4444', 4: '#10B981' };
@@ -23,9 +24,18 @@ interface AddGateFormProps {
 function AddGateForm({ stageId, onDone }: AddGateFormProps) {
   const [gateType, setGateType] = useState<StageGateType>(StageGateType.ManualCheck);
   const [label, setLabel] = useState('');
-  const [fieldName, setFieldName] = useState<string>(GATE_REQUIRED_FIELDS[0]?.value ?? '');
   const [isRequired, setIsRequired] = useState(true);
   const create = useCreateStageGate();
+
+  // Load custom fields defined for Deals so they appear alongside native fields
+  const { data: cfRaw } = useCustomFieldDefinitions(CrmEntityType.Deal);
+  const customFields: CustomFieldDefinitionDto[] = (cfRaw as unknown as CustomFieldDefinitionDto[] | undefined) ?? [];
+  const allRequiredFields: { value: string; label: string }[] = [
+    ...(GATE_REQUIRED_FIELDS as readonly { value: string; label: string }[]),
+    ...customFields.filter(f => f.isActive).map(f => ({ value: f.name, label: `${f.name} must be set` })),
+  ];
+
+  const [fieldName, setFieldName] = useState<string>(GATE_REQUIRED_FIELDS[0]?.value ?? '');
 
   const handleSubmit = () => {
     if (!label.trim()) return;
@@ -76,7 +86,7 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
             onChange={(e) => setFieldName(e.target.value)}
             className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
           >
-            {GATE_REQUIRED_FIELDS.map((f) => (
+            {allRequiredFields.map((f) => (
               <option key={f.value} value={f.value}>{f.label}</option>
             ))}
           </select>
@@ -98,7 +108,7 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
         <input
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          placeholder={`Label (e.g. "${GATE_REQUIRED_FIELDS.find(f => f.value === fieldName)?.label ?? fieldName} must be set")`}
+          placeholder={`Label (e.g. "${allRequiredFields.find(f => f.value === fieldName)?.label ?? fieldName}")`}
           className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
         />
       )}

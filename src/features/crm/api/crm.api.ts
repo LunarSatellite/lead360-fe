@@ -393,12 +393,80 @@ export const crmApi = {
     apiClient.get<NurtureAnalyticsDto>(`${BASE}/analytics/nurture`),
 
   // ─── Deliveries ──────────────────────────────────────────────────────────
+  getAllDeliveries: (filter: import('../types/crm.types').CrmDeliveryFilter) =>
+    apiClient.get<{ item1: import('../types/crm.types').CrmDeliveryDto[]; item2: number }>(`${BASE}/deliveries`, { params: filter }),
   getDeliveries: (orderId: string) =>
     apiClient.get<import('../types/crm.types').CrmDeliveryDto[]>(`${BASE}/orders/${orderId}/deliveries`),
   createDelivery: (orderId: string, data: import('../types/crm.types').CrmCreateDeliveryRequest) =>
     apiClient.post<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/orders/${orderId}/deliveries`, data),
   updateDeliveryStatus: (deliveryId: string, data: import('../types/crm.types').CrmUpdateDeliveryStatusRequest) =>
     apiClient.patch<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/deliveries/${deliveryId}/status`, data),
+
+  // ─── Equipment / Asset ────────────────────────────────────────────────────
+  getEquipment: (filter: import('../types/crm.types').CrmEquipmentFilter) =>
+    apiClient.get<{ item1: import('../types/crm.types').CrmEquipmentSummaryDto[]; item2: number }>(`${BASE}/equipment`, { params: filter }),
+  getEquipmentById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmEquipmentDetailDto>(`${BASE}/equipment/${id}`),
+  createEquipment: (data: import('../types/crm.types').CrmEquipmentCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmEquipmentDetailDto>(`${BASE}/equipment`, data),
+  updateEquipment: (id: string, data: import('../types/crm.types').CrmEquipmentUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmEquipmentDetailDto>(`${BASE}/equipment/${id}`, data),
+  updateEquipmentStatus: (id: string, data: import('../types/crm.types').CrmEquipmentStatusRequest) =>
+    apiClient.patch<import('../types/crm.types').CrmEquipmentDetailDto>(`${BASE}/equipment/${id}/status`, data),
+  deleteEquipment: (id: string) =>
+    apiClient.delete(`${BASE}/equipment/${id}`),
+  addEquipmentNote: (id: string, data: import('../types/crm.types').AddEquipmentNoteRequest) =>
+    apiClient.post<import('../types/crm.types').CrmEquipmentDetailDto>(`${BASE}/equipment/${id}/notes`, data),
+
+  // ─── Returns / RMA ────────────────────────────────────────────────────────
+  getReturns: (filter: import('../types/crm.types').CrmReturnFilter) =>
+    apiClient.get<{ item1: import('../types/crm.types').CrmReturnRequestDto[]; item2: number }>(`${BASE}/returns`, { params: filter }),
+  getReturnById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}`),
+  approveReturn: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/approve`, {}),
+  rejectReturn: (id: string, reason: string) =>
+    apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/reject?reason=${encodeURIComponent(reason)}`, {}),
+  markReturnReceived: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/receive`, {}),
+  recordReturnInspection: (id: string, data: import('../types/crm.types').CrmRecordInspectionRequest) =>
+    apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/inspect`, data),
+  resolveReturn: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/resolve`, {}),
+  cancelReturn: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/cancel`, {}),
+
+  // ─── Work Orders ──────────────────────────────────────────────────────────
+  getWorkOrders: (filter: import('../types/crm.types').CrmWorkOrderFilter) =>
+    apiClient.get<{ item1: import('../types/crm.types').CrmWorkOrderSummaryDto[]; item2: number }>(`${BASE}/work-orders`, { params: filter }),
+  getWorkOrderById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmWorkOrderDetailDto>(`${BASE}/work-orders/${id}`),
+  getWorkOrdersScheduledToday: () =>
+    apiClient.get<import('../types/crm.types').CrmWorkOrderSummaryDto[]>(`${BASE}/work-orders/scheduled-today`),
+  createWorkOrder: (data: import('../types/crm.types').CrmCreateWorkOrderRequest) =>
+    apiClient.post<import('../types/crm.types').CrmWorkOrderDetailDto>(`${BASE}/work-orders`, data),
+  updateWorkOrder: (id: string, data: import('../types/crm.types').CrmUpdateWorkOrderRequest) =>
+    apiClient.put<import('../types/crm.types').CrmWorkOrderDetailDto>(`${BASE}/work-orders/${id}`, data),
+  updateWorkOrderStatus: (id: string, data: import('../types/crm.types').CrmWorkOrderStatusRequest) =>
+    apiClient.patch<import('../types/crm.types').CrmWorkOrderDetailDto>(`${BASE}/work-orders/${id}/status`, data),
+  deleteWorkOrder: (id: string) =>
+    apiClient.delete(`${BASE}/work-orders/${id}`),
+  addWorkOrderNote: (id: string, data: import('../types/crm.types').CrmAddWorkOrderNoteRequest) =>
+    apiClient.post<import('../types/crm.types').CrmWorkOrderDetailDto>(`${BASE}/work-orders/${id}/notes`, data),
+
+  // ─── Customer Onboarding ─────────────────────────────────────────────────
+  getOnboardings: (filter: import('../types/crm.types').CrmOnboardingFilter) =>
+    apiClient.get<{ item1: import('../types/crm.types').CrmCustomerOnboardingDto[]; item2: number }>(`${BASE}/onboardings`, { params: filter }),
+  getOnboardingById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmCustomerOnboardingDto>(`${BASE}/onboardings/${id}`),
+  startOnboarding: (data: import('../types/crm.types').CrmStartOnboardingRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCustomerOnboardingDto>(`${BASE}/onboardings`, data),
+  updateOnboarding: (id: string, data: import('../types/crm.types').CrmUpdateOnboardingRequest) =>
+    apiClient.put<import('../types/crm.types').CrmCustomerOnboardingDto>(`${BASE}/onboardings/${id}`, data),
+  updateOnboardingMilestone: (id: string, milestoneId: string, data: import('../types/crm.types').CrmUpdateMilestoneRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCustomerOnboardingDto>(`${BASE}/onboardings/${id}/milestones/${milestoneId}`, data),
+  completeOnboarding: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmCustomerOnboardingDto>(`${BASE}/onboardings/${id}/complete`, {}),
 
   // ─── CRM Nurture (B2B contacts — Phase 3C) ────────────────────────────────
   enrollCrmContact: (contactId: string, sequenceId: string) =>
@@ -778,5 +846,58 @@ export const crmApi = {
     apiClient.post<import('../types/crm.types').CrmDedupCandidateDto>(`${BASE}/deduplication/${candidateId}/resolve`, data),
   scanDedup: () =>
     apiClient.post<number>(`${BASE}/deduplication/scan`),
+
+
+  // ─── Ops Dashboard ────────────────────────────────────────────────────────────
+  getOpsDashboard: () =>
+    apiClient.get<import('../types/crm.types').OpsDashboardDto>(`${BASE}/ops-dashboard`),
+
+  // ─── Dispatch Calendar ────────────────────────────────────────────────────────
+  getDispatchCalendar: (from: string, to: string, technicianId?: string) =>
+    apiClient.get<import('../types/crm.types').DispatchCalendarDto>(`${BASE}/dispatch/calendar`, {
+      params: { from, to, technicianId },
+    }),
+
+  // ─── Time Periods ─────────────────────────────────────────────────────────────
+  getTimePeriods: (filter: import('../types/crm.types').CrmTimePeriodFilter) =>
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').CrmTimePeriodDto>>(`${BASE}/time-periods`, { params: filter }),
+  getTimePeriodById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmTimePeriodDto>(`${BASE}/time-periods/${id}`),
+  createTimePeriod: (data: import('../types/crm.types').CrmCreateTimePeriodRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTimePeriodDto>(`${BASE}/time-periods`, data),
+  submitTimePeriod: (id: string, data: import('../types/crm.types').CrmSubmitTimePeriodRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTimePeriodDto>(`${BASE}/time-periods/${id}/submit`, data),
+  approveTimePeriod: (id: string, data: import('../types/crm.types').CrmReviewTimePeriodRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTimePeriodDto>(`${BASE}/time-periods/${id}/approve`, data),
+  rejectTimePeriod: (id: string, data: import('../types/crm.types').CrmReviewTimePeriodRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTimePeriodDto>(`${BASE}/time-periods/${id}/reject`, data),
+  deleteTimePeriod: (id: string) =>
+    apiClient.delete(`${BASE}/time-periods/${id}`),
+
+  // ─── Approval Chains ──────────────────────────────────────────────────────────
+  getApprovalChains: () =>
+    apiClient.get<import('../types/crm.types').CrmApprovalChainDefinitionDto[]>(`${BASE}/approval-chains`),
+  getApprovalChainById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmApprovalChainDefinitionDto>(`${BASE}/approval-chains/${id}`),
+  createApprovalChain: (data: import('../types/crm.types').CrmCreateApprovalChainRequest) =>
+    apiClient.post<import('../types/crm.types').CrmApprovalChainDefinitionDto>(`${BASE}/approval-chains`, data),
+  updateApprovalChain: (id: string, data: import('../types/crm.types').CrmCreateApprovalChainRequest) =>
+    apiClient.put<import('../types/crm.types').CrmApprovalChainDefinitionDto>(`${BASE}/approval-chains/${id}`, data),
+  deleteApprovalChain: (id: string) =>
+    apiClient.delete(`${BASE}/approval-chains/${id}`),
+  submitForChain: (data: import('../types/crm.types').CrmSubmitForChainRequest) =>
+    apiClient.post<import('../types/crm.types').CrmApprovalSummaryDto>(`${BASE}/approvals/chain`, data),
+
+  // ─── Assignment Rotation ──────────────────────────────────────────────────────
+  getRotationMembers: (entityType: string) =>
+    apiClient.get<string[]>(`${BASE}/assignment-rotation/${entityType}/members`),
+  addRotationMember: (entityType: string, userId: string) =>
+    apiClient.post(`${BASE}/assignment-rotation/${entityType}/members/${userId}`),
+  removeRotationMember: (entityType: string, userId: string) =>
+    apiClient.delete(`${BASE}/assignment-rotation/${entityType}/members/${userId}`),
+
+  // ─── Web Events ───────────────────────────────────────────────────────────────
+  getWebEvents: (page = 1, pageSize = 50) =>
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').WebEventSummaryDto>>('/v1/events', { params: { page, pageSize } }),
 
 } as const;

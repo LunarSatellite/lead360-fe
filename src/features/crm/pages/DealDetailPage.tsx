@@ -3,7 +3,7 @@ import type { CrmDealAiSummaryDto } from '../types/crm.types';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, ClipboardList, Package, Phone, Video, MessageSquare, Save, Users, Target, Sword, TrendingUp, GitBranch, Sparkles, RefreshCw, Building2, Pencil, X } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
-import { useDealById, useTimeline, useLogActivity, useDealStrategy, useUpdateDealStrategy, useMoveDealStage, useDealStages, useRefreshDealSummary, useUpdateDeal } from '../api/crm.queries';
+import { useDealById, useTimeline, useLogActivity, useDealStrategy, useUpdateDealStrategy, useMoveDealStage, useDealStages, useRefreshDealSummary, useUpdateDeal, useAccounts } from '../api/crm.queries';
 import type { CrmDealDetailDto, CrmDealUpdateRequest } from '../types/crm.types';
 import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS, CrmActivityEventKind, CrmActivityEntityKind } from '../types/crm.types';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -50,6 +50,8 @@ export function Component() {
   const updateDeal = useUpdateDeal();
   const [showEdit, setShowEdit] = useState(false);
   const [editForm, setEditForm] = useState<CrmDealUpdateRequest>({});
+  const { data: accountsRaw } = useAccounts({ pageSize: 200 });
+  const accountsList = (accountsRaw as any)?.items ?? [];
 
   function openEdit() {
     setEditForm({
@@ -59,6 +61,7 @@ export function Component() {
       closeDate: deal?.closeDate ? format(new Date(deal.closeDate), 'yyyy-MM-dd') : '',
       source: deal?.source ?? '',
       notes: deal?.notes ?? '',
+      accountId: deal?.accountId ?? undefined,
     });
     setShowEdit(true);
   }
@@ -426,6 +429,14 @@ export function Component() {
                 <label className="block text-xs font-semibold text-text-muted mb-1.5">Deal Name</label>
                 <input value={editForm.name ?? ''} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-text-muted mb-1.5">Account</label>
+                <select value={editForm.accountId ?? ''} onChange={e => setEditForm(f => ({ ...f, accountId: e.target.value || undefined }))}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                  <option value="">— No account —</option>
+                  {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>

@@ -79,6 +79,11 @@ export const ROUTES = {
     crmTimePeriods: '/dashboard/crm/time-periods',
     crmApprovalChains: '/dashboard/crm/approval-chains',
     crmAssignmentRotation: '/dashboard/crm/assignment-rotation',
+    // ── Procurement ──
+    crmVendors: '/dashboard/crm/vendors',
+    crmPurchaseOrders: '/dashboard/crm/purchase-orders',
+    crmGoodsReceipts: '/dashboard/crm/goods-receipts',
+    crmSupplierInvoices: '/dashboard/crm/supplier-invoices',
     // ── Flow A/B Experiments ──
     flowExperiments: '/dashboard/flows/experiments',
     // ── Integrations ──

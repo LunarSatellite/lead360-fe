@@ -159,6 +159,10 @@ export const router = createBrowserRouter([
       { path: 'crm/time-periods', lazy: () => import('@/features/crm/pages/CrmTimePeriodsPage') },
       { path: 'crm/approval-chains', lazy: () => import('@/features/crm/pages/CrmApprovalChainsPage') },
       { path: 'crm/assignment-rotation', lazy: () => import('@/features/crm/pages/CrmAssignmentRotationPage') },
+      { path: 'crm/vendors', lazy: () => import('@/features/crm/pages/VendorsPage') },
+      { path: 'crm/purchase-orders', lazy: () => import('@/features/crm/pages/PurchaseOrdersPage') },
+      { path: 'crm/goods-receipts', lazy: () => import('@/features/crm/pages/GoodsReceiptsPage') },
+      { path: 'crm/supplier-invoices', lazy: () => import('@/features/crm/pages/SupplierInvoicesPage') },
       // ── Flow A/B Experiments ──
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
       { index: true, element: <Navigate to="analytics" replace /> },

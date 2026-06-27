@@ -55,6 +55,10 @@ import {
   Calendar,
   ArrowRight,
   Shuffle,
+  ShoppingCart,
+  PackageCheck,
+  CreditCard,
+  Truck,
 } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
@@ -105,6 +109,10 @@ const crmNav = [
   { label: 'Orders',        href: ROUTES.dashboard.crmOrders,        icon: Package },
   { label: 'Returns',       href: ROUTES.dashboard.crmReturns,       icon: RotateCw },
   { label: 'Work Orders',   href: ROUTES.dashboard.crmWorkOrders,    icon: Wrench },
+  { label: 'Vendors',          href: ROUTES.dashboard.crmVendors,          icon: Truck },
+  { label: 'Purchase Orders',  href: ROUTES.dashboard.crmPurchaseOrders,   icon: ShoppingCart },
+  { label: 'Goods Receipts',   href: ROUTES.dashboard.crmGoodsReceipts,    icon: PackageCheck },
+  { label: 'Supplier Invoices', href: ROUTES.dashboard.crmSupplierInvoices, icon: CreditCard },
   { label: 'Onboarding',    href: ROUTES.dashboard.crmCustomerOnboarding, icon: UserPlus },
   { label: 'Meetings',      href: ROUTES.dashboard.crmMeetings,      icon: CalendarCheck },
   { label: 'NPS',           href: ROUTES.dashboard.crmNps,           icon: Star },

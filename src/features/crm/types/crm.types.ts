@@ -2931,3 +2931,125 @@ export interface CrmRoundRobinStateDto {
   assignmentCount: number;
   isActive: boolean;
 }
+
+// ─── Procurement — Enums ─────────────────────────────────────────────────────
+export enum PurchaseOrderStatus {
+  Draft = 1, PendingApproval = 2, Approved = 3, SentToVendor = 4,
+  PartiallyReceived = 5, FullyReceived = 6, Cancelled = 7, Closed = 8,
+}
+export enum GoodsReceiptStatus { Draft = 1, Confirmed = 2, Voided = 3 }
+export enum SupplierInvoiceStatus {
+  Draft = 1, Received = 2, Approved = 3, PartiallyPaid = 4, Paid = 5, Overdue = 6, Disputed = 7, Void = 8,
+}
+export enum GoodsCondition { Good = 1, Damaged = 2, Rejected = 3 }
+
+export const PO_STATUS_LABELS: Record<number, string> = {
+  1: 'Draft', 2: 'Pending Approval', 3: 'Approved', 4: 'Sent to Vendor',
+  5: 'Partially Received', 6: 'Fully Received', 7: 'Cancelled', 8: 'Closed',
+};
+export const PO_STATUS_COLORS: Record<number, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  3: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  4: 'text-brand bg-brand-soft border-border-glow',
+  5: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  6: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  7: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  8: 'text-text-muted bg-bg-card border-border-subtle',
+};
+export const GR_STATUS_LABELS: Record<number, string> = { 1: 'Draft', 2: 'Confirmed', 3: 'Voided' };
+export const GR_STATUS_COLORS: Record<number, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  3: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+};
+export const SI_STATUS_LABELS: Record<number, string> = {
+  1: 'Draft', 2: 'Received', 3: 'Approved', 4: 'Partially Paid',
+  5: 'Paid', 6: 'Overdue', 7: 'Disputed', 8: 'Void',
+};
+export const SI_STATUS_COLORS: Record<number, string> = {
+  1: 'text-text-secondary bg-bg-elevated border-border-subtle',
+  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  3: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  6: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  7: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  8: 'text-text-muted bg-bg-card border-border-subtle',
+};
+export const GOODS_CONDITION_LABELS: Record<number, string> = { 1: 'Good', 2: 'Damaged', 3: 'Rejected' };
+
+// ─── Procurement — Vendor ────────────────────────────────────────────────────
+export interface VendorDto {
+  id: string; name: string; contactPerson?: string; email?: string; phone?: string;
+  website?: string; paymentTermsDays?: number; currency?: string; address?: string;
+  taxNumber?: string; isActive: boolean; notes?: string; createdAt: string;
+}
+export interface VendorCreateRequest {
+  name: string; contactPerson?: string; email?: string; phone?: string;
+  website?: string; paymentTermsDays?: number; currency?: string; address?: string;
+  taxNumber?: string; notes?: string;
+}
+export interface VendorUpdateRequest extends VendorCreateRequest { isActive?: boolean; }
+export interface VendorFilter { page?: number; pageSize?: number; search?: string; isActive?: boolean; }
+
+// ─── Procurement — Purchase Orders ──────────────────────────────────────────
+export interface PurchaseOrderLineItemDto {
+  id: string; purchaseOrderId: string; productId?: string; productName: string;
+  sku?: string; quantityOrdered: number; quantityReceived: number; unitCost: number; totalCost: number; notes?: string;
+}
+export interface PurchaseOrderDto {
+  id: string; vendorId: string; vendorName?: string; poNumber: string; status: PurchaseOrderStatus;
+  expectedDeliveryDate?: string; shippingAddress?: string; subTotal: number; taxAmount: number;
+  totalAmount: number; currency: string; approvedAt?: string; approvedByName?: string;
+  sentToVendorAt?: string; cancellationReason?: string; notes?: string;
+  lineItems: PurchaseOrderLineItemDto[]; createdAt: string;
+}
+export interface PurchaseOrderLineItemRequest {
+  productId?: string; productName: string; sku?: string; quantityOrdered: number; unitCost: number; notes?: string;
+}
+export interface PurchaseOrderCreateRequest {
+  vendorId: string; expectedDeliveryDate?: string; shippingAddress?: string;
+  currency?: string; notes?: string; lineItems: PurchaseOrderLineItemRequest[];
+}
+export interface PurchaseOrderUpdateRequest {
+  expectedDeliveryDate?: string; shippingAddress?: string; notes?: string; lineItems?: PurchaseOrderLineItemRequest[];
+}
+export interface PoRejectRequest { reason: string; }
+export interface PurchaseOrderFilter { page?: number; pageSize?: number; vendorId?: string; status?: PurchaseOrderStatus; search?: string; }
+
+// ─── Procurement — Goods Receipts ────────────────────────────────────────────
+export interface GoodsReceiptLineItemDto {
+  id: string; goodsReceiptId: string; poLineItemId?: string; quantityReceived: number;
+  condition: GoodsCondition; rejectedQty?: number; rejectionReason?: string;
+}
+export interface GoodsReceiptDto {
+  id: string; purchaseOrderId: string; poNumber?: string; vendorName?: string;
+  receiptNumber: string; status: GoodsReceiptStatus; receivedAt: string;
+  warehouseLocation?: string; notes?: string; lineItems: GoodsReceiptLineItemDto[]; createdAt: string;
+}
+export interface GoodsReceiptLineItemRequest {
+  poLineItemId?: string; quantityReceived: number; condition: GoodsCondition; rejectedQty?: number; rejectionReason?: string;
+}
+export interface GoodsReceiptCreateRequest {
+  purchaseOrderId: string; warehouseLocation?: string; notes?: string; lineItems: GoodsReceiptLineItemRequest[];
+}
+export interface GoodsReceiptFilter { page?: number; pageSize?: number; purchaseOrderId?: string; status?: GoodsReceiptStatus; }
+
+// ─── Procurement — Supplier Invoices ─────────────────────────────────────────
+export interface SupplierInvoiceDto {
+  id: string; purchaseOrderId?: string; poNumber?: string; vendorId: string; vendorName?: string;
+  invoiceNumber: string; status: SupplierInvoiceStatus; issuedDate: string; dueDate: string;
+  subTotal: number; taxAmount: number; totalAmount: number; currency: string;
+  paidAt?: string; paymentReference?: string; notes?: string; createdAt: string;
+}
+export interface SupplierInvoiceCreateRequest {
+  vendorId: string; purchaseOrderId?: string; invoiceNumber: string; issuedDate: string; dueDate: string;
+  subTotal: number; taxAmount: number; totalAmount: number; currency?: string; notes?: string;
+}
+export interface SupplierInvoiceUpdateRequest {
+  dueDate?: string; notes?: string;
+}
+export interface SupplierInvoiceRecordPaymentRequest { paymentReference?: string; paidAt?: string; }
+export interface SupplierInvoiceDisputeRequest { reason: string; }
+export interface SupplierInvoiceFilter { page?: number; pageSize?: number; vendorId?: string; status?: SupplierInvoiceStatus; }

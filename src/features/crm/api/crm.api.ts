@@ -900,4 +900,76 @@ export const crmApi = {
   getWebEvents: (page = 1, pageSize = 50) =>
     apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').WebEventSummaryDto>>('/v1/events', { params: { page, pageSize } }),
 
+  // ─── Vendors ──────────────────────────────────────────────────────────────────
+  getVendors: (filter: import('../types/crm.types').VendorFilter) =>
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').VendorDto>>(`${BASE}/vendors`, { params: filter }),
+  getVendorById: (id: string) =>
+    apiClient.get<import('../types/crm.types').VendorDto>(`${BASE}/vendors/${id}`),
+  getActiveVendors: () =>
+    apiClient.get<import('../types/crm.types').VendorDto[]>(`${BASE}/vendors/active`),
+  createVendor: (data: import('../types/crm.types').VendorCreateRequest) =>
+    apiClient.post<import('../types/crm.types').VendorDto>(`${BASE}/vendors`, data),
+  updateVendor: (id: string, data: import('../types/crm.types').VendorUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').VendorDto>(`${BASE}/vendors/${id}`, data),
+  deleteVendor: (id: string) =>
+    apiClient.delete(`${BASE}/vendors/${id}`),
+
+  // ─── Purchase Orders ──────────────────────────────────────────────────────────
+  getPurchaseOrders: (filter: import('../types/crm.types').PurchaseOrderFilter) =>
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').PurchaseOrderDto>>(`${BASE}/purchase-orders`, { params: filter }),
+  getPurchaseOrderById: (id: string) =>
+    apiClient.get<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}`),
+  getPurchaseOrdersByVendor: (vendorId: string) =>
+    apiClient.get<import('../types/crm.types').PurchaseOrderDto[]>(`${BASE}/purchase-orders/by-vendor/${vendorId}`),
+  createPurchaseOrder: (data: import('../types/crm.types').PurchaseOrderCreateRequest) =>
+    apiClient.post<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders`, data),
+  updatePurchaseOrder: (id: string, data: import('../types/crm.types').PurchaseOrderUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}`, data),
+  submitPurchaseOrderForApproval: (id: string) =>
+    apiClient.post<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}/submit`, {}),
+  approvePurchaseOrder: (id: string) =>
+    apiClient.post<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}/approve`, {}),
+  rejectPurchaseOrder: (id: string, data: import('../types/crm.types').PoRejectRequest) =>
+    apiClient.post<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}/reject`, data),
+  markPurchaseOrderSentToVendor: (id: string) =>
+    apiClient.post<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}/send`, {}),
+  cancelPurchaseOrder: (id: string, reason?: string) =>
+    apiClient.post<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}/cancel`, { reason }),
+  closePurchaseOrder: (id: string) =>
+    apiClient.post<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}/close`, {}),
+
+  // ─── Goods Receipts ───────────────────────────────────────────────────────────
+  getGoodsReceipts: (filter: import('../types/crm.types').GoodsReceiptFilter) =>
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').GoodsReceiptDto>>(`${BASE}/goods-receipts`, { params: filter }),
+  getGoodsReceiptById: (id: string) =>
+    apiClient.get<import('../types/crm.types').GoodsReceiptDto>(`${BASE}/goods-receipts/${id}`),
+  getGoodsReceiptsByPurchaseOrder: (poId: string) =>
+    apiClient.get<import('../types/crm.types').GoodsReceiptDto[]>(`${BASE}/goods-receipts/by-purchase-order/${poId}`),
+  createGoodsReceipt: (data: import('../types/crm.types').GoodsReceiptCreateRequest) =>
+    apiClient.post<import('../types/crm.types').GoodsReceiptDto>(`${BASE}/goods-receipts`, data),
+  confirmGoodsReceipt: (id: string) =>
+    apiClient.post<import('../types/crm.types').GoodsReceiptDto>(`${BASE}/goods-receipts/${id}/confirm`, {}),
+  voidGoodsReceipt: (id: string) =>
+    apiClient.post<import('../types/crm.types').GoodsReceiptDto>(`${BASE}/goods-receipts/${id}/void`, {}),
+
+  // ─── Supplier Invoices ────────────────────────────────────────────────────────
+  getSupplierInvoices: (filter: import('../types/crm.types').SupplierInvoiceFilter) =>
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').SupplierInvoiceDto>>(`${BASE}/supplier-invoices`, { params: filter }),
+  getSupplierInvoiceById: (id: string) =>
+    apiClient.get<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}`),
+  getOverdueSupplierInvoices: () =>
+    apiClient.get<import('../types/crm.types').SupplierInvoiceDto[]>(`${BASE}/supplier-invoices/overdue`),
+  createSupplierInvoice: (data: import('../types/crm.types').SupplierInvoiceCreateRequest) =>
+    apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices`, data),
+  updateSupplierInvoice: (id: string, data: import('../types/crm.types').SupplierInvoiceUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}`, data),
+  approveSupplierInvoice: (id: string) =>
+    apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/approve`, {}),
+  recordSupplierInvoicePayment: (id: string, data: import('../types/crm.types').SupplierInvoiceRecordPaymentRequest) =>
+    apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/pay`, data),
+  disputeSupplierInvoice: (id: string, data: import('../types/crm.types').SupplierInvoiceDisputeRequest) =>
+    apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/dispute`, data),
+  voidSupplierInvoice: (id: string) =>
+    apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/void`, {}),
+
 } as const;

@@ -72,7 +72,7 @@ export function Component() {
   }
 
   const entityTypeLabels: Record<number, string> = {
-    1: 'Quote', 2: 'Proposal', 3: 'Deal', 4: 'Time Period', 5: 'Return', 6: 'Work Order', 7: 'Onboarding',
+    1: 'Quote', 2: 'Proposal', 3: 'Deal', 4: 'Time Period', 5: 'Return', 6: 'Work Order', 7: 'Onboarding', 8: 'Purchase Order',
   };
 
   const canSave = name.trim() && steps.every(s => s.stepName.trim());
@@ -92,23 +92,23 @@ export function Component() {
       </div>
 
       {showForm && (
-        <div className="rounded-xl border border-border-subtle bg-bg-elevated p-5 space-y-4">
+        <div className="rounded-xl border border-border-subtle bg-glass-1 p-5 space-y-4">
           <h3 className="text-sm font-semibold">{editingId ? 'Edit' : 'New'} Approval Chain</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-xs text-text-muted block mb-1">Name *</label>
-              <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Quote Approval" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-primary text-sm" />
+              <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Quote Approval" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
             </div>
             <div>
               <label className="text-xs text-text-muted block mb-1">Applies To</label>
-              <select value={entityType} onChange={e => setEntityType(Number(e.target.value))} className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-primary text-sm">
+              <select value={entityType} onChange={e => setEntityType(Number(e.target.value))} className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm">
                 {Object.entries(entityTypeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
           </div>
           <div>
             <label className="text-xs text-text-muted block mb-1">Description</label>
-            <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Optional description" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-primary text-sm" />
+            <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Optional description" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
           </div>
 
           {/* Steps */}
@@ -118,18 +118,18 @@ export function Component() {
               <button onClick={addStep} className="text-xs text-brand hover:underline">+ Add Step</button>
             </div>
             {steps.map((s, i) => (
-              <div key={i} className="flex gap-2 items-center p-2 rounded-lg bg-bg-subtle">
+              <div key={i} className="flex gap-2 items-center p-2 rounded-lg bg-glass-2">
                 <span className="text-xs font-bold text-text-muted w-6 shrink-0">#{s.stepOrder}</span>
                 <input
                   value={s.stepName}
                   onChange={e => updateStep(i, 'stepName', e.target.value)}
                   placeholder="Step name (e.g. Sales Manager Review)"
-                  className="flex-1 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-primary text-sm"
+                  className="flex-1 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm"
                 />
                 <select
                   value={s.approverUserId ?? ''}
                   onChange={e => updateStep(i, 'approverUserId', e.target.value)}
-                  className="w-56 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-primary text-sm"
+                  className="w-56 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm"
                 >
                   <option value="">— Any team member —</option>
                   {teamMembers.map(u => (
@@ -174,7 +174,7 @@ export function Component() {
           {chains.map((chain: any) => {
             const steps: any[] = chain.steps ?? [];
             return (
-              <div key={chain.id} className="rounded-xl border border-border-subtle bg-bg-elevated p-4">
+              <div key={chain.id} className="rounded-xl border border-border-subtle bg-glass-1 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">

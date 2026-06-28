@@ -1751,7 +1751,7 @@ export interface CrmQuoteSummaryDto {
 export interface CrmQuoteDetailDto extends CrmQuoteSummaryDto { lineItems: CrmQuoteLineItemDto[]; notes: string | null; }
 export interface CrmQuoteCreateRequest {
   dealId?: string; contactId?: string; lineItems: CrmQuoteLineItemRequest[];
-  currency?: string; validityDays?: number; notes?: string; priceBookId?: string;
+  currency?: string; validityDays?: number; notes?: string; priceBookId?: string; taxPercent?: number;
 }
 export interface CrmQuoteUpdateRequest {
   lineItems?: CrmQuoteLineItemRequest[];
@@ -3244,3 +3244,13 @@ export interface SupplierInvoiceUpdateRequest {
 export interface SupplierInvoiceRecordPaymentRequest { paymentReference?: string; paidAt?: string; }
 export interface SupplierInvoiceDisputeRequest { reason: string; }
 export interface SupplierInvoiceFilter { page?: number; pageSize?: number; vendorId?: string; status?: SupplierInvoiceStatus; }
+
+// ─── Tax Rules ────────────────────────────────────────────────────────────────
+export const CrmTaxType = { VAT: 1, SalesTax: 2, GST: 3, Custom: 4 } as const;
+export type CrmTaxTypeValue = (typeof CrmTaxType)[keyof typeof CrmTaxType];
+export const CRM_TAX_TYPE_LABEL: Record<CrmTaxTypeValue, string> = {
+  [CrmTaxType.VAT]: 'VAT', [CrmTaxType.SalesTax]: 'Sales Tax', [CrmTaxType.GST]: 'GST', [CrmTaxType.Custom]: 'Custom',
+};
+export interface CrmTaxRuleDto { id: string; name: string; jurisdiction: string; taxType: CrmTaxTypeValue; rate: number; appliesToAllProducts: boolean; productCategoryJson?: string; isActive: boolean; }
+export interface CrmTaxRuleCreateRequest { name: string; jurisdiction: string; taxType: CrmTaxTypeValue; rate: number; appliesToAllProducts?: boolean; productCategoryJson?: string; }
+export interface CrmTaxRuleUpdateRequest { name?: string; jurisdiction?: string; taxType?: CrmTaxTypeValue; rate?: number; appliesToAllProducts?: boolean; productCategoryJson?: string; isActive?: boolean; }

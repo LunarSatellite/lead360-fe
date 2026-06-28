@@ -1050,4 +1050,25 @@ export const crmApi = {
   voidSupplierInvoice: (id: string) =>
     apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/void`, {}),
 
+  // ─── Tax Rules ────────────────────────────────────────────────────────────────
+  getTaxRules: () =>
+    apiClient.get<import('../types/crm.types').CrmTaxRuleDto[]>('/v1/crm/tax-rules'),
+  getTaxRuleById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmTaxRuleDto>(`/v1/crm/tax-rules/${id}`),
+  createTaxRule: (data: import('../types/crm.types').CrmTaxRuleCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTaxRuleDto>('/v1/crm/tax-rules', data),
+  updateTaxRule: (id: string, data: import('../types/crm.types').CrmTaxRuleUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmTaxRuleDto>(`/v1/crm/tax-rules/${id}`, data),
+  deleteTaxRule: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/tax-rules/${id}`),
+
+  // ─── Payment Terms ────────────────────────────────────────────────────────────
+  getPaymentTerms: () =>
+    apiClient.get<any[]>('/v1/crm/payment-terms'),
+  createPaymentTerm: (data: any) =>
+    apiClient.post<any>('/v1/crm/payment-terms', data),
+  updatePaymentTerm: (id: string, data: any) =>
+    apiClient.put<any>(`/v1/crm/payment-terms/${id}`, data),
+  deletePaymentTerm: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/payment-terms/${id}`),
 } as const;

@@ -3,14 +3,14 @@ import { Plus, X, Loader2, Building2, Pencil, Trash2 } from 'lucide-react';
 import { useVendors, useCreateVendor, useUpdateVendor, useDeleteVendor } from '../api/crm.queries';
 import type { VendorDto, VendorCreateRequest, VendorUpdateRequest, VendorFilter } from '../types/crm.types';
 
-const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
+const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
 function SlideOver({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
+      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
           <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
@@ -27,6 +27,39 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 type FormState = { name: string; contactPerson: string; email: string; phone: string; website: string; paymentTermsDays: string; currency: string; address: string; taxNumber: string; notes: string; isActive: boolean };
 const emptyForm = (): FormState => ({ name: '', contactPerson: '', email: '', phone: '', website: '', paymentTermsDays: '30', currency: 'USD', address: '', taxNumber: '', notes: '', isActive: true });
+
+function VendorForm({ form, editing, set, onSubmit, onCancel, isPending, submitLabel }: {
+  form: FormState; editing: boolean; set: (k: keyof FormState, v: string | boolean) => void;
+  onSubmit: (e: React.FormEvent) => void; onCancel: () => void; isPending: boolean; submitLabel: string;
+}) {
+  return (
+    <form onSubmit={onSubmit} className="space-y-4">
+      <Field label="Name *"><input required value={form.name} onChange={e => set('name', e.target.value)} className={inputCls} /></Field>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Contact Person"><input value={form.contactPerson} onChange={e => set('contactPerson', e.target.value)} className={inputCls} /></Field>
+        <Field label="Email"><input type="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} /></Field>
+        <Field label="Phone"><input value={form.phone} onChange={e => set('phone', e.target.value)} className={inputCls} /></Field>
+        <Field label="Website"><input value={form.website} onChange={e => set('website', e.target.value)} className={inputCls} /></Field>
+        <Field label="Payment Terms (days)"><input type="number" min="0" value={form.paymentTermsDays} onChange={e => set('paymentTermsDays', e.target.value)} className={inputCls} /></Field>
+        <Field label="Currency"><input value={form.currency} onChange={e => set('currency', e.target.value)} placeholder="USD" className={inputCls} /></Field>
+      </div>
+      <Field label="Tax Number"><input value={form.taxNumber} onChange={e => set('taxNumber', e.target.value)} className={inputCls} /></Field>
+      <Field label="Address"><textarea value={form.address} onChange={e => set('address', e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
+      <Field label="Notes"><textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
+      {editing && (
+        <label className="flex items-center gap-2 text-sm text-text-secondary">
+          <input type="checkbox" checked={form.isActive} onChange={e => set('isActive', e.target.checked)} className="rounded" /> Active
+        </label>
+      )}
+      <div className="flex gap-3 pt-2">
+        <button type="submit" disabled={isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : submitLabel}
+        </button>
+        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+      </div>
+    </form>
+  );
+}
 
 function toCreate(f: FormState): VendorCreateRequest {
   return {
@@ -82,34 +115,6 @@ export function Component() {
     deleteVendor.mutate(v.id);
   };
 
-  const VendorForm = ({ onSubmit, isPending, submitLabel }: { onSubmit: (e: React.FormEvent) => void; isPending: boolean; submitLabel: string }) => (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <Field label="Name *"><input required value={form.name} onChange={e => set('name', e.target.value)} className={inputCls} /></Field>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Contact Person"><input value={form.contactPerson} onChange={e => set('contactPerson', e.target.value)} className={inputCls} /></Field>
-        <Field label="Email"><input type="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} /></Field>
-        <Field label="Phone"><input value={form.phone} onChange={e => set('phone', e.target.value)} className={inputCls} /></Field>
-        <Field label="Website"><input value={form.website} onChange={e => set('website', e.target.value)} className={inputCls} /></Field>
-        <Field label="Payment Terms (days)"><input type="number" min="0" value={form.paymentTermsDays} onChange={e => set('paymentTermsDays', e.target.value)} className={inputCls} /></Field>
-        <Field label="Currency"><input value={form.currency} onChange={e => set('currency', e.target.value)} placeholder="USD" className={inputCls} /></Field>
-      </div>
-      <Field label="Tax Number"><input value={form.taxNumber} onChange={e => set('taxNumber', e.target.value)} className={inputCls} /></Field>
-      <Field label="Address"><textarea value={form.address} onChange={e => set('address', e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
-      <Field label="Notes"><textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
-      {editing && (
-        <label className="flex items-center gap-2 text-sm text-text-secondary">
-          <input type="checkbox" checked={form.isActive} onChange={e => set('isActive', e.target.checked)} className="rounded" /> Active
-        </label>
-      )}
-      <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
-          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : submitLabel}
-        </button>
-        <button type="button" onClick={() => { setShowCreate(false); setEditing(null); }} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
-      </div>
-    </form>
-  );
-
   return (
     <>
       <div className="space-y-6">
@@ -125,16 +130,16 @@ export function Component() {
 
         <div className="flex gap-2">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-            placeholder="Search vendors..." className="flex-1 rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none" value={filter.isActive === undefined ? '' : String(filter.isActive)} onChange={e => setFilter(f => ({ ...f, isActive: e.target.value === '' ? undefined : e.target.value === 'true', page: 1 }))}>
+            placeholder="Search vendors..." className="flex-1 rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none" value={filter.isActive === undefined ? '' : String(filter.isActive)} onChange={e => setFilter(f => ({ ...f, isActive: e.target.value === '' ? undefined : e.target.value === 'true', page: 1 }))}>
             <option value="">All</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
-          <button onClick={() => setFilter(f => ({ ...f, search: search || undefined, page: 1 }))} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-surface text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <button onClick={() => setFilter(f => ({ ...f, search: search || undefined, page: 1 }))} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-input text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
         </div>
 
-        <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
+        <div className="rounded-2xl border border-border-subtle bg-glass-1 overflow-hidden">
           {isLoading ? (
             <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
           ) : !items.length ? (
@@ -153,7 +158,7 @@ export function Component() {
               </thead>
               <tbody>
                 {items.map(v => (
-                  <tr key={v.id} className="border-b border-border-subtle last:border-0 hover:bg-bg-elevated transition-colors">
+                  <tr key={v.id} className="border-b border-border-subtle last:border-0 hover:bg-glass-2 transition-colors">
                     <td className="px-4 py-3 font-semibold text-text-primary">{v.name}</td>
                     <td className="px-4 py-3 text-text-secondary">{v.contactPerson ?? '—'}</td>
                     <td className="px-4 py-3 text-text-secondary">{v.email ?? '—'}</td>
@@ -180,11 +185,11 @@ export function Component() {
       </div>
 
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Vendor">
-        <VendorForm onSubmit={handleCreate} isPending={createVendor.isPending} submitLabel="Create Vendor" />
+        <VendorForm form={form} editing={false} set={set} onSubmit={handleCreate} onCancel={() => { setShowCreate(false); setForm(emptyForm()); }} isPending={createVendor.isPending} submitLabel="Create Vendor" />
       </SlideOver>
 
       <SlideOver open={!!editing} onClose={() => setEditing(null)} title={`Edit — ${editing?.name}`}>
-        <VendorForm onSubmit={handleUpdate} isPending={updateVendor.isPending} submitLabel="Save Changes" />
+        <VendorForm form={form} editing={true} set={set} onSubmit={handleUpdate} onCancel={() => setEditing(null)} isPending={updateVendor.isPending} submitLabel="Save Changes" />
       </SlideOver>
     </>
   );

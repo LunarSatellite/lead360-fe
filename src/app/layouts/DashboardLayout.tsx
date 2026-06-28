@@ -66,6 +66,7 @@ import {
   CreditCard,
   Truck,
   MapPin,
+  Percent,
 } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
@@ -117,6 +118,8 @@ const crmNav = [
   { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },
   { label: 'Renewals',      href: ROUTES.dashboard.crmRenewals,      icon: CalendarClock },
   { label: 'Price Books',   href: ROUTES.dashboard.crmPriceBooks,    icon: BookOpen },
+  { label: 'Tax Rules',     href: ROUTES.dashboard.crmTaxRules,      icon: Percent },
+  { label: 'Payment Terms', href: ROUTES.dashboard.crmPaymentTerms,  icon: Calendar },
   { label: 'Contracts',     href: ROUTES.dashboard.crmContracts,     icon: FileSignature },
   { label: 'Orders',        href: ROUTES.dashboard.crmOrders,        icon: Package },
   { label: 'Returns',       href: ROUTES.dashboard.crmReturns,       icon: RotateCw },

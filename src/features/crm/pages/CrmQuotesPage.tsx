@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
@@ -81,11 +81,17 @@ export function Component() {
   const [validityDays, setValidityDays] = useState(30);
   const [notes, setNotes] = useState('');
   const [lines, setLines] = useState<CrmQuoteLineItemRequest[]>([emptyLine()]);
-  const [priceBookId, setPriceBookId] = useState('');
-
   const { data: priceBooks } = usePriceBooks();
   const priceBookList: CrmPriceBookDto[] = priceBooks ?? [];
+  const [priceBookId, setPriceBookId] = useState('');
   const { data: bookDetail } = usePriceBook(priceBookId || undefined);
+  const initRef = useRef(false);
+  useEffect(() => {
+    if (!initRef.current && priceBookList.length > 0 && !priceBookId) {
+      const def = priceBookList.find((b) => b.isDefault && b.isActive);
+      if (def) { setPriceBookId(def.id); initRef.current = true; }
+    }
+  }, [priceBookList, priceBookId]);
   const bookEntries = bookDetail?.entries ?? [];
 
   const { data: raw, isLoading } = useQuotes(filter);

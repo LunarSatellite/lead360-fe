@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Users, Mail, XCircle, RefreshCw, UserMinus, Plus, Send,
-  Shield, ChevronRight, Trash2, Lock, Check, X,
+  Shield, ChevronRight, Trash2, Lock, Check, X, UserCheck,
 } from 'lucide-react';
 import {
   useTeamMembers, useInvitations, useSendInvitation, useCancelInvitation,
@@ -103,6 +103,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
             <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Role</label>
             <select {...form.register('role', { valueAsNumber: true })} className={input}>
               <option value={UserRole.Admin} className="bg-bg">Admin</option>
+              <option value={UserRole.Manager} className="bg-bg">Manager</option>
               <option value={UserRole.Agent} className="bg-bg">Agent</option>
             </select>
           </div>
@@ -136,19 +137,22 @@ function MembersSection() {
   const { data: rolesData } = useCrmRoles();
   const roles = (rolesData as unknown as CrmRoleDto[]) || [];
   const adminUpdate = useAdminUpdateUser();
-  const deactivate = useDeactivateUser();
   const assignCrmRole = useAssignCrmRole();
+
+  const activeMembers = members.filter((u) => u.status !== UserStatus.Deactivated);
+  const deactivatedMembers = members.filter((u) => u.status === UserStatus.Deactivated);
 
   const roleBadge: Record<number, string> = {
     [UserRole.Owner]: 'bg-warning-soft text-warning',
     [UserRole.Admin]: 'bg-brand-soft text-brand',
+    [UserRole.Manager]: 'bg-violet-soft text-violet',
     [UserRole.Agent]: 'bg-glass-2 text-text-secondary',
   };
   const statusBadge: Record<number, string> = {
     [UserStatus.Active]: 'bg-success-soft text-success',
-    [UserStatus.Inactive]: 'bg-glass-2 text-text-muted',
+    [UserStatus.Deactivated]: 'bg-glass-2 text-text-muted',
     [UserStatus.Suspended]: 'bg-danger-soft text-danger',
-    [UserStatus.PendingVerification]: 'bg-warning-soft text-warning',
+    [UserStatus.Pending]: 'bg-warning-soft text-warning',
   };
 
   return (
@@ -164,56 +168,85 @@ function MembersSection() {
         <div className="p-8 text-center text-sm text-text-muted">No team members yet.</div>
       ) : (
         <div className="divide-y divide-border-subtle">
-          {members.map((user) => {
-            const initials = `${(user.firstName?.[0] || '').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}`;
-            return (
-              <div key={user.id} className="flex items-center gap-4 px-6 py-4 hover:bg-glass-2 transition-all">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand to-pink-500 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">{initials}</div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm font-bold text-text-primary">{user.fullName || `${user.firstName} ${user.lastName}`}</div>
-                  <div className="text-xs text-text-muted">{user.email}</div>
-                </div>
-                <span className={`px-3 py-1 rounded-lg text-xs font-bold ${roleBadge[user.role] || 'bg-glass-2 text-text-muted'}`}>
-                  {USER_ROLE_LABEL[user.role as UserRoleValue] || 'Unknown'}
-                </span>
-                <span className={`px-3 py-1 rounded-lg text-xs font-bold ${statusBadge[user.status] || 'bg-glass-2 text-text-muted'}`}>
-                  {USER_STATUS_LABEL[user.status as UserStatusValue] || 'Unknown'}
-                </span>
-                {user.role !== UserRole.Owner && (
-                  <div className="flex items-center gap-2">
-                    <select
-                      defaultValue={user.role}
-                      onChange={(e) => adminUpdate.mutate({ userId: user.id, data: { role: Number(e.target.value) as UserRoleValue } })}
-                      className="px-2 py-1 rounded-lg bg-bg border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
-                    >
-                      <option value={UserRole.Admin} className="bg-bg">Admin</option>
-                      <option value={UserRole.Agent} className="bg-bg">Agent</option>
-                    </select>
-                    {roles.length > 0 && (
-                      <select
-                        value={user.crmRoleId ?? ''}
-                        onChange={(e) => assignCrmRole.mutate({ userId: user.id, roleId: e.target.value || null })}
-                        className="px-2 py-1 rounded-lg bg-bg border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
-                        title="CRM Role"
-                      >
-                        <option value="" className="bg-bg">No CRM role</option>
-                        {roles.map((r) => (
-                          <option key={r.id} value={r.id} className="bg-bg">{r.name}</option>
-                        ))}
-                      </select>
-                    )}
-                    <button
-                      onClick={() => confirmDialog({ message: `Deactivate ${user.firstName}?`, confirmText: 'Deactivate', danger: true }).then((ok) => { if (ok) deactivate.mutate(user.id); })}
-                      className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
-                      title="Deactivate"
-                    >
-                      <UserMinus className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+          {activeMembers.map((user) => (
+            <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} />
+          ))}
+          {deactivatedMembers.length > 0 && (
+            <>
+              <div className="px-6 py-2 bg-glass-2 text-xs font-bold uppercase tracking-[1px] text-text-muted">Deactivated</div>
+              {deactivatedMembers.map((user) => (
+                <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} />
+              ))}
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrmRole }: {
+  user: UserDto; roles: CrmRoleDto[];
+  roleBadge: Record<number, string>; statusBadge: Record<number, string>;
+  adminUpdate: ReturnType<typeof useAdminUpdateUser>; assignCrmRole: ReturnType<typeof useAssignCrmRole>;
+}) {
+  const initials = `${(user.firstName?.[0] || '').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}`;
+  const isDeactivated = user.status === UserStatus.Deactivated;
+  return (
+    <div key={user.id} className={`flex items-center gap-4 px-6 py-4 hover:bg-glass-2 transition-all ${isDeactivated ? 'opacity-60' : ''}`}>
+      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand to-pink-500 flex items-center justify-center text-sm font-bold text-white flex-shrink-0">{initials}</div>
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-bold text-text-primary">{user.fullName || `${user.firstName} ${user.lastName}`}</div>
+        <div className="text-xs text-text-muted">{user.email}</div>
+      </div>
+      <span className={`px-3 py-1 rounded-lg text-xs font-bold ${roleBadge[user.role] || 'bg-glass-2 text-text-muted'}`}>
+        {USER_ROLE_LABEL[user.role as UserRoleValue] || 'Unknown'}
+      </span>
+      <span className={`px-3 py-1 rounded-lg text-xs font-bold ${statusBadge[user.status] || 'bg-glass-2 text-text-muted'}`}>
+        {USER_STATUS_LABEL[user.status as UserStatusValue] || 'Unknown'}
+      </span>
+      {user.role !== UserRole.Owner && (
+        <div className="flex items-center gap-2">
+          {!isDeactivated ? (
+            <>
+              <select
+                defaultValue={user.role}
+                onChange={(e) => adminUpdate.mutate({ userId: user.id, data: { role: Number(e.target.value) as UserRoleValue } })}
+                className="px-2 py-1 rounded-lg bg-bg border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
+              >
+                <option value={UserRole.Admin} className="bg-bg">Admin</option>
+                <option value={UserRole.Manager} className="bg-bg">Manager</option>
+                <option value={UserRole.Agent} className="bg-bg">Agent</option>
+              </select>
+              {roles.length > 0 && (
+                <select
+                  value={user.crmRoleId ?? ''}
+                  onChange={(e) => assignCrmRole.mutate({ userId: user.id, roleId: e.target.value || null })}
+                  className="px-2 py-1 rounded-lg bg-bg border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
+                  title="CRM Role"
+                >
+                  <option value="" className="bg-bg">No CRM role</option>
+                  {roles.map((r) => (
+                    <option key={r.id} value={r.id} className="bg-bg">{r.name}</option>
+                  ))}
+                </select>
+              )}
+              <button
+                onClick={() => confirmDialog({ message: `Deactivate ${user.firstName}?`, confirmText: 'Deactivate', danger: true }).then((ok) => { if (ok) adminUpdate.mutate({ userId: user.id, data: { status: UserStatus.Deactivated } }); })}
+                className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+                title="Deactivate"
+              >
+                <UserMinus className="w-4 h-4" />
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => confirmDialog({ message: `Reactivate ${user.firstName}?`, confirmText: 'Reactivate' }).then((ok) => { if (ok) adminUpdate.mutate({ userId: user.id, data: { status: UserStatus.Active } }); })}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success hover:brightness-110 transition-all"
+            >
+              <RefreshCw className="w-3.5 h-3.5" /> Reactivate
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -444,6 +477,46 @@ function PermissionMatrix({ role }: { role: CrmRoleDto }) {
     );
   };
 
+  const toggleRow = (feature: CrmFeatureValue) => {
+    if (role.isSystem) return;
+    setDirty(true);
+    setPerms((prev) => {
+      const current = prev[feature];
+      const allOn = PERM_COLS.every((c) => current[c.key]);
+      const updated = { ...current };
+      for (const c of PERM_COLS) updated[c.key] = !allOn;
+      if (!updated.canView) {
+        updated.canViewAll = false; updated.canCreate = false;
+        updated.canEdit = false; updated.canDelete = false; updated.canApprove = false;
+      }
+      return { ...prev, [feature]: updated };
+    });
+  };
+
+  const allowAll = () => {
+    if (role.isSystem) return;
+    setDirty(true);
+    setPerms((prev) => {
+      const next = { ...prev };
+      for (const f of Object.values(CrmFeature) as CrmFeatureValue[]) {
+        next[f] = { ...next[f], canView: true, canViewAll: true, canCreate: true, canEdit: true, canDelete: true, canApprove: true };
+      }
+      return next;
+    });
+  };
+
+  const denyAll = () => {
+    if (role.isSystem) return;
+    setDirty(true);
+    setPerms((prev) => {
+      const next = { ...prev };
+      for (const f of Object.values(CrmFeature) as CrmFeatureValue[]) {
+        next[f] = { ...next[f], canView: false, canViewAll: false, canCreate: false, canEdit: false, canDelete: false, canApprove: false };
+      }
+      return next;
+    });
+  };
+
   const cell = (feature: CrmFeatureValue, key: PermKey) => {
     const val = perms[feature]?.[key] ?? false;
     const disabled = role.isSystem || (key !== 'canView' && !perms[feature]?.canView);
@@ -480,18 +553,26 @@ function PermissionMatrix({ role }: { role: CrmRoleDto }) {
           </div>
           {role.description && <div className="text-xs text-text-muted mt-0.5">{role.description}</div>}
         </div>
-        {!role.isSystem && dirty && (
-          <button
-            onClick={save}
-            disabled={updatePerms.isPending}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 disabled:opacity-50"
-          >
-            {updatePerms.isPending
-              ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              : <Check className="w-4 h-4" />}
-            Save changes
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {!role.isSystem && (
+            <>
+              <button onClick={allowAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success hover:brightness-110 transition-all">Allow All</button>
+              <button onClick={denyAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-danger-soft text-danger hover:brightness-110 transition-all">Deny All</button>
+            </>
+          )}
+          {!role.isSystem && dirty && (
+            <button
+              onClick={save}
+              disabled={updatePerms.isPending}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 disabled:opacity-50"
+            >
+              {updatePerms.isPending
+                ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                : <Check className="w-4 h-4" />}
+              Save changes
+            </button>
+          )}
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -501,18 +582,30 @@ function PermissionMatrix({ role }: { role: CrmRoleDto }) {
               {PERM_COLS.map((c) => (
                 <th key={c.key} className="px-2 py-3 text-center text-xs font-bold uppercase tracking-[1.5px] text-text-muted">{c.label}</th>
               ))}
+              {!role.isSystem && <th className="px-2 py-3 text-center text-xs font-bold uppercase tracking-[1.5px] text-text-muted w-10">All</th>}
             </tr>
           </thead>
           <tbody className="divide-y divide-border-subtle">
             {CRM_FEATURE_GROUPS.map((group) => (
               <Fragment key={group.label}>
                 <tr className="bg-glass-2">
-                  <td colSpan={7} className="px-5 py-1.5 text-xs font-bold text-text-muted uppercase tracking-[1.5px]">{group.label}</td>
+                  <td colSpan={8} className="px-5 py-1.5 text-xs font-bold text-text-muted uppercase tracking-[1.5px]">{group.label}</td>
                 </tr>
                 {group.features.map((f) => (
                   <tr key={f} className="hover:bg-glass-2 transition-all">
                     <td className="px-5 py-2 text-sm font-medium text-text-primary">{CRM_FEATURE_LABEL[f]}</td>
                     {PERM_COLS.map((c) => cell(f, c.key))}
+                    {!role.isSystem && (
+                      <td className="px-2 py-2 text-center">
+                        <button
+                          onClick={() => toggleRow(f)}
+                          className="w-5 h-5 rounded flex items-center justify-center mx-auto transition-all bg-glass-2 border border-border-medium text-text-muted hover:border-brand hover:text-brand"
+                          title="Toggle all"
+                        >
+                          <span className="text-xs font-bold">±</span>
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </Fragment>

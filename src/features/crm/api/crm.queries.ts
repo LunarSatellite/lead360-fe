@@ -548,6 +548,8 @@ function priceBookMutation<TArgs>(fn: (a: TArgs) => Promise<unknown>, okMsg: str
 }
 export const useCreatePriceBook = priceBookMutation(
   (d: import('../types/crm.types').CrmPriceBookCreateRequest) => crmApi.createPriceBook(d), 'Price book created.');
+export const useUpdatePriceBook = priceBookMutation(
+  (d: { id: string; data: Partial<import('../types/crm.types').CrmPriceBookDto> }) => crmApi.updatePriceBook(d.id, d.data), 'Price book updated.');
 export const useDeletePriceBook = priceBookMutation((id: string) => crmApi.deletePriceBook(id), 'Price book deleted.');
 export const useAddPriceBookEntry = priceBookMutation(
   (a: { id: string; data: import('../types/crm.types').CrmPriceBookEntryRequest }) => crmApi.addPriceBookEntry(a.id, a.data),

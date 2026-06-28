@@ -52,7 +52,7 @@ Real world: Every CRM deployment starts with defining who can see and do what. T
 3. Click `New` → create a custom role: `Senior Rep`
    - Enable: Leads, Deals, Contacts, Accounts, Quotes, Proposals — View All + Edit
    - Disable: Vendors, POs, Settings, Team Management
-   - Click `Save changes`
+   - Click `Save changes`x`x`
 4. Delete the custom `Senior Rep` role → confirm dialog → removed
 
 ---
@@ -102,7 +102,7 @@ Real world: A pipeline defines the steps a deal goes through before closing. Gat
 
 ---
 
-## 0.4 Product Catalog & Price Books ❌
+## 0.4 Product Catalog & Price Books ✅
 
 Real world: Products and services are defined centrally with multiple price tiers — Standard, VIP/Enterprise, Distributor, Promotional. When a sales rep builds a quote, they select the price book and prices populate automatically. A single product can have a different price per book.
 
@@ -1935,6 +1935,18 @@ Real world: Gross margin = Revenue − COGS. Net margin = Gross − time cost. M
   Campaign performance                 ← ❌ 1.4
   Commission reports UI                ← ⏳ 19.7
   Profitability per deal               ← ❌ 19.8
+
+[ENTERPRISE (new)]
+  Custom Reports & Dashboard Builder   ← ❌ 20.1
+  Email Sync (Gmail/Outlook)          ← ❌ 20.2
+  CSV Data Import                     ← ❌ 20.3
+  Online Payment Collection           ← ❌ 20.4
+  Customer Portal                     ← ❌ 20.5
+  Multi-Currency                      ← ❌ 20.6
+  Field History / Audit Trail         ← ❌ 20.7
+  Approve/Reject via Email            ← ❌ 20.8
+  Bulk Actions / Mass Edit            ← ❌ 20.9
+  Mobile Access                       ← ❌ 20.10
 ```
 
 ---
@@ -1981,3 +1993,270 @@ Real world: Gross margin = Revenue − COGS. Net margin = Gross − time cost. M
 | **C** | 32 | Tax Rules (auto-calculated, B2B exemption) | 0.5 | Tax entered manually on each quote and invoice. |
 | **C** | 33 | Payment Terms Library | 0.6 | Payment terms entered as free text; no auto-due-date from account terms. |
 | **C** | 34 | Internal Handover Note (sales → CS at deal close) | 6.3 | CS walks in blind without structured handover. |
+| **A** | 35 | Custom Reports & Dashboard Builder | 20.1 | Managers can't create their own reports or dashboards. |
+| **A** | 36 | Individual Email Sync (Gmail/Outlook) | 20.2 | Reps' 1:1 emails not logged on contacts/deals automatically. |
+| **A** | 37 | CSV Data Import with Field Mapping | 20.3 | No way to bulk-import leads, contacts, or accounts from spreadsheets. |
+| **B** | 38 | Online Payment Collection (Stripe/PayPal) | 20.4 | Invoices sent but no "Pay Now" button or payment gateway. |
+| **B** | 39 | Customer Portal / Self-Service | 20.5 | Customers can't view their tickets, invoices, or order status. |
+| **B** | 40 | Multi-Currency (system-wide with exchange rates) | 20.6 | No base currency, exchange rate tables, or auto-conversion on reports. |
+| **B** | 41 | Field History / Audit Trail | 20.7 | No way to see who changed what field and when on any record. |
+| **C** | 42 | Approve/Reject via Email | 20.8 | Managers must log in to approve. No email-based approval. |
+| **C** | 43 | Bulk Actions / Mass Edit | 20.9 | Each record must be edited individually. No select-all → action. |
+| **C** | 44 | Mobile Access | 20.10 | No mobile UI for deals, contacts, tasks on the go. |
+
+---
+
+---
+
+# PHASE 20 — Enterprise Features (Gaps from Real-World CRMs)
+
+> These features exist in Salesforce, HubSpot, Zoho, and Dynamics 365 but are not yet covered in the main flow. They are documented here as future phases to build and test.
+
+---
+
+## 20.1 Custom Reports & Dashboard Builder ❌
+
+Real world: Every major CRM lets users create ad-hoc reports by dragging in fields, setting filters, choosing grouping, and selecting chart types. Dashboards combine multiple reports on a single view. Reports can be scheduled for email delivery. Without this, managers rely on devs to build every new view.
+
+**What to build:**
+- **Backend entities:** `SavedReport` (TenantId, Name, EntityType enum [Lead/Contact/Account/Deal/Quote/Invoice/Order/Activity], FieldsJson (selected columns + order), FiltersJson (condition tree with AND/OR groups, field, operator, value), GroupByJson (field + aggregate), SortJson (field + direction), ChartConfigJson (type: Bar/Line/Pie/Table/Funnel, xField, yField, colorField), CreatedByUserId, IsShared bool, IsSystem bool), `Dashboard` (Name, LayoutJson (reportId + position + size per widget), CreatedByUserId, IsShared), `ScheduledReport` (ReportId, RecipientEmails[], CronExpression, LastSentAt, Format enum [PDF/CSV/HTML])
+- **API:** CRUD on `/api/v1/crm/reports`. CRUD on `/api/v1/crm/dashboards`. `POST /api/v1/crm/reports/{id}/run` (execute and return data). `POST /api/v1/crm/dashboards/{id}/render` (return all widget data). `POST /api/v1/crm/reports/{id}/schedule`
+- **Frontend page:** `/dashboard/crm/reports` — report list with categories. Report builder: left panel = available fields grouped by entity, center = column list + drag-to-reorder, right = filter builder + chart preview. `/dashboard/crm/dashboards` — grid layout, add widget → pick a saved report, resize/grid. Schedule modal: recipients + frequency dropdown (Daily/Weekly/Monthly/Quarterly) + format.
+
+**Test steps (once built):**
+1. `/dashboard/crm/reports` → `New Report`
+   - Entity: Deals, Fields: Title, Account Name, Value, Stage, Close Date, Owner
+   - Filter: Stage = Closed Won, Close Date = This Quarter
+   - Group By: Owner, Aggregate: SUM(Value)
+   - Chart: Bar chart, X: Owner, Y: SUM(Value)
+   - Save as: `Q3 Won Revenue by Rep`
+2. Run report → table shows per-rep totals, bar chart renders ✓
+3. `/dashboard/crm/dashboards` → `New Dashboard`
+   - Add widget: `Q3 Won Revenue by Rep`
+   - Add widget: `Pipeline by Stage` (create another report)
+   - Layout: side-by-side
+4. Dashboard renders both widgets with live data ✓
+5. Schedule report → recipients: manager@omniflow.ai, cron: every Monday 08:00
+6. Run scheduled job → email delivered with PDF attachment ✓
+7. Share report with team → verify visible in shared reports tab ✓
+
+---
+
+## 20.2 Individual Email Sync (Gmail/Outlook) ❌
+
+Real world: In HubSpot and Salesforce, when a rep sends or receives an email from their connected Gmail/Outlook, it is automatically logged on the contact and deal timeline. The rep never has to manually CC a CRM address or forward emails. This is the single most-used daily feature for sales reps.
+
+**What to build:**
+- **Backend entities:** `EmailSyncConnection` (TenantId, UserId, Provider enum [Google/Outlook], EmailAddress, AccessTokenEncrypted, RefreshTokenEncrypted, ExpiresAt, IsActive, LastSyncAt), `EmailSyncMessage` (TenantId, ConnectionId, MessageId provider-side, FromAddress, ToAddresses[], CcAddresses[], Subject, BodyPreview, BodyHtml, SentAt, IsIncoming bool, LinkedEntityType enum [Contact/Lead/Deal] nullable, LinkedEntityId guid nullable, SyncStatus enum [New/Matched/Linked/Ignored])
+- **Email matching service:** On new synced email → extract sender/recipient email → search `CrmContact.Email`, `Lead.CustomerEmail`, `CrmAccount.Email` → if exact match → auto-link to contact + load that contact's active deals → link to deal too. If no match → show in "Unmatched" queue for manual linking.
+- **Background job:** `EmailSyncWorker` (Hangfire recurring, runs every 5 min per active connection) → uses Gmail API / Microsoft Graph API → fetches recent messages since `LastSyncAt` → creates `EmailSyncMessage` → runs matching service → logs to activity timeline on linked entities.
+- **API:** `POST /api/v1/crm/email-sync/connect` (OAuth start). `POST /api/v1/crm/email-sync/{connectionId}/disconnect`. `GET /api/v1/crm/email-sync/unmatched` (list unlinked emails). `POST /api/v1/crm/email-sync/{messageId}/link` (body: EntityType + EntityId). `POST /api/v1/crm/email-sync/sync-now` (manual trigger).
+- **Frontend:** `/dashboard/settings/email-sync` — connect Gmail or Outlook via OAuth, shows connection status + last sync time, disconnect button. Activity timeline on Contact/Deal → synced emails show with Gmail/Outlook icon, subject, snippet, click to expand. Unmatched queue → select contact/deal to link.
+
+**Test steps (once built):**
+1. `/dashboard/settings/email-sync` → Connect Gmail → OAuth flow → connection shows Active ✓
+2. Send email from connected Gmail to anita.sharma@acmecorp.com → wait for sync cycle (or click Sync Now)
+3. Open Anita Sharma contact → Activity timeline → synced email appears with subject + preview ✓
+4. Open Acme Corp deal (linked to Anita) → same email visible ✓
+5. Send reply from Anita to your Gmail → synced as incoming → appears on contact timeline ✓
+6. Disconnect connection → sync stops → reconnect → sync resumes from last checkpoint ✓
+
+---
+
+## 20.3 CSV Data Import with Field Mapping ❌
+
+Real world: Every CRM deployment starts with importing existing data from spreadsheets. Salesforce Data Import Wizard, HubSpot Import. Users upload a CSV, map columns to CRM fields, preview results, handle duplicates, and commit or rollback. Without this, every new customer must manually enter hundreds of records.
+
+**What to build:**
+- **Backend entities:** `ImportJob` (TenantId, EntityType enum [Lead/Contact/Account/Deal], FileName, FilePath, TotalRows, SuccessCount, ErrorCount, DuplicateCount, Status [Uploaded/Mapped/Previewed/Importing/Completed/Failed], CreatedByUserId, CompletedAt, ErrorsJson[]), `ImportMapping` (ImportJobId, CsvColumnName, CrmFieldName, IsRequired bool, DefaultValue string nullable)
+- **API:** `POST /api/v1/crm/import/upload` (multipart CSV file → parse header row + first 20 rows for preview). `POST /api/v1/crm/import/{jobId}/mapping` (save column → field mapping). `GET /api/v1/crm/import/{jobId}/preview` (return first 20 mapped rows). `POST /api/v1/crm/import/{jobId}/execute` (run import in background). `GET /api/v1/crm/import/{jobId}/errors` (paginated error rows). `POST /api/v1/crm/import/{jobId}/rollback` (reverse import within 24h).
+- **Duplicate detection:** During import, for each row: if Contact.Email or Lead.CustomerEmail matches existing → mark as duplicate, skip or update (configurable: Skip/Update/Create New). Report counts in import summary.
+- **Frontend page:** `/dashboard/crm/import` — step wizard: Step 1: Select entity + upload CSV. Step 2: Map columns — dropdown per CSV column showing available CRM fields, required fields highlighted. Step 3: Preview — first 20 rows with mapped values shown, duplicate warnings on rows. Step 4: Configure — duplicate handling (Skip/Overwrite/Create New). Step 5: Execute — progress bar + running count. Result: success/error counts, download error CSV.
+
+**Test steps (once built):**
+1. `/dashboard/crm/import` → Select entity: Contacts → Upload CSV with columns: `Name, Email, Phone, Company`
+2. Map: Name → FullName, Email → Email, Phone → Phone, Company → AccountName
+3. Preview → shows 20 mapped rows ✓ — highlight any unmapped required fields
+4. Execute → progress bar → Completed ✓
+5. Import result: 98 imported, 2 duplicates skipped, 0 errors ✓
+6. Open Contact list → 98 new contacts appear ✓
+7. Download error CSV → see 2 skipped rows with reason: "Duplicate email: anita.sharma@acmecorp.com" ✓
+
+---
+
+## 20.4 Online Payment Collection (Payment Gateway) ❌
+
+Real world: Stripe, PayPal, and Razorpay integrations are standard in HubSpot, Zoho, and modern CRMs. When an invoice is sent, the customer sees a "Pay Now" button. Payment is processed, the gateway confirms it, and the invoice is auto-marked Paid. No manual "Record Payment" step.
+
+**What to build:**
+- **Backend entities:** `PaymentGatewayConfig` (TenantId, Provider enum [Stripe/PayPal/Razorpay/MercadoPago], IsActive, ApiKeyEncrypted, WebhookSecretEncrypted, SupportedCurrencies[]), `PaymentLink` (InvoiceId, GatewayProvider, GatewayPaymentIntentId, Amount, Currency, Status enum [Pending/Completed/Failed/Refunded], CreatedAt, CompletedAt, PayerEmail nullable, PayerName nullable)
+- **Invoice integration:** On invoice Send → generate payment link via gateway → embed in invoice email + show "Pay Now" button on invoice view. Gateway webhook receives payment confirmation → update PaymentLink status + mark invoice Paid.
+- **Webhook endpoint:** `POST /api/v1/public/payment-webhook/{provider}` (public, idempotency key from gateway). On `payment_intent.succeeded` → mark invoice Paid. On `payment_intent.payment_failed` → log failure, optionally notify customer.
+- **Refund:** Invoice detail → `Refund` button → gateway refund API → create CreditNote + mark invoice Refunded.
+- **Frontend:** Invoice email includes "Pay Now →" button linking to a hosted payment page. Invoice detail → Payment section: link status, payer info, gateway reference. `Refund` button on Paid invoices. `/dashboard/settings/payment-gateway` — connect Stripe account via API key entry, test mode toggle.
+
+**Test steps (once built):**
+1. `/dashboard/settings/payment-gateway` → Enter Stripe test keys → Save → Test mode: Active ✓
+2. Open a sent invoice → "Pay Now" button visible ✓
+3. Click → redirected to Stripe Checkout → enter test card 4242... → Pay
+4. Redirect back → invoice status auto-updates to Paid ✓
+5. Invoice detail → Payment section: Stripe ref, $26,700, completed at [datetime] ✓
+6. Click Refund → confirm → CreditNote auto-created, invoice status: Refunded ✓
+7. Send another invoice → let payment fail (test card 4000...) → invoice stays Sent, failure logged ✓
+
+---
+
+## 20.5 Customer Portal / Self-Service ❌
+
+Real world: Salesforce Customer Community, HubSpot Customer Portal, Zoho Customer Portal. Customers log in to view their open support tickets, download invoices, see order status, update their profile, access knowledge base articles, and communicate with their CS rep. Reduces support load and improves transparency.
+
+**What to build:**
+- **Backend entities:** `PortalUser` (TenantId, ContactId, Email, PasswordHash, LastLoginAt, IsActive), `PortalSession` (PortalUserId, Token, ExpiresAt)
+- **Portal API endpoints** (public, but auth-protected with Portal token):
+  - `POST /api/v1/public/portal/login` (email + password → JWT limited to portal scope)
+  - `GET /api/v1/public/portal/profile` (contact info, account info)
+  - `GET /api/v1/public/portal/tickets` (their support cases, status, last update)
+  - `POST /api/v1/public/portal/tickets` (create new support case)
+  - `GET /api/v1/public/portal/invoices` (their invoices with download links)
+  - `GET /api/v1/public/portal/orders` (their orders with delivery status)
+  - `GET /api/v1/public/portal/knowledge-base` (published articles search)
+  - `PUT /api/v1/public/portal/profile` (update phone, address)
+- **Portal invitation:** When a Contact is created → admin can `Send Portal Invite` → email with setup link sent → Contact sets password → portal user created.
+- **Frontend (separate SPA or subdomain):** `/portal/` — login page. Dashboard: open tickets count, recent invoices, order status. Tickets tab: list + create new. Invoices tab: list with download PDF. Orders tab: tracking info. Knowledge Base: search + read articles. Profile: edit name, phone, change password.
+
+**Test steps (once built):**
+1. Open a Contact → `Send Portal Invite` → email sent with setup link ✓
+2. Click link → set password → login at `/portal/`
+3. Dashboard shows: 1 open ticket (from earlier phase), 1 invoice ($26,700), 1 order (Delivered) ✓
+4. Tickets → see "ACME-ESP-007 — No Power" case, status: Closed, resolution text visible ✓
+5. Invoices → download PDF → correct invoice rendered ✓
+6. Orders → see tracking number DHL-ACME-BATCH-001, status: Delivered ✓
+7. Create new ticket: `Water pressure low on ACME-ESP-003` → submitted, appears in list ✓
+8. Try accessing another customer's data via URL tampering → 403 Forbidden ✓
+
+---
+
+## 20.6 Multi-Currency (System-Wide) ❌
+
+Real world: Salesforce Multi-Currency, HubSpot Multi-Currency. A base currency is set per tenant (e.g., USD). Exchange rates are maintained (manual or auto via API). Every deal, quote, invoice, and order has a currency field. Reports convert all values to the base currency for aggregation. Without this, international businesses report inaccurate totals.
+
+**What to build:**
+- **Backend entities:** `Currency` (TenantId, Code [USD/EUR/NPR/INR], Name, Symbol, ExchangeRateToBase decimal, IsBase bool, IsActive, UpdatedAt, AutoUpdateFromApi bool), add `Currency` field to: `CrmDeal`, `CrmQuote`, `CrmInvoice`, `CrmOrder`, `CrmPriceBook`, `CrmProductBundle`, `CrmSubscription`
+- **Exchange rate job:** `ExchangeRateSyncWorker` (optional, runs daily) → fetches from exchangeratesapi.io or Open Exchange Rates → updates non-base currencies' ExchangeRateToBase
+- **API:** CRUD on `/api/v1/crm/currencies`. `GET /api/v1/crm/currencies/convert?from=X&to=Y&amount=Z`
+- **Report integration:** Report runner converts all monetary values to base currency using `amount × (1 / ExchangeRateToBase)`. Dashboard widgets show currency symbol per row + base converted total at bottom.
+- **Frontend:** Invoice/Quote/Deal forms → Currency dropdown (defaults to account's currency or tenant base). Amount fields display currency symbol. Reports → toggle "Show in base currency" checkbox. `/dashboard/settings/currencies` — add currency, set rate, mark as base.
+
+**Test steps (once built):**
+1. `/dashboard/settings/currencies` → Base: USD (1.0). Add NPR: rate 133.50. Add EUR: rate 0.92 ✓
+2. Create deal for Nepal account → currency defaults to NPR → Value: 3,562,500 NPR ✓
+3. Create deal for German account → currency defaults to EUR → Value: 23,400 EUR ✓
+4. Report → "Q3 Pipeline by Rep" → toggle "Base currency (USD)" → values shown as $26,700 (USD deal) + $3,562,500/133.50 = $26,700 (NPR deal converted) + $23,400/0.92 = $25,434 (EUR deal converted) ✓
+5. Update EUR rate to 0.95 → report recalculates ✓
+6. Deactivate NPR → verify NPR currency removed from dropdowns on new records ✓
+
+---
+
+## 20.7 Field History / Audit Trail ❌
+
+Real world: Salesforce Field History Tracking, HubSpot Activity Log. Every change to tracked fields on every record is recorded: old value, new value, who changed it, when. Used for compliance (SOX, HIPAA), dispute resolution, and understanding why a deal changed stage.
+
+**What to build:**
+- **Backend entity:** `FieldAuditLog` (TenantId, EntityType string [Deal/Contact/Account/Lead/Quote/Order/Invoice/SupportCase], EntityId guid, FieldName string, OldValue string nullable, NewValue string nullable, ChangedByUserId guid, ChangedAt datetime, ChangeContext string nullable [e.g., "Stage gate progression", "Bulk edit", "Import"])
+- **Integration:** EF Core `SaveChanges` interceptor or repository base class → before save, compare tracked entities' current vs original values → for each changed property on tracked entity types → write `FieldAuditLog`. Configurable per entity per field (e.g., don't track `LastModifiedAt` to avoid noise).
+- **API:** `GET /api/v1/crm/{entityType}/{entityId}/audit` (paginated, order by ChangedAt desc)
+- **Frontend:** Every detail page → `History` tab: timeline of field changes — format: `[User Name] changed [Field Name] from [Old] to [New] — [Time ago]`. Color-coded: green = stage advance, red = stage regress, blue = value change. Support filtering by field name within the tab.
+
+**Test steps (once built):**
+1. Open Acme Corp deal → change value from $25,500 to $26,700 → Save
+2. History tab → `You changed Value from $25,500 to $26,700 — just now` ✓
+3. Move deal from Prospecting to Discovery Call →
+4. History tab → `You changed Stage from Prospecting to Discovery Call — 1 min ago` ✓
+5. Log in as a different user → change deal name →
+6. History tab → `Anita Sharma changed Name from 'Acme Corp Deal' to 'Acme Corp — 10x Espresso Enterprise' — 2 mins ago` ✓
+7. API: `GET /api/v1/crm/deals/{dealId}/audit?page=1&pageSize=50` → returns 3 entries ordered by date desc ✓
+8. Verify `LastModifiedAt` field is NOT tracked (noise filter) ✓
+
+---
+
+## 20.8 Approve/Reject via Email ❌
+
+Real world: Salesforce Approval Processes send an email with Approve/Reject links. Manager clicks without logging in. No time spent navigating to the app for a simple yes/no. Response is recorded immediately.
+
+**What to build:**
+- **Backend:** On creating an approval request → if approver has email notifications enabled → send email with:
+  - Subject: `[Action Required] Quote Approval: ACME-QUOTE-001 for $26,700`
+  - Body: Context (who requested, amount, customer, link to record in app)
+  - Two links: `https://omniflow.app/api/v1/public/approve/{approvalRequestId}/{approverToken}` and `/reject/{approvalRequestId}/{approverToken}`
+  - Token: HMAC-signed or UUID stored in `CrmApprovalStep.ApprovalToken` (single-use, expires in 7 days)
+- **Public endpoints:** `GET /api/v1/public/approve/{requestId}/{token}` (no auth, token validates) → loads approval request → if pending + token valid + not expired → approve + add audit log entry "Approved via email" → redirect to "✔ Approved — you can close this page"
+  - Same for reject with optional reason: `GET /api/v1/public/reject/{requestId}/{token}` → show simple form: "Reason for rejection (optional)" → Submit → reject + audit log
+- **Frontend:** Approval request detail → shows method: "Approved via email" or "Approved in-app". History tab includes email approval events. Settings → Notification preferences → "Email me approval requests" toggle.
+
+**Test steps (once built):**
+1. Submit quote for approval ($26,700) → approver receives email ✓
+2. Email shows: Quote ACME-QUOTE-001, $26,700, Customer: Acme Corp ✓
+3. Click Approve link → browser opens → "✔ Approved" page ✓
+4. Open approval request in app → status: Approved, method: via email ✓
+5. Submit another approval → click Reject link → enter reason: "Discount too high" → Submit
+6. Status: Rejected, reason visible in app, audit trail: "Rejected via email" ✓
+7. Try using an expired token (7 days later) → "Link expired" error ✓
+8. Try reusing same token → "Already used" error ✓
+
+---
+
+## 20.9 Bulk Actions / Mass Edit ❌
+
+Real world: Salesforce List Views have a checkbox column + mass actions. HubSpot has bulk edit, bulk assign, bulk delete, bulk add to list, bulk email. Users select multiple records and perform one action. Without this, every operation on 100 leads requires 100 clicks.
+
+**What to build:**
+- **Backend:** Generic bulk endpoints:
+  - `POST /api/v1/crm/{entity}/bulk-update` (body: { Ids: guid[], Updates: {Field: value}[] })
+  - `POST /api/v1/crm/{entity}/bulk-delete` (body: { Ids: guid[] })
+  - `POST /api/v1/crm/{entity}/bulk-assign` (body: { Ids: guid[], AssignToUserId: guid })
+  - `POST /api/v1/crm/{entity}/bulk-email` (body: { Ids: guid[], TemplateId: guid, Subject: string })
+  - `POST /api/v1/crm/{entity}/bulk-stage-change` (deals only: { Ids: guid[], StageId: guid, Reason: string nullable })
+  - All return: { SuccessCount, FailCount, Errors: {Id, Reason}[] }
+- **Frontend:** List view checkbox column → select some/all → action bar appears at top: Update, Assign, Delete (with confirmation), Send Email, Change Stage. Bulk edit modal: show fields for the entity, user changes values → Save → progress indicator (3 of 50 updated) → result summary. Deletion shows "Are you sure? 24h undo available?" → Soft delete with undo batch link.
+
+**Test steps (once built):**
+1. Lead list → check 3 leads → `Assign To` → select user → Save ✓
+2. Verify: all 3 leads now assigned to that user ✓
+3. Deal list → check 5 deals → `Change Stage` → select `Closed Lost` → reason: `Bulk cleanup`
+4. Verify: 5 deals show Closed Lost with reason ✓
+5. Contact list → check 10 contacts → `Delete` → confirm → 10 soft-deleted ✓
+6. Undo: notification shows "Undo bulk delete" link → click → 10 contacts restored ✓
+7. Mixed: check 5 leads + try to delete → 3 deleted, 2 failed (one has active deal) → partial failure handled ✓
+
+---
+
+## 20.10 Mobile Access ❌
+
+Real world: Every major CRM ships a mobile app (Salesforce, HubSpot, Zoho, Dynamics) that at minimum lets reps view deals, contacts, tasks, and activities, log calls and meetings, and update deal stages. Without it, field sales and field techs are disconnected from the system.
+
+**What to build:**
+- **REST API (already exists — ensure mobile-friendly responses):**
+  - Lightweight list endpoints with pagination: `GET /api/v1/mobile/deals?page=1&pageSize=20&status=Active`
+  - Same for Contacts, Leads, Tasks, Activities
+  - Quick actions: `PUT /api/v1/mobile/deals/{id}/stage` (advance stage), `POST /api/v1/mobile/activities` (log call/meeting from phone)
+  - Push notification endpoint for integrations (optional)
+- **Mobile UI (PWA or React Native wrapper):**
+  - Tab bar: Deals | Contacts | Tasks | Activities | More
+  - Deal list: swipeable to call primary contact, tap to view detail, inline stage advance
+  - Contact detail: phone number tappable to call, email tappable to compose
+  - Task list: checkbox to mark complete, due date indicator (red if overdue)
+  - Quick log: + button → Log Call / Log Meeting / Create Task
+  - Offline support: basic localStorage cache for recently viewed records
+- **Note:** This section is intentionally lighter than others — mobile is primarily a consumption + quick action interface, not a full data entry system.
+
+**Test steps (once built):**
+1. Log in on mobile → Deal tab → list of active deals loads ✓
+2. Tap Acme Corp deal → detail view: value, stage, close date, primary contact ✓
+3. Tap phone icon → device dialer opens with Anita's number ✓
+4. Tap email icon → email app opens with Anita's email pre-filled ✓
+5. Swipe deal left → "Log Call" quick action → notes form → Save → activity logged ✓
+6. Tasks tab → see "Send proposal to all 3 stakeholders" with due date ✓
+7. Check task → marked complete ✓
+8. + button → Log Meeting → fill subject, contact, date → Save ✓
+9. Pull to refresh → updated data from API ✓
+10. Go offline → previously loaded deals still viewable ✓

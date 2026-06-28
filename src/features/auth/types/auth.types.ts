@@ -5,17 +5,17 @@
 
 // ─── Enums ───
 
-export const UserRole = { Owner: 1, Admin: 2, Agent: 3 } as const;
+export const UserRole = { Owner: 1, Admin: 2, Agent: 3, Manager: 4 } as const;
 export type UserRoleValue = (typeof UserRole)[keyof typeof UserRole];
 export const USER_ROLE_LABEL: Record<UserRoleValue, string> = {
-  [UserRole.Owner]: 'Owner', [UserRole.Admin]: 'Admin', [UserRole.Agent]: 'Agent',
+  [UserRole.Owner]: 'Owner', [UserRole.Admin]: 'Admin', [UserRole.Agent]: 'Agent', [UserRole.Manager]: 'Manager',
 };
 
-export const UserStatus = { Active: 1, Inactive: 2, Suspended: 3, PendingVerification: 4 } as const;
+export const UserStatus = { Pending: 1, Active: 2, Suspended: 3, Deactivated: 4 } as const;
 export type UserStatusValue = (typeof UserStatus)[keyof typeof UserStatus];
 export const USER_STATUS_LABEL: Record<UserStatusValue, string> = {
-  [UserStatus.Active]: 'Active', [UserStatus.Inactive]: 'Inactive',
-  [UserStatus.Suspended]: 'Suspended', [UserStatus.PendingVerification]: 'Pending verification',
+  [UserStatus.Pending]: 'Pending', [UserStatus.Active]: 'Active',
+  [UserStatus.Suspended]: 'Suspended', [UserStatus.Deactivated]: 'Deactivated',
 };
 
 export const BusinessType = { Goods: 1, Services: 2, Hybrid: 3 } as const;

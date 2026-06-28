@@ -120,7 +120,8 @@ const crmNav = [
   { label: 'Price Books',   href: ROUTES.dashboard.crmPriceBooks,    icon: BookOpen },
   { label: 'Tax Rules',     href: ROUTES.dashboard.crmTaxRules,      icon: Percent },
   { label: 'Payment Terms', href: ROUTES.dashboard.crmPaymentTerms,  icon: Calendar },
-  { label: 'Contracts',     href: ROUTES.dashboard.crmContracts,     icon: FileSignature },
+  { label: 'Contracts',     href: ROUTES.dashboard.crmContracts,          icon: FileSignature },
+
   { label: 'Orders',        href: ROUTES.dashboard.crmOrders,        icon: Package },
   { label: 'Returns',       href: ROUTES.dashboard.crmReturns,       icon: RotateCw },
   { label: 'Work Orders',   href: ROUTES.dashboard.crmWorkOrders,    icon: Wrench },

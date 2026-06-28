@@ -871,13 +871,33 @@ export const crmApi = {
   getContracts: (params?: { status?: number; accountId?: string }) =>
     apiClient.get<import('../types/crm.types').CrmContractDto[]>(`${BASE}/contracts`, { params }),
   getContractById: (id: string) =>
-    apiClient.get<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts/${id}`),
+    apiClient.get<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts/${id}`),
   createContract: (data: import('../types/crm.types').CrmContractCreateRequest) =>
-    apiClient.post<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts`, data),
+    apiClient.post<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts`, data),
   updateContractStatus: (id: string, status: number) =>
-    apiClient.patch<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts/${id}/status`, { status }),
+    apiClient.patch<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts/${id}/status`, { status }),
   deleteContract: (id: string) =>
     apiClient.delete(`${BASE}/contracts/${id}`),
+  // Signatories
+  addContractSignatory: (contractId: string, data: import('../types/crm.types').CrmContractSignatoryRequest) =>
+    apiClient.post<import('../types/crm.types').CrmContractSignatoryDto>(`${BASE}/contracts/${contractId}/signatories`, data),
+  recordContractSignature: (signatoryId: string, data: import('../types/crm.types').CrmRecordSignatureRequest) =>
+    apiClient.put<import('../types/crm.types').CrmContractSignatoryDto>(`${BASE}/contracts/signatories/${signatoryId}/sign`, data),
+  removeContractSignatory: (signatoryId: string) =>
+    apiClient.delete(`${BASE}/contracts/signatories/${signatoryId}`),
+  // Templates
+  getContractTemplates: (category?: number) =>
+    apiClient.get<import('../types/crm.types').CrmContractTemplateDto[]>(`${BASE}/contracts/templates`, { params: { category } }),
+  getContractTemplateById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates/${id}`),
+  createContractTemplate: (data: import('../types/crm.types').CrmContractTemplateCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates`, data),
+  updateContractTemplate: (id: string, data: Partial<import('../types/crm.types').CrmContractTemplateDto>) =>
+    apiClient.put<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates/${id}`, data),
+  deleteContractTemplate: (id: string) =>
+    apiClient.delete(`${BASE}/contracts/templates/${id}`),
+  previewContractTemplate: (id: string, context: import('../types/crm.types').CrmContractCreateRequest) =>
+    apiClient.post<string>(`${BASE}/contracts/templates/${id}/preview`, context),
 
   // ─── Invoice payment links ────────────────────────────────────────────────
   generateInvoicePaymentLink: (id: string) =>

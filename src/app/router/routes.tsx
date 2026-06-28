@@ -173,6 +173,7 @@ export const router = createBrowserRouter([
       { path: 'crm/price-books', lazy: () => import('@/features/crm/pages/PriceBooksPage') },
       { path: 'crm/renewals', lazy: () => import('@/features/crm/pages/RenewalsPage') },
       { path: 'crm/contracts', lazy: () => import('@/features/crm/pages/ContractsPage') },
+
       { path: 'crm/returns', lazy: () => import('@/features/crm/pages/CrmReturnsPage') },
       { path: 'crm/work-orders', lazy: () => import('@/features/crm/pages/CrmWorkOrdersPage') },
       { path: 'crm/customer-onboarding', lazy: () => import('@/features/crm/pages/CrmCustomerOnboardingPage') },

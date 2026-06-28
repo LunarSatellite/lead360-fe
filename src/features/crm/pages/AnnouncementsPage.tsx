@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, X, Loader2, Newspaper, Trash2, Send, Archive, Calendar } from 'lucide-react';
+import { Plus, X, Loader2, Newspaper, Trash2, Send, Archive, Calendar, Clock } from 'lucide-react';
 import {
   useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement,
   useDeleteAnnouncement, usePublishAnnouncement, useArchiveAnnouncement, useScheduleAnnouncement,
@@ -11,10 +11,11 @@ import {
 } from '../types/crm.types';
 import { format, parseISO } from 'date-fns';
 
-const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
-const selectCls = 'px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
+const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
+const selectCls = 'px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
 const btnPrimary = 'flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-all disabled:opacity-50';
-const btnGhost = 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all';
+const btnPrimarySuccess = 'flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all disabled:opacity-50';
+const btnGhost = 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-text-muted hover:text-text-primary hover:bg-bg-input transition-all';
 
 function Badge({ label, colorCls }: { label: string; colorCls: string }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colorCls}`}>{label}</span>;
@@ -24,7 +25,7 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
+      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
           <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"><X className="w-4 h-4" /></button>
@@ -39,10 +40,11 @@ const lbl = (t: string) => <label className="block text-xs font-semibold text-te
 
 function CreateForm({ onClose }: { onClose: () => void }) {
   const create = useCreateAnnouncement();
+  const publish = usePublishAnnouncement();
   const [form, setForm] = useState<AnnouncementCreateRequest>({ title: '', content: '', type: AnnouncementType.General });
   const set = (k: keyof AnnouncementCreateRequest, v: any) => setForm(f => ({ ...f, [k]: v }));
 
-  const submit = async () => {
+  const saveDraft = async () => {
     if (!form.title.trim() || !form.content.trim()) return;
     const payload: AnnouncementCreateRequest = { ...form };
     if (payload.scheduledAt === '') delete payload.scheduledAt;
@@ -50,11 +52,20 @@ function CreateForm({ onClose }: { onClose: () => void }) {
     onClose();
   };
 
+  const publishNow = async () => {
+    if (!form.title.trim() || !form.content.trim()) return;
+    const payload: AnnouncementCreateRequest = { ...form };
+    if (payload.scheduledAt === '') delete payload.scheduledAt;
+    const result = await create.mutateAsync(payload);
+    if (result?.id) await publish.mutateAsync(result.id);
+    onClose();
+  };
+
   return (
     <div className="flex flex-col gap-5">
       <div>
         {lbl('Title *')}
-        <input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} placeholder="Announcement title" />
+        <input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1" />
       </div>
       <div>
         {lbl('Content *')}
@@ -70,12 +81,21 @@ function CreateForm({ onClose }: { onClose: () => void }) {
         {lbl('Schedule for (optional)')}
         <input type="datetime-local" className={inputCls} value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)} />
       </div>
-      <div className="flex justify-end gap-3 pt-2">
-        <button className={btnGhost} onClick={onClose}>Cancel</button>
-        <button className={btnPrimary} onClick={submit} disabled={create.isPending || !form.title.trim() || !form.content.trim()}>
-          {create.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-          Create
-        </button>
+      <div className="flex flex-col gap-2 pt-2 border-t border-border-subtle">
+        <p className="text-[11px] text-text-muted">Choose what happens after creating:</p>
+        <div className="flex justify-end gap-3">
+          <button className={btnGhost} onClick={onClose}>Cancel</button>
+          <button className={btnPrimary} onClick={saveDraft} disabled={create.isPending || !form.title.trim() || !form.content.trim()}>
+            {create.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Clock className="w-4 h-4" />}
+            Save as Draft
+          </button>
+          {!form.scheduledAt && (
+            <button className={btnPrimarySuccess} onClick={publishNow} disabled={create.isPending || publish.isPending || !form.title.trim() || !form.content.trim()}>
+              {create.isPending || publish.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              Publish
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -201,7 +221,7 @@ export function Component() {
       <div className="flex items-center gap-2 px-6 py-3 border-b border-border-subtle shrink-0">
         {([undefined, AnnouncementStatus.Draft, AnnouncementStatus.Scheduled, AnnouncementStatus.Published, AnnouncementStatus.Archived] as const).map(s => (
           <button key={String(s)} onClick={() => setStatusFilter(s)}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${statusFilter === s ? 'bg-accent text-white' : 'bg-bg-elevated text-text-muted hover:text-text-primary'}`}>
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${statusFilter === s ? 'bg-accent text-white' : 'bg-glass-1 text-text-muted hover:text-text-primary'}`}>
             {s == null ? 'All' : ANNOUNCEMENT_STATUS_LABELS[s]}
           </button>
         ))}
@@ -220,7 +240,7 @@ export function Component() {
           <div className="flex flex-col gap-2">
             {items.map(a => (
               <button key={a.id} onClick={() => setSelected(a)}
-                className="w-full text-left p-4 rounded-xl bg-bg-elevated border border-border-subtle hover:border-border-medium transition-all">
+                className="w-full text-left p-4 rounded-xl bg-glass-1 border border-border-subtle hover:border-border-medium transition-all">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-text-primary text-sm truncate">{a.title}</p>

@@ -721,12 +721,40 @@ export interface CrmContractDto {
   accountId?: string; contactId?: string; dealId?: string; subscriptionId?: string;
   value: number; currency: string; startDate?: string; endDate?: string;
   renewalTermMonths?: number; autoRenew: boolean; signedAt?: string;
-  documentUrl?: string; notes?: string; createdAt: string;
+  documentUrl?: string; notes?: string; signedCount: number; signatoryCount: number; createdAt: string;
 }
 export interface CrmContractCreateRequest {
   title: string; accountId?: string; contactId?: string; dealId?: string; subscriptionId?: string;
   value?: number; currency?: string; startDate?: string; endDate?: string;
   renewalTermMonths?: number; autoRenew?: boolean; documentUrl?: string; notes?: string;
+  templateId?: string;
+}
+export interface CrmContractDetailDto extends CrmContractDto {
+  templateId?: string;
+  signatories: CrmContractSignatoryDto[];
+}
+export interface CrmContractSignatoryDto {
+  id: string; name: string; email?: string; signOrder: number;
+  signedAt?: string; signedByName?: string;
+}
+export interface CrmContractSignatoryRequest { name: string; email?: string; signOrder: number }
+export interface CrmRecordSignatureRequest { signedByName: string; signedAt?: string }
+
+export const ContractTemplateCategory = { General: 0, MSA: 1, NDA: 2, SaaS: 3, ServiceAgreement: 4, SalesAgreement: 5, Renewal: 6, Amendment: 7 } as const;
+export type ContractTemplateCategoryValue = (typeof ContractTemplateCategory)[keyof typeof ContractTemplateCategory];
+export const CONTRACT_TEMPLATE_CATEGORY_LABELS: Record<ContractTemplateCategoryValue, string> = {
+  [ContractTemplateCategory.General]: 'General', [ContractTemplateCategory.MSA]: 'MSA',
+  [ContractTemplateCategory.NDA]: 'NDA', [ContractTemplateCategory.SaaS]: 'SaaS Agreement',
+  [ContractTemplateCategory.ServiceAgreement]: 'Service Agreement', [ContractTemplateCategory.SalesAgreement]: 'Sales Agreement',
+  [ContractTemplateCategory.Renewal]: 'Renewal', [ContractTemplateCategory.Amendment]: 'Amendment',
+};
+export interface CrmContractTemplateDto {
+  id: string; name: string; description?: string; category: ContractTemplateCategoryValue;
+  subject?: string; bodyHtml: string; isActive: boolean; createdAt: string;
+}
+export interface CrmContractTemplateCreateRequest {
+  name: string; description?: string; category: ContractTemplateCategoryValue;
+  subject?: string; bodyHtml: string;
 }
 
 // ── Public pay (payment links) ────────────────────────────────────────────────

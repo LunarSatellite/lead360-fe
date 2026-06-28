@@ -65,6 +65,7 @@ import {
   PackageCheck,
   CreditCard,
   Truck,
+  MapPin,
 } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
@@ -139,6 +140,7 @@ const crmNav = [
   { label: 'Time Periods',   href: ROUTES.dashboard.crmTimePeriods,        icon: Calendar },
   { label: 'Approval Chains', href: ROUTES.dashboard.crmApprovalChains,    icon: ArrowRight },
   { label: 'Assignment Rotation', href: ROUTES.dashboard.crmAssignmentRotation, icon: Shuffle },
+  { label: 'Territories',         href: ROUTES.dashboard.crmTerritories,         icon: MapPin },
 ];
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───

@@ -149,4 +149,5 @@ export interface UserDto {
   isEmailVerified: boolean;
   emailVerifiedAt: string | null;
   lastLoginAt: string | null;
+  crmRoleId: string | null;
 }

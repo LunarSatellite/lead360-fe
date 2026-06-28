@@ -86,6 +86,8 @@ export const ROUTES = {
     crmTimePeriods: '/dashboard/crm/time-periods',
     crmApprovalChains: '/dashboard/crm/approval-chains',
     crmAssignmentRotation: '/dashboard/crm/assignment-rotation',
+    // ── RBAC & Territories ──
+    crmTerritories: '/dashboard/crm/territories',
     // ── Procurement ──
     crmVendors: '/dashboard/crm/vendors',
     crmPurchaseOrders: '/dashboard/crm/purchase-orders',

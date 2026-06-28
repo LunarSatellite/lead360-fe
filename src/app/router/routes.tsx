@@ -165,6 +165,7 @@ export const router = createBrowserRouter([
       { path: 'crm/time-periods', lazy: () => import('@/features/crm/pages/CrmTimePeriodsPage') },
       { path: 'crm/approval-chains', lazy: () => import('@/features/crm/pages/CrmApprovalChainsPage') },
       { path: 'crm/assignment-rotation', lazy: () => import('@/features/crm/pages/CrmAssignmentRotationPage') },
+      { path: 'crm/territories', lazy: () => import('@/features/crm/pages/CrmTerritoriesPage') },
       { path: 'crm/vendors', lazy: () => import('@/features/crm/pages/VendorsPage') },
       { path: 'crm/purchase-orders', lazy: () => import('@/features/crm/pages/PurchaseOrdersPage') },
       { path: 'crm/goods-receipts', lazy: () => import('@/features/crm/pages/GoodsReceiptsPage') },

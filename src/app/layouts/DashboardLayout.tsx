@@ -44,7 +44,7 @@ import {
   FileSignature,
   Search,
   History,
-  SlidersHorizontal,
+  // SlidersHorizontal,
   Star,
   Clock,
   Facebook,

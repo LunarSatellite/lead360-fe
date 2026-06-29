@@ -1907,7 +1907,7 @@ export interface CrmDunningEventDto { id: string; eventType: string; occurredAt:
 export interface CrmInvoiceSummaryDto {
   id: string; invoiceNumber: string; dealId: string | null; dealName: string | null;
   accountId: string | null; accountName: string | null;
-  totalAmount: number; currency: string; status: CrmInvoiceStatus;
+  totalAmount: number; amountPaid?: number; currency: string; status: CrmInvoiceStatus;
   dueDate: string | null; paidAt: string | null; createdAt: string;
 }
 export interface CrmInvoiceDetailDto extends CrmInvoiceSummaryDto { lineItems: CrmQuoteLineItemDto[]; dunningHistory: CrmDunningEventDto[]; }

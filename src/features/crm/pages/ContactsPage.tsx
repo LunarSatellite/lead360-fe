@@ -15,6 +15,7 @@ import { DuplicateWarning } from '../components/DuplicateWarning';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 import type {
   CrmContactFilter, CrmContactSummaryDto, CrmContactCreateRequest, PagedResult,
+  CrmDuplicateMatchDto,
 } from '../types/crm.types';
 import {
   CrmContactSourceKind, CRM_CONTACT_SOURCE_LABELS,
@@ -177,31 +178,6 @@ function Modal({
   );
 }
 
-function SlideOver({
-  title, onClose, children,
-}: {
-  title: string;
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
-      </div>
-    </div>
-  );
-}
 
 // ─── Create form ──────────────────────────────────────────────────────────────
 
@@ -238,7 +214,7 @@ function ContactCreateForm({
   const debouncedEmail = useDebounce(form.email, 400);
   const debouncedPhone = useDebounce(form.phone, 400);
   const { data: dupes } = useFindContactDuplicates(debouncedEmail, debouncedPhone);
-  const matches = dupes ?? [];
+  const matches = (dupes as unknown as CrmDuplicateMatchDto[] | undefined) ?? [];
   const hasDupes = matches.length > 0;
 
   const submit = (allowDuplicate: boolean) => {

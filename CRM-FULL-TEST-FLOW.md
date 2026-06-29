@@ -126,7 +126,7 @@ Real world: Products and services are defined centrally with multiple price tier
 
 ---
 
-## 0.5 Tax Rules ❌
+## 0.5 Tax Rules ✅
 
 Real world: Tax rates vary by product type, customer location, and business registration status. B2B customers with a VAT registration number are exempt in many jurisdictions. Tax is auto-calculated on quotes and invoices based on the customer's account country and product type.
 
@@ -145,7 +145,7 @@ Real world: Tax rates vary by product type, customer location, and business regi
 
 ---
 
-## 0.6 Payment Terms Library ❌
+## 0.6 Payment Terms Library ✅
 
 Real world: Named payment terms (Net 30, Net 60, 50% Upfront + Net 30) are defined once and applied to customers based on account tier or credit rating. When a new invoice is created, the account's default terms populate the due date automatically.
 
@@ -441,7 +441,7 @@ Progression: `New` → `Contacted` → `Warm` → `Qualified` / `Disqualified`
 
 ---
 
-## 2.6 Lead Conversion ❌
+## 2.6 Lead Conversion ✅
 
 Real world: A single **Convert** button simultaneously creates a Contact (from lead contact info), an Account/Company (from lead company info), and a Deal/Opportunity (pre-filled with lead data). The lead is marked Converted and kept for reporting — never deleted. This is the formal hand-off from Marketing to Sales and is a core feature in every major CRM.
 

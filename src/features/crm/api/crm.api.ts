@@ -1082,6 +1082,20 @@ export const crmApi = {
   deleteTaxRule: (id: string) =>
     apiClient.delete<void>(`/v1/crm/tax-rules/${id}`),
 
+  // ─── Lead Scoring Rules ─────────────────────────────────────────────────────────
+  getScoringRules: () =>
+    apiClient.get<any[]>('/v1/crm/scoring-rules'),
+  createScoringRule: (data: any) =>
+    apiClient.post<any>('/v1/crm/scoring-rules', data),
+  updateScoringRule: (id: string, data: any) =>
+    apiClient.put<any>(`/v1/crm/scoring-rules/${id}`, data),
+  deleteScoringRule: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/scoring-rules/${id}`),
+  triggerScoreEvent: (leadId: string, data: { eventType: string; note?: string }) =>
+    apiClient.post<any>(`/v1/crm/scoring-rules/trigger/${leadId}`, data),
+  getScoreEventHistory: (leadId: string) =>
+    apiClient.get<any[]>(`/v1/crm/scoring-rules/history/${leadId}`),
+
   // ─── Payment Terms ────────────────────────────────────────────────────────────
   getPaymentTerms: () =>
     apiClient.get<any[]>('/v1/crm/payment-terms'),

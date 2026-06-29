@@ -145,7 +145,7 @@ export function Component() {
     showCreate ? dupEmail : undefined,
     showCreate ? dupPhone : undefined,
   );
-  const leadMatches = leadDupes ?? [];
+  const leadMatches = (leadDupes as any[]) ?? [];
 
   const { data: rawContactData } = useContacts({ search: contactQuery || undefined, pageSize: 6 });
   const contactSuggestions = ((rawContactData as unknown as PagedResult<CrmContactSummaryDto> | undefined)?.items ?? [])
@@ -727,7 +727,16 @@ export function Component() {
               {leadMatches.length > 0 && (
                 <DuplicateWarning
                   matches={leadMatches}
-                  onCreateAnyway={() => createLead.mutate(form, { onSuccess: () => setShowCreate(false) })}
+                  onCreateAnyway={() => createLead.mutate({
+                    ...form,
+                    companyName: orgDetails.name || undefined,
+                    companyDomain: orgDetails.domain || undefined,
+                    companyIndustry: orgDetails.industry || undefined,
+                    companyEmployeeCount: orgDetails.employeeCount ? Number(orgDetails.employeeCount) : undefined,
+                    companyCity: orgDetails.city || undefined,
+                    companyCountry: orgDetails.country || undefined,
+                    companyWebsite: orgDetails.website || undefined,
+                  }, { onSuccess: () => setShowCreate(false) })}
                   isSaving={createLead.isPending}
                 />
               )}
@@ -741,7 +750,16 @@ export function Component() {
               </button>
               <button
                 disabled={createLead.isPending || (!form.customerName && !form.customerPhone && !form.customerEmail)}
-                onClick={() => createLead.mutate(form, { onSuccess: () => setShowCreate(false) })}
+                onClick={() => createLead.mutate({
+                  ...form,
+                  companyName: orgDetails.name || undefined,
+                  companyDomain: orgDetails.domain || undefined,
+                  companyIndustry: orgDetails.industry || undefined,
+                  companyEmployeeCount: orgDetails.employeeCount ? Number(orgDetails.employeeCount) : undefined,
+                  companyCountry: orgDetails.country || undefined,
+                  companyCity: orgDetails.city || undefined,
+                  companyWebsite: orgDetails.website || undefined,
+                }, { onSuccess: () => setShowCreate(false) })}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {createLead.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}

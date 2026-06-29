@@ -73,6 +73,7 @@ export const ROUTES = {
     crmMeetings: '/dashboard/crm/meetings',
     crmWorkflows: '/dashboard/crm/workflows',
     crmNps: '/dashboard/crm/nps',
+    crmScoringRules: '/dashboard/crm/scoring-rules',
     crmTimeTracking: '/dashboard/crm/time-tracking',
     crmCustomFields: '/dashboard/crm/custom-fields',
     crmDedup: '/dashboard/crm/dedup',

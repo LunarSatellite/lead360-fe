@@ -1,11 +1,11 @@
 // Lead stages matching backend LeadStage enum
 export const LeadStage = {
-  New: 1, Warm: 2, Hot: 3, Nurturing: 4, Converted: 5, Lost: 6, Qualified: 7,
+  New: 1, Warm: 2, Hot: 3, Nurturing: 4, Converted: 5, Lost: 6, Qualified: 7, MQL: 8,
 } as const;
 export type LeadStage = (typeof LeadStage)[keyof typeof LeadStage];
 
 export const LEAD_STAGE_LABELS: Record<LeadStage, string> = {
-  1: 'New', 2: 'Warm', 3: 'Hot', 4: 'Nurturing', 5: 'Converted', 6: 'Lost', 7: 'Qualified',
+  1: 'New', 2: 'Warm', 3: 'Hot', 4: 'Nurturing', 5: 'Converted', 6: 'Lost', 7: 'Qualified', 8: 'MQL',
 };
 
 export const LEAD_STAGE_COLORS: Record<LeadStage, string> = {
@@ -16,6 +16,7 @@ export const LEAD_STAGE_COLORS: Record<LeadStage, string> = {
   5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
   6: 'text-text-muted bg-bg-card border-border-subtle',
   7: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  8: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
 };
 
 export const ChannelType = {
@@ -140,17 +141,17 @@ export interface LeadSummaryDto {
   intentSummary: string | null;
   tags: string | null;
   assignedToUserName: string | null;
+  companyName?: string;
+  companyDomain?: string;
+  companyIndustry?: string;
+  companyEmployeeCount?: number;
+  companyCity?: string;
+  companyCountry?: string;
+  companyWebsite?: string;
+  notes?: string;
   lastActivityAt: string;
   convertedAt: string | null;
   createdAt: string;
-  organizationId?: string;
-  organizationName?: string;
-  organizationDomain?: string;
-  organizationIndustry?: string;
-  organizationEmployeeCount?: number;
-  organizationCountry?: string;
-  organizationCity?: string;
-  organizationWebsite?: string;
 }
 
 export interface LeadNurtureStatusDto {
@@ -169,6 +170,9 @@ export interface LeadDetailDto extends LeadSummaryDto {
   scoreReason: string | null;
   assignedToUserId: string | null;
   alertSent: boolean;
+  convertedContactId?: string;
+  convertedAccountId?: string;
+  convertedDealId?: string;
   activities: LeadActivityDto[];
   nurtureStatus: LeadNurtureStatusDto | null;
 }
@@ -1091,7 +1095,13 @@ export interface CreateManualLeadRequest {
   adSource?: string;
   notes?: string;
   score?: number;
-  organizationId?: string;
+  companyName?: string;
+  companyDomain?: string;
+  companyIndustry?: string;
+  companyEmployeeCount?: number;
+  companyCity?: string;
+  companyCountry?: string;
+  companyWebsite?: string;
 }
 
 export interface ConvertLeadRequest {

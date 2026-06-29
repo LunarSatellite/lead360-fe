@@ -711,6 +711,23 @@ export interface CrmPriceBookEntryRequest {
   productId?: string; productName: string; sku?: string; unitPrice: number; minQuantity?: number;
 }
 
+export interface CrmProductBundleDto {
+  id: string; name: string; description?: string; currency: string;
+  isActive: boolean; itemCount: number; total: number; createdAt: string;
+}
+export interface CrmProductBundleItemDto {
+  id: string; bundleId: string; productId?: string; productName: string;
+  sku?: string; quantity: number; unitPrice: number;
+}
+export interface CrmProductBundleDetailDto {
+  id: string; name: string; description?: string; currency: string;
+  isActive: boolean; items: CrmProductBundleItemDto[]; createdAt: string;
+}
+export interface CrmProductBundleCreateRequest { name: string; description?: string; currency?: string }
+export interface CrmProductBundleItemRequest {
+  productId?: string; productName: string; sku?: string; quantity: number; unitPrice: number;
+}
+
 // ── Contracts (CLM) ───────────────────────────────────────────────────────────
 export enum CrmContractStatus {
   Draft = 1, PendingSignature = 2, Active = 3, Expired = 4, Terminated = 5, Renewed = 6,

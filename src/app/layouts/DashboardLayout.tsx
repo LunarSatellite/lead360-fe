@@ -118,6 +118,7 @@ const crmNav = [
   { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },
   { label: 'Renewals',      href: ROUTES.dashboard.crmRenewals,      icon: CalendarClock },
   { label: 'Price Books',   href: ROUTES.dashboard.crmPriceBooks,    icon: BookOpen },
+  { label: 'Bundles',       href: ROUTES.dashboard.crmProductBundles, icon: Package },
   { label: 'Tax Rules',     href: ROUTES.dashboard.crmTaxRules,      icon: Percent },
   { label: 'Payment Terms', href: ROUTES.dashboard.crmPaymentTerms,  icon: Calendar },
   { label: 'Contracts',     href: ROUTES.dashboard.crmContracts,          icon: FileSignature },

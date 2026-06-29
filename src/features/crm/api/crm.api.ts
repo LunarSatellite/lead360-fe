@@ -927,6 +927,20 @@ export const crmApi = {
   deletePriceBookEntry: (entryId: string) =>
     apiClient.delete(`${BASE}/price-books/entries/${entryId}`),
 
+  // ─── Product bundles (CPQ) ────────────────────────────────────────────────
+  getProductBundles: () =>
+    apiClient.get<import('../types/crm.types').CrmProductBundleDto[]>(`${BASE}/product-bundles`),
+  getProductBundleById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmProductBundleDetailDto>(`${BASE}/product-bundles/${id}`),
+  createProductBundle: (data: import('../types/crm.types').CrmProductBundleCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProductBundleDto>(`${BASE}/product-bundles`, data),
+  deleteProductBundle: (id: string) =>
+    apiClient.delete(`${BASE}/product-bundles/${id}`),
+  addProductBundleItem: (id: string, data: import('../types/crm.types').CrmProductBundleItemRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProductBundleItemDto>(`${BASE}/product-bundles/${id}/items`, data),
+  deleteProductBundleItem: (itemId: string) =>
+    apiClient.delete(`${BASE}/product-bundles/items/${itemId}`),
+
   // ─── Renewals ─────────────────────────────────────────────────────────────
   getRenewals: (filter: import('../types/crm.types').CrmRenewalFilter = {}) =>
     apiClient.get<PagedResult<import('../types/crm.types').CrmRenewalListItemDto>>(`${BASE}/renewals`, { params: filter }),

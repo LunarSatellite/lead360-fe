@@ -32,6 +32,7 @@ const NAV_COMMANDS: NavCommand[] = [
   { label: 'Renewals', to: ROUTES.dashboard.crmRenewals },
   { label: 'Contracts', to: ROUTES.dashboard.crmContracts, keywords: 'clm agreement' },
   { label: 'Price Books', to: ROUTES.dashboard.crmPriceBooks, keywords: 'cpq pricing' },
+  { label: 'Bundles', to: ROUTES.dashboard.crmProductBundles, keywords: 'cpq bundle kit package' },
   { label: 'Tasks', to: ROUTES.dashboard.crmTasks },
   { label: 'Meetings', to: ROUTES.dashboard.crmMeetings },
   { label: 'Nurture', to: ROUTES.dashboard.crmNurture },

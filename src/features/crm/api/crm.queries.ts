@@ -2030,7 +2030,7 @@ export function useUpdateMeeting() {
 export function useCreateTaskFromMeeting() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => crmApi.createTaskFromMeeting(id),
+    mutationFn: ({ id, title, assignedToUserId }: { id: string; title?: string; assignedToUserId?: string }) => crmApi.createTaskFromMeeting(id, title, assignedToUserId),
     onSuccess: () => { qc.invalidateQueries({ queryKey: CRM_KEYS.tasks() }); toast.success('Task created from meeting.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });

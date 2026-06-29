@@ -31,6 +31,9 @@ import { BulkLeadAction } from '../types/crm.types';
 import { CsvToolbar } from '../components/CsvToolbar';
 import { DuplicateWarning } from '../components/DuplicateWarning';
 import { useDebounce } from '@/shared/hooks/useDebounce';
+import { CrmEntityType } from '../types/crm.types';
+import { CustomFieldsInline } from '../components/CustomFieldsInline';
+import { crmApi } from '../api/crm.api';
 import type {
   LeadSummaryDto,
   LeadStatsDto,
@@ -125,6 +128,7 @@ export function Component() {
   const orgDropRef                        = useRef<HTMLDivElement>(null);
   const [orgDetails, setOrgDetails]       = useState({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' });
   const [form, setForm]               = useState<CreateManualLeadRequest>({ stage: LeadStage.New });
+  const [leadCustomFields, setLeadCustomFields] = useState<Record<string, string>>({});
   const [selected, setSelected]       = useState<Set<string>>(new Set());
   const createLead                    = useCreateLead();
   const bulkAction                    = useBulkLeadAction();
@@ -736,10 +740,20 @@ export function Component() {
                     companyCity: orgDetails.city || undefined,
                     companyCountry: orgDetails.country || undefined,
                     companyWebsite: orgDetails.website || undefined,
-                  }, { onSuccess: () => setShowCreate(false) })}
+                  }, { onSuccess: (result: any) => {
+                    const id = result?.id;
+                    if (id) {
+                      const toSave = Object.entries(leadCustomFields).filter(([, v]) => v);
+                      if (toSave.length > 0) crmApi.setCustomFieldValues(id, CrmEntityType.Lead, { values: toSave.map(([d, v]) => ({ definitionId: d, value: v })) });
+                    }
+                    setShowCreate(false);
+                  }})}
                   isSaving={createLead.isPending}
                 />
               )}
+            </div>
+            <div className="px-6 py-3">
+              <CustomFieldsInline entityType={CrmEntityType.Lead} onValuesChange={setLeadCustomFields} />
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
               <button
@@ -759,7 +773,14 @@ export function Component() {
                   companyCountry: orgDetails.country || undefined,
                   companyCity: orgDetails.city || undefined,
                   companyWebsite: orgDetails.website || undefined,
-                }, { onSuccess: () => setShowCreate(false) })}
+                }, { onSuccess: (result: any) => {
+                  const id = result?.id;
+                  if (id) {
+                    const toSave = Object.entries(leadCustomFields).filter(([, v]) => v);
+                    if (toSave.length > 0) crmApi.setCustomFieldValues(id, CrmEntityType.Lead, { values: toSave.map(([d, v]) => ({ definitionId: d, value: v })) });
+                  }
+                  setShowCreate(false);
+                }})}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {createLead.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}

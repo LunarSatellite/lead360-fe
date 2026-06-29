@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Plus, X, Loader2, CalendarCheck, PhoneCall, Play, Copy } from 'lucide-react';
+import { Plus, X, Loader2, CalendarCheck, PhoneCall, Play, Copy, Sparkles } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useMeetings, useMeetingById, useInitiateMeeting, useBookMeeting, useCancelMeeting,
@@ -12,6 +12,7 @@ import type {
   CrmMeetingSummaryDto, CrmMeetingInitiateRequest, CrmMeetingAttendeeDto, CrmMeetingFilter,
   CrmCallSummarySummaryDto, CrmCallSummaryRequestDto, CrmCallSummaryFilter,
 } from '../types/crm.types';
+import { useTeamMembers } from '@/features/team/api/team.queries';
 import {
   CrmMeetingStatus,
   CRM_MEETING_STATUS_LABELS, CRM_MEETING_STATUS_COLORS,
@@ -71,7 +72,7 @@ function MeetingsTab() {
   const [search, setSearch] = useState('');
 
   const [showInitiate, setShowInitiate] = useState(false);
-  const [initForm, setInitForm] = useState<{ contactId: string; dealId: string; title: string; agendaText: string; joinUrl: string; durationMinutes: string; generateSlots: boolean }>({ contactId: '', dealId: '', title: '', agendaText: '', joinUrl: '', durationMinutes: '30', generateSlots: false });
+  const [initForm, setInitForm] = useState<{ contactId: string; dealId: string; title: string; agendaText: string; joinUrl: string; durationMinutes: string; generateSlots: boolean; scheduledAt: string }>({ contactId: '', dealId: '', title: '', agendaText: '', joinUrl: '', durationMinutes: '30', generateSlots: false, scheduledAt: '' });
   const [selectedAttendees, setSelectedAttendees] = useState<Set<string>>(new Set());
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -89,16 +90,23 @@ function MeetingsTab() {
 
   const { data: dealsRaw } = useDeals({ pageSize: 200 });
   const dealsList: { id: string; name: string }[] = (dealsRaw as any)?.items ?? [];
+  const { data: teamRaw } = useTeamMembers();
+  const teamMembers: UserDto[] = (teamRaw as any) ?? [];
 
   const [notes, setNotes] = useState('');
   const [showCompleteSummary, setShowCompleteSummary] = useState(false);
   const [completeSummaryText, setCompleteSummaryText] = useState('');
+  const [taskTitle, setTaskTitle] = useState('');
+  const [taskAssigneeId, setTaskAssigneeId] = useState('');
+  const [showRequestSummary, setShowRequestSummary] = useState(false);
+  const [reqSummaryText, setReqSummaryText] = useState('');
 
   const initiateMeeting = useInitiateMeeting();
   const bookMeeting = useBookMeeting();
   const cancelMeeting = useCancelMeeting();
   const updateMeeting = useUpdateMeeting();
   const createTask = useCreateTaskFromMeeting();
+  const requestSummary = useRequestCallSummary();
   const logActivity = useLogActivity();
 
   const applyFilter = () => setFilter({ page: 1, pageSize: 20, search: search || undefined, status: statusF ? Number(statusF) as CrmMeetingStatus : undefined });
@@ -127,8 +135,9 @@ function MeetingsTab() {
       attendees: attendees.length > 0 ? attendees : undefined,
       generateSlots: initForm.generateSlots,
       durationMinutes: Number(initForm.durationMinutes) || 30,
+      scheduledAt: initForm.scheduledAt ? initForm.scheduledAt + 'T00:00:00Z' : undefined,
     };
-    initiateMeeting.mutate(req, { onSuccess: () => { setShowInitiate(false); setInitForm({ contactId: '', dealId: '', title: '', agendaText: '', joinUrl: '', durationMinutes: '30', generateSlots: false }); setSelectedAttendees(new Set()); } });
+    initiateMeeting.mutate(req, { onSuccess: () => { setShowInitiate(false); setInitForm({ contactId: '', dealId: '', title: '', agendaText: '', joinUrl: '', durationMinutes: '30', generateSlots: false, scheduledAt: '' }); setSelectedAttendees(new Set()); } });
   };
 
   const toggleAttendee = (id: string) => {
@@ -212,6 +221,9 @@ function MeetingsTab() {
                 </label>
               ))}
             </div>
+          </Field>
+          <Field label="Date (leave blank for scheduling)">
+            <input type="date" value={initForm.scheduledAt} onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))} className={inputCls} />
           </Field>
           <Field label="Duration">
             <select value={initForm.durationMinutes} onChange={setI('durationMinutes')} className={selectCls}>
@@ -376,6 +388,24 @@ function MeetingsTab() {
               </div>
             )}
 
+            {showRequestSummary ? (
+              <div className="rounded-xl border border-border-subtle bg-bg-elevated p-4 space-y-3">
+                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Request AI Call Summary</p>
+                <input value={reqSummaryText} onChange={e => setReqSummaryText(e.target.value)} placeholder="What happened in this call / meeting?" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                <div className="flex gap-2">
+                  <button onClick={() => {
+                    requestSummary.mutate({ contactId: detail.contactId, meetingId: detail.id, trigger: 1 }, { onSuccess: () => { setShowRequestSummary(false); setReqSummaryText(''); toast.success('Summary requested.'); } });
+                  }} disabled={requestSummary.isPending} className="px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+                    {requestSummary.isPending ? 'Requesting...' : 'Request Summary'}
+                  </button>
+                  <button onClick={() => setShowRequestSummary(false)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <button onClick={() => setShowRequestSummary(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-text-secondary text-sm font-bold hover:bg-bg-card transition-all">
+                <Sparkles className="w-4 h-4" strokeWidth={1.5} /> Request AI Summary
+              </button>
+            )}
             <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border-subtle">
               {detail.status === CrmMeetingStatus.ProposalDrafted && bookDate && bookTime && (
                 <button
@@ -408,9 +438,27 @@ function MeetingsTab() {
                   <CalendarCheck className="w-4 h-4" strokeWidth={1.5} /> Mark Completed
                 </button>
               )}
-              <button onClick={() => createTask.mutate(detail.id)} disabled={createTask.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-text-secondary text-sm font-bold hover:bg-bg-card transition-all disabled:opacity-60">
-                {createTask.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.5} />} Create Task
-              </button>
+              <div className="space-y-2">
+                <div className="flex gap-2 items-center">
+                  <input value={taskTitle} onChange={e => setTaskTitle(e.target.value)} placeholder="Task description..."
+                    className="flex-1 px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                  <button onClick={() => taskTitle.trim() && createTask.mutate({ id: detail.id, title: taskTitle.trim(), assignedToUserId: taskAssigneeId || undefined })}
+                    disabled={createTask.isPending || !taskTitle.trim()}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all shrink-0">
+                    {createTask.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.5} />}
+                    {createTask.isPending ? 'Creating...' : 'Create Task'}
+                  </button>
+                </div>
+                <div className="flex justify-end">
+                  <select value={taskAssigneeId} onChange={e => setTaskAssigneeId(e.target.value)}
+                    className="px-2 py-1 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-border-glow w-48">
+                    <option value="">Assign to me (default)</option>
+                    {teamMembers.filter((u: any) => u.role !== 1).map((u: any) => (
+                      <option key={u.id} value={u.id}>{u.fullName || `${u.firstName} ${u.lastName}`}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               {detail.status !== CrmMeetingStatus.Cancelled && detail.status !== CrmMeetingStatus.Completed && (
                 <button onClick={() => { cancelMeeting.mutate(detail.id, { onSuccess: () => setSelectedId(null) }); }} disabled={cancelMeeting.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger text-sm font-bold hover:bg-danger hover:text-bg transition-all disabled:opacity-60">
                   {cancelMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" strokeWidth={1.5} />} Cancel

@@ -10,6 +10,9 @@ import {
   useAddAccountContact, useRemoveAccountContact,
   useContacts, useOrganizations,
 } from '../api/crm.queries';
+import { CrmEntityType } from '../types/crm.types';
+import { CustomFieldsInline } from '../components/CustomFieldsInline';
+import { crmApi } from '../api/crm.api';
 import type {
   CrmAccountFilter, CrmAccountSummaryDto, CrmAccountDetailDto,
   CrmAccountCreateRequest, CrmAccountUpdateRequest,
@@ -84,10 +87,11 @@ type AccountFormState = {
   renewalDate: string;
   notes: string;
   organizationId: string;
+  parentAccountId: string;
 };
 
 const EMPTY_ACCOUNT: AccountFormState = {
-  name: '', status: '1', tier: '', contractValue: '', currency: 'USD', renewalDate: '', notes: '', organizationId: '',
+  name: '', status: '1', tier: '', contractValue: '', currency: 'USD', renewalDate: '', notes: '', organizationId: '', parentAccountId: '',
 };
 
 function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
@@ -95,6 +99,8 @@ function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
     name: d.name,
     status: d.status.toString(),
     tier: d.tier?.toString() ?? '',
+    organizationId: d.organizationId ?? '',
+    parentAccountId: d.parentAccountId ?? '',
     contractValue: d.contractValue?.toString() ?? '',
     currency: d.currency,
     renewalDate: d.renewalDate ? d.renewalDate.slice(0, 10) : '',
@@ -105,7 +111,7 @@ function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
 function AccountForm({
   initial, submitLabel, onSave, onCancel, isSaving,
 }: {
-  initial?: AccountFormState;
+  initial?: AccountFormState & { id?: string };
   submitLabel: string;
   onSave: (f: AccountFormState) => void;
   onCancel: () => void;
@@ -117,12 +123,21 @@ function AccountForm({
       setForm((f) => ({ ...f, [k]: e.target.value }));
   const { data: orgsRaw } = useOrganizations({ pageSize: 200 });
   const orgsList = (orgsRaw as any)?.items ?? [];
+  const { data: allAccountsRaw } = useAccounts({ pageSize: 200 });
+  const allAccountsList = ((allAccountsRaw as any)?.items ?? []).filter((a: any) => a.id !== initial?.id);
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div>
         <label className="block text-xs font-semibold text-text-muted mb-1.5">Account Name *</label>
         <input required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" className={inputCls} />
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-text-muted mb-1.5">Parent Account</label>
+        <select value={form.parentAccountId} onChange={set('parentAccountId')} className={inputCls}>
+          <option value="">No parent (top-level)</option>
+          {allAccountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+        </select>
       </div>
       <div>
         <label className="block text-xs font-semibold text-text-muted mb-1.5">Organization</label>
@@ -306,7 +321,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
                 </div>
               </div>
               <button
-                onClick={() => removeContact.mutate({ accountId, linkId: l.id })}
+                onClick={() => removeContact.mutate({ accountId, linkId: l.contactId })}
                 disabled={removeContact.isPending}
                 className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-[rgba(244,63,94,0.2)] transition-all disabled:opacity-50 shrink-0"
                 title="Remove"
@@ -356,6 +371,7 @@ function AccountDetailPanel({
       currency: f.currency || undefined,
       renewalDate: f.renewalDate || undefined,
       notes: f.notes || undefined,
+      parentAccountId: f.parentAccountId || undefined,
     };
     updateAccount.mutate({ id: account.id, data: req }, { onSuccess: () => setIsEditing(false) });
   };
@@ -445,6 +461,12 @@ function AccountDetailPanel({
           {/* Details tab */}
           {tab === 'details' && (
             <div className="space-y-3 text-sm">
+              {account.parentAccountName && (
+                <div className="flex items-center gap-3">
+                  <Building className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
+                  <span className="text-text-secondary">Parent: <span className="text-text-primary font-medium">{account.parentAccountName}</span></span>
+                </div>
+              )}
               {account.contractValue != null && (
                 <div className="flex items-center gap-3">
                   <DollarSign className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
@@ -494,6 +516,7 @@ export function Component() {
   const data = raw as unknown as PagedResult<CrmAccountSummaryDto> | undefined;
 
   const createAccount = useCreateAccount();
+  const [accountCustomFields, setAccountCustomFields] = useState<Record<string, string>>({});
 
   const handleCreate = (f: AccountFormState) => {
     const req: CrmAccountCreateRequest = {
@@ -505,8 +528,16 @@ export function Component() {
       currency: f.currency || undefined,
       renewalDate: f.renewalDate || undefined,
       notes: f.notes || undefined,
+      parentAccountId: f.parentAccountId || undefined,
     };
-    createAccount.mutate(req, { onSuccess: () => setShowCreate(false) });
+    createAccount.mutate(req, { onSuccess: (result: any) => {
+      const id = result?.id;
+      if (id) {
+        const toSave = Object.entries(accountCustomFields).filter(([, v]) => v);
+        if (toSave.length > 0) crmApi.setCustomFieldValues(id, CrmEntityType.Account, { values: toSave.map(([d, v]) => ({ definitionId: d, value: v })) });
+      }
+      setShowCreate(false);
+    } });
   };
 
   const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
@@ -652,6 +683,9 @@ export function Component() {
             onCancel={() => setShowCreate(false)}
             isSaving={createAccount.isPending}
           />
+          <div className="px-6 py-3">
+            <CustomFieldsInline entityType={CrmEntityType.Account} onValuesChange={setAccountCustomFields} />
+          </div>
         </Modal>
       )}
 

@@ -556,11 +556,11 @@ export interface CrmReviewApprovalRequest {
 }
 
 export const CrmAccountContactRole = {
-  Champion: 1, EconomicBuyer: 2, User: 3, Blocker: 4, Influencer: 5,
+  Champion: 1, EconomicBuyer: 2, User: 3, Blocker: 4, Influencer: 5, TechnicalBuyer: 6,
 } as const;
 export type CrmAccountContactRole = (typeof CrmAccountContactRole)[keyof typeof CrmAccountContactRole];
 export const CRM_ACCOUNT_CONTACT_ROLE_LABELS: Record<CrmAccountContactRole, string> = {
-  1: 'Champion', 2: 'Economic Buyer', 3: 'User', 4: 'Blocker', 5: 'Influencer',
+  1: 'Champion', 2: 'Economic Buyer', 3: 'User', 4: 'Blocker', 5: 'Influencer', 6: 'Technical Buyer',
 };
 
 export const CrmSignalKind = {
@@ -858,6 +858,10 @@ export interface CrmAccountSummaryDto {
   contractValue: number | null;
   currency: string;
   renewalDate: string | null;
+  paymentTermId?: string;
+  paymentTermName?: string;
+  parentAccountId?: string;
+  parentAccountName?: string;
   createdAt: string;
   updatedAt: string | null;
 }
@@ -878,6 +882,7 @@ export interface CrmAccountCreateRequest {
   currency?: string;
   notes?: string;
   tagsJson?: string;
+  parentAccountId?: string;
 }
 
 export interface CrmAccountUpdateRequest {
@@ -891,6 +896,7 @@ export interface CrmAccountUpdateRequest {
   currency?: string;
   notes?: string;
   tagsJson?: string;
+  parentAccountId?: string;
 }
 
 export interface CrmAccountFilter {
@@ -2122,6 +2128,7 @@ export interface CrmMeetingInitiateRequest {
   attendees?: CrmMeetingAttendeeDto[];
   generateSlots?: boolean;
   durationMinutes?: number;
+  scheduledAt?: string;
 }
 export interface CrmMeetingFilter { search?: string; status?: CrmMeetingStatus; page?: number; pageSize?: number; }
 
@@ -2153,7 +2160,7 @@ export interface CrmCallSummarySummaryDto {
   sentiment: CrmSignalSentiment | null; createdAt: string;
 }
 export interface CrmCallSummaryDetailDto extends CrmCallSummarySummaryDto { actionItems: string[]; }
-export interface CrmCallSummaryRequestDto { signalId: string; contactId?: string; dealId?: string; }
+export interface CrmCallSummaryRequestDto { contactId: string; signalId?: string; meetingId?: string; trigger: number; }
 export interface CrmCallSummaryFilter { page?: number; pageSize?: number; }
 
 // ─── NPS Surveys ─────────────────────────────────────────────────────────────

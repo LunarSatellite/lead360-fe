@@ -11,6 +11,9 @@ import {
   useFindContactDuplicates,
 } from '../api/crm.queries';
 import { CsvToolbar } from '../components/CsvToolbar';
+import { CustomFieldsInline } from '../components/CustomFieldsInline';
+import { CrmEntityType } from '../types/crm.types';
+import { crmApi } from '../api/crm.api';
 import { DuplicateWarning } from '../components/DuplicateWarning';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 import type {
@@ -402,9 +405,18 @@ export function Component() {
     }));
   };
 
+  const [contactCustomFields, setContactCustomFields] = useState<Record<string, string>>({});
+
   const handleCreate = (req: CrmContactCreateRequest) => {
     createContact.mutate(req, {
-      onSuccess: () => setShowCreate(false),
+      onSuccess: (result: any) => {
+        const id = result?.id;
+        if (id) {
+          const toSave = Object.entries(contactCustomFields).filter(([, v]) => v);
+          if (toSave.length > 0) crmApi.setCustomFieldValues(id, CrmEntityType.Contact, { values: toSave.map(([d, v]) => ({ definitionId: d, value: v })) });
+        }
+        setShowCreate(false);
+      },
     });
   };
 
@@ -587,6 +599,9 @@ export function Component() {
             onCancel={() => setShowCreate(false)}
             isSaving={createContact.isPending}
           />
+          <div className="px-6 py-3">
+            <CustomFieldsInline entityType={CrmEntityType.Contact} onValuesChange={setContactCustomFields} />
+          </div>
         </Modal>
       )}
     </>

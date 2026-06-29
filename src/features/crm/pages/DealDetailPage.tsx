@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import type { CrmDealAiSummaryDto } from '../types/crm.types';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, ClipboardList, Package, Phone, Video, MessageSquare, Save, Users, Target, Sword, TrendingUp, GitBranch, Sparkles, RefreshCw, Building2, Pencil, X } from 'lucide-react';
+import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, ClipboardList, Package, Phone, Video, MessageSquare, Save, Users, Target, Sword, TrendingUp, GitBranch, Sparkles, RefreshCw, Building2, Pencil, X, UserPlus, Trash2 } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { crmApi } from '../api/crm.api';
+import { toast } from 'sonner';
 import { ROUTES } from '@/app/router/route-paths';
 import { useDealById, useTimeline, useLogActivity, useDealStrategy, useUpdateDealStrategy, useMoveDealStage, useDealStages, useRefreshDealSummary, useUpdateDeal, useAccounts } from '../api/crm.queries';
 import type { CrmDealDetailDto, CrmDealUpdateRequest } from '../types/crm.types';
@@ -301,6 +304,9 @@ export function Component() {
 
       {id && <CustomFieldsPanel recordId={id} entityType={CrmEntityType.Deal} />}
 
+      {/* ── Deal Contacts ── */}
+      {id && <DealContactsSection dealId={id} />}
+
       <div className="rounded-2xl border border-border-subtle bg-bg-card p-4">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(`${ROUTES.dashboard.crmQuotes}?dealId=${id}`)}
@@ -481,6 +487,74 @@ export function Component() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Deal Contacts Section ──────────────────────────────────────────────────
+
+const DEAL_CONTACT_ROLES = ['Champion', 'Economic Buyer', 'Technical Buyer', 'Influencer', 'Blocker', 'User'];
+
+function DealContactsSection({ dealId }: { dealId: string }) {
+  const qc = useQueryClient();
+  const [showAdd, setShowAdd] = useState(false);
+  const [search, setSearch] = useState('');
+  const [role, setRole] = useState('Champion');
+
+  const { data: contactsRaw } = useQuery({
+    queryKey: ['deal-contacts', dealId],
+    queryFn: () => crmApi.getDealContacts(dealId),
+  });
+  const dealContacts: any[] = (contactsRaw as any) ?? [];
+
+  const addMut = useMutation({
+    mutationFn: (d: any) => crmApi.addDealContact(dealId, d),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['deal-contacts', dealId] }); setSearch(''); setShowAdd(false); toast.success('Contact added.'); },
+    onError: (e: any) => toast.error(e?.message || 'Error'),
+  });
+  const removeMut = useMutation({
+    mutationFn: (id: string) => crmApi.removeDealContact(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['deal-contacts', dealId] }); toast.success('Contact removed.'); },
+  });
+
+  return (
+    <div className="rounded-2xl border border-border-subtle bg-bg-card p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> Deal Contacts ({dealContacts.length})</span>
+        <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 text-xs text-brand hover:underline">
+          <UserPlus className="w-3 h-3" /> {showAdd ? 'Cancel' : 'Add Contact'}
+        </button>
+      </div>
+
+      {showAdd && (
+        <div className="flex gap-2">
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
+          <select value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+            {DEAL_CONTACT_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
+          <button onClick={() => search.trim() && addMut.mutate({ contactId: search.trim(), role })} disabled={addMut.isPending || !search.trim()}
+            className="px-3 py-2 rounded-xl bg-brand text-bg text-xs font-bold disabled:opacity-50">Add</button>
+        </div>
+      )}
+
+      {dealContacts.length === 0 ? (
+        <p className="text-sm text-text-muted italic">No contacts on this deal yet.</p>
+      ) : (
+        <div className="space-y-2">
+          {dealContacts.map((dc: any) => (
+            <div key={dc.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-bg-elevated border border-border-subtle">
+              <div className="min-w-0">
+                <div className="font-semibold text-sm text-text-primary">{dc.contactName}</div>
+                <div className="flex items-center gap-2 mt-0.5">
+                  {dc.contactEmail && <span className="text-xs text-text-muted">{dc.contactEmail}</span>}
+                  <span className="text-xs px-1.5 py-0.5 rounded bg-brand-soft border border-border-glow text-brand font-medium">{dc.role || 'User'}</span>
+                </div>
+              </div>
+              <button onClick={() => removeMut.mutate(dc.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+            </div>
+          ))}
         </div>
       )}
     </div>

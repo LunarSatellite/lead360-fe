@@ -304,6 +304,12 @@ export const crmApi = {
   refreshDealSummary: (id: string) =>
     apiClient.post<import('../types/crm.types').CrmDealAiSummaryDto>(`${BASE}/deals/${id}/summary/refresh`),
 
+  getDealContacts: (dealId: string) =>
+    apiClient.get<any[]>(`${BASE}/deals/${dealId}/contacts`),
+  addDealContact: (dealId: string, data: { contactId: string; role?: string }) =>
+    apiClient.post<any>(`${BASE}/deals/${dealId}/contacts`, data),
+  removeDealContact: (dealContactId: string) =>
+    apiClient.delete<void>(`${BASE}/deals/contacts/${dealContactId}`),
   getDealTimeline: (id: string) =>
     apiClient.get<DealTimelineDto>(`${BASE}/deals/${id}/timeline`),
 
@@ -684,8 +690,8 @@ export const crmApi = {
     apiClient.post(`${BASE}/meetings/${id}/cancel`, {}),
   updateMeeting: (id: string, data: { status?: number; notes?: string }) =>
     apiClient.put<import('../types/crm.types').CrmMeetingDetailDto>(`${BASE}/meetings/${id}`, data),
-  createTaskFromMeeting: (id: string) =>
-    apiClient.post(`${BASE}/meetings/${id}/tasks`, {}),
+  createTaskFromMeeting: (id: string, title?: string, assignedToUserId?: string) =>
+    apiClient.post(`${BASE}/meetings/${id}/tasks`, { title, assignedToUserId }),
 
   // ─── Public Scheduling (no-auth) ─────────────────────────────────────────
   getPublicSchedule: (token: string) =>

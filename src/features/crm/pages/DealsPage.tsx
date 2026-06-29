@@ -6,15 +6,18 @@ import {
   Settings, Trash2, ChevronUp, ChevronDown, X, GitBranch, Filter, User, Check,
 } from 'lucide-react';
 import { confirmDialog } from '@/shared/ui/confirm';
+import { crmApi } from '../api/crm.api';
 import {
   useDeals, useDealStages, useMoveDealStage, useCloseDeal,
   useCreateDealStage, useUpdateDealStage, useDeleteDealStage, usePipelines,
-  useImportDealsCsv, useCreateDeal, useBulkDeleteDeals, useAccounts,
+  useImportDealsCsv, useCreateDeal, useBulkDeleteDeals, useAccounts, useContacts,
 } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
 import { CsvToolbar } from '../components/CsvToolbar';
 import type { CrmDealStageCreateRequest, CrmDealCreateRequest } from '../types/crm.types';
+import { CrmEntityType } from '../types/crm.types';
+import { CustomFieldsInline } from '../components/CustomFieldsInline';
 import type {
   CrmDealSummaryDto, CrmDealStageSummaryDto, CrmDealFilter, PagedResult,
 } from '../types/crm.types';
@@ -173,6 +176,8 @@ export function Component() {
   const [ndCloseDate, setNdCloseDate] = useState('');
   const [ndOwnerId, setNdOwnerId] = useState('');
   const [ndAccountId, setNdAccountId] = useState('');
+  const [ndContactId, setNdContactId] = useState('');
+  const [ndCustomFields, setNdCustomFields] = useState<Record<string, string>>({});
   const [showFilters, setShowFilters] = useState(false);
   const [filterOwnerId, setFilterOwnerId] = useState('');
   const [filterCloseDateFrom, setFilterCloseDateFrom] = useState('');
@@ -243,9 +248,11 @@ export function Component() {
 
   const { data: accountsRaw } = useAccounts({ pageSize: 200 });
   const accountsList = (accountsRaw as any)?.items ?? [];
+  const { data: contactsRaw } = useContacts({ pageSize: 200 });
+  const contactsList = (contactsRaw as any)?.items ?? [];
 
   function resetNewDeal() {
-    setNdName(''); setNdStageId(''); setNdAmount(''); setNdCloseDate(''); setNdOwnerId(''); setNdAccountId('');
+    setNdName(''); setNdStageId(''); setNdAmount(''); setNdCloseDate(''); setNdOwnerId(''); setNdAccountId(''); setNdContactId(''); setNdCustomFields({});
   }
 
   function submitNewDeal() {
@@ -258,9 +265,19 @@ export function Component() {
       closeDate: ndCloseDate || undefined,
       ownedByUserId: ndOwnerId || undefined,
       accountId: ndAccountId || undefined,
+      contactId: ndContactId || undefined,
     };
     createDeal.mutate(payload, {
-      onSuccess: () => { setShowNewDeal(false); resetNewDeal(); toast.success('Deal created'); },
+      onSuccess: (result: any) => {
+        const dealId = result?.id;
+        if (dealId) {
+          const toSave = Object.entries(ndCustomFields).filter(([, v]) => v);
+          if (toSave.length > 0) {
+            crmApi.setCustomFieldValues(dealId, CrmEntityType.Deal, { values: toSave.map(([definitionId, value]) => ({ definitionId, value })) });
+          }
+        }
+        setShowNewDeal(false); resetNewDeal(); toast.success('Deal created');
+      },
       onError: () => toast.error('Failed to create deal'),
     });
   }
@@ -720,7 +737,7 @@ export function Component() {
       {showNewDeal && (
         <div className="fixed inset-0 z-50 flex justify-end">
           <div className="absolute inset-0 bg-black/40" onClick={() => { setShowNewDeal(false); resetNewDeal(); }} />
-          <div className="relative w-full max-w-md bg-bg-card border-l border-border-subtle h-full overflow-y-auto shadow-2xl flex flex-col">
+          <div className="relative w-full max-w-md bg-bg border-l border-border-subtle h-full overflow-y-auto shadow-2xl flex flex-col">
             <div className="p-5 border-b border-border-subtle flex items-center justify-between shrink-0">
               <div>
                 <h2 className="text-sm font-bold text-text-primary">New Deal</h2>
@@ -732,12 +749,12 @@ export function Component() {
               <div>
                 <label className="text-xs font-semibold text-text-secondary block mb-1">Deal Name *</label>
                 <input value={ndName} onChange={e => setNdName(e.target.value)} placeholder="e.g. Acme Corp — Enterprise"
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+                  className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-text-secondary block mb-1">Stage *</label>
                 <select value={ndStageId} onChange={e => setNdStageId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                  className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
                   <option value="">Select stage</option>
                   {stages.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
@@ -745,17 +762,17 @@ export function Component() {
               <div>
                 <label className="text-xs font-semibold text-text-secondary block mb-1">Amount</label>
                 <input type="number" value={ndAmount} onChange={e => setNdAmount(e.target.value)} placeholder="0"
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+                  className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-text-secondary block mb-1">Expected Close Date</label>
                 <input type="date" value={ndCloseDate} onChange={e => setNdCloseDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                  className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
               </div>
               <div>
                 <label className="text-xs font-semibold text-text-secondary block mb-1">Owner</label>
                 <select value={ndOwnerId} onChange={e => setNdOwnerId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                  className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
                   <option value="">Assign to me (default)</option>
                   {teamMembers.map(u => (
                     <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
@@ -764,12 +781,23 @@ export function Component() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-text-secondary block mb-1">Account</label>
-                <select value={ndAccountId} onChange={e => setNdAccountId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                <select value={ndAccountId} onChange={e => { setNdAccountId(e.target.value); setNdContactId(''); }}
+                  className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
                   <option value="">No account linked</option>
                   {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
                 </select>
               </div>
+              <div>
+                <label className="text-xs font-semibold text-text-secondary block mb-1">Primary Contact</label>
+                <select value={ndContactId} onChange={e => setNdContactId(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                  <option value="">No contact</option>
+                  {contactsList.map((c: any) => <option key={c.id} value={c.id}>{c.fullName}{c.email ? ` (${c.email})` : ''}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="px-5 py-3">
+              <CustomFieldsInline entityType={CrmEntityType.Deal} onValuesChange={setNdCustomFields} />
             </div>
             <div className="p-5 border-t border-border-subtle shrink-0 flex gap-3">
               <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }}

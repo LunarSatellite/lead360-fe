@@ -3,9 +3,11 @@ import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check } from 'lucide-
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
-import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook } from '../api/crm.queries';
+import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useReviseQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook } from '../api/crm.queries';
 import { crmApi } from '../api/crm.api';
 import { confirmDialog } from '@/shared/ui/confirm';
+import { ApprovalPanel } from '../components/ApprovalPanel';
+import { ApprovalEntityType } from '../types/crm.types';
 import type {
   CrmQuoteSummaryDto, CrmQuoteCreateRequest, CrmQuoteUpdateRequest, CrmQuoteFilter,
   CrmQuoteLineItemRequest, CrmDealSummaryDto, CrmContactSummaryDto, CrmPriceBookDto,
@@ -102,6 +104,7 @@ export function Component() {
   const sendQuote = useSendQuote();
   const acceptQuote = useAcceptQuote();
   const rejectQuote = useRejectQuote();
+  const reviseQuote = useReviseQuote();
   const deleteQuote = useDeleteQuote();
   const [loadingEdit, setLoadingEdit] = useState(false);
 
@@ -258,6 +261,9 @@ export function Component() {
                 </table>
               </div>
             )}
+            {/* Approval Panel */}
+            {selected.id && <ApprovalPanel entityType={ApprovalEntityType.Quote} entityId={selected.id} entityName={`Quote ${selected.quoteNumber}`} />}
+
             {selected.status === CrmQuoteStatus.Draft && (
               <div className="flex items-center gap-2">
                 <button onClick={() => openEdit(selected.id)} disabled={loadingEdit} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-card border border-border-subtle text-text-primary text-sm font-bold hover:bg-bg-elevated disabled:opacity-60 transition-all">
@@ -270,6 +276,10 @@ export function Component() {
             )}
             {selected.status === 2 && ( /* Sent */
               <div className="flex items-center gap-2">
+                <button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                  {reviseQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" strokeWidth={1.5} />} Revise
+                </button>
                 <button onClick={() => { acceptQuote.mutate(selected.id); setSelected(null); }} disabled={acceptQuote.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   {acceptQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" strokeWidth={1.5} />} Accept

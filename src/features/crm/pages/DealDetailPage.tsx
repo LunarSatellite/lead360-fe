@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import type { CrmDealAiSummaryDto } from '../types/crm.types';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, ClipboardList, Package, Phone, Video, MessageSquare, Save, Users, Target, Sword, TrendingUp, GitBranch, Sparkles, RefreshCw, Building2, Pencil, X, UserPlus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, ClipboardList, Package, Phone, Video, MessageSquare, Save, Users, Target, Sword, TrendingUp, GitBranch, Sparkles, RefreshCw, Building2, Pencil, X, UserPlus, Trash2, Crosshair, FileSignature } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
+import { DEAL_COMPETITOR_OUTCOME_LABELS } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
 import { useDealById, useTimeline, useLogActivity, useDealStrategy, useUpdateDealStrategy, useMoveDealStage, useDealStages, useRefreshDealSummary, useUpdateDeal, useAccounts } from '../api/crm.queries';
 import type { CrmDealDetailDto, CrmDealUpdateRequest } from '../types/crm.types';
@@ -12,6 +13,7 @@ import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS, CrmActivityEventKind, C
 import { formatDistanceToNow, format } from 'date-fns';
 import { DealGateChecklist } from '../components/DealGateChecklist';
 import { ApprovalPanel } from '../components/ApprovalPanel';
+
 import { ApprovalEntityType, CrmEntityType } from '../types/crm.types';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
 
@@ -277,6 +279,12 @@ export function Component() {
           </div>
         )}
 
+        {(deal as any).winReason && (
+          <div className="mt-4 p-3 rounded-xl bg-success-soft border border-[rgba(34,197,94,0.2)]">
+            <p className="text-xs text-success font-semibold">Win reason</p>
+            <p className="text-sm text-text-secondary mt-0.5">{(deal as any).winReason}</p>
+          </div>
+        )}
         {deal.lostReason && (
           <div className="mt-4 p-3 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.2)]">
             <p className="text-xs text-danger font-semibold">Lost reason</p>
@@ -307,6 +315,9 @@ export function Component() {
       {/* ── Deal Contacts ── */}
       {id && <DealContactsSection dealId={id} />}
 
+      {/* ── Competitors ── */}
+      {id && <DealCompetitorsSection dealId={id} />}
+
       <div className="rounded-2xl border border-border-subtle bg-bg-card p-4">
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(`${ROUTES.dashboard.crmQuotes}?dealId=${id}`)}
@@ -323,6 +334,10 @@ export function Component() {
               <Package className="w-4 h-4" strokeWidth={1.5} /> Create Order
             </button>
           )}
+          <button onClick={() => navigate(`/dashboard/crm/contracts?dealId=${id}`)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-elevated border border-border-subtle text-text-primary text-sm font-bold hover:bg-bg-card transition-all">
+            <FileSignature className="w-4 h-4" strokeWidth={1.5} /> Generate Contract
+          </button>
         </div>
       </div>
 
@@ -496,6 +511,84 @@ export function Component() {
 // ── Deal Contacts Section ──────────────────────────────────────────────────
 
 const DEAL_CONTACT_ROLES = ['Champion', 'Economic Buyer', 'Technical Buyer', 'Influencer', 'Blocker', 'User'];
+
+function DealCompetitorsSection({ dealId }: { dealId: string }) {
+  const qc = useQueryClient();
+  const [showAdd, setShowAdd] = useState(false);
+  const [compId, setCompId] = useState('');
+  const [ourS, setOurS] = useState('');
+  const [theirS, setTheirS] = useState('');
+
+  const { data: compsRaw } = useQuery({ queryKey: ['crm', 'competitors'], queryFn: () => crmApi.getCompetitors() });
+  const allComps: any[] = (compsRaw as any) ?? [];
+
+  const { data: dealCompsRaw } = useQuery({
+    queryKey: ['crm', 'deal-competitors', dealId],
+    queryFn: () => crmApi.getDealCompetitors(dealId),
+  });
+  const dealComps: any[] = (dealCompsRaw as any) ?? [];
+
+  const addMut = useMutation({
+    mutationFn: () => crmApi.addDealCompetitor(dealId, { competitorId: compId, ourStrengths: ourS || undefined, theirStrengths: theirS || undefined }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'deal-competitors', dealId] }); setShowAdd(false); setCompId(''); setOurS(''); setTheirS(''); toast.success('Competitor added.'); },
+    onError: (e: any) => toast.error(e?.message || 'Error'),
+  });
+  const updateOutcomeMut = useMutation({
+    mutationFn: ({ id, outcome }: { id: string; outcome: number }) => crmApi.updateDealCompetitorOutcome(id, outcome),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'deal-competitors', dealId] }); qc.invalidateQueries({ queryKey: ['crm', 'competitor-analytics'] }); toast.success('Outcome updated.'); },
+  });
+  const removeMut = useMutation({
+    mutationFn: (id: string) => crmApi.removeDealCompetitor(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'deal-competitors', dealId] }); toast.success('Removed.'); },
+  });
+
+  const usedIds = new Set(dealComps.map((dc: any) => dc.competitorId));
+
+  return (
+    <div className="rounded-2xl border border-border-subtle bg-bg-card p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5"><Crosshair className="w-3.5 h-3.5" /> Competitors ({dealComps.length})</span>
+        <button onClick={() => setShowAdd(!showAdd)} className="flex items-center gap-1 text-xs text-brand hover:underline"><UserPlus className="w-3 h-3" /> {showAdd ? 'Cancel' : 'Add'}</button>
+      </div>
+      {showAdd && (
+        <div className="space-y-2">
+          <select value={compId} onChange={e => setCompId(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+            <option value="">Select competitor</option>
+            {allComps.filter((c: any) => !usedIds.has(c.id)).map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+          <input value={ourS} onChange={e => setOurS(e.target.value)} placeholder="Our strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
+          <input value={theirS} onChange={e => setTheirS(e.target.value)} placeholder="Their strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
+          <button onClick={() => compId && addMut.mutate()} disabled={addMut.isPending || !compId} className="w-full py-2 rounded-xl bg-brand text-bg text-xs font-bold disabled:opacity-50">
+            {addMut.isPending ? 'Adding...' : 'Add to deal'}
+          </button>
+        </div>
+      )}
+      {dealComps.length === 0 ? (
+        <p className="text-sm text-text-muted italic">No competitors tracked.</p>
+      ) : dealComps.map((dc: any) => (
+        <div key={dc.id} className="flex items-center justify-between gap-3 p-3 rounded-xl bg-bg-elevated border border-border-subtle">
+          <div className="flex-1 min-w-0">
+            <div className="font-semibold text-sm text-text-primary">{dc.competitorName}</div>
+            {(dc.ourStrengths || dc.theirStrengths) && (
+              <div className="text-xs text-text-muted mt-0.5">
+                {dc.ourStrengths && <span className="text-success">Us: {dc.ourStrengths}</span>}
+                {dc.ourStrengths && dc.theirStrengths && <span> · </span>}
+                {dc.theirStrengths && <span className="text-danger">Them: {dc.theirStrengths}</span>}
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <select value={dc.outcome} onChange={e => updateOutcomeMut.mutate({ id: dc.id, outcome: Number(e.target.value) })}
+              className="px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs text-text-primary">
+              {Object.entries(DEAL_COMPETITOR_OUTCOME_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+            </select>
+            <button onClick={() => removeMut.mutate(dc.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3 h-3" /></button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function DealContactsSection({ dealId }: { dealId: string }) {
   const qc = useQueryClient();

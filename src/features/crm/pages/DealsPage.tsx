@@ -219,6 +219,8 @@ export function Component() {
 
   const moveStage = useMoveDealStage();
   const closeDeal = useCloseDeal();
+  const [winReason, setWinReason] = useState('');
+  const [winDealId, setWinDealId] = useState<string | null>(null);
   const createDeal = useCreateDeal();
   const bulkDelete = useBulkDeleteDeals();
 
@@ -288,6 +290,7 @@ export function Component() {
   const [editingStageId, setEditingStageId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const [editingColor, setEditingColor] = useState('');
+  const [editingProb, setEditingProb] = useState(0);
   const [newStageName, setNewStageName] = useState('');
   const [newStageColor, setNewStageColor] = useState('#6366f1');
 
@@ -518,10 +521,7 @@ export function Component() {
                             e.stopPropagation();
                             setCloseMenuId(closeMenuId === deal.id ? null : deal.id);
                           }}
-                          onCloseWon={() => {
-                            closeDeal.mutate({ id: deal.id, data: { isWon: true } });
-                            setCloseMenuId(null);
-                          }}
+                          onCloseWon={() => { setWinDealId(deal.id); setWinReason(''); setCloseMenuId(null); }}
                           onCloseLost={() => {
                             closeDeal.mutate({ id: deal.id, data: { isWon: false } });
                             setCloseMenuId(null);
@@ -837,8 +837,15 @@ export function Component() {
                         <input type="color" value={editingColor} onChange={e => setEditingColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
                         <span className="text-xs text-text-muted">Color</span>
                       </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-text-muted">Win probability</span>
+                        <div className="flex items-center gap-1">
+                          <input type="range" min={0} max={100} value={editingProb} onChange={e => setEditingProb(Number(e.target.value))} className="w-24 accent-brand" />
+                          <span className="text-xs text-text-primary font-semibold tabular-nums w-8 text-right">{editingProb}%</span>
+                        </div>
+                      </div>
                       <div className="flex gap-2">
-                        <button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor } }); setEditingStageId(null); }}
+                        <button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor, defaultProbability: editingProb / 100 } }); setEditingStageId(null); }}
                           className="flex-1 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold">Save</button>
                         <button onClick={() => setEditingStageId(null)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
                       </div>
@@ -847,13 +854,14 @@ export function Component() {
                     <div className="flex items-center gap-3 px-3 py-2.5">
                       <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: stage.color ?? '#6366f1' }} />
                       <span className="flex-1 text-sm text-text-primary">{stage.name}</span>
+                      <span className="text-xs text-text-muted font-semibold tabular-nums">{Math.round((stage.defaultProbability ?? 0) * 100)}%</span>
                       {stage.isClosed && <span className="text-2xs text-text-muted border border-border-subtle px-1.5 py-0.5 rounded">{stage.isWon ? 'Won' : 'Lost'}</span>}
                       <div className="flex items-center gap-1">
                         <button disabled={idx === 0} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order - 1 } })}
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
                         <button disabled={idx === stages.length - 1} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order + 1 } })}
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); }}
+                        <button onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
                           className="p-1 text-text-muted hover:text-text-primary"><Settings className="w-3.5 h-3.5" /></button>
                         <button onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
@@ -875,6 +883,32 @@ export function Component() {
                   {createStage.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />} Add Stage
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Win Reason Modal */}
+      {winDealId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md bg-bg border border-border-subtle rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="text-sm font-bold text-text-primary">Mark as Won</h3>
+            <p className="text-xs text-text-muted">Enter the win reason to record why this deal was closed.</p>
+            <textarea
+              autoFocus
+              value={winReason}
+              onChange={e => setWinReason(e.target.value)}
+              rows={4}
+              placeholder="e.g. Best TCO vs DeLonghi. Anita championed. Rajesh approved."
+              className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary resize-none focus:outline-none focus:border-border-glow"
+            />
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => setWinDealId(null)} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+              <button onClick={() => { closeDeal.mutate({ id: winDealId, data: { isWon: true, winReason: winReason.trim() || undefined } }); setWinDealId(null); }}
+                disabled={closeDeal.isPending}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-success hover:opacity-90 disabled:opacity-50">
+                {closeDeal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />} Confirm Won
+              </button>
             </div>
           </div>
         </div>

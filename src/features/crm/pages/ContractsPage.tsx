@@ -116,15 +116,17 @@ export function Component() {
     onError: (e: any) => toast.error(e?.message || 'Preview failed'),
   });
 
+  function toIso(d: string) { return d ? `${d}T00:00:00.000Z` : undefined; }
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    const data: any = { title: form.title.trim(), value: form.value ? Number(form.value) : 0, currency: form.currency || 'USD', startDate: form.startDate || undefined, endDate: form.endDate || undefined, autoRenew: form.autoRenew, templateId: form.templateId || undefined };
+    const data: any = { title: form.title.trim(), value: form.value ? Number(form.value) : 0, currency: form.currency || 'USD', startDate: toIso(form.startDate), endDate: toIso(form.endDate), autoRenew: form.autoRenew, templateId: form.templateId || undefined };
     if (form.templateId) { previewMut.mutate(); return; }
     createMut.mutate(data);
   };
 
   const confirmCreate = () => {
-    const data: any = { title: form.title.trim(), value: form.value ? Number(form.value) : 0, currency: form.currency || 'USD', startDate: form.startDate || undefined, endDate: form.endDate || undefined, autoRenew: form.autoRenew, templateId: form.templateId || undefined };
+    const data: any = { title: form.title.trim(), value: form.value ? Number(form.value) : 0, currency: form.currency || 'USD', startDate: toIso(form.startDate), endDate: toIso(form.endDate), autoRenew: form.autoRenew, templateId: form.templateId || undefined };
     createMut.mutate(data);
     setShowPreview(false);
   };

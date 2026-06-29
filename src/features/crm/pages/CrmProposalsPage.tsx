@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Plus, X, Loader2, ClipboardList, Send, AlertTriangle, FilePlus } from 'lucide-react';
+import { Plus, X, Loader2, ClipboardList, Send, AlertTriangle, FilePlus, RefreshCw, Save } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
-import { useProposals, useProposalById, useGenerateProposal, useCreateProposal, useCreateProposalFromLead, useSendProposal, useAcceptProposal, useRejectProposal, useProposalTemplates, useDeals, useContacts, useLeads } from '../api/crm.queries';
+import { useProposals, useProposalById, useGenerateProposal, useCreateProposal, useCreateProposalFromLead, useSendProposal, useAcceptProposal, useRejectProposal, useProposalTemplates, useDeals, useContacts, useLeads, useUpdateProposalSection, useRegenerateProposalSection } from '../api/crm.queries';
 import type {
   CrmProposalSummaryDto, CrmProposalDetailDto, CrmProposalGenerateRequest, CrmProposalCreateRequest,
   CrmProposalFromLeadRequest, CrmProposalSectionInput, CrmProposalFilter, CrmDealSummaryDto, CrmContactSummaryDto,
   LeadSummaryDto,
 } from '../types/crm.types';
-import { CrmProposalStatus, CRM_PROPOSAL_STATUS_LABELS, CRM_PROPOSAL_STATUS_COLORS, PROPOSAL_SECTION_KINDS } from '../types/crm.types';
+import { CrmProposalStatus, CRM_PROPOSAL_STATUS_LABELS, CRM_PROPOSAL_STATUS_COLORS, PROPOSAL_SECTION_KINDS, ApprovalEntityType } from '../types/crm.types';
+import { ApprovalPanel } from '../components/ApprovalPanel';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -47,6 +48,60 @@ function SlideOver({ open, onClose, title, children, wide }: {
         </div>
         <div className="flex-1 overflow-y-auto p-6 space-y-4">{children}</div>
       </div>
+    </div>
+  );
+}
+
+// ─── Editable Section ─────────────────────────────────────────────────────────
+function EditableSection({ proposalId, section }: { proposalId: string; section: any }) {
+  const [editing, setEditing] = useState(false);
+  const [content, setContent] = useState(section.content ?? '');
+  const updateSection = useUpdateProposalSection();
+  const regenerateSection = useRegenerateProposalSection();
+
+  const handleSave = () => {
+    updateSection.mutate({ proposalId, sectionId: section.id, content });
+    setEditing(false);
+  };
+
+  return (
+    <div className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-bold text-text-primary">{section.title}</p>
+        <div className="flex gap-1">
+          {!editing ? (
+            <button onClick={() => { setContent(section.content ?? ''); setEditing(true); }} className="text-[10px] text-brand hover:underline">Edit</button>
+          ) : (
+            <>
+              <button onClick={handleSave} disabled={updateSection.isPending} className="flex items-center gap-1 text-[10px] text-success hover:underline font-medium">
+                {updateSection.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />} Save
+              </button>
+              <button onClick={() => setEditing(false)} className="text-[10px] text-text-muted hover:underline">Cancel</button>
+            </>
+          )}
+          <button onClick={() => regenerateSection.mutate({ proposalId, sectionId: section.id })} disabled={regenerateSection.isPending}
+            className="flex items-center gap-1 text-[10px] text-brand hover:underline font-medium">
+            {regenerateSection.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />} Regenerate
+          </button>
+        </div>
+      </div>
+
+      {editing ? (
+        <textarea value={content} onChange={e => setContent(e.target.value)} rows={6}
+          className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary resize-y focus:outline-none focus:border-border-glow" />
+      ) : (
+        <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{section.content || '—'}</p>
+      )}
+
+      {section.gapFlags?.length > 0 && !section.gapsDismissed && (
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {section.gapFlags.map((g: string, i: number) => (
+            <span key={i} className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FEF3C7] text-[#92400E] text-xs font-medium border border-[#FDE68A]">
+              <AlertTriangle className="w-3 h-3 shrink-0" strokeWidth={1.5} /> {g}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -220,27 +275,22 @@ export function Component() {
               <Field label="Contact"><span className="text-text-secondary text-sm">{selectedSummary?.contactName ?? '—'}</span></Field>
             </div>
 
-            {/* Sections with gap warnings */}
+            {/* Editable Sections */}
             {detail.sections?.length > 0 && (
               <div className="space-y-3">
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Sections ({detail.openGapsCount} open gap{detail.openGapsCount !== 1 ? 's' : ''})</p>
                 {detail.sections.map((s) => (
-                  <div key={s.id} className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
-                    <p className="text-xs font-bold text-text-primary">{s.title}</p>
-                    <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{s.content?.slice(0, 200)}{s.content?.length > 200 ? '…' : ''}</p>
-                    {s.gapFlags?.length > 0 && !s.gapsDismissed && (
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {s.gapFlags.map((g, i) => (
-                          <span key={i} className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FEF3C7] text-[#92400E] text-xs font-medium border border-[#FDE68A]">
-                            <AlertTriangle className="w-3 h-3 shrink-0" strokeWidth={1.5} /> {g}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <EditableSection
+                    key={s.id}
+                    proposalId={detail.id}
+                    section={s}
+                  />
                 ))}
               </div>
             )}
+
+            {/* Approval */}
+            {detail.id && <ApprovalPanel entityType={ApprovalEntityType.Proposal} entityId={detail.id} entityName={detail.title} />}
 
             {canSend(detail) && (
               <button onClick={() => { sendProposal.mutate(detail.id); setSelectedId(null); }} disabled={sendProposal.isPending}

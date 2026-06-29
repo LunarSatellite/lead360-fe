@@ -598,6 +598,8 @@ export const crmApi = {
     apiClient.post(`${BASE}/quotes/${id}/accept`, {}),
   rejectQuote: (id: string) =>
     apiClient.post(`${BASE}/quotes/${id}/reject`, {}),
+  reviseQuote: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmQuoteSummaryDto>(`${BASE}/quotes/${id}/revise`),
   updateQuoteStatus: (id: string, status: number) =>
     apiClient.patch(`${BASE}/quotes/${id}/status`, { status }),
   deleteQuote: (id: string) =>
@@ -622,6 +624,8 @@ export const crmApi = {
     apiClient.post(`${BASE}/proposals/${id}/reject`, {}),
   getProposalTemplates: () =>
     apiClient.get<import('../types/crm.types').CrmProposalTemplateSummaryDto[]>(`${BASE}/proposals/templates`),
+  updateProposalSection: (proposalId: string, sectionId: string, content: string) =>
+    apiClient.put<import('../types/crm.types').CrmProposalSectionDto>(`${BASE}/proposals/${proposalId}/sections/${sectionId}`, { content }),
   regenerateProposalSection: (proposalId: string, sectionId: string) =>
     apiClient.post(`${BASE}/proposals/${proposalId}/sections/${sectionId}/regenerate`, {}),
 
@@ -820,6 +824,8 @@ export const crmApi = {
   // ─── Approval Workflows ───────────────────────────────────────────────────
   getApprovals: (status?: import('../types/crm.types').ApprovalStatus) =>
     apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto[]>(`${BASE}/approvals`, { params: status != null ? { status } : undefined }),
+  getMyApprovals: (status?: import('../types/crm.types').ApprovalStatus) =>
+    apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto[]>(`${BASE}/approvals/my`, { params: status != null ? { status } : undefined }),
   getPendingApprovals: () =>
     apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto[]>(`${BASE}/approvals/pending`),
   getApprovalById: (id: string) =>
@@ -1111,4 +1117,26 @@ export const crmApi = {
     apiClient.put<any>(`/v1/crm/payment-terms/${id}`, data),
   deletePaymentTerm: (id: string) =>
     apiClient.delete<void>(`/v1/crm/payment-terms/${id}`),
+
+  // ─── Competitors ────────────────────────────────────────────────────────────
+  getCompetitors: () =>
+    apiClient.get<import('../types/crm.types').CrmCompetitorDto[]>('/v1/crm/competitors'),
+  createCompetitor: (data: import('../types/crm.types').CrmCompetitorCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCompetitorDto>('/v1/crm/competitors', data),
+  updateCompetitor: (id: string, data: Partial<import('../types/crm.types').CrmCompetitorDto>) =>
+    apiClient.put<import('../types/crm.types').CrmCompetitorDto>(`/v1/crm/competitors/${id}`, data),
+  deleteCompetitor: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/competitors/${id}`),
+  getCompetitorAnalytics: () =>
+    apiClient.get<import('../types/crm.types').CrmCompetitorAnalyticsDto[]>('/v1/crm/competitors/analytics'),
+  getCompetitorDetail: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmCompetitorDetailDto>(`/v1/crm/competitors/${id}/detail`),
+  getDealCompetitors: (dealId: string) =>
+    apiClient.get<import('../types/crm.types').CrmDealCompetitorDto[]>(`/v1/crm/competitors/deal/${dealId}`),
+  addDealCompetitor: (dealId: string, data: { competitorId: string; ourStrengths?: string; theirStrengths?: string }) =>
+    apiClient.post<import('../types/crm.types').CrmDealCompetitorDto>(`/v1/crm/competitors/deal/${dealId}`, data),
+  updateDealCompetitorOutcome: (dealCompetitorId: string, outcome: number) =>
+    apiClient.put<import('../types/crm.types').CrmDealCompetitorDto>(`/v1/crm/competitors/deal/${dealCompetitorId}/outcome`, outcome),
+  removeDealCompetitor: (dealCompetitorId: string) =>
+    apiClient.delete<void>(`/v1/crm/competitors/deal/${dealCompetitorId}`),
 } as const;

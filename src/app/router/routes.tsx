@@ -177,6 +177,7 @@ export const router = createBrowserRouter([
       { path: 'crm/returns', lazy: () => import('@/features/crm/pages/CrmReturnsPage') },
       { path: 'crm/work-orders', lazy: () => import('@/features/crm/pages/CrmWorkOrdersPage') },
       { path: 'crm/customer-onboarding', lazy: () => import('@/features/crm/pages/CrmCustomerOnboardingPage') },
+      { path: 'crm/competitors', lazy: () => import('@/features/crm/pages/CompetitorsPage') },
       { path: 'crm/scoring-rules', lazy: () => import('@/features/crm/pages/ScoringRulesPage') },
       { path: 'crm/tax-rules', lazy: () => import('@/features/crm/pages/TaxRulesPage') },
       { path: 'crm/payment-terms', lazy: () => import('@/features/crm/pages/PaymentTermsPage') },

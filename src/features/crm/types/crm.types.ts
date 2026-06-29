@@ -540,6 +540,9 @@ export interface CrmApprovalSummaryDto {
   assignedToUserName: string | null;
   status: ApprovalStatus;
   comment: string | null;
+  chainId?: string;
+  currentStepOrder: number;
+  totalSteps: number;
   createdAt: string;
   reviewedAt: string | null;
 }
@@ -762,6 +765,16 @@ export interface CrmContractTemplateCreateRequest {
 }
 
 // ── Public pay (payment links) ────────────────────────────────────────────────
+export interface CrmCompetitorDto { id: string; name: string; website?: string; notes?: string; }
+export interface CrmCompetitorCreateRequest { name: string; website?: string; notes?: string; }
+export interface CrmDealCompetitorDto { id: string; competitorId: string; competitorName: string; ourStrengths?: string; theirStrengths?: string; outcome: number; }
+export interface CrmCompetitorAnalyticsDto { name: string; totalDeals: number; won: number; lost: number; winRatePct: number; revenueWon: number; revenueLost: number; }
+export interface CrmCompetitorTrendPoint { period: string; total: number; won: number; lost: number; winRatePct: number; }
+export interface CrmCompetitorDetailDto { name: string; website?: string; notes?: string; trends: CrmCompetitorTrendPoint[]; }
+export const DealCompetitorOutcome = { Pending: 0, WonAgainst: 1, LostTo: 2, NoDecision: 3 } as const;
+export type DealCompetitorOutcomeValue = (typeof DealCompetitorOutcome)[keyof typeof DealCompetitorOutcome];
+export const DEAL_COMPETITOR_OUTCOME_LABELS: Record<number, string> = { 0: 'Pending', 1: 'Won Against', 2: 'Lost To', 3: 'No Decision' };
+
 export interface CrmInvoicePublicDto {
   invoiceNumber: string; totalAmount: number; currencyCode: string;
   status: string; dueDate: string; isPaid: boolean;
@@ -1024,6 +1037,7 @@ export interface CrmDealSummaryDto {
 export interface CrmDealDetailDto extends CrmDealSummaryDto {
   winProbabilityOverride: number | null;
   lostReason: string | null;
+  winReason: string | null;
   notes: string | null;
   tagsJson: string | null;
   aiSummaryJson: string | null;
@@ -1090,7 +1104,7 @@ export interface CrmDealFilter {
 }
 
 export interface MoveDealStageRequest { stageId: string; }
-export interface CloseDealRequest { isWon: boolean; lostReason?: string; }
+export interface CloseDealRequest { isWon: boolean; lostReason?: string; winReason?: string; }
 export interface CreateManualLeadRequest {
   customerName?: string;
   customerPhone?: string;
@@ -2652,6 +2666,9 @@ export const CRM_ACTIVITY_EVENT_LABELS: Record<number, string> = {
   20: 'Record created',
   21: 'Record updated',
   22: 'Record deleted',
+  46: 'Approval submitted',
+  47: 'Approval approved',
+  48: 'Approval rejected',
 };
 export interface DealStrategyDto {
   champion?: string;
@@ -3299,3 +3316,5 @@ export const CRM_TAX_TYPE_LABEL: Record<CrmTaxTypeValue, string> = {
 export interface CrmTaxRuleDto { id: string; name: string; jurisdiction: string; taxType: CrmTaxTypeValue; rate: number; appliesToAllProducts: boolean; productCategoryJson?: string; isActive: boolean; }
 export interface CrmTaxRuleCreateRequest { name: string; jurisdiction: string; taxType: CrmTaxTypeValue; rate: number; appliesToAllProducts?: boolean; productCategoryJson?: string; }
 export interface CrmTaxRuleUpdateRequest { name?: string; jurisdiction?: string; taxType?: CrmTaxTypeValue; rate?: number; appliesToAllProducts?: boolean; productCategoryJson?: string; isActive?: boolean; }
+
+

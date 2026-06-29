@@ -67,6 +67,7 @@ import {
   Truck,
   MapPin,
   Percent,
+  Crosshair,
 } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
@@ -133,6 +134,7 @@ const crmNav = [
   { label: 'Meetings',      href: ROUTES.dashboard.crmMeetings,      icon: CalendarCheck },
   { label: 'NPS',           href: ROUTES.dashboard.crmNps,           icon: Star },
   { label: 'Scoring Rules', href: ROUTES.dashboard.crmScoringRules,  icon: TrendingUp },
+  { label: 'Competitors',   href: ROUTES.dashboard.crmCompetitors,    icon: Crosshair },
   { label: 'Time Tracking', href: ROUTES.dashboard.crmTimeTracking,  icon: Clock },
   { label: 'Custom Fields', href: ROUTES.dashboard.crmCustomFields,  icon: SlidersHorizontal },
   { label: 'Workflows',       href: ROUTES.dashboard.crmWorkflows,       icon: Zap },

@@ -235,6 +235,7 @@ function StageGateConfigPanel({ pipelineId }: { pipelineId: string }) {
                 strokeWidth={2}
               />
               <span className="text-sm font-medium text-text-primary flex-1">{stage.name}</span>
+              <span className="text-xs font-semibold text-text-muted tabular-nums mr-2">{Math.round(stage.defaultProbability * 100)}%</span>
               {stage.order != null && (
                 <span className="text-[10px] text-text-muted">#{stage.order + 1}</span>
               )}

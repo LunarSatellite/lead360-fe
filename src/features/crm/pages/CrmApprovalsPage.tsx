@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle2, XCircle, Clock, Loader2, ShieldCheck, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useApprovals, usePendingApprovals, useApproveRequest, useRejectRequest } from '../api/crm.queries';
+import { useMyApprovals, usePendingApprovals, useApproveRequest, useRejectRequest } from '../api/crm.queries';
 import type { CrmApprovalSummaryDto } from '../types/crm.types';
 import {
   ApprovalStatus, APPROVAL_STATUS_LABELS, APPROVAL_STATUS_COLORS,
@@ -151,7 +151,7 @@ type Tab = 'pending' | 'all';
 export function Component() {
   const [tab, setTab] = useState<Tab>('pending');
   const { data: pendingRaw, isLoading: pendingLoading } = usePendingApprovals();
-  const { data: allRaw, isLoading: allLoading } = useApprovals();
+  const { data: allRaw, isLoading: allLoading } = useMyApprovals();
 
   const pending = (pendingRaw as unknown as CrmApprovalSummaryDto[] | undefined) ?? [];
   const all = (allRaw as unknown as CrmApprovalSummaryDto[] | undefined) ?? [];

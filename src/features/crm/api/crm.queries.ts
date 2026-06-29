@@ -1730,6 +1730,14 @@ export function useRejectQuote() {
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
+export function useReviseQuote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.reviseQuote(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.quotes() }); toast.success('Quote revised — new draft created.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
 export function useDeleteQuote() {
   const qc = useQueryClient();
   return useMutation({
@@ -1795,6 +1803,22 @@ export function useRejectProposal() {
   return useMutation({
     mutationFn: (id: string) => crmApi.rejectProposal(id),
     onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.proposalById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.proposals() }); toast.success('Proposal rejected.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useUpdateProposalSection() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ proposalId, sectionId, content }: { proposalId: string; sectionId: string; content: string }) => crmApi.updateProposalSection(proposalId, sectionId, content),
+    onSuccess: (_d, vars) => { qc.invalidateQueries({ queryKey: CRM_KEYS.proposalById(vars.proposalId) }); toast.success('Section updated.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useRegenerateProposalSection() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ proposalId, sectionId }: { proposalId: string; sectionId: string }) => crmApi.regenerateProposalSection(proposalId, sectionId),
+    onSuccess: (_d, vars) => { qc.invalidateQueries({ queryKey: CRM_KEYS.proposalById(vars.proposalId) }); toast.success('Section regenerated.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
@@ -2383,6 +2407,13 @@ export function useApprovals(status?: import('../types/crm.types').ApprovalStatu
   return useQuery({
     queryKey: CRM_KEYS.approvals(status),
     queryFn: () => crmApi.getApprovals(status),
+  });
+}
+
+export function useMyApprovals(status?: import('../types/crm.types').ApprovalStatus) {
+  return useQuery({
+    queryKey: CRM_KEYS.approvals(status != null ? `my-${status}` : 'my'),
+    queryFn: () => crmApi.getMyApprovals(status),
   });
 }
 
@@ -3110,4 +3141,6 @@ export function useVoidSupplierInvoice() {
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
+
+
 

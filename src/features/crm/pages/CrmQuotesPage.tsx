@@ -3,7 +3,7 @@ import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check } from 'lucide-
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
-import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook } from '../api/crm.queries';
+import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook, useProductBundles, useProductBundle } from '../api/crm.queries';
 import { crmApi } from '../api/crm.api';
 import { confirmDialog } from '@/shared/ui/confirm';
 import type {
@@ -93,6 +93,23 @@ export function Component() {
     }
   }, [priceBookList, priceBookId]);
   const bookEntries = bookDetail?.entries ?? [];
+
+  // Bundle picker — expands a bundle's items into quote line items.
+  const { data: bundles } = useProductBundles();
+  const bundleList = bundles ?? [];
+  const [bundleId, setBundleId] = useState('');
+  const { data: bundleDetail } = useProductBundle(bundleId || undefined);
+  function addBundle() {
+    const items = bundleDetail?.items ?? [];
+    if (!items.length) return;
+    const bundleLines: CrmQuoteLineItemRequest[] = items.map((it) => ({
+      description: it.productName, quantity: it.quantity, unitPrice: it.unitPrice, productId: it.productId,
+    }));
+    // Replace a single empty starter row; otherwise append.
+    setLines((ls) => (ls.length === 1 && !ls[0].description ? bundleLines : [...ls, ...bundleLines]));
+    if (bundleDetail?.currency) setCurrency(bundleDetail.currency);
+    setBundleId('');
+  }
 
   const { data: raw, isLoading } = useQuotes(filter);
   const items: CrmQuoteSummaryDto[] = (raw as any)?.items ?? [];
@@ -324,9 +341,21 @@ export function Component() {
           <Field label="Validity (days)"><input type="number" value={validityDays} onChange={e => setValidityDays(Number(e.target.value))} className={inputCls} min={1} /></Field>
         )}
         <div>
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
             <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Line Items</p>
-            <button onClick={() => setLines(ls => [...ls, emptyLine()])} className="text-xs text-brand hover:underline">+ Add Row</button>
+            <div className="flex items-center gap-2">
+              {!editingId && bundleList.length > 0 && (
+                <>
+                  <select value={bundleId} onChange={e => setBundleId(e.target.value)} className={selectCls + ' !w-auto text-xs py-1'}>
+                    <option value="">Add bundle…</option>
+                    {bundleList.map(b => <option key={b.id} value={b.id}>{b.name} ({b.itemCount})</option>)}
+                  </select>
+                  <button type="button" onClick={addBundle} disabled={!bundleId || !bundleDetail}
+                    className="text-xs font-semibold text-brand hover:underline disabled:opacity-40 disabled:no-underline">Add</button>
+                </>
+              )}
+              <button onClick={() => setLines(ls => [...ls, emptyLine()])} className="text-xs text-brand hover:underline">+ Add Row</button>
+            </div>
           </div>
           <div className="space-y-2">
             {lines.map((l, i) => (

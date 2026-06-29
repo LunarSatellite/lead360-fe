@@ -4,7 +4,7 @@ import { UserRole } from '@/features/auth/types/auth.types';
 export const createInvitationSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Enter a valid email').max(254),
   role: z.number().refine(
-    (v) => Object.values(UserRole).includes(v as 1 | 2 | 3),
+    (v) => Object.values(UserRole).includes(v as 1 | 2 | 3 | 4),
     'Select a role',
   ),
   personalMessage: z.string().max(500).optional().or(z.literal('')),

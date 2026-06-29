@@ -3,7 +3,7 @@ import { Plus, Trash2, Star, BookOpen, Loader2, X } from 'lucide-react';
 import { DataView } from '@/shared/ui/DataView';
 import { confirmDialog } from '@/shared/ui/confirm';
 import {
-  usePriceBooks, usePriceBook, useCreatePriceBook, useDeletePriceBook,
+  usePriceBooks, usePriceBook, useCreatePriceBook, useUpdatePriceBook, useDeletePriceBook,
   useAddPriceBookEntry, useDeletePriceBookEntry,
 } from '../api/crm.queries';
 import type {
@@ -23,6 +23,7 @@ export function Component() {
   const detail = usePriceBook(selectedId);
 
   const createBook = useCreatePriceBook();
+  const updateBook = useUpdatePriceBook();
   const deleteBook = useDeletePriceBook();
   const [bookForm, setBookForm] = useState({ name: '', currency: 'USD', description: '', isDefault: false });
 
@@ -84,14 +85,37 @@ export function Component() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <h2 className="text-base font-bold text-text-primary">{book.name}</h2>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-base font-bold text-text-primary">{book.name}</h2>
+                        {book.isDefault && <Star className="w-4 h-4 text-warning" fill="currentColor" />}
+                        {!book.isActive && <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-danger-soft text-danger">Inactive</span>}
+                      </div>
                       <p className="text-xs text-text-muted">{book.currency}{book.description ? ` · ${book.description}` : ''}</p>
                     </div>
-                    <button
-                      onClick={() => confirmDialog({ message: `Delete price book "${book.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteBook.mutate(book.id, { onSuccess: () => setSelectedId(undefined) }); })}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger hover:border-danger/40 transition-all">
-                      <Trash2 className="w-3 h-3" /> Delete book
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {book.isDefault ? (
+                        <button onClick={() => updateBook.mutate({ id: book.id, data: { isDefault: false } })}
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-warning hover:text-text-secondary hover:border-border-medium transition-all">
+                          <Star className="w-3 h-3" fill="currentColor" /> Remove default
+                        </button>
+                      ) : (
+                        <button onClick={() => updateBook.mutate({ id: book.id, data: { isDefault: true } })}
+                          className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-warning hover:border-warning/40 transition-all">
+                          <Star className="w-3 h-3" /> Set as default
+                        </button>
+                      )}
+                      <button onClick={() => updateBook.mutate({ id: book.id, data: { isActive: !book.isActive } })}
+                        className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${
+                          book.isActive ? 'text-text-secondary hover:text-danger hover:border-danger/40' : 'text-success hover:text-success'
+                        }`}>
+                        {book.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                      <button
+                        onClick={() => confirmDialog({ message: `Delete price book "${book.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteBook.mutate(book.id, { onSuccess: () => setSelectedId(undefined) }); })}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger hover:border-danger/40 transition-all">
+                        <Trash2 className="w-3 h-3" /> Delete
+                      </button>
+                    </div>
                   </div>
 
                   <EntryEditor bookId={book.id} currency={book.currency} entries={book.entries} />

@@ -1,11 +1,11 @@
 // Lead stages matching backend LeadStage enum
 export const LeadStage = {
-  New: 1, Warm: 2, Hot: 3, Nurturing: 4, Converted: 5, Lost: 6, Qualified: 7,
+  New: 1, Warm: 2, Hot: 3, Nurturing: 4, Converted: 5, Lost: 6, Qualified: 7, MQL: 8,
 } as const;
 export type LeadStage = (typeof LeadStage)[keyof typeof LeadStage];
 
 export const LEAD_STAGE_LABELS: Record<LeadStage, string> = {
-  1: 'New', 2: 'Warm', 3: 'Hot', 4: 'Nurturing', 5: 'Converted', 6: 'Lost', 7: 'Qualified',
+  1: 'New', 2: 'Warm', 3: 'Hot', 4: 'Nurturing', 5: 'Converted', 6: 'Lost', 7: 'Qualified', 8: 'MQL',
 };
 
 export const LEAD_STAGE_COLORS: Record<LeadStage, string> = {
@@ -16,6 +16,7 @@ export const LEAD_STAGE_COLORS: Record<LeadStage, string> = {
   5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
   6: 'text-text-muted bg-bg-card border-border-subtle',
   7: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  8: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
 };
 
 export const ChannelType = {
@@ -140,17 +141,17 @@ export interface LeadSummaryDto {
   intentSummary: string | null;
   tags: string | null;
   assignedToUserName: string | null;
+  companyName?: string;
+  companyDomain?: string;
+  companyIndustry?: string;
+  companyEmployeeCount?: number;
+  companyCity?: string;
+  companyCountry?: string;
+  companyWebsite?: string;
+  notes?: string;
   lastActivityAt: string;
   convertedAt: string | null;
   createdAt: string;
-  organizationId?: string;
-  organizationName?: string;
-  organizationDomain?: string;
-  organizationIndustry?: string;
-  organizationEmployeeCount?: number;
-  organizationCountry?: string;
-  organizationCity?: string;
-  organizationWebsite?: string;
 }
 
 export interface LeadNurtureStatusDto {
@@ -169,6 +170,9 @@ export interface LeadDetailDto extends LeadSummaryDto {
   scoreReason: string | null;
   assignedToUserId: string | null;
   alertSent: boolean;
+  convertedContactId?: string;
+  convertedAccountId?: string;
+  convertedDealId?: string;
   activities: LeadActivityDto[];
   nurtureStatus: LeadNurtureStatusDto | null;
 }
@@ -707,6 +711,23 @@ export interface CrmPriceBookEntryRequest {
   productId?: string; productName: string; sku?: string; unitPrice: number; minQuantity?: number;
 }
 
+export interface CrmProductBundleDto {
+  id: string; name: string; description?: string; currency: string;
+  isActive: boolean; itemCount: number; total: number; createdAt: string;
+}
+export interface CrmProductBundleItemDto {
+  id: string; bundleId: string; productId?: string; productName: string;
+  sku?: string; quantity: number; unitPrice: number;
+}
+export interface CrmProductBundleDetailDto {
+  id: string; name: string; description?: string; currency: string;
+  isActive: boolean; items: CrmProductBundleItemDto[]; createdAt: string;
+}
+export interface CrmProductBundleCreateRequest { name: string; description?: string; currency?: string }
+export interface CrmProductBundleItemRequest {
+  productId?: string; productName: string; sku?: string; quantity: number; unitPrice: number;
+}
+
 // ── Contracts (CLM) ───────────────────────────────────────────────────────────
 export enum CrmContractStatus {
   Draft = 1, PendingSignature = 2, Active = 3, Expired = 4, Terminated = 5, Renewed = 6,
@@ -721,12 +742,40 @@ export interface CrmContractDto {
   accountId?: string; contactId?: string; dealId?: string; subscriptionId?: string;
   value: number; currency: string; startDate?: string; endDate?: string;
   renewalTermMonths?: number; autoRenew: boolean; signedAt?: string;
-  documentUrl?: string; notes?: string; createdAt: string;
+  documentUrl?: string; notes?: string; signedCount: number; signatoryCount: number; createdAt: string;
 }
 export interface CrmContractCreateRequest {
   title: string; accountId?: string; contactId?: string; dealId?: string; subscriptionId?: string;
   value?: number; currency?: string; startDate?: string; endDate?: string;
   renewalTermMonths?: number; autoRenew?: boolean; documentUrl?: string; notes?: string;
+  templateId?: string;
+}
+export interface CrmContractDetailDto extends CrmContractDto {
+  templateId?: string;
+  signatories: CrmContractSignatoryDto[];
+}
+export interface CrmContractSignatoryDto {
+  id: string; name: string; email?: string; signOrder: number;
+  signedAt?: string; signedByName?: string;
+}
+export interface CrmContractSignatoryRequest { name: string; email?: string; signOrder: number }
+export interface CrmRecordSignatureRequest { signedByName: string; signedAt?: string }
+
+export const ContractTemplateCategory = { General: 0, MSA: 1, NDA: 2, SaaS: 3, ServiceAgreement: 4, SalesAgreement: 5, Renewal: 6, Amendment: 7 } as const;
+export type ContractTemplateCategoryValue = (typeof ContractTemplateCategory)[keyof typeof ContractTemplateCategory];
+export const CONTRACT_TEMPLATE_CATEGORY_LABELS: Record<ContractTemplateCategoryValue, string> = {
+  [ContractTemplateCategory.General]: 'General', [ContractTemplateCategory.MSA]: 'MSA',
+  [ContractTemplateCategory.NDA]: 'NDA', [ContractTemplateCategory.SaaS]: 'SaaS Agreement',
+  [ContractTemplateCategory.ServiceAgreement]: 'Service Agreement', [ContractTemplateCategory.SalesAgreement]: 'Sales Agreement',
+  [ContractTemplateCategory.Renewal]: 'Renewal', [ContractTemplateCategory.Amendment]: 'Amendment',
+};
+export interface CrmContractTemplateDto {
+  id: string; name: string; description?: string; category: ContractTemplateCategoryValue;
+  subject?: string; bodyHtml: string; isActive: boolean; createdAt: string;
+}
+export interface CrmContractTemplateCreateRequest {
+  name: string; description?: string; category: ContractTemplateCategoryValue;
+  subject?: string; bodyHtml: string;
 }
 
 // ── Public pay (payment links) ────────────────────────────────────────────────
@@ -1063,7 +1112,13 @@ export interface CreateManualLeadRequest {
   adSource?: string;
   notes?: string;
   score?: number;
-  organizationId?: string;
+  companyName?: string;
+  companyDomain?: string;
+  companyIndustry?: string;
+  companyEmployeeCount?: number;
+  companyCity?: string;
+  companyCountry?: string;
+  companyWebsite?: string;
 }
 
 export interface ConvertLeadRequest {
@@ -1751,7 +1806,7 @@ export interface CrmQuoteSummaryDto {
 export interface CrmQuoteDetailDto extends CrmQuoteSummaryDto { lineItems: CrmQuoteLineItemDto[]; notes: string | null; }
 export interface CrmQuoteCreateRequest {
   dealId?: string; contactId?: string; lineItems: CrmQuoteLineItemRequest[];
-  currency?: string; validityDays?: number; notes?: string; priceBookId?: string;
+  currency?: string; validityDays?: number; notes?: string; priceBookId?: string; taxPercent?: number;
 }
 export interface CrmQuoteUpdateRequest {
   lineItems?: CrmQuoteLineItemRequest[];
@@ -3244,3 +3299,13 @@ export interface SupplierInvoiceUpdateRequest {
 export interface SupplierInvoiceRecordPaymentRequest { paymentReference?: string; paidAt?: string; }
 export interface SupplierInvoiceDisputeRequest { reason: string; }
 export interface SupplierInvoiceFilter { page?: number; pageSize?: number; vendorId?: string; status?: SupplierInvoiceStatus; }
+
+// ─── Tax Rules ────────────────────────────────────────────────────────────────
+export const CrmTaxType = { VAT: 1, SalesTax: 2, GST: 3, Custom: 4 } as const;
+export type CrmTaxTypeValue = (typeof CrmTaxType)[keyof typeof CrmTaxType];
+export const CRM_TAX_TYPE_LABEL: Record<CrmTaxTypeValue, string> = {
+  [CrmTaxType.VAT]: 'VAT', [CrmTaxType.SalesTax]: 'Sales Tax', [CrmTaxType.GST]: 'GST', [CrmTaxType.Custom]: 'Custom',
+};
+export interface CrmTaxRuleDto { id: string; name: string; jurisdiction: string; taxType: CrmTaxTypeValue; rate: number; appliesToAllProducts: boolean; productCategoryJson?: string; isActive: boolean; }
+export interface CrmTaxRuleCreateRequest { name: string; jurisdiction: string; taxType: CrmTaxTypeValue; rate: number; appliesToAllProducts?: boolean; productCategoryJson?: string; }
+export interface CrmTaxRuleUpdateRequest { name?: string; jurisdiction?: string; taxType?: CrmTaxTypeValue; rate?: number; appliesToAllProducts?: boolean; productCategoryJson?: string; isActive?: boolean; }

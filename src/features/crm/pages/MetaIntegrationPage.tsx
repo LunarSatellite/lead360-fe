@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-  Facebook, Loader2, CheckCircle, XCircle, RefreshCw, Zap, Plus,
+  Facebook, Loader2, CheckCircle, RefreshCw, Zap, Plus,
   BarChart3, TrendingUp, Users, DollarSign,
   Eye, Play, Pause, ExternalLink, ChevronRight,
   Target, Pencil, Check, X, Bot, Copy, Link, Settings,

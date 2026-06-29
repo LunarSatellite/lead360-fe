@@ -129,7 +129,7 @@ export const router = createBrowserRouter([
       // ── CRM ──
       { path: 'crm/leads', lazy: () => import('@/features/crm/pages/LeadsPage') },
       { path: 'crm/leads/:id', lazy: () => import('@/features/crm/pages/LeadDetailPage') },
-      { path: 'crm/contacts', lazy: () => import('@/features/crm/pages/ContactsPage') },
+      { path: 'crm/contacts', lazy: () => import('@/features/crm/pages/CrmContactsHubPage') },
       { path: 'crm/contacts/:id', lazy: () => import('@/features/crm/pages/ContactDetailPage') },
       { path: 'crm/organizations', lazy: () => import('@/features/crm/pages/OrganizationsPage') },
       { path: 'crm/accounts', lazy: () => import('@/features/crm/pages/AccountsPage') },
@@ -149,6 +149,7 @@ export const router = createBrowserRouter([
       { path: 'crm/proposals', lazy: () => import('@/features/crm/pages/CrmProposalsPage') },
       { path: 'crm/invoices', lazy: () => import('@/features/crm/pages/CrmInvoicesPage') },
       { path: 'crm/subscriptions', lazy: () => import('@/features/crm/pages/CrmSubscriptionsPage') },
+      { path: 'crm/product-bundles', lazy: () => import('@/features/crm/pages/ProductBundlesPage') },
       { path: 'crm/orders', lazy: () => import('@/features/crm/pages/CrmOrdersPage') },
       { path: 'crm/meetings', lazy: () => import('@/features/crm/pages/CrmMeetingsPage') },
       { path: 'crm/workflows', lazy: () => import('@/features/crm/pages/CrmWorkflowsPage') },
@@ -170,6 +171,16 @@ export const router = createBrowserRouter([
       { path: 'crm/purchase-orders', lazy: () => import('@/features/crm/pages/PurchaseOrdersPage') },
       { path: 'crm/goods-receipts', lazy: () => import('@/features/crm/pages/GoodsReceiptsPage') },
       { path: 'crm/supplier-invoices', lazy: () => import('@/features/crm/pages/SupplierInvoicesPage') },
+      { path: 'crm/price-books', lazy: () => import('@/features/crm/pages/PriceBooksPage') },
+      { path: 'crm/renewals', lazy: () => import('@/features/crm/pages/RenewalsPage') },
+      { path: 'crm/contracts', lazy: () => import('@/features/crm/pages/ContractsPage') },
+
+      { path: 'crm/returns', lazy: () => import('@/features/crm/pages/CrmReturnsPage') },
+      { path: 'crm/work-orders', lazy: () => import('@/features/crm/pages/CrmWorkOrdersPage') },
+      { path: 'crm/customer-onboarding', lazy: () => import('@/features/crm/pages/CrmCustomerOnboardingPage') },
+      { path: 'crm/scoring-rules', lazy: () => import('@/features/crm/pages/ScoringRulesPage') },
+      { path: 'crm/tax-rules', lazy: () => import('@/features/crm/pages/TaxRulesPage') },
+      { path: 'crm/payment-terms', lazy: () => import('@/features/crm/pages/PaymentTermsPage') },
       // ── Flow A/B Experiments ──
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
       { index: true, element: <Navigate to="chat" replace /> },

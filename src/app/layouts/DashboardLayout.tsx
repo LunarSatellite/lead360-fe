@@ -51,24 +51,23 @@ import {
   Newspaper,
   ListChecks,
   Globe,
-  ShieldCheck,
   SlidersHorizontal,
-  GitMerge,
   RotateCw,
   Wrench,
   UserPlus,
   LayoutDashboard,
   Calendar,
-  ArrowRight,
   Shuffle,
   ShoppingCart,
   PackageCheck,
   CreditCard,
   Truck,
   MapPin,
+  Percent,
 } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
+import { usePendingDedupCount } from '@/features/crm/api/crm.queries';
 import { NotificationBell } from '@/features/crm/components/NotificationBell';
 import { CommandPalette, openCommandPalette } from '@/shared/ui/CommandPalette';
 import { CopilotPanel, openCopilot } from '@/features/crm/components/CopilotPanel';
@@ -100,7 +99,6 @@ const settingsNav = [
 const crmNav = [
   { label: 'Leads',         href: ROUTES.dashboard.crmLeads,         icon: Users },
   { label: 'Contacts',      href: ROUTES.dashboard.crmContacts,      icon: UserCheck },
-  { label: 'Duplicates',    href: ROUTES.dashboard.crmDedup,         icon: GitMerge },
   { label: 'Deals',         href: ROUTES.dashboard.crmDealsHub,      icon: Briefcase },
   { label: 'Organizations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
   { label: 'Accounts',      href: ROUTES.dashboard.crmAccounts,      icon: Building },
@@ -117,7 +115,11 @@ const crmNav = [
   { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },
   { label: 'Renewals',      href: ROUTES.dashboard.crmRenewals,      icon: CalendarClock },
   { label: 'Price Books',   href: ROUTES.dashboard.crmPriceBooks,    icon: BookOpen },
-  { label: 'Contracts',     href: ROUTES.dashboard.crmContracts,     icon: FileSignature },
+  { label: 'Bundles',       href: ROUTES.dashboard.crmProductBundles, icon: Package },
+  { label: 'Tax Rules',     href: ROUTES.dashboard.crmTaxRules,      icon: Percent },
+  { label: 'Payment Terms', href: ROUTES.dashboard.crmPaymentTerms,  icon: Calendar },
+  { label: 'Contracts',     href: ROUTES.dashboard.crmContracts,          icon: FileSignature },
+
   { label: 'Orders',        href: ROUTES.dashboard.crmOrders,        icon: Package },
   { label: 'Returns',       href: ROUTES.dashboard.crmReturns,       icon: RotateCw },
   { label: 'Work Orders',   href: ROUTES.dashboard.crmWorkOrders,    icon: Wrench },
@@ -128,6 +130,7 @@ const crmNav = [
   { label: 'Onboarding',    href: ROUTES.dashboard.crmCustomerOnboarding, icon: UserPlus },
   { label: 'Meetings',      href: ROUTES.dashboard.crmMeetings,      icon: CalendarCheck },
   { label: 'NPS',           href: ROUTES.dashboard.crmNps,           icon: Star },
+  { label: 'Scoring Rules', href: ROUTES.dashboard.crmScoringRules,  icon: TrendingUp },
   { label: 'Time Tracking', href: ROUTES.dashboard.crmTimeTracking,  icon: Clock },
   { label: 'Custom Fields', href: ROUTES.dashboard.crmCustomFields,  icon: SlidersHorizontal },
   { label: 'Workflows',       href: ROUTES.dashboard.crmWorkflows,       icon: Zap },
@@ -138,7 +141,6 @@ const crmNav = [
   { label: 'Event Tracking',  href: ROUTES.dashboard.crmEventIngestion,     icon: Globe },
   { label: 'Ops Dashboard',  href: ROUTES.dashboard.crmOpsDashboard,       icon: LayoutDashboard },
   { label: 'Time Periods',   href: ROUTES.dashboard.crmTimePeriods,        icon: Calendar },
-  { label: 'Approval Chains', href: ROUTES.dashboard.crmApprovalChains,    icon: ArrowRight },
   { label: 'Assignment Rotation', href: ROUTES.dashboard.crmAssignmentRotation, icon: Shuffle },
   { label: 'Territories',         href: ROUTES.dashboard.crmTerritories,         icon: MapPin },
 ];
@@ -206,6 +208,7 @@ const PRIMARY_HREFS: Set<string> = new Set(primaryMobileTabs.map((t) => t.href))
 export function DashboardLayout() {
   useTokenAutoRefresh();
   useLeadAlerts();
+  const dedupCount = usePendingDedupCount();
   const location = useLocation();
   const logout = useLogout();
   const { data: profile } = useProfile();
@@ -327,10 +330,11 @@ export function DashboardLayout() {
 
   const PageIcon = getPageIcon();
 
-  const renderNavItem = (item: { label: string; href: string; icon: any; badge?: string; end?: boolean }) => {
+  const renderNavItem = (item: { label: string; href: string; icon: any; badge?: string; badgeCount?: number; end?: boolean }) => {
     const isActive = item.end
       ? location.pathname === item.href
       : location.pathname === item.href || location.pathname.startsWith(item.href + '/');
+    const hasCount = typeof item.badgeCount === 'number' && item.badgeCount > 0;
     return (
       <NavLink
         key={item.href}
@@ -346,20 +350,33 @@ export function DashboardLayout() {
           justifyContent: showExpanded ? 'flex-start' : 'center',
         }}
       >
-        {/* Active accent bar — gradient top-to-bottom for depth */}
+        {/* Active accent bar */}
         {isActive && (
           <div className="absolute left-0 top-1 bottom-1 w-[2.5px] rounded-r-full bg-gradient-to-b from-brand-light to-brand" />
         )}
-        <item.icon
-          className={`w-[18px] h-[18px] shrink-0 transition-colors ${isActive ? 'text-brand' : ''}`}
-          strokeWidth={1.5}
-        />
+        {/* Icon + collapsed dot */}
+        <div className="relative shrink-0">
+          <item.icon
+            className={`w-[18px] h-[18px] transition-colors ${isActive ? 'text-brand' : ''}`}
+            strokeWidth={1.5}
+          />
+          {hasCount && !showExpanded && (
+            <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-warning flex items-center justify-center text-[8px] font-black text-bg leading-none">
+              {item.badgeCount! > 9 ? '9+' : item.badgeCount}
+            </span>
+          )}
+        </div>
         {showExpanded && (
           <>
             <span className="text-xs whitespace-nowrap overflow-hidden">{item.label}</span>
             {item.badge && (
               <span className="ml-auto px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-violet-soft text-violet-light">
                 {item.badge}
+              </span>
+            )}
+            {hasCount && (
+              <span className="ml-auto px-1.5 py-0.5 rounded-full text-[9px] font-black bg-warning/20 text-warning border border-warning/30">
+                {item.badgeCount}
               </span>
             )}
           </>
@@ -498,7 +515,13 @@ export function DashboardLayout() {
             <div className="w-6 h-px bg-border-subtle mx-auto my-2" />
           )}
           {(!showExpanded || openSections.crm) && (
-            <div className="flex flex-col gap-0.5">{crmNav.map(renderNavItem)}</div>
+            <div className="flex flex-col gap-0.5">
+              {crmNav.map((item) =>
+                item.label === 'Contacts'
+                  ? renderNavItem({ ...item, badgeCount: dedupCount })
+                  : renderNavItem(item)
+              )}
+            </div>
           )}
 
           {/* ── System / Settings ── */}

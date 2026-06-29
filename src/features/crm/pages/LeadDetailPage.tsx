@@ -9,6 +9,9 @@ import {
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { createPortal } from 'react-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { crmApi } from '../api/crm.api';
+import { toast } from 'sonner';
 import {
   useLeadById, useUpdateLeadStage, useAddNote, useConvertLead, useDealStages,
   useNurtureSequences, useEnrollLead, useLeadEnrollments,
@@ -37,10 +40,10 @@ function activityDotColor(activityType: number): string {
 
 // ─── Score bar color helper ───────────────────────────────────────────────────
 
-function scoreBarColor(score: number): string {
-  if (score <= 30) return 'bg-text-muted';
-  if (score <= 55) return 'bg-[#F59E0B]';
-  return 'bg-brand';
+function scoreBadge(score: number): string {
+  if (score < 25) return 'bg-glass-2 text-text-muted border-border-medium';
+  if (score < 50) return 'bg-warning-soft text-warning border-warning/30';
+  return 'bg-success-soft text-success border-success/30';
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
@@ -52,6 +55,7 @@ export function Component() {
   const { data: rawLead, isLoading } = useLeadById(id);
   const lead = rawLead as unknown as LeadDetailDto | undefined;
 
+  const qc = useQueryClient();
   const updateStage = useUpdateLeadStage();
   const addNote = useAddNote();
   const convertLead = useConvertLead();
@@ -145,16 +149,12 @@ export function Component() {
                 {channelLabel}
               </span>
 
-              {/* Score bar */}
-              <div className="flex items-center gap-2 flex-1 min-w-[100px] max-w-[180px]">
-                <div className="flex-1 h-1.5 rounded-full bg-bg-elevated overflow-hidden">
-                  <div
-                    className={`h-full rounded-full ${scoreBarColor(lead.score)}`}
-                    style={{ width: `${lead.score}%` }}
-                  />
-                </div>
-                <span className="text-xs font-bold text-text-secondary">{lead.score}</span>
-              </div>
+              {/* Score badge */}
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold border ${scoreBadge(lead.score)}`}>
+                {lead.score >= 50 && <Flame className="w-3 h-3" />}
+                Score: {lead.score}
+                {lead.score >= 50 && <span className="text-[9px] font-semibold uppercase tracking-wider ml-0.5">MQL</span>}
+              </span>
 
               {/* Hot pulsing dot */}
               {isHot && (
@@ -190,17 +190,18 @@ export function Component() {
                 <InfoRow icon={<Mail className="w-4 h-4" />} label="Email" value={lead.customerEmail} />
                 <InfoRow icon={<Hash className="w-4 h-4" />} label="Handle" value={lead.channelHandle} />
                 <InfoRow icon={<Users className="w-4 h-4" />} label="Assigned" value={lead.assignedToUserName || 'Unassigned'} />
+                <AssignFromPoolButton leadId={lead.id} />
               </div>
               {/* Right: Organization Info */}
               <div className="space-y-3 border-l border-border-subtle pl-6">
                 <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Organization Info</h3>
-                <InfoRow icon={<Building2 className="w-4 h-4" />} label="Name"     value={lead.organizationName} />
-                <InfoRow icon={<Globe   className="w-4 h-4" />} label="Domain"   value={lead.organizationDomain} />
-                <InfoRow icon={<Layers  className="w-4 h-4" />} label="Industry" value={lead.organizationIndustry} />
-                <InfoRow icon={<Users   className="w-4 h-4" />} label="Employees" value={lead.organizationEmployeeCount?.toLocaleString()} />
-                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="Country"  value={lead.organizationCountry} />
-                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="City"     value={lead.organizationCity} />
-                <InfoRow icon={<Link    className="w-4 h-4" />} label="Website"  value={lead.organizationWebsite} />
+                <InfoRow icon={<Building2 className="w-4 h-4" />} label="Name"     value={lead.companyName} />
+                <InfoRow icon={<Globe   className="w-4 h-4" />} label="Domain"   value={lead.companyDomain} />
+                <InfoRow icon={<Layers  className="w-4 h-4" />} label="Industry" value={lead.companyIndustry} />
+                <InfoRow icon={<Users   className="w-4 h-4" />} label="Employees" value={lead.companyEmployeeCount?.toLocaleString()} />
+                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="Country"  value={lead.companyCountry} />
+                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="City"     value={lead.companyCity} />
+                <InfoRow icon={<Link    className="w-4 h-4" />} label="Website"  value={lead.companyWebsite} />
               </div>
             </div>
           </div>
@@ -306,44 +307,31 @@ export function Component() {
             {showConvertForm && !isConverted && (
               <div className="border border-border-glow bg-bg-elevated rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-brand uppercase tracking-wider">Convert to Contact + Deal</span>
+                  <span className="text-xs font-bold text-brand uppercase tracking-wider">Convert to Contact + Account + Deal</span>
                   <button onClick={() => setShowConvertForm(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2">
                     <label className="text-xs text-text-muted mb-1 block">Deal Name</label>
-                    <input
-                      value={convertForm.dealName ?? ''}
-                      onChange={(e) => setConvertForm((f) => ({ ...f, dealName: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
-                      placeholder="Deal name"
-                    />
+                    <input value={convertForm.dealName ?? `Deal — ${displayName}`} onChange={(e) => setConvertForm((f) => ({ ...f, dealName: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                   </div>
                   <div>
                     <label className="text-xs text-text-muted mb-1 block">Amount</label>
-                    <input
-                      type="number" min={0}
-                      value={convertForm.dealAmount ?? ''}
+                    <input type="number" min={0} value={convertForm.dealAmount ?? ''}
                       onChange={(e) => setConvertForm((f) => ({ ...f, dealAmount: e.target.value ? Number(e.target.value) : undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
-                      placeholder="0"
-                    />
+                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" placeholder="0" />
                   </div>
                   <div>
                     <label className="text-xs text-text-muted mb-1 block">Close Date</label>
-                    <input type="date"
-                      value={convertForm.closeDate ?? ''}
+                    <input type="date" value={convertForm.closeDate ?? ''}
                       onChange={(e) => setConvertForm((f) => ({ ...f, closeDate: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
-                    />
+                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                   </div>
                   <div>
                     <label className="text-xs text-text-muted mb-1 block">Stage</label>
-                    <select
-                      value={convertForm.stageId ?? ''}
-                      onChange={(e) => setConvertForm((f) => ({ ...f, stageId: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
-                    >
+                    <select value={convertForm.stageId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, stageId: e.target.value || undefined }))}
+                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
                       <option value="">First open stage</option>
                       {(dealStages as any[]).filter((s: any) => !s.isClosed).map((s: any) => (
                         <option key={s.id} value={s.id}>{s.name}</option>
@@ -352,29 +340,34 @@ export function Component() {
                   </div>
                   <div>
                     <label className="text-xs text-text-muted mb-1 block">Assign Owner</label>
-                    <select
-                      value={convertForm.ownedByUserId ?? ''}
-                      onChange={(e) => setConvertForm((f) => ({ ...f, ownedByUserId: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
-                    >
+                    <select value={convertForm.ownedByUserId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, ownedByUserId: e.target.value || undefined }))}
+                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
                       <option value="">Assign to me (default)</option>
-                      {teamMembers.map((u) => (
-                        <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
-                      ))}
+                      {teamMembers.map((u) => (<option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>))}
                     </select>
                   </div>
                 </div>
-                <button
-                  disabled={convertLead.isPending}
-                  onClick={() => convertLead.mutate({ id: lead.id, data: convertForm }, { onSuccess: () => setShowConvertForm(false) })}
-                  className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                >
+                <button disabled={convertLead.isPending}
+                  onClick={() => convertLead.mutate({ id: lead.id, data: convertForm }, {
+                    onSuccess: () => { setShowConvertForm(false); qc.invalidateQueries({ queryKey: ['lead', lead.id] }); toast.success('Lead converted!'); },
+                  })}
+                  className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
                   {convertLead.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Zap className="w-4 h-4" /> Confirm Convert</>}
                 </button>
               </div>
             )}
 
             {/* Score reason */}
+            {isConverted && (lead.convertedContactId || lead.convertedDealId) && (
+              <div className="bg-bg-elevated border border-border-glow rounded-xl p-3 space-y-1.5">
+                <span className="text-xs font-bold text-brand uppercase tracking-wider">Converted Records</span>
+                <div className="flex flex-col gap-1 text-xs">
+                  {lead.convertedContactId && <a href={`/dashboard/crm/contacts/${lead.convertedContactId}`} className="text-brand hover:underline">→ View Contact</a>}
+                  {lead.convertedAccountId && <a href={`/dashboard/crm/accounts/${lead.convertedAccountId}`} className="text-brand hover:underline">→ View Account</a>}
+                  {lead.convertedDealId && <a href={`/dashboard/crm/deals/${lead.convertedDealId}`} className="text-brand hover:underline">→ View Deal</a>}
+                </div>
+              </div>
+            )}
             {lead.scoreReason && (
               <div className="bg-bg-elevated border border-border-subtle rounded-xl p-3 text-xs text-text-secondary">
                 <span className="font-semibold text-text-muted uppercase tracking-wide mr-2">
@@ -383,6 +376,8 @@ export function Component() {
                 {lead.scoreReason}
               </div>
             )}
+            <ScoreHistory leadId={lead.id} />
+            <TriggerScoreEvent leadId={lead.id} />
           </div>
         </div>
 
@@ -683,6 +678,83 @@ function NurtureStatusCard({ nurture }: { nurture: LeadNurtureStatusDto }) {
         <p className="text-xs text-text-muted italic">
           {nurture.status === 3 ? 'Sequence completed.' : 'Sequence cancelled.'}
         </p>
+      )}
+    </div>
+  );
+}
+
+function AssignFromPoolButton({ leadId }: { leadId: string }) {
+  const qc = useQueryClient();
+  const assignMut = useMutation({
+    mutationFn: () => crmApi.getRotationMembers('Lead').then(members => {
+      const list: string[] = (members as any) ?? [];
+      if (list.length === 0) throw new Error('Sales Lead Pool is empty. Add members in Assignment Rotation.');
+      return crmApi.assignLead(leadId, list[0]);
+    }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['lead', leadId] }); toast.success('Lead assigned from pool.'); },
+    onError: (e: any) => toast.error(e?.message || 'Error'),
+  });
+  return (
+    <button onClick={() => assignMut.mutate()} disabled={assignMut.isPending}
+      className="text-xs font-semibold text-brand hover:underline disabled:opacity-50">
+      {assignMut.isPending ? 'Assigning...' : 'Assign from pool'}
+    </button>
+  );
+}
+
+function TriggerScoreEvent({ leadId }: { leadId: string }) {
+  const [eventType, setEventType] = useState('');
+  const qc = useQueryClient();
+  const { data: rulesData } = useQuery({ queryKey: ['crm', 'scoring-rules'], queryFn: () => crmApi.getScoringRules() });
+  const rules: any[] = (rulesData as any) ?? [];
+  const triggerMut = useMutation({
+    mutationFn: (d: { eventType: string }) => crmApi.triggerScoreEvent(leadId, d),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['lead', leadId] }); qc.invalidateQueries({ queryKey: ['crm', 'score-events', leadId] }); setEventType(''); toast.success(`Event "${eventType}" triggered.`); },
+    onError: (e: any) => toast.error(e?.message || 'Error'),
+  });
+  if (rules.length === 0) return null;
+  return (
+    <div className="flex gap-2 items-center">
+      <select value={eventType} onChange={e => setEventType(e.target.value)} className="flex-1 px-2 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary">
+        <option value="">— Trigger scoring event —</option>
+        {rules.map((r: any) => <option key={r.id} value={r.eventType}>{r.label || r.eventType} (+{r.points})</option>)}
+      </select>
+      <button onClick={() => eventType && triggerMut.mutate({ eventType })}
+        disabled={!eventType || triggerMut.isPending}
+        className="px-3 py-1.5 rounded-lg bg-brand text-white text-xs font-bold disabled:opacity-50">
+        {triggerMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Fire'}
+      </button>
+    </div>
+  );
+}
+
+function ScoreHistory({ leadId }: { leadId: string }) {
+  const { data } = useQuery({
+    queryKey: ['crm', 'score-events', leadId],
+    queryFn: () => crmApi.getScoreEventHistory(leadId),
+  });
+  const events: any[] = (data as any) ?? [];
+  const [open, setOpen] = useState(false);
+  if (events.length === 0) return null;
+  return (
+    <div className="border border-border-subtle rounded-xl overflow-hidden">
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-4 py-2.5 bg-glass-2 text-xs font-semibold text-text-muted hover:text-text-primary transition-all">
+        <span>Score History ({events.length} events)</span>
+        <span className={`transition-transform ${open ? 'rotate-180' : ''}`}>▼</span>
+      </button>
+      {open && (
+        <div className="divide-y divide-border-subtle max-h-48 overflow-y-auto">
+          {events.map((e: any) => (
+            <div key={e.id} className="px-4 py-2 text-xs space-y-0.5">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-brand font-semibold">{e.eventType}</span>
+                <span className={`font-bold ${e.points > 0 ? 'text-success' : 'text-danger'}`}>{e.points > 0 ? '+' : ''}{e.points}</span>
+              </div>
+              <div className="text-text-muted">{e.reason || ''}</div>
+              <div className="text-text-muted text-[10px]">{e.scoreBefore} → {e.scoreAfter} · {e.eventAt ? new Date(e.eventAt).toLocaleString() : ''}</div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

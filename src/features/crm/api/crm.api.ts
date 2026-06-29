@@ -871,13 +871,33 @@ export const crmApi = {
   getContracts: (params?: { status?: number; accountId?: string }) =>
     apiClient.get<import('../types/crm.types').CrmContractDto[]>(`${BASE}/contracts`, { params }),
   getContractById: (id: string) =>
-    apiClient.get<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts/${id}`),
+    apiClient.get<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts/${id}`),
   createContract: (data: import('../types/crm.types').CrmContractCreateRequest) =>
-    apiClient.post<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts`, data),
+    apiClient.post<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts`, data),
   updateContractStatus: (id: string, status: number) =>
-    apiClient.patch<import('../types/crm.types').CrmContractDto>(`${BASE}/contracts/${id}/status`, { status }),
+    apiClient.patch<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts/${id}/status`, { status }),
   deleteContract: (id: string) =>
     apiClient.delete(`${BASE}/contracts/${id}`),
+  // Signatories
+  addContractSignatory: (contractId: string, data: import('../types/crm.types').CrmContractSignatoryRequest) =>
+    apiClient.post<import('../types/crm.types').CrmContractSignatoryDto>(`${BASE}/contracts/${contractId}/signatories`, data),
+  recordContractSignature: (signatoryId: string, data: import('../types/crm.types').CrmRecordSignatureRequest) =>
+    apiClient.put<import('../types/crm.types').CrmContractSignatoryDto>(`${BASE}/contracts/signatories/${signatoryId}/sign`, data),
+  removeContractSignatory: (signatoryId: string) =>
+    apiClient.delete(`${BASE}/contracts/signatories/${signatoryId}`),
+  // Templates
+  getContractTemplates: (category?: number) =>
+    apiClient.get<import('../types/crm.types').CrmContractTemplateDto[]>(`${BASE}/contracts/templates`, { params: { category } }),
+  getContractTemplateById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates/${id}`),
+  createContractTemplate: (data: import('../types/crm.types').CrmContractTemplateCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates`, data),
+  updateContractTemplate: (id: string, data: Partial<import('../types/crm.types').CrmContractTemplateDto>) =>
+    apiClient.put<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates/${id}`, data),
+  deleteContractTemplate: (id: string) =>
+    apiClient.delete(`${BASE}/contracts/templates/${id}`),
+  previewContractTemplate: (id: string, context: import('../types/crm.types').CrmContractCreateRequest) =>
+    apiClient.post<string>(`${BASE}/contracts/templates/${id}/preview`, context),
 
   // ─── Invoice payment links ────────────────────────────────────────────────
   generateInvoicePaymentLink: (id: string) =>
@@ -906,6 +926,20 @@ export const crmApi = {
     apiClient.put<import('../types/crm.types').CrmPriceBookEntryDto>(`${BASE}/price-books/entries/${entryId}`, data),
   deletePriceBookEntry: (entryId: string) =>
     apiClient.delete(`${BASE}/price-books/entries/${entryId}`),
+
+  // ─── Product bundles (CPQ) ────────────────────────────────────────────────
+  getProductBundles: () =>
+    apiClient.get<import('../types/crm.types').CrmProductBundleDto[]>(`${BASE}/product-bundles`),
+  getProductBundleById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmProductBundleDetailDto>(`${BASE}/product-bundles/${id}`),
+  createProductBundle: (data: import('../types/crm.types').CrmProductBundleCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProductBundleDto>(`${BASE}/product-bundles`, data),
+  deleteProductBundle: (id: string) =>
+    apiClient.delete(`${BASE}/product-bundles/${id}`),
+  addProductBundleItem: (id: string, data: import('../types/crm.types').CrmProductBundleItemRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProductBundleItemDto>(`${BASE}/product-bundles/${id}/items`, data),
+  deleteProductBundleItem: (itemId: string) =>
+    apiClient.delete(`${BASE}/product-bundles/items/${itemId}`),
 
   // ─── Renewals ─────────────────────────────────────────────────────────────
   getRenewals: (filter: import('../types/crm.types').CrmRenewalFilter = {}) =>
@@ -1050,4 +1084,39 @@ export const crmApi = {
   voidSupplierInvoice: (id: string) =>
     apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/void`, {}),
 
+  // ─── Tax Rules ────────────────────────────────────────────────────────────────
+  getTaxRules: () =>
+    apiClient.get<import('../types/crm.types').CrmTaxRuleDto[]>('/v1/crm/tax-rules'),
+  getTaxRuleById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmTaxRuleDto>(`/v1/crm/tax-rules/${id}`),
+  createTaxRule: (data: import('../types/crm.types').CrmTaxRuleCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTaxRuleDto>('/v1/crm/tax-rules', data),
+  updateTaxRule: (id: string, data: import('../types/crm.types').CrmTaxRuleUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmTaxRuleDto>(`/v1/crm/tax-rules/${id}`, data),
+  deleteTaxRule: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/tax-rules/${id}`),
+
+  // ─── Lead Scoring Rules ─────────────────────────────────────────────────────────
+  getScoringRules: () =>
+    apiClient.get<any[]>('/v1/crm/scoring-rules'),
+  createScoringRule: (data: any) =>
+    apiClient.post<any>('/v1/crm/scoring-rules', data),
+  updateScoringRule: (id: string, data: any) =>
+    apiClient.put<any>(`/v1/crm/scoring-rules/${id}`, data),
+  deleteScoringRule: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/scoring-rules/${id}`),
+  triggerScoreEvent: (leadId: string, data: { eventType: string; note?: string }) =>
+    apiClient.post<any>(`/v1/crm/scoring-rules/trigger/${leadId}`, data),
+  getScoreEventHistory: (leadId: string) =>
+    apiClient.get<any[]>(`/v1/crm/scoring-rules/history/${leadId}`),
+
+  // ─── Payment Terms ────────────────────────────────────────────────────────────
+  getPaymentTerms: () =>
+    apiClient.get<any[]>('/v1/crm/payment-terms'),
+  createPaymentTerm: (data: any) =>
+    apiClient.post<any>('/v1/crm/payment-terms', data),
+  updatePaymentTerm: (id: string, data: any) =>
+    apiClient.put<any>(`/v1/crm/payment-terms/${id}`, data),
+  deletePaymentTerm: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/payment-terms/${id}`),
 } as const;

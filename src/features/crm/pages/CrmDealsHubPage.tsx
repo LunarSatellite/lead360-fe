@@ -1,13 +1,15 @@
 import { useSearchParams } from 'react-router-dom';
-import { Briefcase, GitBranch, ShieldCheck } from 'lucide-react';
+import { Briefcase, GitBranch, ShieldCheck, Link2 } from 'lucide-react';
 import { Component as DealsPage } from './DealsPage';
 import { Component as PipelinesPage } from './CrmPipelinesPage';
 import { Component as ApprovalsPage } from './CrmApprovalsPage';
+import { Component as ChainsPage } from './CrmApprovalChainsPage';
 
 const TABS = [
   { key: 'deals',     label: 'Deals',     icon: Briefcase  },
   { key: 'pipelines', label: 'Pipelines', icon: GitBranch  },
   { key: 'approvals', label: 'Approvals', icon: ShieldCheck },
+  { key: 'chains',    label: 'Chains',    icon: Link2       },
 ] as const;
 
 type TabKey = typeof TABS[number]['key'];
@@ -53,6 +55,7 @@ export function Component() {
       {active === 'deals'     && <DealsPage />}
       {active === 'pipelines' && <PipelinesPage />}
       {active === 'approvals' && <ApprovalsPage />}
+      {active === 'chains'    && <ChainsPage />}
     </div>
   );
 }

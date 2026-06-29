@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
@@ -81,11 +81,17 @@ export function Component() {
   const [validityDays, setValidityDays] = useState(30);
   const [notes, setNotes] = useState('');
   const [lines, setLines] = useState<CrmQuoteLineItemRequest[]>([emptyLine()]);
-  const [priceBookId, setPriceBookId] = useState('');
-
   const { data: priceBooks } = usePriceBooks();
   const priceBookList: CrmPriceBookDto[] = priceBooks ?? [];
+  const [priceBookId, setPriceBookId] = useState('');
   const { data: bookDetail } = usePriceBook(priceBookId || undefined);
+  const initRef = useRef(false);
+  useEffect(() => {
+    if (!initRef.current && priceBookList.length > 0 && !priceBookId) {
+      const def = priceBookList.find((b) => b.isDefault && b.isActive);
+      if (def) { setPriceBookId(def.id); initRef.current = true; }
+    }
+  }, [priceBookList, priceBookId]);
   const bookEntries = bookDetail?.entries ?? [];
 
   const { data: raw, isLoading } = useQuotes(filter);
@@ -99,11 +105,14 @@ export function Component() {
   const deleteQuote = useDeleteQuote();
   const [loadingEdit, setLoadingEdit] = useState(false);
 
+  const [taxPercent, setTaxPercent] = useState(0);
   const subtotal = lines.reduce((s, l) => s + l.quantity * l.unitPrice, 0);
+  const taxAmount = subtotal * taxPercent / 100;
+  const total = subtotal + taxAmount;
 
   function resetForm() {
     setEditingId(null); setDealId(''); setContactId(''); setCurrency('USD');
-    setValidityDays(30); setNotes(''); setLines([emptyLine()]); setPriceBookId('');
+    setValidityDays(30); setNotes(''); setLines([emptyLine()]); setPriceBookId(''); setTaxPercent(0);
   }
 
   async function openEdit(id: string) {
@@ -131,13 +140,13 @@ export function Component() {
     if (!lines.some(l => l.description)) { toast.error('Add at least one line item.'); return; }
     const items = lines.filter(l => l.description);
     if (editingId) {
-      const req: CrmQuoteUpdateRequest = { lineItems: items, currency, notes: notes || undefined };
+      const req: CrmQuoteUpdateRequest = { lineItems: items, currency, notes: notes || undefined, taxPercent: taxPercent || undefined };
       updateQuote.mutate({ id: editingId, data: req }, { onSuccess: () => { setCreateOpen(false); resetForm(); } });
     } else {
       const req: CrmQuoteCreateRequest = {
         dealId: dealId || undefined, contactId: contactId || undefined,
         lineItems: items, currency, validityDays, notes: notes || undefined,
-        priceBookId: priceBookId || undefined,
+        priceBookId: priceBookId || undefined, taxPercent: taxPercent || undefined,
       };
       createQuote.mutate(req, { onSuccess: () => { setCreateOpen(false); resetForm(); } });
     }
@@ -351,7 +360,18 @@ export function Component() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-text-secondary mt-2 text-right">Subtotal: <span className="font-bold text-text-primary">{currency} {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+          <div className="flex items-center justify-end gap-3 mt-2">
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-text-muted">Tax %</label>
+              <input type="number" value={taxPercent} onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
+                className="w-20 px-2 py-1 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary text-right focus:outline-none focus:border-brand" min={0} step={0.01} />
+            </div>
+          </div>
+          <div className="text-xs text-text-secondary text-right space-y-0.5">
+            <p>Subtotal: <span className="font-bold text-text-primary">{currency} {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+            {taxPercent > 0 && <p>Tax ({taxPercent}%): <span className="font-bold text-text-primary">{currency} {taxAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>}
+            <p className="text-sm">Total: <span className="font-bold text-text-primary">{currency} {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+          </div>
         </div>
         <Field label="Notes"><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls} placeholder="Optional notes..." /></Field>
         <button onClick={handleSubmit} disabled={createQuote.isPending || updateQuote.isPending} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">

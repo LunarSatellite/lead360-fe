@@ -3,12 +3,12 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import {
   Search, UserCheck, Plus, Loader2, ChevronLeft, ChevronRight, X, Trash2, Check,
-  User, Mail, Phone, Briefcase, Link, FileText,
+  User, Mail, Phone, Briefcase, Link, FileText, AlertTriangle, ArrowRight,
 } from 'lucide-react';
 import { confirmDialog } from '@/shared/ui/confirm';
 import {
   useContacts, useCreateContact, useDeleteContact, useBulkDeleteContacts, useImportContactsCsv,
-  useFindContactDuplicates,
+  useFindContactDuplicates, usePendingDedupCount,
 } from '../api/crm.queries';
 import { CsvToolbar } from '../components/CsvToolbar';
 import { DuplicateWarning } from '../components/DuplicateWarning';
@@ -341,6 +341,8 @@ export function Component() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
 
+  const dedupCount = usePendingDedupCount();
+
   const { data: raw, isLoading } = useContacts(filter);
   const data = raw as unknown as PagedResult<CrmContactSummaryDto> | undefined;
 
@@ -425,6 +427,30 @@ export function Component() {
             </button>
           </div>
         </div>
+
+        {/* Duplicate alert banner */}
+        {dedupCount > 0 && (
+          <button
+            type="button"
+            onClick={() => navigate(ROUTES.dashboard.crmContacts + '?tab=duplicates')}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[rgba(245,158,11,0.25)] bg-[rgba(245,158,11,0.06)] hover:bg-[rgba(245,158,11,0.1)] hover:border-[rgba(245,158,11,0.4)] transition-all group text-left"
+          >
+            <div className="w-7 h-7 rounded-lg bg-warning/10 border border-warning/20 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-3.5 h-3.5 text-warning" strokeWidth={1.6} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs font-bold text-warning">
+                {dedupCount} potential duplicate{dedupCount !== 1 ? 's' : ''} detected
+              </span>
+              <span className="text-xs text-text-muted ml-1.5">
+                — review and merge to keep your contacts clean
+              </span>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-semibold text-warning/70 group-hover:text-warning shrink-0 transition-colors">
+              Review <ArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
+            </div>
+          </button>
+        )}
 
         {/* Filters */}
         <form onSubmit={handleSearch} className="flex gap-2 flex-wrap">

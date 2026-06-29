@@ -1,14 +1,19 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, UserPlus, Trash2, RotateCw, Wrench, UserPlus as UserPlusIcon } from 'lucide-react';
+import { Loader2, UserPlus, Trash2, RotateCw, Wrench, UserPlus as UserPlusIcon, Users, LifeBuoy } from 'lucide-react';
 import { toast } from 'sonner';
 import { crmApi } from '../api/crm.api';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
 
-const ENTITY_TYPES = ['Return', 'WorkOrder', 'Onboarding'] as const;
-const ENTITY_LABELS: Record<string, string> = { Return: 'Returns', WorkOrder: 'Work Orders', Onboarding: 'Onboarding' };
-const ENTITY_ICONS: Record<string, any> = { Return: RotateCw, WorkOrder: Wrench, Onboarding: UserPlusIcon };
+const ENTITY_TYPES = ['Lead', 'SupportCase', 'WorkOrder', 'Return', 'Onboarding'] as const;
+const ENTITY_LABELS: Record<string, string> = {
+  Lead: 'Sales Lead Pool', SupportCase: 'Support Ticket Pool',
+  WorkOrder: 'Field Tech Pool', Return: 'Returns Pool', Onboarding: 'Onboarding Pool',
+};
+const ENTITY_ICONS: Record<string, any> = {
+  Lead: Users, SupportCase: LifeBuoy, WorkOrder: Wrench, Return: RotateCw, Onboarding: UserPlusIcon,
+};
 
 export function Component() {
   const qc = useQueryClient();
@@ -66,7 +71,7 @@ export function Component() {
           const Icon = ENTITY_ICONS[t];
           return (
             <button key={t} onClick={() => { setSelectedType(t); setSelectedUserId(''); }}
-              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedType === t ? 'bg-brand text-white' : 'bg-bg-elevated border border-border-subtle text-text-secondary hover:bg-bg-subtle'}`}>
+              className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${selectedType === t ? 'bg-brand text-white' : 'bg-glass-1 border border-border-subtle text-text-secondary hover:bg-glass-2'}`}>
               <Icon className="w-4 h-4" /> {ENTITY_LABELS[t]}
             </button>
           );
@@ -78,7 +83,7 @@ export function Component() {
         <select
           value={selectedUserId}
           onChange={e => setSelectedUserId(e.target.value)}
-          className="flex-1 px-3 py-2 rounded-lg border border-border-subtle bg-bg-elevated text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40"
+          className="flex-1 px-3 py-2 rounded-lg border border-border-subtle bg-bg-input text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40"
         >
           <option value="">— Select a team member to add —</option>
           {available.map(u => (
@@ -98,7 +103,7 @@ export function Component() {
       {isLoading ? (
         <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 animate-spin text-text-muted" /></div>
       ) : memberIds.length === 0 ? (
-        <div className="text-center py-12 rounded-xl border border-border-subtle bg-bg-elevated">
+        <div className="text-center py-12 rounded-xl border border-border-subtle bg-glass-1">
           <p className="text-sm font-semibold text-text-muted">No members in the {ENTITY_LABELS[selectedType]} rotation</p>
           <p className="text-xs text-text-muted mt-1">New {ENTITY_LABELS[selectedType].toLowerCase()} will not be auto-assigned until you add at least one member.</p>
         </div>
@@ -110,7 +115,7 @@ export function Component() {
             const displayName = user ? userName(user) : userId;
             const email = user?.email ?? null;
             return (
-              <div key={userId} className="flex items-center gap-3 rounded-xl border border-border-subtle bg-bg-elevated px-4 py-3">
+              <div key={userId} className="flex items-center gap-3 rounded-xl border border-border-subtle bg-glass-1 px-4 py-3">
                 <span className="w-6 h-6 rounded-full bg-brand/10 text-brand text-xs font-bold flex items-center justify-center shrink-0">
                   {idx + 1}
                 </span>

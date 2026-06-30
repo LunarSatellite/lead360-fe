@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Plus, X, Loader2, LifeBuoy, Send, AlertTriangle, CheckCircle, XCircle, ChevronLeft, ChevronRight, Search, Shield, Trash2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { Plus, X, Loader2, LifeBuoy, Send, AlertTriangle, CheckCircle, XCircle, ChevronLeft, ChevronRight, ChevronDown, Search, Shield, Trash2 } from 'lucide-react';
 import {
   useSupportCases, useCreateSupportCase, useSupportCaseById,
   useAddSupportCaseMessage,
@@ -21,6 +22,8 @@ const PAGE_SIZE = 20;
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
 const selectCls = 'px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
+const formInputCls = 'w-full px-3 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors';
+const formInputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 function Badge({ label, colorCls }: { label: string; colorCls: string }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colorCls}`}>{label}</span>;
@@ -36,8 +39,8 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function SlideOver({ title, onClose, wide, children }: { title: string; onClose: () => void; wide?: boolean; children: React.ReactNode }) {
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex justify-end">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[480px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
@@ -48,7 +51,8 @@ function SlideOver({ title, onClose, wide, children }: { title: string; onClose:
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -122,36 +126,140 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
   );
 }
 
+const PRIORITY_OPTS = [
+  { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-[rgba(184,230,213,0.08)]' },
+  { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-[#F59E0B]',       hover: 'hover:bg-[rgba(245,158,11,0.08)]'  },
+  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-[rgba(244,63,94,0.08)]'   },
+  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-[rgba(244,63,94,0.12)]'   },
+] as const;
+
+const dropTriggerStyle = (open: boolean) => ({
+  backgroundColor: '#1A2F27',
+  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+  border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+  boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+  outline: 'none',
+  transition: 'box-shadow 0.2s ease',
+});
+const dropPanelStyle = { borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' };
+
 function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCaseCreateRequest) => void; onCancel: () => void; isSaving: boolean }) {
   const [form, setForm] = useState({ subject: '', contactId: '', priority: '', slaPolicyId: '', description: '' });
   const { data: rawSla } = useSlaPolicies();
   const slaPolicies: CrmSlaPolicySummaryDto[] = (rawSla as any)?.items ?? (Array.isArray(rawSla) ? rawSla : []);
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setForm(f => ({ ...f, [k]: e.target.value }));
+  const set = (k: keyof typeof form) => (e: { target: { value: string } }) => setForm(f => ({ ...f, [k]: e.target.value }));
 
-  return (
-    <form onSubmit={e => { e.preventDefault(); onSave({ subject: form.subject, contactId: form.contactId || undefined, priority: form.priority ? Number(form.priority) as CrmSupportCasePriority : undefined, slaPolicyId: form.slaPolicyId || undefined, description: form.description || undefined }); }} className="space-y-4">
-      <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Subject *</label><input required value={form.subject} onChange={set('subject')} placeholder="Describe the issue..." className={inputCls} /></div>
-      <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Contact ID</label><input value={form.contactId} onChange={set('contactId')} placeholder="UUID (optional)" className={inputCls} /></div>
-      <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Priority</label>
-        <select value={form.priority} onChange={set('priority')} className={`${selectCls} w-full`}>
-          <option value="">Select priority</option>
-          {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-        </select>
+  const [priorityOpen, setPriorityOpen] = useState(false);
+  const [slaOpen, setSlaOpen] = useState(false);
+  const priorityRef = useRef<HTMLDivElement>(null);
+  const slaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (priorityRef.current && !priorityRef.current.contains(e.target as Node)) setPriorityOpen(false);
+      if (slaRef.current && !slaRef.current.contains(e.target as Node)) setSlaOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const selectedPriority = PRIORITY_OPTS.find(o => o.value === form.priority);
+  const selectedSla = slaPolicies.find(p => p.id === form.slaPolicyId);
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-end pr-4">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
+      <div className="drawer-slide-in relative w-[540px] flex flex-col overflow-hidden"
+        style={{ borderRadius: 18, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)', maxHeight: 'calc(100vh - 32px)' }}>
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Support Case</h3>
+          <button onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
+        </div>
+        <form onSubmit={e => { e.preventDefault(); onSave({ subject: form.subject, contactId: form.contactId || undefined, priority: form.priority ? Number(form.priority) as CrmSupportCasePriority : undefined, slaPolicyId: form.slaPolicyId || undefined, description: form.description || undefined }); }} className="flex-1 flex flex-col min-h-0">
+          <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
+            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Subject *</label><input required value={form.subject} onChange={set('subject')} placeholder="Describe the issue..." className={formInputCls} style={formInputStyle} /></div>
+            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Contact ID</label><input value={form.contactId} onChange={set('contactId')} placeholder="UUID (optional)" className={formInputCls} style={formInputStyle} /></div>
+
+            {/* Priority custom dropdown */}
+            <div>
+              <label className="block text-xs font-semibold text-text-muted mb-1.5">Priority</label>
+              <div className="relative" ref={priorityRef}>
+                <button type="button" onClick={() => { setPriorityOpen(o => !o); setSlaOpen(false); }}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm"
+                  style={dropTriggerStyle(priorityOpen)}>
+                  {selectedPriority ? (
+                    <>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: selectedPriority.dot, boxShadow: `0 0 6px ${selectedPriority.dot}` }} />
+                      <span className={`flex-1 text-left font-medium ${selectedPriority.text}`}>{selectedPriority.label}</span>
+                    </>
+                  ) : (
+                    <span className="flex-1 text-left text-text-muted">Select priority</span>
+                  )}
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${priorityOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {priorityOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden" style={dropPanelStyle}>
+                    {PRIORITY_OPTS.map(opt => (
+                      <button key={opt.value} type="button"
+                        onClick={() => { setForm(f => ({ ...f, priority: opt.value })); setPriorityOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.priority === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                        {opt.label}
+                        {form.priority === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* SLA Policy custom dropdown */}
+            <div>
+              <label className="block text-xs font-semibold text-text-muted mb-1.5">SLA Policy</label>
+              <div className="relative" ref={slaRef}>
+                <button type="button" onClick={() => { setSlaOpen(o => !o); setPriorityOpen(false); }}
+                  className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm"
+                  style={dropTriggerStyle(slaOpen)}>
+                  <span className={`flex-1 text-left font-medium ${selectedSla ? 'text-text-primary' : 'text-text-muted'}`}>
+                    {selectedSla ? selectedSla.name : 'None'}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${slaOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {slaOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden" style={dropPanelStyle}>
+                    <button type="button"
+                      onClick={() => { setForm(f => ({ ...f, slaPolicyId: '' })); setSlaOpen(false); }}
+                      className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.06)] text-text-muted ${form.slaPolicyId === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      None
+                      {form.slaPolicyId === '' && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                    </button>
+                    {slaPolicies.map(p => (
+                      <button key={p.id} type="button"
+                        onClick={() => { setForm(f => ({ ...f, slaPolicyId: p.id })); setSlaOpen(false); }}
+                        className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.06)] text-text-primary ${form.slaPolicyId === p.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        {p.name}
+                        {form.slaPolicyId === p.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label><textarea rows={4} value={form.description} onChange={set('description')} placeholder="Additional details..." className={`${formInputCls} resize-none`} style={formInputStyle} /></div>
+          </div>
+          <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
+            <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
+            <button type="submit" disabled={isSaving || !form.subject.trim()} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+              Create Case
+            </button>
+          </div>
+        </form>
       </div>
-      <div><label className="block text-xs font-semibold text-text-muted mb-1.5">SLA Policy</label>
-        <select value={form.slaPolicyId} onChange={set('slaPolicyId')} className={`${selectCls} w-full`}>
-          <option value="">None</option>
-          {slaPolicies.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
-        </select>
-      </div>
-      <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label><textarea rows={4} value={form.description} onChange={set('description')} placeholder="Additional details..." className={`${inputCls} resize-none`} /></div>
-      <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={isSaving || !form.subject.trim()} className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all">
-          {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Create Case'}
-        </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">Cancel</button>
-      </div>
-    </form>
+    </div>,
+    document.body
   );
 }
 
@@ -342,9 +450,7 @@ export function Component() {
 
       {showSla && <SlaPolicyManager onClose={() => setShowSla(false)} />}
       {showCreate && (
-        <SlideOver title="New Support Case" onClose={() => setShowCreate(false)}>
-          <CreateForm onSave={req => createCase.mutate(req, { onSuccess: () => setShowCreate(false) })} onCancel={() => setShowCreate(false)} isSaving={createCase.isPending} />
-        </SlideOver>
+        <CreateForm onSave={req => createCase.mutate(req, { onSuccess: () => setShowCreate(false) })} onCancel={() => setShowCreate(false)} isSaving={createCase.isPending} />
       )}
 
       {selectedId && <DetailPanel caseId={selectedId} onClose={() => setSelectedId(null)} />}

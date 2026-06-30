@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, FileSignature, Loader2, X, Trash2, Check, Eye, Pencil } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
-import { CrmContractStatus, ContractTemplateCategory, CONTRACT_TEMPLATE_CATEGORY_LABELS } from '../types/crm.types';
+import { CrmContractStatus, ContractTemplateCategory, CONTRACT_TEMPLATE_CATEGORY_LABELS, type ContractTemplateCategoryValue } from '../types/crm.types';
 import { toast } from 'sonner';
 import { confirmDialog } from '@/shared/ui/confirm';
 
@@ -58,16 +59,17 @@ export function Component() {
     queryKey: ['crm', 'contracts', statusFilter],
     queryFn: () => crmApi.getContracts(statusFilter ? { status: statusFilter } : undefined),
   });
-  const contracts: any[] = contractsRaw ?? [];
+  const contracts: any[] = (contractsRaw as unknown as any[]) ?? [];
 
   const { data: templatesRaw } = useQuery({ queryKey: ['crm', 'contract-templates'], queryFn: () => crmApi.getContractTemplates() });
-  const templates: any[] = templatesRaw ?? [];
+  const templates: any[] = (templatesRaw as unknown as any[]) ?? [];
 
   const { data: detail } = useQuery({
     queryKey: ['crm', 'contract', selectedId],
     queryFn: () => crmApi.getContractById(selectedId!),
     enabled: !!selectedId,
   });
+  const detailData = detail as unknown as any;
 
   // ── Mutations ──
   const createMut = useMutation({
@@ -131,11 +133,10 @@ export function Component() {
     setShowPreview(false);
   };
 
-  const sigs = detail?.signatories ?? [];
+  const sigs = detailData?.signatories ?? [];
   const signedCount = sigs.filter((s: any) => s.signedAt).length;
   const allSigned = sigs.length > 0 && signedCount === sigs.length;
 
-  const catLabels = Object.fromEntries(Object.entries(ContractTemplateCategory).filter(([k]) => isNaN(Number(k))).map(([k, v]) => [v, k]));
 
   return (
     <div className="space-y-6">
@@ -199,23 +200,23 @@ export function Component() {
           {selectedId && detail && (
             <div className="w-80 shrink-0 bg-glass-1 rounded-card border-thin border-border-subtle p-4 space-y-4 sticky top-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-text-primary">{detail.title}</h3>
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${STATUS_STYLE[detail.status]}`}>{STATUS_LABEL[detail.status]}</span>
+                <h3 className="text-sm font-bold text-text-primary">{detailData?.title}</h3>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${STATUS_STYLE[detailData?.status]}`}>{STATUS_LABEL[detailData?.status]}</span>
               </div>
               <div className="text-xs space-y-1">
-                <div className="flex justify-between"><span className="text-text-muted">Value</span><span className="text-text-primary">{fmt(detail.value, detail.currency)}</span></div>
-                {detail.startDate && <div className="flex justify-between"><span className="text-text-muted">Start</span><span className="text-text-primary">{new Date(detail.startDate).toLocaleDateString()}</span></div>}
-                {detail.endDate && <div className="flex justify-between"><span className="text-text-muted">End</span><span className="text-text-primary">{new Date(detail.endDate).toLocaleDateString()}</span></div>}
+                <div className="flex justify-between"><span className="text-text-muted">Value</span><span className="text-text-primary">{fmt(detailData?.value, detailData?.currency)}</span></div>
+                {detailData?.startDate && <div className="flex justify-between"><span className="text-text-muted">Start</span><span className="text-text-primary">{new Date(detailData?.startDate).toLocaleDateString()}</span></div>}
+                {detailData?.endDate && <div className="flex justify-between"><span className="text-text-muted">End</span><span className="text-text-primary">{new Date(detailData?.endDate).toLocaleDateString()}</span></div>}
               </div>
 
               <div className="border-t border-border-subtle pt-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Signatories {sigs.length > 0 && <span className="text-text-muted font-normal">({signedCount} of {sigs.length} signed)</span>}</span>
-                  {detail.status === CrmContractStatus.Draft && (
+                  {detailData?.status === CrmContractStatus.Draft && (
                     <button onClick={() => addSigMut.mutate(sigForm)} disabled={!sigForm.name.trim()} className="text-xs text-brand hover:underline">+ Add</button>
                   )}
                 </div>
-                {detail.status === CrmContractStatus.Draft && (
+                {detailData?.status === CrmContractStatus.Draft && (
                   <div className="flex gap-1 mb-2">
                     <input className="flex-1 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Name" value={sigForm.name} onChange={e => setSigForm(f => ({ ...f, name: e.target.value }))} />
                     <input className="w-24 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Email" value={sigForm.email} onChange={e => setSigForm(f => ({ ...f, email: e.target.value }))} />
@@ -229,9 +230,9 @@ export function Component() {
                     <div className="flex items-center gap-1.5 shrink-0">
                       {s.signedAt ? (
                         <span className="flex items-center gap-1 text-[10px] text-success"><Check className="w-3 h-3" /> Signed</span>
-                      ) : detail.status === CrmContractStatus.PendingSignature ? (
+                      ) : detailData?.status === CrmContractStatus.PendingSignature ? (
                         <button onClick={() => recordSigMut.mutate(s.id)} className="text-[10px] font-semibold text-brand hover:underline">Record signature</button>
-                      ) : detail.status === CrmContractStatus.Draft ? (
+                      ) : detailData?.status === CrmContractStatus.Draft ? (
                         <button onClick={() => removeSigMut.mutate(s.id)} className="text-[10px] text-danger hover:underline">Remove</button>
                       ) : null}
                     </div>
@@ -241,12 +242,12 @@ export function Component() {
               </div>
 
               <div className="flex gap-2 pt-1">
-                {detail.status === CrmContractStatus.Draft && (
-                  <button onClick={() => updateStatusMut.mutate({ id: detail.id, status: CrmContractStatus.PendingSignature })}
+                {detailData?.status === CrmContractStatus.Draft && (
+                  <button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.PendingSignature })}
                     className="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-white hover:brightness-110">Send for signature</button>
                 )}
-                {detail.status === CrmContractStatus.PendingSignature && allSigned && (
-                  <button onClick={() => updateStatusMut.mutate({ id: detail.id, status: CrmContractStatus.Active })}
+                {detailData?.status === CrmContractStatus.PendingSignature && allSigned && (
+                  <button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.Active })}
                     className="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-success text-white hover:brightness-110">Mark fully signed</button>
                 )}
               </div>
@@ -272,7 +273,7 @@ export function Component() {
                     <button onClick={() => deleteTemplateMut.mutate(t.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
-                <div className="text-[11px] text-text-muted">{CONTRACT_TEMPLATE_CATEGORY_LABELS[t.category] ?? 'General'}{t.subject ? ` · ${t.subject}` : ''}</div>
+                <div className="text-[11px] text-text-muted">{CONTRACT_TEMPLATE_CATEGORY_LABELS[t.category as ContractTemplateCategoryValue] ?? 'General'}{t.subject ? ` · ${t.subject}` : ''}</div>
                 <div className="text-[11px] text-text-muted line-clamp-2 font-mono bg-glass-2 p-2 rounded">{t.bodyHtml}</div>
               </div>
             ))}
@@ -283,8 +284,8 @@ export function Component() {
         </div>
       )}
 
-      {showTemplateForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      {showTemplateForm && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <form onSubmit={(e) => { e.preventDefault(); createTemplateMut.mutate({ ...templateForm, description: templateForm.description || undefined, subject: templateForm.subject || undefined }); }} className="w-full max-w-lg bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between"><h2 className="text-sm font-bold text-text-primary">{editTemplateId ? 'Edit' : 'New'} Template</h2>
               <button type="button" onClick={() => { setShowTemplateForm(false); setEditTemplateId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
@@ -307,11 +308,12 @@ export function Component() {
             </div>
             <button type="submit" disabled={createTemplateMut.isPending || !templateForm.name.trim()} className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">{editTemplateId ? 'Update' : 'Create'} Template</button>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      {showForm && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <form onSubmit={submit} className="w-full max-w-md bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between"><h2 className="text-sm font-bold text-text-primary">New contract</h2>
               <button type="button" onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
@@ -335,11 +337,12 @@ export function Component() {
               {createMut.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Create contract'}
             </button>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {showPreview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      {showPreview && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <div className="w-full max-w-2xl bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4 max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between shrink-0"><h2 className="text-sm font-bold text-text-primary flex items-center gap-2"><Eye className="w-4 h-4" /> Preview</h2>
               <button onClick={() => setShowPreview(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
@@ -349,7 +352,8 @@ export function Component() {
               <button onClick={() => setShowPreview(false)} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary">Back</button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

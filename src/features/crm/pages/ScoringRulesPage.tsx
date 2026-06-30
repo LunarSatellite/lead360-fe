@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, X, Loader2, Trash2, Pencil } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
@@ -98,8 +99,8 @@ export function Component() {
         </ul>
       </div>
 
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      {showForm && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <form onSubmit={submit} className="w-full max-w-md bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between"><h2 className="text-sm font-bold">{editId ? 'Edit' : 'New'} Scoring Rule</h2>
               <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
@@ -110,7 +111,8 @@ export function Component() {
             <button type="submit" disabled={createMut.isPending || updateMut.isPending || !form.eventType.trim()}
               className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">{editId ? 'Update' : 'Create'}</button>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

@@ -174,6 +174,8 @@ export function Component() {
   const [showNewDeal, setShowNewDeal] = useState(false);
   const [ndName, setNdName] = useState('');
   const [ndStageId, setNdStageId] = useState('');
+  const [ndStageOpen, setNdStageOpen] = useState(false);
+  const ndStageRef = useRef<HTMLDivElement>(null);
   const [ndAmount, setNdAmount] = useState('');
   const [ndCloseDate, setNdCloseDate] = useState('');
   const [ndOwnerId, setNdOwnerId] = useState('');
@@ -237,6 +239,13 @@ export function Component() {
   const clearSelection = () => setSelected(new Set());
   // Drop selections when the visible list changes (filter/page) or the view switches.
   useEffect(() => { setSelected(new Set()); }, [listFilter, view]);
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ndStageRef.current && !ndStageRef.current.contains(e.target as Node)) setNdStageOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
   const runBulkDelete = async () => {
     if (selected.size === 0) return;
     const ok = await confirmDialog({
@@ -256,7 +265,7 @@ export function Component() {
   const contactsList = (contactsRaw as any)?.items ?? [];
 
   function resetNewDeal() {
-    setNdName(''); setNdStageId(''); setNdAmount(''); setNdCloseDate(''); setNdOwnerId(''); setNdAccountId(''); setNdContactId(''); setNdCustomFields({});
+    setNdName(''); setNdStageId(''); setNdStageOpen(false); setNdAmount(''); setNdCloseDate(''); setNdOwnerId(''); setNdAccountId(''); setNdContactId(''); setNdCustomFields({});
   }
 
   function submitNewDeal() {
@@ -803,17 +812,45 @@ export function Component() {
               {/* Stage */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Stage *</label>
-                <div className="relative">
-                  <GitBranch className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <select
-                    value={ndStageId}
-                    onChange={e => setNdStageId(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] appearance-none"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                <div className="relative" ref={ndStageRef}>
+                  <button
+                    type="button"
+                    onClick={() => setNdStageOpen(o => !o)}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                    style={{
+                      backgroundColor: '#1A2F27',
+                      backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                      border: `1px solid ${ndStageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                      boxShadow: ndStageOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                      outline: 'none',
+                      transition: 'box-shadow 0.2s ease',
+                    }}
                   >
-                    <option value="">Select stage</option>
-                    {stages.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                  </select>
+                    <GitBranch className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                    <span className={`flex-1 text-left font-medium ${ndStageId ? 'text-text-primary' : 'text-text-muted'}`}>
+                      {ndStageId ? (stages.find(s => s.id === ndStageId)?.name ?? 'Select stage') : 'Select stage'}
+                    </span>
+                    <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${ndStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                  </button>
+                  {ndStageOpen && (
+                    <div
+                      className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                    >
+                      {stages.map(s => (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => { setNdStageId(s.id); setNdStageOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${ndStageId === s.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                        >
+                          {s.color && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: s.color, boxShadow: `0 0 6px ${s.color}` }} />}
+                          {s.name}
+                          {ndStageId === s.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import {
   Search, Building, Building2, Plus, Loader2, ChevronLeft, ChevronRight,
   X, Trash2, DollarSign, Calendar, Pencil, Check, UserPlus, UserMinus,
-  Layers, Star, FileText, Globe, MapPin, Users,
+  Layers, Star, FileText, Globe, MapPin, Users, ChevronDown,
 } from 'lucide-react';
 import {
   useAccounts, useAccountById, useAccountContacts,
@@ -495,6 +495,19 @@ const glowInput = {
   backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
 } as const;
 
+const ACCOUNT_STATUS_OPTS = [
+  { value: '1', label: 'Prospect', dot: '#60A5FA', text: 'text-[#60A5FA]',  hover: 'hover:bg-[rgba(96,165,250,0.08)]'   },
+  { value: '2', label: 'Customer', dot: '#00D97E', text: 'text-brand',       hover: 'hover:bg-brand-soft'                },
+  { value: '3', label: 'Partner',  dot: '#A78BFA', text: 'text-[#A78BFA]',  hover: 'hover:bg-[rgba(167,139,250,0.08)]' },
+  { value: '4', label: 'Churned',  dot: '#F43F5E', text: 'text-danger',      hover: 'hover:bg-[rgba(244,63,94,0.08)]'   },
+] as const;
+
+const ACCOUNT_TIER_OPTS = [
+  { value: '1', label: 'SMB',        dot: '#B8E6D5', text: 'text-text-secondary', hover: 'hover:bg-[rgba(184,230,213,0.08)]' },
+  { value: '2', label: 'Mid-Market', dot: '#F59E0B', text: 'text-[#F59E0B]',      hover: 'hover:bg-[rgba(245,158,11,0.08)]'  },
+  { value: '3', label: 'Enterprise', dot: '#FFD84D', text: 'text-text-primary',   hover: 'hover:bg-[rgba(255,216,77,0.08)]'  },
+] as const;
+
 function CreateAccountModal({
   form, onChange, isSaving, onClose, onSubmit, customFieldsContent,
 }: {
@@ -510,6 +523,10 @@ function CreateAccountModal({
   const [showOrgDrop, setShowOrgDrop] = useState(false);
   const orgDropRef = useRef<HTMLDivElement>(null);
   const [orgDetails, setOrgDetails] = useState({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' });
+  const [statusOpen, setStatusOpen] = useState(false);
+  const statusRef = useRef<HTMLDivElement>(null);
+  const [tierOpen, setTierOpen] = useState(false);
+  const tierRef = useRef<HTMLDivElement>(null);
 
   const { data: orgsRaw } = useOrganizations({ search: orgQuery || undefined, pageSize: 6 });
   const orgSuggestions = (orgsRaw as any)?.items ?? [];
@@ -521,9 +538,9 @@ function CreateAccountModal({
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (orgDropRef.current && !orgDropRef.current.contains(e.target as Node)) {
-        setShowOrgDrop(false);
-      }
+      if (orgDropRef.current && !orgDropRef.current.contains(e.target as Node)) setShowOrgDrop(false);
+      if (statusRef.current && !statusRef.current.contains(e.target as Node)) setStatusOpen(false);
+      if (tierRef.current && !tierRef.current.contains(e.target as Node)) setTierOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -594,35 +611,88 @@ function CreateAccountModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Status</label>
-              <div className="relative">
-                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <select
-                  value={form.status}
-                  onChange={set('status')}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] appearance-none"
-                  style={glowInput}
+              <div className="relative" ref={statusRef}>
+                <button
+                  type="button"
+                  onClick={() => setStatusOpen(o => !o)}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                  style={{
+                    ...glowInput,
+                    border: `1px solid ${statusOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: statusOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
                 >
-                  {Object.entries(CRM_ACCOUNT_STATUS_LABELS).map(([k, label]) => (
-                    <option key={k} value={k}>{label}</option>
-                  ))}
-                </select>
+                  <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                  {(() => { const opt = ACCOUNT_STATUS_OPTS.find(o => o.value === form.status); return opt ? (
+                    <>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                      <span className={`flex-1 text-left font-medium ${opt.text}`}>{opt.label}</span>
+                    </>
+                  ) : <span className="flex-1 text-left text-text-muted">Select status</span>; })()}
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${statusOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {statusOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                    {ACCOUNT_STATUS_OPTS.map(opt => (
+                      <button key={opt.value} type="button"
+                        onClick={() => { onChange(f => ({ ...f, status: opt.value })); setStatusOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.status === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                        {opt.label}
+                        {form.status === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Tier</label>
-              <div className="relative">
-                <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <select
-                  value={form.tier}
-                  onChange={set('tier')}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] appearance-none"
-                  style={glowInput}
+              <div className="relative" ref={tierRef}>
+                <button
+                  type="button"
+                  onClick={() => setTierOpen(o => !o)}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                  style={{
+                    ...glowInput,
+                    border: `1px solid ${tierOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: tierOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
                 >
-                  <option value="">— None —</option>
-                  {Object.entries(CRM_ACCOUNT_TIER_LABELS).map(([k, label]) => (
-                    <option key={k} value={k}>{label}</option>
-                  ))}
-                </select>
+                  <Star className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                  {(() => { const opt = ACCOUNT_TIER_OPTS.find(o => o.value === form.tier); return opt ? (
+                    <>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                      <span className={`flex-1 text-left font-medium ${opt.text}`}>{opt.label}</span>
+                    </>
+                  ) : <span className="flex-1 text-left text-text-muted">— None —</span>; })()}
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${tierOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {tierOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                    <button type="button"
+                      onClick={() => { onChange(f => ({ ...f, tier: '' })); setTierOpen(false); }}
+                      className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${form.tier === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      — None —
+                      {form.tier === '' && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                    </button>
+                    {ACCOUNT_TIER_OPTS.map(opt => (
+                      <button key={opt.value} type="button"
+                        onClick={() => { onChange(f => ({ ...f, tier: opt.value })); setTierOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.tier === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                        {opt.label}
+                        {form.tier === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div>

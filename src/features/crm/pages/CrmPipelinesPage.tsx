@@ -358,12 +358,6 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
   const deletePipeline = useDeletePipeline();
   const setDefault = useSetPipelineDefault();
 
-  const handleSave = () => {
-    update.mutate({ id: pipeline.id, data: { name: editName.trim(), color: editColor } }, {
-      onSuccess: () => setEditing(false),
-    });
-  };
-
   const handleDelete = async () => {
     const ok = await confirmDialog({
       message: `Delete pipeline "${pipeline.name}"? Stages will be unlinked but not deleted.`,

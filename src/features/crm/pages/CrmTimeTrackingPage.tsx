@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, X, Loader2, Clock, DollarSign, Trash2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { useTimeEntries, useTimeSummary, useLogTime, useDeleteTimeEntry } from '../api/crm.queries';
@@ -28,8 +29,8 @@ function SlideOver({ open, onClose, title, children }: {
   open: boolean; onClose: () => void; title: string; children: React.ReactNode;
 }) {
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex justify-end">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
@@ -40,7 +41,8 @@ function SlideOver({ open, onClose, title, children }: {
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

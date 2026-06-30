@@ -683,6 +683,18 @@ export const crmApi = {
   updateOrderFulfillment: (id: string, data: { status: number; carrier?: string; trackingNumber?: string; actualDeliveryDate?: string; failureReason?: string }) =>
     apiClient.patch<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}/fulfillment`, data),
 
+  // ─── Pick List / Packing ──────────────────────────────────────────────────
+  generatePickList: (orderId: string) =>
+    apiClient.post<import('../types/crm.types').PickListDto>(`${BASE}/orders/${orderId}/pick-list`),
+  getPickList: (orderId: string) =>
+    apiClient.get<import('../types/crm.types').PickListDto>(`${BASE}/orders/${orderId}/pick-list`),
+  updatePickListItem: (orderId: string, itemId: string, data: import('../types/crm.types').UpdatePickListItemRequest) =>
+    apiClient.put<import('../types/crm.types').PickListItemDto>(`${BASE}/orders/${orderId}/pick-list/items/${itemId}`, data),
+  markPickListPicked: (orderId: string) =>
+    apiClient.post<import('../types/crm.types').PickListDto>(`${BASE}/orders/${orderId}/pick-list/mark-picked`),
+  markPickListPacked: (orderId: string, data: import('../types/crm.types').MarkPackedRequest) =>
+    apiClient.post<import('../types/crm.types').PickListDto>(`${BASE}/orders/${orderId}/pick-list/pack`, data),
+
   // ─── Meetings ─────────────────────────────────────────────────────────────
   getMeetings: (filter: import('../types/crm.types').CrmMeetingFilter = {}) =>
     apiClient.get<PagedResult<import('../types/crm.types').CrmMeetingSummaryDto>>(`${BASE}/meetings`, { params: filter }),

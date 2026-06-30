@@ -37,7 +37,9 @@ import type {
    FlowExperimentUpdateRequest,
    ExperimentVariantKind,
    DealStrategyDto,
-   ActivityLogRequest,
+    ActivityLogRequest,
+    UpdatePickListItemRequest,
+    MarkPackedRequest,
 } from '../types/crm.types';
 
 // ─── Query key constants ──────────────────────────────────────────────────────
@@ -2070,6 +2072,41 @@ export function useUpdateOrderFulfillment() {
     mutationFn: ({ id, data }: { id: string; data: { status: number; carrier?: string; trackingNumber?: string; actualDeliveryDate?: string; failureReason?: string } }) => crmApi.updateOrderFulfillment(id, data),
     onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Fulfillment updated.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Pick List / Packing ───────────────────────────────────────────────────
+export function useGeneratePickList() {
+  return useMutation({
+    mutationFn: (orderId: string) => crmApi.generatePickList(orderId),
+    onSuccess: () => toast.success('Pick list generated'),
+  });
+}
+export function usePickList(orderId: string | undefined) {
+  return useQuery({
+    queryKey: ['crm', 'orders', orderId, 'pick-list'],
+    queryFn: () => crmApi.getPickList(orderId!),
+    enabled: !!orderId,
+  });
+}
+export function useUpdatePickListItem() {
+  return useMutation({
+    mutationFn: ({ orderId, itemId, data }: { orderId: string; itemId: string; data: UpdatePickListItemRequest }) =>
+      crmApi.updatePickListItem(orderId, itemId, data),
+    onSuccess: () => toast.success('Pick item updated'),
+  });
+}
+export function useMarkPickListPicked() {
+  return useMutation({
+    mutationFn: (orderId: string) => crmApi.markPickListPicked(orderId),
+    onSuccess: () => toast.success('All items marked picked'),
+  });
+}
+export function useMarkPickListPacked() {
+  return useMutation({
+    mutationFn: ({ orderId, data }: { orderId: string; data: MarkPackedRequest }) =>
+      crmApi.markPickListPacked(orderId, data),
+    onSuccess: () => toast.success('Order packed'),
   });
 }
 

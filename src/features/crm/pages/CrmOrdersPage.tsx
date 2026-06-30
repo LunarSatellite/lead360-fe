@@ -6,15 +6,18 @@ import {
   useOrders, useCreateOrder, useConfirmOrder, useFulfillOrder, useCancelOrder,
   useRecordOrderPayment, useUpdateOrderFulfillment, useAcknowledgeOrder, useCreditCheck, useUpdateOrder, useGenerateInvoiceFromDeal,
   useDeliveries, useCreateDelivery, useUpdateDeliveryStatus, useDealById, useOrderById, useQuoteById, useAccounts,
+  useGeneratePickList, usePickList, useUpdatePickListItem, useMarkPickListPicked, useMarkPickListPacked,
 } from '../api/crm.queries';
 import type {
   CrmOrderDetailDto, CrmOrderCreateRequest, CrmOrderLineItemRequest,
-  CrmOrderFilter,
+  CrmOrderFilter, PickListItemDto,
 } from '../types/crm.types';
 import {
+  CrmOrderStatus,
   CRM_ORDER_STATUS_LABELS, CRM_ORDER_STATUS_COLORS,
   CRM_ORDER_FULFILLMENT_LABELS, CRM_ORDER_PAYMENT_LABELS, CRM_ORDER_PAYMENT_COLORS,
   CRM_DELIVERY_STATUS_LABELS, CRM_DELIVERY_STATUS_COLORS,
+  PICK_LIST_STATUS_LABELS,
 } from '../types/crm.types';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
@@ -143,6 +146,12 @@ export function Component() {
   const updateFulfillment = useUpdateOrderFulfillment();
   const acknowledgeOrder = useAcknowledgeOrder();
   const creditCheck = useCreditCheck();
+  const generatePickList = useGeneratePickList();
+  const { data: pickListRaw, refetch: refetchPickList } = usePickList(selectedOrder?.id);
+  const pickList = (pickListRaw as any) ?? null;
+  const updatePickItem = useUpdatePickListItem();
+  const markPicked = useMarkPickListPicked();
+  const markPacked = useMarkPickListPacked();
   const updateOrder = useUpdateOrder();
   const generateInvoice = useGenerateInvoiceFromDeal();
   const [editingPO, setEditingPO] = useState('');
@@ -486,6 +495,100 @@ export function Component() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Pick List */}
+            {selectedOrder.status === CrmOrderStatus.Confirmed && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-semibold text-text-muted">Pick List</label>
+                  {!pickList && (
+                    <button onClick={() => generatePickList.mutate(selectedOrder.id, { onSuccess: () => refetchPickList() })} disabled={generatePickList.isPending}
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border border-border-subtle text-text-secondary hover:text-brand hover:border-brand/40 transition-all">
+                      {generatePickList.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Package className="w-3 h-3" />} Generate Pick List
+                    </button>
+                  )}
+                </div>
+                {pickList && (
+                  <div className="bg-bg-surface rounded-xl p-3 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-text-muted">Status: <span className="font-semibold text-text-primary">{PICK_LIST_STATUS_LABELS[pickList.status]}</span></span>
+                      <div className="flex gap-1">
+                        {pickList.status <= 2 && (
+                          <button onClick={() => markPicked.mutate(pickList.orderId, { onSuccess: () => refetchPickList() })} disabled={markPicked.isPending}
+                            className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:text-success hover:border-success/40 transition-all">
+                            {markPicked.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : null} Mark All Picked
+                          </button>
+                        )}
+                        {pickList.status === 3 && (
+                          <button onClick={() => {
+                            const boxC = prompt('Box count?');
+                            const weight = prompt('Total weight (kg)?');
+                            markPacked.mutate({ orderId: pickList.orderId, data: { boxCount: Number(boxC) || undefined, totalWeightKg: Number(weight) || undefined } }, { onSuccess: () => refetchPickList() });
+                          }} disabled={markPacked.isPending}
+                            className="text-[10px] px-2 py-1 rounded border border-success/20 bg-success/10 text-success hover:bg-success/20 transition-all">
+                            Mark Packed
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="text-left text-text-muted">
+                          <th className="py-1 pr-2">Product</th>
+                          <th className="py-1 pr-2">Location</th>
+                          <th className="py-1 pr-2 text-right">To Pick</th>
+                          <th className="py-1 pr-2 text-right">Picked</th>
+                          <th className="py-1">Serials</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {pickList.items.map((pi: PickListItemDto) => (
+                          <tr key={pi.id} className="border-t border-border-subtle">
+                            <td className="py-1.5 pr-2 text-text-primary font-medium">{pi.productName}</td>
+                            <td className="py-1.5 pr-2 text-text-muted">{pi.warehouseLocation || '—'}</td>
+                            <td className="py-1.5 pr-2 text-right">{pi.quantityToPick}</td>
+                            <td className="py-1.5 pr-2 text-right">
+                              {pickList.status <= 2 ? (
+                                <input type="number" min={0} max={pi.quantityToPick} defaultValue={pi.quantityPicked}
+                                  onBlur={(e) => {
+                                    const val = Number(e.target.value);
+                                    if (val !== pi.quantityPicked) {
+                                      updatePickItem.mutate({ orderId: pickList.orderId, itemId: pi.id, data: { quantityPicked: val, serialNumbers: pi.serialNumbers } }, { onSuccess: () => refetchPickList() });
+                                    }
+                                  }}
+                                  className="w-16 px-1.5 py-0.5 rounded bg-bg-elevated border border-border-subtle text-right text-xs" />
+                              ) : (
+                                <span className={pi.quantityPicked >= pi.quantityToPick ? 'text-success' : 'text-warning'}>{pi.quantityPicked}</span>
+                              )}
+                            </td>
+                            <td className="py-1.5">
+                              {pickList.status <= 2 ? (
+                                <input placeholder="Serials (comma)" defaultValue={pi.serialNumbers || ''}
+                                  onBlur={(e) => {
+                                    const val = e.target.value;
+                                    if (val !== (pi.serialNumbers || '')) {
+                                      updatePickItem.mutate({ orderId: pickList.orderId, itemId: pi.id, data: { quantityPicked: pi.quantityPicked, serialNumbers: val || undefined } }, { onSuccess: () => refetchPickList() });
+                                    }
+                                  }}
+                                  className="w-full px-1.5 py-0.5 rounded bg-bg-elevated border border-border-subtle text-xs" />
+                              ) : (
+                                <span className="text-text-muted">{pi.serialNumbers || '—'}</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {pickList.boxCount != null && (
+                      <div className="text-[11px] text-text-muted pt-2 border-t border-border-subtle">
+                        Packed: {pickList.boxCount} box(es){pickList.totalWeightKg != null ? `, ${pickList.totalWeightKg} kg` : ''}
+                        {pickList.notes ? ` — ${pickList.notes}` : ''}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

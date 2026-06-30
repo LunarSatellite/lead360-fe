@@ -83,6 +83,7 @@ type AccountFormState = {
   status: string;
   tier: string;
   contractValue: string;
+  creditLimit: string;
   currency: string;
   renewalDate: string;
   notes: string;
@@ -91,7 +92,7 @@ type AccountFormState = {
 };
 
 const EMPTY_ACCOUNT: AccountFormState = {
-  name: '', status: '1', tier: '', contractValue: '', currency: 'USD', renewalDate: '', notes: '', organizationId: '', parentAccountId: '',
+  name: '', status: '1', tier: '', contractValue: '', creditLimit: '', currency: 'USD', renewalDate: '', notes: '', organizationId: '', parentAccountId: '',
 };
 
 function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
@@ -102,6 +103,7 @@ function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
     organizationId: d.organizationId ?? '',
     parentAccountId: d.parentAccountId ?? '',
     contractValue: d.contractValue?.toString() ?? '',
+    creditLimit: (d as any).creditLimit?.toString() ?? '',
     currency: d.currency,
     renewalDate: d.renewalDate ? d.renewalDate.slice(0, 10) : '',
     notes: d.notes ?? '',
@@ -167,6 +169,10 @@ function AccountForm({
         <div>
           <label className="block text-xs font-semibold text-text-muted mb-1.5">Contract Value</label>
           <input type="number" min="0" value={form.contractValue} onChange={set('contractValue')} placeholder="50000" className={inputCls} />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-text-muted mb-1.5">Credit Limit</label>
+          <input type="number" min="0" value={form.creditLimit} onChange={set('creditLimit')} placeholder="100000" className={inputCls} />
         </div>
         <div>
           <label className="block text-xs font-semibold text-text-muted mb-1.5">Currency</label>
@@ -368,6 +374,7 @@ function AccountDetailPanel({
       status: Number(f.status) as CrmAccountStatus,
       tier: f.tier ? (Number(f.tier) as CrmAccountTier) : undefined,
       contractValue: f.contractValue ? Number(f.contractValue) : undefined,
+      creditLimit: f.creditLimit ? Number(f.creditLimit) : undefined,
       currency: f.currency || undefined,
       renewalDate: f.renewalDate || undefined,
       notes: f.notes || undefined,
@@ -525,6 +532,7 @@ export function Component() {
       status: Number(f.status) as CrmAccountStatus,
       tier: f.tier ? (Number(f.tier) as CrmAccountTier) : undefined,
       contractValue: f.contractValue ? Number(f.contractValue) : undefined,
+      creditLimit: f.creditLimit ? Number(f.creditLimit) : undefined,
       currency: f.currency || undefined,
       renewalDate: f.renewalDate || undefined,
       notes: f.notes || undefined,

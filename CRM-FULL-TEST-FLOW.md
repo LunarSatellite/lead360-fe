@@ -2260,3 +2260,19 @@ Real world: Every major CRM ships a mobile app (Salesforce, HubSpot, Zoho, Dynam
 8. + button → Log Meeting → fill subject, contact, date → Save ✓
 9. Pull to refresh → updated data from API ✓
 10. Go offline → previously loaded deals still viewable ✓
+
+
+
+## Deferred Enhancements (Post Phase 7)
+
+These match standard CRM behavior but are outside the current test flow scope. Build when time permits:
+
+- **Order from Contract**: Create order directly from a signed contract (like Salesforce)
+- **Line-level discounts**: Apply discount % per line item instead of only order-level
+- **Order revisions/amendments**: Revise a confirmed order (like quote revision flow)
+- **Auto-invoice on confirm**: Generate invoice automatically when order is confirmed (config exists, gated off)
+- **Split shipments**: Multiple delivery addresses per order
+- **Tax line items**: Tax applied per line item based on product tax category
+
+
+The PO document itself (the PDF the customer sends) is not stored — only the PO number is recorded. In most small-to-medium CRMs, that's sufficient. Enterprise systems add document attachment.

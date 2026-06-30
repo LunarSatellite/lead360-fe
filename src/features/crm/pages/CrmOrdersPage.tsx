@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { Plus, X, Loader2, Package, CheckCircle, Truck, XCircle, DollarSign, MapPin, Hash } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Plus, X, Loader2, Package, CheckCircle, Truck, XCircle, DollarSign, MapPin, Hash, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
+import { useSearchParams } from 'react-router-dom';
 import {
   useOrders, useCreateOrder, useConfirmOrder, useFulfillOrder, useCancelOrder,
-  useRecordOrderPayment, useUpdateOrderFulfillment,
-  useDeliveries, useCreateDelivery, useUpdateDeliveryStatus,
+  useRecordOrderPayment, useUpdateOrderFulfillment, useAcknowledgeOrder, useCreditCheck, useUpdateOrder, useGenerateInvoiceFromDeal,
+  useDeliveries, useCreateDelivery, useUpdateDeliveryStatus, useDealById, useOrderById, useQuoteById, useAccounts,
 } from '../api/crm.queries';
 import type {
   CrmOrderDetailDto, CrmOrderCreateRequest, CrmOrderLineItemRequest,
@@ -63,26 +64,55 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-type LineItem = { productName: string; quantity: string; unitPrice: string };
-const emptyLine = (): LineItem => ({ productName: '', quantity: '1', unitPrice: '' });
+type LineItem = { productId: string; productName: string; quantity: string; unitPrice: string };
+const emptyLine = (): LineItem => ({ productId: '', productName: '', quantity: '1', unitPrice: '' });
+
+const PO_WARNING = "B2B customers typically require their PO number on invoices.";
 
 export function Component() {
+  const [searchParams] = useSearchParams();
   const [filter, setFilter] = useState<CrmOrderFilter>({ page: 1, pageSize: 20 });
   const [search, setSearch] = useState('');
   const [statusF, setStatusF] = useState('');
 
-  const [showCreate, setShowCreate] = useState(false);
-  const [contactId, setContactId] = useState('');
-  const [currency, setCurrency] = useState('USD');
+  const urlDealId = searchParams.get('dealId') ?? '';
+  const urlAccountId = searchParams.get('accountId') ?? '';
+  const urlQuoteId = searchParams.get('quoteId') ?? '';
+  const { data: urlDealRaw } = useDealById(urlDealId || undefined);
+  const urlDeal = (urlDealRaw as any) ?? null;
+  const { data: urlQuoteRaw } = useQuoteById(urlQuoteId || undefined);
+  const urlQuote = (urlQuoteRaw as any) ?? null;
+
+  const [showCreate, setShowCreate] = useState(!!urlDealId || !!urlQuoteId);
+  const [contactId, setContactId] = useState(urlDeal?.contactId ?? '');
+  const [orderDealId, setOrderDealId] = useState(urlDealId);
+  const [orderAccountId, setOrderAccountId] = useState(urlAccountId);
+  const { data: accountsRaw } = useAccounts({ pageSize: 200 });
+  const accountsList: any[] = (accountsRaw as any)?.items ?? [];
+  const [lines, setLines] = useState<LineItem[]>([emptyLine()]);
+  const [currency, setCurrency] = useState(urlDeal?.currency ?? 'USD');
+  // Pre-fill from quote data once loaded
+  useEffect(() => {
+    if (urlQuote) {
+      setContactId(urlQuote.contactId ?? '');
+      setCurrency(urlQuote.currency ?? 'USD');
+      setOrderDealId(urlQuote.dealId ?? '');
+      if (urlQuote.lineItems?.length) {
+        setLines(urlQuote.lineItems.map((li: any) => ({ productId: li.productId || '', productName: li.description || li.productName || '', quantity: String(li.quantity || 1), unitPrice: String(li.unitPrice || 0) })));
+      }
+    }
+  }, [urlQuote]);
+  const [customerPONumber, setCustomerPONumber] = useState('');
   const [notes, setNotes] = useState('');
   const [shippingLine1, setShippingLine1] = useState('');
   const [shippingCity, setShippingCity] = useState('');
   const [shippingState, setShippingState] = useState('');
   const [shippingPostalCode, setShippingPostalCode] = useState('');
   const [shippingCountry, setShippingCountry] = useState('');
-  const [lines, setLines] = useState<LineItem[]>([emptyLine()]);
 
   const [selectedOrder, setSelectedOrder] = useState<CrmOrderDetailDto | null>(null);
+  const autoOpenedRef = useRef(false);
+  const urlOrderId = searchParams.get('orderId') ?? '';
   const [showPayment, setShowPayment] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('');
@@ -94,6 +124,14 @@ export function Component() {
   const { data: raw, isLoading } = useOrders(filter);
   const items: CrmOrderDetailDto[] = (raw as any)?.items ?? [];
 
+  const { data: pendingOrder } = useOrderById(urlOrderId || undefined);
+  useEffect(() => {
+    if (pendingOrder && !autoOpenedRef.current) {
+      setSelectedOrder(pendingOrder as any);
+      autoOpenedRef.current = true;
+    }
+  }, [pendingOrder]);
+
   const { data: deliveries } = useDeliveries(selectedOrder?.id);
   const deliveryList: import('../types/crm.types').CrmDeliveryDto[] = (deliveries as any) ?? [];
 
@@ -103,6 +141,14 @@ export function Component() {
   const cancelOrder = useCancelOrder();
   const recordPayment = useRecordOrderPayment();
   const updateFulfillment = useUpdateOrderFulfillment();
+  const acknowledgeOrder = useAcknowledgeOrder();
+  const creditCheck = useCreditCheck();
+  const updateOrder = useUpdateOrder();
+  const generateInvoice = useGenerateInvoiceFromDeal();
+  const [editingPO, setEditingPO] = useState('');
+  const [editingPOId, setEditingPOId] = useState('');
+  const [creditResult, setCreditResult] = useState<any>(null);
+  const [confirmOverrideNote, setConfirmOverrideNote] = useState('');
   const createDelivery = useCreateDelivery();
   const updateDeliveryStatus = useUpdateDeliveryStatus();
 
@@ -116,11 +162,14 @@ export function Component() {
     e.preventDefault();
     const lineItems: CrmOrderLineItemRequest[] = lines
       .filter(l => l.productName.trim())
-      .map(l => ({ productName: l.productName.trim(), quantity: Number(l.quantity), unitPrice: Number(l.unitPrice) }));
+      .map(l => ({ productId: l.productId || undefined, productName: l.productName.trim(), quantity: Number(l.quantity), unitPrice: Number(l.unitPrice) }));
     const req: CrmOrderCreateRequest = {
       contactId: contactId.trim(),
+      dealId: orderDealId || undefined,
+      accountId: orderAccountId || undefined,
       lineItems,
       currency: currency || 'USD',
+      customerPONumber: customerPONumber.trim() || undefined,
       notes: notes || undefined,
       shippingAddressLine1: shippingLine1 || undefined,
       shippingCity: shippingCity || undefined,
@@ -131,7 +180,7 @@ export function Component() {
     createOrder.mutate(req, {
       onSuccess: () => {
         setShowCreate(false);
-        setContactId(''); setCurrency('USD'); setNotes(''); setLines([emptyLine()]);
+        setContactId(''); setCurrency('USD'); setCustomerPONumber(''); setNotes(''); setLines([emptyLine()]);
         setShippingLine1(''); setShippingCity(''); setShippingState(''); setShippingPostalCode(''); setShippingCountry('');
       },
     });
@@ -178,8 +227,8 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search orders..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search orders..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Status</option>
             {Object.entries(CRM_ORDER_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -250,6 +299,13 @@ export function Component() {
         <form onSubmit={handleCreate} className="space-y-4">
           <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} /></Field>
           <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} /></Field>
+          <Field label="Customer PO #"><input value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} /></Field>
+          <Field label="Account">
+            <select value={orderAccountId} onChange={e => setOrderAccountId(e.target.value)} className={inputCls}>
+              <option value="">— Select account (optional) —</option>
+              {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+            </select>
+          </Field>
 
           <div className="border-t border-border-subtle pt-3">
             <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-2"><MapPin className="w-3 h-3" /> Shipping Address</label>
@@ -454,14 +510,50 @@ export function Component() {
               </div>
             )}
 
+            <Field label="Customer PO #">
+              {editingPOId === selectedOrder.id ? (
+                <div className="flex gap-2">
+                  <input value={editingPO} onChange={e => setEditingPO(e.target.value)} className="flex-1 px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-sm" autoFocus />
+                  <button onClick={() => { updateOrder.mutate({ id: selectedOrder.id, data: { customerPONumber: editingPO.trim() || undefined } }); setEditingPOId(''); }} className="text-xs text-success hover:underline font-medium">Save</button>
+                  <button onClick={() => setEditingPOId('')} className="text-xs text-text-muted hover:underline">Cancel</button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-text-primary font-semibold">{selectedOrder.customerPONumber || '—'}</span>
+                  <button onClick={() => { setEditingPO(selectedOrder.customerPONumber ?? ''); setEditingPOId(selectedOrder.id); }} className="text-[10px] text-brand hover:underline font-medium">{selectedOrder.customerPONumber ? 'Edit' : 'Add'}</button>
+                </div>
+              )}
+            </Field>
+            {selectedOrder.acknowledgmentSentAt && <Field label="Acknowledgment Sent"><span className="text-sm text-text-muted">{format(new Date(selectedOrder.acknowledgmentSentAt), 'MMM d, yyyy HH:mm')}</span></Field>}
             {selectedOrder.notes && <div><label className="text-xs font-semibold text-text-muted mb-1">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selectedOrder.notes}</p></div>}
             {selectedOrder.cancellationReason && <div><label className="text-xs font-semibold text-danger mb-1">Cancellation Reason</label><p className="text-sm text-danger bg-danger-soft rounded-xl p-3">{selectedOrder.cancellationReason}</p></div>}
 
             {/* Actions */}
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selectedOrder.status === 1 && (
-                <button onClick={() => confirmOrder.mutate(selectedOrder.id)} disabled={confirmOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success hover:bg-success-soft transition-all disabled:opacity-50">
-                  <CheckCircle className="w-3.5 h-3.5" /> Confirm
+                <button onClick={() => {
+                  if (selectedOrder.accountId) {
+                    creditCheck.mutate({ accountId: selectedOrder.accountId, orderValue: selectedOrder.totalAmount }, {
+                      onSuccess: (res: any) => {
+                        const result = { ...res };
+                        if (!selectedOrder.customerPONumber) setConfirmOverrideNote(PO_WARNING);
+                        setCreditResult(result);
+                      },
+                      onError: () => {
+                        if (!selectedOrder.customerPONumber) { setCreditResult({ riskLevel: 2, overdueBalance: 0, overdueInvoiceCount: 0, utilizedCredit: 0, availableCredit: 0, creditLimit: null }); setConfirmOverrideNote(PO_WARNING); }
+                        else confirmOrder.mutate(selectedOrder.id);
+                      },
+                    });
+                  } else {
+                    if (!selectedOrder.customerPONumber) {
+                      setCreditResult({ riskLevel: 2, overdueBalance: 0, overdueInvoiceCount: 0, utilizedCredit: 0, availableCredit: 0, creditLimit: null });
+                      setConfirmOverrideNote(PO_WARNING);
+                      return;
+                    }
+                    confirmOrder.mutate(selectedOrder.id);
+                  }
+                }} disabled={confirmOrder.isPending || creditCheck.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success hover:bg-success-soft transition-all disabled:opacity-50">
+                  {creditCheck.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle className="w-3.5 h-3.5" />} Confirm
                 </button>
               )}
               {selectedOrder.status === 2 && (
@@ -472,6 +564,18 @@ export function Component() {
                   <button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 transition-all disabled:opacity-50">
                     <CheckCircle className="w-3.5 h-3.5" /> Mark Delivered
                   </button>
+                </>
+              )}
+              {(selectedOrder.status === 2 || selectedOrder.status === 3) && (
+                <>
+                  <button onClick={() => acknowledgeOrder.mutate(selectedOrder.id)} disabled={acknowledgeOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
+                    <CheckCircle className="w-3.5 h-3.5" /> {selectedOrder.acknowledgmentSentAt ? 'Resend Acknowledgment' : 'Send Acknowledgment'}
+                  </button>
+                  {selectedOrder.dealId && (
+                    <button onClick={() => generateInvoice.mutate(selectedOrder.dealId!)} disabled={generateInvoice.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success transition-all disabled:opacity-50">
+                      {generateInvoice.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <DollarSign className="w-3.5 h-3.5" />} Generate Invoice
+                    </button>
+                  )}
                 </>
               )}
               {selectedOrder.status >= 1 && selectedOrder.status <= 3 && (
@@ -491,6 +595,54 @@ export function Component() {
           </div>
         )}
       </SlideOver>
+
+      {/* Credit Check Modal */}
+      {creditResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md bg-bg border border-border-subtle rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4" /> Credit Check — {creditResult.riskLevel === 1 ? 'Green' : creditResult.riskLevel === 2 ? 'Amber' : 'Red'}
+            </h3>
+            <div className="space-y-2 text-sm">
+              <p className="flex justify-between"><span className="text-text-muted">Overdue</span><span className={creditResult.overdueBalance > 0 ? 'text-danger font-semibold' : ''}>${creditResult.overdueBalance?.toLocaleString() ?? '0'} ({creditResult.overdueInvoiceCount} invoice{creditResult.overdueInvoiceCount !== 1 ? 's' : ''})</span></p>
+              <p className="flex justify-between"><span className="text-text-muted">Credit Limit</span><span>{creditResult.creditLimit ? `$${creditResult.creditLimit.toLocaleString()}` : '—'}</span></p>
+              <p className="flex justify-between"><span className="text-text-muted">Utilized</span><span>${creditResult.utilizedCredit?.toLocaleString() ?? '0'}</span></p>
+              <p className="flex justify-between"><span className="text-text-muted">Available</span><span className={creditResult.availableCredit < 0 ? 'text-danger font-semibold' : 'text-success font-semibold'}>${Math.max(0, creditResult.availableCredit ?? 0).toLocaleString()}</span></p>
+            </div>
+
+            {confirmOverrideNote === PO_WARNING && (
+              <p className="text-xs text-warning bg-warning-soft px-3 py-2 rounded-xl flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5 shrink-0" /> B2B customers typically require their PO number on invoices.</p>
+            )}
+
+            {creditResult.riskLevel === 1 && !confirmOverrideNote && (
+              <p className="text-xs text-success bg-success-soft px-3 py-2 rounded-xl">Account in good standing — no overdue, sufficient credit.</p>
+            )}
+            {creditResult.riskLevel >= 2 || confirmOverrideNote === PO_WARNING ? (
+              <div className="space-y-2">
+                {creditResult.riskLevel === 2 && confirmOverrideNote !== PO_WARNING && (
+                  <p className="text-xs text-warning bg-warning-soft px-3 py-2 rounded-xl">Account has ${creditResult.overdueBalance?.toLocaleString()} overdue. Proceed with caution.</p>
+                )}
+                {creditResult.riskLevel === 3 && (
+                  <p className="text-xs text-danger bg-danger-soft px-3 py-2 rounded-xl">Account over credit limit. Order blocked — manager override required.</p>
+                )}
+                {(creditResult.riskLevel >= 2 || confirmOverrideNote === PO_WARNING) && (
+                  <input value={confirmOverrideNote} onChange={e => setConfirmOverrideNote(e.target.value)} placeholder="Add a note explaining why..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" />
+                )}
+              </div>
+            ) : null}
+
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => { setCreditResult(null); setConfirmOverrideNote(''); }} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+              {(creditResult.riskLevel === 1 || creditResult.riskLevel === 2) && (
+                <button onClick={() => { confirmOrder.mutate(selectedOrder!.id); setCreditResult(null); setConfirmOverrideNote(''); }} disabled={confirmOrder.isPending}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-success hover:opacity-90 disabled:opacity-50">
+                  {confirmOrder.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />} Confirm Order
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -181,6 +181,8 @@ export const router = createBrowserRouter([
       { path: 'crm/scoring-rules', lazy: () => import('@/features/crm/pages/ScoringRulesPage') },
       { path: 'crm/tax-rules', lazy: () => import('@/features/crm/pages/TaxRulesPage') },
       { path: 'crm/payment-terms', lazy: () => import('@/features/crm/pages/PaymentTermsPage') },
+      { path: 'crm/inventory', lazy: () => import('@/features/crm/pages/InventoryPage') },
+      { path: 'crm/commissions', lazy: () => import('@/features/crm/pages/CommissionsPage') },
       // ── Flow A/B Experiments ──
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
       { index: true, element: <Navigate to="chat" replace /> },

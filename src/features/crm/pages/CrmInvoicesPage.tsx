@@ -182,6 +182,7 @@ export function Component() {
               <Field label="Account / Deal"><span className="text-text-secondary text-sm">{selected.accountName ?? selected.dealName ?? '—'}</span></Field>
               <Field label="Due Date"><span className="text-text-secondary text-sm">{selected.dueDate ? format(parseISO(selected.dueDate), 'MMM d, yyyy') : '—'}</span></Field>
               <Field label="Paid At"><span className="text-text-secondary text-sm">{selected.paidAt ? format(parseISO(selected.paidAt), 'MMM d, yyyy') : '—'}</span></Field>
+              <Field label="Customer PO #"><span className="text-text-primary font-semibold text-sm">{(selected as any).customerPONumber || '—'}</span></Field>
             </div>
 
             {/* Record Payment */}

@@ -600,6 +600,8 @@ export const crmApi = {
     apiClient.post(`${BASE}/quotes/${id}/reject`, {}),
   reviseQuote: (id: string) =>
     apiClient.post<import('../types/crm.types').CrmQuoteSummaryDto>(`${BASE}/quotes/${id}/revise`),
+  createOrderFromQuote: (quoteId: string) =>
+    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/from-quote/${quoteId}`),
   updateQuoteStatus: (id: string, status: number) =>
     apiClient.patch(`${BASE}/quotes/${id}/status`, { status }),
   deleteQuote: (id: string) =>
@@ -921,6 +923,11 @@ export const crmApi = {
   payPublicInvoice: (token: string, reference?: string) =>
     apiClient.post<boolean>(`/v1/public/pay/${token}`, { reference }),
 
+  // ─── Business Catalog Items (for Price Book product picker) ───────────────
+  getCatalogItems: () =>
+    apiClient.get<any>('/v1/business-catalog/items', { params: { pageSize: 1000 } })
+      .then((r: any) => r?.items ?? []),
+
   // ─── CPQ Price Books ──────────────────────────────────────────────────────
   getPriceBooks: () =>
     apiClient.get<import('../types/crm.types').CrmPriceBookDto[]>(`${BASE}/price-books`),
@@ -1139,4 +1146,41 @@ export const crmApi = {
     apiClient.put<import('../types/crm.types').CrmDealCompetitorDto>(`/v1/crm/competitors/deal/${dealCompetitorId}/outcome`, outcome),
   removeDealCompetitor: (dealCompetitorId: string) =>
     apiClient.delete<void>(`/v1/crm/competitors/deal/${dealCompetitorId}`),
+
+  // ─── Inventory ────────────────────────────────────────────────────────────────
+  getInventory: (filter?: { belowReorderPoint?: boolean; search?: string; page?: number; pageSize?: number }) =>
+    apiClient.get<PagedResult<import('../types/crm.types').InventoryItemDto>>(`/v1/inventory`, { params: filter }),
+  getInventoryByProduct: (productId: string) =>
+    apiClient.get<import('../types/crm.types').InventoryItemDto>(`/v1/inventory/${productId}`),
+  checkStock: (items: import('../types/crm.types').StockCheckItem[]) =>
+    apiClient.post<import('../types/crm.types').StockCheckResult>(`/v1/inventory/check`, items),
+  adjustInventory: (productId: string, data: import('../types/crm.types').InventoryAdjustRequest) =>
+    apiClient.post<import('../types/crm.types').InventoryItemDto>(`/v1/inventory/${productId}/adjust`, data),
+  getInventoryTransactions: (productId: string) =>
+    apiClient.get<any[]>(`/v1/inventory/${productId}/transactions`),
+
+  acknowledgeOrder: (id: string) =>
+    apiClient.post(`/v1/crm/orders/${id}/acknowledge`),
+  createOrderFromQuote: (quoteId: string) =>
+    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/from-quote/${quoteId}`),
+  creditCheck: (accountId: string, orderValue: number) =>
+    apiClient.post<import('../types/crm.types').CreditCheckResult>(`/v1/crm/orders/credit-check`, { accountId, orderValue }),
+  getDealHandover: (dealId: string) =>
+    apiClient.get<import('../types/crm.types').DealHandoverDto | null>(`/v1/crm/deals/${dealId}/handover`),
+  submitDealHandover: (dealId: string, data: import('../types/crm.types').DealHandoverSubmitRequest) =>
+    apiClient.post<import('../types/crm.types').DealHandoverDto>(`/v1/crm/deals/${dealId}/handover`, data),
+
+  // ─── Commissions ──────────────────────────────────────────────────────────────
+  getCommissionEntries: (filter: import('../types/crm.types').CrmCommissionFilter) =>
+    apiClient.get<import('../types/crm.types').CrmCommissionEntryDto[]>(`/v1/crm/commissions/entries`, { params: filter }),
+  getCommissionPayouts: (periodCode?: string) =>
+    apiClient.get<import('../types/crm.types').CrmCommissionPayoutDto[]>(`/v1/crm/commissions/payouts`, { params: periodCode ? { periodCode } : undefined }),
+  runCommission: (data: { periodCode: string; periodStart: string; periodEnd: string }) =>
+    apiClient.post(`/v1/crm/commissions/run`, data),
+  createCommissionPlan: (data: { name: string; rateType: number; rateValue: number; targetEntity: number }) =>
+    apiClient.post(`/v1/crm/commissions/plans`, data),
+  finalizePayout: (id: string, data: import('../types/crm.types').CrmFinalizePayoutRequest) =>
+    apiClient.post(`/v1/crm/commissions/payouts/${id}/finalize`, data),
+  markPayoutPaid: (id: string) =>
+    apiClient.post(`/v1/crm/commissions/payouts/${id}/pay`),
 } as const;

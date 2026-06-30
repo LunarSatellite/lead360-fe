@@ -523,6 +523,12 @@ export function useGenerateInvoicePaymentLink() {
   });
 }
 
+// ── Business Catalog Items ──────────────────────────────────────────────────────
+const CATALOG_ITEMS_KEY = ['crm', 'catalog-items'] as const;
+export function useCatalogItems() {
+  return useQuery({ queryKey: CATALOG_ITEMS_KEY, queryFn: () => crmApi.getCatalogItems() });
+}
+
 // ── CPQ Price Books ─────────────────────────────────────────────────────────────
 const PRICEBOOK_KEY = ['crm', 'price-books'] as const;
 
@@ -1746,6 +1752,14 @@ export function useDeleteQuote() {
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
+export function useCreateOrderFromQuote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (quoteId: string) => crmApi.createOrderFromQuote(quoteId),
+    onSuccess: (_d) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Order created from quote.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
 
 // ─── Proposals ────────────────────────────────────────────────────────────────
 
@@ -1964,8 +1978,50 @@ export function useFulfillOrder() {
 export function useCancelOrder() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => crmApi.cancelOrder(id),
+    mutationFn: (id: string) => crmApi.cancelOrder(id, 'Cancelled by user'),
     onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Order cancelled.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useDealHandover(dealId: string | undefined) {
+  return useQuery({ queryKey: ['crm', 'deal-handover', dealId], queryFn: () => crmApi.getDealHandover(dealId!), enabled: !!dealId });
+}
+export function useSubmitDealHandover() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ dealId, data }: { dealId: string; data: import('../types/crm.types').DealHandoverSubmitRequest }) => crmApi.submitDealHandover(dealId, data),
+    onSuccess: (_d, vars) => { qc.invalidateQueries({ queryKey: ['crm', 'deal-handover', vars.dealId] }); toast.success('Handover submitted.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useCreditCheck() {
+  return useMutation({
+    mutationFn: ({ accountId, orderValue }: { accountId: string; orderValue: number }) => crmApi.creditCheck(accountId, orderValue),
+  });
+}
+
+// ── Inventory ──────────────────────────────────────────────────────────────────
+export function useInventory(filter?: any) {
+  return useQuery({ queryKey: ['crm', 'inventory', filter], queryFn: () => crmApi.getInventory(filter) });
+}
+export function useCheckStock() {
+  return useMutation({
+    mutationFn: (items: import('../types/crm.types').StockCheckItem[]) => crmApi.checkStock(items),
+  });
+}
+export function useAdjustInventory() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ productId, data }: { productId: string; data: import('../types/crm.types').InventoryAdjustRequest }) => crmApi.adjustInventory(productId, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'inventory'] }); toast.success('Inventory adjusted.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useAcknowledgeOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.acknowledgeOrder(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Acknowledgment sent.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
@@ -3142,5 +3198,28 @@ export function useVoidSupplierInvoice() {
   });
 }
 
+// ── Commissions ────────────────────────────────────────────────────────────────
+export function useCommissionEntries(filter: import('../types/crm.types').CrmCommissionFilter) {
+  return useQuery({ queryKey: ['crm', 'commission-entries', filter], queryFn: () => crmApi.getCommissionEntries(filter) });
+}
+export function useCommissionPayouts(periodCode?: string) {
+  return useQuery({ queryKey: ['crm', 'commission-payouts', periodCode], queryFn: () => crmApi.getCommissionPayouts(periodCode) });
+}
+export function useFinalizePayout() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').CrmFinalizePayoutRequest }) => crmApi.finalizePayout(id, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'commission-payouts'] }); qc.invalidateQueries({ queryKey: ['crm', 'commission-entries'] }); toast.success('Payout finalized.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useMarkPayoutPaid() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.markPayoutPaid(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'commission-payouts'] }); toast.success('Payout marked paid.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
 
 

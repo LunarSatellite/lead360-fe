@@ -13,6 +13,7 @@ import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS, CrmActivityEventKind, C
 import { formatDistanceToNow, format } from 'date-fns';
 import { DealGateChecklist } from '../components/DealGateChecklist';
 import { ApprovalPanel } from '../components/ApprovalPanel';
+import { HandoverSection } from '../components/HandoverSection';
 
 import { ApprovalEntityType, CrmEntityType } from '../types/crm.types';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
@@ -317,6 +318,9 @@ export function Component() {
 
       {/* ── Competitors ── */}
       {id && <DealCompetitorsSection dealId={id} />}
+
+      {/* ── Handover to CS ── */}
+      {id && deal.status === 2 && <HandoverSection dealId={id} />}
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card p-4">
         <div className="flex items-center gap-3">

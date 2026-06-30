@@ -67,6 +67,7 @@ export const ROUTES = {
     crmTaxRules: '/dashboard/crm/tax-rules',
     crmPriceBooks: '/dashboard/crm/price-books',
     crmPaymentTerms: '/dashboard/crm/payment-terms',
+    crmInventory: '/dashboard/crm/inventory',
     crmContracts: '/dashboard/crm/contracts',
     crmContractTemplates: '/dashboard/crm/contract-templates',
     crmOrders: '/dashboard/crm/orders',
@@ -91,6 +92,7 @@ export const ROUTES = {
     crmTimePeriods: '/dashboard/crm/time-periods',
     crmApprovalChains: '/dashboard/crm/approval-chains',
     crmAssignmentRotation: '/dashboard/crm/assignment-rotation',
+    crmCommissions: '/dashboard/crm/commissions',
     // ── RBAC & Territories ──
     crmTerritories: '/dashboard/crm/territories',
     // ── Procurement ──

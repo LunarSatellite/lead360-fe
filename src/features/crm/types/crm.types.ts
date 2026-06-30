@@ -714,6 +714,19 @@ export interface CrmPriceBookEntryRequest {
   productId?: string; productName: string; sku?: string; unitPrice: number; minQuantity?: number;
 }
 
+// ── Catalog Items (for Price Book product picker) ──────────────────────────
+export interface CatalogItemSummaryDto {
+  id: string;
+  name: string;
+  description?: string;
+  price?: number;
+  currency: string;
+  unit: string;
+  isAvailable: boolean;
+  imageUrl?: string;
+  categoryName?: string;
+}
+
 // ── Contracts (CLM) ───────────────────────────────────────────────────────────
 export enum CrmContractStatus {
   Draft = 1, PendingSignature = 2, Active = 3, Expired = 4, Terminated = 5, Renewed = 6,
@@ -869,6 +882,7 @@ export interface CrmAccountSummaryDto {
   tier: CrmAccountTier | null;
   ownedByUserId: string | null;
   contractValue: number | null;
+  creditLimit?: number;
   currency: string;
   renewalDate: string | null;
   paymentTermId?: string;
@@ -882,6 +896,7 @@ export interface CrmAccountSummaryDto {
 export interface CrmAccountDetailDto extends CrmAccountSummaryDto {
   notes: string | null;
   tagsJson: string | null;
+  creditLimit?: number;
 }
 
 export interface CrmAccountCreateRequest {
@@ -892,6 +907,7 @@ export interface CrmAccountCreateRequest {
   ownedByUserId?: string;
   renewalDate?: string;
   contractValue?: number;
+  creditLimit?: number;
   currency?: string;
   notes?: string;
   tagsJson?: string;
@@ -906,6 +922,7 @@ export interface CrmAccountUpdateRequest {
   ownedByUserId?: string;
   renewalDate?: string;
   contractValue?: number;
+  creditLimit?: number;
   currency?: string;
   notes?: string;
   tagsJson?: string;
@@ -1912,6 +1929,7 @@ export interface CrmInvoiceSummaryDto {
   accountId: string | null; accountName: string | null;
   totalAmount: number; currency: string; status: CrmInvoiceStatus;
   dueDate: string | null; paidAt: string | null; createdAt: string;
+  customerPONumber?: string;
 }
 export interface CrmInvoiceDetailDto extends CrmInvoiceSummaryDto { lineItems: CrmQuoteLineItemDto[]; dunningHistory: CrmDunningEventDto[]; }
 export interface CrmRecordPaymentRequest { amount: number; paymentMethod?: CrmPaymentMethod; paidAt?: string; notes?: string; }
@@ -2022,6 +2040,7 @@ export interface CrmOrderSummaryDto {
 
 export interface CrmOrderDetailDto {
   id: string; orderNumber: string; contactId: string; contactName: string | null;
+  accountId?: string; dealId?: string;
   status: CrmOrderStatus; fulfillmentStatus: CrmOrderFulfillmentStatus; paymentStatus: CrmOrderPaymentStatus;
   orderDate: string; subtotal: number; taxAmount: number; discountAmount: number;
   totalAmount: number; currency: string;
@@ -2035,13 +2054,14 @@ export interface CrmOrderDetailDto {
   paymentMethod: string | null; paidAt: string | null; paymentReference: string | null;
   shippingMethod: string | null; carrier: string | null; trackingNumber: string | null;
   requestedDeliveryDate: string | null; actualDeliveryDate: string | null; shippedAt: string | null;
-  erpOrderId: string | null; cancellationReason: string | null;
+  erpOrderId: string | null; customerPONumber?: string; cancellationReason: string | null;
   notes: string | null; lineItems: CrmOrderLineItemDto[]; createdAt: string;
+  acknowledgmentSentAt?: string;
 }
 
 export interface CrmOrderCreateRequest {
   contactId: string; accountId?: string; dealId?: string; quoteId?: string;
-  currency: string;
+  currency: string; customerPONumber?: string;
   shippingAddressLine1?: string; shippingAddressLine2?: string;
   shippingCity?: string; shippingState?: string; shippingPostalCode?: string; shippingCountry?: string;
   billingSameAsShipping?: boolean;
@@ -2056,6 +2076,7 @@ export interface CrmOrderUpdateRequest {
   shippingAddressLine1?: string; shippingAddressLine2?: string;
   shippingCity?: string; shippingState?: string; shippingPostalCode?: string; shippingCountry?: string;
   carrier?: string; trackingNumber?: string; shippingMethod?: string;
+  customerPONumber?: string;
 }
 
 export interface CrmOrderFilter {
@@ -3316,5 +3337,91 @@ export const CRM_TAX_TYPE_LABEL: Record<CrmTaxTypeValue, string> = {
 export interface CrmTaxRuleDto { id: string; name: string; jurisdiction: string; taxType: CrmTaxTypeValue; rate: number; appliesToAllProducts: boolean; productCategoryJson?: string; isActive: boolean; }
 export interface CrmTaxRuleCreateRequest { name: string; jurisdiction: string; taxType: CrmTaxTypeValue; rate: number; appliesToAllProducts?: boolean; productCategoryJson?: string; }
 export interface CrmTaxRuleUpdateRequest { name?: string; jurisdiction?: string; taxType?: CrmTaxTypeValue; rate?: number; appliesToAllProducts?: boolean; productCategoryJson?: string; isActive?: boolean; }
+
+// ── Inventory ──────────────────────────────────────────────────────────────────
+export interface InventoryItemDto {
+  id: string; productId: string; productName?: string; sku?: string;
+  quantityOnHand: number; quantityReserved: number; quantityAvailable: number;
+  reorderPoint: number; belowReorderPoint: boolean; warehouseLocation?: string;
+}
+export interface StockCheckItem { productId: string; quantity: number; }
+export interface StockCheckLineResult {
+  productId: string; productName?: string; quantityRequested: number;
+  quantityOnHand: number; quantityReserved: number; quantityAvailable: number; isAvailable: boolean;
+}
+export interface StockCheckResult { allAvailable: boolean; lines: StockCheckLineResult[]; }
+export interface InventoryAdjustRequest { quantity: number; notes?: string; warehouseLocation?: string; }
+
+// ── Credit Check ───────────────────────────────────────────────────────────────
+export interface CreditCheckResult {
+  overdueBalance: number;
+  overdueInvoiceCount: number;
+  creditLimit?: number;
+  utilizedCredit: number;
+  availableCredit: number;
+  riskLevel: 1 | 2 | 3;
+}
+export const CREDIT_RISK_LABELS: Record<number, string> = { 1: 'Green', 2: 'Amber', 3: 'Red' };
+
+export interface DealHandoverDto {
+  id: string; dealId: string; customerExpectations?: string; stakeholderSummary?: string;
+  specialCommitments?: string; redFlags?: string; handedOverToUserId?: string;
+  handedOverToUserName?: string; previousOwnerUserId?: string; previousOwnerUserName?: string;
+  handedOverAt?: string; status: number; writtenByUserName?: string;
+}
+export interface DealHandoverSubmitRequest {
+  customerExpectations?: string; stakeholderSummary?: string; specialCommitments?: string;
+  redFlags?: string; handedOverToUserId?: string;
+}
+
+// ── Commissions ────────────────────────────────────────────────────────────────
+export const CrmCommissionRunStatus = { Draft: 1, Finalized: 2, Paid: 3 } as const;
+export type CrmCommissionRunStatus = (typeof CrmCommissionRunStatus)[keyof typeof CrmCommissionRunStatus];
+
+export const CRM_COMMISSION_STATUS_LABELS: Record<number, string> = { 1: 'Pending', 2: 'Approved', 3: 'Paid' };
+export const CRM_COMMISSION_STATUS_COLORS: Record<number, string> = {
+  1: 'text-warning border-warning/30 bg-warning/10',
+  2: 'text-success border-success/30 bg-success/10',
+  3: 'text-text-muted border-border-subtle bg-bg-elevated',
+};
+
+export interface CrmCommissionEntryDto {
+  id: string;
+  commissionPlanId?: string;
+  dealId?: string;
+  orderId?: string;
+  repUserId?: string;
+  currency: string;
+  dealAmount: number;
+  commissionAmount: number;
+  description?: string;
+  runCode?: string;
+  paidAt?: string;
+  createdAt: string;
+}
+
+export interface CrmCommissionPayoutDto {
+  id: string;
+  userId: string;
+  periodCode: string;
+  label?: string;
+  totalCommissionAmount: number;
+  deductions?: number;
+  netPayAmount: number;
+  currency: string;
+  status: CrmCommissionRunStatus;
+  paidAt?: string;
+  notes?: string;
+  createdAt: string;
+}
+
+export interface CrmCommissionFilter {
+  repUserId?: string;
+  periodCode?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface CrmFinalizePayoutRequest { deductions?: number; notes?: string; }
 
 

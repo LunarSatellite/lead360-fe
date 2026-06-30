@@ -14,6 +14,7 @@ import {
 } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { CsvToolbar } from '../components/CsvToolbar';
 import type { CrmDealStageCreateRequest, CrmDealCreateRequest } from '../types/crm.types';
 import { CrmEntityType } from '../types/crm.types';
@@ -161,6 +162,7 @@ function CsvDealsToolbar() {
 
 export function Component() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [view, setView] = useState<View>('kanban');
   const [search, setSearch] = useState('');
   const [selectedPipelineId, setSelectedPipelineId] = useState<string | null>(null);
@@ -365,8 +367,20 @@ export function Component() {
           </button>
           <CsvDealsToolbar />
           <button
-            onClick={() => setShowFilters(v => !v)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${showFilters || activeFiltersCount > 0 ? 'border-brand bg-brand/10 text-brand' : 'border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary'}`}
+            onClick={() => {
+              if (filterOwnerId === user?.id) { setFilterOwnerId(''); setListFilter(f => ({ ...f, ownedByUserId: undefined, page: 1 })); }
+              else { setFilterOwnerId(user?.id ?? ''); setListFilter(f => ({ ...f, ownedByUserId: user?.id, page: 1 })); }
+            }}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
+              filterOwnerId === user?.id ? 'bg-brand text-bg border-brand' : 'bg-bg-elevated border-border-subtle text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            <User className="w-3.5 h-3.5" />
+            My Deals
+          </button>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-bg-elevated border-border-subtle text-text-secondary hover:text-text-primary"
           >
             <Filter className="w-3.5 h-3.5" />
             Filter{activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}

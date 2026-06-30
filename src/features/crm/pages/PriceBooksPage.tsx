@@ -4,10 +4,10 @@ import { DataView } from '@/shared/ui/DataView';
 import { confirmDialog } from '@/shared/ui/confirm';
 import {
   usePriceBooks, usePriceBook, useCreatePriceBook, useUpdatePriceBook, useDeletePriceBook,
-  useAddPriceBookEntry, useDeletePriceBookEntry,
+  useAddPriceBookEntry, useDeletePriceBookEntry, useCatalogItems,
 } from '../api/crm.queries';
 import type {
-  CrmPriceBookDto, CrmPriceBookEntryDto, CrmPriceBookEntryRequest,
+  CrmPriceBookDto, CrmPriceBookEntryDto, CrmPriceBookEntryRequest, CatalogItemSummaryDto,
 } from '../types/crm.types';
 
 const inputCls =
@@ -157,14 +157,22 @@ export function Component() {
 function EntryEditor({ bookId, currency, entries }: { bookId: string; currency: string; entries: CrmPriceBookEntryDto[] }) {
   const addEntry = useAddPriceBookEntry();
   const delEntry = useDeletePriceBookEntry();
-  const [form, setForm] = useState<{ productName: string; sku: string; unitPrice: string }>({ productName: '', sku: '', unitPrice: '' });
+  const { data: catalogItems } = useCatalogItems();
+  const items: CatalogItemSummaryDto[] = catalogItems ?? [];
+  const [form, setForm] = useState<{ productId: string; productName: string; sku: string; unitPrice: string }>({ productId: '', productName: '', sku: '', unitPrice: '' });
+
+  const pickProduct = (id: string) => {
+    const p = items.find((x) => x.id === id);
+    if (!p) { setForm({ productId: '', productName: '', sku: '', unitPrice: '' }); return; }
+    setForm({ productId: p.id, productName: p.name, sku: p.unit, unitPrice: p.price?.toString() ?? '' });
+  };
 
   const add = (e: React.FormEvent) => {
     e.preventDefault();
     const price = Number(form.unitPrice);
     if (!form.productName.trim() || Number.isNaN(price) || price < 0) return;
-    const data: CrmPriceBookEntryRequest = { productName: form.productName.trim(), sku: form.sku || undefined, unitPrice: price };
-    addEntry.mutate({ id: bookId, data }, { onSuccess: () => setForm({ productName: '', sku: '', unitPrice: '' }) });
+    const data: CrmPriceBookEntryRequest = { productId: form.productId || undefined, productName: form.productName.trim(), sku: form.sku || undefined, unitPrice: price };
+    addEntry.mutate({ id: bookId, data }, { onSuccess: () => setForm({ productId: '', productName: '', sku: '', unitPrice: '' }) });
   };
 
   return (
@@ -195,9 +203,23 @@ function EntryEditor({ bookId, currency, entries }: { bookId: string; currency: 
         </table>
       </div>
 
-      <form onSubmit={add} className="flex flex-wrap gap-2 items-center">
-        <input className={`${inputCls} flex-1 min-w-[160px]`} placeholder="Product name" value={form.productName}
-          onChange={(e) => setForm((f) => ({ ...f, productName: e.target.value }))} />
+      <form onSubmit={add} className="flex flex-wrap gap-2 items-end">
+        <div className="flex-1 min-w-[200px]">
+          {items.length > 0 ? (
+            <select
+              value={form.productId}
+              onChange={(e) => pickProduct(e.target.value)}
+              className={`${inputCls} appearance-none`}>
+              <option value="">＋ Pick a product…</option>
+              {items.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}{p.categoryName ? ` (${p.categoryName})` : ''}</option>
+              ))}
+            </select>
+          ) : (
+            <input className={inputCls} placeholder="Product name" value={form.productName}
+              onChange={(e) => setForm((f) => ({ ...f, productName: e.target.value }))} />
+          )}
+        </div>
         <input className={`${inputCls} w-28`} placeholder="SKU" value={form.sku}
           onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))} />
         <input className={`${inputCls} w-32`} type="number" min="0" step="0.01" placeholder="Price" value={form.unitPrice}

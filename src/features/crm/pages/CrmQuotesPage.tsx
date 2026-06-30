@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
-import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check } from 'lucide-react';
+import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check, Package } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useReviseQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook } from '../api/crm.queries';
 import { crmApi } from '../api/crm.api';
 import { confirmDialog } from '@/shared/ui/confirm';
@@ -57,6 +57,7 @@ function SlideOver({ open, onClose, title, children, wide }: {
 const emptyLine = (): CrmQuoteLineItemRequest => ({ description: '', quantity: 1, unitPrice: 0 });
 
 export function Component() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = useState<CrmQuoteFilter>({ page: 1, pageSize: 20 });
   const [search, setSearch] = useState('');
@@ -274,7 +275,7 @@ export function Component() {
                 </button>
               </div>
             )}
-            {selected.status === 2 && ( /* Sent */
+            {selected.status === 2 && ( /* Sent — customer can accept/reject */
               <div className="flex items-center gap-2">
                 <button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
@@ -287,6 +288,18 @@ export function Component() {
                 <button onClick={() => { rejectQuote.mutate(selected.id); setSelected(null); }} disabled={rejectQuote.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   {rejectQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" strokeWidth={1.5} />} Reject
+                </button>
+              </div>
+            )}
+            {selected.status === 3 && ( /* Accepted — ready to create order */
+              <div className="flex items-center gap-2">
+                <button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                  {reviseQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" strokeWidth={1.5} />} Revise
+                </button>
+                <button onClick={() => { setSelected(null); navigate(`/dashboard/crm/orders?quoteId=${selected.id}`); }}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
+                  <Package className="w-4 h-4" strokeWidth={1.5} /> Create Order
                 </button>
               </div>
             )}

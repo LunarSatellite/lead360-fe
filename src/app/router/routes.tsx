@@ -129,7 +129,7 @@ export const router = createBrowserRouter([
       // ── CRM ──
       { path: 'crm/leads', lazy: () => import('@/features/crm/pages/LeadsPage') },
       { path: 'crm/leads/:id', lazy: () => import('@/features/crm/pages/LeadDetailPage') },
-      { path: 'crm/contacts', lazy: () => import('@/features/crm/pages/ContactsPage') },
+      { path: 'crm/contacts', lazy: () => import('@/features/crm/pages/CrmContactsHubPage') },
       { path: 'crm/contacts/:id', lazy: () => import('@/features/crm/pages/ContactDetailPage') },
       { path: 'crm/organizations', lazy: () => import('@/features/crm/pages/OrganizationsPage') },
       { path: 'crm/accounts', lazy: () => import('@/features/crm/pages/AccountsPage') },
@@ -149,6 +149,7 @@ export const router = createBrowserRouter([
       { path: 'crm/proposals', lazy: () => import('@/features/crm/pages/CrmProposalsPage') },
       { path: 'crm/invoices', lazy: () => import('@/features/crm/pages/CrmInvoicesPage') },
       { path: 'crm/subscriptions', lazy: () => import('@/features/crm/pages/CrmSubscriptionsPage') },
+      { path: 'crm/product-bundles', lazy: () => import('@/features/crm/pages/ProductBundlesPage') },
       { path: 'crm/orders', lazy: () => import('@/features/crm/pages/CrmOrdersPage') },
       { path: 'crm/meetings', lazy: () => import('@/features/crm/pages/CrmMeetingsPage') },
       { path: 'crm/workflows', lazy: () => import('@/features/crm/pages/CrmWorkflowsPage') },

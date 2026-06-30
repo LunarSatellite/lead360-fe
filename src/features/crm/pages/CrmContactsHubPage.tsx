@@ -1,22 +1,20 @@
 import { useSearchParams } from 'react-router-dom';
-import { Briefcase, GitBranch, ShieldCheck, Link2 } from 'lucide-react';
-import { Component as DealsPage } from './DealsPage';
-import { Component as PipelinesPage } from './CrmPipelinesPage';
-import { Component as ApprovalsPage } from './CrmApprovalsPage';
-import { Component as ChainsPage } from './CrmApprovalChainsPage';
+import { UserCheck, GitMerge } from 'lucide-react';
+import { Component as ContactsPage } from './ContactsPage';
+import { Component as DeduplicationPage } from './CrmDeduplicationPage';
+import { usePendingDedupCount } from '../api/crm.queries';
 
 const TABS = [
-  { key: 'deals',     label: 'Deals',     icon: Briefcase  },
-  { key: 'pipelines', label: 'Pipelines', icon: GitBranch  },
-  { key: 'approvals', label: 'Approvals', icon: ShieldCheck },
-  { key: 'chains',    label: 'Chains',    icon: Link2       },
+  { key: 'contacts',    label: 'Contacts',    icon: UserCheck },
+  { key: 'duplicates',  label: 'Duplicates',  icon: GitMerge  },
 ] as const;
 
 type TabKey = typeof TABS[number]['key'];
 
 export function Component() {
   const [params, setParams] = useSearchParams();
-  const active = (params.get('tab') as TabKey | null) ?? 'deals';
+  const active = (params.get('tab') as TabKey | null) ?? 'contacts';
+  const dedupCount = usePendingDedupCount();
 
   const setTab = (key: TabKey) => setParams({ tab: key }, { replace: true });
 
@@ -27,6 +25,7 @@ export function Component() {
         <div className="flex items-center gap-1">
           {TABS.map(({ key, label, icon: Icon }) => {
             const isActive = active === key;
+            const showBadge = key === 'duplicates' && dedupCount > 0;
             return (
               <button
                 key={key}
@@ -42,6 +41,11 @@ export function Component() {
                   strokeWidth={1.6}
                 />
                 {label}
+                {showBadge && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[9px] font-black bg-warning/20 text-warning border border-warning/30">
+                    {dedupCount}
+                  </span>
+                )}
                 {isActive && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[calc(100%+6px)] w-4 h-[2px] rounded-full bg-brand" />
                 )}
@@ -52,10 +56,8 @@ export function Component() {
       </div>
 
       {/* Tab content */}
-      {active === 'deals'     && <DealsPage />}
-      {active === 'pipelines' && <PipelinesPage />}
-      {active === 'approvals' && <ApprovalsPage />}
-      {active === 'chains'    && <ChainsPage />}
+      {active === 'contacts'   && <ContactsPage />}
+      {active === 'duplicates' && <DeduplicationPage />}
     </div>
   );
 }

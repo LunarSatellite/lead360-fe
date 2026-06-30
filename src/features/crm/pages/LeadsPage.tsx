@@ -42,6 +42,7 @@ import type {
   CreateManualLeadRequest,
   CrmContactSummaryDto,
   CrmOrganizationSummaryDto,
+  CrmDuplicateMatchDto,
 } from '../types/crm.types';
 import {
   LeadStage,
@@ -149,7 +150,7 @@ export function Component() {
     showCreate ? dupEmail : undefined,
     showCreate ? dupPhone : undefined,
   );
-  const leadMatches = (leadDupes as any[]) ?? [];
+  const leadMatches = (leadDupes as unknown as CrmDuplicateMatchDto[] | undefined) ?? [];
 
   const { data: rawContactData } = useContacts({ search: contactQuery || undefined, pageSize: 6 });
   const contactSuggestions = ((rawContactData as unknown as PagedResult<CrmContactSummaryDto> | undefined)?.items ?? [])

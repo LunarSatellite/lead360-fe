@@ -179,6 +179,14 @@ export function Component() {
                 }
               </Field>
               <Field label="Amount"><span className="font-semibold text-text-primary">{selected.currency} {selected.totalAmount.toLocaleString()}</span></Field>
+              {selected.amountPaid != null && selected.amountPaid > 0 && selected.amountPaid < selected.totalAmount && (
+                <Field label="Balance due">
+                  <span className="font-semibold text-warning">
+                    {selected.currency} {(selected.totalAmount - selected.amountPaid).toLocaleString()}
+                    <span className="text-text-muted font-normal"> ({selected.currency} {selected.amountPaid.toLocaleString()} paid)</span>
+                  </span>
+                </Field>
+              )}
               <Field label="Account / Deal"><span className="text-text-secondary text-sm">{selected.accountName ?? selected.dealName ?? '—'}</span></Field>
               <Field label="Due Date"><span className="text-text-secondary text-sm">{selected.dueDate ? format(parseISO(selected.dueDate), 'MMM d, yyyy') : '—'}</span></Field>
               <Field label="Paid At"><span className="text-text-secondary text-sm">{selected.paidAt ? format(parseISO(selected.paidAt), 'MMM d, yyyy') : '—'}</span></Field>

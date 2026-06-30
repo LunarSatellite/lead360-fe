@@ -727,6 +727,23 @@ export interface CatalogItemSummaryDto {
   categoryName?: string;
 }
 
+export interface CrmProductBundleDto {
+  id: string; name: string; description?: string; currency: string;
+  isActive: boolean; itemCount: number; total: number; createdAt: string;
+}
+export interface CrmProductBundleItemDto {
+  id: string; bundleId: string; productId?: string; productName: string;
+  sku?: string; quantity: number; unitPrice: number;
+}
+export interface CrmProductBundleDetailDto {
+  id: string; name: string; description?: string; currency: string;
+  isActive: boolean; items: CrmProductBundleItemDto[]; createdAt: string;
+}
+export interface CrmProductBundleCreateRequest { name: string; description?: string; currency?: string }
+export interface CrmProductBundleItemRequest {
+  productId?: string; productName: string; sku?: string; quantity: number; unitPrice: number;
+}
+
 // ── Contracts (CLM) ───────────────────────────────────────────────────────────
 export enum CrmContractStatus {
   Draft = 1, PendingSignature = 2, Active = 3, Expired = 4, Terminated = 5, Renewed = 6,
@@ -1927,7 +1944,7 @@ export interface CrmDunningEventDto { id: string; eventType: string; occurredAt:
 export interface CrmInvoiceSummaryDto {
   id: string; invoiceNumber: string; dealId: string | null; dealName: string | null;
   accountId: string | null; accountName: string | null;
-  totalAmount: number; currency: string; status: CrmInvoiceStatus;
+  totalAmount: number; amountPaid?: number; currency: string; status: CrmInvoiceStatus;
   dueDate: string | null; paidAt: string | null; createdAt: string;
   customerPONumber?: string;
 }
@@ -2078,6 +2095,45 @@ export interface CrmOrderUpdateRequest {
   carrier?: string; trackingNumber?: string; shippingMethod?: string;
   customerPONumber?: string;
 }
+
+export interface PickListItemDto {
+  id: string;
+  productId: string;
+  productName: string;
+  warehouseLocation?: string;
+  quantityToPick: number;
+  quantityPicked: number;
+  serialNumbers?: string;
+}
+
+export interface PickListDto {
+  id: string;
+  orderId: string;
+  status: number; // 1=Pending, 2=InProgress, 3=Picked, 4=Packed
+  boxCount?: number;
+  totalWeightKg?: number;
+  notes?: string;
+  items: PickListItemDto[];
+  createdAt: string;
+}
+
+export interface UpdatePickListItemRequest {
+  quantityPicked: number;
+  serialNumbers?: string;
+}
+
+export interface MarkPackedRequest {
+  boxCount?: number;
+  totalWeightKg?: number;
+  notes?: string;
+}
+
+export const PICK_LIST_STATUS_LABELS: Record<number, string> = {
+  1: 'Pending',
+  2: 'In Progress',
+  3: 'Picked',
+  4: 'Packed',
+};
 
 export interface CrmOrderFilter {
   search?: string; status?: CrmOrderStatus; fulfillmentStatus?: CrmOrderFulfillmentStatus;

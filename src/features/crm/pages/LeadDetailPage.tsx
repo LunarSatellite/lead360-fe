@@ -195,13 +195,13 @@ export function Component() {
               {/* Right: Organization Info */}
               <div className="space-y-3 border-l border-border-subtle pl-6">
                 <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Organization Info</h3>
-                <InfoRow icon={<Building2 className="w-4 h-4" />} label="Name"     value={lead.organizationName} />
-                <InfoRow icon={<Globe   className="w-4 h-4" />} label="Domain"   value={lead.organizationDomain} />
-                <InfoRow icon={<Layers  className="w-4 h-4" />} label="Industry" value={lead.organizationIndustry} />
-                <InfoRow icon={<Users   className="w-4 h-4" />} label="Employees" value={lead.organizationEmployeeCount?.toLocaleString()} />
-                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="Country"  value={lead.organizationCountry} />
-                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="City"     value={lead.organizationCity} />
-                <InfoRow icon={<Link    className="w-4 h-4" />} label="Website"  value={lead.organizationWebsite} />
+                <InfoRow icon={<Building2 className="w-4 h-4" />} label="Name"     value={lead.companyName} />
+                <InfoRow icon={<Globe   className="w-4 h-4" />} label="Domain"   value={lead.companyDomain} />
+                <InfoRow icon={<Layers  className="w-4 h-4" />} label="Industry" value={lead.companyIndustry} />
+                <InfoRow icon={<Users   className="w-4 h-4" />} label="Employees" value={lead.companyEmployeeCount?.toLocaleString()} />
+                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="Country"  value={lead.companyCountry} />
+                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="City"     value={lead.companyCity} />
+                <InfoRow icon={<Link    className="w-4 h-4" />} label="Website"  value={lead.companyWebsite} />
               </div>
             </div>
           </div>

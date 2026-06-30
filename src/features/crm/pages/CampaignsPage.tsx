@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Plus, Zap, ChevronDown, ChevronUp, X, Loader2,
   Send, Clock, Ban, BarChart2, Mail, MessageSquare, Trash2,
@@ -41,7 +42,8 @@ import { formatDistanceToNow, format } from 'date-fns';
 type MainTab = 'b2b' | 'leads' | 'fb-ads';
 
 const inputCls =
-  'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
+  'w-full px-3 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors';
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 // Matches backend RecipientStatus enum: Pending=1, Sent=2, Failed=3, Replied=4, Opened=5
 const RECIPIENT_STATUS_LABEL: Record<number, string> = {
@@ -56,19 +58,40 @@ const selectCls = `${inputCls} cursor-pointer`;
 // ─── Shared centered modal ────────────────────────────────────────────────────
 
 function SlideOver({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-bg-elevated shadow-2xl flex flex-col border-thin border-border-subtle rounded-card max-h-[90vh]">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-end pr-4">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative w-[540px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+          <h3
+            className="font-bold leading-tight"
+            style={{
+              background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            {title}
+          </h3>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        <div className="flex-1 flex flex-col min-h-0">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -175,16 +198,17 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
+      <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
       {/* Core */}
       <SectionLabel label="Campaign" />
       <div>
         <label className="block text-xs font-semibold text-text-muted mb-1.5">Campaign Name *</label>
-        <input required value={form.name} onChange={set('name')} placeholder="May B2B Outreach" className={inputCls} />
+        <input required value={form.name} onChange={set('name')} placeholder="May B2B Outreach" className={inputCls} style={inputStyle} />
       </div>
       <div>
         <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
-        <input value={form.description} onChange={set('description')} placeholder="What is this campaign for?" className={inputCls} />
+        <input value={form.description} onChange={set('description')} placeholder="What is this campaign for?" className={inputCls} style={inputStyle} />
       </div>
 
       {/* Channel */}
@@ -211,7 +235,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
       {isEmailChannel && (
         <div>
           <label className="block text-xs font-semibold text-text-muted mb-1.5">Subject Line *</label>
-          <input required value={form.subject} onChange={set('subject')} placeholder="Exclusive offer for {{FullName}}" className={inputCls} />
+          <input required value={form.subject} onChange={set('subject')} placeholder="Exclusive offer for {{FullName}}" className={inputCls} style={inputStyle} />
         </div>
       )}
 
@@ -221,7 +245,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           placeholder={isEmailChannel
             ? `Hi {{FullName}},\n\nWe wanted to reach out…`
             : `Hi {{FirstName}}! We have something special for you. Reply to learn more.`}
-          className={`${inputCls} resize-none`} />
+          className={`${inputCls} resize-none`} style={inputStyle} />
         <p className="text-xs text-text-muted mt-1">
           Tokens: <code className="text-brand">{'{{FullName}}'}</code>{' '}
           <code className="text-brand">{'{{Email}}'}</code>
@@ -234,7 +258,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
         </label>
         <textarea rows={2} value={form.targetFilterJson}
           onChange={(e) => { set('targetFilterJson')(e); setFilterJsonError(''); }}
-          placeholder={'{"hasOpenDeals": true}'} className={`${inputCls} resize-none font-mono text-xs ${filterJsonError ? 'border-danger' : ''}`} />
+          placeholder={'{"hasOpenDeals": true}'} className={`${inputCls} resize-none font-mono text-xs ${filterJsonError ? 'border-danger' : ''}`} style={inputStyle} />
         {filterJsonError && <p className="text-xs text-danger mt-1">{filterJsonError}</p>}
       </div>
 
@@ -242,7 +266,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
         <label className="block text-xs font-semibold text-text-muted mb-1.5">
           Schedule At <span className="text-text-muted font-normal">(leave blank to save as draft)</span>
         </label>
-        <input type="datetime-local" value={form.scheduledAt} onChange={set('scheduledAt')} className={inputCls} />
+        <input type="datetime-local" value={form.scheduledAt} onChange={set('scheduledAt')} className={inputCls} style={inputStyle} />
       </div>
 
       {/* Advanced toggle */}
@@ -262,16 +286,16 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2">
               <label className="block text-xs text-text-muted mb-1">Budget Amount</label>
-              <input type="number" min="0" step="0.01" value={form.budgetAmount} onChange={set('budgetAmount')} placeholder="5000" className={inputCls} />
+              <input type="number" min="0" step="0.01" value={form.budgetAmount} onChange={set('budgetAmount')} placeholder="5000" className={inputCls} style={inputStyle} />
             </div>
             <div>
               <label className="block text-xs text-text-muted mb-1">Currency</label>
-              <input value={form.budgetCurrency} onChange={set('budgetCurrency')} placeholder="USD" maxLength={3} className={inputCls} />
+              <input value={form.budgetCurrency} onChange={set('budgetCurrency')} placeholder="USD" maxLength={3} className={inputCls} style={inputStyle} />
             </div>
           </div>
           <div>
             <label className="block text-xs text-text-muted mb-1">Cost Per Send</label>
-            <input type="number" min="0" step="0.0001" value={form.costPerSend} onChange={set('costPerSend')} placeholder="0.05" className={inputCls} />
+            <input type="number" min="0" step="0.0001" value={form.costPerSend} onChange={set('costPerSend')} placeholder="0.05" className={inputCls} style={inputStyle} />
           </div>
 
           {/* Goal */}
@@ -279,7 +303,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs text-text-muted mb-1">Goal Type</label>
-              <select value={form.goalType} onChange={set('goalType')} className={selectCls}>
+              <select value={form.goalType} onChange={set('goalType')} className={selectCls} style={inputStyle}>
                 <option value="">No goal</option>
                 {Object.entries(CAMPAIGN_GOAL_LABELS).map(([k, v]) => (
                   <option key={k} value={k}>{v}</option>
@@ -288,7 +312,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
             </div>
             <div>
               <label className="block text-xs text-text-muted mb-1">Target</label>
-              <input type="number" min="0" step="1" value={form.goalTarget} onChange={set('goalTarget')} placeholder="100" className={inputCls} />
+              <input type="number" min="0" step="1" value={form.goalTarget} onChange={set('goalTarget')} placeholder="100" className={inputCls} style={inputStyle} />
             </div>
           </div>
 
@@ -296,7 +320,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           <SectionLabel label="Attribution" />
           <div>
             <label className="block text-xs text-text-muted mb-1">Default Attribution Model</label>
-            <select value={form.defaultAttributionModel} onChange={set('defaultAttributionModel')} className={selectCls}>
+            <select value={form.defaultAttributionModel} onChange={set('defaultAttributionModel')} className={selectCls} style={inputStyle}>
               {Object.entries(ATTRIBUTION_MODEL_LABELS).map(([k, v]) => (
                 <option key={k} value={k}>{v}</option>
               ))}
@@ -308,32 +332,34 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs text-text-muted mb-1">Source</label>
-              <input value={form.utmSource} onChange={set('utmSource')} placeholder="email" className={inputCls} />
+              <input value={form.utmSource} onChange={set('utmSource')} placeholder="email" className={inputCls} style={inputStyle} />
             </div>
             <div>
               <label className="block text-xs text-text-muted mb-1">Medium</label>
-              <input value={form.utmMedium} onChange={set('utmMedium')} placeholder="newsletter" className={inputCls} />
+              <input value={form.utmMedium} onChange={set('utmMedium')} placeholder="newsletter" className={inputCls} style={inputStyle} />
             </div>
             <div>
               <label className="block text-xs text-text-muted mb-1">Campaign</label>
-              <input value={form.utmCampaign} onChange={set('utmCampaign')} placeholder="q2_launch" className={inputCls} />
+              <input value={form.utmCampaign} onChange={set('utmCampaign')} placeholder="q2_launch" className={inputCls} style={inputStyle} />
             </div>
             <div>
               <label className="block text-xs text-text-muted mb-1">Content</label>
-              <input value={form.utmContent} onChange={set('utmContent')} placeholder="subject_a" className={inputCls} />
+              <input value={form.utmContent} onChange={set('utmContent')} placeholder="subject_a" className={inputCls} style={inputStyle} />
             </div>
           </div>
         </div>
       )}
 
-      <div className="flex gap-3 pt-1">
-        <button type="submit" disabled={isSaving || !form.name.trim() || !form.bodyTemplate.trim() || (isEmailChannel && !form.subject.trim())}
-          className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all">
-          {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Plus className="w-3.5 h-3.5" /> Create Campaign</>}
-        </button>
+      </div>
+      <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
         <button type="button" onClick={onCancel}
-          className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">
+          className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">
           Cancel
+        </button>
+        <button type="submit" disabled={isSaving || !form.name.trim() || !form.bodyTemplate.trim() || (isEmailChannel && !form.subject.trim())}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+          {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+          Create Campaign
         </button>
       </div>
     </form>
@@ -982,67 +1008,70 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
     setForm((f) => ({ ...f, [k]: v }));
   const preview = previewSegment.data as any;
 
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-end pr-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[600px] h-full bg-bg-shell border-l border-thin border-border-subtle overflow-y-auto p-6" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-base font-bold text-text-primary">New Lead Outreach Campaign</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
-            <X className="w-4 h-4" />
-          </button>
+      <div className="drawer-slide-in relative w-[540px] flex flex-col overflow-hidden"
+        style={{ borderRadius: 18, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)', maxHeight: 'calc(100vh - 32px)' }}>
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Lead Outreach Campaign</h3>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
         </div>
-        <form onSubmit={(e) => { e.preventDefault(); createCampaign.mutate(formToLeadRequest(form), { onSuccess: onClose }); }} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-text-muted mb-1.5">Name *</label>
-            <input required value={form.name} onChange={(e) => setField('name', e.target.value)} placeholder="May Warm Lead Outreach" className={inputCls} />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
-            <input value={form.description} onChange={(e) => setField('description', e.target.value)} className={inputCls} />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-text-muted mb-1.5">Message Template *</label>
-            <textarea rows={4} required value={form.messageTemplate} onChange={(e) => setField('messageTemplate', e.target.value)}
-              placeholder="Hi {{CustomerName}}, we have a special offer for you…" className={`${inputCls} resize-none`} />
-          </div>
-          <div className="bg-bg-elevated border border-border-subtle rounded-xl p-4 space-y-4">
-            <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Segment Filter</p>
+        <form onSubmit={(e) => { e.preventDefault(); createCampaign.mutate(formToLeadRequest(form), { onSuccess: onClose }); }} className="flex-1 flex flex-col min-h-0">
+          <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
             <div>
-              <label className="block text-xs text-text-muted mb-2">Lead Stages</label>
-              <StageCheckboxes selected={form.stages} onChange={(s) => setField('stages', s)} />
+              <label className="block text-xs font-semibold text-text-muted mb-1.5">Name *</label>
+              <input required value={form.name} onChange={(e) => setField('name', e.target.value)} placeholder="May Warm Lead Outreach" className={inputCls} style={inputStyle} />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs text-text-muted mb-1">Min Score (0–100)</label>
-                <input type="number" min={0} max={100} value={form.minScore} onChange={(e) => setField('minScore', Number(e.target.value))} className={inputCls} />
-              </div>
-              <div>
-                <label className="block text-xs text-text-muted mb-1">Active in last (days)</label>
-                <input type="number" min={1} value={form.lastActiveDays} onChange={(e) => setField('lastActiveDays', Number(e.target.value))} className={inputCls} />
-              </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
+              <input value={form.description} onChange={(e) => setField('description', e.target.value)} className={inputCls} style={inputStyle} />
             </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <button type="button"
-                onClick={() => previewSegment.mutate({ stages: form.stages.length > 0 ? form.stages : undefined, minScore: form.minScore > 0 ? form.minScore : undefined, lastActiveDays: form.lastActiveDays > 0 ? form.lastActiveDays : undefined })}
-                disabled={previewSegment.isPending}
-                className="flex items-center gap-1.5 text-xs font-semibold text-brand bg-brand-soft border border-border-glow px-3 py-1.5 rounded-xl transition-all disabled:opacity-50">
-                {previewSegment.isPending && <Loader2 className="w-3 h-3 animate-spin" />}
-                Preview Segment
-              </button>
-              {preview && <span className="text-xs text-text-secondary"><span className="font-semibold text-text-primary">{preview.matchCount}</span> leads match</span>}
+            <div>
+              <label className="block text-xs font-semibold text-text-muted mb-1.5">Message Template *</label>
+              <textarea rows={4} required value={form.messageTemplate} onChange={(e) => setField('messageTemplate', e.target.value)}
+                placeholder="Hi {{CustomerName}}, we have a special offer for you…" className={`${inputCls} resize-none`} style={inputStyle} />
+            </div>
+            <div className="bg-bg-elevated border border-border-subtle rounded-xl p-4 space-y-4">
+              <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Segment Filter</p>
+              <div>
+                <label className="block text-xs text-text-muted mb-2">Lead Stages</label>
+                <StageCheckboxes selected={form.stages} onChange={(s) => setField('stages', s)} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-text-muted mb-1">Min Score (0–100)</label>
+                  <input type="number" min={0} max={100} value={form.minScore} onChange={(e) => setField('minScore', Number(e.target.value))} className={inputCls} style={inputStyle} />
+                </div>
+                <div>
+                  <label className="block text-xs text-text-muted mb-1">Active in last (days)</label>
+                  <input type="number" min={1} value={form.lastActiveDays} onChange={(e) => setField('lastActiveDays', Number(e.target.value))} className={inputCls} style={inputStyle} />
+                </div>
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                <button type="button"
+                  onClick={() => previewSegment.mutate({ stages: form.stages.length > 0 ? form.stages : undefined, minScore: form.minScore > 0 ? form.minScore : undefined, lastActiveDays: form.lastActiveDays > 0 ? form.lastActiveDays : undefined })}
+                  disabled={previewSegment.isPending}
+                  className="flex items-center gap-1.5 text-xs font-semibold text-brand bg-brand-soft border border-border-glow px-3 py-1.5 rounded-xl transition-all disabled:opacity-50">
+                  {previewSegment.isPending && <Loader2 className="w-3 h-3 animate-spin" />}
+                  Preview Segment
+                </button>
+                {preview && <span className="text-xs text-text-secondary"><span className="font-semibold text-text-primary">{preview.matchCount}</span> leads match</span>}
+              </div>
             </div>
           </div>
-          <div className="flex justify-end gap-3 pt-2 border-t border-border-subtle">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">Cancel</button>
-            <button type="submit" disabled={createCampaign.isPending} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all">
-              {createCampaign.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              Create
+          <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
+            <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
+            <button type="submit" disabled={createCampaign.isPending} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              {createCampaign.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+              Create Campaign
             </button>
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -1274,39 +1303,43 @@ function FbAdsTab() {
       {/* Connect form slide-over */}
       {showConnect && (
         <SlideOver title="Connect Facebook Ad Account" onClose={() => setShowConnect(false)}>
-          <form onSubmit={handleConnect} className="space-y-4">
-            <div className="p-3 bg-bg-elevated rounded-xl border border-border-subtle text-xs text-text-muted space-y-1">
-              <p className="font-semibold text-text-secondary">How to get your credentials:</p>
-              <p>1. Go to <span className="font-mono text-brand">business.facebook.com</span> → Ad Accounts</p>
-              <p>2. Copy your Ad Account ID (format: <span className="font-mono">act_123456789</span>)</p>
-              <p>3. Generate a System User Access Token with <span className="font-mono">ads_read</span> permission</p>
+          <form onSubmit={handleConnect} className="flex-1 flex flex-col min-h-0">
+            <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
+              <div className="p-3 bg-bg-elevated rounded-xl border border-border-subtle text-xs text-text-muted space-y-1">
+                <p className="font-semibold text-text-secondary">How to get your credentials:</p>
+                <p>1. Go to <span className="font-mono text-brand">business.facebook.com</span> → Ad Accounts</p>
+                <p>2. Copy your Ad Account ID (format: <span className="font-mono">act_123456789</span>)</p>
+                <p>3. Generate a System User Access Token with <span className="font-mono">ads_read</span> permission</p>
+              </div>
+              <SectionLabel label="Ad Account" />
+              <div>
+                <label className="text-xs text-text-muted">Ad Account ID *</label>
+                <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
+                  placeholder="act_123456789 or 123456789" className={`mt-1 ${inputCls}`} style={inputStyle} required />
+              </div>
+              <div>
+                <label className="text-xs text-text-muted">Access Token *</label>
+                <input type="password" value={form.accessToken} onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
+                  placeholder="EAAxxxx..." className={`mt-1 ${inputCls}`} style={inputStyle} required />
+              </div>
+              <div>
+                <label className="text-xs text-text-muted">Business Name</label>
+                <input value={form.businessName ?? ''} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+                  placeholder="My Business" className={`mt-1 ${inputCls}`} style={inputStyle} />
+              </div>
+              <div>
+                <label className="text-xs text-text-muted">Currency</label>
+                <input value={form.currency ?? 'USD'} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
+                  placeholder="USD" className={`mt-1 ${inputCls}`} style={inputStyle} maxLength={10} />
+              </div>
             </div>
-            <SectionLabel label="Ad Account" />
-            <div>
-              <label className="text-xs text-text-muted">Ad Account ID *</label>
-              <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
-                placeholder="act_123456789 or 123456789" className={`mt-1 ${inputCls}`} required />
+            <div className="shrink-0 flex items-center justify-end px-6 py-4 border-t border-border-subtle">
+              <button type="submit" disabled={connectMutation.isPending}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-colors disabled:opacity-50">
+                {connectMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Link2 className="w-3.5 h-3.5" />}
+                Connect
+              </button>
             </div>
-            <div>
-              <label className="text-xs text-text-muted">Access Token *</label>
-              <input type="password" value={form.accessToken} onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
-                placeholder="EAAxxxx..." className={`mt-1 ${inputCls}`} required />
-            </div>
-            <div>
-              <label className="text-xs text-text-muted">Business Name</label>
-              <input value={form.businessName ?? ''} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-                placeholder="My Business" className={`mt-1 ${inputCls}`} />
-            </div>
-            <div>
-              <label className="text-xs text-text-muted">Currency</label>
-              <input value={form.currency ?? 'USD'} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
-                placeholder="USD" className={`mt-1 ${inputCls}`} maxLength={10} />
-            </div>
-            <button type="submit" disabled={connectMutation.isPending}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold text-bg bg-brand hover:bg-brand-light transition-all disabled:opacity-50">
-              {connectMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Link2 className="w-4 h-4" />}
-              Connect
-            </button>
           </form>
         </SlideOver>
       )}

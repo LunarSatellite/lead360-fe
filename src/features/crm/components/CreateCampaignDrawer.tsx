@@ -320,6 +320,7 @@ function StepCampaign({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       <Field label="Campaign Name">
         <input
           className={inputCls}
+
           value={form.name}
           onChange={e => set('name', e.target.value)}
           placeholder="e.g. Summer Sale 2026 — Lead Gen"
@@ -438,6 +439,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
           <input
             type="number" min={13} max={65}
             className={inputCls}
+  
             value={form.ageMin}
             onChange={e => set('ageMin', Number(e.target.value))}
           />
@@ -446,6 +448,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
           <input
             type="number" min={13} max={65}
             className={inputCls}
+  
             value={form.ageMax}
             onChange={e => set('ageMax', Number(e.target.value))}
           />
@@ -496,6 +499,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" />
             <input
               className={inputCls + ' pl-8'}
+    
               value={countryQ}
               onChange={e => { setCountryQ(e.target.value); setShowCountrySearch(true); }}
               onFocus={() => setShowCountrySearch(true)}
@@ -553,6 +557,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" />
             <input
               className={inputCls + ' pl-8 pr-8'}
+    
               value={interestQ}
               onChange={e => { setInterestQ(e.target.value); setShowInterestSearch(true); }}
               onFocus={() => setShowInterestSearch(true)}
@@ -651,6 +656,7 @@ function StepBudget({ form, set }: { form: CreateCampaignRequest; set: SetFn }) 
           <input
             type="number" min={1} step={0.01}
             className={inputCls + ' pl-8'}
+  
             value={form.budget}
             onChange={e => set('budget', Number(e.target.value))}
             placeholder="10.00"
@@ -667,6 +673,7 @@ function StepBudget({ form, set }: { form: CreateCampaignRequest; set: SetFn }) 
         <input
           type="datetime-local"
           className={inputCls}
+
           value={form.startTime}
           onChange={e => set('startTime', e.target.value)}
         />
@@ -676,6 +683,7 @@ function StepBudget({ form, set }: { form: CreateCampaignRequest; set: SetFn }) 
         <input
           type="datetime-local"
           className={inputCls}
+
           value={form.stopTime ?? ''}
           onChange={e => set('stopTime', e.target.value)}
         />
@@ -692,6 +700,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       <Field label="Ad Name (internal reference)">
         <input
           className={inputCls}
+
           value={form.adName}
           onChange={e => set('adName', e.target.value)}
           placeholder="e.g. Summer Sale — Lead Ad v1"
@@ -701,6 +710,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       <Field label="Headline (shown in bold on the ad)">
         <input
           className={inputCls}
+
           value={form.headline}
           onChange={e => set('headline', e.target.value)}
           placeholder="e.g. Get 30% Off This Summer!"
@@ -712,6 +722,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       <Field label="Ad Body (main text above the ad)">
         <textarea
           className={inputCls + ' min-h-[90px] resize-none'}
+
           value={form.adBody}
           onChange={e => set('adBody', e.target.value)}
           placeholder="e.g. Don't miss our biggest sale of the year. Shop now and save big on all products."
@@ -725,6 +736,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
           <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
           <input
             className={inputCls + ' pl-8'}
+  
             value={form.destinationUrl}
             onChange={e => set('destinationUrl', e.target.value)}
             placeholder="https://yourwebsite.com/landing"
@@ -738,6 +750,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
           <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
           <input
             className={inputCls + ' pl-8'}
+  
             value={form.imageUrl ?? ''}
             onChange={e => set('imageUrl', e.target.value)}
             placeholder="https://cdn.example.com/ad-image.jpg"
@@ -749,6 +762,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       <Field label="Call to Action Button">
         <select
           className={inputCls}
+
           value={form.callToAction}
           onChange={e => set('callToAction', e.target.value)}
         >

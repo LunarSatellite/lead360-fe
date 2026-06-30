@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { Plus, X, Loader2, ClipboardList, Send, AlertTriangle, FilePlus, RefreshCw, Save } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
@@ -23,7 +23,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="space-y-1">
       <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
@@ -33,7 +33,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function SlideOver({ open, onClose, title, children, wide }: {
-  open: boolean; onClose: () => void; title: string; children: React.ReactNode; wide?: boolean;
+  open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean;
 }) {
   if (!open) return null;
   return (
@@ -130,6 +130,7 @@ export function Component() {
   const items: CrmProposalSummaryDto[] = (raw as any)?.items ?? [];
 
   const { data: detail, isLoading: detailLoading } = useProposalById(selectedId ?? undefined);
+  const detailData = detail as unknown as CrmProposalDetailDto | undefined;
 
   const { data: rawTemplates } = useProposalTemplates();
   const templates: any[] = (rawTemplates as any) ?? [];
@@ -266,23 +267,23 @@ export function Component() {
       <SlideOver open={!!selectedId} onClose={() => setSelectedId(null)} title="Proposal Detail" wide>
         {detailLoading ? (
           <div className="flex items-center justify-center py-12 text-text-muted"><Loader2 className="w-6 h-6 animate-spin" /></div>
-        ) : detail && (
+        ) : detailData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Title"><span className="text-text-primary font-semibold text-sm">{detail.title}</span></Field>
-              <Field label="Status"><Badge value={detail.status} labels={CRM_PROPOSAL_STATUS_LABELS} colors={CRM_PROPOSAL_STATUS_COLORS} /></Field>
+              <Field label="Title"><span className="text-text-primary font-semibold text-sm">{detailData.title}</span></Field>
+              <Field label="Status"><Badge value={detailData.status} labels={CRM_PROPOSAL_STATUS_LABELS} colors={CRM_PROPOSAL_STATUS_COLORS} /></Field>
               <Field label="Deal"><span className="text-text-secondary text-sm">{selectedSummary?.dealName ?? '—'}</span></Field>
               <Field label="Contact"><span className="text-text-secondary text-sm">{selectedSummary?.contactName ?? '—'}</span></Field>
             </div>
 
             {/* Editable Sections */}
-            {detail.sections?.length > 0 && (
+            {(detailData.sections?.length ?? 0) > 0 && (
               <div className="space-y-3">
-                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Sections ({detail.openGapsCount} open gap{detail.openGapsCount !== 1 ? 's' : ''})</p>
-                {detail.sections.map((s) => (
+                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Sections ({detailData.openGapsCount} open gap{detailData.openGapsCount !== 1 ? 's' : ''})</p>
+                {detailData.sections!.map((s) => (
                   <EditableSection
                     key={s.id}
-                    proposalId={detail.id}
+                    proposalId={detailData.id}
                     section={s}
                   />
                 ))}
@@ -290,21 +291,21 @@ export function Component() {
             )}
 
             {/* Approval */}
-            {detail.id && <ApprovalPanel entityType={ApprovalEntityType.Proposal} entityId={detail.id} entityName={detail.title} />}
+            {detailData.id && <ApprovalPanel entityType={ApprovalEntityType.Proposal} entityId={detailData.id} entityName={detailData.title} />}
 
-            {canSend(detail) && (
-              <button onClick={() => { sendProposal.mutate(detail.id); setSelectedId(null); }} disabled={sendProposal.isPending}
+            {canSend(detailData) && (
+              <button onClick={() => { sendProposal.mutate(detailData.id); setSelectedId(null); }} disabled={sendProposal.isPending}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
                 {sendProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" strokeWidth={1.5} />} Send Proposal
               </button>
             )}
-            {detail.status === 4 && (
+            {detailData.status === 4 && (
               <div className="flex gap-2">
-                <button onClick={() => { acceptProposal.mutate(detail.id); setSelectedId(null); }} disabled={acceptProposal.isPending}
+                <button onClick={() => { acceptProposal.mutate(detailData.id); setSelectedId(null); }} disabled={acceptProposal.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   {acceptProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Accept
                 </button>
-                <button onClick={() => { rejectProposal.mutate(detail.id); setSelectedId(null); }} disabled={rejectProposal.isPending}
+                <button onClick={() => { rejectProposal.mutate(detailData.id); setSelectedId(null); }} disabled={rejectProposal.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   {rejectProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Reject
                 </button>

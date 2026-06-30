@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Trash2, Star, BookOpen, Loader2, X } from 'lucide-react';
 import { DataView } from '@/shared/ui/DataView';
 import { confirmDialog } from '@/shared/ui/confirm';
@@ -7,7 +8,7 @@ import {
   useAddPriceBookEntry, useDeletePriceBookEntry, useCatalogItems,
 } from '../api/crm.queries';
 import type {
-  CrmPriceBookDto, CrmPriceBookEntryDto, CrmPriceBookEntryRequest, CatalogItemSummaryDto,
+  CrmPriceBookDto, CrmPriceBookDetailDto, CrmPriceBookEntryDto, CrmPriceBookEntryRequest, CatalogItemSummaryDto,
 } from '../types/crm.types';
 
 const inputCls =
@@ -50,7 +51,7 @@ export function Component() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
         {/* Books list */}
-        <DataView query={booksQuery} empty={<EmptyBooks onCreate={() => setShowCreate(true)} />}>
+        <DataView<CrmPriceBookDto[]> query={booksQuery as any} empty={<EmptyBooks onCreate={() => setShowCreate(true)} />}>
           {(books) => (
             <div className="flex flex-col gap-2">
               {books.map((b: CrmPriceBookDto) => (
@@ -80,7 +81,7 @@ export function Component() {
               Select a price book to manage its items.
             </div>
           ) : (
-            <DataView query={detail}>
+            <DataView<CrmPriceBookDetailDto> query={detail as any}>
               {(book) => (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-3">
@@ -126,8 +127,8 @@ export function Component() {
         </div>
       </div>
 
-      {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      {showCreate && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <form onSubmit={submitBook} className="w-full max-w-md bg-bg-card border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-text-primary">New price book</h2>
@@ -148,7 +149,8 @@ export function Component() {
               {createBook.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Create'}
             </button>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

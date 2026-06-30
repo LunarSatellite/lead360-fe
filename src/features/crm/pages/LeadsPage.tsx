@@ -643,13 +643,15 @@ export function Component() {
                     <button
                       type="button"
                       onClick={() => setStageOpen(o => !o)}
-                      className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl bg-bg-elevated border text-sm text-text-primary focus:outline-none transition-all"
+                      className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                       style={{
                         backgroundColor: '#1A332C',
-                        borderColor: stageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)',
+                        border: `1px solid ${stageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
                         boxShadow: stageOpen
                           ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
                           : 'none',
+                        outline: 'none',
+                        transition: 'box-shadow 0.2s ease',
                       }}
                     >
                       <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />

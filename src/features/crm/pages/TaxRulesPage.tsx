@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Trash2, Percent, Globe, X } from 'lucide-react';
-import { DataView } from '@/shared/ui/DataView';
 import { confirmDialog } from '@/shared/ui/confirm';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
@@ -15,7 +15,7 @@ const TAX_KEY = ['crm', 'tax-rules'] as const;
 export function Component() {
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: TAX_KEY, queryFn: () => crmApi.getTaxRules() });
-  const rules: CrmTaxRuleDto[] = data ?? [];
+  const rules: CrmTaxRuleDto[] = (data as unknown as CrmTaxRuleDto[]) ?? [];
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ name: '', jurisdiction: '', taxType: CrmTaxType.VAT as CrmTaxTypeValue, rate: 0, appliesToAllProducts: true });
@@ -115,8 +115,8 @@ export function Component() {
         </div>
       </div>
 
-      {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      {showCreate && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <form onSubmit={submit} className="w-full max-w-md bg-bg-card border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-text-primary">New tax rule</h2>
@@ -144,7 +144,8 @@ export function Component() {
               {createMut.isPending ? 'Creating...' : 'Create'}
             </button>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

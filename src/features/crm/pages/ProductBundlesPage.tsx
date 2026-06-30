@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Plus, Trash2, Package, Loader2, X } from 'lucide-react';
 import { DataView } from '@/shared/ui/DataView';
 import { confirmDialog } from '@/shared/ui/confirm';
@@ -7,7 +8,7 @@ import {
   useAddProductBundleItem, useDeleteProductBundleItem,
 } from '../api/crm.queries';
 import type {
-  CrmProductBundleDto, CrmProductBundleItemDto, CrmProductBundleItemRequest,
+  CrmProductBundleDto, CrmProductBundleDetailDto, CrmProductBundleItemDto, CrmProductBundleItemRequest,
 } from '../types/crm.types';
 
 const inputCls =
@@ -48,7 +49,7 @@ export function Component() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
-        <DataView query={bundlesQuery} empty={<EmptyBundles onCreate={() => setShowCreate(true)} />}>
+        <DataView<CrmProductBundleDto[]> query={bundlesQuery as any} empty={<EmptyBundles onCreate={() => setShowCreate(true)} />}>
           {(bundles) => (
             <div className="flex flex-col gap-2">
               {bundles.map((b: CrmProductBundleDto) => (
@@ -74,7 +75,7 @@ export function Component() {
               Select a bundle to manage its items.
             </div>
           ) : (
-            <DataView query={detail}>
+            <DataView<CrmProductBundleDetailDto> query={detail as any}>
               {(bundle) => (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between gap-3">
@@ -97,8 +98,8 @@ export function Component() {
         </div>
       </div>
 
-      {showCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+      {showCreate && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <form onSubmit={submit} className="w-full max-w-md bg-bg-card border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-sm font-bold text-text-primary">New bundle</h2>
@@ -115,7 +116,8 @@ export function Component() {
               {createBundle.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Create'}
             </button>
           </form>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

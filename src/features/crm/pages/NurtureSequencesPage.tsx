@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, Pencil, Trash2, X, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Loader2, ChevronDown } from 'lucide-react';
 import {
   useNurtureSequences,
   useCreateNurtureSequence,
@@ -145,6 +145,9 @@ function StepCard({
   const set = <K extends keyof StepFormState>(key: K, value: StepFormState[K]) =>
     onChange({ ...step, [key]: value });
 
+  const [actionOpen, setActionOpen] = useState(false);
+  const [newStageOpen, setNewStageOpen] = useState(false);
+
   return (
     <div className="bg-bg-elevated border border-border-subtle rounded-xl p-4 space-y-3">
       {/* Step header */}
@@ -169,24 +172,51 @@ function StepCard({
           min={0}
           value={step.delayMinutes}
           onChange={(e) => set('delayMinutes', Number(e.target.value))}
-          className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow"
+          className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
         />
       </div>
 
       {/* Action type */}
       <div>
         <label className="block text-xs font-medium text-text-secondary mb-1">Action</label>
-        <select
-          value={step.actionType}
-          onChange={(e) => set('actionType', Number(e.target.value) as NurtureStepAction)}
-          className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow"
-        >
-          {Object.entries(NURTURE_ACTION_LABELS).map(([val, label]) => (
-            <option key={val} value={val}>
-              {label}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setActionOpen(o => !o)}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+            style={{
+              backgroundColor: '#1A332C',
+              border: `1px solid ${actionOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+              boxShadow: actionOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+              outline: 'none',
+              transition: 'box-shadow 0.2s ease',
+            }}
+          >
+            <span className="flex-1 text-left font-medium text-text-secondary">
+              {NURTURE_ACTION_LABELS[step.actionType]}
+            </span>
+            <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${actionOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+          </button>
+          {actionOpen && (
+            <div
+              className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+              style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+            >
+              {Object.entries(NURTURE_ACTION_LABELS).map(([val, label]) => (
+                <button
+                  key={val}
+                  type="button"
+                  onClick={() => { set('actionType', Number(val) as NurtureStepAction); setActionOpen(false); }}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${step.actionType === Number(val) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                >
+                  {label}
+                  {step.actionType === Number(val) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Conditional extra fields */}
@@ -198,7 +228,8 @@ function StepCard({
             value={step.messageTemplate}
             onChange={(e) => set('messageTemplate', e.target.value)}
             placeholder="Hi {{CustomerName}}, just checking in…"
-            className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-border-glow resize-none"
+            className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
           <p className="text-xs text-text-muted mt-1">
             Available tokens:{' '}
@@ -212,18 +243,50 @@ function StepCard({
       {step.actionType === NurtureStepAction.ChangeStage && (
         <div>
           <label className="block text-xs font-medium text-text-secondary mb-1">New Stage</label>
-          <select
-            value={step.newStage}
-            onChange={(e) => set('newStage', e.target.value === '' ? '' : (Number(e.target.value) as LeadStage))}
-            className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow"
-          >
-            <option value="">Select stage…</option>
-            {Object.entries(LEAD_STAGE_LABELS).map(([val, label]) => (
-              <option key={val} value={val}>
-                {label}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setNewStageOpen(o => !o)}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              style={{
+                backgroundColor: '#1A332C',
+                border: `1px solid ${newStageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                boxShadow: newStageOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                outline: 'none',
+                transition: 'box-shadow 0.2s ease',
+              }}
+            >
+              <span className="flex-1 text-left font-medium text-text-secondary">
+                {step.newStage === '' ? 'Select stage…' : LEAD_STAGE_LABELS[step.newStage as LeadStage]}
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${newStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+            </button>
+            {newStageOpen && (
+              <div
+                className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+              >
+                <button
+                  type="button"
+                  onClick={() => { set('newStage', ''); setNewStageOpen(false); }}
+                  className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${step.newStage === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                >
+                  Select stage…
+                </button>
+                {Object.entries(LEAD_STAGE_LABELS).map(([val, label]) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => { set('newStage', Number(val) as LeadStage); setNewStageOpen(false); }}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${step.newStage === Number(val) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                  >
+                    {label}
+                    {step.newStage === Number(val) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -235,7 +298,8 @@ function StepCard({
             value={step.tagToAdd}
             onChange={(e) => set('tagToAdd', e.target.value)}
             placeholder="e.g. follow-up-needed"
-            className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-border-glow"
+            className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
         </div>
       )}
@@ -254,6 +318,7 @@ function SequenceModal({
   const [form, setForm] = useState<SequenceFormState>(
     editing ? sequenceToForm(editing) : emptyForm()
   );
+  const [triggerStageOpen, setTriggerStageOpen] = useState(false);
   const createMutation = useCreateNurtureSequence();
   const updateMutation = useUpdateNurtureSequence();
 
@@ -295,25 +360,49 @@ function SequenceModal({
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex justify-end">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-end pr-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[540px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
+      <div
+        className="drawer-slide-in relative w-[540px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">
-            {editing ? 'Edit Sequence' : 'New Nurture Sequence'}
-          </h3>
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {editing ? 'Edit Sequence' : 'New Nurture Sequence'}
+            </h2>
+            <p className="text-xs text-text-muted mt-0.5">
+              {editing ? 'Update this nurture sequence settings' : 'Configure an automated nurture sequence for your leads'}
+            </p>
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
+            className="text-text-muted hover:text-text-primary mt-0.5"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5">
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
+        <div className="overflow-y-auto px-6 py-5 flex-1 min-h-0 space-y-4">
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-text-secondary mb-1">
@@ -325,7 +414,8 @@ function SequenceModal({
               value={form.name}
               onChange={(e) => setField('name', e.target.value)}
               placeholder="e.g. Warm Lead Follow-up"
-              className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-border-glow"
+              className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
           </div>
 
@@ -369,7 +459,8 @@ function SequenceModal({
               value={form.description}
               onChange={(e) => setField('description', e.target.value)}
               placeholder="Briefly describe what this sequence does…"
-              className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-border-glow resize-none"
+              className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
           </div>
 
@@ -408,15 +499,43 @@ function SequenceModal({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-1">Trigger Stage</label>
-                <select
-                  value={form.triggerStage}
-                  onChange={(e) => setField('triggerStage', Number(e.target.value) as LeadStage)}
-                  className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow"
-                >
-                  {Object.entries(LEAD_STAGE_LABELS).map(([val, label]) => (
-                    <option key={val} value={val}>{label}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setTriggerStageOpen(o => !o)}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                    style={{
+                      backgroundColor: '#1A332C',
+                      border: `1px solid ${triggerStageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                      boxShadow: triggerStageOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                      outline: 'none',
+                      transition: 'box-shadow 0.2s ease',
+                    }}
+                  >
+                    <span className="flex-1 text-left font-medium text-text-secondary">
+                      {LEAD_STAGE_LABELS[form.triggerStage]}
+                    </span>
+                    <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${triggerStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                  </button>
+                  {triggerStageOpen && (
+                    <div
+                      className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                    >
+                      {Object.entries(LEAD_STAGE_LABELS).map(([val, label]) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() => { setField('triggerStage', Number(val) as LeadStage); setTriggerStageOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${form.triggerStage === Number(val) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                        >
+                          {label}
+                          {form.triggerStage === Number(val) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</label>
@@ -425,7 +544,8 @@ function SequenceModal({
                   min={0}
                   value={form.triggerDelayMinutes}
                   onChange={(e) => setField('triggerDelayMinutes', Number(e.target.value))}
-                  className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow"
+                  className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </div>
@@ -447,7 +567,8 @@ function SequenceModal({
                     setField('triggerScoreThreshold', e.target.value === '' ? null : Number(e.target.value))
                   }
                   placeholder="e.g. 30"
-                  className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-border-glow"
+                  className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
               <div>
@@ -457,7 +578,8 @@ function SequenceModal({
                   min={0}
                   value={form.triggerDelayMinutes}
                   onChange={(e) => setField('triggerDelayMinutes', Number(e.target.value))}
-                  className="w-full bg-bg border border-border-subtle rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow"
+                  className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </div>
@@ -551,26 +673,25 @@ function SequenceModal({
             ))}
           </div>
 
-          {/* Footer actions */}
-          <div className="flex items-center justify-end gap-3 pt-2 border-t border-border-subtle">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-text-secondary hover:text-text-primary bg-bg-elevated border border-border-subtle rounded-xl transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand hover:bg-brand/90 rounded-xl transition-colors disabled:opacity-60"
-            >
-              {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-              {editing ? 'Save Changes' : 'Create Sequence'}
-            </button>
-          </div>
-        </form>
         </div>
+        <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+            {editing ? 'Save Changes' : 'Create Sequence'}
+          </button>
+        </div>
+        </form>
       </div>
     </div>,
     document.body

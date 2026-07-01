@@ -2234,6 +2234,77 @@ export interface FbAdAccountConnectRequest {
   currency?: string;
 }
 
+// ─── TikTok Ads ──────────────────────────────────────────────────────────────
+
+export interface TikTokAdAccountDto {
+  id: string;
+  advertiserId: string;
+  businessName?: string;
+  isActive: boolean;
+  hasToken: boolean;
+  lastSyncedAt?: string;
+  totalCampaignsSynced: number;
+}
+
+export interface TikTokAdCampaignDto {
+  id: string;
+  tikTokCampaignId: string;
+  name: string;
+  objective?: string;
+  status: string;
+  dailyBudget?: number;
+  lifetimeBudget?: number;
+  budgetCurrency?: string;
+  startTime?: string;
+  stopTime?: string;
+  impressions: number;
+  clicks: number;
+  spend: number;
+  reach: number;
+  ctr?: number;
+  cpc?: number;
+  conversions: number;
+  costPerConversion?: number;
+  videoViews: number;
+  likes: number;
+  shares: number;
+  comments: number;
+  insightsSyncedAt?: string;
+  createdFromOmniFlow: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TikTokAdSyncResultDto {
+  campaignsSynced: number;
+  campaignsCreated: number;
+  campaignsUpdated: number;
+  syncedAt: string;
+  errors: string[];
+}
+
+export interface TikTokAdAccountConnectRequest {
+  advertiserId: string;
+  accessToken: string;
+  businessName?: string;
+}
+
+export interface TikTokAdAggregateDto {
+  totalCampaigns: number;
+  activeCampaigns: number;
+  totalSpend: number;
+  totalImpressions: number;
+  totalClicks: number;
+  totalReach: number;
+  totalConversions: number;
+  totalVideoViews: number;
+  totalLikes: number;
+  totalShares: number;
+  totalComments: number;
+  overallCtr?: number;
+  overallCpc?: number;
+}
+
 // ─── Announcements ────────────────────────────────────────────────────────────
 
 export const AnnouncementType = { General: 1, Maintenance: 2, Feature: 3, Alert: 4, Urgent: 5 } as const;

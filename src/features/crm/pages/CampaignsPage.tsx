@@ -4,6 +4,7 @@ import {
   Send, Clock, Ban, BarChart2, Mail, MessageSquare, Trash2,
   Calendar, Users, TrendingUp, DollarSign, Target, Link2,
   PlusCircle, RefreshCw, Unplug,
+  Eye, MousePointerClick, MessageCircle, XCircle, CheckCircle,
 } from 'lucide-react';
 import {
   // B2B campaigns
@@ -411,15 +412,32 @@ function PerformancePanel({ campaignId }: { campaignId: string }) {
   const fmtMoney = (n: number | null | undefined, currency = 'USD') =>
     n != null ? `${currency} ${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '—';
 
-  const deliveryRows = [
-    { label: 'Total Recipients', value: d.totalRecipients },
-    { label: 'Sent', value: `${d.sentCount} (${fmt(d.deliveryRate, '%')})` },
-    { label: 'Opened', value: `${d.openedCount} (${fmt(d.openRate, '%')})` },
-    { label: 'Clicked', value: `${d.clickCount} (${fmt(d.clickRate, '%')})` },
-    { label: 'Replied', value: `${d.repliedCount} (${fmt(d.replyRate, '%')})` },
-    { label: 'Converted', value: `${d.convertedCount} (${fmt(d.conversionRate, '%')})` },
-    { label: 'Failed', value: d.failedCount },
+  const maxFunnel = d.totalRecipients > 0 ? d.totalRecipients : 1;
+
+  const funnelBars = [
+    { label: 'Recipients', count: d.totalRecipients, pct: 100, color: 'bg-text-muted' },
+    { label: 'Sent', count: d.sentCount, pct: (d.sentCount / maxFunnel) * 100, color: 'bg-blue-400' },
+    { label: 'Opened', count: d.openedCount, pct: d.openRate ?? 0, color: 'bg-amber-400', of: 'sent' },
+    { label: 'Clicked', count: d.clickCount, pct: d.clickRate ?? 0, color: 'bg-indigo-400', of: 'opened' },
+    { label: 'Replied', count: d.repliedCount, pct: d.replyRate ?? 0, color: 'bg-emerald-400', of: 'sent' },
+    { label: 'Converted', count: d.convertedCount, pct: d.conversionRate ?? 0, color: 'bg-emerald-500', of: 'sent' },
+    { label: 'Failed', count: d.failedCount, pct: (d.failedCount / Math.max(d.sentCount, 1)) * 100, color: 'bg-danger' },
   ];
+
+  const FunnelBar = ({ bar }: { bar: typeof funnelBars[0] }) => (
+    <div className="mb-2 last:mb-0">
+      <div className="flex items-center justify-between text-xs mb-1">
+        <span className="font-medium text-text-primary">{bar.label}</span>
+        <span className="text-text-muted">
+          {bar.count.toLocaleString()}
+          {bar.pct > 0 && <span className="ml-1 text-[10px]">({bar.pct.toFixed(1)}%)</span>}
+        </span>
+      </div>
+      <div className="w-full h-1.5 rounded-full bg-bg-elevated overflow-hidden">
+        <div className={`h-full rounded-full transition-all duration-500 ${bar.color}`} style={{ width: `${Math.min(bar.pct, 100)}%` }} />
+      </div>
+    </div>
+  );
 
   const budgetRows = d.budgetAmount != null ? [
     { label: 'Budget', value: fmtMoney(d.budgetAmount, d.budgetCurrency) },
@@ -457,8 +475,8 @@ function PerformancePanel({ campaignId }: { campaignId: string }) {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Delivery Funnel</p>
-        {deliveryRows.map((r) => <Row key={r.label} {...r} />)}
+        <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-3">Delivery Funnel</p>
+        {funnelBars.map((b) => <FunnelBar key={b.label} bar={b} />)}
       </div>
       {budgetRows.length > 0 && (
         <div>
@@ -752,11 +770,47 @@ function B2BCampaignCard({ campaign }: { campaign: CrmCampaignSummaryDto }) {
 
       {/* Stats row */}
       {(campaign.sentCount > 0 || campaign.totalRecipients > 0) && (
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-secondary">
-          <span><span className="font-semibold text-text-primary">{campaign.totalRecipients}</span> recipients</span>
-          <span><span className="font-semibold text-text-primary">{campaign.sentCount}</span> sent</span>
-          {campaign.openedCount > 0 && (
-            <span><span className="font-semibold text-text-primary">{campaign.openedCount}</span> opened</span>
+        <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-text-secondary">
+          <span className="inline-flex items-center gap-1">
+            <Users className="w-3 h-3 text-text-muted" strokeWidth={1.5} />
+            <span className="font-semibold text-text-primary">{campaign.totalRecipients}</span> recipients
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Send className="w-3 h-3 text-text-muted" strokeWidth={1.5} />
+            <span className="font-semibold text-text-primary">{campaign.sentCount}</span> sent
+          </span>
+          {campaign.sentCount > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <Eye className="w-3 h-3 text-amber-400" strokeWidth={1.5} />
+              <span className="font-semibold text-text-primary">{campaign.openedCount}</span> opened
+              <span className="text-[10px] text-text-muted">({campaign.sentCount > 0 ? ((campaign.openedCount / campaign.sentCount) * 100).toFixed(1) : 0}%)</span>
+            </span>
+          )}
+          {campaign.clickCount > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <MousePointerClick className="w-3 h-3 text-blue-400" strokeWidth={1.5} />
+              <span className="font-semibold text-text-primary">{campaign.clickCount}</span> clicked
+              <span className="text-[10px] text-text-muted">({campaign.sentCount > 0 ? ((campaign.clickCount / campaign.sentCount) * 100).toFixed(1) : 0}%)</span>
+            </span>
+          )}
+          {campaign.repliedCount > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <MessageCircle className="w-3 h-3 text-emerald-400" strokeWidth={1.5} />
+              <span className="font-semibold text-text-primary">{campaign.repliedCount}</span> replied
+              <span className="text-[10px] text-text-muted">({campaign.sentCount > 0 ? ((campaign.repliedCount / campaign.sentCount) * 100).toFixed(1) : 0}%)</span>
+            </span>
+          )}
+          {campaign.convertedCount > 0 && (
+            <span className="inline-flex items-center gap-1">
+              <CheckCircle className="w-3 h-3 text-emerald-400" strokeWidth={1.5} />
+              <span className="font-semibold text-text-primary">{campaign.convertedCount}</span> converted
+            </span>
+          )}
+          {campaign.failedCount > 0 && (
+            <span className="inline-flex items-center gap-1 text-danger">
+              <XCircle className="w-3 h-3" strokeWidth={1.5} />
+              <span className="font-semibold">{campaign.failedCount}</span> failed
+            </span>
           )}
           {campaign.attributedRevenue > 0 && (
             <span className="text-success font-semibold">${campaign.attributedRevenue.toLocaleString()} attributed</span>

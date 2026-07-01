@@ -1,5 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/shared/lib/api-client';
 import {
   MessageSquare,
   ShoppingBag,
@@ -31,6 +33,14 @@ export function Component() {
   const p = (profile ?? null) as { firstName?: string } | null;
   const firstName = p?.firstName || 'there';
 
+  const { data: summaryRaw, isLoading: summaryLoading } = useQuery({
+    queryKey: ['home-summary'],
+    queryFn: () => apiClient.get<any>('/v1/home/summary'),
+    refetchInterval: 60_000,
+    staleTime: 30_000,
+  });
+  const summary = summaryRaw as any;
+
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* ─── Header ─── */}
@@ -52,10 +62,18 @@ export function Component() {
 
       {/* ─── Stat cards ─── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard icon={MessageSquare} label="Conversations today" value="47" />
-        <StatCard icon={ShoppingBag} label="Orders" value="18" />
-        <StatCard icon={Heart} label="Happy customers" value="94%" />
-        <StatCard icon={Zap} label="Avg reply" value="1.2s" />
+        <StatCard icon={MessageSquare} label="Conversations today"
+          value={summaryLoading ? '—' : String(summary?.conversationsToday ?? 0)} />
+        <StatCard icon={ShoppingBag} label="Orders"
+          value={summaryLoading ? '—' : String(summary?.ordersToday ?? 0)} />
+        <StatCard icon={Heart} label="Happy customers"
+          value={summaryLoading ? '—' : `${summary?.customerSatisfactionPct ?? 0}%`} />
+        <StatCard icon={Zap} label="Avg reply"
+          value={summaryLoading ? '—' : summary?.avgReplyTimeSeconds > 0
+            ? summary.avgReplyTimeSeconds < 60
+              ? `${summary.avgReplyTimeSeconds}s`
+              : `${Math.round(summary.avgReplyTimeSeconds / 60)}m`
+            : '—'} />
       </div>
 
       {/* ─── Two-column content ─── */}
@@ -65,10 +83,17 @@ export function Component() {
             Happening now
           </h2>
           <div className="flex flex-col">
-            <LiveRow name="Anita S." action="browsing chocolate cakes" time="2s ago" />
-            <LiveRow name="Prakash M." action="placing order · Rs. 1,800" time="1m ago" />
-            <LiveRow name="Shreya T." action="asking about delivery" time="3m ago" />
-            <LiveRow name="Unknown" action="just said hi" time="5m ago" />
+            {summaryLoading ? (
+              <div className="py-4 text-center">
+                <div className="w-4 h-4 border-2 border-brand border-r-transparent rounded-full animate-spin mx-auto" />
+              </div>
+            ) : (summary?.recentActivity ?? []).length > 0 ? (
+              (summary.recentActivity as any[]).map((item: any, i: number) => (
+                <LiveRow key={i} name={item.name} action={item.action} time={item.timeAgo} />
+              ))
+            ) : (
+              <div className="py-4 text-center text-xs text-text-muted">No recent activity yet.</div>
+            )}
           </div>
           <Link
             to={ROUTES.dashboard.conversations}
@@ -87,7 +112,9 @@ export function Component() {
             </h2>
           </div>
           <p className="text-sm text-text-primary leading-relaxed mb-4">
-            7 customers asked about custom cakes this week. Want me to add a custom cake flow?
+            {summary?.conversationsToday > 0
+              ? `${summary.conversationsToday} conversation${summary.conversationsToday !== 1 ? 's' : ''} started today. Want me to review recent conversations and suggest improvements?`
+              : "Set up your first bot flow to start handling customer conversations automatically."}
           </p>
           <div className="flex gap-2">
             <Link

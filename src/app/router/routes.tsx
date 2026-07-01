@@ -1,8 +1,9 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { DashboardLayout } from '@/app/layouts/DashboardLayout';
-import { RequireAuth, RedirectIfAuth } from './guards';
+import { RequireAuth, RedirectIfAuth, RequirePortalAuth, RedirectIfPortalAuth } from './guards';
 import { RouteErrorBoundary } from '@/shared/ui/RouteErrorBoundary';
+import PortalLayout from '@/app/layouts/PortalLayout';
 
 export const router = createBrowserRouter([
   // ─── Landing — logged in users skip to dashboard ───
@@ -162,11 +163,21 @@ export const router = createBrowserRouter([
       { path: 'crm/time-tracking', lazy: () => import('@/features/crm/pages/CrmTimeTrackingPage') },
       { path: 'crm/custom-fields', lazy: () => import('@/features/crm/pages/CustomFieldsPage') },
       { path: 'crm/dedup', lazy: () => import('@/features/crm/pages/CrmDeduplicationPage') },
+      { path: 'crm/inbox', lazy: () => import('@/features/crm/pages/SharedInboxPage') },
+      { path: 'crm/activity', lazy: () => import('@/features/crm/pages/ActivityFeedPage') },
+      { path: 'crm/audit', lazy: () => import('@/features/crm/pages/AuditLogPage') },
+      { path: 'crm/notification-settings', lazy: () => import('@/features/crm/pages/NotificationSettingsPage') },
+      { path: 'crm/returns', lazy: () => import('@/features/crm/pages/CrmReturnsPage') },
+      { path: 'crm/work-orders', lazy: () => import('@/features/crm/pages/CrmWorkOrdersPage') },
+      { path: 'crm/customer-onboarding', lazy: () => import('@/features/crm/pages/CrmCustomerOnboardingPage') },
       { path: 'crm/ops-dashboard', lazy: () => import('@/features/crm/pages/CrmOpsDashboardPage') },
       { path: 'crm/time-periods', lazy: () => import('@/features/crm/pages/CrmTimePeriodsPage') },
       { path: 'crm/approval-chains', lazy: () => import('@/features/crm/pages/CrmApprovalChainsPage') },
       { path: 'crm/assignment-rotation', lazy: () => import('@/features/crm/pages/CrmAssignmentRotationPage') },
       { path: 'crm/territories', lazy: () => import('@/features/crm/pages/CrmTerritoriesPage') },
+      { path: 'crm/deliveries', lazy: () => import('@/features/crm/pages/CrmDeliveriesPage') },
+      { path: 'crm/equipment', lazy: () => import('@/features/crm/pages/CrmEquipmentPage') },
+      { path: 'crm/deals-hub', lazy: () => import('@/features/crm/pages/CrmDealsHubPage') },
       { path: 'crm/vendors', lazy: () => import('@/features/crm/pages/VendorsPage') },
       { path: 'crm/purchase-orders', lazy: () => import('@/features/crm/pages/PurchaseOrdersPage') },
       { path: 'crm/goods-receipts', lazy: () => import('@/features/crm/pages/GoodsReceiptsPage') },
@@ -195,6 +206,36 @@ export const router = createBrowserRouter([
   {
     path: '/campaign-reply/:recipientId',
     lazy: () => import('@/features/crm/pages/CampaignReplyPage'),
+  },
+
+  // ─── Customer Portal — magic-link auth ───
+  {
+    path: '/portal/auth',
+    element: (
+      <RedirectIfPortalAuth>
+        <Outlet />
+      </RedirectIfPortalAuth>
+    ),
+    children: [
+      { index: true, lazy: () => import('@/features/portal/pages/PortalAuthPage') },
+    ],
+  },
+  {
+    path: '/portal',
+    element: (
+      <RequirePortalAuth>
+        <PortalLayout />
+      </RequirePortalAuth>
+    ),
+    children: [
+      { path: 'cases', lazy: () => import('@/features/portal/pages/PortalCasesPage') },
+      { path: 'cases/new', lazy: () => import('@/features/portal/pages/PortalNewCasePage') },
+      { path: 'cases/:id', lazy: () => import('@/features/portal/pages/PortalCaseDetailPage') },
+      { path: 'invoices', lazy: () => import('@/features/portal/pages/PortalInvoicesPage') },
+      { path: 'orders', lazy: () => import('@/features/portal/pages/PortalOrdersPage') },
+      { path: 'subscriptions', lazy: () => import('@/features/portal/pages/PortalSubscriptionsPage') },
+      { index: true, element: <Navigate to="cases" replace /> },
+    ],
   },
 
   // ─── Legacy redirects ───

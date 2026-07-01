@@ -136,6 +136,9 @@ const CRM_KEYS = {
   fbAdAccount: () => ['crm', 'fb-ads', 'account'] as const,
   fbAdCampaigns: () => ['crm', 'fb-ads', 'campaigns'] as const,
   fbAdAggregate: () => ['crm', 'fb-ads', 'aggregate'] as const,
+  tikTokAdAccount: () => ['crm', 'tiktok-ads', 'account'] as const,
+  tikTokAdCampaigns: () => ['crm', 'tiktok-ads', 'campaigns'] as const,
+  tikTokAdAggregate: () => ['crm', 'tiktok-ads', 'aggregate'] as const,
   announcements: (status?: number) => ['announcements', status] as const,
   announcementById: (id: string) => ['announcements', id] as const,
   approvals: (status?: number) => ['crm', 'approvals', status] as const,
@@ -1424,6 +1427,8 @@ export function useCrmCampaigns() {
   return useQuery({
     queryKey: CRM_KEYS.crmCampaignsAll(),
     queryFn: () => crmApi.getCrmCampaigns(),
+    refetchInterval: 15_000,
+    staleTime: 10_000,
   });
 }
 
@@ -1534,6 +1539,8 @@ export function useCrmCampaignPerformance(id: string | undefined) {
     queryKey: [...CRM_KEYS.crmCampaignById(id ?? ''), 'performance'] as const,
     queryFn: () => crmApi.getCrmCampaignPerformance(id!),
     enabled: !!id,
+    refetchInterval: 15_000,
+    staleTime: 10_000,
   });
 }
 
@@ -1541,6 +1548,8 @@ export function useCrmCampaignsAggregate() {
   return useQuery({
     queryKey: [...CRM_KEYS.crmCampaignsAll(), 'aggregate'] as const,
     queryFn: () => crmApi.getCrmCampaignsAggregate(),
+    refetchInterval: 15_000,
+    staleTime: 10_000,
   });
 }
 
@@ -2468,6 +2477,59 @@ export function useSyncFbAdCampaigns() {
   });
 }
 
+// ─── TikTok Ads ─────────────────────────────────────────────────────────────
+
+export function useTikTokAdAccount() {
+  return useQuery({ queryKey: CRM_KEYS.tikTokAdAccount(), queryFn: () => crmApi.getTikTokAdAccount() });
+}
+export function useTikTokAdCampaigns() {
+  return useQuery({ queryKey: CRM_KEYS.tikTokAdCampaigns(), queryFn: () => crmApi.getTikTokAdCampaigns() });
+}
+export function useTikTokAdAggregate() {
+  return useQuery({ queryKey: CRM_KEYS.tikTokAdAggregate(), queryFn: () => crmApi.getTikTokAdAggregate() });
+}
+export function useConnectTikTokAdAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import('../types/crm.types').TikTokAdAccountConnectRequest) => crmApi.connectTikTokAdAccount(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAccount() });
+      toast.success('TikTok Ad Account connected.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Failed to connect account.'),
+  });
+}
+export function useDisconnectTikTokAdAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => crmApi.disconnectTikTokAdAccount(),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAccount() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdCampaigns() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAggregate() });
+      toast.success('TikTok Ad Account disconnected.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Failed to disconnect account.'),
+  });
+}
+export function useSyncTikTokAdCampaigns() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => crmApi.syncTikTokAdCampaigns(),
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdCampaigns() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAggregate() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAccount() });
+      const data = (res as any)?.data;
+      const synced = data?.campaignsSynced ?? 0;
+      const errors = data?.errors ?? [];
+      if (errors.length > 0) toast.warning(`Synced ${synced} campaigns with ${errors.length} error(s).`);
+      else toast.success(`Synced ${synced} campaign${synced !== 1 ? 's' : ''} from TikTok.`);
+    },
+    onError: (err: any) => toast.error(err?.message || 'Sync failed.'),
+  });
+}
+
 // ─── Announcements ────────────────────────────────────────────────────────────
 
 export function useAnnouncements(status?: import('../types/crm.types').AnnouncementStatus) {
@@ -2522,6 +2584,28 @@ export function useScheduleAnnouncement() {
     mutationFn: ({ id, scheduledAt }: { id: string; scheduledAt: string }) => crmApi.scheduleAnnouncement(id, scheduledAt),
     onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.announcementById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.announcements() }); toast.success('Announcement scheduled.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useAnnouncementAnalytics(id: string | null) {
+  return useQuery({
+    queryKey: ['announcement-analytics', id],
+    queryFn: () => crmApi.getAnnouncementAnalytics(id!),
+    enabled: !!id,
+    refetchInterval: 15_000,
+  });
+}
+export function useAnnouncementRecipients(id: string | null, page = 1) {
+  return useQuery({
+    queryKey: ['announcement-recipients', id, page],
+    queryFn: () => crmApi.getAnnouncementRecipients(id!, page),
+    enabled: !!id,
+  });
+}
+export function useAnnouncementSummaryStats() {
+  return useQuery({
+    queryKey: ['announcement-summary-stats'],
+    queryFn: () => crmApi.getAnnouncementSummaryStats(),
+    refetchInterval: 30_000,
   });
 }
 

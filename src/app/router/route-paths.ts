@@ -72,6 +72,7 @@ export const ROUTES = {
     crmContracts: '/dashboard/crm/contracts',
     crmContractTemplates: '/dashboard/crm/contract-templates',
     crmOrders: '/dashboard/crm/orders',
+    crmDeliveries: '/dashboard/crm/deliveries',
     crmMeetings: '/dashboard/crm/meetings',
     crmWorkflows: '/dashboard/crm/workflows',
     crmNps: '/dashboard/crm/nps',

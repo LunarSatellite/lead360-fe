@@ -2019,11 +2019,11 @@ export const CRM_ORDER_STATUS_COLORS: Record<CrmOrderStatus, string> = {
 };
 
 export const CrmOrderFulfillmentStatus = {
-  Pending: 1, InProgress: 2, Shipped: 3, OutForDelivery: 4, Delivered: 5, DeliveryFailed: 6, NotApplicable: 7,
+  Pending: 1, InProgress: 2, Picking: 3, ReadyToShip: 4, Shipped: 5, OutForDelivery: 6, Delivered: 7, DeliveryFailed: 8, NotApplicable: 9,
 } as const;
 export type CrmOrderFulfillmentStatus = (typeof CrmOrderFulfillmentStatus)[keyof typeof CrmOrderFulfillmentStatus];
-export const CRM_ORDER_FULFILLMENT_LABELS: Record<CrmOrderFulfillmentStatus, string> = {
-  1: 'Pending', 2: 'In Progress', 3: 'Shipped', 4: 'Out for Delivery', 5: 'Delivered', 6: 'Delivery Failed', 7: 'N/A',
+export const CRM_ORDER_FULFILLMENT_LABELS: Record<number, string> = {
+  1: 'Pending', 2: 'In Progress', 3: 'Picking', 4: 'Ready to Ship', 5: 'Shipped', 6: 'Out for Delivery', 7: 'Delivered', 8: 'Delivery Failed', 9: 'N/A',
 };
 
 export const CrmOrderPaymentStatus = {
@@ -2142,6 +2142,74 @@ export interface CrmOrderFilter {
 }
 
 
+
+// ── Process Workflow ──────────────────────────────────────────────────────────
+export interface ProcessStepDto {
+  id: string;
+  stepOrder: number;
+  name: string;
+  description?: string;
+  assignedTeamLabel?: string;
+  assignedToUserId?: string;
+  slaHours: number;
+}
+export interface ProcessDefinitionDto {
+  id: string;
+  name: string;
+  description?: string;
+  isActive: boolean;
+  steps: ProcessStepDto[];
+  createdAt: string;
+}
+export interface CreateProcessStepRequest {
+  stepOrder: number;
+  name: string;
+  description?: string;
+  assignedTeamLabel?: string;
+  assignedToUserId?: string;
+  slaHours?: number;
+}
+export interface CreateProcessDefinitionRequest {
+  name: string;
+  description?: string;
+  steps: CreateProcessStepRequest[];
+}
+export interface ProcessInstanceDto {
+  id: string;
+  processDefinitionId: string;
+  definitionName: string;
+  status: number;
+  triggerKind: number;
+  triggerRefId?: string;
+  triggerRefKind?: string;
+  currentStepOrder: number;
+  totalSteps: number;
+  startedAt: string;
+}
+export interface ProcessTaskDto {
+  id: string;
+  processInstanceId: string;
+  processStepId: string;
+  stepOrder: number;
+  stepName: string;
+  definitionName: string;
+  assignedTeamLabel?: string;
+  assignedToUserId?: string;
+  status: number;
+  assignedAt: string;
+}
+export interface StartProcessRequest {
+  processDefinitionId: string;
+  triggerKind?: number;
+  triggerRefId?: string;
+  triggerRefKind?: string;
+}
+export interface CompleteProcessTaskRequest {
+  notes?: string;
+}
+export const PROCESS_TASK_STATUS_LABELS: Record<number, string> = {
+  1: 'Pending', 2: 'In Progress', 3: 'Completed', 4: 'Skipped',
+};
 
 // ─── Meetings ─────────────────────────────────────────────────────────────────
 
@@ -2784,8 +2852,9 @@ export interface CrmDeliveryDto {
   estimatedDeliveryDate: string | null; shippedAt: string | null;
   outForDeliveryAt: string | null; deliveredAt: string | null;
   recipientName: string | null; proofPhotoUrl: string | null;
-  signatureUrl: string | null; failureReason: string | null;
-  notes: string | null; createdAt: string;
+  signatureUrl: string | null; podSignedByName: string | null;
+  podSignedAt: string | null; podConfirmedAt: string | null;
+  failureReason: string | null; notes: string | null; createdAt: string;
 }
 
 export interface CrmCreateDeliveryRequest {

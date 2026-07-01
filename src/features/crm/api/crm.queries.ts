@@ -2135,6 +2135,19 @@ export function useUpdateDeliveryStatus() {
   });
 }
 
+export function useRecordDeliveryPOD() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ deliveryId, formData }: { deliveryId: string; formData: FormData }) =>
+      crmApi.recordDeliveryPOD(deliveryId, formData),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'deliveries'] });
+      toast.success('POD recorded — delivery confirmed');
+    },
+    onError: () => toast.error('Failed to record POD'),
+  });
+}
+
 // ─── Meetings ─────────────────────────────────────────────────────────────────
 
 export function useMeetings(filter: import('../types/crm.types').CrmMeetingFilter = {}) {

@@ -821,6 +821,20 @@ export const crmApi = {
   getFbAdAggregate: () =>
     apiClient.get<import('../types/crm.types').FbAdAggregateDto>(`${BASE}/fb-ads/aggregate`),
 
+  // ─── TikTok Ads ───────────────────────────────────────────────────────────
+  getTikTokAdAccount: () =>
+    apiClient.get<import('../types/crm.types').TikTokAdAccountDto | null>(`${BASE}/tiktok-ads/account`),
+  connectTikTokAdAccount: (data: import('../types/crm.types').TikTokAdAccountConnectRequest) =>
+    apiClient.post<import('../types/crm.types').TikTokAdAccountDto>(`${BASE}/tiktok-ads/account`, data),
+  disconnectTikTokAdAccount: () =>
+    apiClient.delete(`${BASE}/tiktok-ads/account`),
+  getTikTokAdCampaigns: () =>
+    apiClient.get<import('../types/crm.types').TikTokAdCampaignDto[]>(`${BASE}/tiktok-ads/campaigns`),
+  syncTikTokAdCampaigns: () =>
+    apiClient.post<import('../types/crm.types').TikTokAdSyncResultDto>(`${BASE}/tiktok-ads/campaigns/sync`, {}),
+  getTikTokAdAggregate: () =>
+    apiClient.get<import('../types/crm.types').TikTokAdAggregateDto>(`${BASE}/tiktok-ads/aggregate`),
+
   // ─── Announcements ────────────────────────────────────────────────────────
   getAnnouncements: (status?: AnnouncementStatus) =>
     apiClient.get<AnnouncementSummaryDto[]>(ANN_BASE, { params: status != null ? { status } : undefined }),
@@ -838,6 +852,12 @@ export const crmApi = {
     apiClient.post<AnnouncementDetailDto>(`${ANN_BASE}/${id}/archive`, {}),
   scheduleAnnouncement: (id: string, scheduledAt: string) =>
     apiClient.post<AnnouncementDetailDto>(`${ANN_BASE}/${id}/schedule`, { scheduledAt }),
+  getAnnouncementAnalytics: (id: string) =>
+    apiClient.get<any>(`${ANN_BASE}/${id}/analytics`),
+  getAnnouncementRecipients: (id: string, page = 1) =>
+    apiClient.get<any[]>(`${ANN_BASE}/${id}/recipients`, { params: { page, pageSize: 50 } }),
+  getAnnouncementSummaryStats: () =>
+    apiClient.get<any>(`${ANN_BASE}/analytics/summary`),
 
   // ─── Approval Workflows ───────────────────────────────────────────────────
   getApprovals: (status?: import('../types/crm.types').ApprovalStatus) =>
@@ -1191,8 +1211,6 @@ export const crmApi = {
 
   acknowledgeOrder: (id: string) =>
     apiClient.post(`/v1/crm/orders/${id}/acknowledge`),
-  createOrderFromQuote: (quoteId: string) =>
-    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/from-quote/${quoteId}`),
   creditCheck: (accountId: string, orderValue: number) =>
     apiClient.post<import('../types/crm.types').CreditCheckResult>(`/v1/crm/orders/credit-check`, { accountId, orderValue }),
   getDealHandover: (dealId: string) =>

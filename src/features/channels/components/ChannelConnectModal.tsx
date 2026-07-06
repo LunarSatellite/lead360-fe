@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useCreateChannel, useActivateChannel } from '../api/channels.queries';
 import { ChannelType, CHANNEL_TYPE_LABEL } from '../types/channels.types';
-import type { ChannelTypeValue, ChannelConnectionDto } from '../types/channels.types';
+import type { ChannelTypeValue, ChannelConnectionCreateResponseDto } from '../types/channels.types';
 
 interface ChannelConnectModalProps {
   open: boolean;
@@ -133,21 +133,36 @@ const CHANNEL_HELPER_TEXT: Record<ChannelTypeValue, string> = {
 };
 
 const WEBHOOK_INSTRUCTIONS: Record<ChannelTypeValue, string> = {
-  [ChannelType.WhatsApp]:  'Paste this webhook URL in Meta Developer Console → WhatsApp → Configuration → Callback URL.',
+  [ChannelType.WhatsApp]:  'Paste this webhook URL and verify token in Meta Developer Console → WhatsApp → Configuration → Callback URL / Verify Token.',
   [ChannelType.Telegram]:  'The webhook is set automatically via the Telegram Bot API.',
   [ChannelType.SMS]:       'Paste this webhook URL in Twilio Console → Phone Numbers → Messaging Webhook.',
   [ChannelType.Voice]:     'Paste this webhook URL in Twilio Console → Phone Numbers → Voice Webhook.',
-  [ChannelType.Messenger]: 'Paste this webhook URL in Meta Developer Console → Messenger → Webhooks.',
-  [ChannelType.Instagram]: 'Paste this webhook URL in Meta Developer Console → Instagram → Webhooks.',
+  [ChannelType.Messenger]: 'Paste this webhook URL and verify token in Meta Developer Console → Messenger → Webhooks.',
+  [ChannelType.Instagram]: 'Paste this webhook URL and verify token in Meta Developer Console → Instagram → Webhooks.',
   [ChannelType.WebChat]:   'Embed the Lead360 chat widget script on your website using this endpoint.',
   [ChannelType.Email]:     'Configure your email provider to forward incoming emails to this webhook URL.',
   [ChannelType.Viber]:     'Paste this webhook URL in Viber Admin Panel → Webhooks.',
 };
 
+// Channels whose provider webhook setup screen asks for a separate "Verify Token" field
+// alongside the callback URL (Meta's hub.verify_token handshake).
+const SHOWS_VERIFY_TOKEN: Record<ChannelTypeValue, boolean> = {
+  [ChannelType.WhatsApp]:  true,
+  [ChannelType.Telegram]:  false,
+  [ChannelType.SMS]:       false,
+  [ChannelType.Voice]:     false,
+  [ChannelType.Messenger]: true,
+  [ChannelType.Instagram]: true,
+  [ChannelType.WebChat]:   false,
+  [ChannelType.Email]:     false,
+  [ChannelType.Viber]:     false,
+};
+
 export function ChannelConnectModal({ open, onClose, tenantId, channelType }: ChannelConnectModalProps) {
   const [step, setStep] = useState<'config' | 'success'>('config');
-  const [createdChannel, setCreatedChannel] = useState<ChannelConnectionDto | null>(null);
+  const [createdChannel, setCreatedChannel] = useState<ChannelConnectionCreateResponseDto | null>(null);
   const [copied, setCopied] = useState(false);
+  const [tokenCopied, setTokenCopied] = useState(false);
 
   const create = useCreateChannel();
   const activate = useActivateChannel();
@@ -170,7 +185,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
       { tenantId: tenantId || undefined, channelType, channelIdentifier, displayName: displayName || undefined, configurationJson: configJson },
       {
         onSuccess: (result) => {
-          const channel = result as unknown as ChannelConnectionDto;
+          const channel = result as unknown as ChannelConnectionCreateResponseDto;
           setCreatedChannel(channel);
           if (channel?.id) activate.mutate(channel.id);
           setStep('success');
@@ -187,9 +202,18 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
     }
   };
 
+  const handleCopyToken = () => {
+    if (createdChannel?.webhookVerifyToken) {
+      navigator.clipboard.writeText(createdChannel.webhookVerifyToken);
+      setTokenCopied(true);
+      setTimeout(() => setTokenCopied(false), 2000);
+    }
+  };
+
   const handleClose = () => {
     setStep('config');
     setCreatedChannel(null);
+    setTokenCopied(false);
     form.reset();
     onClose();
   };
@@ -351,6 +375,38 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                     )}
                   </button>
                 </div>
+              </div>
+            )}
+
+            {/* Webhook Verify Token */}
+            {SHOWS_VERIFY_TOKEN[channelType] && createdChannel?.webhookVerifyToken && (
+              <div>
+                <p className={labelClass}>Verify Token</p>
+                <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-card bg-glass-1 border-thin border-border-subtle">
+                  <ExternalLink className="w-3.5 h-3.5 text-text-muted flex-shrink-0" strokeWidth={1.6} />
+                  <span className="text-xs font-mono text-brand truncate flex-1">
+                    {createdChannel.webhookVerifyToken}
+                  </span>
+                  <button
+                    onClick={handleCopyToken}
+                    className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-xs border-thin border-border-medium text-2xs font-bold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+                  >
+                    {tokenCopied ? (
+                      <>
+                        <Check className="w-3 h-3 text-success" strokeWidth={2.2} />
+                        <span className="text-success">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3" strokeWidth={1.6} />
+                        Copy
+                      </>
+                    )}
+                  </button>
+                </div>
+                <p className="text-2xs text-text-muted mt-1 pl-2">
+                  Shown once — save it now. You'll need it if you ever have to re-verify this webhook.
+                </p>
               </div>
             )}
 

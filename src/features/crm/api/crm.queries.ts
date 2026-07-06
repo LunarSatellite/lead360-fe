@@ -1886,6 +1886,14 @@ export function useGenerateInvoiceFromDeal() {
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
+export function useGenerateInvoiceFromOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (orderId: string) => crmApi.generateInvoiceFromOrder(orderId),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CRM_KEYS.invoices() }); toast.success('Invoice generated from order.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
 export function useRecordPayment() {
   const qc = useQueryClient();
   return useMutation({

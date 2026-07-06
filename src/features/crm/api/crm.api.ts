@@ -640,6 +640,8 @@ export const crmApi = {
     apiClient.get<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/${id}`),
   generateInvoiceFromDeal: (dealId: string) =>
     apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-deal/${dealId}`, {}),
+  generateInvoiceFromOrder: (orderId: string) =>
+    apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-order/${orderId}`, {}),
   recordInvoicePayment: (id: string, data: import('../types/crm.types').CrmRecordPaymentRequest) =>
     apiClient.post(`${BASE}/invoices/${id}/payment`, data),
   disputeInvoice: (id: string) =>

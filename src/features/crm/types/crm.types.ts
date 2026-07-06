@@ -2338,6 +2338,24 @@ export const CRM_WORKFLOW_TRIGGER_LABELS: Record<string, string> = {
   'deal.closed_won': 'Deal Closed Won',
   'deal.closed_lost': 'Deal Closed Lost',
   'campaign.matched': 'Campaign Matched',
+  'lead.created': 'Lead Created',
+  'contact.created': 'Contact Created',
+  'deal.created': 'Deal Created',
+  // Website events — fired from the tracking snippet (POST /events/ingest)
+  'page.viewed': 'Website: Page Viewed',
+  'product.viewed': 'Website: Product Viewed',
+  'user.signed_up': 'Website: User Signed Up',
+  'user.logged_in': 'Website: User Logged In',
+  'newsletter.subscribed': 'Website: Newsletter Subscribed',
+  'cart.item_added': 'Website: Added to Cart',
+  'checkout.started': 'Website: Checkout Started',
+  'purchase.completed': 'Website: Purchase Completed',
+  'payment.failed': 'Website: Payment Failed',
+  'order.delivered': 'Website: Order Delivered',
+  'review.submitted': 'Website: Review Submitted',
+  'return.requested': 'Website: Return Requested',
+  'subscription.renewed': 'Website: Subscription Renewed',
+  'subscription.cancelled': 'Website: Subscription Cancelled',
 };
 
 // Action types as strings (matching backend)

@@ -14,13 +14,13 @@ import type { WebEventSummaryDto } from '../types/crm.types';
 // ─── API ──────────────────────────────────────────────────────────────────────
 
 interface EventIngestionKeyDto {
-  Key: string;
-  SnippetUrl: string;
+  key: string;
+  snippetUrl: string;
 }
 
 const eventsApi = {
   getKey: () =>
-    apiClient.get<EventIngestionKeyDto | { Key: null; Message: string }>('/v1/events/key'),
+    apiClient.get<EventIngestionKeyDto | { key: null; message: string }>('/v1/events/key'),
   generateKey: () =>
     apiClient.post<EventIngestionKeyDto>('/v1/events/key', {}),
 };
@@ -264,10 +264,11 @@ function EventIngestionPage() {
   const { data, isLoading } = useEventIngestionKey();
   const generate = useGenerateEventIngestionKey();
 
-  const responseData = data as unknown as EventIngestionKeyDto | { Key: null; Message: string } | undefined;
-  const keyData = responseData && 'Key' in responseData && responseData.Key
-    ? responseData as EventIngestionKeyDto
-    : null;
+  // The API serializes camelCase (key / snippetUrl); tolerate PascalCase too for safety.
+  const raw = data as any;
+  const keyValue: string | null = raw?.key ?? raw?.Key ?? null;
+  const snippetUrlValue: string = raw?.snippetUrl ?? raw?.SnippetUrl ?? '';
+  const keyData = keyValue ? { key: keyValue, snippetUrl: snippetUrlValue } : null;
   const hasKey = !!keyData;
 
   const handleGenerate = async () => {
@@ -275,23 +276,32 @@ function EventIngestionPage() {
     setShowConfirm(false);
   };
 
-  const embedTag = keyData ? `<script src="${keyData.SnippetUrl}" async></script>` : '';
-  const usageExample = hasKey
-    ? `<!-- Place this before </body> -->
-${embedTag}
+  const embedTag = keyData ? `<script src="${keyData.snippetUrl}" async></script>` : '';
 
-<!-- Then track events anywhere on the page -->
+  // Part 1 — the loader tag: copy-paste as-is (it carries your key).
+  const embedSnippet = hasKey
+    ? `<!-- Paste once, just before </body>, on every page -->
+${embedTag}`
+    : '';
+
+  // Part 2 — track-call EXAMPLES: a template to adapt, not to paste literally.
+  const trackGuide = hasKey
+    ? `<!-- EXAMPLES — replace the values with your own variables, and call each one
+     on the matching action (a button click, a page load, a form submit). -->
 <script>
-  omniflow('track', 'page.viewed', {
-    email: 'user@example.com',
-    name: 'Jane Smith',
-    page: window.location.pathname
+  // A visitor identifies themselves (signup / login / checkout).
+  // Use a real variable for email/phone — not a hard-coded string.
+  omniflow('track', 'user.signed_up', {
+    email: currentUser.email,   // your logged-in user's email
+    name:  currentUser.name
+    // phone: currentUser.phone // phone works too (enables SMS/WhatsApp follow-up)
   });
 
+  // A purchase completes (put this on your order-confirmation page).
   omniflow('track', 'purchase.completed', {
-    email: 'user@example.com',
-    amount: 99.00,
-    product: 'Pro Plan'
+    email:   currentUser.email,
+    amount:  order.total,        // your real order total (usable in workflow conditions)
+    product: item.name           // your real product name
   });
 </script>`
     : '';
@@ -364,17 +374,17 @@ ${embedTag}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <code className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm font-mono text-brand truncate">
-                {keyData!.Key}
+                {keyData!.key}
               </code>
-              <CopyButton value={keyData!.Key} />
+              <CopyButton value={keyData!.key} />
             </div>
             <div>
               <p className="text-xs font-semibold text-text-muted mb-1.5">Snippet URL</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-xs font-mono text-text-secondary truncate">
-                  {keyData!.SnippetUrl}
+                  {keyData!.snippetUrl}
                 </code>
-                <CopyButton value={keyData!.SnippetUrl} />
+                <CopyButton value={keyData!.snippetUrl} />
               </div>
             </div>
           </div>
@@ -395,18 +405,40 @@ ${embedTag}
         )}
       </div>
 
-      {/* Embed code */}
+      {/* Part 1 — embed the tracker (copy-paste as-is) */}
       {hasKey && (
         <div className="glass-surface rounded-2xl p-5 space-y-4">
           <h2 className="text-sm font-bold text-text-primary flex items-center gap-2">
             <Code2 className="w-4 h-4 text-text-muted" />
-            Embed on your website
+            Embed the tracker on your website
           </h2>
-          <CodeBlock code={usageExample} label="HTML + JavaScript" />
           <p className="text-xs text-text-muted">
-            The tracker uses <code className="bg-bg-elevated px-1 rounded">navigator.sendBeacon</code> with an XHR fallback.
-            Page performance is not affected — events fire asynchronously and never block navigation.
+            Copy this one line and paste it once, just before <code className="bg-bg-elevated px-1 rounded">&lt;/body&gt;</code>,
+            on every page. It carries your key and loads the tracker.
           </p>
+          <CodeBlock code={embedSnippet} label="Paste this as-is — HTML" />
+          <p className="text-xs text-text-muted">
+            Uses <code className="bg-bg-elevated px-1 rounded">navigator.sendBeacon</code> with an XHR fallback — events fire
+            asynchronously and never block the page.
+          </p>
+        </div>
+      )}
+
+      {/* Part 2 — track events: developer guide (examples to adapt) */}
+      {hasKey && (
+        <div className="glass-surface rounded-2xl p-5 space-y-4">
+          <h2 className="text-sm font-bold text-text-primary flex items-center gap-2">
+            <Code2 className="w-4 h-4 text-text-muted" />
+            Track events — developer guide
+          </h2>
+          <p className="text-xs text-text-muted">
+            These are <strong className="text-text-secondary">examples to adapt</strong>, not code to paste as-is. Replace the
+            values with your own variables (e.g. your logged-in user&apos;s email), and call each one on the matching action.
+            Invent event names that fit your business — they only need to match your workflow triggers. Identify visitors with{' '}
+            <code className="bg-bg-elevated px-1 rounded">email</code> or <code className="bg-bg-elevated px-1 rounded">phone</code>{' '}
+            so events can create and reach a contact.
+          </p>
+          <CodeBlock code={trackGuide} label="Examples — customise these" />
         </div>
       )}
 

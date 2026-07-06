@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Truck, X, Loader2, CheckCircle, XCircle, Package } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
-import { useAllDeliveries, useUpdateDeliveryStatus } from '../api/crm.queries';
+import { useAllDeliveries, useUpdateDeliveryStatus, useRecordDeliveryPOD } from '../api/crm.queries';
 import type { CrmDeliveryFilter } from '../types/crm.types';
 import { CRM_DELIVERY_STATUS_LABELS, CRM_DELIVERY_STATUS_COLORS, CrmDeliveryStatus } from '../types/crm.types';
 import type { CrmDeliveryDto } from '../types/crm.types';
@@ -50,11 +50,26 @@ export function Component() {
   const [statusF, setStatusF] = useState('');
   const [selected, setSelected] = useState<CrmDeliveryDto | null>(null);
 
-  const { data: raw, isLoading } = useAllDeliveries(filter);
-  const items: CrmDeliveryDto[] = (raw as any)?.item1 ?? [];
-  const total: number = (raw as any)?.item2 ?? 0;
+  const { data: raw, isLoading, refetch } = useAllDeliveries(filter);
+  const items: CrmDeliveryDto[] = (raw as any)?.items ?? [];
+  const total: number = (raw as any)?.totalCount ?? 0;
 
   const updateStatus = useUpdateDeliveryStatus();
+  const recordPOD = useRecordDeliveryPOD();
+  const [podName, setPodName] = useState('');
+  const [podSigFile, setPodSigFile] = useState<File | null>(null);
+  const [podPhotoFile, setPodPhotoFile] = useState<File | null>(null);
+
+  const handleRecordPOD = () => {
+    if (!selected || !podName.trim()) return;
+    const fd = new FormData();
+    fd.append('signedByName', podName.trim());
+    if (podSigFile) fd.append('signatureImage', podSigFile);
+    if (podPhotoFile) fd.append('proofPhoto', podPhotoFile);
+    recordPOD.mutate({ deliveryId: selected.id, formData: fd }, {
+      onSuccess: () => { setPodName(''); setPodSigFile(null); setPodPhotoFile(null); refetch(); },
+    });
+  };
 
   const applyFilter = () => {
     setFilter(f => ({
@@ -65,9 +80,15 @@ export function Component() {
   };
 
   const advance = (d: CrmDeliveryDto, toStatus: number) => {
+    const extra: Record<string, any> = {};
+    if (toStatus === 6) {
+      const reason = prompt('Failure reason:');
+      if (!reason) return;
+      extra.failureReason = reason;
+    }
     updateStatus.mutate(
-      { deliveryId: d.id, data: { status: toStatus as CrmDeliveryStatus } },
-      { onSuccess: () => setSelected(prev => prev?.id === d.id ? { ...prev, status: toStatus as CrmDeliveryStatus } : prev) }
+      { deliveryId: d.id, data: { status: toStatus as CrmDeliveryStatus, ...extra } },
+      { onSuccess: () => { refetch(); setSelected(prev => prev?.id === d.id ? { ...prev, status: toStatus as CrmDeliveryStatus, failureReason: extra.failureReason } : prev); } }
     );
   };
 
@@ -86,13 +107,13 @@ export function Component() {
             value={search} onChange={e => setSearch(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && applyFilter()}
             placeholder="Search shipment #, tracking #, carrier..."
-            className="flex-1 min-w-48 rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40"
+            className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow"
           />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none">
+          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Status</option>
             {Object.entries(CRM_DELIVERY_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-surface text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <button onClick={applyFilter} className="px-4 py-2 rounded-xl border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -184,6 +205,31 @@ export function Component() {
                     {ns.label}
                   </button>
                 ))}
+              </div>
+            )}
+
+            {/* Proof of Delivery */}
+            {selected.status >= 4 && (
+              <div className="pt-3 border-t border-border-subtle space-y-3">
+                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Proof of Delivery</p>
+                {selected.podSignedByName ? (
+                  <div className="bg-bg-surface rounded-xl p-3 space-y-2 text-sm">
+                    <div className="flex justify-between"><span className="text-text-muted">Signed By</span><span className="text-text-primary font-medium">{selected.podSignedByName}</span></div>
+                    {selected.podSignedAt && <div className="flex justify-between"><span className="text-text-muted">Signed At</span><span className="text-text-primary">{format(parseISO(selected.podSignedAt), 'MMM d, yyyy HH:mm')}</span></div>}
+                    {selected.signatureUrl && <div><a href={selected.signatureUrl} target="_blank" rel="noopener noreferrer" className="text-brand text-xs hover:underline">View Signature</a></div>}
+                    {selected.proofPhotoUrl && <div><a href={selected.proofPhotoUrl} target="_blank" rel="noopener noreferrer" className="text-brand text-xs hover:underline">View Proof Photo</a></div>}
+                  </div>
+                ) : selected.status === 4 && (
+                  <div className="space-y-2">
+                    <input value={podName} onChange={e => setPodName(e.target.value)} placeholder="Signed by name" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm" />
+                    <input type="file" accept="image/*" onChange={e => { if (e.target.files?.[0]) setPodSigFile(e.target.files[0]); }} className="text-xs text-text-muted" />
+                    <input type="file" accept="image/*" onChange={e => { if (e.target.files?.[0]) setPodPhotoFile(e.target.files[0]); }} className="text-xs text-text-muted" />
+                    <button onClick={handleRecordPOD} disabled={recordPOD.isPending || !podName.trim()}
+                      className="w-full py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
+                      {recordPOD.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Confirm Delivery & Record POD'}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

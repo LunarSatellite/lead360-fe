@@ -428,13 +428,15 @@ export const crmApi = {
 
   // ─── Deliveries ──────────────────────────────────────────────────────────
   getAllDeliveries: (filter: import('../types/crm.types').CrmDeliveryFilter) =>
-    apiClient.get<{ item1: import('../types/crm.types').CrmDeliveryDto[]; item2: number }>(`${BASE}/deliveries`, { params: filter }),
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').CrmDeliveryDto>>(`${BASE}/deliveries`, { params: filter }),
   getDeliveries: (orderId: string) =>
     apiClient.get<import('../types/crm.types').CrmDeliveryDto[]>(`${BASE}/orders/${orderId}/deliveries`),
   createDelivery: (orderId: string, data: import('../types/crm.types').CrmCreateDeliveryRequest) =>
     apiClient.post<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/orders/${orderId}/deliveries`, data),
   updateDeliveryStatus: (deliveryId: string, data: import('../types/crm.types').CrmUpdateDeliveryStatusRequest) =>
     apiClient.patch<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/deliveries/${deliveryId}/status`, data),
+  recordDeliveryPOD: (deliveryId: string, formData: FormData) =>
+    apiClient.post<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/deliveries/${deliveryId}/pod`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 
   // ─── Equipment / Asset ────────────────────────────────────────────────────
   getEquipment: (filter: import('../types/crm.types').CrmEquipmentFilter) =>
@@ -638,6 +640,8 @@ export const crmApi = {
     apiClient.get<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/${id}`),
   generateInvoiceFromDeal: (dealId: string) =>
     apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-deal/${dealId}`, {}),
+  generateInvoiceFromOrder: (orderId: string) =>
+    apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-order/${orderId}`, {}),
   recordInvoicePayment: (id: string, data: import('../types/crm.types').CrmRecordPaymentRequest) =>
     apiClient.post(`${BASE}/invoices/${id}/payment`, data),
   disputeInvoice: (id: string) =>

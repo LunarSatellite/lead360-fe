@@ -115,6 +115,14 @@ const crmNav = [
   { label: 'Deals',         href: ROUTES.dashboard.crmDealsHub,      icon: Briefcase },
   { label: 'Event Tracking',  href: ROUTES.dashboard.crmEventIngestion,     icon: Globe },
   { label: 'Feature Settings', href: ROUTES.dashboard.crmFeatureSettings, icon: SlidersHorizontal },
+  { label: 'Commissions',   href: ROUTES.dashboard.crmCommissions,        icon: DollarSign },
+
+  { label: 'Orders',    href: ROUTES.dashboard.crmOrders,    icon: Package  },
+  { label: 'Deliveries', href: ROUTES.dashboard.crmDeliveries, icon: Truck  },
+  { label: 'Returns',   href: ROUTES.dashboard.crmReturns,   icon: RotateCw  },
+  { label: 'Work Orders',   href: ROUTES.dashboard.crmWorkOrders,    icon: Wrench },
+  { label: 'Vendors',          href: ROUTES.dashboard.crmVendors,          icon: Truck },
+  { label: 'Purchase Orders',  href: ROUTES.dashboard.crmPurchaseOrders,   icon: ShoppingCart },
   { label: 'Goods Receipts',   href: ROUTES.dashboard.crmGoodsReceipts,    icon: PackageCheck },
   { label: 'Inventory',     href: ROUTES.dashboard.crmInventory,      icon: Package },
   { label: 'Invoices',      href: ROUTES.dashboard.crmInvoices,      icon: Receipt },
@@ -294,6 +302,7 @@ export function DashboardLayout() {
     if (path.includes('/crm/invoices')) return 'Invoices';
     if (path.includes('/crm/subscriptions')) return 'Subscriptions';
     if (path.includes('/crm/orders')) return 'Orders';
+    if (path.includes('/crm/deliveries')) return 'Deliveries';
     if (path.includes('/crm/meetings')) return 'Meetings';
     if (path.includes('/crm/nps')) return 'NPS Surveys';
     if (path.includes('/crm/time-tracking')) return 'Time Tracking';

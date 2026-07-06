@@ -1895,6 +1895,14 @@ export function useGenerateInvoiceFromDeal() {
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
+export function useGenerateInvoiceFromOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (orderId: string) => crmApi.generateInvoiceFromOrder(orderId),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CRM_KEYS.invoices() }); toast.success('Invoice generated from order.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
 export function useRecordPayment() {
   const qc = useQueryClient();
   return useMutation({
@@ -2141,6 +2149,19 @@ export function useUpdateDeliveryStatus() {
     mutationFn: ({ deliveryId, data }: { deliveryId: string; data: import('../types/crm.types').CrmUpdateDeliveryStatusRequest }) => crmApi.updateDeliveryStatus(deliveryId, data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'orders'] }); toast.success('Delivery status updated.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useRecordDeliveryPOD() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ deliveryId, formData }: { deliveryId: string; formData: FormData }) =>
+      crmApi.recordDeliveryPOD(deliveryId, formData),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'deliveries'] });
+      toast.success('POD recorded — delivery confirmed');
+    },
+    onError: () => toast.error('Failed to record POD'),
   });
 }
 

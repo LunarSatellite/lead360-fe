@@ -25,11 +25,13 @@ const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated p
 const FULFILLMENT_COLORS: Record<number, string> = {
   1: 'text-text-secondary bg-bg-elevated border-border-subtle',
   2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  3: 'text-brand bg-brand-soft border-border-glow',
-  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
-  5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
-  6: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
-  7: 'text-text-muted bg-bg-card border-border-subtle',
+  3: 'text-[#3B82F6] bg-[rgba(59,130,246,0.1)] border-[rgba(59,130,246,0.2)]',
+  4: 'text-[#8B5CF6] bg-[rgba(139,92,246,0.1)] border-[rgba(139,92,246,0.2)]',
+  5: 'text-brand bg-brand-soft border-border-glow',
+  6: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
+  7: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  8: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  9: 'text-text-muted bg-bg-card border-border-subtle',
 };
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
@@ -661,7 +663,7 @@ export function Component() {
               )}
               {selectedOrder.status === 2 && (
                 <>
-                  <button onClick={() => handleFulfillStatus(selectedOrder.id, 3)} disabled={updateFulfillment.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
+                  <button onClick={() => handleFulfillStatus(selectedOrder.id, 5)} disabled={updateFulfillment.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
                     <Truck className="w-3.5 h-3.5" /> Mark Shipped
                   </button>
                   <button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 transition-all disabled:opacity-50">

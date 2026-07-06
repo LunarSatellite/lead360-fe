@@ -4,7 +4,7 @@ import { format, parseISO, isPast } from 'date-fns';
 import { toast } from 'sonner';
 import { confirmDialog } from '@/shared/ui/confirm';
 import {
-  useInvoices, useGenerateInvoiceFromDeal, useRecordPayment,
+  useInvoices, useGenerateInvoiceFromDeal, useGenerateInvoiceFromOrder, useRecordPayment,
   useDisputeInvoice, useSendInvoice, useVoidInvoice, useGenerateInvoicePaymentLink,
 } from '../api/crm.queries';
 import type {
@@ -66,7 +66,9 @@ export function Component() {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<CrmInvoiceSummaryDto | null>(null);
   const [genOpen, setGenOpen] = useState(false);
+  const [genSource, setGenSource] = useState<'deal' | 'order'>('deal');
   const [genDealId, setGenDealId] = useState('');
+  const [genOrderId, setGenOrderId] = useState('');
 
   const [payAmount, setPayAmount] = useState('');
   const [payMethod, setPayMethod] = useState<CrmPaymentMethod>(CrmPaymentMethod.BankTransfer);
@@ -77,6 +79,7 @@ export function Component() {
   const items: CrmInvoiceSummaryDto[] = (raw as any)?.items ?? [];
 
   const generateFromDeal = useGenerateInvoiceFromDeal();
+  const generateFromOrder = useGenerateInvoiceFromOrder();
   const recordPayment = useRecordPayment();
   const disputeInvoice = useDisputeInvoice();
   const sendInvoice = useSendInvoice();
@@ -86,6 +89,10 @@ export function Component() {
   function handleGenerate() {
     if (!genDealId.trim()) return;
     generateFromDeal.mutate(genDealId.trim(), { onSuccess: () => { setGenOpen(false); setGenDealId(''); } });
+  }
+  function handleGenerateFromOrder() {
+    if (!genOrderId.trim()) return;
+    generateFromOrder.mutate(genOrderId.trim(), { onSuccess: () => { setGenOpen(false); setGenOrderId(''); } });
   }
 
   function handleRecordPayment() {
@@ -109,7 +116,7 @@ export function Component() {
           <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
         </div>
         <button onClick={() => setGenOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
-          <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Generate from Deal
+          <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Invoice
         </button>
       </div>
 
@@ -261,15 +268,30 @@ export function Component() {
         )}
       </SlideOver>
 
-      {/* Generate from Deal SlideOver */}
-      <SlideOver open={genOpen} onClose={() => { setGenOpen(false); setGenDealId(''); }} title="Generate Invoice from Deal">
-        <Field label="Deal ID *">
-          <input value={genDealId} onChange={e => setGenDealId(e.target.value)} className={inputCls} placeholder="Enter Deal ID" />
-        </Field>
-        <button onClick={handleGenerate} disabled={generateFromDeal.isPending || !genDealId.trim()}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
-          {generateFromDeal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Receipt className="w-4 h-4" />} Generate Invoice
-        </button>
+      {/* Generate Invoice SlideOver */}
+      <SlideOver open={genOpen} onClose={() => { setGenOpen(false); setGenDealId(''); setGenOrderId(''); }} title="New Invoice">
+        <div className="space-y-3">
+          <Field label="Source">
+            <select value={genSource} onChange={e => setGenSource(e.target.value as 'deal' | 'order')} className={selectCls}>
+              <option value="deal">From Deal</option>
+              <option value="order">From Order</option>
+            </select>
+          </Field>
+          {genSource === 'deal' ? (
+            <Field label="Deal ID *">
+              <input value={genDealId} onChange={e => setGenDealId(e.target.value)} className={inputCls} placeholder="Enter Deal ID" />
+            </Field>
+          ) : (
+            <Field label="Order Number *">
+              <input value={genOrderId} onChange={e => setGenOrderId(e.target.value)} className={inputCls} placeholder="e.g. ORD-20260701-XXXX" />
+            </Field>
+          )}
+          <button onClick={genSource === 'deal' ? handleGenerate : handleGenerateFromOrder}
+            disabled={(genSource === 'deal' ? generateFromDeal : generateFromOrder).isPending || !(genSource === 'deal' ? genDealId : genOrderId).trim()}
+            className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+            {(genSource === 'deal' ? generateFromDeal : generateFromOrder).isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Receipt className="w-4 h-4" />} Generate Invoice
+          </button>
+        </div>
       </SlideOver>
     </div>
   );

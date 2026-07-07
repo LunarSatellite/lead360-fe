@@ -87,6 +87,14 @@ export interface ChannelConnectionDto {
   lastMessageReceivedAt: string | null;
 }
 
+// ─── ChannelConnectionCreateResponseDto (POST /api/v1/channels response) ───
+// Extends ChannelConnectionDto with a one-time-reveal webhookVerifyToken.
+// Only present on the create response — GET /channels and /channels/{id} never return it.
+
+export interface ChannelConnectionCreateResponseDto extends ChannelConnectionDto {
+  webhookVerifyToken: string | null;
+}
+
 // ─── ChannelConnectionCreateRequest (POST /api/v1/channels) ───
 
 export interface ChannelConnectionCreateRequest {

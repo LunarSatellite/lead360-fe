@@ -428,13 +428,15 @@ export const crmApi = {
 
   // ─── Deliveries ──────────────────────────────────────────────────────────
   getAllDeliveries: (filter: import('../types/crm.types').CrmDeliveryFilter) =>
-    apiClient.get<{ item1: import('../types/crm.types').CrmDeliveryDto[]; item2: number }>(`${BASE}/deliveries`, { params: filter }),
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').CrmDeliveryDto>>(`${BASE}/deliveries`, { params: filter }),
   getDeliveries: (orderId: string) =>
     apiClient.get<import('../types/crm.types').CrmDeliveryDto[]>(`${BASE}/orders/${orderId}/deliveries`),
   createDelivery: (orderId: string, data: import('../types/crm.types').CrmCreateDeliveryRequest) =>
     apiClient.post<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/orders/${orderId}/deliveries`, data),
   updateDeliveryStatus: (deliveryId: string, data: import('../types/crm.types').CrmUpdateDeliveryStatusRequest) =>
     apiClient.patch<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/deliveries/${deliveryId}/status`, data),
+  recordDeliveryPOD: (deliveryId: string, formData: FormData) =>
+    apiClient.post<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/deliveries/${deliveryId}/pod`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 
   // ─── Equipment / Asset ────────────────────────────────────────────────────
   getEquipment: (filter: import('../types/crm.types').CrmEquipmentFilter) =>
@@ -638,6 +640,8 @@ export const crmApi = {
     apiClient.get<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/${id}`),
   generateInvoiceFromDeal: (dealId: string) =>
     apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-deal/${dealId}`, {}),
+  generateInvoiceFromOrder: (orderId: string) =>
+    apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-order/${orderId}`, {}),
   recordInvoicePayment: (id: string, data: import('../types/crm.types').CrmRecordPaymentRequest) =>
     apiClient.post(`${BASE}/invoices/${id}/payment`, data),
   disputeInvoice: (id: string) =>
@@ -817,6 +821,20 @@ export const crmApi = {
   getFbAdAggregate: () =>
     apiClient.get<import('../types/crm.types').FbAdAggregateDto>(`${BASE}/fb-ads/aggregate`),
 
+  // ─── TikTok Ads ───────────────────────────────────────────────────────────
+  getTikTokAdAccount: () =>
+    apiClient.get<import('../types/crm.types').TikTokAdAccountDto | null>(`${BASE}/tiktok-ads/account`),
+  connectTikTokAdAccount: (data: import('../types/crm.types').TikTokAdAccountConnectRequest) =>
+    apiClient.post<import('../types/crm.types').TikTokAdAccountDto>(`${BASE}/tiktok-ads/account`, data),
+  disconnectTikTokAdAccount: () =>
+    apiClient.delete(`${BASE}/tiktok-ads/account`),
+  getTikTokAdCampaigns: () =>
+    apiClient.get<import('../types/crm.types').TikTokAdCampaignDto[]>(`${BASE}/tiktok-ads/campaigns`),
+  syncTikTokAdCampaigns: () =>
+    apiClient.post<import('../types/crm.types').TikTokAdSyncResultDto>(`${BASE}/tiktok-ads/campaigns/sync`, {}),
+  getTikTokAdAggregate: () =>
+    apiClient.get<import('../types/crm.types').TikTokAdAggregateDto>(`${BASE}/tiktok-ads/aggregate`),
+
   // ─── Announcements ────────────────────────────────────────────────────────
   getAnnouncements: (status?: AnnouncementStatus) =>
     apiClient.get<AnnouncementSummaryDto[]>(ANN_BASE, { params: status != null ? { status } : undefined }),
@@ -834,6 +852,12 @@ export const crmApi = {
     apiClient.post<AnnouncementDetailDto>(`${ANN_BASE}/${id}/archive`, {}),
   scheduleAnnouncement: (id: string, scheduledAt: string) =>
     apiClient.post<AnnouncementDetailDto>(`${ANN_BASE}/${id}/schedule`, { scheduledAt }),
+  getAnnouncementAnalytics: (id: string) =>
+    apiClient.get<any>(`${ANN_BASE}/${id}/analytics`),
+  getAnnouncementRecipients: (id: string, page = 1) =>
+    apiClient.get<any[]>(`${ANN_BASE}/${id}/recipients`, { params: { page, pageSize: 50 } }),
+  getAnnouncementSummaryStats: () =>
+    apiClient.get<any>(`${ANN_BASE}/analytics/summary`),
 
   // ─── Approval Workflows ───────────────────────────────────────────────────
   getApprovals: (status?: import('../types/crm.types').ApprovalStatus) =>
@@ -1187,8 +1211,6 @@ export const crmApi = {
 
   acknowledgeOrder: (id: string) =>
     apiClient.post(`/v1/crm/orders/${id}/acknowledge`),
-  createOrderFromQuote: (quoteId: string) =>
-    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/from-quote/${quoteId}`),
   creditCheck: (accountId: string, orderValue: number) =>
     apiClient.post<import('../types/crm.types').CreditCheckResult>(`/v1/crm/orders/credit-check`, { accountId, orderValue }),
   getDealHandover: (dealId: string) =>

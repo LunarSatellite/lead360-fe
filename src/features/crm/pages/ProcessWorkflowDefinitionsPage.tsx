@@ -8,7 +8,7 @@ import {
 import { format, parseISO } from 'date-fns';
 import {
   useProcessDefinitions, useCreateProcessDefinition, useUpdateProcessDefinition,
-  useDeleteProcessDefinition, useStartProcess,
+  useDeleteProcessDefinition, useStartProcess, useProcessRoles,
 } from '../api/process-workflow.queries';
 import type {
   ProcessDefinitionDto,
@@ -22,6 +22,20 @@ interface StepEditorProps {
   step: CreateProcessStepRequest;
   onChange: (index: number, step: CreateProcessStepRequest) => void;
   onRemove: (index: number) => void;
+}
+
+function RoleDropdown({ roleId, onChange }: { roleId: string; onChange: (id: string) => void }) {
+  const { data: roles } = useProcessRoles();
+  const list = roles ?? [];
+  return (
+    <select value={roleId} onChange={e => onChange(e.target.value)}
+      className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand">
+      <option value="">No role (all users)</option>
+      {list.map((r: { id: string; name: string }) => (
+        <option key={r.id} value={r.id}>{r.name}</option>
+      ))}
+    </select>
+  );
 }
 
 function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
@@ -56,13 +70,8 @@ function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
 
       <div className="flex gap-2">
         <div className="flex-1">
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Team Label</label>
-          <input
-            value={step.assignedTeamLabel ?? ''}
-            onChange={e => onChange(index, { ...step, assignedTeamLabel: e.target.value || undefined })}
-            placeholder="e.g. Sales, Support"
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          />
+          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Assigned Role</label>
+          <RoleDropdown roleId={step.assignedRoleId ?? ''} onChange={id => onChange(index, { ...step, assignedRoleId: id || undefined })} />
         </div>
         <div className="w-28">
           <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">SLA (hrs)</label>
@@ -98,6 +107,7 @@ function DefinitionForm({ initial, onDone, onCancel }: DefinitionFormProps) {
       description: s.description ?? undefined,
       assignedTeamLabel: s.assignedTeamLabel ?? undefined,
       assignedToUserId: s.assignedToUserId ?? undefined,
+      assignedRoleId: s.assignedRoleId ?? undefined,
       slaHours: s.slaHours,
     })).length > 0
       ? (initial?.steps ?? []).map(s => ({
@@ -106,6 +116,7 @@ function DefinitionForm({ initial, onDone, onCancel }: DefinitionFormProps) {
           description: s.description ?? undefined,
           assignedTeamLabel: s.assignedTeamLabel ?? undefined,
           assignedToUserId: s.assignedToUserId ?? undefined,
+          assignedRoleId: s.assignedRoleId ?? undefined,
           slaHours: s.slaHours,
         }))
       : [{ stepOrder: 1, name: '', slaHours: 24 }]
@@ -143,6 +154,7 @@ function DefinitionForm({ initial, onDone, onCancel }: DefinitionFormProps) {
         description: s.description,
         assignedTeamLabel: s.assignedTeamLabel || undefined,
         assignedToUserId: s.assignedToUserId,
+        assignedRoleId: s.assignedRoleId || undefined,
         slaHours: s.slaHours ?? 24,
       })),
     };

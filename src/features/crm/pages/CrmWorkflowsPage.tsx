@@ -451,6 +451,40 @@ function stepsToGraph(steps: Array<CrmWorkflowStepRequest | { id?: string; stepO
   return { nodes, edges };
 }
 
+// Translate the visual canvas's friendly action + fields into the backend's action name + config
+// keys, so canvas-built steps actually run. Actions with no backend equivalent are hidden from the
+// palette; if an old saved one still appears, it passes through unchanged (and no-ops as before).
+function mapCanvasAction(cfg: Record<string, any>): { actionType: string; config: Record<string, unknown> } {
+  const s = (k: string) => (cfg[k] != null && String(cfg[k]).trim() !== '' ? String(cfg[k]) : undefined);
+  const clean = (o: Record<string, unknown>) =>
+    Object.fromEntries(Object.entries(o).filter(([, v]) => v !== undefined && v !== ''));
+  switch (cfg.actionType) {
+    case 'send_email': {
+      const tf = cfg.toField ?? 'contact.email';
+      const to = tf === 'owner.email' ? 'owner' : tf === 'custom' ? (s('to') ?? '') : 'customer';
+      return { actionType: 'send_email', config: clean({ to, subject: s('subject'), body: s('value') }) };
+    }
+    case 'create_task':
+      return { actionType: 'create_task', config: clean({ title: s('value'), priority: s('priority'), description: s('description') }) };
+    case 'notify':
+      return { actionType: 'send_notification', config: clean({ title: s('value'), body: s('body') }) };
+    case 'assign_owner':
+      return { actionType: 'assign_to_user', config: clean({ userId: s('value') }) };
+    case 'update_record':
+      return { actionType: 'update_field', config: clean({ entity_type: s('recordType'), field: s('field'), value: s('value') }) };
+    case 'create_note':
+      return { actionType: 'log_signal', config: clean({ summary: s('value') }) };
+    case 'enrol_nurture':
+      return { actionType: 'create_nurture_entry', config: clean({ sequenceId: s('sequenceId') }) };
+    case 'start_process':
+      return { actionType: 'start_process', config: clean({ definition_id: s('definition_id') }) };
+    default: {
+      const { actionType: _a, description: _d, ...rest } = cfg;
+      return { actionType: String(cfg.actionType ?? 'create_task'), config: rest };
+    }
+  }
+}
+
 function graphToSteps(nodes: Node[], edges: Edge[]): CrmWorkflowStepRequest[] {
   const sorted = nodes.filter((n) => n.type !== 'trigger' && n.type !== 'end');
   return sorted.map((n, i) => {
@@ -465,12 +499,12 @@ function graphToSteps(nodes: Node[], edges: Edge[]): CrmWorkflowStepRequest[] {
       };
     }
     if (cfg.actionType != null) {
-      // Build config JSON from canvas-set fields, excluding UI-only keys
-      const { actionType: _at, description: _d, ...rest } = cfg;
+      // Translate the canvas's friendly action + fields into the backend's action + config keys.
+      const mapped = mapCanvasAction(cfg);
       return {
         stepOrder: i + 1,
-        actionType: String(cfg.actionType),
-        actionConfigJson: Object.keys(rest).length ? JSON.stringify(rest) : '{}',
+        actionType: mapped.actionType,
+        actionConfigJson: JSON.stringify(mapped.config),
         delayMinutes: 0,
       };
     }
@@ -538,6 +572,71 @@ function FloatingPalette() {
 
 // ── Quick Insert Menu ──────────────────────────────────────────────────────────
 // ── Create Workflow Form (alternative to palette) ─────────────────────────────
+// ── GenericConditionEditor ──────────────────────────────────────────────────────
+// Data-driven condition builder for triggers without a specialised editor (e.g. web events).
+// Emits the dynamic rule shape the backend understands:
+//   { "logic":"AND", "conditions":[ { "field":"properties.amount", "operator":"gte", "value":100 } ] }
+// No rows → emits '' so the workflow fires on every matching event.
+function GenericConditionEditor({ value, onChange }: { value: string; onChange: (json: string) => void }) {
+  const INPUT = 'nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary outline-none focus:border-brand';
+  type Cond = { field: string; operator: string; value: unknown };
+  const parsed = useMemo(() => {
+    try {
+      const o = JSON.parse(value || '{}');
+      if (o && Array.isArray(o.conditions)) return { logic: o.logic === 'OR' ? 'OR' : 'AND', conditions: o.conditions as Cond[] };
+    } catch { /* ignore malformed */ }
+    return { logic: 'AND', conditions: [] as Cond[] };
+  }, [value]);
+  const { logic, conditions } = parsed;
+
+  const emit = (nextLogic: string, conds: Cond[]) =>
+    onChange(conds.length ? JSON.stringify({ logic: nextLogic, conditions: conds }) : '');
+  const coerce = (v: string): unknown => {
+    if (v.trim() === '') return '';
+    const n = Number(v);
+    return Number.isNaN(n) ? v : n;
+  };
+  const update = (i: number, patch: Partial<Cond>) =>
+    emit(logic, conditions.map((c, idx) => (idx === i ? { ...c, ...patch } : c)));
+  const add = () => emit(logic, [...conditions, { field: '', operator: 'gte', value: '' }]);
+  const remove = (i: number) => emit(logic, conditions.filter((_, idx) => idx !== i));
+
+  const OPERATORS = [
+    { value: 'eq', label: 'equals' }, { value: 'neq', label: 'not equals' },
+    { value: 'gt', label: 'greater than' }, { value: 'gte', label: 'greater or equal' },
+    { value: 'lt', label: 'less than' }, { value: 'lte', label: 'less or equal' },
+    { value: 'contains', label: 'contains' },
+  ];
+
+  return (
+    <div className="space-y-1.5">
+      {conditions.length === 0 && (
+        <p className="text-[10px] text-text-muted italic">No conditions — fires on every matching event. Add one to filter (e.g. properties.amount ≥ 100).</p>
+      )}
+      {conditions.map((c, i) => (
+        <div key={i} className="flex items-center gap-1">
+          <input className={INPUT + ' flex-1'} placeholder="properties.amount" value={String(c.field ?? '')} onChange={(e) => update(i, { field: e.target.value })} />
+          <select className={INPUT + ' w-28'} value={String(c.operator ?? 'gte')} onChange={(e) => update(i, { operator: e.target.value })}>
+            {OPERATORS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+          <input className={INPUT + ' w-20'} placeholder="value" value={c.value == null ? '' : String(c.value)} onChange={(e) => update(i, { value: coerce(e.target.value) })} />
+          <button type="button" className="nodrag text-text-muted hover:text-danger-DEFAULT px-1 text-xs" onClick={() => remove(i)}>✕</button>
+        </div>
+      ))}
+      <div className="flex items-center gap-2">
+        <button type="button" className="nodrag text-[10px] text-brand hover:underline" onClick={add}>+ Add condition</button>
+        {conditions.length > 1 && (
+          <select className={INPUT + ' w-24'} value={logic} onChange={(e) => emit(e.target.value, conditions)}>
+            <option value="AND">Match ALL</option>
+            <option value="OR">Match ANY</option>
+          </select>
+        )}
+      </div>
+      <p className="text-[9px] text-text-muted">Fields: properties.amount, properties.plan, eventType, contactEmail</p>
+    </div>
+  );
+}
+
 // ── TriggerConditionEditor ─────────────────────────────────────────────────────
 function TriggerConditionEditor({ triggerType, value, onChange }: {
   triggerType: string; value: string; onChange: (json: string) => void;
@@ -584,7 +683,8 @@ function TriggerConditionEditor({ triggerType, value, onChange }: {
     );
   }
 
-  return <p className="text-[10px] text-text-muted italic py-1">No conditions required for this trigger.</p>;
+  // Any other trigger (incl. web events) → data-driven builder that emits the dynamic rule shape.
+  return <GenericConditionEditor value={value} onChange={onChange} />;
 }
 
 // ── ActionConfigEditor ─────────────────────────────────────────────────────────
@@ -665,14 +765,38 @@ function ActionConfigEditor({ actionType, value, onChange }: {
     </div>
   );
 
-  if (actionType === 'send_email') return (
-    <div><label className={L}>Send to *</label>
-      <select className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
-        <option value="">Select user…</option>
-        {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
-      </select>
-    </div>
-  );
+  if (actionType === 'send_email') {
+    const to = parsed.to === undefined ? 'customer' : String(parsed.to);
+    const mode = to === 'owner' ? 'owner' : to === 'customer' ? 'customer' : 'custom';
+    // Always persist `to` (defaulting to "customer") so the backend has a recipient even if the
+    // user only edits subject/body.
+    const setMany = (patch: Record<string, unknown>) => onChange(JSON.stringify({ ...parsed, to, ...patch }));
+    return (
+      <div className="space-y-1.5">
+        <div><label className={L}>Send to *</label>
+          <select className={F} value={mode} onChange={(e) => {
+            const v = e.target.value;
+            setMany({ to: v === 'owner' ? 'owner' : v === 'customer' ? 'customer' : '' });
+          }}>
+            <option value="customer">The customer (who triggered it)</option>
+            <option value="owner">The record owner (staff)</option>
+            <option value="custom">A custom address…</option>
+          </select>
+        </div>
+        {mode === 'custom' && (
+          <div><label className={L}>Email address *</label>
+            <input className={F} placeholder="hello@example.com" value={to} onChange={(e) => setMany({ to: e.target.value })} />
+          </div>
+        )}
+        <div><label className={L}>Subject *</label>
+          <input className={F} placeholder="e.g. Thanks for your order!" value={String(parsed.subject ?? '')} onChange={(e) => setMany({ subject: e.target.value })} />
+        </div>
+        <div><label className={L}>Message *</label>
+          <textarea rows={3} className={F + ' resize-none'} placeholder="Your email message…" value={String(parsed.body ?? '')} onChange={(e) => setMany({ body: e.target.value })} />
+        </div>
+      </div>
+    );
+  }
 
   if (actionType === 'adjust_lead_score') {
     const delta = Number(parsed.delta ?? 10);
@@ -1056,6 +1180,10 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                   value={cfg.apiTriggerType ?? 'manual'}
                   onChange={(v) => sf('apiTriggerType', v)}
                   options={[
+                    // CRM record-created triggers (poll-based — fire when the record is created)
+                    { value: 'lead.created',          label: 'Lead Created' },
+                    { value: 'contact.created',       label: 'Contact Created' },
+                    { value: 'deal.created',          label: 'Deal Created' },
                     { value: 'deal.stage_changed',    label: 'Deal Stage Changed' },
                     { value: 'funnel.stage_changed',  label: 'Funnel / Pipeline Stage Changed' },
                     { value: 'lead.score_threshold',  label: 'Lead Score Threshold' },
@@ -1065,10 +1193,32 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                     { value: 'meeting.booked',        label: 'Meeting Booked' },
                     { value: 'proposal.sent',         label: 'Proposal Sent' },
                     { value: 'agent.handoff_requested', label: 'Agent Handoff' },
+                    // Website events — fired from the tracking snippet (POST /events/ingest)
+                    { value: 'user.signed_up',        label: 'Website: User Signed Up' },
+                    { value: 'user.logged_in',        label: 'Website: User Logged In' },
+                    { value: 'newsletter.subscribed', label: 'Website: Newsletter Subscribed' },
+                    { value: 'product.viewed',        label: 'Website: Product Viewed' },
+                    { value: 'cart.item_added',       label: 'Website: Added to Cart' },
+                    { value: 'checkout.started',      label: 'Website: Checkout Started' },
+                    { value: 'purchase.completed',    label: 'Website: Purchase Completed' },
+                    { value: 'payment.failed',        label: 'Website: Payment Failed' },
+                    { value: 'order.delivered',       label: 'Website: Order Delivered' },
+                    { value: 'review.submitted',      label: 'Website: Review Submitted' },
+                    { value: 'return.requested',      label: 'Website: Return Requested' },
+                    { value: 'subscription.cancelled',label: 'Website: Subscription Cancelled' },
                     { value: 'manual',                label: 'Manual / Custom Event' },
                   ]}
                   hint="Maps to the automation engine trigger type"
                 />
+                {/* Optional conditions — filter which events actually fire this workflow */}
+                <div>
+                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Conditions (optional)</label>
+                  <TriggerConditionEditor
+                    triggerType={cfg.apiTriggerType ?? 'manual'}
+                    value={cfg.conditionsJson ?? ''}
+                    onChange={(v) => sf('conditionsJson', v)}
+                  />
+                </div>
                 <div className="rounded-lg p-3 border text-2xs bg-blue-400/5 border-blue-400/20">
                   <p className="text-blue-400 leading-relaxed">This block starts the workflow. Connect action, AI, or API blocks below to define what happens next.</p>
                 </div>
@@ -1098,14 +1248,13 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                   value={cfg.actionType ?? 'create_task'}
                   onChange={(v) => sf('actionType', v)}
                   options={[
+                    // Only actions the backend engine actually runs are offered here.
+                    // (send_sms / create_ticket / webhook are hidden until a backend action exists.)
                     { value: 'send_email',    label: 'Send Email' },
-                    { value: 'send_sms',      label: 'Send SMS' },
                     { value: 'create_task',   label: 'Create Task' },
                     { value: 'update_record', label: 'Update Record' },
                     { value: 'assign_owner',  label: 'Assign Owner' },
                     { value: 'create_note',   label: 'Add a Note' },
-                    { value: 'create_ticket', label: 'Create Ticket' },
-                    { value: 'webhook',       label: 'Webhook / API Call' },
                     { value: 'notify',        label: 'Send Notification' },
                     { value: 'enrol_nurture', label: 'Enrol in Nurture Sequence' },
                     { value: 'start_process', label: 'Start Process Workflow' },

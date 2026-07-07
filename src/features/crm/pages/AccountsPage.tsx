@@ -75,7 +75,6 @@ const EMPTY_ACCOUNT: AccountFormState = {
 function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
   return {
     name: d.name,
-    organizationId: '',
     status: d.status.toString(),
     tier: d.tier?.toString() ?? '',
     organizationId: d.organizationId ?? '',

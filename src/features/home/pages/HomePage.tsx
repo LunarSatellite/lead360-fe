@@ -16,6 +16,10 @@ import type { IntentDto } from '@/features/intents/types/intents.types';
 import type { ChannelConnectionDto } from '@/features/channels/types/channels.types';
 import { ChannelConnectionStatus } from '@/features/channels/types/channels.types';
 import type { FlowDto } from '@/features/flow-builder/types/flow.types';
+import { useActiveSessions } from '@/features/conversations/api/conversation.queries';
+import { SESSION_STATUS_LABEL, SESSION_STATUS_COLOR, CHANNEL_LABEL } from '@/features/conversations/types/conversation.types';
+import type { SessionDto } from '@/features/conversations/types/conversation.types';
+import { StatusBadge } from '@/shared/components';
 
 function relAgo(iso?: string): string {
   if (!iso) return '';
@@ -41,6 +45,12 @@ export function Component() {
   const { data: channelsRaw } = useChannels();
   const channels = (channelsRaw as unknown as ChannelConnectionDto[]) ?? [];
   const isLive = channels.some((c) => c.status === ChannelConnectionStatus.Active);
+
+  const { data: sessionsRaw } = useActiveSessions();
+  const recentConversations = ((sessionsRaw as unknown as SessionDto[]) ?? [])
+    .slice()
+    .sort((a, b) => new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime())
+    .slice(0, 5);
 
   const num = (n?: number) => (n ?? 0).toLocaleString();
 
@@ -80,33 +90,59 @@ export function Component() {
 
       {/* ─── Two-column content ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-4">
-        <div className="bg-glass-1 border-thin border-border-subtle rounded-card p-4">
-          <h2 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-3">
-            Recent leads
-          </h2>
-          {recent.length === 0 ? (
-            <p className="text-xs text-text-muted text-center py-6">
-              No leads yet — they'll appear here as they come in.
-            </p>
-          ) : (
-            <div className="flex flex-col">
-              {recent.map((l) => (
-                <LiveRow
-                  key={l.id}
-                  name={l.customerName || l.channelHandle || 'New lead'}
-                  action={LEAD_STAGE_LABELS[l.stage] ?? 'lead'}
-                  time={relAgo(l.lastActivityAt)}
-                />
-              ))}
-            </div>
-          )}
-          <Link
-            to={ROUTES.dashboard.crmLeads}
-            className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-thin border-border-subtle text-xs font-semibold text-brand hover:text-brand-light transition-colors"
-          >
-            See all leads
-            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
-          </Link>
+        <div className="flex flex-col gap-4">
+          <div className="bg-glass-1 border-thin border-border-subtle rounded-card p-4">
+            <h2 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-3">
+              Recent leads
+            </h2>
+            {recent.length === 0 ? (
+              <p className="text-xs text-text-muted text-center py-6">
+                No leads yet — they'll appear here as they come in.
+              </p>
+            ) : (
+              <div className="flex flex-col">
+                {recent.map((l) => (
+                  <LiveRow
+                    key={l.id}
+                    name={l.customerName || l.channelHandle || 'New lead'}
+                    action={LEAD_STAGE_LABELS[l.stage] ?? 'lead'}
+                    time={relAgo(l.lastActivityAt)}
+                  />
+                ))}
+              </div>
+            )}
+            <Link
+              to={ROUTES.dashboard.crmLeads}
+              className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-thin border-border-subtle text-xs font-semibold text-brand hover:text-brand-light transition-colors"
+            >
+              See all leads
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+            </Link>
+          </div>
+
+          <div className="bg-glass-1 border-thin border-border-subtle rounded-card p-4">
+            <h2 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-3">
+              Recent conversations
+            </h2>
+            {recentConversations.length === 0 ? (
+              <p className="text-xs text-text-muted text-center py-6">
+                No conversations yet — they'll appear here as customers message your bot.
+              </p>
+            ) : (
+              <div className="flex flex-col">
+                {recentConversations.map((s) => (
+                  <ConversationRow key={s.id} session={s} />
+                ))}
+              </div>
+            )}
+            <Link
+              to={ROUTES.dashboard.conversations}
+              className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-thin border-border-subtle text-xs font-semibold text-brand hover:text-brand-light transition-colors"
+            >
+              See all conversations
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+            </Link>
+          </div>
         </div>
 
         <div className="bg-brand-soft border-thin border-border-glow rounded-card p-4">
@@ -538,6 +574,35 @@ function LiveRow({ name, action, time }: { name: string; action: string; time: s
       </div>
       <span className="text-[10px] text-text-muted shrink-0">{time}</span>
     </div>
+  );
+}
+
+/* ─── ConversationRow — clicking opens the full chat in Conversations ─── */
+function ConversationRow({ session }: { session: SessionDto }) {
+  const navigate = useNavigate();
+  const initial = (session.customerId || '?').charAt(0).toUpperCase();
+  return (
+    <button
+      type="button"
+      onClick={() => navigate(`${ROUTES.dashboard.conversations}?session=${session.id}`)}
+      className="w-full flex items-center gap-2.5 py-2 border-b border-thin border-border-subtle last:border-b-0 text-left hover:bg-glass-2 transition-colors rounded-sm px-1 -mx-1"
+    >
+      <div className="w-7 h-7 rounded-full bg-[#132A21] flex items-center justify-center text-2xs font-bold text-brand shrink-0">
+        {initial}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-semibold text-text-primary truncate">{session.customerId}</span>
+          <StatusBadge variant={SESSION_STATUS_COLOR[session.status]}>
+            {SESSION_STATUS_LABEL[session.status]}
+          </StatusBadge>
+        </div>
+        <span className="text-xs text-text-secondary">
+          {CHANNEL_LABEL[session.channel] || 'Unknown'} · {session.messageCount} msgs
+        </span>
+      </div>
+      <span className="text-[10px] text-text-muted shrink-0">{relAgo(session.lastActivityAt)}</span>
+    </button>
   );
 }
 

@@ -2837,6 +2837,37 @@ export interface ActivityLogRequest {
   occurredAt?: string;
 }
 
+// ─── Notification Preferences ──────────────────────────────────────────────────
+export const NotificationDeliveryChannel = {
+  InApp: 1, Email: 2, Both: 3,
+} as const;
+export type NotificationDeliveryChannel = (typeof NotificationDeliveryChannel)[keyof typeof NotificationDeliveryChannel];
+export const NOTIFICATION_CHANNEL_LABELS: Record<number, string> = {
+  1: 'In-app', 2: 'Email', 3: 'In-app & email',
+};
+export const NotificationDigestMode = {
+  Instant: 1, Hourly: 2, Daily: 3, Weekly: 4,
+} as const;
+export type NotificationDigestMode = (typeof NotificationDigestMode)[keyof typeof NotificationDigestMode];
+export const NOTIFICATION_DIGEST_LABELS: Record<number, string> = {
+  1: 'Instant', 2: 'Hourly', 3: 'Daily', 4: 'Weekly',
+};
+export interface CrmNotifPreferenceDto {
+  notificationType: number;
+  enabled: boolean;
+  deliveryChannel: number;
+  digestMode: number;
+}
+export const CONFIGURABLE_NOTIFICATION_TYPES: { value: number; label: string; description: string }[] = [
+  { value: 1, label: 'New lead assigned', description: 'A lead is assigned to you or your team' },
+  { value: 2, label: 'Deal stage change', description: 'A deal you own moves to a new stage' },
+  { value: 3, label: 'Signal received', description: 'An intent signal is detected for a contact' },
+  { value: 4, label: 'Mention in comment', description: 'Someone @mentions you in a comment' },
+  { value: 5, label: 'Task overdue', description: 'A task assigned to you passes its due date' },
+  { value: 6, label: 'Approval request', description: 'Someone requests your approval' },
+  { value: 7, label: 'Daily digest', description: 'End-of-day summary of changes' },
+];
+
 export interface CrmActivityFeedFilter {
   from?: string;
   to?: string;
@@ -2845,6 +2876,41 @@ export interface CrmActivityFeedFilter {
   actorUserId?: string;
   page?: number;
   pageSize?: number;
+}
+
+/** Mirrors backend CrmAuditOperation. */
+export const CrmAuditOperation = {
+  Created: 1, Updated: 2, Deleted: 3,
+} as const;
+export type CrmAuditOperation = (typeof CrmAuditOperation)[keyof typeof CrmAuditOperation];
+
+/** Mirrors backend CrmActivityEventKind. */
+export const CrmActivityEventKind = {
+  CommentAdded: 1, StageChanged: 2, DealCreated: 3, AssignmentChanged: 4,
+  TaskCompleted: 5, SignalReceived: 6, FieldEdited: 7,
+} as const;
+export type CrmActivityEventKind = (typeof CrmActivityEventKind)[keyof typeof CrmActivityEventKind];
+
+/** Mirrors backend CrmActivityEntityKind. */
+export const CrmActivityEntityKind = {
+  Contact: 1, Deal: 2, SupportCase: 3, Lead: 4, Account: 5, Organization: 6, Task: 7,
+} as const;
+export type CrmActivityEntityKind = (typeof CrmActivityEntityKind)[keyof typeof CrmActivityEntityKind];
+
+export interface CrmAuditLogDto {
+  id: string;
+  operation: number;
+  entityKind: number;
+  fieldName?: string;
+  oldValue?: string;
+  newValue?: string;
+  changedByUserId?: string;
+  changedAt: string;
+}
+
+export interface CrmAuditFilter {
+  pageSize?: number;
+  entityKind?: number;
 }
 
 /** Mirrors backend CrmActivityEntityKind. */
@@ -2895,6 +2961,33 @@ export interface DealStrategyDto {
 export interface DealTimelineDto {
   dealId: string;
   events: ActivityEventDto[];
+}
+
+// ─── Shared Inbox ──────────────────────────────────────────────────────────────
+export const CrmInboxItemKind = {
+  Lead: 1, SupportCase: 2, Task: 3,
+} as const;
+export type CrmInboxItemKind = (typeof CrmInboxItemKind)[keyof typeof CrmInboxItemKind];
+
+export const CRM_INBOX_KIND_LABELS: Record<number, string> = {
+  1: 'Lead', 2: 'Support Case', 3: 'Task',
+};
+
+export interface CrmInboxItemDto {
+  id: string;
+  kind: number;
+  title?: string;
+  status?: string;
+  priority?: string;
+  score?: number;
+  createdAt: string;
+}
+
+export interface CrmInboxSummaryDto {
+  total: number;
+  leads: number;
+  supportCases: number;
+  tasks: number;
 }
 
 // ─── Delivery / Shipments ─────────────────────────────────────────────────────

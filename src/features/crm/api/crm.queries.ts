@@ -312,6 +312,25 @@ export function useMarkAllRead() {
   });
 }
 
+export function useNotifPreferences() {
+  return useQuery({
+    queryKey: ['crm', 'notifications', 'preferences'] as const,
+    queryFn: () => crmApi.getNotifPreferences(),
+  });
+}
+export function useSaveNotifPreferences() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { preferences: import('../types/crm.types').CrmNotifPreferenceDto[] }) =>
+      crmApi.saveNotifPreferences(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'notifications', 'preferences'] });
+      toast.success('Preferences saved.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
 // ─── Nurture Sequences ────────────────────────────────────────────────────────
 
 export function useNurtureSequences() {
@@ -1178,6 +1197,13 @@ export function useActivityFeed(filter: import('../types/crm.types').CrmActivity
     queryKey: CRM_KEYS.activityFeed(filter),
     queryFn: () => crmApi.getActivityFeed(filter),
     placeholderData: (prev) => prev,
+  });
+}
+export function useAuditFeed(filter: import('../types/crm.types').CrmAuditFilter, enabled = true) {
+  return useQuery({
+    queryKey: ['crm', 'audit-feed', filter] as const,
+    queryFn: () => crmApi.getAuditFeed(filter),
+    enabled,
   });
 }
 export function useLogActivity() {
@@ -3396,6 +3422,31 @@ export function useMarkPayoutPaid() {
   return useMutation({
     mutationFn: (id: string) => crmApi.markPayoutPaid(id),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'commission-payouts'] }); toast.success('Payout marked paid.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Shared Inbox ──────────────────────────────────────────────────────────────
+export function useInbox(filter: { kind?: number } = {}) {
+  return useQuery({
+    queryKey: ['crm', 'inbox', filter] as const,
+    queryFn: () => crmApi.getInbox(filter),
+  });
+}
+export function useInboxSummary() {
+  return useQuery({
+    queryKey: ['crm', 'inbox', 'summary'] as const,
+    queryFn: () => crmApi.getInboxSummary(),
+  });
+}
+export function useClaimInboxItem() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { kind: number; entityId: string }) => crmApi.claimInboxItem(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'inbox'] });
+      toast.success('Item claimed.');
+    },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }

@@ -115,6 +115,11 @@ export const crmApi = {
   markAllRead: () =>
     apiClient.put(`${BASE}/notifications/read-all`, {}),
 
+  getNotifPreferences: () =>
+    apiClient.get<import('../types/crm.types').CrmNotifPreferenceDto[]>(`${BASE}/notifications/preferences`),
+  saveNotifPreferences: (data: { preferences: import('../types/crm.types').CrmNotifPreferenceDto[] }) =>
+    apiClient.put(`${BASE}/notifications/preferences`, data),
+
   // ─── Nurture Sequences ────────────────────────────────────────────────────
   getNurtureSequences: () =>
     apiClient.get<NurtureSequenceDto[]>(`${BASE}/nurture-sequences`),
@@ -332,6 +337,12 @@ export const crmApi = {
     // `indexes: null` => arrays serialize as repeated `eventKinds=1&eventKinds=2`,
     // which ASP.NET model-binds to List<T> (the default `eventKinds[]=` form does not).
     apiClient.get<PagedResult<ActivityEventDto>>(`${BASE}/activity-feed`, {
+      params: filter,
+      paramsSerializer: { indexes: null },
+    }),
+
+  getAuditFeed: (filter: import('../types/crm.types').CrmAuditFilter) =>
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').CrmAuditLogDto>>(`${BASE}/audit-feed`, {
       params: filter,
       paramsSerializer: { indexes: null },
     }),
@@ -1217,6 +1228,14 @@ export const crmApi = {
     apiClient.get<import('../types/crm.types').DealHandoverDto | null>(`/v1/crm/deals/${dealId}/handover`),
   submitDealHandover: (dealId: string, data: import('../types/crm.types').DealHandoverSubmitRequest) =>
     apiClient.post<import('../types/crm.types').DealHandoverDto>(`/v1/crm/deals/${dealId}/handover`, data),
+
+  // ─── Shared Inbox ──────────────────────────────────────────────────────────────
+  getInbox: (filter: { kind?: number }) =>
+    apiClient.get<{ items: import('../types/crm.types').CrmInboxItemDto[] }>(`/v1/crm/inbox`, { params: filter }),
+  getInboxSummary: () =>
+    apiClient.get<import('../types/crm.types').CrmInboxSummaryDto>(`/v1/crm/inbox/summary`),
+  claimInboxItem: ({ kind, entityId }: { kind: number; entityId: string }) =>
+    apiClient.post(`/v1/crm/inbox/${kind}/${entityId}/claim`),
 
   // ─── Commissions ──────────────────────────────────────────────────────────────
   getCommissionEntries: (filter: import('../types/crm.types').CrmCommissionFilter) =>

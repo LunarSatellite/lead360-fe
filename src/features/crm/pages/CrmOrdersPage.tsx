@@ -4,10 +4,11 @@ import { format, parseISO } from 'date-fns';
 import { useSearchParams } from 'react-router-dom';
 import {
   useOrders, useCreateOrder, useConfirmOrder, useFulfillOrder, useCancelOrder,
-  useRecordOrderPayment, useUpdateOrderFulfillment, useAcknowledgeOrder, useCreditCheck, useUpdateOrder, useGenerateInvoiceFromDeal,
+  useRecordOrderPayment, useUpdateOrderFulfillment, useAcknowledgeOrder, useDraftOrderAcknowledgment, useCreditCheck, useUpdateOrder, useGenerateInvoiceFromDeal,
   useDeliveries, useCreateDelivery, useUpdateDeliveryStatus, useDealById, useOrderById, useQuoteById, useAccounts,
   useGeneratePickList, usePickList, useUpdatePickListItem, useMarkPickListPicked, useMarkPickListPacked,
 } from '../api/crm.queries';
+import { AiSendPreviewModal } from '../components/AiSendPreviewModal';
 import type {
   CrmOrderDetailDto, CrmOrderCreateRequest, CrmOrderLineItemRequest,
   CrmOrderFilter, PickListItemDto,
@@ -73,6 +74,39 @@ type LineItem = { productId: string; productName: string; quantity: string; unit
 const emptyLine = (): LineItem => ({ productId: '', productName: '', quantity: '1', unitPrice: '' });
 
 const PO_WARNING = "B2B customers typically require their PO number on invoices.";
+
+function OrderAckPreviewModal({ order, onDone }: { order: CrmOrderDetailDto; onDone: () => void }) {
+  const draft = useDraftOrderAcknowledgment();
+  const ack = useAcknowledgeOrder();
+  const [introText, setIntroText] = useState('');
+  const [hasDrafted, setHasDrafted] = useState(false);
+
+  const runDraft = () => {
+    draft.mutate(order.id, {
+      onSuccess: (res: any) => { setIntroText(res?.introDraft ?? ''); setHasDrafted(true); },
+    });
+  };
+  useEffect(() => { runDraft(); }, [order.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <AiSendPreviewModal
+      open
+      onClose={onDone}
+      title={`${order.acknowledgmentSentAt ? 'Resend' : 'Send'} Acknowledgment — ${order.orderNumber}`}
+      isDrafting={draft.isPending || !hasDrafted}
+      draftText={introText}
+      onIntroChange={setIntroText}
+      onRegenerate={runDraft}
+      isSending={ack.isPending}
+      onConfirmSend={() => ack.mutate({ id: order.id, introText }, { onSuccess: onDone })}
+    >
+      <div className="space-y-1">
+        <div>Total: {order.currency} {order.totalAmount.toLocaleString()}</div>
+        {order.requestedDeliveryDate && <div>Expected delivery: {format(parseISO(order.requestedDeliveryDate), 'MMM d, yyyy')}</div>}
+      </div>
+    </AiSendPreviewModal>
+  );
+}
 
 export function Component() {
   const [searchParams] = useSearchParams();
@@ -146,7 +180,7 @@ export function Component() {
   const cancelOrder = useCancelOrder();
   const recordPayment = useRecordOrderPayment();
   const updateFulfillment = useUpdateOrderFulfillment();
-  const acknowledgeOrder = useAcknowledgeOrder();
+  const [ackPreviewOrder, setAckPreviewOrder] = useState<CrmOrderDetailDto | null>(null);
   const creditCheck = useCreditCheck();
   const generatePickList = useGeneratePickList();
   const { data: pickListRaw, refetch: refetchPickList } = usePickList(selectedOrder?.id);
@@ -673,7 +707,7 @@ export function Component() {
               )}
               {(selectedOrder.status === 2 || selectedOrder.status === 3) && (
                 <>
-                  <button onClick={() => acknowledgeOrder.mutate(selectedOrder.id)} disabled={acknowledgeOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
+                  <button onClick={() => setAckPreviewOrder(selectedOrder)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
                     <CheckCircle className="w-3.5 h-3.5" /> {selectedOrder.acknowledgmentSentAt ? 'Resend Acknowledgment' : 'Send Acknowledgment'}
                   </button>
                   {selectedOrder.dealId && (
@@ -747,6 +781,10 @@ export function Component() {
             </div>
           </div>
         </div>
+      )}
+
+      {ackPreviewOrder && (
+        <OrderAckPreviewModal order={ackPreviewOrder} onDone={() => setAckPreviewOrder(null)} />
       )}
     </>
   );

@@ -111,6 +111,9 @@ const CRM_KEYS = {
   proposalTemplates: () => ['crm', 'proposal-templates'] as const,
   invoices: () => ['crm', 'invoices'] as const,
   invoiceById: (id: string) => ['crm', 'invoices', id] as const,
+  invoiceDunning: (id: string) => ['crm', 'invoices', id, 'dunning'] as const,
+  creditNotes: () => ['crm', 'credit-notes'] as const,
+  creditNoteById: (id: string) => ['crm', 'credit-notes', id] as const,
   subscriptions: () => ['crm', 'subscriptions'] as const,
   subscriptionById: (id: string) => ['crm', 'subscriptions', id] as const,
   orders: () => ['crm', 'orders'] as const,
@@ -1783,9 +1786,15 @@ export function useUpdateQuote() {
 export function useSendQuote() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => crmApi.sendQuote(id),
-    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.quoteById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.quotes() }); toast.success('Quote sent.'); },
+    mutationFn: ({ id, introText }: { id: string; introText?: string }) => crmApi.sendQuote(id, introText),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.quoteById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.quotes() }); toast.success('Quote sent.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useDraftQuoteSendEmail() {
+  return useMutation({
+    mutationFn: (id: string) => crmApi.draftQuoteSendEmail(id),
   });
 }
 export function useAcceptQuote() {
@@ -1948,9 +1957,15 @@ export function useDisputeInvoice() {
 export function useSendInvoice() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => crmApi.sendInvoice(id),
-    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.invoiceById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.invoices() }); toast.success('Invoice sent.'); },
+    mutationFn: ({ id, introText }: { id: string; introText?: string }) => crmApi.sendInvoice(id, introText),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.invoiceById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.invoices() }); toast.success('Invoice sent.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useDraftInvoiceSendEmail() {
+  return useMutation({
+    mutationFn: (id: string) => crmApi.draftInvoiceSendEmail(id),
   });
 }
 export function useVoidInvoice() {
@@ -1958,6 +1973,104 @@ export function useVoidInvoice() {
   return useMutation({
     mutationFn: (id: string) => crmApi.voidInvoice(id),
     onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.invoiceById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.invoices() }); toast.success('Invoice voided.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useDunningHistory(id: string | null) {
+  return useQuery({
+    queryKey: CRM_KEYS.invoiceDunning(id ?? ''),
+    queryFn: () => crmApi.getDunningHistory(id!),
+    enabled: !!id,
+  });
+}
+
+export function usePauseDunning() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').CrmDunningPauseRequest }) => crmApi.pauseDunning(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.invoiceDunning(id) }); toast.success('Dunning paused.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useResumeDunning() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.resumeDunning(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.invoiceDunning(id) }); toast.success('Dunning resumed.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useSendReminderNow() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.sendReminderNow(id),
+    onSuccess: (sent: any, id) => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.invoiceDunning(id) });
+      if (sent) toast.success('Reminder sent.');
+      else toast.info('No reminder due yet for this invoice.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Credit Notes ──────────────────────────────────────────────────────────────
+
+export function useCreditNotes(filter: import('../types/crm.types').CrmCreditNoteFilter = {}) {
+  return useQuery({
+    queryKey: [...CRM_KEYS.creditNotes(), filter],
+    queryFn: () => crmApi.getCreditNotes(filter),
+  });
+}
+
+export function useCreditNoteById(id: string | null) {
+  return useQuery({
+    queryKey: CRM_KEYS.creditNoteById(id ?? ''),
+    queryFn: () => crmApi.getCreditNoteById(id!),
+    enabled: !!id,
+  });
+}
+
+export function useIssueCreditNote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import('../types/crm.types').CrmCreditNoteIssueRequest) => crmApi.issueCreditNote(data),
+    onSuccess: (_d, data) => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.creditNotes() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.invoiceById(data.originalInvoiceId) });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.invoices() });
+      toast.success('Credit note issued.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useApplyCreditNote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').CrmCreditNoteApplyRequest }) => crmApi.applyCreditNote(id, data),
+    onSuccess: (_d, { id, data }) => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.creditNoteById(id) });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.creditNotes() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.invoiceById(data.targetInvoiceId) });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.invoices() });
+      toast.success('Credit note applied.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useRefundCreditNote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').CrmCreditNoteRefundRequest }) => crmApi.refundCreditNote(id, data),
+    onSuccess: (_d, { id }) => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.creditNoteById(id) });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.creditNotes() });
+      toast.success('Credit note refunded.');
+    },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
@@ -2096,9 +2209,15 @@ export function useAdjustInventory() {
 export function useAcknowledgeOrder() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => crmApi.acknowledgeOrder(id),
-    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Acknowledgment sent.'); },
+    mutationFn: ({ id, introText }: { id: string; introText?: string }) => crmApi.acknowledgeOrder(id, introText),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Acknowledgment sent.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useDraftOrderAcknowledgment() {
+  return useMutation({
+    mutationFn: (id: string) => crmApi.draftOrderAcknowledgment(id),
   });
 }
 export function useRecordOrderPayment() {
@@ -2896,7 +3015,7 @@ export function useScanDedup() {
 
 // ─── Deliveries (standalone list) ────────────────────────────────────────────
 
-import type { CrmDeliveryFilter, CrmEquipmentFilter, CrmEquipmentCreateRequest, CrmEquipmentUpdateRequest, CrmEquipmentStatusRequest, AddEquipmentNoteRequest, CrmReturnFilter, CrmRecordInspectionRequest, CrmWorkOrderFilter, CrmCreateWorkOrderRequest, CrmUpdateWorkOrderRequest, CrmWorkOrderStatusRequest, CrmAddWorkOrderNoteRequest, CrmOnboardingFilter, CrmStartOnboardingRequest, CrmUpdateOnboardingRequest, CrmUpdateMilestoneRequest } from '../types/crm.types';
+import type { CrmDeliveryFilter, CrmEquipmentFilter, CrmEquipmentCreateRequest, CrmEquipmentUpdateRequest, CrmEquipmentStatusRequest, AddEquipmentNoteRequest, CrmReturnFilter, CrmRecordInspectionRequest, CrmUpdateReturnRequest, CrmWorkOrderFilter, CrmCreateWorkOrderRequest, CrmUpdateWorkOrderRequest, CrmWorkOrderStatusRequest, CrmAddWorkOrderNoteRequest, CrmOnboardingFilter, CrmStartOnboardingRequest, CrmUpdateOnboardingRequest, CrmUpdateMilestoneRequest } from '../types/crm.types';
 
 export function useAllDeliveries(filter: CrmDeliveryFilter) {
   return useQuery({
@@ -3041,6 +3160,15 @@ export function useRecordReturnInspection() {
     mutationFn: ({ id, data }: { id: string; data: CrmRecordInspectionRequest }) => crmApi.recordReturnInspection(id, data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'returns'] }); toast.success('Inspection recorded'); },
     onError: () => toast.error('Failed to record inspection'),
+  });
+}
+
+export function useUpdateReturn() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CrmUpdateReturnRequest }) => crmApi.updateReturn(id, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'returns'] }); toast.success('Return updated'); },
+    onError: () => toast.error('Failed to update return'),
   });
 }
 
@@ -3399,6 +3527,12 @@ export function useVoidSupplierInvoice() {
     mutationFn: (id: string) => crmApi.voidSupplierInvoice(id),
     onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoiceById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoices() }); toast.success('Invoice voided.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+export function useThreeWayMatch() {
+  return useMutation({
+    mutationFn: (id: string) => crmApi.matchSupplierInvoice(id),
   });
 }
 

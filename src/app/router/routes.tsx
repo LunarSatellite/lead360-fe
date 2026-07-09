@@ -149,6 +149,7 @@ export const router = createBrowserRouter([
       { path: 'crm/quotes', lazy: () => import('@/features/crm/pages/CrmQuotesPage') },
       { path: 'crm/proposals', lazy: () => import('@/features/crm/pages/CrmProposalsPage') },
       { path: 'crm/invoices', lazy: () => import('@/features/crm/pages/CrmInvoicesPage') },
+      { path: 'crm/credit-notes', lazy: () => import('@/features/crm/pages/CreditNotesPage') },
       { path: 'crm/subscriptions', lazy: () => import('@/features/crm/pages/CrmSubscriptionsPage') },
       { path: 'crm/product-bundles', lazy: () => import('@/features/crm/pages/ProductBundlesPage') },
       { path: 'crm/orders', lazy: () => import('@/features/crm/pages/CrmOrdersPage') },

@@ -545,6 +545,7 @@ export interface CrmApprovalSummaryDto {
   totalSteps: number;
   createdAt: string;
   reviewedAt: string | null;
+  decidedViaEmail: boolean;
 }
 
 export interface CrmSubmitApprovalRequest {
@@ -1940,17 +1941,75 @@ export type CrmPaymentMethod = (typeof CrmPaymentMethod)[keyof typeof CrmPayment
 export const CRM_PAYMENT_METHOD_LABELS: Record<CrmPaymentMethod, string> = {
   1: 'Bank Transfer', 2: 'Credit Card', 3: 'Cash', 4: 'Check', 5: 'Other',
 };
-export interface CrmDunningEventDto { id: string; eventType: string; occurredAt: string; }
+export const DunningStage = {
+  Day0_Delivery: 1, DayMinus3_PreReminder: 2, DayPlus3_First: 3, DayPlus10_Second: 4,
+  DayPlus20_Third: 5, DayPlus30_Formal: 6, DayPlus45_Final: 7, DayPlus60_Escalation: 8,
+} as const;
+export type DunningStage = (typeof DunningStage)[keyof typeof DunningStage];
+export const DUNNING_STAGE_LABELS: Record<DunningStage, string> = {
+  1: 'Delivery', 2: 'Pre-Reminder', 3: 'First Reminder', 4: 'Second Reminder',
+  5: 'Third Reminder', 6: 'Formal Notice', 7: 'Final Notice', 8: 'Escalation',
+};
+export const DunningEventKind = {
+  ReminderSent: 1, PaymentReceived: 2, DisputeRaised: 3, EscalatedToHuman: 4,
+  Paused: 5, Resumed: 6, Voided: 7,
+} as const;
+export type DunningEventKind = (typeof DunningEventKind)[keyof typeof DunningEventKind];
+export const DUNNING_EVENT_KIND_LABELS: Record<DunningEventKind, string> = {
+  1: 'Reminder Sent', 2: 'Payment Received', 3: 'Dispute Raised', 4: 'Escalated',
+  5: 'Paused', 6: 'Resumed', 7: 'Voided',
+};
+export const DunningPauseReason = {
+  CustomerExplainedDelay: 1, DisputeRaised: 2, FinancialDifficulty: 3, ManualHold: 4,
+} as const;
+export type DunningPauseReason = (typeof DunningPauseReason)[keyof typeof DunningPauseReason];
+export const DUNNING_PAUSE_REASON_LABELS: Record<DunningPauseReason, string> = {
+  1: 'Customer Explained Delay', 2: 'Dispute Raised', 3: 'Financial Difficulty', 4: 'Manual Hold',
+};
+export interface CrmDunningEventDto {
+  id: string; stage: DunningStage; kind: DunningEventKind; channel?: string;
+  sentAt?: string; pauseReason?: DunningPauseReason; pausedUntil?: string; createdAt: string;
+}
+export interface CrmDunningPauseRequest { reason: DunningPauseReason; until?: string; }
 export interface CrmInvoiceSummaryDto {
   id: string; invoiceNumber: string; dealId: string | null; dealName: string | null;
   accountId: string | null; accountName: string | null;
-  totalAmount: number; amountPaid?: number; currency: string; status: CrmInvoiceStatus;
+  totalAmount: number; amountPaid?: number; creditAppliedAmount?: number; currency: string; status: CrmInvoiceStatus;
   dueDate: string | null; paidAt: string | null; createdAt: string;
   customerPONumber?: string;
 }
 export interface CrmInvoiceDetailDto extends CrmInvoiceSummaryDto { lineItems: CrmQuoteLineItemDto[]; dunningHistory: CrmDunningEventDto[]; }
 export interface CrmRecordPaymentRequest { amount: number; paymentMethod?: CrmPaymentMethod; paidAt?: string; notes?: string; }
 export interface CrmInvoiceFilter { search?: string; status?: CrmInvoiceStatus; page?: number; pageSize?: number; }
+
+// ── Credit Notes ─────────────────────────────────────────────────────────────────
+export const CreditNoteApplyMethod = { AccountBalance: 1, NextInvoice: 2, CashRefund: 3 } as const;
+export type CreditNoteApplyMethod = (typeof CreditNoteApplyMethod)[keyof typeof CreditNoteApplyMethod];
+export const CREDIT_NOTE_APPLY_METHOD_LABELS: Record<CreditNoteApplyMethod, string> = {
+  1: 'Account Balance', 2: 'Next Invoice', 3: 'Cash Refund',
+};
+export const CreditNoteStatus = { Issued: 1, Applied: 2, Refunded: 3, Voided: 4 } as const;
+export type CreditNoteStatus = (typeof CreditNoteStatus)[keyof typeof CreditNoteStatus];
+export const CREDIT_NOTE_STATUS_LABELS: Record<CreditNoteStatus, string> = {
+  1: 'Issued', 2: 'Applied', 3: 'Refunded', 4: 'Voided',
+};
+export const CREDIT_NOTE_STATUS_COLORS: Record<CreditNoteStatus, string> = {
+  1: 'bg-brand-soft text-brand border-brand/30',
+  2: 'bg-success-soft text-success border-success/30',
+  3: 'bg-success-soft text-success border-success/30',
+  4: 'bg-glass-2 text-text-muted border-border-medium',
+};
+export interface CrmCreditNoteDto {
+  id: string; creditNoteNumber: string; accountId: string; accountName?: string;
+  originalInvoiceId: string; originalInvoiceNumber?: string;
+  amount: number; reason: string; applyMethod: CreditNoteApplyMethod; status: CreditNoteStatus;
+  issuedAt: string; appliedToInvoiceId?: string; appliedToInvoiceNumber?: string; appliedAt?: string;
+  refundedAt?: string; refundReference?: string; createdFromReturnId?: string;
+}
+export interface CrmCreditNoteFilter { accountId?: string; originalInvoiceId?: string; status?: CreditNoteStatus; page?: number; pageSize?: number; }
+export interface CrmCreditNoteIssueRequest { originalInvoiceId: string; amount: number; reason: string; applyMethod: CreditNoteApplyMethod; }
+export interface CrmCreditNoteApplyRequest { targetInvoiceId: string; }
+export interface CrmCreditNoteRefundRequest { refundReference?: string; }
 
 // ─── Subscriptions ────────────────────────────────────────────────────────────
 
@@ -3659,6 +3718,9 @@ export interface StockCheckLineResult {
 export interface StockCheckResult { allAvailable: boolean; lines: StockCheckLineResult[]; }
 export interface InventoryAdjustRequest { quantity: number; notes?: string; warehouseLocation?: string; }
 
+// ── AI Email Drafting (Quotes/Orders/Invoices send preview) ─────────────────────
+export interface CrmEmailIntroDraftDto { introDraft?: string | null; }
+
 // ── Credit Check ───────────────────────────────────────────────────────────────
 export interface CreditCheckResult {
   overdueBalance: number;
@@ -3669,6 +3731,21 @@ export interface CreditCheckResult {
   riskLevel: 1 | 2 | 3;
 }
 export const CREDIT_RISK_LABELS: Record<number, string> = { 1: 'Green', 2: 'Amber', 3: 'Red' };
+
+// ── Three-Way Match ──────────────────────────────────────────────────────────────
+export interface ThreeWayMatchLineResult {
+  poLineItemId: string; productName: string; quantityOrdered: number; quantityReceived: number;
+  unitCost: number; expectedLineTotal: number;
+}
+export interface ThreeWayMatchResult {
+  supplierInvoiceId: string; purchaseOrderId?: string;
+  invoicedAmount: number; expectedAmount: number; varianceAmount: number; variancePercent: number;
+  lines: ThreeWayMatchLineResult[];
+  riskLevel: 0 | 1 | 2 | 3;
+}
+export const THREE_WAY_MATCH_RISK_LABELS: Record<number, string> = {
+  0: 'No PO Linked', 1: 'Matched', 2: 'Minor Variance', 3: 'Major Variance',
+};
 
 export interface DealHandoverDto {
   id: string; dealId: string; customerExpectations?: string; stakeholderSummary?: string;

@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { Plus, X, Loader2, FileText, CheckCircle, DollarSign, AlertTriangle, XCircle } from 'lucide-react';
+import { Plus, X, Loader2, FileText, CheckCircle, DollarSign, AlertTriangle, XCircle, ShieldCheck } from 'lucide-react';
 import { format, parseISO, isPast } from 'date-fns';
 import {
   useSupplierInvoices, useCreateSupplierInvoice, useApproveSupplierInvoice,
   useRecordSupplierInvoicePayment, useDisputeSupplierInvoice, useVoidSupplierInvoice,
-  useActiveVendors,
+  useThreeWayMatch, useActiveVendors,
 } from '../api/crm.queries';
-import type { SupplierInvoiceDto, SupplierInvoiceCreateRequest, SupplierInvoiceFilter, VendorDto } from '../types/crm.types';
-import { SI_STATUS_LABELS, SI_STATUS_COLORS, SupplierInvoiceStatus } from '../types/crm.types';
+import type { SupplierInvoiceDto, SupplierInvoiceCreateRequest, SupplierInvoiceFilter, VendorDto, ThreeWayMatchResult } from '../types/crm.types';
+import { SI_STATUS_LABELS, SI_STATUS_COLORS, SupplierInvoiceStatus, THREE_WAY_MATCH_RISK_LABELS } from '../types/crm.types';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -53,6 +53,7 @@ export function Component() {
   const [payRef, setPayRef] = useState('');
   const [payDate, setPayDate] = useState('');
   const [disputeReason, setDisputeReason] = useState('');
+  const [matchResult, setMatchResult] = useState<ThreeWayMatchResult | null>(null);
 
   // Create form
   const [vendorId, setVendorId] = useState('');
@@ -75,6 +76,7 @@ export function Component() {
   const paySI = useRecordSupplierInvoicePayment();
   const disputeSI = useDisputeSupplierInvoice();
   const voidSI = useVoidSupplierInvoice();
+  const threeWayMatch = useThreeWayMatch();
 
   const totalAmount = (Number(subTotal) || 0) + (Number(taxAmount) || 0);
 
@@ -244,6 +246,11 @@ export function Component() {
             {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selected.notes}</p></div>}
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
+              {selected.purchaseOrderId && (selected.status === SupplierInvoiceStatus.Received || selected.status === SupplierInvoiceStatus.Approved) && (
+                <button onClick={() => threeWayMatch.mutate(selected.id, { onSuccess: (res: any) => setMatchResult(res) })} disabled={threeWayMatch.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand hover:bg-brand-soft transition-all disabled:opacity-50">
+                  {threeWayMatch.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-3.5 h-3.5" />} Run Match
+                </button>
+              )}
               {selected.status === SupplierInvoiceStatus.Received && (
                 <button onClick={() => { approveSI.mutate(selected.id); setSelected(null); }} disabled={approveSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 disabled:opacity-50">
                   <CheckCircle className="w-3.5 h-3.5" /> Approve
@@ -297,6 +304,63 @@ export function Component() {
           </div>
         </form>
       </SlideOver>
+
+      {/* Three-Way Match result */}
+      {matchResult && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md bg-bg border border-border-subtle rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4" /> Three-Way Match — {THREE_WAY_MATCH_RISK_LABELS[matchResult.riskLevel]}
+            </h3>
+
+            {matchResult.riskLevel === 0 ? (
+              <p className="text-sm text-text-muted">This invoice has no linked purchase order — nothing to match against.</p>
+            ) : (
+              <>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between"><span className="text-text-muted">Invoiced Amount</span><span className="text-text-primary font-medium">{matchResult.invoicedAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                  <div className="flex justify-between"><span className="text-text-muted">Expected (PO × Received)</span><span className="text-text-primary font-medium">{matchResult.expectedAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                  <div className="flex justify-between font-bold border-t border-border-subtle pt-2">
+                    <span>Variance</span>
+                    <span className={matchResult.varianceAmount === 0 ? 'text-text-primary' : matchResult.varianceAmount > 0 ? 'text-danger' : 'text-success'}>
+                      {matchResult.varianceAmount > 0 ? '+' : ''}{matchResult.varianceAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })} ({matchResult.variancePercent}%)
+                    </span>
+                  </div>
+                </div>
+
+                {matchResult.lines.length > 0 && (
+                  <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle max-h-48 overflow-y-auto">
+                    {matchResult.lines.map(l => (
+                      <div key={l.poLineItemId} className="flex justify-between items-center px-3 py-2 text-xs">
+                        <div>
+                          <span className="font-medium text-text-primary">{l.productName}</span>
+                          <div className="text-text-muted">{l.quantityReceived}/{l.quantityOrdered} received @ {l.unitCost}</div>
+                        </div>
+                        <span className="text-text-secondary">{l.expectedLineTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {matchResult.riskLevel === 3 && (
+                  <div className="px-3 py-2 rounded-lg bg-danger-soft border border-danger text-xs text-danger">
+                    Major variance — verify with the vendor before approving payment.
+                  </div>
+                )}
+                {matchResult.riskLevel === 2 && (
+                  <div className="px-3 py-2 rounded-lg bg-[rgba(245,158,11,0.08)] border border-[rgba(245,158,11,0.3)] text-xs text-[#F59E0B]">
+                    Minor variance — within tolerance, but worth a second look.
+                  </div>
+                )}
+              </>
+            )}
+
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => setMatchResult(null)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

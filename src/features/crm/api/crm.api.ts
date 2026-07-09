@@ -478,6 +478,8 @@ export const crmApi = {
     apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/receive`, {}),
   recordReturnInspection: (id: string, data: import('../types/crm.types').CrmRecordInspectionRequest) =>
     apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/inspect`, data),
+  updateReturn: (id: string, data: import('../types/crm.types').CrmUpdateReturnRequest) =>
+    apiClient.put<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}`, data),
   resolveReturn: (id: string) =>
     apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/resolve`, {}),
   cancelReturn: (id: string) =>
@@ -605,8 +607,10 @@ export const crmApi = {
     apiClient.post<import('../types/crm.types').CrmQuoteDetailDto>(`${BASE}/quotes`, data),
   updateQuote: (id: string, data: import('../types/crm.types').CrmQuoteUpdateRequest) =>
     apiClient.put<import('../types/crm.types').CrmQuoteDetailDto>(`${BASE}/quotes/${id}`, data),
-  sendQuote: (id: string) =>
-    apiClient.post(`${BASE}/quotes/${id}/send`, {}),
+  sendQuote: (id: string, introText?: string) =>
+    apiClient.post(`${BASE}/quotes/${id}/send`, { introText }),
+  draftQuoteSendEmail: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmEmailIntroDraftDto>(`${BASE}/quotes/${id}/draft-send-email`, {}),
   acceptQuote: (id: string) =>
     apiClient.post(`${BASE}/quotes/${id}/accept`, {}),
   rejectQuote: (id: string) =>
@@ -659,8 +663,30 @@ export const crmApi = {
     apiClient.post(`${BASE}/invoices/${id}/dispute`, {}),
   voidInvoice: (id: string) =>
     apiClient.post(`${BASE}/invoices/${id}/void`, {}),
-  sendInvoice: (id: string) =>
-    apiClient.post(`${BASE}/invoices/${id}/send`, {}),
+  sendInvoice: (id: string, introText?: string) =>
+    apiClient.post(`${BASE}/invoices/${id}/send`, { introText }),
+  draftInvoiceSendEmail: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmEmailIntroDraftDto>(`${BASE}/invoices/${id}/draft-send-email`, {}),
+  getDunningHistory: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmDunningEventDto[]>(`${BASE}/invoices/${id}/dunning`),
+  pauseDunning: (id: string, data: import('../types/crm.types').CrmDunningPauseRequest) =>
+    apiClient.post<boolean>(`${BASE}/invoices/${id}/dunning/pause`, data),
+  resumeDunning: (id: string) =>
+    apiClient.post<boolean>(`${BASE}/invoices/${id}/dunning/resume`, {}),
+  sendReminderNow: (id: string) =>
+    apiClient.post<boolean>(`${BASE}/invoices/${id}/dunning/send-now`, {}),
+
+  // ─── Credit Notes ─────────────────────────────────────────────────────────
+  getCreditNotes: (filter: import('../types/crm.types').CrmCreditNoteFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmCreditNoteDto>>(`${BASE}/credit-notes`, { params: filter }),
+  getCreditNoteById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmCreditNoteDto>(`${BASE}/credit-notes/${id}`),
+  issueCreditNote: (data: import('../types/crm.types').CrmCreditNoteIssueRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCreditNoteDto>(`${BASE}/credit-notes`, data),
+  applyCreditNote: (id: string, data: import('../types/crm.types').CrmCreditNoteApplyRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCreditNoteDto>(`${BASE}/credit-notes/${id}/apply`, data),
+  refundCreditNote: (id: string, data: import('../types/crm.types').CrmCreditNoteRefundRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCreditNoteDto>(`${BASE}/credit-notes/${id}/refund`, data),
 
   // ─── Subscriptions ────────────────────────────────────────────────────────
   getSubscriptions: (filter: import('../types/crm.types').CrmSubscriptionFilter = {}) =>
@@ -1149,6 +1175,8 @@ export const crmApi = {
     apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/dispute`, data),
   voidSupplierInvoice: (id: string) =>
     apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/void`, {}),
+  matchSupplierInvoice: (id: string) =>
+    apiClient.post<import('../types/crm.types').ThreeWayMatchResult>(`${BASE}/supplier-invoices/${id}/match`, {}),
 
   // ─── Tax Rules ────────────────────────────────────────────────────────────────
   getTaxRules: () =>
@@ -1220,8 +1248,10 @@ export const crmApi = {
   getInventoryTransactions: (productId: string) =>
     apiClient.get<any[]>(`/v1/inventory/${productId}/transactions`),
 
-  acknowledgeOrder: (id: string) =>
-    apiClient.post(`/v1/crm/orders/${id}/acknowledge`),
+  acknowledgeOrder: (id: string, introText?: string) =>
+    apiClient.post(`/v1/crm/orders/${id}/acknowledge`, { introText }),
+  draftOrderAcknowledgment: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmEmailIntroDraftDto>(`/v1/crm/orders/${id}/draft-acknowledgment-email`, {}),
   creditCheck: (accountId: string, orderValue: number) =>
     apiClient.post<import('../types/crm.types').CreditCheckResult>(`/v1/crm/orders/credit-check`, { accountId, orderValue }),
   getDealHandover: (dealId: string) =>

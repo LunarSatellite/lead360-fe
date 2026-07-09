@@ -108,6 +108,11 @@ function ApprovalRow({ approval }: { approval: CrmApprovalSummaryDto }) {
               {approval.status === ApprovalStatus.Rejected && <XCircle className="w-3 h-3" />}
               {APPROVAL_STATUS_LABELS[approval.status]}
             </span>
+            {!isPending && approval.decidedViaEmail && (
+              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-bg-elevated text-text-muted border border-border-subtle">
+                via email
+              </span>
+            )}
           </div>
 
           <p className="text-xs text-text-muted">

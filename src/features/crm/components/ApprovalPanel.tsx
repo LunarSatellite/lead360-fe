@@ -104,15 +104,22 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
         <div className="flex items-center justify-between gap-3">
           <p className="text-sm font-bold text-text-primary">Approval</p>
           {approval && (
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border ${
-              approval.status === 1 ? 'text-warning border-warning/30 bg-warning/10' :
-              approval.status === 2 ? 'text-success border-success/30 bg-success/10' :
-              'text-danger border-danger/30 bg-danger/10'
-            }`}>
-              {approval.status === 1 && <><Clock className="w-3 h-3" /> Pending</>}
-              {approval.status === 2 && <><CheckCircle2 className="w-3 h-3" /> Approved</>}
-              {approval.status === 3 && <><XCircle className="w-3 h-3" /> Rejected</>}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border ${
+                approval.status === 1 ? 'text-warning border-warning/30 bg-warning/10' :
+                approval.status === 2 ? 'text-success border-success/30 bg-success/10' :
+                'text-danger border-danger/30 bg-danger/10'
+              }`}>
+                {approval.status === 1 && <><Clock className="w-3 h-3" /> Pending</>}
+                {approval.status === 2 && <><CheckCircle2 className="w-3 h-3" /> Approved</>}
+                {approval.status === 3 && <><XCircle className="w-3 h-3" /> Rejected</>}
+              </span>
+              {approval.status !== 1 && approval.decidedViaEmail && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-lg text-xs font-medium text-text-muted bg-bg-elevated border border-border-subtle">
+                  via email
+                </span>
+              )}
+            </div>
           )}
         </div>
 

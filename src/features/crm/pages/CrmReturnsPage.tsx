@@ -3,14 +3,14 @@ import { X, Loader2, RotateCcw, CheckCircle, XCircle, Package } from 'lucide-rea
 import { format, parseISO } from 'date-fns';
 import {
   useReturns, useApproveReturn, useRejectReturn,
-  useMarkReturnReceived, useRecordReturnInspection, useResolveReturn, useCancelReturn,
+  useMarkReturnReceived, useRecordReturnInspection, useUpdateReturn, useResolveReturn, useCancelReturn,
 } from '../api/crm.queries';
 import type { CrmReturnFilter, CrmReturnRequestDto, CrmRecordInspectionRequest } from '../types/crm.types';
 import {
   CRM_RETURN_STATUS_LABELS, CRM_RETURN_STATUS_COLORS,
   CRM_RETURN_REASON_LABELS, CRM_RETURN_RESOLUTION_LABELS,
   CRM_RETURN_INSPECTION_LABELS,
-  CrmReturnStatus, CrmReturnInspectionResult,
+  CrmReturnStatus, CrmReturnInspectionResult, CrmReturnResolution,
 } from '../types/crm.types';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
@@ -70,13 +70,58 @@ function InspectionForm({ rmaId, onDone }: { rmaId: string; onDone: () => void }
   );
 }
 
+function ResolveForm({ rmaId, onDone }: { rmaId: string; onDone: () => void }) {
+  const [resolution, setResolution] = useState<CrmReturnResolution>(CrmReturnResolution.Refund);
+  const [amount, setAmount] = useState('');
+  const update = useUpdateReturn();
+  const resolve = useResolveReturn();
+
+  const needsAmount = resolution === CrmReturnResolution.Refund || resolution === CrmReturnResolution.Credit;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    update.mutate({
+      id: rmaId,
+      data: {
+        resolution,
+        refundAmount: resolution === CrmReturnResolution.Refund ? Number(amount) : undefined,
+        creditAmount: resolution === CrmReturnResolution.Credit ? Number(amount) : undefined,
+      },
+    }, {
+      onSuccess: () => resolve.mutate(rmaId, { onSuccess: onDone }),
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
+      <p className="text-xs font-semibold text-text-muted">Set Resolution</p>
+      <select value={resolution} onChange={e => setResolution(Number(e.target.value) as CrmReturnResolution)} className={inputCls}>
+        {Object.entries(CRM_RETURN_RESOLUTION_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+      </select>
+      {needsAmount && (
+        <input
+          required type="number" min="0" step="0.01" value={amount} onChange={e => setAmount(e.target.value)}
+          placeholder={resolution === CrmReturnResolution.Refund ? 'Refund amount' : 'Credit amount'}
+          className={inputCls}
+        />
+      )}
+      <button type="submit" disabled={update.isPending || resolve.isPending} className="w-full py-2 rounded-lg bg-success text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+        {update.isPending || resolve.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Save & Resolve'}
+      </button>
+      {(resolution === CrmReturnResolution.Refund || resolution === CrmReturnResolution.Credit) && (
+        <p className="text-[10px] text-text-muted">A Credit Note will be auto-issued for this amount once resolved.</p>
+      )}
+    </form>
+  );
+}
+
 function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
   const approve = useApproveReturn();
   const reject = useRejectReturn();
   const receive = useMarkReturnReceived();
-  const resolve = useResolveReturn();
   const cancel = useCancelReturn();
   const [showInspect, setShowInspect] = useState(false);
+  const [showResolve, setShowResolve] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
   const [showReject, setShowReject] = useState(false);
 
@@ -169,7 +214,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
           </button>
         )}
         {rma.status === CrmReturnStatus.Inspecting && (
-          <button onClick={() => resolve.mutate(rma.id)} disabled={resolve.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 disabled:opacity-50 transition-all">
+          <button onClick={() => setShowResolve(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 transition-all">
             <CheckCircle className="w-3.5 h-3.5" /> Resolve
           </button>
         )}
@@ -189,6 +234,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
         </form>
       )}
       {showInspect && <InspectionForm rmaId={rma.id} onDone={() => setShowInspect(false)} />}
+      {showResolve && <ResolveForm rmaId={rma.id} onDone={() => setShowResolve(false)} />}
     </div>
   );
 }

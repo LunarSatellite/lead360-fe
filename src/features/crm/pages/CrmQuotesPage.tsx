@@ -3,7 +3,8 @@ import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check, Package } from
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useAcceptQuote, useRejectQuote, useReviseQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook, useProductBundles, useProductBundle } from '../api/crm.queries';
+import { useQuotes, useCreateQuote, useUpdateQuote, useSendQuote, useDraftQuoteSendEmail, useAcceptQuote, useRejectQuote, useReviseQuote, useDeleteQuote, useDeals, useContacts, usePriceBooks, usePriceBook, useProductBundles, useProductBundle } from '../api/crm.queries';
+import { AiSendPreviewModal } from '../components/AiSendPreviewModal';
 import { crmApi } from '../api/crm.api';
 import { confirmDialog } from '@/shared/ui/confirm';
 import { ApprovalPanel } from '../components/ApprovalPanel';
@@ -55,6 +56,39 @@ function SlideOver({ open, onClose, title, children, wide }: {
 }
 
 const emptyLine = (): CrmQuoteLineItemRequest => ({ description: '', quantity: 1, unitPrice: 0 });
+
+function QuoteSendPreviewModal({ quote, onDone }: { quote: CrmQuoteSummaryDto; onDone: () => void }) {
+  const draft = useDraftQuoteSendEmail();
+  const send = useSendQuote();
+  const [introText, setIntroText] = useState('');
+  const [hasDrafted, setHasDrafted] = useState(false);
+
+  const runDraft = () => {
+    draft.mutate(quote.id, {
+      onSuccess: (res: any) => { setIntroText(res?.introDraft ?? ''); setHasDrafted(true); },
+    });
+  };
+  useEffect(() => { runDraft(); }, [quote.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <AiSendPreviewModal
+      open
+      onClose={onDone}
+      title={`Send Quote #${quote.quoteNumber}`}
+      isDrafting={draft.isPending || !hasDrafted}
+      draftText={introText}
+      onIntroChange={setIntroText}
+      onRegenerate={runDraft}
+      isSending={send.isPending}
+      onConfirmSend={() => send.mutate({ id: quote.id, introText }, { onSuccess: onDone })}
+    >
+      <div className="space-y-1">
+        <div>Total: {quote.currency} {quote.totalAmount.toLocaleString()}</div>
+        {quote.validUntil && <div>Valid until: {format(parseISO(quote.validUntil), 'MMM d, yyyy')}</div>}
+      </div>
+    </AiSendPreviewModal>
+  );
+}
 
 export function Component() {
   const navigate = useNavigate();
@@ -119,7 +153,7 @@ export function Component() {
 
   const createQuote = useCreateQuote();
   const updateQuote = useUpdateQuote();
-  const sendQuote = useSendQuote();
+  const [sendPreviewQuote, setSendPreviewQuote] = useState<CrmQuoteSummaryDto | null>(null);
   const acceptQuote = useAcceptQuote();
   const rejectQuote = useRejectQuote();
   const reviseQuote = useReviseQuote();
@@ -233,7 +267,7 @@ export function Component() {
                         </button>
                       )}
                       {q.status === CrmQuoteStatus.Draft && (
-                        <button onClick={() => sendQuote.mutate(q.id)} title="Send" className="p-1.5 rounded-lg text-brand hover:bg-brand-soft transition-colors">
+                        <button onClick={() => setSendPreviewQuote(q)} title="Send" className="p-1.5 rounded-lg text-brand hover:bg-brand-soft transition-colors">
                           <Send className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       )}
@@ -287,7 +321,7 @@ export function Component() {
                 <button onClick={() => openEdit(selected.id)} disabled={loadingEdit} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-card border border-border-subtle text-text-primary text-sm font-bold hover:bg-bg-elevated disabled:opacity-60 transition-all">
                   {loadingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Pencil className="w-4 h-4" strokeWidth={1.5} />} Edit
                 </button>
-                <button onClick={() => { sendQuote.mutate(selected.id); setSelected(null); }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all">
+                <button onClick={() => { setSendPreviewQuote(selected); setSelected(null); }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all">
                   <Send className="w-4 h-4" strokeWidth={1.5} /> Send Quote
                 </button>
               </div>
@@ -430,6 +464,10 @@ export function Component() {
           {(createQuote.isPending || updateQuote.isPending) ? <Loader2 className="w-4 h-4 animate-spin" /> : (editingId ? <Pencil className="w-4 h-4" /> : <Plus className="w-4 h-4" />)} {editingId ? 'Save Changes' : 'Create Quote'}
         </button>
       </SlideOver>
+
+      {sendPreviewQuote && (
+        <QuoteSendPreviewModal quote={sendPreviewQuote} onDone={() => setSendPreviewQuote(null)} />
+      )}
     </div>
   );
 }

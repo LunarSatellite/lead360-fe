@@ -66,6 +66,7 @@ import {
   Percent,
   Crosshair,
   DollarSign,
+  Undo2,
 } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
@@ -126,6 +127,7 @@ const crmNav = [
   { label: 'Goods Receipts',   href: ROUTES.dashboard.crmGoodsReceipts,    icon: PackageCheck },
   { label: 'Inventory',     href: ROUTES.dashboard.crmInventory,      icon: Package },
   { label: 'Invoices',      href: ROUTES.dashboard.crmInvoices,      icon: Receipt },
+  { label: 'Credit Notes',  href: ROUTES.dashboard.crmCreditNotes,   icon: Undo2 },
   { label: 'Leads',         href: ROUTES.dashboard.crmLeads,         icon: Users },
   { label: 'Meetings',      href: ROUTES.dashboard.crmMeetings,      icon: CalendarCheck },
   { label: 'Meta Ads',      href: '/dashboard/crm/meta-ads',          icon: Facebook },

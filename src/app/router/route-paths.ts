@@ -62,6 +62,7 @@ export const ROUTES = {
     crmQuotes: '/dashboard/crm/quotes',
     crmProposals: '/dashboard/crm/proposals',
     crmInvoices: '/dashboard/crm/invoices',
+    crmCreditNotes: '/dashboard/crm/credit-notes',
     crmSubscriptions: '/dashboard/crm/subscriptions',
     crmRenewals: '/dashboard/crm/renewals',
     crmTaxRules: '/dashboard/crm/tax-rules',

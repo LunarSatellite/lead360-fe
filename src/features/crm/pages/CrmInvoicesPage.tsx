@@ -1,19 +1,29 @@
-import { useState } from 'react';
-import { Plus, X, Loader2, Receipt, DollarSign, Send, Link2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus, X, Loader2, Receipt, DollarSign, Send, Link2, Bell, Pause, Play } from 'lucide-react';
 import { format, parseISO, isPast } from 'date-fns';
 import { toast } from 'sonner';
 import { confirmDialog } from '@/shared/ui/confirm';
 import {
   useInvoices, useGenerateInvoiceFromDeal, useGenerateInvoiceFromOrder, useRecordPayment,
-  useDisputeInvoice, useSendInvoice, useVoidInvoice, useGenerateInvoicePaymentLink,
+  useDisputeInvoice, useSendInvoice, useDraftInvoiceSendEmail, useVoidInvoice, useGenerateInvoicePaymentLink,
+  useIssueCreditNote, useDunningHistory, usePauseDunning, useResumeDunning, useSendReminderNow,
 } from '../api/crm.queries';
+import { AiSendPreviewModal } from '../components/AiSendPreviewModal';
 import type {
-  CrmInvoiceSummaryDto, CrmInvoiceFilter, CrmRecordPaymentRequest,
+  CrmInvoiceSummaryDto, CrmInvoiceFilter, CrmRecordPaymentRequest, CreditNoteApplyMethod,
+  DunningPauseReason,
 } from '../types/crm.types';
 import {
   CrmInvoiceStatus, CrmPaymentMethod,
   CRM_INVOICE_STATUS_LABELS, CRM_INVOICE_STATUS_COLORS, CRM_PAYMENT_METHOD_LABELS,
+  CreditNoteApplyMethod as CNApplyMethod, CREDIT_NOTE_APPLY_METHOD_LABELS,
+  DunningEventKind, DunningPauseReason as PauseReasonEnum,
+  DUNNING_STAGE_LABELS, DUNNING_EVENT_KIND_LABELS, DUNNING_PAUSE_REASON_LABELS,
 } from '../types/crm.types';
+
+function balanceDue(inv: CrmInvoiceSummaryDto): number {
+  return inv.totalAmount - (inv.amountPaid ?? 0) - (inv.creditAppliedAmount ?? 0);
+}
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -55,10 +65,126 @@ function SlideOver({ open, onClose, title, children, wide }: {
   );
 }
 
+function RemindersSection({ invoiceId }: { invoiceId: string }) {
+  const [showPause, setShowPause] = useState(false);
+  const [pauseReason, setPauseReason] = useState<DunningPauseReason>(PauseReasonEnum.ManualHold);
+  const [pauseUntil, setPauseUntil] = useState('');
+
+  const { data: history, isLoading } = useDunningHistory(invoiceId);
+  const events = (history as any) ?? [];
+  const pause = usePauseDunning();
+  const resume = useResumeDunning();
+  const sendNow = useSendReminderNow();
+
+  const latest = events[0];
+  const isPaused = latest?.kind === DunningEventKind.Paused;
+
+  return (
+    <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
+          <Bell className="w-3.5 h-3.5" /> Reminders
+        </p>
+        <div className="flex items-center gap-2">
+          <button onClick={() => sendNow.mutate(invoiceId)} disabled={sendNow.isPending}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold text-text-secondary hover:text-brand hover:bg-brand-soft transition-all disabled:opacity-50">
+            {sendNow.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />} Send Now
+          </button>
+          {isPaused ? (
+            <button onClick={() => resume.mutate(invoiceId)} disabled={resume.isPending}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold text-success hover:bg-success-soft transition-all disabled:opacity-50">
+              {resume.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />} Resume
+            </button>
+          ) : (
+            <button onClick={() => setShowPause(v => !v)}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold text-text-secondary hover:text-[#F59E0B] transition-all">
+              <Pause className="w-3 h-3" /> Pause
+            </button>
+          )}
+        </div>
+      </div>
+
+      {isPaused && (
+        <div className="px-2 py-1.5 rounded-lg bg-[rgba(245,158,11,0.08)] border border-[rgba(245,158,11,0.3)] text-xs text-[#F59E0B]">
+          Paused — {latest.pauseReason ? DUNNING_PAUSE_REASON_LABELS[latest.pauseReason as DunningPauseReason] : 'reason not set'}
+          {latest.pausedUntil && ` until ${format(parseISO(latest.pausedUntil), 'MMM d, yyyy')}`}
+        </div>
+      )}
+
+      {showPause && (
+        <div className="space-y-2 pt-1">
+          <select value={pauseReason} onChange={e => setPauseReason(Number(e.target.value) as DunningPauseReason)} className={selectCls}>
+            {Object.entries(DUNNING_PAUSE_REASON_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+          </select>
+          <input type="date" value={pauseUntil} onChange={e => setPauseUntil(e.target.value)} className={inputCls} placeholder="Paused until (optional)" />
+          <button onClick={() => pause.mutate({ id: invoiceId, data: { reason: pauseReason, until: pauseUntil || undefined } }, { onSuccess: () => setShowPause(false) })}
+            disabled={pause.isPending} className="w-full py-1.5 rounded-lg bg-[#F59E0B] text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+            {pause.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : 'Confirm Pause'}
+          </button>
+        </div>
+      )}
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-3 text-text-muted"><Loader2 className="w-4 h-4 animate-spin" /></div>
+      ) : !events.length ? (
+        <p className="text-xs text-text-muted">No reminders sent yet.</p>
+      ) : (
+        <div className="space-y-1.5 max-h-48 overflow-y-auto">
+          {events.map((e: any) => (
+            <div key={e.id} className="flex items-center justify-between text-xs px-2 py-1.5 rounded-lg bg-bg-surface">
+              <div>
+                <span className="font-semibold text-text-primary">{DUNNING_EVENT_KIND_LABELS[e.kind as import('../types/crm.types').DunningEventKind] ?? e.kind}</span>
+                {e.kind === DunningEventKind.ReminderSent && (
+                  <span className="text-text-muted ml-1.5">— {DUNNING_STAGE_LABELS[e.stage as import('../types/crm.types').DunningStage] ?? e.stage}</span>
+                )}
+                {e.channel && <span className="text-text-muted ml-1.5">via {e.channel}</span>}
+              </div>
+              <span className="text-text-muted">{format(parseISO(e.createdAt), 'MMM d, HH:mm')}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function isOverdue(inv: CrmInvoiceSummaryDto): boolean {
   if (inv.status === CrmInvoiceStatus.Overdue) return true;
   if (inv.status === CrmInvoiceStatus.Sent && inv.dueDate && isPast(parseISO(inv.dueDate))) return true;
   return false;
+}
+
+function InvoiceSendPreviewModal({ invoice, onDone }: { invoice: CrmInvoiceSummaryDto; onDone: () => void }) {
+  const draft = useDraftInvoiceSendEmail();
+  const send = useSendInvoice();
+  const [introText, setIntroText] = useState('');
+  const [hasDrafted, setHasDrafted] = useState(false);
+
+  const runDraft = () => {
+    draft.mutate(invoice.id, {
+      onSuccess: (res: any) => { setIntroText(res?.introDraft ?? ''); setHasDrafted(true); },
+    });
+  };
+  useEffect(() => { runDraft(); }, [invoice.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <AiSendPreviewModal
+      open
+      onClose={onDone}
+      title={`Send Invoice #${invoice.invoiceNumber}`}
+      isDrafting={draft.isPending || !hasDrafted}
+      draftText={introText}
+      onIntroChange={setIntroText}
+      onRegenerate={runDraft}
+      isSending={send.isPending}
+      onConfirmSend={() => send.mutate({ id: invoice.id, introText }, { onSuccess: onDone })}
+    >
+      <div className="space-y-1">
+        <div>Total: {invoice.currency} {invoice.totalAmount.toLocaleString()}</div>
+        {invoice.dueDate && <div>Due: {format(parseISO(invoice.dueDate), 'MMM d, yyyy')}</div>}
+      </div>
+    </AiSendPreviewModal>
+  );
 }
 
 export function Component() {
@@ -75,6 +201,11 @@ export function Component() {
   const [payDate, setPayDate] = useState('');
   const [payNotes, setPayNotes] = useState('');
 
+  const [showCreditNote, setShowCreditNote] = useState(false);
+  const [cnAmount, setCnAmount] = useState('');
+  const [cnReason, setCnReason] = useState('');
+  const [cnApplyMethod, setCnApplyMethod] = useState<CreditNoteApplyMethod>(CNApplyMethod.AccountBalance);
+
   const { data: raw, isLoading } = useInvoices(filter);
   const items: CrmInvoiceSummaryDto[] = (raw as any)?.items ?? [];
 
@@ -82,9 +213,10 @@ export function Component() {
   const generateFromOrder = useGenerateInvoiceFromOrder();
   const recordPayment = useRecordPayment();
   const disputeInvoice = useDisputeInvoice();
-  const sendInvoice = useSendInvoice();
+  const [sendPreviewInvoice, setSendPreviewInvoice] = useState<CrmInvoiceSummaryDto | null>(null);
   const voidInvoice = useVoidInvoice();
   const genPayLink = useGenerateInvoicePaymentLink();
+  const issueCreditNote = useIssueCreditNote();
 
   function handleGenerate() {
     if (!genDealId.trim()) return;
@@ -93,6 +225,14 @@ export function Component() {
   function handleGenerateFromOrder() {
     if (!genOrderId.trim()) return;
     generateFromOrder.mutate(genOrderId.trim(), { onSuccess: () => { setGenOpen(false); setGenOrderId(''); } });
+  }
+
+  function handleIssueCreditNote() {
+    if (!selected || !cnAmount || !cnReason.trim()) return;
+    issueCreditNote.mutate(
+      { originalInvoiceId: selected.id, amount: Number(cnAmount), reason: cnReason.trim(), applyMethod: cnApplyMethod },
+      { onSuccess: () => { setShowCreditNote(false); setCnAmount(''); setCnReason(''); setSelected(null); } },
+    );
   }
 
   function handleRecordPayment() {
@@ -186,11 +326,16 @@ export function Component() {
                 }
               </Field>
               <Field label="Amount"><span className="font-semibold text-text-primary">{selected.currency} {selected.totalAmount.toLocaleString()}</span></Field>
-              {selected.amountPaid != null && selected.amountPaid > 0 && selected.amountPaid < selected.totalAmount && (
+              {balanceDue(selected) !== selected.totalAmount && balanceDue(selected) > 0 && (
                 <Field label="Balance due">
                   <span className="font-semibold text-warning">
-                    {selected.currency} {(selected.totalAmount - selected.amountPaid).toLocaleString()}
-                    <span className="text-text-muted font-normal"> ({selected.currency} {selected.amountPaid.toLocaleString()} paid)</span>
+                    {selected.currency} {balanceDue(selected).toLocaleString()}
+                    <span className="text-text-muted font-normal">
+                      {' '}({[
+                        selected.amountPaid ? `${selected.currency} ${selected.amountPaid.toLocaleString()} paid` : null,
+                        selected.creditAppliedAmount ? `${selected.currency} ${selected.creditAppliedAmount.toLocaleString()} credited` : null,
+                      ].filter(Boolean).join(', ')})
+                    </span>
                   </span>
                 </Field>
               )}
@@ -225,11 +370,16 @@ export function Component() {
               </button>
             </div>
 
+            {/* Reminders / Dunning */}
+            {selected.status !== CrmInvoiceStatus.Draft && selected.status !== CrmInvoiceStatus.Void && (
+              <RemindersSection invoiceId={selected.id} />
+            )}
+
             {/* Send action for Draft invoices */}
             {selected.status === CrmInvoiceStatus.Draft && (
-              <button onClick={() => { sendInvoice.mutate(selected.id); setSelected(null); }} disabled={sendInvoice.isPending}
+              <button onClick={() => { setSendPreviewInvoice(selected); setSelected(null); }}
                 className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
-                {sendInvoice.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Send Invoice
+                <Send className="w-4 h-4" /> Send Invoice
               </button>
             )}
 
@@ -263,7 +413,34 @@ export function Component() {
                 className="flex-1 py-2 rounded-xl text-sm font-bold border border-border-subtle text-text-secondary bg-bg-elevated hover:bg-bg-card disabled:opacity-50 disabled:cursor-not-allowed transition-all">
                 {voidInvoice.isPending ? <Loader2 className="w-4 h-4 animate-spin inline" /> : 'Void'}
               </button>
+              {selected.status !== CrmInvoiceStatus.Draft && selected.status !== CrmInvoiceStatus.Void && (
+                <button
+                  onClick={() => { setCnAmount(balanceDue(selected).toFixed(2)); setShowCreditNote(v => !v); }}
+                  className="flex-1 py-2 rounded-xl text-sm font-bold border border-border-subtle text-text-secondary bg-bg-elevated hover:bg-bg-card transition-all">
+                  Issue Credit Note
+                </button>
+              )}
             </div>
+
+            {showCreditNote && (
+              <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
+                <Field label="Amount">
+                  <input type="number" value={cnAmount} onChange={e => setCnAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
+                </Field>
+                <Field label="Apply Method">
+                  <select value={cnApplyMethod} onChange={e => setCnApplyMethod(Number(e.target.value) as CreditNoteApplyMethod)} className={selectCls}>
+                    {Object.entries(CREDIT_NOTE_APPLY_METHOD_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                  </select>
+                </Field>
+                <Field label="Reason">
+                  <textarea value={cnReason} onChange={e => setCnReason(e.target.value)} rows={2} className={inputCls} placeholder="Why is this credit note being issued?" />
+                </Field>
+                <button onClick={handleIssueCreditNote} disabled={issueCreditNote.isPending || !cnAmount || !cnReason.trim()}
+                  className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                  {issueCreditNote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Issue Credit Note'}
+                </button>
+              </div>
+            )}
           </div>
         )}
       </SlideOver>
@@ -293,6 +470,10 @@ export function Component() {
           </button>
         </div>
       </SlideOver>
+
+      {sendPreviewInvoice && (
+        <InvoiceSendPreviewModal invoice={sendPreviewInvoice} onDone={() => setSendPreviewInvoice(null)} />
+      )}
     </div>
   );
 }

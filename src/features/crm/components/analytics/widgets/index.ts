@@ -1,0 +1,16 @@
+export { DealStatsWidget } from './DealStatsWidget';
+export { RevenueWidget } from './RevenueWidget';
+export { LeadFunnelWidget } from './LeadFunnelWidget';
+export { ContactsWidget } from './ContactsWidget';
+export { ActivityWidget } from './ActivityWidget';
+export { VelocityWidget } from './VelocityWidget';
+export { PipelineWidget } from './PipelineWidget';
+export { NurtureWidget } from './NurtureWidget';
+export { SupportWidget } from './SupportWidget';
+export { AiEffectivenessWidget } from './AiEffectivenessWidget';
+export type { AiActionFilter } from './AiEffectivenessWidget';
+export { NpsWidget } from './NpsWidget';
+export { ChurnRiskWidget } from './ChurnRiskWidget';
+export { LeadScoreWidget } from './LeadScoreWidget';
+export { TeamPerformanceWidget } from './TeamPerformanceWidget';
+export { RecurringRevenueWidget } from './RecurringRevenueWidget';

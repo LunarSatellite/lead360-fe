@@ -607,6 +607,9 @@ export interface CrmContactFilter {
   ownedByUserId?: string;
   organizationId?: string;
   sourceKind?: CrmContactSourceKind;
+  minChurnProbability?: number;
+  maxChurnProbability?: number;
+  churnKind?: number;
   page?: number;
   pageSize?: number;
 }
@@ -1490,6 +1493,33 @@ export type CrmSupportCasePriority = (typeof CrmSupportCasePriority)[keyof typeo
 export const CRM_SUPPORT_PRIORITY_LABELS: Record<CrmSupportCasePriority, string> = {
   1: 'Low', 2: 'Medium', 3: 'High', 4: 'Critical',
 };
+
+export interface SupportStatusBreakdownDto {
+  status: CrmSupportCaseStatus;
+  count: number;
+}
+
+export interface SupportSeverityBreakdownDto {
+  severity: CrmSupportCasePriority;
+  count: number;
+}
+
+export interface SupportAnalyticsDto {
+  totalCases: number;
+  /** Cases not yet resolved/closed/AI-resolved. */
+  openCases: number;
+  resolvedCases: number;
+  createdThisMonth: number;
+  resolvedThisMonth: number;
+  avgResolutionHours: number;
+  initialResponseBreaches: number;
+  resolutionBreaches: number;
+  slaBreachRate: number;
+  aiResolvedCount: number;
+  aiResolutionRate: number;
+  byStatus: SupportStatusBreakdownDto[];
+  bySeverity: SupportSeverityBreakdownDto[];
+}
 export const CRM_SUPPORT_PRIORITY_COLORS: Record<CrmSupportCasePriority, string> = {
   1: 'text-text-secondary bg-bg-elevated border-border-subtle',
   2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
@@ -2133,25 +2163,46 @@ export interface CrmWorkflowCampaignUpdateRequest {
 // ─── AI Actions ───────────────────────────────────────────────────────────────
 
 export const CrmAiActionStatus = {
-  Pending: 1, Approved: 2, Rejected: 3, Executing: 4, Executed: 5, Undone: 6,
+  Executed: 1, Undone: 2, PendingApproval: 3, Approved: 4, Rejected: 5, Escalated: 6,
 } as const;
 export type CrmAiActionStatus = (typeof CrmAiActionStatus)[keyof typeof CrmAiActionStatus];
 export const CRM_AI_ACTION_STATUS_LABELS: Record<CrmAiActionStatus, string> = {
-  1: 'Pending', 2: 'Approved', 3: 'Rejected', 4: 'Executing', 5: 'Executed', 6: 'Undone',
+  1: 'Executed', 2: 'Undone', 3: 'Pending approval', 4: 'Approved', 5: 'Rejected', 6: 'Escalated',
+};
+export const CRM_AI_ACTION_TIER_LABELS: Record<number, string> = {
+  1: 'T1 Autonomous', 2: 'T2 Notify', 3: 'T3 Approve', 4: 'T4 Escalate',
+};
+export const CRM_AI_ACTION_KIND_LABELS: Record<number, string> = {
+  1: 'Contact summary refreshed', 2: 'Activity auto-logged', 3: 'Task auto-created',
+  4: 'Deal stage advanced', 5: 'Lead qualified', 6: 'Lead disqualified',
+  7: 'Nurture message sent', 8: 'Churn intervention sent', 9: 'Quote drafted',
+  10: 'Funnel stage advanced', 11: 'Proposal generated', 12: 'Proposal sent',
+  13: 'Negotiation counter drafted', 14: 'Negotiation escalated', 15: 'Invoice generated',
+  16: 'Dunning reminder sent', 17: 'Renewal outreach sent', 18: 'Meeting proposed',
+  19: 'Meeting booked', 20: 'Call summary generated', 21: 'Support case AI-drafted',
+  22: 'Support case AI-resolved', 23: 'Support case escalated', 24: 'Support knowledge gap',
+  25: 'Expansion opportunity detected', 26: 'Expansion outreach drafted', 27: 'Win/loss analysis generated',
+  28: 'Onboarding intervention drafted', 29: 'Onboarding graduated', 30: 'Deal forecast updated',
 };
 export const CRM_AI_ACTION_STATUS_COLORS: Record<CrmAiActionStatus, string> = {
-  1: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  2: 'text-brand bg-brand-soft border-border-glow',
-  3: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
-  4: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
-  5: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
-  6: 'text-text-muted bg-bg-card border-border-subtle',
+  1: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  2: 'text-text-muted bg-bg-card border-border-subtle',
+  3: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  4: 'text-brand bg-brand-soft border-border-glow',
+  5: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  6: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
 };
 export interface CrmAiActionDto {
-  id: string; actionType: string; entityKind: string;
-  entityId: string | null; entityLabel: string | null;
-  description: string; status: CrmAiActionStatus;
-  approvedByUserId: string | null; executedAt: string | null; createdAt: string;
+  id: string;
+  kind: number;
+  tier: number;
+  status: CrmAiActionStatus;
+  subjectKind: CrmSignalSubjectKind;
+  subjectId: string;
+  tierReason: string | null;
+  confidenceScore: number;
+  undoWindowExpiresAt: string | null;
+  createdAt: string;
 }
 
 // ─── Facebook / Instagram Ads ─────────────────────────────────────────────────

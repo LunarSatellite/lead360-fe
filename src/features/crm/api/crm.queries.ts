@@ -90,6 +90,13 @@ const CRM_KEYS = {
     velocity: () => ['crm', 'analytics', 'velocity'] as const,
     leadFunnel: () => ['crm', 'analytics', 'lead-funnel'] as const,
     nurture: () => ['crm', 'analytics', 'nurture'] as const,
+    aiEffectiveness: () => ['crm', 'analytics', 'ai-effectiveness'] as const,
+    nps: (months: number) => ['crm', 'analytics', 'nps', months] as const,
+    churn: () => ['crm', 'analytics', 'churn'] as const,
+    leadScore: (months: number) => ['crm', 'analytics', 'lead-score', months] as const,
+    team: () => ['crm', 'analytics', 'team'] as const,
+    recurringRevenue: () => ['crm', 'analytics', 'recurring-revenue'] as const,
+    support: () => ['crm', 'analytics', 'support'] as const,
   },
   contactEnrollments: (contactId: string) => ['crm', 'contact-enrollments', contactId] as const,
   experiments: () => ['crm', 'experiments'] as const,
@@ -996,6 +1003,34 @@ export function useLeadFunnelAnalytics() {
 
 export function useNurtureAnalytics() {
   return useQuery({ queryKey: CRM_KEYS.analytics.nurture(), queryFn: () => crmApi.getNurtureAnalytics() });
+}
+
+export function useAiEffectivenessAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.aiEffectiveness(), queryFn: () => crmApi.getAiEffectivenessAnalytics() });
+}
+
+export function useChurnRiskAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.churn(), queryFn: () => crmApi.getChurnRiskAnalytics() });
+}
+
+export function useNpsAnalytics(months = 12) {
+  return useQuery({ queryKey: CRM_KEYS.analytics.nps(months), queryFn: () => crmApi.getNpsAnalytics(months) });
+}
+
+export function useLeadScoreAnalytics(months = 6) {
+  return useQuery({ queryKey: CRM_KEYS.analytics.leadScore(months), queryFn: () => crmApi.getLeadScoreAnalytics(months) });
+}
+
+export function useTeamPerformanceAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.team(), queryFn: () => crmApi.getTeamPerformanceAnalytics() });
+}
+
+export function useRecurringRevenueAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.recurringRevenue(), queryFn: () => crmApi.getRecurringRevenueAnalytics() });
+}
+
+export function useSupportAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.support(), queryFn: () => crmApi.getSupportAnalytics() });
 }
 
 // ─── Flow A/B Experiments ─────────────────────────────────────────────────────

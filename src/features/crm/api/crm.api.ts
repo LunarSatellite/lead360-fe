@@ -392,6 +392,27 @@ export const crmApi = {
   getNurtureAnalytics: () =>
     apiClient.get<NurtureAnalyticsDto>(`${BASE}/analytics/nurture`),
 
+  getSupportAnalytics: () =>
+    apiClient.get<import('../types/crm.types').SupportAnalyticsDto>(`${BASE}/analytics/support`),
+
+  getAiEffectivenessAnalytics: () =>
+    apiClient.get<import('../types/crm-analytics.types').AiEffectivenessAnalyticsDto>(`${BASE}/analytics/ai-effectiveness`),
+
+  getNpsAnalytics: (months = 12) =>
+    apiClient.get<import('../types/crm-analytics.types').NpsAnalyticsDto>(`${BASE}/analytics/nps?months=${months}`),
+
+  getChurnRiskAnalytics: () =>
+    apiClient.get<import('../types/crm-analytics.types').ChurnRiskAnalyticsDto>(`${BASE}/analytics/churn`),
+
+  getLeadScoreAnalytics: (months = 6) =>
+    apiClient.get<import('../types/crm-analytics.types').LeadScoreAnalyticsDto>(`${BASE}/analytics/lead-score?months=${months}`),
+
+  getTeamPerformanceAnalytics: () =>
+    apiClient.get<import('../types/crm-analytics.types').TeamPerformanceAnalyticsDto>(`${BASE}/analytics/team-performance`),
+
+  getRecurringRevenueAnalytics: () =>
+    apiClient.get<import('../types/crm-analytics.types').RecurringRevenueAnalyticsDto>(`${BASE}/analytics/recurring-revenue`),
+
   // ─── Deliveries ──────────────────────────────────────────────────────────
   getDeliveries: (orderId: string) =>
     apiClient.get<import('../types/crm.types').CrmDeliveryDto[]>(`${BASE}/orders/${orderId}/deliveries`),

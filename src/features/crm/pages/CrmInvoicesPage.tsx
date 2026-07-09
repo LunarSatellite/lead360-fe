@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus, X, Loader2, Receipt, DollarSign, Send } from 'lucide-react';
 import { format, parseISO, isPast } from 'date-fns';
 import {
@@ -60,7 +61,14 @@ function isOverdue(inv: CrmInvoiceSummaryDto): boolean {
 }
 
 export function Component() {
-  const [filter, setFilter] = useState<CrmInvoiceFilter>({ page: 1, pageSize: 20 });
+  // Drill-down from the Recurring-revenue widget lands here pre-filtered: ?status= opens the list filtered to that invoice status.
+  const [searchParams] = useSearchParams();
+  const initialStatus = searchParams.get('status');
+  const [filter, setFilter] = useState<CrmInvoiceFilter>({
+    page: 1,
+    pageSize: 20,
+    status: initialStatus ? (Number(initialStatus) as CrmInvoiceFilter['status']) : undefined,
+  });
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<CrmInvoiceSummaryDto | null>(null);
   const [genOpen, setGenOpen] = useState(false);

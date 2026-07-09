@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus, X, Loader2, RefreshCw, PauseCircle, PlayCircle, XCircle } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
@@ -60,10 +61,19 @@ const EMPTY_CREATE: CreateForm = { contactId: '', accountId: '', dealId: '', pla
 type EditForm = { planName: string; planTier: string; billingCadence: string; amount: string; seats: string; };
 
 export function Component() {
-  const [filter, setFilter] = useState<CrmSubscriptionFilter>({ page: 1, pageSize: 20 });
+  // Drill-down from the Recurring-revenue widget lands here pre-filtered: ?planTier= (MRR-by-tier) / ?status= open the list filtered.
+  const [searchParams] = useSearchParams();
+  const initialTier = searchParams.get('planTier') ?? '';
+  const initialStatus = searchParams.get('status') ?? '';
+  const [filter, setFilter] = useState<CrmSubscriptionFilter>({
+    page: 1,
+    pageSize: 20,
+    planTier: initialTier ? (Number(initialTier) as CrmSubscriptionPlanTier) : undefined,
+    status: initialStatus ? (Number(initialStatus) as CrmSubscriptionStatus) : undefined,
+  });
   const [search, setSearch] = useState('');
-  const [statusF, setStatusF] = useState('');
-  const [tierF, setTierF] = useState('');
+  const [statusF, setStatusF] = useState(initialStatus);
+  const [tierF, setTierF] = useState(initialTier);
 
   const [showCreate, setShowCreate] = useState(false);
   const [createForm, setCreateForm] = useState<CreateForm>(EMPTY_CREATE);

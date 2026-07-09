@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search, UserCheck, Plus, Loader2, ChevronLeft, ChevronRight, X, Trash2,
 } from 'lucide-react';
@@ -300,9 +300,23 @@ function ContactCreateForm({
 
 export function Component() {
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<CrmContactFilter>({ page: 1, pageSize: PAGE_SIZE });
+  // Drill-down from the "Contacts by source" donut lands here pre-filtered (?sourceKind=);
+  // the churn-risk donut lands here with a churn probability range (?minChurnProbability=&maxChurnProbability=).
+  const [searchParams] = useSearchParams();
+  const initialSource = searchParams.get('sourceKind') ?? '';
+  const initialMinChurn = searchParams.get('minChurnProbability');
+  const initialMaxChurn = searchParams.get('maxChurnProbability');
+  const initialChurnKind = searchParams.get('churnKind');
+  const [filter, setFilter] = useState<CrmContactFilter>({
+    page: 1,
+    pageSize: PAGE_SIZE,
+    sourceKind: initialSource ? (Number(initialSource) as CrmContactSourceKind) : undefined,
+    minChurnProbability: initialMinChurn ? Number(initialMinChurn) : undefined,
+    maxChurnProbability: initialMaxChurn ? Number(initialMaxChurn) : undefined,
+    churnKind: initialChurnKind ? Number(initialChurnKind) : undefined,
+  });
   const [search, setSearch] = useState('');
-  const [sourceFilter, setSourceFilter] = useState<string>('');
+  const [sourceFilter, setSourceFilter] = useState<string>(initialSource);
   const [showCreate, setShowCreate] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -338,6 +352,13 @@ export function Component() {
   const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
   const currentPage = filter.page ?? 1;
 
+  const churnActive = filter.minChurnProbability !== undefined || filter.maxChurnProbability !== undefined;
+  const churnHorizon = filter.churnKind === 3 ? '60-day' : '30-day';
+  const churnBandLabel =
+    ((filter.minChurnProbability ?? 0) >= 0.7 ? 'High churn risk (≥70%)'
+      : (filter.minChurnProbability ?? 0) >= 0.4 ? 'Medium churn risk (40–70%)'
+      : 'Low churn risk (<40%)') + ` · ${churnHorizon}`;
+
   return (
     <>
       <div className="space-y-6">
@@ -365,6 +386,22 @@ export function Component() {
             </button>
           </div>
         </div>
+
+        {/* Churn-band drill indicator */}
+        {churnActive && (
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl bg-brand-soft text-brand border-thin border-border-glow">
+              Filtered: {churnBandLabel}
+              <button
+                onClick={() => setFilter((f) => ({ ...f, minChurnProbability: undefined, maxChurnProbability: undefined, churnKind: undefined, page: 1 }))}
+                className="hover:text-text-primary transition-colors"
+                aria-label="Clear churn filter"
+              >
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            </span>
+          </div>
+        )}
 
         {/* Filters */}
         <form onSubmit={handleSearch} className="flex gap-2 flex-wrap">

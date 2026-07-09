@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus, X, Loader2, Star, TrendingUp } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
@@ -167,7 +168,12 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
 }
 
 export function Component() {
-  const [filter, setFilter] = useState<CrmNpsFilter>({});
+  // Drill-down from the NPS widget lands here pre-filtered: ?classification= opens the list filtered to that band.
+  const [searchParams] = useSearchParams();
+  const initialClassification = searchParams.get('classification');
+  const [filter, setFilter] = useState<CrmNpsFilter>({
+    classification: initialClassification ? (Number(initialClassification) as CrmNpsFilter['classification']) : undefined,
+  });
   const [showSend, setShowSend] = useState(false);
   const [detail, setDetail] = useState<CrmNpsSurveySummaryDto | null>(null);
 

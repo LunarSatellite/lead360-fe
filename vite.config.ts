@@ -19,6 +19,12 @@ export default defineConfig({
     port: 3000,
     open: true,
   },
+  optimizeDeps: {
+    // recharts is only pulled in by the lazy-loaded CRM analytics page. Pre-bundle
+    // it up front so Vite doesn't re-optimize mid-navigation (which forces a reload
+    // that fails the in-flight dynamic import of CrmAnalyticsPage).
+    include: ['recharts'],
+  },
   build: {
     rollupOptions: {
       output: {

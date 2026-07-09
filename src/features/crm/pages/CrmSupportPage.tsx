@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Plus, X, Loader2, LifeBuoy, Send, AlertTriangle, CheckCircle, XCircle, ChevronLeft, ChevronRight, ChevronDown, Search, Shield, Trash2, Sparkles } from 'lucide-react';
 import {
   useSupportCases, useCreateSupportCase, useSupportCaseById,
@@ -356,10 +357,19 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
 }
 
 export function Component() {
-  const [filter, setFilter] = useState<CrmSupportCaseFilter>({ page: 1, pageSize: PAGE_SIZE });
+  // Drill-down from the Support widget lands here pre-filtered: ?status= / ?priority= open the list filtered.
+  const [searchParams] = useSearchParams();
+  const initialStatus = searchParams.get('status');
+  const initialPriority = searchParams.get('priority');
+  const [filter, setFilter] = useState<CrmSupportCaseFilter>({
+    page: 1,
+    pageSize: PAGE_SIZE,
+    status: initialStatus ? (Number(initialStatus) as CrmSupportCaseStatus) : undefined,
+    priority: initialPriority ? (Number(initialPriority) as CrmSupportCasePriority) : undefined,
+  });
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [priorityFilter, setPriorityFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState(initialStatus ?? '');
+  const [priorityFilter, setPriorityFilter] = useState(initialPriority ?? '');
   const [showCreate, setShowCreate] = useState(false);
   const [showSla, setShowSla] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);

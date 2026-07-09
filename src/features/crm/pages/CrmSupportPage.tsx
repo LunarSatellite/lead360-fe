@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Plus, X, Loader2, LifeBuoy, Send, AlertTriangle, CheckCircle, XCircle, ChevronLeft, ChevronRight, ChevronDown, Search, Shield, Trash2 } from 'lucide-react';
+import { Plus, X, Loader2, LifeBuoy, Send, AlertTriangle, CheckCircle, XCircle, ChevronLeft, ChevronRight, ChevronDown, Search, Shield, Trash2, Sparkles } from 'lucide-react';
 import {
   useSupportCases, useCreateSupportCase, useSupportCaseById,
   useAddSupportCaseMessage,
   useEscalateSupportCase, useResolveSupportCase, useCloseSupportCase, useSlaPolicies,
   useCreateSlaPolicy, useDeleteSlaPolicy,
 } from '../api/crm.queries';
+import { useGenerateKbDraftFromCase } from '../api/crm-kb.queries';
 import type {
   CrmSupportCaseSummaryDto, CrmSupportCaseCreateRequest, CrmSupportCaseFilter,
   CrmSupportMessageDto, CrmSlaPolicySummaryDto, CrmSlaPolicyCreateRequest, PagedResult,
@@ -272,6 +273,8 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
   const resolve = useResolveSupportCase();
   const close = useCloseSupportCase();
   const addMsg = useAddSupportCaseMessage();
+  const generateKbDraft = useGenerateKbDraftFromCase();
+  const canGenerateKbDraft = detail?.status === CrmSupportCaseStatus.Resolved || detail?.status === CrmSupportCaseStatus.Closed;
 
   const handleSend = () => {
     if (!msgBody.trim()) return;
@@ -296,6 +299,17 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
             <button onClick={() => close.mutate(caseId)} disabled={close.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-bg-elevated text-text-secondary text-xs font-semibold border border-border-subtle hover:bg-bg-card transition-all disabled:opacity-50">
               <XCircle className="w-3.5 h-3.5" /> Close
             </button>
+            {canGenerateKbDraft && (
+              <button
+                onClick={() => generateKbDraft.mutate(caseId)}
+                disabled={generateKbDraft.isPending}
+                title="Propose a Knowledge Base article from this resolved case"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-soft text-brand text-xs font-semibold border border-border-glow hover:bg-brand hover:text-white transition-all disabled:opacity-50"
+              >
+                {generateKbDraft.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                Generate KB Draft
+              </button>
+            )}
           </div>
           <div className="flex border-b border-border-subtle">
             {(['details', 'messages'] as const).map(t => (

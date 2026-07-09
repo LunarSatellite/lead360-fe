@@ -27,6 +27,8 @@ import {
 import { formatDistanceToNow } from 'date-fns';
 import { confirmDialog } from '@/shared/ui/confirm';
 import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead, useFindContactDuplicates, useBulkLeadAction, useContacts, useOrganizations } from '../api/crm.queries';
+import { useTeamMembers } from '@/features/team/api/team.queries';
+import type { UserDto } from '@/features/auth/types/auth.types';
 import { BulkLeadAction } from '../types/crm.types';
 import { CsvToolbar } from '../components/CsvToolbar';
 import { DuplicateWarning } from '../components/DuplicateWarning';
@@ -133,6 +135,8 @@ export function Component() {
   const [selected, setSelected]       = useState<Set<string>>(new Set());
   const createLead                    = useCreateLead();
   const bulkAction                    = useBulkLeadAction();
+  const { data: teamRaw }             = useTeamMembers();
+  const teamMembers                   = (teamRaw as unknown as UserDto[] | undefined) ?? [];
 
   const toggleSelect = (id: string) =>
     setSelected((prev) => {
@@ -214,6 +218,13 @@ export function Component() {
     if (selected.size === 0) return;
     bulkAction.mutate(
       { leadIds: [...selected], action: BulkLeadAction.Stage, stage },
+      { onSuccess: () => clearSelection() },
+    );
+  };
+  const runBulkAssign = (userId: string | null) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { leadIds: [...selected], action: BulkLeadAction.Assign, assignToUserId: userId },
       { onSuccess: () => clearSelection() },
     );
   };
@@ -968,6 +979,21 @@ export function Component() {
             <option value="">Set stage…</option>
             {STAGE_PILLS.filter((p) => p.value !== undefined).map((p) => (
               <option key={p.label} value={p.value}>{p.label}</option>
+            ))}
+          </select>
+          <select
+            value=""
+            disabled={bulkAction.isPending}
+            onChange={(e) => {
+              if (e.target.value === 'unassign') runBulkAssign(null);
+              else if (e.target.value) runBulkAssign(e.target.value);
+            }}
+            className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+          >
+            <option value="">Assign to…</option>
+            <option value="unassign">Unassign</option>
+            {teamMembers.map((u) => (
+              <option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>
             ))}
           </select>
           <button

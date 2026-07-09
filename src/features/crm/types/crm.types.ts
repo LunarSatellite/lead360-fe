@@ -247,6 +247,54 @@ export interface CrmBulkResult {
   errors: string[];
 }
 
+export enum BulkDealAction {
+  Stage = 1,
+  Assign = 2,
+  Delete = 3,
+}
+
+export interface BulkDealActionRequest {
+  dealIds: string[];
+  action: BulkDealAction;
+  stageId?: string;
+  assignToUserId?: string | null;
+}
+
+export enum CrmFunnelStage {
+  Anonymous = 0,
+  Identified = 1,
+  Inquiring = 2,
+  Qualified = 3,
+  Negotiating = 4,
+  Closing = 5,
+  Customer = 6,
+  Repeat = 7,
+}
+
+export const CRM_FUNNEL_STAGE_LABELS: Record<CrmFunnelStage, string> = {
+  [CrmFunnelStage.Anonymous]: 'Anonymous',
+  [CrmFunnelStage.Identified]: 'Identified',
+  [CrmFunnelStage.Inquiring]: 'Inquiring',
+  [CrmFunnelStage.Qualified]: 'Qualified',
+  [CrmFunnelStage.Negotiating]: 'Negotiating',
+  [CrmFunnelStage.Closing]: 'Closing',
+  [CrmFunnelStage.Customer]: 'Customer',
+  [CrmFunnelStage.Repeat]: 'Repeat',
+};
+
+export enum BulkContactAction {
+  FunnelStage = 1,
+  Assign = 2,
+  Delete = 3,
+}
+
+export interface BulkContactActionRequest {
+  contactIds: string[];
+  action: BulkContactAction;
+  funnelStage?: CrmFunnelStage;
+  assignToUserId?: string | null;
+}
+
 export interface NurtureStepDto {
   id: string;
   sequenceId: string;

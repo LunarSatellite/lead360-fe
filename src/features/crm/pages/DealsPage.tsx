@@ -10,14 +10,14 @@ import { crmApi } from '../api/crm.api';
 import {
   useDeals, useDealStages, useMoveDealStage, useCloseDeal,
   useCreateDealStage, useUpdateDealStage, useDeleteDealStage, usePipelines,
-  useImportDealsCsv, useCreateDeal, useBulkDeleteDeals, useAccounts, useContacts,
+  useImportDealsCsv, useCreateDeal, useBulkDeleteDeals, useBulkDealAction, useAccounts, useContacts,
 } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { CsvToolbar } from '../components/CsvToolbar';
 import type { CrmDealStageCreateRequest, CrmDealCreateRequest } from '../types/crm.types';
-import { CrmEntityType } from '../types/crm.types';
+import { CrmEntityType, BulkDealAction } from '../types/crm.types';
 import { CustomFieldsInline } from '../components/CustomFieldsInline';
 import type {
   CrmDealSummaryDto, CrmDealStageSummaryDto, CrmDealFilter, PagedResult,
@@ -227,6 +227,7 @@ export function Component() {
   const [winDealId, setWinDealId] = useState<string | null>(null);
   const createDeal = useCreateDeal();
   const bulkDelete = useBulkDeleteDeals();
+  const bulkAction = useBulkDealAction();
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const listItems = listData?.items ?? [];
@@ -255,6 +256,20 @@ export function Component() {
     });
     if (!ok) return;
     bulkDelete.mutate([...selected], { onSuccess: () => clearSelection() });
+  };
+  const runBulkStage = (stageId: string) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { dealIds: [...selected], action: BulkDealAction.Stage, stageId },
+      { onSuccess: () => clearSelection() },
+    );
+  };
+  const runBulkAssign = (userId: string | null) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { dealIds: [...selected], action: BulkDealAction.Assign, assignToUserId: userId },
+      { onSuccess: () => clearSelection() },
+    );
   };
 
   const activeFiltersCount = [filterOwnerId, filterCloseDateFrom, filterCloseDateTo, filterInactive ? 'inactive' : ''].filter(Boolean).length;
@@ -737,6 +752,32 @@ export function Component() {
             <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl bg-bg-elevated border border-border-medium shadow-2xl">
               <span className="text-xs font-bold text-text-primary whitespace-nowrap">{selected.size} selected</span>
               <div className="h-5 w-px bg-border-subtle" />
+              <select
+                value=""
+                disabled={bulkAction.isPending}
+                onChange={(e) => { if (e.target.value) runBulkStage(e.target.value); }}
+                className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+              >
+                <option value="">Set stage…</option>
+                {stages.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+              <select
+                value=""
+                disabled={bulkAction.isPending}
+                onChange={(e) => {
+                  if (e.target.value === 'unassign') runBulkAssign(null);
+                  else if (e.target.value) runBulkAssign(e.target.value);
+                }}
+                className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+              >
+                <option value="">Assign to…</option>
+                <option value="unassign">Unassign</option>
+                {teamMembers.map((u) => (
+                  <option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>
+                ))}
+              </select>
               <button
                 onClick={runBulkDelete}
                 disabled={bulkDelete.isPending}

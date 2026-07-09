@@ -67,6 +67,8 @@ import {
   Crosshair,
   DollarSign,
   Undo2,
+  FileBarChart,
+  LayoutPanelTop,
 } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
@@ -113,7 +115,9 @@ const crmNav = [
   { label: 'Contacts',      href: ROUTES.dashboard.crmContacts,      icon: UserCheck },
   { label: 'Contracts',     href: ROUTES.dashboard.crmContracts,          icon: FileSignature },
   { label: 'Custom Fields', href: ROUTES.dashboard.crmCustomFields,  icon: SlidersHorizontal },
+  { label: 'Dashboards',    href: ROUTES.dashboard.crmDashboards,    icon: LayoutPanelTop },
   { label: 'Deals',         href: ROUTES.dashboard.crmDealsHub,      icon: Briefcase },
+  { label: 'Knowledge Base', href: ROUTES.dashboard.crmKnowledgeBase, icon: BookOpen },
   { label: 'Event Tracking',  href: ROUTES.dashboard.crmEventIngestion,     icon: Globe },
   { label: 'Feature Settings', href: ROUTES.dashboard.crmFeatureSettings, icon: SlidersHorizontal },
   { label: 'Commissions',   href: ROUTES.dashboard.crmCommissions,        icon: DollarSign },
@@ -144,6 +148,7 @@ const crmNav = [
   { label: 'Purchase Orders',  href: ROUTES.dashboard.crmPurchaseOrders,   icon: ShoppingCart },
   { label: 'Quotes',        href: ROUTES.dashboard.crmQuotes,        icon: FileText },
   { label: 'Renewals',      href: ROUTES.dashboard.crmRenewals,      icon: CalendarClock },
+  { label: 'Reports',       href: ROUTES.dashboard.crmReports,       icon: FileBarChart },
   { label: 'Returns',       href: ROUTES.dashboard.crmReturns,       icon: RotateCw },
   { label: 'Scoring Rules', href: ROUTES.dashboard.crmScoringRules,  icon: TrendingUp },
   { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },

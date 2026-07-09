@@ -7,9 +7,11 @@ import {
 } from 'lucide-react';
 import { confirmDialog } from '@/shared/ui/confirm';
 import {
-  useContacts, useCreateContact, useDeleteContact, useBulkDeleteContacts, useImportContactsCsv,
+  useContacts, useCreateContact, useDeleteContact, useBulkDeleteContacts, useBulkContactAction, useImportContactsCsv,
   useFindContactDuplicates, usePendingDedupCount,
 } from '../api/crm.queries';
+import { useTeamMembers } from '@/features/team/api/team.queries';
+import type { UserDto } from '@/features/auth/types/auth.types';
 import { CsvToolbar } from '../components/CsvToolbar';
 import { CustomFieldsInline } from '../components/CustomFieldsInline';
 import { CrmEntityType } from '../types/crm.types';
@@ -22,6 +24,7 @@ import type {
 } from '../types/crm.types';
 import {
   CrmContactSourceKind, CRM_CONTACT_SOURCE_LABELS,
+  BulkContactAction, CrmFunnelStage, CRM_FUNNEL_STAGE_LABELS,
 } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow } from 'date-fns';
@@ -352,7 +355,10 @@ export function Component() {
   const createContact = useCreateContact();
   const deleteContact = useDeleteContact();
   const bulkDelete = useBulkDeleteContacts();
+  const bulkAction = useBulkContactAction();
   const importCsv = useImportContactsCsv();
+  const { data: teamRaw } = useTeamMembers();
+  const teamMembers = (teamRaw as unknown as UserDto[] | undefined) ?? [];
 
   const items = data?.items ?? [];
   const toggleSelect = (id: string) =>
@@ -371,6 +377,20 @@ export function Component() {
     });
     if (!ok) return;
     bulkDelete.mutate([...selected], { onSuccess: () => clearSelection() });
+  };
+  const runBulkFunnelStage = (stage: CrmFunnelStage) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { contactIds: [...selected], action: BulkContactAction.FunnelStage, funnelStage: stage },
+      { onSuccess: () => clearSelection() },
+    );
+  };
+  const runBulkAssign = (userId: string | null) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { contactIds: [...selected], action: BulkContactAction.Assign, assignToUserId: userId },
+      { onSuccess: () => clearSelection() },
+    );
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -552,6 +572,32 @@ export function Component() {
           <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl bg-bg-elevated border border-border-medium shadow-2xl">
             <span className="text-xs font-bold text-text-primary whitespace-nowrap">{selected.size} selected</span>
             <div className="h-5 w-px bg-border-subtle" />
+            <select
+              value=""
+              disabled={bulkAction.isPending}
+              onChange={(e) => { if (e.target.value !== '') runBulkFunnelStage(Number(e.target.value) as CrmFunnelStage); }}
+              className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+            >
+              <option value="">Set funnel stage…</option>
+              {Object.entries(CRM_FUNNEL_STAGE_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+            <select
+              value=""
+              disabled={bulkAction.isPending}
+              onChange={(e) => {
+                if (e.target.value === 'unassign') runBulkAssign(null);
+                else if (e.target.value) runBulkAssign(e.target.value);
+              }}
+              className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+            >
+              <option value="">Assign to…</option>
+              <option value="unassign">Unassign</option>
+              {teamMembers.map((u) => (
+                <option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>
+              ))}
+            </select>
             <button
               onClick={runBulkDelete}
               disabled={bulkDelete.isPending}

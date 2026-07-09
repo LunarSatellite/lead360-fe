@@ -30,6 +30,7 @@
     "lucide-react": "^0.460.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-grid-layout": "^2.2.3",
     "react-hook-form": "^7.54.0",
     "react-router": "^7.1.0",
     "react-router-dom": "^7.1.0",
@@ -59,6 +60,8 @@
     "vitest": "^2.1.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

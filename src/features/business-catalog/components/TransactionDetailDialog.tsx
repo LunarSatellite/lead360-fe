@@ -15,11 +15,15 @@ import {
   Clock,
   MessageSquare,
   User,
+  ChefHat,
+  PackageCheck,
+  Send,
 } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import {
   useTransaction,
   useUpdateTransactionStatus,
+  useNotifyTransaction,
 } from '../api/business-catalog.queries';
 import {
   TRANSACTION_STATUS_LABEL,
@@ -35,6 +39,7 @@ interface Props {
 export function TransactionDetailDialog({ transactionId, onClose }: Props) {
   const { data, isLoading } = useTransaction(transactionId);
   const statusMutation = useUpdateTransactionStatus();
+  const notifyMutation = useNotifyTransaction();
   const [note, setNote] = useState('');
 
   useEffect(() => {
@@ -102,6 +107,12 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                 )}
                 {tx.statusNote && (
                   <span className="text-[11px] text-text-muted italic">"{tx.statusNote}"</span>
+                )}
+                {tx.lastNotifiedAt && (
+                  <span className="flex items-center gap-1 text-[10px] text-text-muted">
+                    <Send className="w-3 h-3" strokeWidth={2} />
+                    Notified {formatDistanceToNow(new Date(tx.lastNotifiedAt), { addSuffix: true })}
+                  </span>
                 )}
               </div>
 
@@ -238,7 +249,91 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                   ) : (
                     <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
                   )}
-                  Confirm
+                  Confirm &amp; notify customer
+                </button>
+              </div>
+            )}
+
+            {tx.status === TransactionStatus.Confirmed && (
+              <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
+                <button
+                  type="button"
+                  disabled={notifyMutation.isPending}
+                  onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
+                             border border-border-medium text-text-secondary
+                             hover:bg-glass-2 hover:text-text-primary
+                             disabled:opacity-50 transition-all"
+                >
+                  <Send className="w-3.5 h-3.5" strokeWidth={2} /> Resend confirmation
+                </button>
+                <button
+                  type="button"
+                  disabled={statusMutation.isPending}
+                  onClick={() => setStatus(TransactionStatus.Preparing)}
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold
+                             bg-info text-white hover:bg-info/90 disabled:opacity-50 transition-all"
+                >
+                  {statusMutation.isPending ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <ChefHat className="w-3.5 h-3.5" strokeWidth={2} />
+                  )}
+                  Mark as preparing &amp; notify
+                </button>
+              </div>
+            )}
+
+            {tx.status === TransactionStatus.Preparing && (
+              <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
+                <button
+                  type="button"
+                  disabled={notifyMutation.isPending}
+                  onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
+                             border border-border-medium text-text-secondary
+                             hover:bg-glass-2 hover:text-text-primary
+                             disabled:opacity-50 transition-all"
+                >
+                  <Send className="w-3.5 h-3.5" strokeWidth={2} /> Resend "preparing" update
+                </button>
+                <button
+                  type="button"
+                  disabled={statusMutation.isPending}
+                  onClick={() => setStatus(TransactionStatus.ReadyForPickup)}
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold
+                             bg-brand text-white hover:bg-brand/90 disabled:opacity-50 transition-all"
+                >
+                  {statusMutation.isPending ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <PackageCheck className="w-3.5 h-3.5" strokeWidth={2} />
+                  )}
+                  Mark ready for pickup &amp; notify
+                </button>
+              </div>
+            )}
+
+            {tx.status === TransactionStatus.ReadyForPickup && (
+              <div className="flex items-center justify-between gap-2 px-5 py-3 border-t border-border-subtle">
+                <span className="flex items-center gap-1.5 text-xs font-bold text-brand">
+                  <PackageCheck className="w-3.5 h-3.5" strokeWidth={2} /> Ready — awaiting pickup
+                </span>
+                <button
+                  type="button"
+                  disabled={notifyMutation.isPending}
+                  onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
+                             border border-border-medium text-text-secondary
+                             hover:bg-glass-2 hover:text-text-primary
+                             disabled:opacity-50 transition-all"
+                >
+                  {notifyMutation.isPending ? (
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Send className="w-3.5 h-3.5" strokeWidth={2} />
+                  )}
+                  Resend "ready for pickup"
                 </button>
               </div>
             )}
@@ -264,7 +359,11 @@ function StatusPill({ status }: { status: TransactionStatusValue }) {
       ? 'bg-success-soft text-success'
       : status === TransactionStatus.Cancelled
         ? 'bg-danger-soft text-danger'
-        : 'bg-warning-soft text-warning';
+        : status === TransactionStatus.Preparing
+          ? 'bg-info-soft text-info'
+          : status === TransactionStatus.ReadyForPickup
+            ? 'bg-brand-soft text-brand'
+            : 'bg-warning-soft text-warning';
   return (
     <span className={`text-[10px] font-extrabold uppercase px-2 py-1 rounded-md ${bg}`}>
       {TRANSACTION_STATUS_LABEL[status]}

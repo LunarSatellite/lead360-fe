@@ -27,6 +27,8 @@ export const TransactionStatus = {
   Pending: 1,
   Confirmed: 2,
   Cancelled: 3,
+  Preparing: 4,
+  ReadyForPickup: 5,
 } as const;
 export type TransactionStatusValue = (typeof TransactionStatus)[keyof typeof TransactionStatus];
 
@@ -58,6 +60,8 @@ export const TRANSACTION_STATUS_LABEL: Record<TransactionStatusValue, string> = 
   1: 'Pending',
   2: 'Confirmed',
   3: 'Cancelled',
+  4: 'Preparing',
+  5: 'Ready for Pickup',
 };
 
 /// <summary>UI color token suffix — used like `bg-${color}-soft` etc. Maps to project semantic colors.</summary>
@@ -65,6 +69,8 @@ export const TRANSACTION_STATUS_COLOR: Record<TransactionStatusValue, string> = 
   1: 'warning',
   2: 'success',
   3: 'danger',
+  4: 'info',
+  5: 'brand',
 };
 
 // ─── Business Profile DTOs ───
@@ -135,6 +141,8 @@ export interface CatalogCategory {
   collectsTimeSlot: boolean | null;
   collectsAddress: boolean | null;
   collectsDateRange: boolean | null;
+  collectsNotes: boolean | null;
+  collectsMultipleItems: boolean | null;
 }
 
 export interface CatalogCategoryCreateRequest {
@@ -151,6 +159,8 @@ export interface CatalogCategoryCreateRequest {
   collectsTimeSlot?: boolean | null;
   collectsAddress?: boolean | null;
   collectsDateRange?: boolean | null;
+  collectsNotes?: boolean | null;
+  collectsMultipleItems?: boolean | null;
 }
 
 export interface CatalogCategoryUpdateRequest {
@@ -167,6 +177,8 @@ export interface CatalogCategoryUpdateRequest {
   collectsTimeSlot?: boolean | null;
   collectsAddress?: boolean | null;
   collectsDateRange?: boolean | null;
+  collectsNotes?: boolean | null;
+  collectsMultipleItems?: boolean | null;
 }
 
 // ─── Item DTOs ───
@@ -269,6 +281,9 @@ export interface BusinessTransaction {
   source: string;
   statusChangedAt: string | null;
   statusNote: string | null;
+  lastNotifiedAt: string | null;
+  /** Transient — only present right after an action that attempted a customer notification. */
+  notificationSent?: boolean | null;
   createdAt: string;
   updatedAt: string | null;
 }
@@ -301,6 +316,13 @@ export interface TransactionFilter {
 export interface TransactionStatusUpdateRequest {
   status: TransactionStatusValue;
   statusNote?: string | null;
+  /** Defaults true server-side — automatically messages the customer on their originating channel. */
+  notifyCustomer?: boolean;
+}
+
+export interface TransactionNotifyRequest {
+  /** Overrides the built-in per-status message. Omit to use the default template for the current status. */
+  message?: string | null;
 }
 
 export interface TransactionManualCreateRequest {

@@ -17,6 +17,7 @@ import type {
   PagedResult,
   TransactionFilter,
   TransactionManualCreateRequest,
+  TransactionNotifyRequest,
   TransactionStatusUpdateRequest,
   TransactionSummary,
   BusinessTransaction,
@@ -93,4 +94,6 @@ export const transactionApi = {
     apiClient.post<BusinessTransaction>('/v1/business-catalog/transactions', data),
   updateStatus: (id: string, data: TransactionStatusUpdateRequest) =>
     apiClient.post<BusinessTransaction>(`/v1/business-catalog/transactions/${id}/status`, data),
+  notify: (id: string, data: TransactionNotifyRequest) =>
+    apiClient.post<BusinessTransaction>(`/v1/business-catalog/transactions/${id}/notify`, data),
 } as const;

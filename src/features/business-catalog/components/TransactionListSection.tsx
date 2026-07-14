@@ -76,6 +76,8 @@ export function TransactionListSection({ transactionLabel }: Props) {
             { v: null, label: 'All' },
             { v: TransactionStatus.Pending as TransactionStatusValue, label: 'Pending' },
             { v: TransactionStatus.Confirmed as TransactionStatusValue, label: 'Confirmed' },
+            { v: TransactionStatus.Preparing as TransactionStatusValue, label: 'Preparing' },
+            { v: TransactionStatus.ReadyForPickup as TransactionStatusValue, label: 'Ready for Pickup' },
             { v: TransactionStatus.Cancelled as TransactionStatusValue, label: 'Cancelled' },
           ].map((opt) => {
             const selected = status === opt.v;
@@ -200,7 +202,11 @@ function StatusDot({ status }: { status: TransactionStatusValue }) {
       ? 'bg-success'
       : status === TransactionStatus.Cancelled
         ? 'bg-danger'
-        : 'bg-warning';
+        : status === TransactionStatus.Preparing
+          ? 'bg-info'
+          : status === TransactionStatus.ReadyForPickup
+            ? 'bg-brand'
+            : 'bg-warning';
   return <span className={`w-2 h-2 rounded-full ${color} flex-shrink-0`} />;
 }
 
@@ -226,7 +232,11 @@ function StatusBadge({ status }: { status: TransactionStatusValue }) {
       ? 'bg-success-soft text-success'
       : status === TransactionStatus.Cancelled
         ? 'bg-danger-soft text-danger'
-        : 'bg-warning-soft text-warning';
+        : status === TransactionStatus.Preparing
+          ? 'bg-info-soft text-info'
+          : status === TransactionStatus.ReadyForPickup
+            ? 'bg-brand-soft text-brand'
+            : 'bg-warning-soft text-warning';
   return (
     <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-md whitespace-nowrap ${cls}`}>
       {TRANSACTION_STATUS_LABEL[status]}

@@ -24,12 +24,14 @@ import {
   Square,
   FileText,
   Info,
+  GitBranch,
 } from 'lucide-react';
 import { useChatThread, parseInlineCard } from '../hooks/useChatThread';
 import { useVoiceRecorder } from '@/features/voice/hooks/useVoiceRecorder';
 import { useTranscribeAudio } from '@/features/voice/api/voice.queries';
 import { AgentCreatedCardRenderer } from '@/features/agents';
 import type { AgentCreatedCard } from '@/features/agents';
+import { HttpMethodBadge } from '@/shared/components';
 import {
   ChatMessageRole,
   ChatSessionMode,
@@ -44,6 +46,7 @@ import {
   type OnboardingProgress,
   type WebsiteExtractionDraftsCard,
   type DocumentExtractionDraftsCard,
+  type ProposedBotMenuCard,
 } from '../types/chat.types';
 import { InputCard } from '../components/inline-cards/InputControls';
 
@@ -1587,7 +1590,7 @@ function Thread({
           {isEmpty && <EmptyChatHints onChip={onChip} />}
           {messages.map((m) => {
             if (m.role === ChatMessageRole.User) return <DocUserBlock key={m.id} msg={m} />;
-            if (m.role === ChatMessageRole.System) return <SystemRow key={m.id} msg={m} />;
+            if (m.role === ChatMessageRole.System) return <SystemRow key={m.id} msg={m} cardActions={cardActions} />;
             return (
               <DocAssistantBlock
                 key={m.id}
@@ -1611,7 +1614,7 @@ function Thread({
         {isEmpty && <EmptyChatHints onChip={onChip} />}
         {messages.map((m) => {
           if (m.role === ChatMessageRole.User) return <UserBubble key={m.id} msg={m} />;
-          if (m.role === ChatMessageRole.System) return <SystemRow key={m.id} msg={m} />;
+          if (m.role === ChatMessageRole.System) return <SystemRow key={m.id} msg={m} cardActions={cardActions} />;
           return (
             <AssistantBubble
               key={m.id}
@@ -1942,6 +1945,8 @@ function InlineCardRenderer({
       return <WebsiteExtractionDraftsCardRenderer card={card as unknown as WebsiteExtractionDraftsCard} />;
     case 'DocumentExtractionDrafts':
       return <DocumentExtractionDraftsCardRenderer card={card as unknown as DocumentExtractionDraftsCard} />;
+    case 'ProposedBotMenu':
+      return <ProposedBotMenuCardRenderer card={card as unknown as ProposedBotMenuCard} actions={actions} />;
     case 'AgentCreated':
       return <AgentCreatedCardRenderer card={card as unknown as AgentCreatedCard} />;
     case 'FreeText':
@@ -2110,6 +2115,62 @@ function RedirectToPageCard({ card, actions }: { card: InlineCard; actions: Card
   );
 }
 
+function ProposedBotMenuCardRenderer({ card, actions }: { card: ProposedBotMenuCard; actions: CardActions }) {
+  return (
+    <div className="bg-glass-1 border-thin border-border-glow rounded-card p-3.5">
+      <div className="flex items-start gap-3 mb-3">
+        <div className="w-8 h-8 rounded-sm bg-brand-soft border-thin border-border-glow flex items-center justify-center shrink-0">
+          <GitBranch className="w-3.5 h-3.5 text-brand" strokeWidth={1.8} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-bold text-text-primary mb-0.5">Proposed bot menu from {card.specName}</div>
+          <div className="text-xs text-text-secondary">
+            {card.topics.length} topic{card.topics.length === 1 ? '' : 's'} mapped from {card.endpointCount} endpoint(s)
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2.5 mb-3.5">
+        {card.topics.map((topic) => (
+          <div key={topic.name} className="rounded-sm bg-bg-elevated border-thin border-border-subtle p-2.5">
+            <div className="text-xs font-bold text-text-primary mb-1.5">{topic.name}</div>
+            {topic.description && (
+              <div className="text-[11px] text-text-muted mb-1.5">{topic.description}</div>
+            )}
+            <div className="flex flex-wrap gap-1.5">
+              {topic.endpoints.map((ep, i) => (
+                <span key={i} className="inline-flex items-center gap-1">
+                  <HttpMethodBadge method={ep.method as 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'} />
+                  <code className="text-[10.5px] text-text-secondary">{ep.path}</code>
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={actions.onConfirm}
+          className="flex-1 flex items-center justify-center gap-1.5 rounded-sm text-bg px-3 py-2 text-xs font-bold transition-all hover:brightness-110"
+          style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+        >
+          Build this menu
+        </button>
+        <button
+          type="button"
+          onClick={() => actions.onNavigate(card.reviewPath)}
+          className="flex-1 flex items-center justify-center gap-1.5 rounded-sm border-thin border-border-glow text-text-secondary px-3 py-2 text-xs font-bold transition-all hover:bg-glass-2"
+        >
+          Review endpoints
+          <ExternalLink className="w-3 h-3" strokeWidth={1.8} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function OpenFlowCanvasCard({ card, actions }: { card: InlineCard; actions: CardActions }) {
   const flowId = card.flowId as string | null | undefined;
   const path = flowId ? `/dashboard/flows/${flowId}` : '/dashboard/flows';
@@ -2177,7 +2238,7 @@ function ConfirmationCard({ card, actions }: { card: InlineCard; actions: CardAc
   );
 }
 
-function SystemRow({ msg }: { msg: ChatMessageDto }) {
+function SystemRow({ msg, cardActions }: { msg: ChatMessageDto; cardActions: CardActions }) {
   const card = parseInlineCard(msg);
 
   let summary: string | null = null;
@@ -2187,6 +2248,11 @@ function SystemRow({ msg }: { msg: ChatMessageDto }) {
   } else if (card?.type === 'WebsiteExtractionDrafts') {
     const w = card as unknown as WebsiteExtractionDraftsCard;
     summary = `Read ${w.url} — extracted ${w.productCount} products, ${w.topicCount} topics.`;
+  } else if (card?.type === 'RedirectToPage') {
+    summary = (card.reason as string | undefined) ?? 'Detected an API spec in the uploaded file.';
+  } else if (card?.type === 'ProposedBotMenu') {
+    const m = card as unknown as ProposedBotMenuCard;
+    summary = `${m.topics.length} menu topic(s) proposed from ${m.endpointCount} endpoint(s) in ${m.specName}.`;
   }
   if (!summary) return null;
 
@@ -2198,16 +2264,7 @@ function SystemRow({ msg }: { msg: ChatMessageDto }) {
       </div>
       {card && (
         <div className="ml-5">
-          <InlineCardRenderer
-            card={card}
-            actions={{
-              onNavigate: () => {},
-              onConfirm: () => {},
-              onCancel: () => {},
-              onPasteManually: () => {},
-              onReply: () => {},
-            }}
-          />
+          <InlineCardRenderer card={card} actions={cardActions} />
         </div>
       )}
     </div>

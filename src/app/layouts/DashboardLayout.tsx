@@ -88,6 +88,7 @@ const primaryNav = [
   { label: 'Chat',         href: '/dashboard/chat',                   icon: MessageSquare },
   { label: 'Overview',     href: '/dashboard/home',                   icon: LayoutGrid },
   { label: 'Bot flow',     href: ROUTES.dashboard.flows,              icon: GitBranch, badge: 'AI' },
+  { label: 'API Pipeline', href: ROUTES.dashboard.apiConnection,      icon: Plug },
   // { label: 'Bot Settings', href: ROUTES.dashboard.botSettings,        icon: Settings },
   { label: 'Experiments',  href: ROUTES.dashboard.flowExperiments,    icon: FlaskConical },
   { label: 'Agents',       href: ROUTES.dashboard.agents,             icon: Bot },

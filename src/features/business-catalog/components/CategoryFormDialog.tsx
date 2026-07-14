@@ -65,9 +65,17 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
   const [collectsAddress, setCollectsAddress] = useState<'' | 'true' | 'false'>(
     parseBool(category?.collectsAddress),
   );
+  const [collectsNotes, setCollectsNotes] = useState<'' | 'true' | 'false'>(
+    parseBool(category?.collectsNotes),
+  );
+  const [collectsMultipleItems, setCollectsMultipleItems] = useState<'' | 'true' | 'false'>(
+    parseBool(category?.collectsMultipleItems),
+  );
   const [showAdvanced, setShowAdvanced] = useState(
     // Pre-expand advanced section if any override is set
-    !!(category?.collectsQuantity != null || category?.collectsTimeSlot != null || category?.collectsAddress != null),
+    !!(category?.collectsQuantity != null || category?.collectsTimeSlot != null
+       || category?.collectsAddress != null || category?.collectsNotes != null
+       || category?.collectsMultipleItems != null),
   );
 
   const createMutation = useCreateCategory();
@@ -104,6 +112,8 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
       collectsQuantity: toBool(collectsQuantity),
       collectsTimeSlot: toBool(collectsTimeSlot),
       collectsAddress:  toBool(collectsAddress),
+      collectsNotes:    toBool(collectsNotes),
+      collectsMultipleItems: toBool(collectsMultipleItems),
     };
     if (editing && category) {
       updateMutation.mutate(
@@ -278,9 +288,11 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
                   Override what the bot collects for this category. "Inherit" uses the Business Profile setting.
                 </p>
                 {([
-                  ['collectsQuantity',  collectsQuantity,  setCollectsQuantity,  'Collects quantity'],
-                  ['collectsTimeSlot',  collectsTimeSlot,  setCollectsTimeSlot,  'Collects time slot'],
-                  ['collectsAddress',   collectsAddress,   setCollectsAddress,   'Collects address'],
+                  ['collectsQuantity',    collectsQuantity,    setCollectsQuantity,    'Collects quantity'],
+                  ['collectsTimeSlot',    collectsTimeSlot,    setCollectsTimeSlot,    'Collects time slot'],
+                  ['collectsAddress',     collectsAddress,     setCollectsAddress,     'Collects address'],
+                  ['collectsNotes',       collectsNotes,       setCollectsNotes,       'Collects notes'],
+                  ['collectsMultipleItems', collectsMultipleItems, setCollectsMultipleItems, 'Multiple items'],
                 ] as const).map(([, value, setter, label]) => (
                   <div key={label} className="flex items-center justify-between">
                     <span className="text-[11px] text-text-secondary">{label}</span>

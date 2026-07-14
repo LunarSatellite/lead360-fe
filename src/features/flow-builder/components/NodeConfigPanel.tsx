@@ -1,5 +1,7 @@
 import type { Node } from '@xyflow/react';
 import { Trash2 } from 'lucide-react';
+import { useCategories } from '@/features/business-catalog/api/business-catalog.queries';
+import type { CatalogCategory } from '@/features/business-catalog/types/business-catalog.types';
 import type { FlowNodeData } from '../types/flow.types';
 import { NODE_TYPE_META } from '../types/flow.types';
 
@@ -9,7 +11,38 @@ interface NodeConfigPanelProps {
   onDelete: (nodeId: string) => void;
 }
 
+const CATALOG_ACTION_OPTIONS = [
+  { value: 'browse', label: '📂 Browse all categories' },
+  { value: 'items', label: '🛍️ Show items from one category' },
+  { value: 'detail', label: '🔍 Item detail' },
+  { value: 'order', label: '🛒 Start order' },
+  { value: 'track', label: '📋 Track an order' },
+];
+
+const CHECKOUT_STEP_LABELS: Record<string, string> = {
+  quantity: '🔢 Quantity',
+  notes: '📝 Requirement / notes',
+  'ask-more': '➕ "Add another item?"',
+  name: '🙋 Customer name',
+  phone: '📞 Phone number',
+  address: '📍 Pickup or delivery address',
+};
+const ALL_CHECKOUT_STEPS = ['quantity', 'notes', 'ask-more', 'name', 'phone', 'address'];
+
+/** Keeps every known step present (order-only editor — inclusion is controlled by the category's Collects* flags, not here). */
+function normalizeCheckoutOrder(raw: unknown): string[] {
+  const known = Array.isArray(raw)
+    ? raw.filter((t): t is string => typeof t === 'string' && ALL_CHECKOUT_STEPS.includes(t))
+    : [];
+  const missing = ALL_CHECKOUT_STEPS.filter((t) => !known.includes(t));
+  return [...known, ...missing];
+}
+
 export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelProps) {
+  // Called unconditionally (Rules of Hooks) — cheap/cached, only rendered when a catalog node is selected.
+  const { data: categoriesData } = useCategories(true);
+  const categories: CatalogCategory[] = (categoriesData as any) ?? [];
+
   if (!node) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-12 px-4 text-center">
@@ -21,6 +54,16 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
 
   const data = node.data as FlowNodeData;
   const meta = NODE_TYPE_META[data.nodeType];
+  const catalogConfig = data.config as { action?: string; categoryId?: string; checkoutOrder?: unknown };
+  const checkoutOrder = normalizeCheckoutOrder(catalogConfig?.checkoutOrder);
+
+  const moveCheckoutStep = (idx: number, dir: -1 | 1) => {
+    const target = idx + dir;
+    if (target < 0 || target >= checkoutOrder.length) return;
+    const next = [...checkoutOrder];
+    [next[idx], next[target]] = [next[target], next[idx]];
+    onUpdate(node.id, { config: { ...(data.config || {}), checkoutOrder: next } });
+  };
 
   return (
     <div className="p-3 space-y-3">
@@ -57,6 +100,81 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
           className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs bg-glass-1 text-text-muted"
         />
       </div>
+
+      {/* Catalog node: friendly Action + Category controls (avoids hand-editing raw JSON) */}
+      {data.nodeType === 'catalog' && (
+        <>
+          <div>
+            <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Action</label>
+            <select
+              value={catalogConfig?.action ?? 'browse'}
+              onChange={(e) =>
+                onUpdate(node.id, { config: { ...(data.config || {}), action: e.target.value } })
+              }
+              className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white"
+            >
+              {CATALOG_ACTION_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {catalogConfig?.action === 'items' && (
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Category</label>
+              <select
+                value={catalogConfig?.categoryId ?? ''}
+                onChange={(e) =>
+                  onUpdate(node.id, {
+                    config: { ...(data.config || {}), categoryId: e.target.value || undefined },
+                  })
+                }
+                className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white"
+              >
+                <option value="">Select a category…</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </select>
+              <p className="mt-1 text-[10px] text-text-muted">
+                This button will jump straight into this category's items — customers won't see the "choose a category" list first.
+              </p>
+            </div>
+          )}
+
+          {catalogConfig?.action === 'order' && (
+            <div>
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Checkout order</label>
+              <p className="mb-1.5 text-[10px] text-text-muted">
+                What order the bot asks for these. Steps this business doesn't collect (per its catalog settings) are skipped automatically — this only controls order.
+              </p>
+              <div className="space-y-1">
+                {checkoutOrder.map((step, idx) => (
+                  <div key={step} className="flex items-center gap-1.5 rounded-lg border border-border-subtle bg-white px-2 py-1.5 text-xs">
+                    <span className="flex-1">{CHECKOUT_STEP_LABELS[step] ?? step}</span>
+                    <button
+                      type="button"
+                      disabled={idx === 0}
+                      onClick={() => moveCheckoutStep(idx, -1)}
+                      className="flex h-5 w-5 items-center justify-center rounded hover:bg-glass-1 disabled:opacity-30"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      disabled={idx === checkoutOrder.length - 1}
+                      onClick={() => moveCheckoutStep(idx, 1)}
+                      className="flex h-5 w-5 items-center justify-center rounded hover:bg-glass-1 disabled:opacity-30"
+                    >
+                      ↓
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
 
       {/* Config JSON (editable for advanced users) */}
       <div>

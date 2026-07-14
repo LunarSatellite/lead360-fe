@@ -4,7 +4,8 @@ import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
 import {
   ArrowLeft, Phone, Mail, Hash, Clock, Loader2, Flame,
-  MessageCircle, CalendarClock, Zap, X, Users, GitMerge,
+  MessageCircle, CalendarClock, Zap, X, Users, GitMerge, Building2, Layers,
+  Globe, MapPin, Link,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { createPortal } from 'react-dom';
@@ -179,15 +180,29 @@ export function Component() {
             </div>
           </div>
 
-          {/* Customer info card */}
-          <div className="bg-bg-card border border-border-subtle rounded-2xl p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">
-              Contact Info
-            </h3>
-            <InfoRow icon={<Phone className="w-4 h-4" />} label="Phone" value={lead.customerPhone} />
-            <InfoRow icon={<Mail className="w-4 h-4" />} label="Email" value={lead.customerEmail} />
-            <InfoRow icon={<Hash className="w-4 h-4" />} label="Handle" value={lead.channelHandle} />
-            <InfoRow icon={<Users className="w-4 h-4" />} label="Assigned" value={lead.assignedToUserName || 'Unassigned'} />
+          {/* Contact Info + Organization Info — side by side in one card */}
+          <div className="bg-bg-card border border-border-subtle rounded-2xl p-5">
+            <div className="grid grid-cols-2 gap-6">
+              {/* Left: Contact Info */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Contact Info</h3>
+                <InfoRow icon={<Phone className="w-4 h-4" />} label="Phone" value={lead.customerPhone} />
+                <InfoRow icon={<Mail className="w-4 h-4" />} label="Email" value={lead.customerEmail} />
+                <InfoRow icon={<Hash className="w-4 h-4" />} label="Handle" value={lead.channelHandle} />
+                <InfoRow icon={<Users className="w-4 h-4" />} label="Assigned" value={lead.assignedToUserName || 'Unassigned'} />
+              </div>
+              {/* Right: Organization Info */}
+              <div className="space-y-3 border-l border-border-subtle pl-6">
+                <h3 className="text-sm font-semibold text-text-secondary uppercase tracking-wide">Organization Info</h3>
+                <InfoRow icon={<Building2 className="w-4 h-4" />} label="Name"     value={lead.organizationName} />
+                <InfoRow icon={<Globe   className="w-4 h-4" />} label="Domain"   value={lead.organizationDomain} />
+                <InfoRow icon={<Layers  className="w-4 h-4" />} label="Industry" value={lead.organizationIndustry} />
+                <InfoRow icon={<Users   className="w-4 h-4" />} label="Employees" value={lead.organizationEmployeeCount?.toLocaleString()} />
+                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="Country"  value={lead.organizationCountry} />
+                <InfoRow icon={<MapPin  className="w-4 h-4" />} label="City"     value={lead.organizationCity} />
+                <InfoRow icon={<Link    className="w-4 h-4" />} label="Website"  value={lead.organizationWebsite} />
+              </div>
+            </div>
           </div>
 
           {/* Nurture status card */}

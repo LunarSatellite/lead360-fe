@@ -3,6 +3,7 @@ import { Plus, X, Loader2, Newspaper, Trash2, Send, Archive, Calendar } from 'lu
 import {
   useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement,
   useDeleteAnnouncement, usePublishAnnouncement, useArchiveAnnouncement, useScheduleAnnouncement,
+  useAnnouncementAnalytics, useAnnouncementRecipients, useAnnouncementSummaryStats,
 } from '../api/crm.queries';
 import type { AnnouncementSummaryDto, AnnouncementCreateRequest } from '../types/crm.types';
 import {
@@ -81,6 +82,95 @@ function CreateForm({ onClose }: { onClose: () => void }) {
   );
 }
 
+function AnalyticsTab({ id }: { id: string }) {
+  const { data: analyticsRaw, isLoading } = useAnnouncementAnalytics(id);
+  const { data: recipientsRaw } = useAnnouncementRecipients(id);
+  const analytics = analyticsRaw as any;
+  const recipients = ((recipientsRaw as unknown) as any[]) ?? [];
+
+  if (isLoading) return <div className="flex items-center justify-center py-12"><div className="w-5 h-5 border-2 border-brand border-r-transparent rounded-full animate-spin" /></div>;
+  if (!analytics) return <div className="py-8 text-center text-sm text-text-muted">No analytics yet. Publish the announcement to start tracking.</div>;
+
+  const stats = [
+    { label: 'Delivered', value: analytics.sentCount ?? 0, total: analytics.totalRecipients ?? 0, rate: analytics.deliveryRate ?? 0, color: 'bg-brand' },
+    { label: 'Opened', value: analytics.openedCount ?? 0, total: analytics.sentCount ?? 0, rate: analytics.openRate ?? 0, color: 'bg-blue-400' },
+    { label: 'Clicked', value: analytics.clickedCount ?? 0, total: analytics.sentCount ?? 0, rate: analytics.clickRate ?? 0, color: 'bg-purple-400' },
+    { label: 'Failed', value: analytics.failedCount ?? 0, total: analytics.totalRecipients ?? 0, rate: analytics.totalRecipients > 0 ? Math.round((analytics.failedCount / analytics.totalRecipients) * 100 * 10) / 10 : 0, color: 'bg-red-400' },
+  ];
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="grid grid-cols-2 gap-3">
+        {stats.map(s => (
+          <div key={s.label} className="bg-bg-elevated rounded-xl border border-border-subtle p-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-semibold text-text-muted">{s.label}</span>
+              <span className="text-lg font-extrabold text-text-primary">{s.value}</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full bg-bg-shell overflow-hidden">
+              <div className={`h-full rounded-full transition-all ${s.color}`} style={{ width: `${Math.min(s.rate, 100)}%` }} />
+            </div>
+            <div className="flex justify-between mt-1">
+              <span className="text-[10px] text-text-muted">of {s.total}</span>
+              <span className="text-[10px] font-bold text-text-secondary">{s.rate}%</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {analytics.clickToOpenRate > 0 && (
+        <div className="bg-bg-elevated rounded-xl border border-border-subtle p-3 flex items-center justify-between">
+          <span className="text-xs font-semibold text-text-muted">Click-to-open rate</span>
+          <span className="text-sm font-bold text-text-primary">{analytics.clickToOpenRate}%</span>
+        </div>
+      )}
+
+      {recipients.length > 0 && (
+        <div>
+          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Recipients</p>
+          <div className="rounded-xl border border-border-subtle overflow-hidden">
+            <div className="grid grid-cols-[1fr_auto_auto_auto] text-[10px] font-bold text-text-muted uppercase tracking-wider px-3 py-2 bg-bg-elevated border-b border-border-subtle">
+              <span>Email</span><span>Sent</span><span>Opened</span><span>Clicked</span>
+            </div>
+            <div className="divide-y divide-border-subtle max-h-64 overflow-y-auto">
+              {recipients.map((r: any) => (
+                <div key={r.id} className="grid grid-cols-[1fr_auto_auto_auto] px-3 py-2 text-xs items-center hover:bg-bg-elevated transition-colors">
+                  <span className="text-text-secondary truncate">{r.toAddress ?? '—'}</span>
+                  <span className={`text-center ${r.recipientStatus === 'Sent' ? 'text-success' : 'text-red-400'}`}>
+                    {r.recipientStatus === 'Sent' ? '✓' : '✗'}
+                  </span>
+                  <span className={`text-center ${r.isOpened ? 'text-blue-400' : 'text-text-muted'}`}>
+                    {r.isOpened ? `✓ ${r.openCount > 1 ? `(${r.openCount}x)` : ''}` : '—'}
+                  </span>
+                  <span className={`text-center ${r.isClicked ? 'text-purple-400' : 'text-text-muted'}`}>
+                    {r.isClicked ? '✓' : '—'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(analytics.recentOpens ?? []).length > 0 && (
+        <div>
+          <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Recent opens</p>
+          <div className="flex flex-col gap-1">
+            {analytics.recentOpens.map((r: any) => (
+              <div key={r.id} className="flex items-center justify-between text-xs py-1">
+                <span className="text-text-secondary truncate">{r.toAddress ?? '—'}</span>
+                <span className="text-text-muted shrink-0 ml-2">{r.openedAt ? new Date(r.openedAt).toLocaleTimeString() : '—'}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p className="text-[10px] text-text-muted text-center">Updates every 15 seconds</p>
+    </div>
+  );
+}
+
 function DetailPanel({ item, onClose }: { item: AnnouncementSummaryDto; onClose: () => void }) {
   const update = useUpdateAnnouncement();
   const publish = usePublishAnnouncement();
@@ -90,6 +180,7 @@ function DetailPanel({ item, onClose }: { item: AnnouncementSummaryDto; onClose:
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ title: item.title, content: '', type: item.type, scheduledAt: '' });
   const [scheduleTime, setScheduleTime] = useState('');
+  const [panelTab, setPanelTab] = useState<'details' | 'analytics'>('details');
   const set = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
 
   const canEdit = item.status === AnnouncementStatus.Draft || item.status === AnnouncementStatus.Scheduled;
@@ -108,67 +199,82 @@ function DetailPanel({ item, onClose }: { item: AnnouncementSummaryDto; onClose:
         <Badge label={ANNOUNCEMENT_TYPE_LABELS[item.type]} colorCls="text-accent border-accent/30 bg-accent/10" />
       </div>
 
-      {!editing ? (
-        <>
-          <div>
-            <p className="text-xs font-semibold text-text-muted mb-1">Title</p>
-            <p className="text-text-primary font-semibold">{item.title}</p>
-          </div>
-          {item.scheduledAt && (
-            <div>
-              <p className="text-xs font-semibold text-text-muted mb-1">Scheduled</p>
-              <p className="text-sm text-text-secondary">{format(parseISO(item.scheduledAt), 'PPP p')}</p>
-            </div>
-          )}
-          {item.publishedAt && (
-            <div>
-              <p className="text-xs font-semibold text-text-muted mb-1">Published</p>
-              <p className="text-sm text-text-secondary">{format(parseISO(item.publishedAt), 'PPP p')}</p>
-            </div>
-          )}
-          <p className="text-xs text-text-muted">Created {format(parseISO(item.createdAt), 'PPP')}</p>
-        </>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <div>{lbl('Title')}<input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} /></div>
-          <div>{lbl('Content')}<textarea className={`${inputCls} min-h-[120px] resize-y`} value={form.content} onChange={e => set('content', e.target.value)} /></div>
-          <div>{lbl('Type')}
-            <select className={selectCls} value={form.type} onChange={e => set('type', Number(e.target.value))}>
-              {Object.entries(ANNOUNCEMENT_TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-            </select>
-          </div>
-          <div>{lbl('Reschedule')}<input type="datetime-local" className={inputCls} value={form.scheduledAt} onChange={e => set('scheduledAt', e.target.value)} /></div>
-          <div className="flex gap-2 justify-end">
-            <button className={btnGhost} onClick={() => setEditing(false)}>Cancel</button>
-            <button className={btnPrimary} onClick={saveEdit} disabled={update.isPending}>{update.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}Save</button>
-          </div>
-        </div>
-      )}
+      <div className="flex gap-1 bg-bg-elevated rounded-lg p-0.5 border border-border-subtle">
+        {(['details', 'analytics'] as const).map(t => (
+          <button key={t} onClick={() => setPanelTab(t)}
+            className={`flex-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${panelTab === t ? 'bg-accent text-white' : 'text-text-muted hover:text-text-primary'}`}>
+            {t === 'details' ? 'Details' : 'Analytics'}
+          </button>
+        ))}
+      </div>
 
-      <div className="border-t border-border-subtle pt-4 flex flex-col gap-2">
-        {canEdit && !editing && <button className={btnGhost} onClick={() => setEditing(true)}>Edit</button>}
-        {canPublish && item.status !== AnnouncementStatus.Published && (
-          <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-emerald-400 hover:bg-emerald-400/10 transition-all" onClick={() => publish.mutateAsync(item.id)} disabled={publish.isPending}>
-            <Send className="w-4 h-4" />{publish.isPending ? 'Publishing…' : 'Publish now'}
-          </button>
-        )}
-        {canArchive && item.status === AnnouncementStatus.Published && (
-          <button className={btnGhost} onClick={() => archive.mutateAsync(item.id)} disabled={archive.isPending}>
-            <Archive className="w-4 h-4" />{archive.isPending ? 'Archiving…' : 'Archive'}
-          </button>
-        )}
-        {item.status !== AnnouncementStatus.Published && item.status !== AnnouncementStatus.Archived && (
-          <div className="flex gap-2 items-center">
-            <input type="datetime-local" className={`${inputCls} flex-1`} value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} />
-            <button className={btnPrimary} disabled={!scheduleTime || schedule.isPending} onClick={() => schedule.mutateAsync({ id: item.id, scheduledAt: scheduleTime })}>
-              <Calendar className="w-4 h-4" />Schedule
+      {panelTab === 'details' && (
+        <>
+          {!editing ? (
+            <>
+              <div>
+                <p className="text-xs font-semibold text-text-muted mb-1">Title</p>
+                <p className="text-text-primary font-semibold">{item.title}</p>
+              </div>
+              {item.scheduledAt && (
+                <div>
+                  <p className="text-xs font-semibold text-text-muted mb-1">Scheduled</p>
+                  <p className="text-sm text-text-secondary">{format(parseISO(item.scheduledAt), 'PPP p')}</p>
+                </div>
+              )}
+              {item.publishedAt && (
+                <div>
+                  <p className="text-xs font-semibold text-text-muted mb-1">Published</p>
+                  <p className="text-sm text-text-secondary">{format(parseISO(item.publishedAt), 'PPP p')}</p>
+                </div>
+              )}
+              <p className="text-xs text-text-muted">Created {format(parseISO(item.createdAt), 'PPP')}</p>
+            </>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <div>{lbl('Title')}<input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} /></div>
+              <div>{lbl('Content')}<textarea className={`${inputCls} min-h-[120px] resize-y`} value={form.content} onChange={e => set('content', e.target.value)} /></div>
+              <div>{lbl('Type')}
+                <select className={selectCls} value={form.type} onChange={e => set('type', Number(e.target.value))}>
+                  {Object.entries(ANNOUNCEMENT_TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+                </select>
+              </div>
+              <div>{lbl('Reschedule')}<input type="datetime-local" className={inputCls} value={form.scheduledAt} onChange={e => set('scheduledAt', e.target.value)} /></div>
+              <div className="flex gap-2 justify-end">
+                <button className={btnGhost} onClick={() => setEditing(false)}>Cancel</button>
+                <button className={btnPrimary} onClick={saveEdit} disabled={update.isPending}>{update.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}Save</button>
+              </div>
+            </div>
+          )}
+
+          <div className="border-t border-border-subtle pt-4 flex flex-col gap-2">
+            {canEdit && !editing && <button className={btnGhost} onClick={() => setEditing(true)}>Edit</button>}
+            {canPublish && item.status !== AnnouncementStatus.Published && (
+              <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-emerald-400 hover:bg-emerald-400/10 transition-all" onClick={() => publish.mutateAsync(item.id)} disabled={publish.isPending}>
+                <Send className="w-4 h-4" />{publish.isPending ? 'Publishing…' : 'Publish now'}
+              </button>
+            )}
+            {canArchive && item.status === AnnouncementStatus.Published && (
+              <button className={btnGhost} onClick={() => archive.mutateAsync(item.id)} disabled={archive.isPending}>
+                <Archive className="w-4 h-4" />{archive.isPending ? 'Archiving…' : 'Archive'}
+              </button>
+            )}
+            {item.status !== AnnouncementStatus.Published && item.status !== AnnouncementStatus.Archived && (
+              <div className="flex gap-2 items-center">
+                <input type="datetime-local" className={`${inputCls} flex-1`} value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} />
+                <button className={btnPrimary} disabled={!scheduleTime || schedule.isPending} onClick={() => schedule.mutateAsync({ id: item.id, scheduledAt: scheduleTime })}>
+                  <Calendar className="w-4 h-4" />Schedule
+                </button>
+              </div>
+            )}
+            <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-red-400 hover:bg-red-400/10 transition-all" onClick={async () => { await del.mutateAsync(item.id); onClose(); }} disabled={del.isPending}>
+              <Trash2 className="w-4 h-4" />{del.isPending ? 'Deleting…' : 'Delete'}
             </button>
           </div>
-        )}
-        <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-red-400 hover:bg-red-400/10 transition-all" onClick={async () => { await del.mutateAsync(item.id); onClose(); }} disabled={del.isPending}>
-          <Trash2 className="w-4 h-4" />{del.isPending ? 'Deleting…' : 'Delete'}
-        </button>
-      </div>
+        </>
+      )}
+
+      {panelTab === 'analytics' && <AnalyticsTab id={item.id} />}
     </div>
   );
 }
@@ -178,6 +284,8 @@ export function Component() {
   const { data, isLoading } = useAnnouncements(statusFilter);
   const [creating, setCreating] = useState(false);
   const [selected, setSelected] = useState<AnnouncementSummaryDto | null>(null);
+  const { data: statsRaw } = useAnnouncementSummaryStats();
+  const overallStats = statsRaw as any;
 
   const items: AnnouncementSummaryDto[] = (data as any)?.data ?? data ?? [];
 
@@ -196,6 +304,23 @@ export function Component() {
           <Plus className="w-4 h-4" />New
         </button>
       </div>
+
+      {/* Summary stats strip */}
+      {overallStats && (overallStats.totalSent > 0) && (
+        <div className="flex gap-3 px-6 py-3 border-b border-border-subtle shrink-0">
+          {[
+            { label: 'Total sent', value: overallStats.totalSent },
+            { label: 'Avg open rate', value: `${overallStats.avgOpenRate}%` },
+            { label: 'Avg click rate', value: `${overallStats.avgClickRate}%` },
+            { label: 'Announcements', value: overallStats.totalAnnouncements },
+          ].map(s => (
+            <div key={s.label} className="flex flex-col">
+              <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wider">{s.label}</span>
+              <span className="text-sm font-bold text-text-primary">{s.value}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex items-center gap-2 px-6 py-3 border-b border-border-subtle shrink-0">

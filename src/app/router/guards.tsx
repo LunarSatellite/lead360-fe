@@ -3,6 +3,12 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { env } from '@/shared/config/env';
+import {
+  getPortalToken,
+  isPortalTokenExpired,
+  clearPortalTokens,
+} from '@/features/portal/hooks/usePortalAuth';
+import { tryPortalRefreshToken } from '@/features/portal/api/portal-api-client';
 
 // ─── Helpers ───
 
@@ -124,4 +130,60 @@ export function RedirectIfAuth({ children }: { children: ReactNode }) {
   }
 
   return <Navigate to="/dashboard/crm/analytics" replace />;
+}
+
+// ─── RequirePortalAuth ───
+
+export function RequirePortalAuth({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const [authState, setAuthState] = useState<'checking' | 'valid' | 'invalid'>('checking');
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function checkAuth() {
+      const token = getPortalToken();
+
+      if (!token) {
+        if (!cancelled) setAuthState('invalid');
+        return;
+      }
+
+      if (!isPortalTokenExpired(token)) {
+        if (!cancelled) setAuthState('valid');
+        return;
+      }
+
+      const newToken = await tryPortalRefreshToken();
+      if (newToken) {
+        if (!cancelled) setAuthState('valid');
+      } else {
+        clearPortalTokens();
+        if (!cancelled) setAuthState('invalid');
+      }
+    }
+
+    checkAuth();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (authState === 'checking') return <AuthLoading />;
+  if (authState === 'invalid') return <Navigate to="/portal/auth" state={{ from: location }} replace />;
+
+  return <>{children}</>;
+}
+
+// ─── RedirectIfPortalAuth ───
+
+export function RedirectIfPortalAuth({ children }: { children: ReactNode }) {
+  const token = getPortalToken();
+
+  if (!token || isPortalTokenExpired(token)) {
+    if (token && isPortalTokenExpired(token)) clearPortalTokens();
+    return <>{children}</>;
+  }
+
+  return <Navigate to="/portal/cases" replace />;
 }

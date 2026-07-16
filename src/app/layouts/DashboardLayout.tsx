@@ -102,68 +102,109 @@ const settingsNav = [
   { label: 'Settings', href: '/dashboard/settings',     icon: Settings },
 ];
 
-const crmNav = [
-  { label: 'Accounts',      href: ROUTES.dashboard.crmAccounts,      icon: Building },
-  { label: 'Analytics',     href: ROUTES.dashboard.crmAnalytics,     icon: TrendingUp },
-  { label: 'Announcements', href: ROUTES.dashboard.crmAnnouncements,  icon: Newspaper },
-  { label: 'Assignment Rotation', href: ROUTES.dashboard.crmAssignmentRotation, icon: Shuffle },
-  { label: 'Audit Log',     href: ROUTES.dashboard.crmAuditLog,      icon: History },
-  { label: 'Bundles',       href: ROUTES.dashboard.crmProductBundles, icon: Package },
-  { label: 'Campaigns',     href: ROUTES.dashboard.crmCampaigns,     icon: Megaphone },
-  { label: 'Campaigns',       href: '/dashboard/crm/workflow-campaigns', icon: Target },
-  { label: 'Commissions',   href: ROUTES.dashboard.crmCommissions,        icon: DollarSign },
-  { label: 'Competitors',   href: ROUTES.dashboard.crmCompetitors,    icon: Crosshair },
-  { label: 'Contacts',      href: ROUTES.dashboard.crmContacts,      icon: UserCheck },
-  { label: 'Contracts',     href: ROUTES.dashboard.crmContracts,          icon: FileSignature },
-  { label: 'Custom Fields', href: ROUTES.dashboard.crmCustomFields,  icon: SlidersHorizontal },
-  { label: 'Dashboards',    href: ROUTES.dashboard.crmDashboards,    icon: LayoutPanelTop },
-  { label: 'Deals',         href: ROUTES.dashboard.crmDealsHub,      icon: Briefcase },
-  { label: 'Knowledge Base', href: ROUTES.dashboard.crmKnowledgeBase, icon: BookOpen },
-  { label: 'Event Tracking',  href: ROUTES.dashboard.crmEventIngestion,     icon: Globe },
-  { label: 'Feature Settings', href: ROUTES.dashboard.crmFeatureSettings, icon: SlidersHorizontal },
-  { label: 'Commissions',   href: ROUTES.dashboard.crmCommissions,        icon: DollarSign },
-
-  { label: 'Orders',    href: ROUTES.dashboard.crmOrders,    icon: Package  },
-  { label: 'Deliveries', href: ROUTES.dashboard.crmDeliveries, icon: Truck  },
-  { label: 'Returns',   href: ROUTES.dashboard.crmReturns,   icon: RotateCw  },
-  { label: 'Work Orders',   href: ROUTES.dashboard.crmWorkOrders,    icon: Wrench },
-  { label: 'Vendors',          href: ROUTES.dashboard.crmVendors,          icon: Truck },
-  { label: 'Purchase Orders',  href: ROUTES.dashboard.crmPurchaseOrders,   icon: ShoppingCart },
-  { label: 'Goods Receipts',   href: ROUTES.dashboard.crmGoodsReceipts,    icon: PackageCheck },
-  { label: 'Inventory',     href: ROUTES.dashboard.crmInventory,      icon: Package },
-  { label: 'Invoices',      href: ROUTES.dashboard.crmInvoices,      icon: Receipt },
-  { label: 'Credit Notes',  href: ROUTES.dashboard.crmCreditNotes,   icon: Undo2 },
-  { label: 'Leads',         href: ROUTES.dashboard.crmLeads,         icon: Users },
-  { label: 'Meetings',      href: ROUTES.dashboard.crmMeetings,      icon: CalendarCheck },
-  { label: 'Meta Ads',      href: '/dashboard/crm/meta-ads',          icon: Facebook },
-  { label: 'NPS',           href: ROUTES.dashboard.crmNps,           icon: Star },
-  { label: 'Nurture',       href: ROUTES.dashboard.crmNurture,       icon: Workflow },
-  { label: 'Onboarding',    href: ROUTES.dashboard.crmCustomerOnboarding, icon: UserPlus },
-  { label: 'Ops Dashboard',  href: ROUTES.dashboard.crmOpsDashboard,       icon: LayoutDashboard },
-  { label: 'Orders',        href: ROUTES.dashboard.crmOrders,        icon: Package },
-  { label: 'Organizations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
-  { label: 'Payment Terms', href: ROUTES.dashboard.crmPaymentTerms,  icon: Calendar },
-  { label: 'Price Books',   href: ROUTES.dashboard.crmPriceBooks,    icon: BookOpen },
-  { label: 'Process Workflows', href: ROUTES.dashboard.crmProcessTasks,      icon: ListChecks },
-  { label: 'Proposals',     href: ROUTES.dashboard.crmProposals,     icon: ClipboardList },
-  { label: 'Purchase Orders',  href: ROUTES.dashboard.crmPurchaseOrders,   icon: ShoppingCart },
-  { label: 'Quotes',        href: ROUTES.dashboard.crmQuotes,        icon: FileText },
-  { label: 'Renewals',      href: ROUTES.dashboard.crmRenewals,      icon: CalendarClock },
-  { label: 'Reports',       href: ROUTES.dashboard.crmReports,       icon: FileBarChart },
-  { label: 'Returns',       href: ROUTES.dashboard.crmReturns,       icon: RotateCw },
-  { label: 'Scoring Rules', href: ROUTES.dashboard.crmScoringRules,  icon: TrendingUp },
-  { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },
-  { label: 'Supplier Invoices', href: ROUTES.dashboard.crmSupplierInvoices, icon: CreditCard },
-  { label: 'Support',       href: ROUTES.dashboard.crmSupport,       icon: LifeBuoy },
-  { label: 'Tasks',         href: ROUTES.dashboard.crmTasks,         icon: CheckSquare },
-  { label: 'Tax Rules',     href: ROUTES.dashboard.crmTaxRules,      icon: Percent },
-  { label: 'Territories',         href: ROUTES.dashboard.crmTerritories,         icon: MapPin },
-  { label: 'Time Periods',   href: ROUTES.dashboard.crmTimePeriods,        icon: Calendar },
-  { label: 'Time Tracking', href: ROUTES.dashboard.crmTimeTracking,  icon: Clock },
-  { label: 'Vendors',          href: ROUTES.dashboard.crmVendors,          icon: Truck },
-  { label: 'Work Orders',   href: ROUTES.dashboard.crmWorkOrders,    icon: Wrench },
-  { label: 'Workflows',       href: ROUTES.dashboard.crmWorkflows,       icon: Zap },
+// CRM nav, split into sub-groups so the 53-item list has scannable structure
+// and each group can collapse independently.
+const crmNavGroups = [
+  {
+    key: 'sales',
+    label: 'Sales',
+    items: [
+      { label: 'Leads',      href: ROUTES.dashboard.crmLeads,      icon: Users },
+      { label: 'Deals',      href: ROUTES.dashboard.crmDealsHub,   icon: Briefcase },
+      { label: 'Quotes',     href: ROUTES.dashboard.crmQuotes,     icon: FileText },
+      { label: 'Proposals',  href: ROUTES.dashboard.crmProposals,  icon: ClipboardList },
+      { label: 'Contracts',  href: ROUTES.dashboard.crmContracts,  icon: FileSignature },
+      { label: 'Renewals',   href: ROUTES.dashboard.crmRenewals,   icon: CalendarClock },
+      { label: 'Price Books', href: ROUTES.dashboard.crmPriceBooks, icon: BookOpen },
+      { label: 'Competitors', href: ROUTES.dashboard.crmCompetitors, icon: Crosshair },
+    ],
+  },
+  {
+    key: 'accounts',
+    label: 'Accounts',
+    items: [
+      { label: 'Accounts',      href: ROUTES.dashboard.crmAccounts,      icon: Building },
+      { label: 'Contacts',      href: ROUTES.dashboard.crmContacts,      icon: UserCheck },
+      { label: 'Organizations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
+      { label: 'Territories',   href: ROUTES.dashboard.crmTerritories,   icon: MapPin },
+      { label: 'Assignment Rotation', href: ROUTES.dashboard.crmAssignmentRotation, icon: Shuffle },
+    ],
+  },
+  {
+    key: 'marketing',
+    label: 'Marketing',
+    items: [
+      { label: 'Campaigns',          href: ROUTES.dashboard.crmCampaigns,        icon: Megaphone },
+      { label: 'Workflow Campaigns', href: '/dashboard/crm/workflow-campaigns', icon: Target },
+      { label: 'Announcements',      href: ROUTES.dashboard.crmAnnouncements,   icon: Newspaper },
+      { label: 'Nurture',            href: ROUTES.dashboard.crmNurture,         icon: Workflow },
+      { label: 'Meta Ads',           href: '/dashboard/crm/meta-ads',           icon: Facebook },
+      { label: 'Event Tracking',     href: ROUTES.dashboard.crmEventIngestion,  icon: Globe },
+    ],
+  },
+  {
+    key: 'operations',
+    label: 'Operations',
+    items: [
+      { label: 'Orders',           href: ROUTES.dashboard.crmOrders,         icon: Package },
+      { label: 'Deliveries',       href: ROUTES.dashboard.crmDeliveries,     icon: Truck },
+      { label: 'Returns',          href: ROUTES.dashboard.crmReturns,        icon: RotateCw },
+      { label: 'Work Orders',      href: ROUTES.dashboard.crmWorkOrders,     icon: Wrench },
+      { label: 'Vendors',          href: ROUTES.dashboard.crmVendors,        icon: Truck },
+      { label: 'Purchase Orders',  href: ROUTES.dashboard.crmPurchaseOrders, icon: ShoppingCart },
+      { label: 'Goods Receipts',   href: ROUTES.dashboard.crmGoodsReceipts,  icon: PackageCheck },
+      { label: 'Inventory',        href: ROUTES.dashboard.crmInventory,      icon: Package },
+      { label: 'Bundles',          href: ROUTES.dashboard.crmProductBundles, icon: Package },
+      { label: 'Process Workflows', href: ROUTES.dashboard.crmProcessTasks,  icon: ListChecks },
+      { label: 'Workflows',        href: ROUTES.dashboard.crmWorkflows,      icon: Zap },
+    ],
+  },
+  {
+    key: 'finance',
+    label: 'Finance',
+    items: [
+      { label: 'Invoices',          href: ROUTES.dashboard.crmInvoices,         icon: Receipt },
+      { label: 'Credit Notes',      href: ROUTES.dashboard.crmCreditNotes,      icon: Undo2 },
+      { label: 'Supplier Invoices', href: ROUTES.dashboard.crmSupplierInvoices, icon: CreditCard },
+      { label: 'Payment Terms',     href: ROUTES.dashboard.crmPaymentTerms,     icon: Calendar },
+      { label: 'Tax Rules',         href: ROUTES.dashboard.crmTaxRules,         icon: Percent },
+      { label: 'Subscriptions',     href: ROUTES.dashboard.crmSubscriptions,    icon: RefreshCw },
+      { label: 'Commissions',       href: ROUTES.dashboard.crmCommissions,      icon: DollarSign },
+    ],
+  },
+  {
+    key: 'support',
+    label: 'Support & Success',
+    items: [
+      { label: 'Support',        href: ROUTES.dashboard.crmSupport,            icon: LifeBuoy },
+      { label: 'NPS',            href: ROUTES.dashboard.crmNps,                icon: Star },
+      { label: 'Knowledge Base', href: ROUTES.dashboard.crmKnowledgeBase,      icon: BookOpen },
+      { label: 'Onboarding',     href: ROUTES.dashboard.crmCustomerOnboarding, icon: UserPlus },
+      { label: 'Meetings',       href: ROUTES.dashboard.crmMeetings,           icon: CalendarCheck },
+      { label: 'Tasks',          href: ROUTES.dashboard.crmTasks,              icon: CheckSquare },
+      { label: 'Time Tracking',  href: ROUTES.dashboard.crmTimeTracking,       icon: Clock },
+      { label: 'Time Periods',   href: ROUTES.dashboard.crmTimePeriods,        icon: Calendar },
+    ],
+  },
+  {
+    key: 'insights',
+    label: 'Insights & Admin',
+    items: [
+      { label: 'Analytics',        href: ROUTES.dashboard.crmAnalytics,      icon: TrendingUp },
+      { label: 'Reports',          href: ROUTES.dashboard.crmReports,        icon: FileBarChart },
+      { label: 'Dashboards',       href: ROUTES.dashboard.crmDashboards,     icon: LayoutPanelTop },
+      { label: 'Ops Dashboard',    href: ROUTES.dashboard.crmOpsDashboard,   icon: LayoutDashboard },
+      { label: 'Scoring Rules',    href: ROUTES.dashboard.crmScoringRules,   icon: TrendingUp },
+      { label: 'Custom Fields',    href: ROUTES.dashboard.crmCustomFields,   icon: SlidersHorizontal },
+      { label: 'Feature Settings', href: ROUTES.dashboard.crmFeatureSettings, icon: SlidersHorizontal },
+      { label: 'Audit Log',        href: ROUTES.dashboard.crmAuditLog,       icon: History },
+    ],
+  },
 ];
+
+// Flattened view — used by the mobile "More" sheet and icon-only rail mode,
+// where sub-group headers don't apply.
+const crmNav = crmNavGroups.flatMap((g) => g.items);
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───
 const primaryMobileTabs = [
@@ -236,9 +277,14 @@ export function DashboardLayout() {
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [moreSheetOpen, setMoreSheetOpen] = useState(false);
   const [openSections, setOpenSections] = useState({ yourBot: true, crm: true, system: true });
+  const [openCrmGroups, setOpenCrmGroups] = useState(() =>
+    Object.fromEntries(crmNavGroups.map((g) => [g.key, false]))
+  );
 
   const toggleSection = (key: keyof typeof openSections) =>
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  const toggleCrmGroup = (key: string) =>
+    setOpenCrmGroups((prev) => ({ ...prev, [key]: !prev[key] }));
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -536,12 +582,39 @@ export function DashboardLayout() {
             <div className="w-6 h-px bg-border-subtle mx-auto my-2" />
           )}
           {(!showExpanded || openSections.crm) && (
-            <div className="flex flex-col gap-0.5">
-              {crmNav.map((item) =>
-                item.label === 'Contacts'
-                  ? renderNavItem({ ...item, badgeCount: dedupCount })
-                  : renderNavItem(item)
-              )}
+            <div className="flex flex-col">
+              {crmNavGroups.map((group) => (
+                <div key={group.key}>
+                  {showExpanded ? (
+                    <button
+                      type="button"
+                      onClick={() => toggleCrmGroup(group.key)}
+                      className={`w-full flex items-center gap-1.5 px-3 py-2.5 transition-colors ${
+                        openCrmGroups[group.key]
+                          ? 'rounded-lg border-thin bg-brand-soft border-border-glow my-0.5'
+                          : 'border-thin border-transparent hover:bg-glass-1'
+                      }`}
+                    >
+                      <span className="text-[10px] font-bold text-text-secondary uppercase tracking-[1.5px] flex-1 text-left">
+                        {group.label}
+                      </span>
+                      <ChevronRight
+                        className={`w-3 h-3 text-text-muted transition-transform duration-200 ${openCrmGroups[group.key] ? 'rotate-90' : ''}`}
+                        strokeWidth={2}
+                      />
+                    </button>
+                  ) : null}
+                  {(!showExpanded || openCrmGroups[group.key]) && (
+                    <div className="flex flex-col gap-0.5 py-1">
+                      {group.items.map((item) =>
+                        item.label === 'Contacts'
+                          ? renderNavItem({ ...item, badgeCount: dedupCount })
+                          : renderNavItem(item)
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           )}
 

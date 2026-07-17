@@ -118,7 +118,7 @@ export function CommandPalette() {
 
   return (
     <div
-      className="fixed inset-0 z-[120] flex items-start justify-center bg-black/50 backdrop-blur-sm px-4 pt-[12vh]"
+      className="fixed inset-0 z-[120] flex items-start justify-center bg-black/50 backdrop-blur-sm px-4 pt-[6vh]"
       onClick={() => setOpen(false)}
       role="dialog"
       aria-modal="true"
@@ -127,17 +127,19 @@ export function CommandPalette() {
         className="w-full max-w-xl bg-bg-elevated border-thin border-border-subtle rounded-card shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-2 px-4 border-b border-thin border-border-subtle">
-          <Search className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.8} />
-          {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
-          <input
-            autoFocus
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search leads, contacts, deals — or jump to a page…"
-            className="flex-1 bg-transparent py-3.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none"
-          />
-          <kbd className="text-[10px] text-text-muted border-thin border-border-medium rounded px-1.5 py-0.5">esc</kbd>
+        <div className="p-3 border-b border-thin border-border-subtle">
+          <div className="flex items-center gap-2 h-12 px-3.5 rounded-sm bg-bg-input border-thin border-border-subtle focus-within:border-border-glow focus-within:shadow-[0_0_0_1px_rgba(0,217,138,0.50),0_0_10px_rgba(0,217,138,0.20)] transition-all">
+            <Search className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.8} />
+            {/* eslint-disable-next-line jsx-a11y/no-autofocus */}
+            <input
+              autoFocus
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search leads, contacts, deals — or jump to a page…"
+              className="flex-1 min-w-0 h-full bg-transparent text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:shadow-none"
+            />
+            <kbd className="shrink-0 text-[10px] text-text-muted border-thin border-border-medium rounded px-1.5 py-0.5">esc</kbd>
+          </div>
         </div>
 
         <div className="max-h-[55vh] overflow-y-auto py-2">

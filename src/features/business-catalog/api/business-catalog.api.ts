@@ -14,6 +14,8 @@ import type {
   CatalogItemCreateRequest,
   CatalogItemFilter,
   CatalogItemUpdateRequest,
+  CatalogImportMode,
+  CatalogImportPreviewResult,
   PagedResult,
   TransactionFilter,
   TransactionManualCreateRequest,
@@ -71,6 +73,27 @@ export const itemApi = {
       params: { available },
     }),
   delete: (id: string) => apiClient.delete<void>(`/v1/business-catalog/items/${id}`),
+} as const;
+
+export const catalogImportApi = {
+  downloadTemplate: async (): Promise<Blob> =>
+    apiClient.get<Blob>('/v1/business-catalog/import-template', { responseType: 'blob' }) as unknown as Promise<Blob>,
+  preview: (file: File, mode: CatalogImportMode) => {
+    const form = new FormData();
+    form.append('file', file);
+    return apiClient.post<CatalogImportPreviewResult>('/v1/business-catalog/import/preview', form, {
+      params: { mode },
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }) as unknown as Promise<CatalogImportPreviewResult>;
+  },
+  import: (file: File, mode: CatalogImportMode) => {
+    const form = new FormData();
+    form.append('file', file);
+    return apiClient.post<CatalogImportPreviewResult>('/v1/business-catalog/import', form, {
+      params: { mode },
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }) as unknown as Promise<CatalogImportPreviewResult>;
+  },
 } as const;
 
 // ─── Transaction ───

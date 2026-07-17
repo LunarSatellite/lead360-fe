@@ -238,6 +238,33 @@ export interface CatalogItemFilter {
   pageSize?: number;
 }
 
+export type CatalogImportMode = 'CreateOnly' | 'Upsert';
+export type CatalogImportAction = 'Invalid' | 'CreateItem' | 'UpdateItem';
+
+export interface CatalogImportRowPreview {
+  row: number;
+  categoryName: string;
+  itemName: string;
+  action: CatalogImportAction;
+  existingCategoryId: string | null;
+  existingItemId: string | null;
+  errors: string[];
+}
+
+export interface CatalogImportPreviewResult {
+  totalRows: number;
+  validRows: number;
+  invalidRows: number;
+  categoriesToCreate: number;
+  itemsToCreate: number;
+  itemsToUpdate: number;
+  categoriesCreated: number;
+  itemsCreated: number;
+  itemsUpdated: number;
+  rows: CatalogImportRowPreview[];
+  errors: Array<{ row: number; error: string }>;
+}
+
 export interface PagedResult<T> {
   items: T[];
   totalCount: number;

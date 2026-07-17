@@ -74,6 +74,7 @@ import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
 import { usePendingDedupCount } from '@/features/crm/api/crm.queries';
 import { NotificationBell } from '@/features/crm/components/NotificationBell';
+import { ThemeToggle } from '@/shared/theme/ThemeToggle';
 import { CommandPalette, openCommandPalette } from '@/shared/ui/CommandPalette';
 import { CopilotPanel, openCopilot } from '@/features/crm/components/CopilotPanel';
 import { useLeadAlerts } from '@/features/crm/hooks/useLeadAlerts';
@@ -736,6 +737,7 @@ export function DashboardLayout() {
               <kbd className="text-[10px] border border-border-medium rounded px-1 py-0.5">⌘K</kbd>
             </button>
             <NotificationBell />
+            <ThemeToggle />
             <button
               onClick={openCopilot}
               className="flex px-3 py-2 rounded-xl text-xs font-semibold border border-border-glow text-brand hover:bg-brand-soft transition-all items-center gap-1.5"

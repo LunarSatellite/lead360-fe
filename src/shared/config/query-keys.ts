@@ -16,4 +16,6 @@ export const QUERY_KEYS = {
   testChannel: ['test-channel'] as const,
   voice: ['voice'] as const,
   crm: ['crm'] as const,
+  webforms: ['crm', 'webforms'] as const,
+  portal: ['portal'] as const,
 } as const;

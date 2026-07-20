@@ -103,6 +103,13 @@ export const ROUTES = {
     crmApprovalChains: '/dashboard/crm/approval-chains',
     crmAssignmentRotation: '/dashboard/crm/assignment-rotation',
     crmCommissions: '/dashboard/crm/commissions',
+    // ── Web Forms (public capture → contact / lead) ──
+    crmWebForms: '/dashboard/crm/webforms',
+    crmWebFormNew: '/dashboard/crm/webforms/new',
+    crmWebFormEdit: (id: string) => `/dashboard/crm/webforms/${id}/edit`,
+    crmWebFormSubmissions: (id: string) => `/dashboard/crm/webforms/${id}/submissions`,
+    crmWebFormSubmissionDetail: (formId: string, submissionId: string) =>
+      `/dashboard/crm/webforms/${formId}/submissions/${submissionId}`,
     // ── RBAC & Territories ──
     crmTerritories: '/dashboard/crm/territories',
     // ── Procurement ──

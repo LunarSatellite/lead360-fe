@@ -140,6 +140,7 @@ const crmNavGroups = [
       { label: 'Nurture',            href: ROUTES.dashboard.crmNurture,         icon: Workflow },
       { label: 'Meta Ads',           href: '/dashboard/crm/meta-ads',           icon: Facebook },
       { label: 'Event Tracking',     href: ROUTES.dashboard.crmEventIngestion,  icon: Globe },
+      { label: 'Web Forms',          href: ROUTES.dashboard.crmWebForms,       icon: Globe },
     ],
   },
   {

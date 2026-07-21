@@ -28,8 +28,6 @@ apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-// ─── Paths that should NOT trigger 401 redirect ───
-// These are either public endpoints or used on unauthenticated pages
 const NO_REDIRECT_PATHS = [
   '/v1/auth/login',
   '/v1/auth/register',
@@ -40,12 +38,12 @@ const NO_REDIRECT_PATHS = [
   '/v1/auth/resend-verification',
   '/v1/team/invitations/validate',
   '/v1/team/invitations/accept',
-  '/v1/compliance/profiles/recommended', // ★ used on register page (no token)
-  '/v1/compliance/profiles', // ★ list profiles (may be called without auth)
-  '/v1/users/me/change-password', // ★ wrong current password returns 401 — show error, don't redirect
-  '/v1/public/schedule', // ★ contact-facing scheduling page — no auth required
-  '/v1/public/pay',     // ★ customer-facing pay-online page — no auth required
-  '/v1/book/',          // ★ public booking pages — no auth required
+  '/v1/compliance/profiles/recommended',
+  '/v1/compliance/profiles',
+  '/v1/users/me/change-password',
+  '/v1/public/schedule',
+  '/v1/public/pay',
+  '/v1/book/',
 ];
 
 function shouldSkipRedirect(url: string | undefined): boolean {
@@ -53,8 +51,6 @@ function shouldSkipRedirect(url: string | undefined): boolean {
   return NO_REDIRECT_PATHS.some((path) => url.includes(path));
 }
 
-// ─── Refresh token mutex ───
-// Only one refresh request goes out; other 401 failures queue behind it
 let isRefreshing = false;
 let refreshSubscribers: ((token: string) => void)[] = [];
 
@@ -71,10 +67,6 @@ export async function tryRefreshToken(): Promise<string | null> {
   const refreshToken = localStorage.getItem('omniflow_refresh_token');
   if (!refreshToken) return null;
   try {
-    // Use raw axios to avoid interceptor loop.
-    // BaseController wraps in { success, data } (lowercase anonymous object).
-    // Inner DTO uses C# property names — handle both PascalCase and camelCase
-    // so this works regardless of whether a global JSON naming policy is set.
     const res = await axios.post(`${env.apiBaseUrl}/v1/auth/refresh-token`, {
       refreshToken,
     });
@@ -98,21 +90,37 @@ apiClient.interceptors.response.use(
   (response) => {
     const data = response.data;
 
-    // Empty 200/204 responses (void endpoints like verify-email, revoke-token)
     if (data === null || data === undefined || data === '') {
       return data;
     }
 
-    // ServiceResult wrapper from our backend
     if (typeof data === 'object' && 'success' in data) {
-      const result = data as ServiceResult<unknown>;
+      const result = data as ServiceResult<unknown> & Record<string, unknown>;
       if (!result.success) {
         throw new ApiError(result.message ?? 'Operation failed', result.errorCode, result.errors);
       }
+
+      // PagedServiceResult<T> has items[] inside `data` and totalCount/pageNumber
+      // at the top level. Renormalize so callers get { items, totalCount, ... }.
+      if (
+        'totalCount' in result &&
+        'pageNumber' in result &&
+        'pageSize' in result &&
+        'totalPages' in result
+      ) {
+        return {
+          items: (result.data as unknown[]) ?? [],
+          totalCount: result.totalCount as number,
+          pageNumber: result.pageNumber as number,
+          pageSize: result.pageSize as number,
+          totalPages: result.totalPages as number,
+          correlationId: result.correlationId,
+        } as never;
+      }
+
       return result.data as never;
     }
 
-    // Plain response (not wrapped in ServiceResult)
     return data;
   },
   async (error) => {
@@ -121,10 +129,8 @@ apiClient.interceptors.response.use(
       const data = error.response?.data;
       const requestUrl = error.config?.url;
 
-      // 401 handling with refresh token mutex
       if (status === 401) {
         if (shouldSkipRedirect(requestUrl)) {
-          // ★ Public/registration endpoint — throw error, don't redirect
           const msg =
             data && typeof data === 'object' && 'message' in data ? (data as any).message : 'Unauthorized';
           throw new ApiError(msg, undefined, undefined, 401);
@@ -132,32 +138,26 @@ apiClient.interceptors.response.use(
 
         const originalRequest = error.config!;
 
-        // If already refreshing, queue this request
         if (isRefreshing) {
           return new Promise((resolve, reject) => {
             subscribeTokenRefresh((newToken: string) => {
               originalRequest.headers.Authorization = `Bearer ${newToken}`;
               resolve(apiClient(originalRequest));
             });
-            // If refresh ultimately fails, the redirect below will fire
             setTimeout(() => reject(new ApiError('Session expired', undefined, undefined, 401)), 15_000);
           });
         }
 
-        // First 401 — try refresh
         isRefreshing = true;
         const newToken = await tryRefreshToken();
 
         if (newToken) {
-          // Notify queued requests BEFORE releasing the mutex so no second
-          // refresh attempt can slip through between onTokenRefreshed and reset.
           onTokenRefreshed(newToken);
           isRefreshing = false;
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return apiClient(originalRequest);
         }
 
-        // Refresh failed — reject all queued requests, clear session, redirect
         isRefreshing = false;
         refreshSubscribers = [];
         localStorage.removeItem('omniflow_token');
@@ -167,7 +167,6 @@ apiClient.interceptors.response.use(
         return Promise.reject(new ApiError('Session expired', undefined, undefined, 401));
       }
 
-      // ProblemDetails format (ASP.NET default error response)
       if (data && typeof data === 'object' && 'title' in data) {
         throw new ApiError(
           data.detail || data.title || 'Request failed',
@@ -177,7 +176,6 @@ apiClient.interceptors.response.use(
         );
       }
 
-      // ServiceResult error format
       if (data && typeof data === 'object' && 'message' in data) {
         throw new ApiError(
           data.message ?? error.message ?? 'Request failed',

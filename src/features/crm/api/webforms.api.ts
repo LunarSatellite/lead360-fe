@@ -114,3 +114,12 @@ export function inferFilePreview(file: WebFormSubmissionFileDto): boolean {
     file.contentType === "application/pdf"
   );
 }
+
+// Build a shareable hosted URL for a form. Salesforce/HubSpot-style:
+// the visitor opens this URL and sees the form on the OmniFlow domain
+// without needing to install embed.js on their own site.
+export function buildHostedUrl(formId: string, slug?: string | null, apiBaseUrl = env.apiBaseUrl): string {
+  const base = apiBaseUrl.replace(/\/v1$/, "");
+  if (slug) return `${base}/f/s/${encodeURIComponent(slug)}`;
+  return `${base}/f/${formId}`;
+}

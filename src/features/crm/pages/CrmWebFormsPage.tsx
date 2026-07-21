@@ -9,7 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import {
   useWebForms, useDeleteWebForm, usePublishWebForm,
 } from "../api/webforms.queries";
-import { buildEmbedSnippet } from "../api/webforms.api";
+import { buildEmbedSnippet, buildHostedUrl } from "../api/webforms.api";
 import type { CrmWebFormFilter, WebFormDto, WebFormStatus } from "../types/webforms.types";
 import { ROUTES } from "@/app/router/route-paths";
 
@@ -38,6 +38,13 @@ export function Component() {
     const snippet = buildEmbedSnippet(formId, null);
     navigator.clipboard.writeText(snippet)
       .then(() => toast.success("Embed snippet copied"))
+      .catch(() => toast.error("Clipboard write failed"));
+  }
+
+  function copyHostedUrl(formId: string, slug?: string | null) {
+    const url = buildHostedUrl(formId, slug ?? null);
+    navigator.clipboard.writeText(url)
+      .then(() => toast.success("Hosted URL copied"))
       .catch(() => toast.error("Clipboard write failed"));
   }
 
@@ -93,16 +100,16 @@ export function Component() {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-glass-2 text-left">
-              {["Name", "Status", "Submissions", "Behavior", "Created", "Actions"].map((h) => (
+              {["Name", "Status", "Slug", "Submissions", "Behavior", "Created", "Actions"].map((h) => (
                 <th key={h} className="px-4 py-2.5 text-[11px] font-bold uppercase tracking-wide text-text-muted">{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {isLoading ? (
-              <tr><td colSpan={6} className="px-4 py-8 text-center text-sm text-text-muted"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></td></tr>
+              <tr><td colSpan={7} className="px-4 py-8 text-center text-sm text-text-muted"><Loader2 className="w-5 h-5 animate-spin mx-auto" /></td></tr>
             ) : items.length === 0 ? (
-              <tr><td colSpan={6} className="px-4 py-12 text-center text-sm text-text-muted">
+              <tr><td colSpan={7} className="px-4 py-12 text-center text-sm text-text-muted">
                 <Globe className="w-7 h-7 mx-auto mb-2 text-text-muted" />
                 <p className="font-medium text-text-primary">No forms yet</p>
                 <p className="text-xs mt-1">Create a form to start capturing leads from your website, careers page, or contact page.</p>
@@ -119,6 +126,19 @@ export function Component() {
                   <span className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded border ${STATUS_BADGE[form.status]}`}>
                     {form.status}
                   </span>
+                </td>
+                <td className="px-4 py-3">
+                  {form.hostedSlug ? (
+                    <button
+                      onClick={() => copyHostedUrl(form.id, form.hostedSlug)}
+                      className="inline-flex items-center gap-1 text-xs text-text-secondary hover:text-brand font-mono"
+                      title="Click to copy hosted URL"
+                    >
+                      <Globe className="w-3 h-3" /> /f/s/{form.hostedSlug}
+                    </button>
+                  ) : (
+                    <span className="text-xs text-text-muted">—</span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <span className="inline-flex items-center gap-1 text-xs text-text-secondary">

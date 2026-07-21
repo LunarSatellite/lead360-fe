@@ -1,5 +1,7 @@
 export type WebFormStatus = "Draft" | "Published" | "Archived";
 
+export type WebFormMode = "Classic" | "Conversational";
+
 export type WebFormFieldType =
   | "Text"
   | "Email"
@@ -24,6 +26,13 @@ export const CONTACT_FIELD_OPTIONS = [
   { value: "Message", label: "Message / notes" },
 ] as const;
 
+export interface WebFormDesignConfig {
+  conversationalTitle?: string;
+  conversationalSubtitle?: string;
+  consentEnabled?: boolean;
+  consentLabel?: string;
+}
+
 export interface WebFormDto {
   id: string;
   name: string;
@@ -38,6 +47,15 @@ export interface WebFormDto {
   createLeadOnSubmit: boolean;
   submissionCount: number;
   createdAt: string;
+  hostedSlug?: string | null;
+  logoUrl?: string | null;
+  primaryColor?: string | null;
+  backgroundColor?: string | null;
+  fontFamily?: string | null;
+  preFillEnabled?: boolean;
+  mode?: WebFormMode;
+  designConfig?: WebFormDesignConfig | null;
+  designConfigJson?: string | null;
 }
 
 export interface WebFormFieldDto {
@@ -75,6 +93,14 @@ export interface CreateWebFormRequest {
   notificationEmails?: string | null;
   createContactOnSubmit?: boolean;
   createLeadOnSubmit?: boolean;
+  hostedSlug?: string | null;
+  logoUrl?: string | null;
+  primaryColor?: string | null;
+  backgroundColor?: string | null;
+  fontFamily?: string | null;
+  preFillEnabled?: boolean;
+  mode?: WebFormMode;
+  designConfigJson?: string | null;
   fields?: CreateWebFormFieldRequest[] | null;
 }
 

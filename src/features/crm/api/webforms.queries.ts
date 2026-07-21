@@ -26,14 +26,14 @@ export const webformKeys = {
 export function useWebForms(filter: CrmWebFormFilter = {}) {
   return useQuery({
     queryKey: webformKeys.list(filter),
-    queryFn: () => webformsApi.listForms(filter).then((r) => r.data),
+    queryFn: () => webformsApi.listForms(filter),
   });
 }
 
 export function useWebForm(id: string | undefined | null) {
   return useQuery({
     queryKey: webformKeys.detail(id ?? ""),
-    queryFn: () => webformsApi.getForm(id!).then((r) => r.data),
+    queryFn: () => webformsApi.getForm(id!),
     enabled: !!id,
   });
 }
@@ -58,10 +58,9 @@ export function useUpdateWebForm() {
       webformsApi.updateForm(id, payload),
     onSuccess: (_res, vars) => {
       toast.success("Web form saved");
-      qc.invalidateQueries({ queryKey: webformKeys.detail(vars.id) });
       qc.invalidateQueries({ queryKey: webformKeys.all });
     },
-    onError: (err) => toast.error(getApiError(err, "Failed to save form").message),
+    onError: (err) => toast.error(getApiError(err, "Failed to update form").message),
   });
 }
 
@@ -86,44 +85,32 @@ export function usePublishWebForm() {
       qc.invalidateQueries({ queryKey: webformKeys.detail(id) });
       qc.invalidateQueries({ queryKey: webformKeys.all });
     },
-    onError: (err) =>
-      toast.error(getApiError(err, "Failed to publish form").message),
+    onError: (err) => toast.error(getApiError(err, "Failed to publish form").message),
   });
 }
 
-// ── Submissions ─────────────────────────────────────────────────────────────
+// ── Submissions ────────────────────────────────────────────────────────────
 
-export function useWebFormSubmissions(
-  formId: string | undefined | null,
-  filter: WebFormSubmissionFilter = {},
-) {
+export function useWebFormSubmissions(formId: string | undefined, filter: WebFormSubmissionFilter = {}) {
   return useQuery({
-    queryKey: webformKeys.submissions(formId ?? "", filter),
-    queryFn: () => webformsApi.listSubmissions(formId!, filter).then((r) => r.data),
+    queryKey: formId ? webformKeys.submissions(formId, filter) : ["webforms", "submissions", "disabled"],
+    queryFn: () => webformsApi.listSubmissions(formId!, filter),
     enabled: !!formId,
   });
 }
 
-export function useWebFormSubmissionDetail(
-  formId: string | undefined | null,
-  submissionId: string | undefined | null,
-) {
+export function useWebFormSubmissionDetail(formId: string | undefined, submissionId: string | undefined) {
   return useQuery({
-    queryKey: webformKeys.submission(formId ?? "", submissionId ?? ""),
-    queryFn: () =>
-      webformsApi.getSubmissionDetail(formId!, submissionId!).then((r) => r.data),
+    queryKey: formId && submissionId ? webformKeys.submission(formId, submissionId) : ["webforms", "submission", "disabled"],
+    queryFn: () => webformsApi.getSubmissionDetail(formId!, submissionId!),
     enabled: !!formId && !!submissionId,
   });
 }
 
-// Mints a short-lived signed token for an attachment on a submission. The hook
-// keeps the token in component state — not in the query cache — because the
-// service returns per-request tokens; we don't want stale tokens across sessions.
-export function useMintSubmissionFileToken() {
+// ── File downloads ──────────────────────────────────────────────────────────
+
+export function useMintDownloadToken() {
   return useMutation({
-    mutationFn: (blobId: string) =>
-      webformsApi.mintDownloadToken(blobId).then((r) => r.data),
-    onError: (err) =>
-      toast.error(getApiError(err, "Failed to generate download link").message),
+    mutationFn: (blobId: string) => webformsApi.mintDownloadToken(blobId),
   });
 }

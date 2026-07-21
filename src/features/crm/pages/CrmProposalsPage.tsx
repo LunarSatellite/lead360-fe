@@ -1,5 +1,6 @@
-import { useState, useEffect, type ReactNode } from 'react';
-import { Plus, X, Loader2, ClipboardList, Send, AlertTriangle, FilePlus, RefreshCw, Save } from 'lucide-react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { Plus, X, Loader2, ClipboardList, Send, AlertTriangle, FilePlus, RefreshCw, Save, Layers, User } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
@@ -32,23 +33,49 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function SlideOver({ open, onClose, title, children, wide }: {
-  open: boolean; onClose: () => void; title: string; children: ReactNode; wide?: boolean;
+function SlideOver({ open, onClose, title, subtitle, children, footer, wide, padRight }: {
+  open: boolean; onClose: () => void; title: string; subtitle?: string; children: ReactNode; footer?: ReactNode; wide?: boolean; padRight?: boolean;
 }) {
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[520px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="text-base font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+  return createPortal(
+    <div className={`fixed inset-0 z-50 flex items-center justify-end${padRight ? ' pr-4' : ''}`}>
+      <div className="absolute inset-0 min-h-screen bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className={`drawer-slide-in relative ${wide ? 'w-[640px]' : 'w-[520px]'} flex flex-col overflow-hidden`}
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>
+        )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -115,6 +142,29 @@ export function Component() {
   const [dealId, setDealId] = useState(searchParams.get('dealId') ?? '');
   const [contactId, setContactId] = useState(searchParams.get('contactId') ?? '');
   const [templateId, setTemplateId] = useState('');
+
+  // Dropdown state for Generate form
+  const [genDealSearch, setGenDealSearch] = useState('');
+  const [showGenDealDrop, setShowGenDealDrop] = useState(false);
+  const genDealDropRef = useRef<HTMLDivElement>(null);
+
+  const [genContactSearch, setGenContactSearch] = useState('');
+  const [showGenContactDrop, setShowGenContactDrop] = useState(false);
+  const genContactDropRef = useRef<HTMLDivElement>(null);
+
+  const [genTemplateSearch, setGenTemplateSearch] = useState('');
+  const [showGenTemplateDrop, setShowGenTemplateDrop] = useState(false);
+  const genTemplateDropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (genDealDropRef.current && !genDealDropRef.current.contains(e.target as Node)) setShowGenDealDrop(false);
+      if (genContactDropRef.current && !genContactDropRef.current.contains(e.target as Node)) setShowGenContactDrop(false);
+      if (genTemplateDropRef.current && !genTemplateDropRef.current.contains(e.target as Node)) setShowGenTemplateDrop(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Consume query params once on mount — don't reopen on refresh
   useEffect(() => {
@@ -316,29 +366,186 @@ export function Component() {
       </SlideOver>
 
       {/* Generate SlideOver */}
-      <SlideOver open={genOpen} onClose={() => { setGenOpen(false); resetForm(); }} title="Generate Proposal">
-        <Field label="Deal *">
-          <select value={dealId} onChange={e => setDealId(e.target.value)} className={selectCls}>
-            <option value="">Select a deal (required)</option>
-            {dealsList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-          </select>
-        </Field>
-        <Field label="Contact">
-          <select value={contactId} onChange={e => setContactId(e.target.value)} className={selectCls}>
-            <option value="">Select a contact (optional)</option>
-            {contactsList.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
-          </select>
-        </Field>
-        <Field label="Template">
-          <select value={templateId} onChange={e => setTemplateId(e.target.value)} className={selectCls}>
-            <option value="">No template</option>
-            {templates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </select>
-        </Field>
-        <button onClick={handleGenerate} disabled={generateProposal.isPending || !dealId.trim()}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
-          {generateProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <ClipboardList className="w-4 h-4" />} Generate
-        </button>
+      <SlideOver
+        open={genOpen}
+        onClose={() => { setGenOpen(false); resetForm(); }}
+        title="Generate Proposal"
+        subtitle="Create a proposal from an existing deal"
+        wide
+        padRight
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            <button
+              onClick={() => { setGenOpen(false); resetForm(); }}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleGenerate}
+              disabled={generateProposal.isPending || !dealId.trim()}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {generateProposal.isPending
+                ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                : <ClipboardList className="w-3.5 h-3.5" />}
+              Generate Proposal
+            </button>
+          </div>
+        }
+      >
+        {/* ── Deal & Contact ── */}
+        <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+          <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Deal & Contact</span>
+          <div className="h-px bg-brand/20" />
+        </div>
+
+        {/* Deal */}
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal <span className="text-danger">*</span></label>
+          <div className="relative" ref={genDealDropRef}>
+            <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              placeholder="Search existing deals…"
+              autoComplete="off"
+              value={genDealSearch}
+              onChange={e => { setGenDealSearch(e.target.value); setShowGenDealDrop(true); }}
+              onFocus={() => setShowGenDealDrop(true)}
+            />
+            {genDealSearch ? (
+              <button type="button" onClick={() => { setGenDealSearch(''); setShowGenDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            ) : null}
+            {showGenDealDrop && (
+              <div
+                className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+              >
+                {dealsList.filter(d => !genDealSearch || d.name.toLowerCase().includes(genDealSearch.toLowerCase())).length > 0
+                  ? dealsList.filter(d => !genDealSearch || d.name.toLowerCase().includes(genDealSearch.toLowerCase())).map(d => (
+                    <button
+                      key={d.id}
+                      type="button"
+                      onClick={() => { setDealId(d.id); setGenDealSearch(''); setShowGenDealDrop(false); }}
+                      className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                        <Layers className="w-4 h-4 text-brand" strokeWidth={1.6} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-text-primary truncate">{d.name}</div>
+                      </div>
+                      <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                    </button>
+                  ))
+                  : <div className="px-4 py-3 text-xs text-text-muted">No deals found</div>
+                }
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Contact */}
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Contact</label>
+          <div className="relative" ref={genContactDropRef}>
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              placeholder="Search existing contacts…"
+              autoComplete="off"
+              value={genContactSearch}
+              onChange={e => { setGenContactSearch(e.target.value); setShowGenContactDrop(true); }}
+              onFocus={() => setShowGenContactDrop(true)}
+            />
+            {genContactSearch ? (
+              <button type="button" onClick={() => { setGenContactSearch(''); setShowGenContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            ) : null}
+            {showGenContactDrop && (
+              <div
+                className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+              >
+                {contactsList.filter(c => !genContactSearch || c.fullName.toLowerCase().includes(genContactSearch.toLowerCase())).length > 0
+                  ? contactsList.filter(c => !genContactSearch || c.fullName.toLowerCase().includes(genContactSearch.toLowerCase())).map(c => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => { setContactId(c.id); setGenContactSearch(''); setShowGenContactDrop(false); }}
+                      className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                    >
+                      <div className="relative shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                          <span className="text-xs font-bold text-brand">{c.fullName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}</span>
+                        </div>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-text-primary truncate">{c.fullName}</div>
+                        {c.email && <div className="flex items-center gap-2 mt-0.5"><span className="text-xs text-text-muted truncate">{c.email}</span></div>}
+                      </div>
+                      <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                    </button>
+                  ))
+                  : <div className="px-4 py-3 text-xs text-text-muted">No contacts found</div>
+                }
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Template */}
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Template</label>
+          <div className="relative" ref={genTemplateDropRef}>
+            <ClipboardList className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              placeholder="Select a template…"
+              autoComplete="off"
+              value={genTemplateSearch}
+              onChange={e => { setGenTemplateSearch(e.target.value); setShowGenTemplateDrop(true); }}
+              onFocus={() => setShowGenTemplateDrop(true)}
+            />
+            {genTemplateSearch ? (
+              <button type="button" onClick={() => { setGenTemplateSearch(''); setShowGenTemplateDrop(false); setTemplateId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            ) : null}
+            {showGenTemplateDrop && (
+              <div
+                className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+              >
+                {templates.filter((t: any) => !genTemplateSearch || t.name.toLowerCase().includes(genTemplateSearch.toLowerCase())).length > 0
+                  ? templates.filter((t: any) => !genTemplateSearch || t.name.toLowerCase().includes(genTemplateSearch.toLowerCase())).map((t: any) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => { setTemplateId(t.id); setGenTemplateSearch(''); setShowGenTemplateDrop(false); }}
+                      className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                        <ClipboardList className="w-4 h-4 text-brand" strokeWidth={1.6} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-text-primary truncate">{t.name}</div>
+                      </div>
+                      <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                    </button>
+                  ))
+                  : <div className="px-4 py-3 text-xs text-text-muted">No templates found</div>
+                }
+              </div>
+            )}
+          </div>
+        </div>
       </SlideOver>
 
       {/* Manual Build SlideOver */}

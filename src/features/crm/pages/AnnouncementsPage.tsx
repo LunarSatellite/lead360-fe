@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, X, Loader2, Newspaper, Trash2, Send, Archive, Calendar, Clock } from 'lucide-react';
+import { Plus, X, Loader2, Newspaper, Trash2, Send, Archive, Calendar, Clock, ChevronDown, Tag } from 'lucide-react';
 import {
   useAnnouncements, useCreateAnnouncement, useUpdateAnnouncement,
   useDeleteAnnouncement, usePublishAnnouncement, useArchiveAnnouncement, useScheduleAnnouncement,
@@ -15,23 +15,42 @@ import { format, parseISO } from 'date-fns';
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
 const selectCls = 'px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
 const btnPrimary = 'flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-all disabled:opacity-50';
-const btnPrimarySuccess = 'flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 transition-all disabled:opacity-50';
 const btnGhost = 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-text-muted hover:text-text-primary hover:bg-bg-input transition-all';
 
 function Badge({ label, colorCls }: { label: string; colorCls: string }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colorCls}`}>{label}</span>;
 }
 
-function SlideOver({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+function SlideOver({ title, onClose, children, footer }: { title: string; onClose: () => void; children: React.ReactNode; footer?: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"><X className="w-4 h-4" /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
+            <p className="text-xs text-text-muted mt-0.5">Create a new announcement</p>
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+            <X className="w-4 h-4" />
+          </button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -39,66 +58,80 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
 
 const lbl = (t: string) => <label className="block text-xs font-semibold text-text-muted mb-1.5">{t}</label>;
 
-function CreateForm({ onClose }: { onClose: () => void }) {
-  const create = useCreateAnnouncement();
-  const publish = usePublishAnnouncement();
-  const [form, setForm] = useState<AnnouncementCreateRequest>({ title: '', content: '', type: AnnouncementType.General });
-  const set = (k: keyof AnnouncementCreateRequest, v: any) => setForm(f => ({ ...f, [k]: v }));
-
-  const saveDraft = async () => {
-    if (!form.title.trim() || !form.content.trim()) return;
-    const payload: AnnouncementCreateRequest = { ...form };
-    if (payload.scheduledAt === '') delete payload.scheduledAt;
-    await create.mutateAsync(payload);
-    onClose();
-  };
-
-  const publishNow = async () => {
-    if (!form.title.trim() || !form.content.trim()) return;
-    const payload: AnnouncementCreateRequest = { ...form };
-    if (payload.scheduledAt === '') delete payload.scheduledAt;
-    const result = await create.mutateAsync(payload);
-    if (result?.id) await publish.mutateAsync(result.id);
-    onClose();
-  };
+function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCreateRequest; set: (k: keyof AnnouncementCreateRequest, v: any) => void; typeOpen: boolean; setTypeOpen: React.Dispatch<React.SetStateAction<boolean>> }) {
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        {lbl('Title *')}
-        <input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1" />
-      </div>
-      <div>
-        {lbl('Content *')}
-        <textarea className={`${inputCls} min-h-[140px] resize-y`} value={form.content} onChange={e => set('content', e.target.value)} placeholder="Write your announcement..." />
-      </div>
-      <div>
-        {lbl('Type')}
-        <select className={selectCls} value={form.type} onChange={e => set('type', Number(e.target.value))}>
-          {Object.entries(ANNOUNCEMENT_TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
-        </select>
-      </div>
-      <div>
-        {lbl('Schedule for (optional)')}
-        <input type="datetime-local" className={inputCls} value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)} />
-      </div>
-      <div className="flex flex-col gap-2 pt-2 border-t border-border-subtle">
-        <p className="text-[11px] text-text-muted">Choose what happens after creating:</p>
-        <div className="flex justify-end gap-3">
-          <button className={btnGhost} onClick={onClose}>Cancel</button>
-          <button className={btnPrimary} onClick={saveDraft} disabled={create.isPending || !form.title.trim() || !form.content.trim()}>
-            {create.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Clock className="w-4 h-4" />}
-            Save as Draft
-          </button>
-          {!form.scheduledAt && (
-            <button className={btnPrimarySuccess} onClick={publishNow} disabled={create.isPending || publish.isPending || !form.title.trim() || !form.content.trim()}>
-              {create.isPending || publish.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              Publish
+    <>
+      <div className="space-y-4">
+        <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+          <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Basic Info</span>
+          <div className="h-px bg-brand/20" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></label>
+          <div className="relative">
+            <Newspaper className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Content <span className="text-danger">*</span></label>
+          <textarea value={form.content} rows={4} onChange={e => set('content', e.target.value)} placeholder="Write your announcement…"
+            className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+        </div>
+        <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+          <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Settings</span>
+          <div className="h-px bg-brand/20" />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
+          <div className="relative">
+            <button type="button" onClick={() => setTypeOpen(!typeOpen)}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              style={{
+                backgroundColor: '#1A2F27',
+                border: `1px solid ${typeOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                boxShadow: typeOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                outline: 'none',
+                transition: 'box-shadow 0.2s ease',
+              }}>
+              <Tag className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+              <span className="flex-1 text-left font-medium text-text-secondary">{ANNOUNCEMENT_TYPE_LABELS[form.type]}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${typeOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
             </button>
-          )}
+            {typeOpen && (
+              <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                {Object.entries(ANNOUNCEMENT_TYPE_LABELS).map(([v, l]) => (
+                  <button key={v} type="button"
+                    onClick={() => { set('type', Number(v)); setTypeOpen(false); }}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${form.type === Number(v) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                    {l}
+                    {form.type === Number(v) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Schedule for <span className="text-text-muted font-normal">(optional)</span></label>
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+            <input type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)}
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{
+                backgroundColor: '#1A2F27',
+                colorScheme: 'dark',
+                backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+              }} />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -306,6 +339,23 @@ export function Component() {
   const [selected, setSelected] = useState<AnnouncementSummaryDto | null>(null);
   const { data: statsRaw } = useAnnouncementSummaryStats();
   const overallStats = statsRaw as any;
+  const [form, setForm] = useState<AnnouncementCreateRequest>({ title: '', content: '', type: AnnouncementType.General });
+  const [typeOpen, setTypeOpen] = useState(false);
+  const createAnnouncement = useCreateAnnouncement();
+  const publishAnnouncement = usePublishAnnouncement();
+  const set = (k: keyof AnnouncementCreateRequest, v: any) => setForm(f => ({ ...f, [k]: v }));
+
+  const handleCreate = async (action: 'draft' | 'publish') => {
+    if (!form.title.trim() || !form.content.trim()) return;
+    const payload: AnnouncementCreateRequest = { ...form };
+    if (!payload.scheduledAt) delete payload.scheduledAt;
+    const result = await createAnnouncement.mutateAsync(payload);
+    if (action === 'publish' && (result as any)?.data?.id) {
+      await publishAnnouncement.mutateAsync((result as any).data.id);
+    }
+    setCreating(false);
+    setForm({ title: '', content: '', type: AnnouncementType.General });
+  };
 
   const items: AnnouncementSummaryDto[] = (data as any)?.data ?? data ?? [];
 
@@ -388,7 +438,28 @@ export function Component() {
         )}
       </div>
 
-      {creating && <SlideOver title="New Announcement" onClose={() => setCreating(false)}><CreateForm onClose={() => setCreating(false)} /></SlideOver>}
+      {creating && <SlideOver title="New Announcement" onClose={() => setCreating(false)}
+        footer={
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] text-text-muted">Choose what happens after creating:</p>
+            <div className="flex gap-3">
+              <button onClick={() => setCreating(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+              <button onClick={() => handleCreate('draft')}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">
+                <Clock className="w-3.5 h-3.5" /> Save as Draft
+              </button>
+              {!form.scheduledAt && (
+                <button onClick={() => handleCreate('publish')}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+                  <Send className="w-3.5 h-3.5" /> Publish
+                </button>
+              )}
+            </div>
+          </div>
+        }
+      >
+        <CreateForm form={form} set={set} typeOpen={typeOpen} setTypeOpen={setTypeOpen} />
+      </SlideOver>}
       {selected && <SlideOver title="Announcement" onClose={() => setSelected(null)}><DetailPanel item={selected} onClose={() => setSelected(null)} /></SlideOver>}
     </div>
   );

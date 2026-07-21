@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Plus, X, Loader2, PackageCheck, CheckCircle, XCircle } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Plus, X, Loader2, PackageCheck, CheckCircle, XCircle, Hash, MapPin, FileText, PlusCircle, ChevronDown, Package } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useGoodsReceipts, useCreateGoodsReceipt, useConfirmGoodsReceipt, useVoidGoodsReceipt,
@@ -7,34 +7,61 @@ import {
 import type { GoodsReceiptDto, GoodsReceiptCreateRequest, GoodsReceiptLineItemRequest, GoodsReceiptFilter } from '../types/crm.types';
 import { GR_STATUS_LABELS, GR_STATUS_COLORS, GOODS_CONDITION_LABELS, GoodsCondition, GoodsReceiptStatus } from '../types/crm.types';
 
-const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
-
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colors[value] ?? ''}`}>{labels[value] ?? value}</span>;
 }
 
-function SlideOver({ open, onClose, title, wide, children }: { open: boolean; onClose: () => void; title: string; wide?: boolean; children: React.ReactNode }) {
+function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className={`drawer-slide-in relative ${wide ? 'w-[620px]' : 'w-[560px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: '640px',
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
 }
 
 type GrLine = { poLineItemId: string; quantityReceived: string; condition: string; rejectedQty: string; rejectionReason: string };
 const emptyGrLine = (): GrLine => ({ poLineItemId: '', quantityReceived: '1', condition: '1', rejectedQty: '0', rejectionReason: '' });
+
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 export function Component() {
   const [filter, setFilter] = useState<GoodsReceiptFilter>({ page: 1, pageSize: 20 });
@@ -47,6 +74,19 @@ export function Component() {
   const [warehouse, setWarehouse] = useState('');
   const [notes, setNotes] = useState('');
   const [lines, setLines] = useState<GrLine[]>([emptyGrLine()]);
+  const [conditionDropOpen, setConditionDropOpen] = useState<number | null>(null);
+  const conditionDropRef = useRef<HTMLDivElement>(null);
+
+  // Close condition dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (conditionDropRef.current && !conditionDropRef.current.contains(e.target as Node)) {
+        setConditionDropOpen(null);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const { data: raw, isLoading } = useGoodsReceipts(filter);
   const items: GoodsReceiptDto[] = (raw as any)?.items ?? [];
@@ -142,33 +182,136 @@ export function Component() {
       </div>
 
       {/* Create */}
-      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Goods Receipt" wide>
-        <form onSubmit={handleCreate} className="space-y-4">
-          <Field label="Purchase Order ID *"><input required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" className={inputCls} /></Field>
-          <Field label="Warehouse Location"><input value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..." className={inputCls} /></Field>
+      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Goods Receipt" subtitle="Record incoming inventory from a purchase order"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button type="submit" form="gr-form" disabled={createGR.isPending}
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              {createGR.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Receipt'}
+            </button>
+          </div>
+        }
+      >
+        <form id="gr-form" onSubmit={handleCreate} className="space-y-4">
+          {/* ── Receipt Info ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Receipt Info</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          <Field label="Purchase Order ID *">
+            <div className="relative">
+              <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={inputStyle} />
+            </div>
+          </Field>
+
+          <Field label="Warehouse Location">
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..."
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={inputStyle} />
+            </div>
+          </Field>
+
+          {/* ── Received Items ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Received Items</span>
+            <div className="h-px bg-brand/20" />
+          </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-text-muted">Received Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all"><Plus className="w-3 h-3" /> Add Row</button>
+              <label className="text-xs font-semibold text-text-secondary">Items</label>
+              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
-                <div key={i} className="bg-bg-surface rounded-xl p-3 space-y-2">
+                <div key={i} className="bg-glass-1 border-thin border-border-subtle rounded-xl p-3 space-y-2">
                   <div className="grid grid-cols-2 gap-2">
-                    <input value={l.poLineItemId} onChange={e => setLine(i, 'poLineItemId', e.target.value)} placeholder="PO Line Item ID (optional)" className={inputCls} />
-                    <input type="number" min="0" value={l.quantityReceived} onChange={e => setLine(i, 'quantityReceived', e.target.value)} placeholder="Qty received" className={inputCls} />
+                    <div className="relative">
+                      <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                      <input value={l.poLineItemId} onChange={e => setLine(i, 'poLineItemId', e.target.value)} placeholder="PO Line Item ID"
+                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                        style={inputStyle} />
+                    </div>
+                    <div className="relative">
+                      <Package className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                      <input type="number" min="0" value={l.quantityReceived} onChange={e => setLine(i, 'quantityReceived', e.target.value)} placeholder="Qty received"
+                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                        style={inputStyle} />
+                    </div>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
-                    <select value={l.condition} onChange={e => setLine(i, 'condition', e.target.value)} className={inputCls}>
-                      {Object.entries(GOODS_CONDITION_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-                    </select>
+                    {/* Condition dropdown */}
+                    <div className="relative" ref={conditionDropRef}>
+                      <PackageCheck className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+                      <button
+                        type="button"
+                        onClick={() => setConditionDropOpen(conditionDropOpen === i ? null : i)}
+                        className="w-full flex items-center gap-2 pl-8 pr-2 py-1.5 rounded-xl text-sm text-text-primary text-left"
+                        style={{
+                          backgroundColor: '#1A332C',
+                          border: `1px solid ${conditionDropOpen === i ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                          boxShadow: conditionDropOpen === i
+                            ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                            : 'none',
+                          outline: 'none',
+                          transition: 'box-shadow 0.2s ease',
+                        }}
+                      >
+                        <span className={`flex-1 font-medium ${
+                          Number(l.condition) === GoodsCondition.Good ? 'text-success' :
+                          Number(l.condition) === GoodsCondition.Damaged ? 'text-[#F59E0B]' :
+                          Number(l.condition) === GoodsCondition.Rejected ? 'text-danger' : 'text-text-secondary'
+                        }`}>
+                          {GOODS_CONDITION_LABELS[Number(l.condition) as GoodsCondition]}
+                        </span>
+                        <ChevronDown className={`w-3 h-3 text-text-muted transition-transform duration-200 ${conditionDropOpen === i ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                      </button>
+                      {conditionDropOpen === i && (
+                        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                        >
+                          {([
+                            { value: GoodsCondition.Good, label: GOODS_CONDITION_LABELS[GoodsCondition.Good], dot: '#10B981', text: 'text-success', hover: 'hover:bg-[rgba(16,185,129,0.08)]' },
+                            { value: GoodsCondition.Damaged, label: GOODS_CONDITION_LABELS[GoodsCondition.Damaged], dot: '#F59E0B', text: 'text-[#F59E0B]', hover: 'hover:bg-[rgba(245,158,11,0.10)]' },
+                            { value: GoodsCondition.Rejected, label: GOODS_CONDITION_LABELS[GoodsCondition.Rejected], dot: '#F43F5E', text: 'text-danger', hover: 'hover:bg-[rgba(244,63,94,0.10)]' },
+                          ] as const).map(opt => (
+                            <button
+                              key={opt.value}
+                              type="button"
+                              onClick={() => { setLine(i, 'condition', String(opt.value)); setConditionDropOpen(null); }}
+                              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${Number(l.condition) === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                            >
+                              <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                              {opt.label}
+                              {Number(l.condition) === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     {Number(l.condition) === GoodsCondition.Rejected && (
-                      <input type="number" min="0" value={l.rejectedQty} onChange={e => setLine(i, 'rejectedQty', e.target.value)} placeholder="Rejected qty" className={inputCls} />
+                      <div className="relative">
+                        <XCircle className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                        <input type="number" min="0" value={l.rejectedQty} onChange={e => setLine(i, 'rejectedQty', e.target.value)} placeholder="Rejected qty"
+                          className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                          style={inputStyle} />
+                      </div>
                     )}
                   </div>
                   {Number(l.condition) !== GoodsCondition.Good && (
-                    <input value={l.rejectionReason} onChange={e => setLine(i, 'rejectionReason', e.target.value)} placeholder="Rejection/damage reason" className={inputCls} />
+                    <div className="relative">
+                      <FileText className="absolute left-2.5 top-3 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                      <input value={l.rejectionReason} onChange={e => setLine(i, 'rejectionReason', e.target.value)} placeholder="Rejection/damage reason"
+                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                        style={inputStyle} />
+                    </div>
                   )}
                   {lines.length > 1 && (
                     <button type="button" onClick={() => removeLine(i)} className="flex items-center gap-1 text-xs text-danger hover:underline"><X className="w-3 h-3" /> Remove row</button>
@@ -178,18 +321,19 @@ export function Component() {
             </div>
           </div>
 
-          <Field label="Notes"><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
-          <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createGR.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
-              {createGR.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Receipt'}
-            </button>
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
-          </div>
+          <Field label="Notes">
+            <div className="relative">
+              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Delivery notes, carrier info, exceptions…"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                style={inputStyle} />
+            </div>
+          </Field>
         </form>
       </SlideOver>
 
       {/* Detail */}
-      <SlideOver open={!!selected} onClose={() => setSelected(null)} title="Goods Receipt" wide>
+      <SlideOver open={!!selected} onClose={() => setSelected(null)} title="Goods Receipt" subtitle="Receipt details and actions">
         {selected && (
           <div className="space-y-5">
             <div>

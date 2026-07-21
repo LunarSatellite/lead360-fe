@@ -1,62 +1,170 @@
 import { useState } from 'react';
-import { Plus, X, Loader2, Building2, Pencil, Trash2 } from 'lucide-react';
+import { Plus, X, Loader2, Building2, Pencil, Trash2, User, Mail, Phone, Globe, CreditCard, MapPin, FileText, DollarSign } from 'lucide-react';
 import { useVendors, useCreateVendor, useUpdateVendor, useDeleteVendor } from '../api/crm.queries';
 import type { VendorDto, VendorCreateRequest, VendorUpdateRequest, VendorFilter } from '../types/crm.types';
 
-const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
-
-function SlideOver({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
+function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: '640px',
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
 }
 
 type FormState = { name: string; contactPerson: string; email: string; phone: string; website: string; paymentTermsDays: string; currency: string; address: string; taxNumber: string; notes: string; isActive: boolean };
 const emptyForm = (): FormState => ({ name: '', contactPerson: '', email: '', phone: '', website: '', paymentTermsDays: '30', currency: 'USD', address: '', taxNumber: '', notes: '', isActive: true });
 
-function VendorForm({ form, editing, set, onSubmit, onCancel, isPending, submitLabel }: {
+function VendorForm({ form, editing, set, onSubmit }: {
   form: FormState; editing: boolean; set: (k: keyof FormState, v: string | boolean) => void;
-  onSubmit: (e: React.FormEvent) => void; onCancel: () => void; isPending: boolean; submitLabel: string;
+  onSubmit: (e: React.FormEvent) => void;
 }) {
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <Field label="Name *"><input required value={form.name} onChange={e => set('name', e.target.value)} className={inputCls} /></Field>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Contact Person"><input value={form.contactPerson} onChange={e => set('contactPerson', e.target.value)} className={inputCls} /></Field>
-        <Field label="Email"><input type="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputCls} /></Field>
-        <Field label="Phone"><input value={form.phone} onChange={e => set('phone', e.target.value)} className={inputCls} /></Field>
-        <Field label="Website"><input value={form.website} onChange={e => set('website', e.target.value)} className={inputCls} /></Field>
-        <Field label="Payment Terms (days)"><input type="number" min="0" value={form.paymentTermsDays} onChange={e => set('paymentTermsDays', e.target.value)} className={inputCls} /></Field>
-        <Field label="Currency"><input value={form.currency} onChange={e => set('currency', e.target.value)} placeholder="USD" className={inputCls} /></Field>
+    <form id="vendor-form" onSubmit={onSubmit} className="space-y-4">
+      {/* ── Company ── */}
+      <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+        <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Company</span>
+        <div className="h-px bg-brand/20" />
       </div>
-      <Field label="Tax Number"><input value={form.taxNumber} onChange={e => set('taxNumber', e.target.value)} className={inputCls} /></Field>
-      <Field label="Address"><textarea value={form.address} onChange={e => set('address', e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
-      <Field label="Notes"><textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
+
+      <Field label="Name *">
+        <div className="relative">
+          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <input required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Acme Supplies Ltd."
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+        </div>
+      </Field>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Tax Number">
+          <div className="relative">
+            <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.taxNumber} onChange={e => set('taxNumber', e.target.value)} placeholder="TAX-123456"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </div>
+        </Field>
+        <Field label="Payment Terms (days)">
+          <div className="relative">
+            <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input type="number" min="0" value={form.paymentTermsDays} onChange={e => set('paymentTermsDays', e.target.value)} placeholder="30"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </div>
+        </Field>
+        <Field label="Currency">
+          <div className="relative">
+            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.currency} onChange={e => set('currency', e.target.value)} placeholder="USD"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </div>
+        </Field>
+        <Field label="Website">
+          <div className="relative">
+            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.website} onChange={e => set('website', e.target.value)} placeholder="https://acme.com"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </div>
+        </Field>
+      </div>
+
+      {/* ── Contact ── */}
+      <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+        <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Contact</span>
+        <div className="h-px bg-brand/20" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Contact Person">
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.contactPerson} onChange={e => set('contactPerson', e.target.value)} placeholder="Jane Smith"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </div>
+        </Field>
+        <Field label="Email">
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="jane@acme.com"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </div>
+        </Field>
+        <Field label="Phone">
+          <div className="relative">
+            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+1 555 000 1234"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </div>
+        </Field>
+      </div>
+
+      <Field label="Address">
+        <div className="relative">
+          <MapPin className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <textarea value={form.address} onChange={e => set('address', e.target.value)} rows={2} placeholder="123 Industrial Ave, Suite 400, New York, NY 10001"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+        </div>
+      </Field>
+
+      <Field label="Notes">
+        <div className="relative">
+          <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={2} placeholder="Preferred supplier for office electronics…"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+        </div>
+      </Field>
+
       {editing && (
-        <label className="flex items-center gap-2 text-sm text-text-secondary">
-          <input type="checkbox" checked={form.isActive} onChange={e => set('isActive', e.target.checked)} className="rounded" /> Active
+        <label className="flex items-center gap-2 text-sm text-text-secondary cursor-pointer">
+          <input type="checkbox" checked={form.isActive} onChange={e => set('isActive', e.target.checked)} className="rounded border-border-subtle text-brand focus:ring-brand/40" /> Active
         </label>
       )}
-      <div className="flex gap-3 pt-2">
-        <button type="submit" disabled={isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
-          {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : submitLabel}
-        </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
-      </div>
     </form>
   );
 }
@@ -184,12 +292,32 @@ export function Component() {
         </div>
       </div>
 
-      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Vendor">
-        <VendorForm form={form} editing={false} set={set} onSubmit={handleCreate} onCancel={() => { setShowCreate(false); setForm(emptyForm()); }} isPending={createVendor.isPending} submitLabel="Create Vendor" />
+      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Vendor" subtitle="Add a new vendor to your directory"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button type="submit" form="vendor-form" disabled={createVendor.isPending}
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              {createVendor.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Vendor'}
+            </button>
+          </div>
+        }
+      >
+        <VendorForm form={form} editing={false} set={set} onSubmit={handleCreate} />
       </SlideOver>
 
-      <SlideOver open={!!editing} onClose={() => setEditing(null)} title={`Edit — ${editing?.name}`}>
-        <VendorForm form={form} editing={true} set={set} onSubmit={handleUpdate} onCancel={() => setEditing(null)} isPending={updateVendor.isPending} submitLabel="Save Changes" />
+      <SlideOver open={!!editing} onClose={() => setEditing(null)} title={`Edit — ${editing?.name}`} subtitle="Update vendor details"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setEditing(null)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button type="submit" form="vendor-form" disabled={updateVendor.isPending}
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              {updateVendor.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}
+            </button>
+          </div>
+        }
+      >
+        <VendorForm form={form} editing={true} set={set} onSubmit={handleUpdate} />
       </SlideOver>
     </>
   );

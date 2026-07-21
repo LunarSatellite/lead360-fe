@@ -1,7 +1,6 @@
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Plus, X, Loader2, Star, TrendingUp } from 'lucide-react';
+import { Plus, X, Loader2, Star, TrendingUp, ChevronDown, User, Hash, Send, FileText } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useNpsSurveys, useNpsTenantSummary, useSendNpsSurvey } from '../api/crm.queries';
@@ -13,10 +12,7 @@ import {
   CRM_NPS_CLASSIFICATION_LABELS, CRM_NPS_CLASSIFICATION_COLORS, CRM_NPS_TRIGGER_LABELS,
 } from '../types/crm.types';
 
-const inputCls =
-  'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
-const selectCls =
-  'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium';
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 function Badge({ value, labels, colors }: {
   value: number;
@@ -30,24 +26,38 @@ function Badge({ value, labels, colors }: {
   );
 }
 
-function SlideOver({ open, onClose, title, children }: {
-  open: boolean; onClose: () => void; title: string; children: React.ReactNode;
+function SlideOver({ open, onClose, title, subtitle, children, footer }: {
+  open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode;
 }) {
   if (!open) return null;
-  return createPortal(
-    <div className="fixed inset-0 z-[9999] flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: '520px',
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>}
       </div>
-    </div>,
-    document.body
+    </div>
   );
 }
 
@@ -109,6 +119,38 @@ function SummaryCard() {
   );
 }
 
+function TriggerDropdown({ value, onChange }: { value: CrmNpsSurveyTrigger | undefined; onChange: (v: CrmNpsSurveyTrigger) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+  return (
+    <div className="relative" ref={ref}>
+      <button type="button" onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary text-left"
+        style={{ backgroundColor: '#1A332C', border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`, boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
+      >
+        <span className="flex-1 font-medium text-text-primary">{value != null ? (CRM_NPS_TRIGGER_LABELS[value] ?? 'Select trigger') : 'Select trigger'}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+          {(Object.entries(CRM_NPS_TRIGGER_LABELS) as [string, string][]).map(([v, l]) => (
+            <button key={v} type="button" onClick={() => { onChange(Number(v) as CrmNpsSurveyTrigger); setOpen(false); }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${value === Number(v) ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}>
+              {l}
+              {value === Number(v) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SendSurveyForm({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState<CrmNpsSendRequest>({
     contactId: '', dealId: '', supportCaseId: '',
@@ -117,7 +159,7 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
   const send = useSendNpsSurvey();
 
   const set = (k: keyof CrmNpsSendRequest) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -130,40 +172,57 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Contact ID *</label>
-        <input required value={form.contactId} onChange={set('contactId')} placeholder="UUID" className={inputCls} />
+    <form id="nps-form" onSubmit={handleSubmit} className="space-y-4">
+      {/* ── Survey ── */}
+      <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+        <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Survey</span>
+        <div className="h-px bg-brand/20" />
       </div>
+
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Deal ID (optional)</label>
-        <input value={form.dealId ?? ''} onChange={set('dealId')} placeholder="UUID" className={inputCls} />
+        <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID *</label>
+        <div className="relative">
+          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <input required value={form.contactId} onChange={set('contactId')} placeholder="contact-uuid"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+            style={inputStyle} />
+        </div>
       </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
+          <div className="relative">
+            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.dealId ?? ''} onChange={set('dealId')} placeholder="deal-uuid"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={inputStyle} />
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Support Case ID</label>
+          <div className="relative">
+            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="case-uuid"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={inputStyle} />
+          </div>
+        </div>
+      </div>
+
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Support Case ID (optional)</label>
-        <input value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="UUID" className={inputCls} />
+        <label className="block text-xs font-semibold text-text-secondary mb-1">Trigger</label>
+        <TriggerDropdown value={form.trigger} onChange={v => setForm(f => ({ ...f, trigger: v }))} />
       </div>
+
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Trigger</label>
-        <select value={form.trigger} onChange={set('trigger')} className={selectCls}>
-          {(Object.entries(CRM_NPS_TRIGGER_LABELS) as [string, string][]).map(([v, l]) => (
-            <option key={v} value={v}>{l}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Custom Message (optional)</label>
-        <textarea rows={3} value={form.customMessage ?? ''} onChange={set('customMessage')} placeholder="How was your experience?" className={`${inputCls} resize-none`} />
-      </div>
-      <div className="flex gap-3 pt-1">
-        <button type="submit" disabled={send.isPending || !form.contactId.trim()}
-          className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all">
-          {send.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Plus className="w-3.5 h-3.5" /> Send Survey</>}
-        </button>
-        <button type="button" onClick={onClose}
-          className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">
-          Cancel
-        </button>
+        <label className="block text-xs font-semibold text-text-secondary mb-1">Custom Message</label>
+        <div className="relative">
+          <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <textarea rows={3} value={form.customMessage ?? ''} onChange={set('customMessage')} placeholder="How was your experience?"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+            style={inputStyle} />
+        </div>
       </div>
     </form>
   );
@@ -271,7 +330,21 @@ export function Component() {
       </div>
 
       {/* Send Survey SlideOver */}
-      <SlideOver open={showSend} onClose={() => setShowSend(false)} title="Send NPS Survey">
+      <SlideOver
+        open={showSend}
+        onClose={() => setShowSend(false)}
+        title="Send NPS Survey"
+        subtitle="Send a Net Promoter Score survey to a contact"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setShowSend(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button type="submit" form="nps-form"
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              <Send className="w-4 h-4" /> Send Survey
+            </button>
+          </div>
+        }
+      >
         <SendSurveyForm onClose={() => setShowSend(false)} />
       </SlideOver>
 

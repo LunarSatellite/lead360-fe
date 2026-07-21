@@ -729,14 +729,26 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex">
-      <div className="flex-1 bg-black/50" onClick={onClose} />
-      <div className="w-full max-w-md bg-bg-card border-l border-border-subtle flex flex-col h-full">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
-          <h3 className="font-bold text-text-primary flex items-center gap-2">
-            <Facebook className="w-5 h-5 text-[#1877F2]" /> Connect Ad Account
-          </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2 className="text-base font-extrabold leading-tight flex items-center gap-2" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              <Facebook className="w-5 h-5 text-[#1877F2]" style={{ WebkitTextFillColor: 'unset' }} /> Connect Ad Account
+            </h2>
+            <p className="text-xs text-text-muted mt-0.5">Link your Meta ad account to run campaigns</p>
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -765,16 +777,20 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             </ol>
           </div>
           <div>
-            <label className={labelCls}>Ad Account ID *</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Ad Account ID <span className="text-danger">*</span></label>
             <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
-              placeholder="act_123456789" className={inputCls} />
+              placeholder="act_123456789"
+              className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
-            <label className={labelCls}>Access Token *</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Access Token <span className="text-danger">*</span></label>
             <div className="relative">
               <input type={showToken ? 'text' : 'password'} value={form.accessToken}
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
-                placeholder="EAABsbCS..." className={inputCls + ' pr-10'} />
+                placeholder="EAABsbCS..."
+                className="w-full pl-3 pr-10 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               <button type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
@@ -782,24 +798,28 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div>
-            <label className={labelCls}>Business Name</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Business Name</label>
             <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-              placeholder="Acme Marketing" className={inputCls} />
+              placeholder="Acme Marketing"
+              className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
-            <label className={labelCls}>Currency</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
             <input value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
-              placeholder="USD" className={inputCls} />
+              placeholder="USD"
+              className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
         </div>
-        <div className="px-6 py-4 border-t border-border-subtle flex gap-3">
+        <div className="shrink-0 px-6 py-4 border-t border-border-subtle flex gap-3">
           <button onClick={() => mut.mutate()}
             disabled={mut.isPending || !form.adAccountId || !form.accessToken}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#1877F2] text-white font-bold text-sm disabled:opacity-50 transition-all">
             {mut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Facebook className="w-4 h-4" />}
             Connect & Save
           </button>
-          <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
+          <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:border-border-medium transition-all">
             Cancel
           </button>
         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check, Package } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Plus, X, Loader2, FileText, Send, Trash2, Pencil, Check, Package, DollarSign, Calendar, User, Layers } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useSearchParams, useNavigate } from 'react-router-dom';
@@ -12,11 +13,13 @@ import { ApprovalEntityType } from '../types/crm.types';
 import type {
   CrmQuoteSummaryDto, CrmQuoteCreateRequest, CrmQuoteUpdateRequest, CrmQuoteFilter,
   CrmQuoteLineItemRequest, CrmDealSummaryDto, CrmContactSummaryDto, CrmPriceBookDto,
+  CrmPriceBookDetailDto,
 } from '../types/crm.types';
 import { CrmQuoteStatus, CRM_QUOTE_STATUS_LABELS, CRM_QUOTE_STATUS_COLORS } from '../types/crm.types';
 
-const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
-const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
+// Shared input/select class
+const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors';
+const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow transition-colors';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return (
@@ -35,23 +38,49 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function SlideOver({ open, onClose, title, children, wide }: {
-  open: boolean; onClose: () => void; title: string; children: React.ReactNode; wide?: boolean;
+function SlideOver({ open, onClose, title, subtitle, children, footer, wide, padRight }: {
+  open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode; wide?: boolean; padRight?: boolean;
 }) {
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className={`fixed inset-0 z-50 flex items-center justify-end${padRight ? ' pr-4' : ''}`}>
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[520px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="text-base font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+      <div
+        className={`drawer-slide-in relative ${wide ? 'w-[640px]' : 'w-[520px]'} flex flex-col overflow-hidden`}
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>
+        )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -102,6 +131,31 @@ export function Component() {
   const [dealId, setDealId] = useState(searchParams.get('dealId') ?? '');
   const [contactId, setContactId] = useState(searchParams.get('contactId') ?? '');
 
+  // Dropdown state for Deal
+  const [dealSearch, setDealSearch] = useState('');
+  const [showDealDrop, setShowDealDrop] = useState(false);
+  const dealDropRef = useRef<HTMLDivElement>(null);
+
+  // Dropdown state for Contact
+  const [contactSearch, setContactSearch] = useState('');
+  const [showContactDrop, setShowContactDrop] = useState(false);
+  const contactDropRef = useRef<HTMLDivElement>(null);
+
+  // Dropdown state for Price Book
+  const [pbSearch, setPbSearch] = useState('');
+  const [showPbDrop, setShowPbDrop] = useState(false);
+  const pbDropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dealDropRef.current && !dealDropRef.current.contains(e.target as Node)) setShowDealDrop(false);
+      if (contactDropRef.current && !contactDropRef.current.contains(e.target as Node)) setShowContactDrop(false);
+      if (pbDropRef.current && !pbDropRef.current.contains(e.target as Node)) setShowPbDrop(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
   useEffect(() => {
     if (searchParams.get('dealId') || searchParams.get('contactId')) {
       setCreateOpen(true);
@@ -119,9 +173,9 @@ export function Component() {
   const [notes, setNotes] = useState('');
   const [lines, setLines] = useState<CrmQuoteLineItemRequest[]>([emptyLine()]);
   const { data: priceBooks } = usePriceBooks();
-  const priceBookList: CrmPriceBookDto[] = priceBooks ?? [];
+  const priceBookList: CrmPriceBookDto[] = (priceBooks as unknown as CrmPriceBookDto[]) ?? [];
   const [priceBookId, setPriceBookId] = useState('');
-  const { data: bookDetail } = usePriceBook(priceBookId || undefined);
+  const bookDetail = usePriceBook(priceBookId || undefined) as unknown as { data: { data: CrmPriceBookDetailDto } };
   const initRef = useRef(false);
   useEffect(() => {
     if (!initRef.current && priceBookList.length > 0 && !priceBookId) {
@@ -129,22 +183,23 @@ export function Component() {
       if (def) { setPriceBookId(def.id); initRef.current = true; }
     }
   }, [priceBookList, priceBookId]);
-  const bookEntries = bookDetail?.entries ?? [];
+  const bookEntries = (bookDetail as unknown as any)?.entries ?? [];
 
   // Bundle picker — expands a bundle's items into quote line items.
   const { data: bundles } = useProductBundles();
-  const bundleList = bundles ?? [];
+  const bundleList: any[] = (bundles as unknown as any[]) ?? [];
   const [bundleId, setBundleId] = useState('');
   const { data: bundleDetail } = useProductBundle(bundleId || undefined);
   function addBundle() {
-    const items = bundleDetail?.items ?? [];
+    const bd = bundleDetail as unknown as any;
+    const items = bd?.items ?? [];
     if (!items.length) return;
-    const bundleLines: CrmQuoteLineItemRequest[] = items.map((it) => ({
+    const bundleLines: CrmQuoteLineItemRequest[] = items.map((it: any) => ({
       description: it.productName, quantity: it.quantity, unitPrice: it.unitPrice, productId: it.productId,
     }));
     // Replace a single empty starter row; otherwise append.
     setLines((ls) => (ls.length === 1 && !ls[0].description ? bundleLines : [...ls, ...bundleLines]));
-    if (bundleDetail?.currency) setCurrency(bundleDetail.currency);
+    if (bd?.currency) setCurrency(bd.currency);
     setBundleId('');
   }
 
@@ -362,50 +417,245 @@ export function Component() {
       </SlideOver>
 
       {/* Create / Edit SlideOver */}
-      <SlideOver open={createOpen} onClose={() => { setCreateOpen(false); resetForm(); }} title={editingId ? 'Edit Quote' : 'New Quote'} wide>
+      <SlideOver
+        open={createOpen}
+        onClose={() => { setCreateOpen(false); resetForm(); }}
+        title={editingId ? 'Edit Quote' : 'New Quote'}
+        subtitle={editingId ? 'Update this quote' : 'Create a new quote for your deal'}
+        wide
+        padRight
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            <button
+              onClick={() => { setCreateOpen(false); resetForm(); }}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={createQuote.isPending || updateQuote.isPending}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {createQuote.isPending || updateQuote.isPending
+                ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                : editingId ? <Pencil className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+              {editingId ? 'Save Changes' : 'Create Quote'}
+            </button>
+          </div>
+        }
+      >
+        {/* ── Deal & Contact ── */}
         {!editingId && (
           <>
-            <Field label="Deal">
-              <select value={dealId} onChange={e => setDealId(e.target.value)} className={selectCls}>
-                <option value="">Select a deal (optional)</option>
-                {dealsList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-              </select>
-            </Field>
-            <Field label="Contact">
-              <select value={contactId} onChange={e => setContactId(e.target.value)} className={selectCls}>
-                <option value="">Select a contact (optional)</option>
-                {contactsList.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
-              </select>
-            </Field>
-            <Field label="Price Book">
-              <select
-                value={priceBookId}
-                onChange={e => {
-                  setPriceBookId(e.target.value);
-                  const pb = priceBookList.find(b => b.id === e.target.value);
-                  if (pb) setCurrency(pb.currency);
-                }}
-                className={selectCls}
-              >
-                <option value="">No price book (manual pricing)</option>
-                {priceBookList.map(pb => <option key={pb.id} value={pb.id}>{pb.name} ({pb.currency})</option>)}
-              </select>
-            </Field>
+            <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+              <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Deal & Contact</span>
+              <div className="h-px bg-brand/20" />
+            </div>
+
+            {/* Deal */}
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Deal</label>
+              <div className="relative" ref={dealDropRef}>
+                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Search existing deals…"
+                  autoComplete="off"
+                  value={dealSearch}
+                  onChange={e => { setDealSearch(e.target.value); setShowDealDrop(true); }}
+                  onFocus={() => setShowDealDrop(true)}
+                />
+                {dealSearch ? (
+                  <button type="button" onClick={() => { setDealSearch(''); setShowDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                    <X className="w-3.5 h-3.5" strokeWidth={2} />
+                  </button>
+                ) : null}
+                {showDealDrop && (
+                  <div
+                    className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                    style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    {dealsList.filter(d => !dealSearch || d.name.toLowerCase().includes(dealSearch.toLowerCase())).length > 0
+                      ? dealsList.filter(d => !dealSearch || d.name.toLowerCase().includes(dealSearch.toLowerCase())).map(d => (
+                        <button
+                          key={d.id}
+                          type="button"
+                          onClick={() => { setDealId(d.id); setDealSearch(''); setShowDealDrop(false); }}
+                          className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                            <Layers className="w-4 h-4 text-brand" strokeWidth={1.6} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm font-semibold text-text-primary truncate">{d.name}</div>
+                          </div>
+                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                        </button>
+                      ))
+                      : <div className="px-4 py-3 text-xs text-text-muted">No deals found</div>
+                    }
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Contact</label>
+              <div className="relative" ref={contactDropRef}>
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Search existing contacts…"
+                  autoComplete="off"
+                  value={contactSearch}
+                  onChange={e => { setContactSearch(e.target.value); setShowContactDrop(true); }}
+                  onFocus={() => setShowContactDrop(true)}
+                />
+                {contactSearch ? (
+                  <button type="button" onClick={() => { setContactSearch(''); setShowContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                    <X className="w-3.5 h-3.5" strokeWidth={2} />
+                  </button>
+                ) : null}
+                {showContactDrop && (
+                  <div
+                    className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                    style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    {contactsList.filter(c => !contactSearch || c.fullName.toLowerCase().includes(contactSearch.toLowerCase())).length > 0
+                      ? contactsList.filter(c => !contactSearch || c.fullName.toLowerCase().includes(contactSearch.toLowerCase())).map(c => (
+                        <button
+                          key={c.id}
+                          type="button"
+                          onClick={() => { setContactId(c.id); setContactSearch(''); setShowContactDrop(false); }}
+                          className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                        >
+                          <div className="relative shrink-0">
+                            <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                              <span className="text-xs font-bold text-brand">{c.fullName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}</span>
+                            </div>
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm font-semibold text-text-primary truncate">{c.fullName}</div>
+                            {c.email && <div className="flex items-center gap-2 mt-0.5"><span className="text-xs text-text-muted truncate">{c.email}</span></div>}
+                          </div>
+                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                        </button>
+                      ))
+                      : <div className="px-4 py-3 text-xs text-text-muted">No contacts found</div>
+                    }
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Price Book */}
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Price Book</label>
+              <div className="relative" ref={pbDropRef}>
+                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Select a price book…"
+                  autoComplete="off"
+                  value={pbSearch}
+                  onChange={e => { setPbSearch(e.target.value); setShowPbDrop(true); }}
+                  onFocus={() => setShowPbDrop(true)}
+                />
+                {pbSearch ? (
+                  <button type="button" onClick={() => { setPbSearch(''); setShowPbDrop(false); setPriceBookId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                    <X className="w-3.5 h-3.5" strokeWidth={2} />
+                  </button>
+                ) : null}
+                {showPbDrop && (
+                  <div
+                    className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                    style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    {priceBookList.filter(pb => !pbSearch || pb.name.toLowerCase().includes(pbSearch.toLowerCase())).length > 0
+                      ? priceBookList.filter(pb => !pbSearch || pb.name.toLowerCase().includes(pbSearch.toLowerCase())).map(pb => (
+                        <button
+                          key={pb.id}
+                          type="button"
+                          onClick={() => { setPriceBookId(pb.id); setPbSearch(''); setShowPbDrop(false); if (pb.currency) setCurrency(pb.currency); }}
+                          className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                            <FileText className="w-4 h-4 text-brand" strokeWidth={1.6} />
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm font-semibold text-text-primary truncate">{pb.name}</div>
+                            <div className="flex items-center gap-2 mt-0.5"><span className="text-xs text-text-muted">{pb.currency}</span></div>
+                          </div>
+                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                        </button>
+                      ))
+                      : <div className="px-4 py-3 text-xs text-text-muted">No price books found</div>
+                    }
+                  </div>
+                )}
+              </div>
+            </div>
           </>
         )}
-        <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} className={inputCls} placeholder="USD" /></Field>
-        {!editingId && (
-          <Field label="Validity (days)"><input type="number" value={validityDays} onChange={e => setValidityDays(Number(e.target.value))} className={inputCls} min={1} /></Field>
-        )}
+
+        {/* Currency & Validity */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
+            <div className="relative">
+              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                value={currency}
+                onChange={e => setCurrency(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                placeholder="USD"
+              />
+            </div>
+          </div>
+          {!editingId && (
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Validity (days)</label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  type="number"
+                  value={validityDays}
+                  onChange={e => setValidityDays(Number(e.target.value))}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  min={1}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ── Line Items ── */}
+        <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+          <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Line Items</span>
+          <div className="h-px bg-brand/20" />
+        </div>
+
         <div>
           <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
-            <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Line Items</p>
+            <p className="text-xs font-semibold text-text-secondary">Items</p>
             <div className="flex items-center gap-2">
               {!editingId && bundleList.length > 0 && (
                 <>
-                  <select value={bundleId} onChange={e => setBundleId(e.target.value)} className={selectCls + ' !w-auto text-xs py-1'}>
+                  <select
+                    value={bundleId}
+                    onChange={e => setBundleId(e.target.value)}
+                    className="text-xs py-1 px-2 rounded-lg border border-[rgba(0,217,138,0.20)] text-text-primary focus:outline-none"
+                    style={{ backgroundColor: '#1A2F27' }}
+                  >
                     <option value="">Add bundle…</option>
-                    {bundleList.map(b => <option key={b.id} value={b.id}>{b.name} ({b.itemCount})</option>)}
+                    {bundleList.map((b: any) => <option key={b.id} value={b.id}>{b.name} ({b.itemCount})</option>)}
                   </select>
                   <button type="button" onClick={addBundle} disabled={!bundleId || !bundleDetail}
                     className="text-xs font-semibold text-brand hover:underline disabled:opacity-40 disabled:no-underline">Add</button>
@@ -414,55 +664,106 @@ export function Component() {
               <button onClick={() => setLines(ls => [...ls, emptyLine()])} className="text-xs text-brand hover:underline">+ Add Row</button>
             </div>
           </div>
+
+          {/* Price book product picker */}
+          {!editingId && priceBookId && bookEntries.length > 0 && (
+            <div className="mb-2">
+              <select
+                value=""
+                onChange={e => {
+                  const en = bookEntries.find((x: any) => x.id === e.target.value);
+                  if (!en) return;
+                  setLines(ls => ls.map((x, idx) => idx === ls.length - 1
+                    ? { ...x, productId: en.productId ?? undefined, description: en.productName, unitPrice: en.unitPrice }
+                    : x));
+                }}
+                className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-xs text-text-primary focus:outline-none"
+                style={{ backgroundColor: '#1A2F27' }}
+              >
+                <option value="">＋ Pick from {bookDetail?.data?.data?.name ?? 'price book'}…</option>
+                {bookEntries.map((en: any) => (
+                  <option key={en.id} value={en.id}>{en.productName} — {currency} {en.unitPrice.toLocaleString()}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className="space-y-2">
             {lines.map((l, i) => (
-              <div key={i} className="space-y-1.5">
-                {!editingId && priceBookId && bookEntries.length > 0 && (
-                  <select
-                    value=""
-                    onChange={e => {
-                      const en = bookEntries.find(x => x.id === e.target.value);
-                      if (!en) return;
-                      setLines(ls => ls.map((x, idx) => idx === i
-                        ? { ...x, productId: en.productId ?? undefined, description: en.productName, unitPrice: en.unitPrice }
-                        : x));
-                    }}
-                    className={selectCls + ' text-xs'}
-                  >
-                    <option value="">＋ Pick from {bookDetail?.name ?? 'price book'}…</option>
-                    {bookEntries.map(en => (
-                      <option key={en.id} value={en.id}>{en.productName} — {currency} {en.unitPrice.toLocaleString()}</option>
-                    ))}
-                  </select>
-                )}
+              <div key={i}>
                 <div className="grid grid-cols-[1fr_80px_100px_32px] gap-2">
-                  <input value={l.description} onChange={e => updateLine(i, 'description', e.target.value)} placeholder="Description" className={inputCls} />
-                  <input type="number" value={l.quantity} onChange={e => updateLine(i, 'quantity', Number(e.target.value))} placeholder="Qty" className={inputCls} min={1} />
-                  <input type="number" value={l.unitPrice} onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))} placeholder="Price" className={inputCls} min={0} step={0.01} />
-                  <button onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))} className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors" disabled={lines.length === 1}>
+                  <input
+                    value={l.description}
+                    onChange={e => updateLine(i, 'description', e.target.value)}
+                    placeholder="Description"
+                    className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  />
+                  <input
+                    type="number"
+                    value={l.quantity}
+                    onChange={e => updateLine(i, 'quantity', Number(e.target.value))}
+                    placeholder="Qty"
+                    min={1}
+                    className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  />
+                  <input
+                    type="number"
+                    value={l.unitPrice}
+                    onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))}
+                    placeholder="Price"
+                    min={0}
+                    step={0.01}
+                    className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  />
+                  <button
+                    onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))}
+                    className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors disabled:opacity-30"
+                    disabled={lines.length === 1}
+                  >
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
             ))}
           </div>
-          <div className="flex items-center justify-end gap-3 mt-2">
+
+          {/* Tax + Totals */}
+          <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-2">
-              <label className="text-xs text-text-muted">Tax %</label>
-              <input type="number" value={taxPercent} onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
-                className="w-20 px-2 py-1 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary text-right focus:outline-none focus:border-brand" min={0} step={0.01} />
+              <label className="text-xs font-semibold text-text-secondary">Tax %</label>
+              <input
+                type="number"
+                value={taxPercent}
+                onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
+                className="w-20 px-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-xs text-text-primary text-right focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27' }}
+                min={0}
+                step={0.01}
+              />
+            </div>
+            <div className="text-xs text-text-secondary text-right space-y-0.5">
+              <p>Subtotal: <span className="font-bold text-text-primary">{currency} {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+              {taxPercent > 0 && <p>Tax ({taxPercent}%): <span className="font-bold text-text-primary">{currency} {taxAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>}
+              <p className="text-sm">Total: <span className="font-bold text-brand">{currency} {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
             </div>
           </div>
-          <div className="text-xs text-text-secondary text-right space-y-0.5">
-            <p>Subtotal: <span className="font-bold text-text-primary">{currency} {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
-            {taxPercent > 0 && <p>Tax ({taxPercent}%): <span className="font-bold text-text-primary">{currency} {taxAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>}
-            <p className="text-sm">Total: <span className="font-bold text-text-primary">{currency} {total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
-          </div>
         </div>
-        <Field label="Notes"><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls} placeholder="Optional notes..." /></Field>
-        <button onClick={handleSubmit} disabled={createQuote.isPending || updateQuote.isPending} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
-          {(createQuote.isPending || updateQuote.isPending) ? <Loader2 className="w-4 h-4 animate-spin" /> : (editingId ? <Pencil className="w-4 h-4" /> : <Plus className="w-4 h-4" />)} {editingId ? 'Save Changes' : 'Create Quote'}
-        </button>
+
+        {/* Notes */}
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
+          <textarea
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+            rows={3}
+            className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            placeholder="Optional notes…"
+          />
+        </div>
       </SlideOver>
 
       {sendPreviewQuote && (

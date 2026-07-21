@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Plus, X, Loader2, ShoppingCart, CheckCircle, Send, XCircle, Lock } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Plus, X, Loader2, ShoppingCart, CheckCircle, Send, XCircle, Lock, Building2, Calendar, DollarSign, MapPin, FileText, ShoppingBag, Hash, PlusCircle, ChevronDown } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   usePurchaseOrders, useCreatePurchaseOrder, useSubmitPurchaseOrderForApproval,
@@ -9,30 +9,55 @@ import {
 import type { PurchaseOrderDto, PurchaseOrderCreateRequest, PurchaseOrderLineItemRequest, PurchaseOrderFilter, VendorDto } from '../types/crm.types';
 import { PO_STATUS_LABELS, PO_STATUS_COLORS, PurchaseOrderStatus } from '../types/crm.types';
 
-const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
-
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colors[value] ?? ''}`}>{labels[value] ?? value}</span>;
 }
 
-function SlideOver({ open, onClose, title, wide, children }: { open: boolean; onClose: () => void; title: string; wide?: boolean; children: React.ReactNode }) {
+function SlideOver({ open, onClose, title, subtitle, children, footer, wide }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode; wide?: boolean }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className={`drawer-slide-in relative ${wide ? 'w-[640px]' : 'w-[560px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: wide ? '640px' : '560px',
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
 }
 
 type LineItem = { productName: string; sku: string; quantity: string; unitCost: string; notes: string };
@@ -50,11 +75,24 @@ export function Component() {
   const [cancelReason, setCancelReason] = useState('');
 
   const [vendorId, setVendorId] = useState('');
+  const [vendorOpen, setVendorOpen] = useState(false);
   const [expectedDelivery, setExpectedDelivery] = useState('');
   const [shippingAddress, setShippingAddress] = useState('');
   const [currency, setCurrency] = useState('USD');
   const [notes, setNotes] = useState('');
   const [lines, setLines] = useState<LineItem[]>([emptyLine()]);
+  const vendorDropRef = useRef<HTMLDivElement>(null);
+
+  // Close vendor dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (vendorDropRef.current && !vendorDropRef.current.contains(e.target as Node)) {
+        setVendorOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const { data: raw, isLoading } = usePurchaseOrders(filter);
   const items: PurchaseOrderDto[] = (raw as any)?.items ?? [];
@@ -178,32 +216,143 @@ export function Component() {
       </div>
 
       {/* Create */}
-      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Purchase Order" wide>
-        <form onSubmit={handleCreate} className="space-y-4">
-          <Field label="Vendor *">
-            <select required value={vendorId} onChange={e => setVendorId(e.target.value)} className={inputCls}>
-              <option value="">Select vendor...</option>
-              {vendorList.map((v: any) => <option key={v.id} value={v.id}>{v.name}</option>)}
-            </select>
-          </Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Expected Delivery"><input type="date" value={expectedDelivery} onChange={e => setExpectedDelivery(e.target.value)} className={inputCls} /></Field>
-            <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} /></Field>
+      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Purchase Order" subtitle="Create a new purchase order for a vendor" wide
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button type="submit" form="po-form" disabled={createPO.isPending}
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              {createPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Purchase Order'}
+            </button>
           </div>
-          <Field label="Shipping Address"><textarea value={shippingAddress} onChange={e => setShippingAddress(e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
+        }
+      >
+        <form id="po-form" onSubmit={handleCreate} className="space-y-4">
+          {/* ── Vendor ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Vendor</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          <Field label="Vendor *">
+            <div className="relative" ref={vendorDropRef}>
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+              <button
+                type="button"
+                onClick={() => setVendorOpen(o => !o)}
+                className="w-full flex items-center gap-2 pl-9 pr-3 py-2 rounded-xl text-sm text-text-primary"
+                style={{
+                  backgroundColor: '#1A332C',
+                  border: `1px solid ${vendorOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                  boxShadow: vendorOpen
+                    ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                    : 'none',
+                  outline: 'none',
+                  transition: 'box-shadow 0.2s ease',
+                }}
+              >
+                <span className={`flex-1 text-left font-medium ${vendorId ? 'text-text-primary' : 'text-text-muted'}`}>
+                  {vendorList.find(v => v.id === vendorId)?.name ?? 'Select vendor...'}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${vendorOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+              </button>
+              {vendorOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                >
+                  {vendorList.length === 0 && (
+                    <div className="px-3 py-2.5 text-sm text-text-muted">No active vendors</div>
+                  )}
+                  {vendorList.map((v: any) => (
+                    <button
+                      key={v.id}
+                      type="button"
+                      onClick={() => { setVendorId(v.id); setVendorOpen(false); }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${vendorId === v.id ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}
+                    >
+                      <Building2 className="w-3 h-3 text-text-muted shrink-0" strokeWidth={1.6} />
+                      <span className="flex-1 text-left">{v.name}</span>
+                      {vendorId === v.id && <span className="text-[10px] font-bold text-text-muted">selected</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </Field>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Expected Delivery">
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  type="date"
+                  value={expectedDelivery}
+                  onChange={e => setExpectedDelivery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                />
+              </div>
+            </Field>
+            <Field label="Currency">
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  value={currency}
+                  onChange={e => setCurrency(e.target.value)}
+                  placeholder="USD"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                />
+              </div>
+            </Field>
+          </div>
+
+          <Field label="Shipping Address">
+            <div className="relative">
+              <MapPin className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <textarea
+                value={shippingAddress}
+                onChange={e => setShippingAddress(e.target.value)}
+                rows={2}
+                placeholder="123 Industrial Ave, Suite 400, New York, NY 10001"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              />
+            </div>
+          </Field>
+
+          {/* ── Line Items ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Line Items</span>
+            <div className="h-px bg-brand/20" />
+          </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-text-muted">Line Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all"><Plus className="w-3 h-3" /> Add Row</button>
+              <label className="text-xs font-semibold text-text-secondary">Items</label>
+              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
                 <div key={i} className="grid grid-cols-[1fr_70px_70px_80px_28px] gap-1.5 items-center">
-                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product" className={inputCls} />
-                  <input value={l.sku} onChange={e => setLine(i, 'sku', e.target.value)} placeholder="SKU" className={inputCls} />
-                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} />
-                  <input type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00" className={inputCls} />
+                  <div className="relative">
+                    <ShoppingBag className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name"
+                      className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </div>
+                  <div className="relative">
+                    <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input value={l.sku} onChange={e => setLine(i, 'sku', e.target.value)} placeholder="SKU"
+                      className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </div>
+                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)}
+                    className="w-full px-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00"
+                    className="w-full px-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30"><X className="w-3.5 h-3.5" /></button>
                 </div>
               ))}
@@ -213,13 +362,19 @@ export function Component() {
             </div>
           </div>
 
-          <Field label="Notes"><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} className={`${inputCls} resize-none`} /></Field>
-          <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
-              {createPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Purchase Order'}
-            </button>
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
-          </div>
+          <Field label="Notes">
+            <div className="relative">
+              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <textarea
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                rows={2}
+                placeholder="Special instructions, delivery requirements…"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              />
+            </div>
+          </Field>
         </form>
       </SlideOver>
 
@@ -307,7 +462,7 @@ export function Component() {
       <SlideOver open={showReject} onClose={() => setShowReject(false)} title="Reject Purchase Order">
         <form onSubmit={handleReject} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Rejection Reason *"><textarea required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className={`${inputCls} resize-none`} placeholder="Reason for rejection..." /></Field>
+          <Field label="Rejection Reason *"><textarea required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none" style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={rejectPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {rejectPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Reject'}
@@ -321,7 +476,7 @@ export function Component() {
       <SlideOver open={showCancel} onClose={() => setShowCancel(false)} title="Cancel Purchase Order">
         <form onSubmit={handleCancel} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className={`${inputCls} resize-none`} placeholder="Optional cancellation reason..." /></Field>
+          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none" style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={cancelPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {cancelPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancel Order'}

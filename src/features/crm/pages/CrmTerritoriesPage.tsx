@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { confirmDialog } from '@/shared/ui/confirm';
 import {
-  Map, Plus, Trash2, Check, X, ChevronDown, ChevronUp,
+  Map, Plus, Trash2, X, ChevronDown, ChevronUp,
   UserPlus, UserMinus, Tag, ToggleLeft, ToggleRight,
 } from 'lucide-react';
 import {
@@ -25,6 +26,19 @@ export function Component() {
   const territories = (data as unknown as SalesTerritoryDto[]) || [];
   const [showCreate, setShowCreate] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const create = useCreateTerritory();
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState(1);
+
+  const handleSubmit = (e: React.SubmitEvent) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+    create.mutate(
+      { name: name.trim(), description: description.trim() || undefined, priority, rules: [] },
+      { onSuccess: () => { setShowCreate(false); setName(''); setDescription(''); setPriority(1); } },
+    );
+  };
 
   const toggle = (id: string) =>
     setExpanded((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
@@ -44,7 +58,62 @@ export function Component() {
         </button>
       </div>
 
-      {showCreate && <CreateTerritoryForm onDone={() => setShowCreate(false)} onCancel={() => setShowCreate(false)} />}
+      {showCreate && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCreate(false)} />
+          <div className="drawer-slide-in relative w-[520px] flex flex-col overflow-hidden"
+            style={{
+              borderRadius: 18,
+              background: 'var(--bg-card)',
+              border: '1px solid rgba(0,217,138,0.2)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+              maxHeight: 'calc(100vh - 32px)',
+            }}
+          >
+            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+            <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
+              <div>
+                <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Territory</h2>
+                <p className="text-xs text-text-muted mt-0.5">Create a new sales territory</p>
+              </div>
+              <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+            </div>
+            <form onSubmit={handleSubmit} className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
+              <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+                <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Basic Info</span>
+                <div className="h-px bg-brand/20" />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
+                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. North America"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} autoFocus />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Priority</label>
+                <input type="number" min={1} value={priority} onChange={(e) => setPriority(Number(e.target.value))}
+                  className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Description <span className="text-text-muted font-normal">(optional)</span></label>
+                <textarea value={description} rows={3} onChange={(e) => setDescription(e.target.value)} placeholder="What leads does this territory cover?"
+                  className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </div>
+            </form>
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
+              <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+              <button type="submit" disabled={create.isPending || !name.trim()}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                {create.isPending ? <span className="w-3.5 h-3.5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+                Create Territory
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
 
       {isLoading ? (
         <div className="p-8 text-center text-sm text-text-muted">Loading territories...</div>
@@ -67,57 +136,6 @@ export function Component() {
           ))}
         </div>
       )}
-    </div>
-  );
-}
-
-// ── Create territory form ──────────────────────────────────────────────────
-function CreateTerritoryForm({ onDone, onCancel }: { onDone: () => void; onCancel: () => void }) {
-  const create = useCreateTerritory();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState(1);
-
-  const input = 'w-full px-4 py-3 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-    create.mutate(
-      { name: name.trim(), description: description.trim() || undefined, priority, rules: [] },
-      { onSuccess: () => onDone() },
-    );
-  };
-
-  return (
-    <div className="bg-glass-1 border border-brand rounded-2xl p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="text-base font-bold text-text-primary">New territory</div>
-        <button onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
-      </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2">
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Name</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. North America" className={input} />
-          </div>
-          <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Priority</label>
-            <input type="number" min={1} value={priority} onChange={(e) => setPriority(Number(e.target.value))} className={input} />
-          </div>
-        </div>
-        <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Description <span className="opacity-40">(optional)</span></label>
-          <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What leads does this territory cover?" className={input} />
-        </div>
-        <div className="flex justify-end gap-3">
-          <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary">Cancel</button>
-          <button type="submit" disabled={create.isPending || !name.trim()} className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 disabled:opacity-50">
-            {create.isPending ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Check className="w-4 h-4" />}
-            Create territory
-          </button>
-        </div>
-      </form>
     </div>
   );
 }
@@ -205,7 +223,7 @@ function RulesPanel({ territory }: { territory: SalesTerritoryDto }) {
 
   const select = 'px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-brand';
 
-  const handleAdd = (e: React.FormEvent) => {
+  const handleAdd = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!value.trim()) return;
     addRule.mutate(

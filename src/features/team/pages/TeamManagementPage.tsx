@@ -1,14 +1,17 @@
-import { useState, Fragment } from 'react';
+﻿import { useState, Fragment } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/app/router/route-paths';
 import { confirmDialog } from '@/shared/ui/confirm';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Users, Mail, XCircle, RefreshCw, UserMinus, Plus, Send,
-  Shield, ChevronRight, Trash2, Lock, Check, X, UserCheck,
+  Shield, ChevronRight, Trash2, Lock, Check, X,
+  QrCode,
 } from 'lucide-react';
 import {
   useTeamMembers, useInvitations, useSendInvitation, useCancelInvitation,
-  useResendInvitation, useAdminUpdateUser, useDeactivateUser,
+  useResendInvitation, useAdminUpdateUser,
 } from '../api/team.queries';
 import { createInvitationSchema, type CreateInvitationFormData } from '../types/team.schemas';
 import { InvitationStatus, INVITATION_STATUS_LABEL } from '../types/team.types';
@@ -140,6 +143,7 @@ function MembersSection() {
   const assignCrmRole = useAssignCrmRole();
 
   const activeMembers = members.filter((u) => u.status !== UserStatus.Deactivated);
+  const navigate = useNavigate();
   const deactivatedMembers = members.filter((u) => u.status === UserStatus.Deactivated);
 
   const roleBadge: Record<number, string> = {
@@ -169,13 +173,13 @@ function MembersSection() {
       ) : (
         <div className="divide-y divide-border-subtle">
           {activeMembers.map((user) => (
-            <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} />
+            <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} navigate={navigate} />
           ))}
           {deactivatedMembers.length > 0 && (
             <>
               <div className="px-6 py-2 bg-glass-2 text-xs font-bold uppercase tracking-[1px] text-text-muted">Deactivated</div>
               {deactivatedMembers.map((user) => (
-                <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} />
+                <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} navigate={navigate} />
               ))}
             </>
           )}
@@ -185,10 +189,11 @@ function MembersSection() {
   );
 }
 
-function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrmRole }: {
+function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrmRole, navigate }: {
   user: UserDto; roles: CrmRoleDto[];
   roleBadge: Record<number, string>; statusBadge: Record<number, string>;
   adminUpdate: ReturnType<typeof useAdminUpdateUser>; assignCrmRole: ReturnType<typeof useAssignCrmRole>;
+  navigate: (to: string) => void;
 }) {
   const initials = `${(user.firstName?.[0] || '').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}`;
   const isDeactivated = user.status === UserStatus.Deactivated;
@@ -231,6 +236,13 @@ function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrm
                   ))}
                 </select>
               )}
+              <button
+                onClick={() => navigate(ROUTES.dashboard.crmContactCards + '?user=' + user.id)}
+                className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all"
+                title="View contact card / QR"
+              >
+                <QrCode className="w-4 h-4" />
+              </button>
               <button
                 onClick={() => confirmDialog({ message: `Deactivate ${user.firstName}?`, confirmText: 'Deactivate', danger: true }).then((ok) => { if (ok) adminUpdate.mutate({ userId: user.id, data: { status: UserStatus.Deactivated } }); })}
                 className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"

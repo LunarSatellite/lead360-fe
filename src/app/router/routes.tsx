@@ -200,7 +200,15 @@ export const router = createBrowserRouter([
       { path: 'crm/payment-terms', lazy: () => import('@/features/crm/pages/PaymentTermsPage') },
       { path: 'crm/inventory', lazy: () => import('@/features/crm/pages/InventoryPage') },
       { path: 'crm/commissions', lazy: () => import('@/features/crm/pages/CommissionsPage') },
-      // ── Flow A/B Experiments ──
+      // ── Web Forms (CRM) ──
+      { path: 'crm/webforms', lazy: () => import('@/features/crm/pages/CrmWebFormsPage') },
+      { path: 'crm/webforms/new', lazy: () => import('@/features/crm/pages/CrmWebFormBuilderPage') },
+      { path: 'crm/webforms/:id/edit', lazy: () => import('@/features/crm/pages/CrmWebFormBuilderPage') },
+      { path: 'crm/webforms/:id/submissions', lazy: () => import('@/features/crm/pages/CrmWebFormSubmissionsPage') },
+      { path: 'crm/webforms/:id/submissions/:submissionId', lazy: () => import('@/features/crm/pages/CrmWebFormSubmissionDetailPage') },
+      // ── vCard QR contact cards ──
+      { path: 'crm/contact-cards', lazy: () => import('@/features/crm/contact-cards/pages/CrmContactCardsPage') },
+            // ── Flow A/B Experiments ──
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
       { index: true, element: <Navigate to="chat" replace /> },
       // OLD: { index: true, element: <Navigate to="setup" replace /> },

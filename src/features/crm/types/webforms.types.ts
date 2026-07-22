@@ -2,6 +2,16 @@ export type WebFormStatus = "Draft" | "Published" | "Archived";
 
 export type WebFormMode = "Classic" | "Conversational";
 
+export type WebFormPageTheme = "Minimal" | "HeroBanner" | "Sidebar" | "Gradient" | "FullBleed";
+
+export const WEB_FORM_PAGE_THEMES: { value: WebFormPageTheme; label: string; description: string; preview: string }[] = [
+  { value: "Minimal",    label: "Minimal",    description: "Clean centered card on white. The HubSpot Forms default.", preview: "minimal" },
+  { value: "HeroBanner",  label: "Hero banner", description: "Full-width header image + form. Travel-booking hero look.", preview: "hero" },
+  { value: "Sidebar",    label: "Sidebar",     description: "Brand panel on the left, form on the right. Good for SaaS / quote requests.", preview: "sidebar" },
+  { value: "Gradient",   label: "Gradient",    description: "Glass card on a brand-color gradient. Modern agency look.", preview: "gradient" },
+  { value: "FullBleed",  label: "Full bleed",  description: "Edge-to-edge hero with a form card overlay. Event / campaign look.", preview: "bleed" },
+];
+
 export type WebFormFieldType =
   | "Text"
   | "Email"
@@ -56,6 +66,17 @@ export interface WebFormDto {
   mode?: WebFormMode;
   designConfig?: WebFormDesignConfig | null;
   designConfigJson?: string | null;
+  pageTheme?: WebFormPageTheme;
+  heroImageUrl?: string | null;
+  pageTitle?: string | null;
+  pageTagline?: string | null;
+  footerText?: string | null;
+  footerLinkUrl?: string | null;
+  footerLinkLabel?: string | null;
+  showPoweredBy?: boolean;
+  companyName?: string | null;
+  companyContactInfo?: string | null;
+  pageBackgroundGradient?: string | null;
 }
 
 export interface WebFormFieldDto {
@@ -101,6 +122,17 @@ export interface CreateWebFormRequest {
   preFillEnabled?: boolean;
   mode?: WebFormMode;
   designConfigJson?: string | null;
+  pageTheme?: WebFormPageTheme;
+  heroImageUrl?: string | null;
+  pageTitle?: string | null;
+  pageTagline?: string | null;
+  footerText?: string | null;
+  footerLinkUrl?: string | null;
+  footerLinkLabel?: string | null;
+  showPoweredBy?: boolean;
+  companyName?: string | null;
+  companyContactInfo?: string | null;
+  pageBackgroundGradient?: string | null;
   fields?: CreateWebFormFieldRequest[] | null;
 }
 

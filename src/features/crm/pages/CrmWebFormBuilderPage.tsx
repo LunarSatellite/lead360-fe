@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft, Loader2, Save, ExternalLink, Trash2,
@@ -12,12 +12,14 @@ import { buildEmbedSnippet, buildHostedUrl } from "../api/webforms.api";
 import { useAuth } from "@/shared/hooks/useAuth";
 import {
   CONTACT_FIELD_OPTIONS,
+  WEB_FORM_PAGE_THEMES,
   type CreateWebFormFieldRequest,
   type CreateWebFormRequest,
   type WebFormDesignConfig,
   type WebFormDto,
   type WebFormFieldType,
   type WebFormMode,
+  type WebFormPageTheme,
 } from "../types/webforms.types";
 import { ROUTES } from "@/app/router/route-paths";
 
@@ -86,6 +88,17 @@ function blankForm(): CreateWebFormRequest {
     preFillEnabled: true,
     mode: "Classic",
     designConfigJson: "",
+    pageTheme: "Minimal",
+    heroImageUrl: "",
+    pageTitle: "",
+    pageTagline: "",
+    footerText: "",
+    footerLinkUrl: "",
+    footerLinkLabel: "",
+    showPoweredBy: true,
+    companyName: "",
+    companyContactInfo: "",
+    pageBackgroundGradient: "",
     fields: [blankField(1)],
   };
 }
@@ -137,6 +150,17 @@ export function Component() {
         preFillEnabled: f.preFillEnabled ?? true,
         mode: f.mode ?? "Classic",
         designConfigJson: f.designConfigJson ?? (f.designConfig ? JSON.stringify(f.designConfig) : ""),
+        pageTheme: f.pageTheme ?? "Minimal",
+        heroImageUrl: f.heroImageUrl ?? "",
+        pageTitle: f.pageTitle ?? "",
+        pageTagline: f.pageTagline ?? "",
+        footerText: f.footerText ?? "",
+        footerLinkUrl: f.footerLinkUrl ?? "",
+        footerLinkLabel: f.footerLinkLabel ?? "",
+        showPoweredBy: f.showPoweredBy ?? true,
+        companyName: f.companyName ?? "",
+        companyContactInfo: f.companyContactInfo ?? "",
+        pageBackgroundGradient: f.pageBackgroundGradient ?? "",
         fields: null,
       });
       setDraftFields([blankField(1)]);
@@ -206,6 +230,17 @@ export function Component() {
       preFillEnabled: !!draft.preFillEnabled,
       mode: draft.mode ?? "Classic",
       designConfigJson: Object.keys(design).length > 0 ? JSON.stringify(design) : null,
+      pageTheme: draft.pageTheme ?? "Minimal",
+      heroImageUrl: (draft.heroImageUrl || "").trim() || null,
+      pageTitle: (draft.pageTitle || "").trim() || null,
+      pageTagline: (draft.pageTagline || "").trim() || null,
+      footerText: (draft.footerText || "").trim() || null,
+      footerLinkUrl: (draft.footerLinkUrl || "").trim() || null,
+      footerLinkLabel: (draft.footerLinkLabel || "").trim() || null,
+      showPoweredBy: draft.showPoweredBy ?? true,
+      companyName: (draft.companyName || "").trim() || null,
+      companyContactInfo: (draft.companyContactInfo || "").trim() || null,
+      pageBackgroundGradient: (draft.pageBackgroundGradient || "").trim() || null,
       fields: draftFields.map((f, i) => ({
         label: f.label,
         fieldKey: f.fieldKey || slugify(f.label),
@@ -510,6 +545,86 @@ function BrandingTab({
   return (
     <div className="space-y-3">
       <div className="rounded-card border-thin border-border-subtle bg-glass-1 p-4 space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-sm font-bold text-text-primary">Hosted page</h2>
+          <span className="text-[10px] uppercase tracking-wide text-text-muted">No-code share link</span>
+        </div>
+        <p className="text-xs text-text-muted">These settings only affect the public hosted page (<code className="font-mono">/f/s/&lt;slug&gt;</code>). The embed snippet and inline form are unaffected.</p>
+
+        <Field label="Page theme">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+            {WEB_FORM_PAGE_THEMES.map((t) => {
+              const active = (draft.pageTheme ?? "Minimal") === t.value;
+              return (
+                <button
+                  key={t.value}
+                  type="button"
+                  onClick={() => patch({ pageTheme: t.value })}
+                  className={
+                    "flex flex-col items-start gap-1 p-2.5 rounded-xl border text-left transition-all " +
+                    (active
+                      ? "border-border-glow bg-glass-2 ring-1 ring-border-glow"
+                      : "border-border-subtle bg-bg-input hover:bg-glass-1")
+                  }
+                  title={t.description}
+                >
+                  <PageThemeMini theme={t.value} primary={draft.primaryColor || "#0A4D8C"} />
+                  <div className="text-[11px] font-bold text-text-primary mt-1">{t.label}</div>
+                </button>
+              );
+            })}
+          </div>
+        </Field>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Field label="Page title" hint="Browser tab + hero title. Defaults to form name.">
+            <input className={inputCls} value={draft.pageTitle ?? ""} onChange={(e) => patch({ pageTitle: e.target.value })} placeholder="Plan Your Journey With Voyager" />
+          </Field>
+          <Field label="Page tagline" hint="Subtitle under the title.">
+            <input className={inputCls} value={draft.pageTagline ?? ""} onChange={(e) => patch({ pageTagline: e.target.value })} placeholder="A few details and we will get back to you." />
+          </Field>
+        </div>
+
+        <Field label="Hero image URL" hint="Shown on HeroBanner and FullBleed themes. Recommended 1600x500.">
+          <input className={inputCls} value={draft.heroImageUrl ?? ""} onChange={(e) => patch({ heroImageUrl: e.target.value })} placeholder="https://images.example.com/voyager-hero.jpg" />
+        </Field>
+
+        <Field label="Background gradient (CSS)" hint="Used by Gradient + FullBleed. Leave blank for the theme default.">
+          <input className={inputCls + " font-mono text-xs"} value={draft.pageBackgroundGradient ?? ""} onChange={(e) => patch({ pageBackgroundGradient: e.target.value })} placeholder="linear-gradient(135deg,#0A4D8C 0%,#0a0e27 100%)" />
+        </Field>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <Field label="Company name" hint="Shown in Sidebar theme.">
+            <input className={inputCls} value={draft.companyName ?? ""} onChange={(e) => patch({ companyName: e.target.value })} placeholder="Voyager Nepal" />
+          </Field>
+          <Field label="Company contact info" hint="Sidebar subtitle - address, phone, etc.">
+            <input className={inputCls} value={draft.companyContactInfo ?? ""} onChange={(e) => patch({ companyContactInfo: e.target.value })} placeholder="Kathmandu, Nepal  -  +977-1-555-0000" />
+          </Field>
+        </div>
+
+        <div className="border-t border-border-subtle pt-3 space-y-2">
+          <h3 className="text-xs font-bold text-text-primary uppercase tracking-wide">Footer</h3>
+          <Field label="Footer text">
+            <input className={inputCls} value={draft.footerText ?? ""} onChange={(e) => patch({ footerText: e.target.value })} placeholder="2025 Voyager Nepal. All rights reserved." />
+          </Field>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <Field label="Footer link label">
+              <input className={inputCls} value={draft.footerLinkLabel ?? ""} onChange={(e) => patch({ footerLinkLabel: e.target.value })} placeholder="Privacy policy" />
+            </Field>
+            <Field label="Footer link URL">
+              <input className={inputCls} value={draft.footerLinkUrl ?? ""} onChange={(e) => patch({ footerLinkUrl: e.target.value })} placeholder="https://example.com/privacy" />
+            </Field>
+          </div>
+          <label className="flex items-center gap-2 p-3 rounded-xl bg-bg-input border-thin border-border-subtle cursor-pointer">
+            <input type="checkbox" checked={!!draft.showPoweredBy} onChange={(e) => patch({ showPoweredBy: e.target.checked })} />
+            <div>
+              <div className="text-sm text-text-primary">Show &quot;Powered by Lead360&quot;</div>
+              <div className="text-[10px] text-text-muted">Off if you want a fully white-labeled page.</div>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div className="rounded-card border-thin border-border-subtle bg-glass-1 p-4 space-y-3">
         <h2 className="text-sm font-bold text-text-primary">Colors & typography</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Field label="Logo URL">
@@ -584,6 +699,24 @@ function ToggleCard({ label, description, checked, onChange }: { label: string; 
       </div>
     </label>
   );
+}
+
+function PageThemeMini({ theme, primary }: { theme: WebFormPageTheme; primary: string }) {
+  const base = "w-full h-12 rounded-md border border-black/10 overflow-hidden flex";
+  if (theme === "Minimal") {
+    return <div className={base} style={{ background: "#fff", alignItems: "center", justifyContent: "center" }}><div style={{ width: "55%", height: "70%", background: "#f4f6fa", borderRadius: "3px", border: "1px solid rgba(0,0,0,0.08)" }} /></div>;
+  }
+  if (theme === "HeroBanner") {
+    return <div className={base + " flex-col"}><div style={{ height: "55%", background: primary }} /><div style={{ flex: 1, background: "#fff", alignItems: "center", justifyContent: "center", display: "flex" }}><div style={{ width: "55%", height: "60%", background: "#f4f6fa", borderRadius: "3px", border: "1px solid rgba(0,0,0,0.08)" }} /></div></div>;
+  }
+  if (theme === "Sidebar") {
+    return <div className={base}><div style={{ width: "40%", background: primary }} /><div style={{ flex: 1, background: "#fff", alignItems: "center", justifyContent: "center", display: "flex" }}><div style={{ width: "60%", height: "70%", background: "#f4f6fa", borderRadius: "3px", border: "1px solid rgba(0,0,0,0.08)" }} /></div></div>;
+  }
+  if (theme === "Gradient") {
+    return <div className={base + " flex-col"} style={{ background: "linear-gradient(135deg," + primary + " 0%,#0a0e27 100%)", alignItems: "center", justifyContent: "center" }}><div style={{ width: "65%", height: "75%", background: "rgba(255,255,255,0.85)", borderRadius: "4px", boxShadow: "0 4px 14px rgba(0,0,0,0.25)" }} /></div>;
+  }
+  // FullBleed
+  return <div className={base + " flex-col"} style={{ background: primary, alignItems: "stretch", justifyContent: "center" }}><div style={{ height: "30%", background: "rgba(255,255,255,0.25)" }} /><div style={{ flex: 1, background: "#fff", alignItems: "center", justifyContent: "center", display: "flex" }}><div style={{ width: "60%", height: "60%", background: "#f4f6fa", borderRadius: "3px", border: "1px solid rgba(0,0,0,0.08)" }} /></div></div>;
 }
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {

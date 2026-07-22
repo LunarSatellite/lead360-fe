@@ -1,4 +1,4 @@
-import type { UserRoleValue, UserStatusValue } from '@/features/auth/types/auth.types';
+﻿import type { UserRoleValue, UserStatusValue } from '@/features/auth/types/auth.types';
 
 // ─── Enums ───
 export const InvitationStatus = { Pending: 1, Accepted: 2, Cancelled: 3, Expired: 4 } as const;
@@ -53,5 +53,8 @@ export interface AcceptInvitationRequest {
 // ─── AdminUpdateUserRequest (PUT /api/v1/users/{userId}/admin) ───
 export interface AdminUpdateUserRequest {
   role?: UserRoleValue;
+  phone?: string | null;       // optional, maxLength 20
   status?: UserStatusValue;
+  jobTitle?: string | null;     // optional, maxLength 100
+  department?: string | null;  // optional, maxLength 100
 }

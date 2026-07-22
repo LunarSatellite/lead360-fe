@@ -110,6 +110,7 @@ export const ROUTES = {
     crmWebFormSubmissions: (id: string) => `/dashboard/crm/webforms/${id}/submissions`,
     crmWebFormSubmissionDetail: (formId: string, submissionId: string) =>
       `/dashboard/crm/webforms/${formId}/submissions/${submissionId}`,
+    crmContactCards: '/dashboard/crm/contact-cards',
     // ── RBAC & Territories ──
     crmTerritories: '/dashboard/crm/territories',
     // ── Procurement ──

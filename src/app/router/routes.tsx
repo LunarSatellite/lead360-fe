@@ -206,7 +206,9 @@ export const router = createBrowserRouter([
       { path: 'crm/webforms/:id/edit', lazy: () => import('@/features/crm/pages/CrmWebFormBuilderPage') },
       { path: 'crm/webforms/:id/submissions', lazy: () => import('@/features/crm/pages/CrmWebFormSubmissionsPage') },
       { path: 'crm/webforms/:id/submissions/:submissionId', lazy: () => import('@/features/crm/pages/CrmWebFormSubmissionDetailPage') },
-      // ── Flow A/B Experiments ──
+      // ── vCard QR contact cards ──
+      { path: 'crm/contact-cards', lazy: () => import('@/features/crm/contact-cards/pages/CrmContactCardsPage') },
+            // ── Flow A/B Experiments ──
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
       { index: true, element: <Navigate to="chat" replace /> },
       // OLD: { index: true, element: <Navigate to="setup" replace /> },

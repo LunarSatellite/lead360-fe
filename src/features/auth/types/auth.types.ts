@@ -111,6 +111,8 @@ export interface UpdateProfileRequest {
   lastName?: string | null;   // maxLength 100
   phone?: string | null;      // maxLength 20
   avatarUrl?: string | null;  // maxLength 500
+  jobTitle?: string | null;     // optional, maxLength 100
+  department?: string | null;  // optional, maxLength 100
 }
 
 // ─── UserProfileDto (returned in AuthResponse.user, GET /api/v1/users/me) ───
@@ -121,6 +123,8 @@ export interface UserProfileDto {
   lastName: string | null;
   phone: string | null;
   avatarUrl: string | null;
+  jobTitle: string | null;
+  department: string | null;
   role: UserRoleValue;
   tenantName: string | null;
   tenantId: string;
@@ -150,4 +154,6 @@ export interface UserDto {
   emailVerifiedAt: string | null;
   lastLoginAt: string | null;
   crmRoleId: string | null;
+  jobTitle: string | null;     // optional, maxLength 100
+  department: string | null;  // optional, maxLength 100 (e.g. "Support", "Sales")
 }

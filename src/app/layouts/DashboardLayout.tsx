@@ -64,6 +64,7 @@ import {
   Truck,
   MapPin,
   Percent,
+  QrCode,
   Crosshair,
   DollarSign,
   Undo2,
@@ -128,6 +129,7 @@ const crmNavGroups = [
       { label: 'Organizations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
       { label: 'Territories',   href: ROUTES.dashboard.crmTerritories,   icon: MapPin },
       { label: 'Assignment Rotation', href: ROUTES.dashboard.crmAssignmentRotation, icon: Shuffle },
+      { label: 'Contact cards', href: ROUTES.dashboard.crmContactCards, icon: QrCode },
     ],
   },
   {

@@ -815,7 +815,7 @@ export function Component() {
         <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => { setShowNewDeal(false); resetNewDeal(); }} />
           <div
-            className="relative w-[640px] flex flex-col overflow-hidden"
+            className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
             style={{
               borderRadius: 18,
               background: 'var(--bg-card)',

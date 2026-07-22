@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
-import { Loader2, Plus, Check, X, Send, Clock } from 'lucide-react';
+import { Loader2, Plus, Check, X, Send, Clock, Calendar, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { crmApi } from '../api/crm.api';
 import { CrmTimePeriodStatus, CRM_TIME_PERIOD_STATUS_LABELS } from '../types/crm.types';
@@ -14,6 +15,55 @@ const STATUS_COLORS: Record<number, string> = {
   [CrmTimePeriodStatus.Approved]:  'bg-success-soft text-success',
   [CrmTimePeriodStatus.Rejected]:  'bg-danger-soft text-danger',
 };
+
+function SlideOver({ open, onClose, title, subtitle, children, footer }: {
+  open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode;
+}) {
+  if (!open) return null;
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex justify-end">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: 640,
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+          marginTop: 16,
+          marginBottom: 16,
+        }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {title}
+            </h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">{children}</div>
+        {footer && <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>}
+      </div>
+    </div>,
+    document.body
+  );
+}
 
 export function Component() {
   const qc = useQueryClient();
@@ -76,62 +126,104 @@ export function Component() {
           <p className="text-xs text-text-muted mt-0.5">Group time entries into reporting periods for review and approval.</p>
         </div>
         <button
-          onClick={() => setShowCreate(v => !v)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-white text-sm font-medium hover:opacity-90 transition-opacity"
+          onClick={() => setShowCreate(true)}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
         >
-          <Plus className="w-4 h-4" /> New Period
+          <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Period
         </button>
       </div>
 
       {/* Create form */}
       {showCreate && (
-        <div className="rounded-xl border border-border-subtle bg-bg-elevated p-5 space-y-4">
-          <h3 className="text-sm font-semibold text-text-primary">Create Time Period</h3>
-          <div>
-            <label className="block text-xs font-semibold text-text-muted mb-1">Name / Label</label>
-            <input
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="e.g. June 2026, Q2 Week 3"
-              className={inputCls}
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1">Start Date *</label>
-              <input
-                type="date"
-                value={periodStart}
-                onChange={e => setPeriodStart(e.target.value)}
-                className={inputCls}
-              />
+        <SlideOver
+          open={showCreate}
+          onClose={() => { setShowCreate(false); setName(''); setPeriodStart(''); setPeriodEnd(''); }}
+          title="New Period"
+          subtitle="Create a time period for tracking and approval"
+          footer={
+            <div className="flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => { setShowCreate(false); setName(''); setPeriodStart(''); setPeriodEnd(''); }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => createMutation.mutate({ periodStart, periodEnd, notes: name || undefined })}
+                disabled={!canCreate || createMutation.isPending}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                {createMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+                Create
+              </button>
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1">End Date *</label>
-              <input
-                type="date"
-                value={periodEnd}
-                onChange={e => setPeriodEnd(e.target.value)}
-                className={inputCls}
-              />
+          }
+        >
+          <form id="period-form" onSubmit={e => { e.preventDefault(); createMutation.mutate({ periodStart, periodEnd, notes: name || undefined }); }} className="space-y-4">
+            {/* ── Period Details ── */}
+            <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+              <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Period Details</span>
+              <div className="h-px bg-brand/20" />
             </div>
-          </div>
-          {periodStart && periodEnd && periodStart >= periodEnd && (
-            <p className="text-xs text-danger">End date must be after start date.</p>
-          )}
-          <div className="flex gap-2">
-            <button
-              onClick={() => createMutation.mutate({ periodStart, periodEnd, notes: name || undefined })}
-              disabled={!canCreate || createMutation.isPending}
-              className="px-4 py-1.5 rounded-lg bg-brand text-white text-sm font-medium disabled:opacity-50"
-            >
-              {createMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create'}
-            </button>
-            <button onClick={() => { setShowCreate(false); setName(''); setPeriodStart(''); setPeriodEnd(''); }} className="px-3 py-1.5 rounded-lg border border-border-subtle text-sm text-text-secondary">
-              Cancel
-            </button>
-          </div>
-        </div>
+
+            {/* Name / Label */}
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Name / Label</label>
+              <div className="relative">
+                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="e.g. June 2026, Q2 Week 3"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Start Date + End Date */}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date *</label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+                  <input
+                    type="date"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{
+                      backgroundColor: '#1A2F27',
+                      colorScheme: 'dark',
+                      backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                    }}
+                    value={periodStart}
+                    onChange={e => setPeriodStart(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">End Date *</label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+                  <input
+                    type="date"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{
+                      backgroundColor: '#1A2F27',
+                      colorScheme: 'dark',
+                      backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                    }}
+                    value={periodEnd}
+                    onChange={e => setPeriodEnd(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+            {periodStart && periodEnd && periodStart >= periodEnd && (
+              <p className="text-xs text-danger">End date must be after start date.</p>
+            )}
+          </form>
+        </SlideOver>
       )}
 
       {/* Status filter */}

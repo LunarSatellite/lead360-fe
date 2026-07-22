@@ -2456,7 +2456,7 @@ export interface CrmCallSummarySummaryDto {
   sentiment: CrmSignalSentiment | null; createdAt: string;
 }
 export interface CrmCallSummaryDetailDto extends CrmCallSummarySummaryDto { actionItems: string[]; }
-export interface CrmCallSummaryRequestDto { contactId: string; signalId?: string; meetingId?: string; trigger: number; }
+export interface CrmCallSummaryRequestDto { contactId?: string; signalId?: string; dealId?: string; meetingId?: string; trigger: number; }
 export interface CrmCallSummaryFilter { page?: number; pageSize?: number; }
 
 // ─── NPS Surveys ─────────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Plus, X, Loader2, Package, CheckCircle, Truck, XCircle, DollarSign, MapPin, Hash, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Plus, X, Loader2, Package, CheckCircle, Truck, XCircle, DollarSign, MapPin, Hash, ShieldCheck, AlertTriangle, ChevronDown, Building2 } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -21,7 +21,7 @@ import {
   PICK_LIST_STATUS_LABELS,
 } from '../types/crm.types';
 
-const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
+const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]';
 
 const FULFILLMENT_COLORS: Record<number, string> = {
   1: 'text-text-secondary bg-bg-elevated border-border-subtle',
@@ -43,19 +43,36 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
   );
 }
 
-function SlideOver({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
+function SlideOver({ open, onClose, title, children, footer }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[560px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all">
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
+            <p className="text-xs text-text-muted mt-0.5">Create a new order</p>
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -64,7 +81,7 @@ function SlideOver({ open, onClose, title, children }: { open: boolean; onClose:
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>
+      <label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>
       {children}
     </div>
   );
@@ -126,6 +143,7 @@ export function Component() {
   const [contactId, setContactId] = useState(urlDeal?.contactId ?? '');
   const [orderDealId, setOrderDealId] = useState(urlDealId);
   const [orderAccountId, setOrderAccountId] = useState(urlAccountId);
+  const [accountOpen, setAccountOpen] = useState(false);
   const { data: accountsRaw } = useAccounts({ pageSize: 200 });
   const accountsList: any[] = (accountsRaw as any)?.items ?? [];
   const [lines, setLines] = useState<LineItem[]>([emptyLine()]);
@@ -340,42 +358,83 @@ export function Component() {
       </div>
 
       {/* Create SlideOver */}
-      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Order">
-        <form onSubmit={handleCreate} className="space-y-4">
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} /></Field>
-          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} /></Field>
-          <Field label="Customer PO #"><input value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} /></Field>
+      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Order"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button type="submit" form="create-order-form" disabled={createOrder.isPending}
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              {createOrder.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Order'}
+            </button>
+          </div>
+        }
+      >
+        <form id="create-order-form" onSubmit={handleCreate} className="space-y-4">
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Customer PO #"><input value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <Field label="Account">
-            <select value={orderAccountId} onChange={e => setOrderAccountId(e.target.value)} className={inputCls}>
-              <option value="">— Select account (optional) —</option>
-              {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-            </select>
+            <div className="relative">
+              <button type="button" onClick={() => setAccountOpen(!accountOpen)}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                style={{
+                  backgroundColor: '#1A2F27',
+                  border: `1px solid ${accountOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                  boxShadow: accountOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  outline: 'none',
+                  transition: 'box-shadow 0.2s ease',
+                }}>
+                <Building2 className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                <span className="flex-1 text-left font-medium text-text-secondary">
+                  {orderAccountId ? accountsList.find((a: any) => a.id === orderAccountId)?.name ?? 'Select account' : '— Select account (optional) —'}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${accountOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+              </button>
+              {accountOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                  <button type="button" onClick={() => { setOrderAccountId(''); setAccountOpen(false); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary">
+                    — None —
+                    {orderAccountId === '' && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                  </button>
+                  {accountsList.map((a: any) => (
+                    <button key={a.id} type="button"
+                      onClick={() => { setOrderAccountId(a.id); setAccountOpen(false); }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${orderAccountId === a.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      <Building2 className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />{a.name}
+                      {orderAccountId === a.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </Field>
 
           <div className="border-t border-border-subtle pt-3">
-            <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-2"><MapPin className="w-3 h-3" /> Shipping Address</label>
+            <label className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary mb-2"><MapPin className="w-3 h-3" /> Shipping Address</label>
             <div className="grid grid-cols-2 gap-2">
-              <div className="col-span-2"><input value={shippingLine1} onChange={e => setShippingLine1(e.target.value)} placeholder="Address line 1" className={inputCls} /></div>
-              <input value={shippingCity} onChange={e => setShippingCity(e.target.value)} placeholder="City" className={inputCls} />
-              <input value={shippingState} onChange={e => setShippingState(e.target.value)} placeholder="State" className={inputCls} />
-              <input value={shippingPostalCode} onChange={e => setShippingPostalCode(e.target.value)} placeholder="Postal code" className={inputCls} />
-              <input value={shippingCountry} onChange={e => setShippingCountry(e.target.value)} placeholder="Country" className={inputCls} />
+              <div className="col-span-2"><input value={shippingLine1} onChange={e => setShippingLine1(e.target.value)} placeholder="Address line 1" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></div>
+              <input value={shippingCity} onChange={e => setShippingCity(e.target.value)} placeholder="City" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <input value={shippingState} onChange={e => setShippingState(e.target.value)} placeholder="State" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <input value={shippingPostalCode} onChange={e => setShippingPostalCode(e.target.value)} placeholder="Postal code" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <input value={shippingCountry} onChange={e => setShippingCountry(e.target.value)} placeholder="Country" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </div>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="text-xs font-semibold text-text-muted">Line Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded-md border border-border-subtle text-xs text-text-secondary hover:text-text-primary hover:bg-bg-surface transition-all">
+              <label className="text-xs font-semibold text-text-secondary">Line Items</label>
+              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded-md border border-border-subtle text-xs text-text-secondary hover:text-text-primary hover:bg-glass-1 transition-all">
                 <Plus className="w-3 h-3" /> Add Row
               </button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
                 <div key={i} className="grid grid-cols-[1fr_60px_80px_28px] gap-1.5 items-center">
-                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" className={inputCls} />
-                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} />
-                  <input type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} />
+                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -388,15 +447,8 @@ export function Component() {
           </div>
 
           <Field label="Notes">
-            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={`${inputCls} resize-none`} />
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls + ' resize-none'} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </Field>
-
-          <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createOrder.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
-              {createOrder.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Order'}
-            </button>
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">Cancel</button>
-          </div>
         </form>
       </SlideOver>
 

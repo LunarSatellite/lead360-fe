@@ -1,6 +1,5 @@
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
-import { Plus, Trash2, Percent, Globe, X } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Plus, Trash2, Percent, Globe, X, Loader2, Layers, MapPin, ChevronDown } from 'lucide-react';
 import { confirmDialog } from '@/shared/ui/confirm';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
@@ -8,9 +7,40 @@ import { CrmTaxType, CRM_TAX_TYPE_LABEL, type CrmTaxRuleDto, type CrmTaxTypeValu
 import { toast } from 'sonner';
 import { ApiError } from '@/shared/lib/api-client';
 
-const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
-
 const TAX_KEY = ['crm', 'tax-rules'] as const;
+
+function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: '480px',
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function Component() {
   const qc = useQueryClient();
@@ -19,6 +49,16 @@ export function Component() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ name: '', jurisdiction: '', taxType: CrmTaxType.VAT as CrmTaxTypeValue, rate: 0, appliesToAllProducts: true });
+  const [taxTypeOpen, setTaxTypeOpen] = useState(false);
+  const taxTypeDropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (taxTypeDropRef.current && !taxTypeDropRef.current.contains(e.target as Node)) setTaxTypeOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const createMut = useMutation({
     mutationFn: (d: CrmTaxRuleDto) => crmApi.createTaxRule(d as any),
@@ -115,38 +155,127 @@ export function Component() {
         </div>
       </div>
 
-      {showCreate && createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-          <form onSubmit={submit} className="w-full max-w-md bg-bg-card border-thin border-border-subtle rounded-2xl p-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-sm font-bold text-text-primary">New tax rule</h2>
-              <button type="button" onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+      <SlideOver
+        open={showCreate}
+        onClose={() => setShowCreate(false)}
+        title="New Tax Rule"
+        subtitle="Set up tax rates by jurisdiction"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button
+              type="submit"
+              form="tr-form"
+              disabled={createMut.isPending || !form.name.trim() || !form.jurisdiction.trim()}
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              {createMut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Rule'}
+            </button>
+          </div>
+        }
+      >
+        <form id="tr-form" onSubmit={submit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Name *</label>
+            <div className="relative">
+              <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                required
+                placeholder="e.g. Nepal VAT"
+                value={form.name}
+                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              />
             </div>
-            <input className={inputCls} placeholder="Name (e.g. Nepal VAT)" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
-            <input className={inputCls} placeholder="Jurisdiction (e.g. Nepal)" value={form.jurisdiction} onChange={e => setForm(f => ({ ...f, jurisdiction: e.target.value }))} required />
-            <div className="grid grid-cols-2 gap-3">
-              <select className={inputCls} value={form.taxType} onChange={e => setForm(f => ({ ...f, taxType: Number(e.target.value) as CrmTaxTypeValue }))}>
-                {Object.entries(CrmTaxType).filter(([k]) => isNaN(Number(k))).map(([k, v]) => (
-                  <option key={v} value={v}>{k}</option>
-                ))}
-              </select>
-              <div className="flex items-center gap-2">
-                <input type="number" className={inputCls} placeholder="Rate" value={form.rate || ''} onChange={e => setForm(f => ({ ...f, rate: Number(e.target.value) }))} min={0} max={100} step={0.01} />
-                <span className="text-text-muted text-sm">%</span>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Jurisdiction *</label>
+            <div className="relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                required
+                placeholder="e.g. Nepal"
+                value={form.jurisdiction}
+                onChange={e => setForm(f => ({ ...f, jurisdiction: e.target.value }))}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Tax Type</label>
+              <div className="relative" ref={taxTypeDropRef}>
+                <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+                <button
+                  type="button"
+                  onClick={() => setTaxTypeOpen(o => !o)}
+                  className="w-full flex items-center gap-2 pl-9 pr-3 py-2 rounded-xl text-sm text-text-primary text-left"
+                  style={{
+                    backgroundColor: '#1A332C',
+                    border: `1px solid ${taxTypeOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: taxTypeOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
+                >
+                  <span className="flex-1 font-medium text-text-primary">
+                    {Object.entries(CrmTaxType).filter(([k]) => isNaN(Number(k))).find(([, v]) => Number(v) === form.taxType)?.[0] ?? 'Select type'}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${taxTypeOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {taxTypeOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    {Object.entries(CrmTaxType).filter(([k]) => isNaN(Number(k))).map(([k, v]) => (
+                      <button
+                        key={v}
+                        type="button"
+                        onClick={() => { setForm(f => ({ ...f, taxType: Number(v) as CrmTaxTypeValue })); setTaxTypeOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${form.taxType === Number(v) ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}
+                      >
+                        <Percent className="w-3 h-3 text-text-muted shrink-0" strokeWidth={1.6} />
+                        {k}
+                        {form.taxType === Number(v) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-            <label className="flex items-center gap-2 text-xs text-text-secondary">
-              <input type="checkbox" checked={form.appliesToAllProducts} onChange={e => setForm(f => ({ ...f, appliesToAllProducts: e.target.checked }))} />
-              Applies to all products
-            </label>
-            <button type="submit" disabled={createMut.isPending || !form.name.trim() || !form.jurisdiction.trim()}
-              className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">
-              {createMut.isPending ? 'Creating...' : 'Create'}
-            </button>
-          </form>
-        </div>,
-        document.body
-      )}
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Rate</label>
+              <div className="relative">
+                <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  type="number"
+                  value={form.rate || ''}
+                  onChange={e => setForm(f => ({ ...f, rate: Number(e.target.value) }))}
+                  min={0}
+                  max={100}
+                  step={0.01}
+                  placeholder="0.00"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2 text-xs text-text-secondary cursor-pointer">
+            <input
+              type="checkbox"
+              checked={form.appliesToAllProducts}
+              onChange={e => setForm(f => ({ ...f, appliesToAllProducts: e.target.checked }))}
+              className="rounded border-border-subtle text-brand focus:ring-brand/40"
+            />
+            Applies to all products
+          </label>
+        </form>
+      </SlideOver>
     </div>
   );
 }

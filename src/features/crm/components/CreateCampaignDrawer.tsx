@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -212,7 +213,7 @@ export function CreateCampaignDrawer({ onClose }: Props) {
       <div className="flex-1 bg-black/50" onClick={onClose} />
 
       {/* Drawer */}
-      <div className="w-full max-w-xl bg-bg-card border-l border-border-subtle flex flex-col h-full overflow-hidden">
+      <div className="drawer-slide-in w-full max-w-xl bg-bg-card border-l border-border-subtle flex flex-col h-full overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <div>

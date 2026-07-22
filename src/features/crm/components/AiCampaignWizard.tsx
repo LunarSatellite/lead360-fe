@@ -181,20 +181,31 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex">
-      <div className="flex-1 bg-black/50" onClick={onClose} />
-      <div className="w-full max-w-md bg-bg-card border-l border-border-subtle flex flex-col h-full">
-
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
-          <h3 className="font-bold text-text-primary flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-              style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}>
-              <Sparkles className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: '#0A0F0D' }} />
-            </div>
-            AI Campaign
-          </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2 className="text-base font-extrabold leading-tight flex items-center gap-2" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}>
+                <Sparkles className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: '#0A0F0D' }} />
+              </div>
+              AI Campaign
+            </h2>
+            <p className="text-xs text-text-muted mt-0.5">Create ads with AI in seconds</p>
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -202,7 +213,8 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           <textarea
-            className="w-full px-3.5 py-3 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all min-h-[100px] resize-none"
+            className="w-full px-3.5 py-3 rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-all min-h-[100px] resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', border: '1px solid rgba(0,217,138,0.20)' }}
             placeholder="e.g. Summer 30% off on all laptops for young professionals"
             value={prompt} onChange={e => setPrompt(e.target.value)} maxLength={500} autoFocus
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(); } }}
@@ -276,7 +288,7 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
 
         {/* Footer — sticky action button */}
         {anyReady && (
-          <div className="px-6 py-4 border-t border-border-subtle">
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
             <button onClick={handleSubmit} disabled={createMut.isPending || !prompt.trim()}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand text-bg font-bold text-sm disabled:opacity-40 hover:opacity-90 transition-all">
               {createMut.isPending

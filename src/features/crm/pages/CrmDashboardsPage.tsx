@@ -10,21 +10,27 @@ import {
   useReports, useWidgetData, useDashboardMetrics,
 } from '../api/crm-reports.queries';
 import { ReportResultView } from './CrmReportsPage';
-import type { CrmDashboardDto, CrmDashboardWidgetDto } from '../types/crm-reports.types';
+import type { CrmDashboardDto, CrmDashboardWidgetDto, CrmDashboardMetricDto } from '../types/crm-reports.types';
 import { WIDGET_TYPES } from '../types/crm-reports.types';
 
 const inputCls = 'w-full px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
 const selectCls = inputCls;
 
 export function Component() {
-  const { data: dashboards = [], isLoading } = useDashboards();
+  const { data, isLoading } = useDashboards();
+  const raw = data as unknown as any;
+  const dashboards: CrmDashboardDto[] = Array.isArray(raw?.items)
+    ? raw.items
+    : Array.isArray(raw)
+    ? raw
+    : [];
   const [showCreate, setShowCreate] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
 
   if (openId) return <DashboardDetail dashboardId={openId} onBack={() => setOpenId(null)} />;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Dashboards</h1>
@@ -139,7 +145,7 @@ function DashboardDetail({ dashboardId, onBack }: { dashboardId: string; onBack:
   };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center gap-3">
         <button onClick={onBack} className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
           <ArrowLeft className="w-5 h-5" />
@@ -176,9 +182,11 @@ function DashboardDetail({ dashboardId, onBack }: { dashboardId: string; onBack:
           <GridLayout
             layout={layout}
             width={width}
-            gridConfig={{ cols: 12, rowHeight: 60, margin: [16, 16] }}
-            dragConfig={{ handle: '.widget-drag-handle' }}
+            gridConfig={{ cols: 12, rowHeight: 60, margin: [16, 16] as [number, number] }}
+            dragConfig={{ enabled: true, handle: '.widget-drag-handle' }}
+            resizeConfig={{ enabled: true }}
             compactor={noCompactor}
+            onLayoutChange={() => {}}
             onDragStop={(_layout, _oldItem, newItem) => persistItem(newItem)}
             onResizeStop={(_layout, _oldItem, newItem) => persistItem(newItem)}
           >
@@ -198,8 +206,13 @@ function AddWidgetForm({ dashboardId, existingWidgets, onDone, onCancel }: {
   dashboardId: string; existingWidgets: CrmDashboardWidgetDto[]; onDone: () => void; onCancel: () => void;
 }) {
   const addWidget = useAddWidget(dashboardId);
-  const { data: reports = [] } = useReports();
-  const { data: metrics = [] } = useDashboardMetrics();
+  const { data: reportsData } = useReports();
+  const { data: metricsRaw } = useDashboardMetrics();
+  const metrics: CrmDashboardMetricDto[] = (Array.isArray(metricsRaw)
+    ? metricsRaw
+    : (metricsRaw as { items: CrmDashboardMetricDto[] } | undefined)?.items) ?? [];
+
+  const reports: any[] = Array.isArray(reportsData) ? reportsData : [];
 
   const [source, setSource] = useState<'report' | 'metric'>('report');
   const [title, setTitle] = useState('');

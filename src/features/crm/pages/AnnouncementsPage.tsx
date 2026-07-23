@@ -14,7 +14,7 @@ import { format, parseISO } from 'date-fns';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
 const selectCls = 'px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
-const btnPrimary = 'flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-all disabled:opacity-50';
+const btnPrimary = 'flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all disabled:opacity-50';
 const btnGhost = 'flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm text-text-muted hover:text-text-primary hover:bg-bg-input transition-all';
 
 function Badge({ label, colorCls }: { label: string; colorCls: string }) {
@@ -120,7 +120,7 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
         <div>
           <label className="block text-xs font-semibold text-text-secondary mb-1">Schedule for <span className="text-text-muted font-normal">(optional)</span></label>
           <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-0" strokeWidth={1.6} />
             <input type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)}
               className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
               style={{

@@ -889,7 +889,7 @@ export function Component() {
                   {ndStageOpen && (
                     <div
                       className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
                     >
                       {stages.map(s => (
                         <button
@@ -978,11 +978,11 @@ export function Component() {
               {/* Primary Contact */}
               <div>
                 <label className="text-xs font-semibold text-text-secondary block mb-1">Primary Contact</label>
-                <select value={ndContactId} onChange={e => setNdContactId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                  <option value="">No contact</option>
-                  {contactsList.map((c: any) => <option key={c.id} value={c.id}>{c.fullName}{c.email ? ` (${c.email})` : ''}</option>)}
-                </select>
+                <ContactDropdown
+                  value={ndContactId}
+                  contacts={contactsList}
+                  onChange={setNdContactId}
+                />
               </div>
             </div>
             <div className="px-5 py-3">
@@ -1107,6 +1107,92 @@ export function Component() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ContactDropdown({
+  value,
+  contacts,
+  onChange,
+}: {
+  value: string;
+  contacts: Array<{ id: string; fullName: string; email?: string; phone?: string }>;
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const selected = contacts.find((c) => c.id === value);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const filtered = contacts.filter((c) =>
+    !search ? true : c.fullName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+        style={{
+          backgroundColor: '#1A2F27',
+          backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+          border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+          boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+          outline: 'none',
+          transition: 'box-shadow 0.2s ease',
+        }}
+      >
+        <User className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+        <span className={`flex-1 text-left font-medium ${value ? 'text-text-primary' : 'text-text-muted'}`}>
+          {selected ? selected.fullName : 'Select a contact…'}
+        </span>
+        <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
+        >
+          <div className="p-2 border-b border-border-subtle">
+            <input
+              autoFocus
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search contacts…"
+              className="w-full px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow"
+            />
+          </div>
+          {filtered.length === 0 ? (
+            <div className="px-4 py-3 text-xs text-text-muted">No contacts found</div>
+          ) : (
+            filtered.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => { onChange(c.id); setOpen(false); setSearch(''); }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-glass-1 transition-colors ${value === c.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+              >
+                <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center text-xs font-bold text-brand shrink-0">
+                  {c.fullName.split(' ').filter(Boolean).map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-semibold text-text-primary truncate">{c.fullName}</div>
+                  {c.email && <div className="text-xs text-text-muted truncate">{c.email}</div>}
+                </div>
+              </button>
+            ))
+          )}
         </div>
       )}
     </div>

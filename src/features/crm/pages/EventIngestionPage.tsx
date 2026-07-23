@@ -307,7 +307,7 @@ ${embedTag}`
     : '';
 
   return (
-    <div className="p-6 max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="p-2 rounded-xl bg-teal-DEFAULT/10 border border-teal-DEFAULT/20">

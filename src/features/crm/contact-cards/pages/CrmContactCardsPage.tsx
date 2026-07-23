@@ -1,4 +1,5 @@
 ﻿import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useSearchParams } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import {
@@ -56,7 +57,11 @@ const btnGhost =
 const btnDanger =
   "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-danger border border-danger/30 hover:bg-danger-soft transition-all";
 
-export function Component() {
+interface ComponentProps {
+  inline?: boolean;
+}
+
+export function Component({ inline }: ComponentProps = {}) {
   const [searchParams, setSearchParams] = useSearchParams();
   const focusUserId = searchParams.get("user");
 
@@ -87,7 +92,7 @@ export function Component() {
 
   return (
     <div className="space-y-6">
-      <Header count={cardList.length} />
+      {!inline && <Header count={cardList.length} />}
       {isLoading ? <LoadingState /> : <CardGrid cards={cardList} onSelect={setSelected} />}
       {selected && (
         <CardDetailModal card={selected} onClose={() => setSelected(null)} />
@@ -248,24 +253,33 @@ function CardTile({
 }
 
 // ─── Detail modal ───
-function CardDetailModal({
+export function CardDetailModal({
   card,
   onClose,
 }: {
   card: CrmContactCardDto;
   onClose: () => void;
 }) {
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+      className="fixed inset-0 z-[100] flex items-center justify-end pr-4 bg-black/40 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-3xl bg-bg-elevated border-thin border-border-subtle rounded-card shadow-2xl max-h-[90vh] flex flex-col"
+        className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
         <ModalHeader card={card} onClose={onClose} />
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           <PreviewSection card={card} />
@@ -275,7 +289,8 @@ function CardDetailModal({
           <StatsSection userId={card.userId} />
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

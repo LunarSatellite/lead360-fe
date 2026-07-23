@@ -164,7 +164,7 @@ export function Component() {
   const isLoading = tab === 'pending' ? pendingLoading : allLoading;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight flex items-center gap-2">
@@ -222,7 +222,7 @@ export function Component() {
             )}
           </div>
         ) : (
-          <div className="px-5">
+          <div>
             {displayed.map((a) => (
               <ApprovalRow key={a.id} approval={a} />
             ))}

@@ -107,7 +107,7 @@ export function Component() {
       {/* ═══ HEADER ═══ */}
       <div
         style={{
-          padding: '16px 24px',
+          padding: '16px 0',
           display: 'flex',
           alignItems: 'center',
           borderBottom: '1px solid #111916',
@@ -181,7 +181,7 @@ export function Component() {
       {/* ═══ JOURNEY MAP — big contained glass panel ═══ */}
       <div
         style={{
-          margin: '16px 20px 0',
+          margin: '16px 0 0',
           borderRadius: 20,
           background: 'linear-gradient(180deg, #080B0A, #050808)',
           border: '1.5px solid #1E2E26',
@@ -266,7 +266,7 @@ export function Component() {
         style={{
           position: 'relative',
           overflow: 'hidden',
-          margin: '16px 20px 0',
+          margin: '16px 0 0',
           borderRadius: 16,
           background: '#0A0F0D',
           border: `1.5px solid ${meta.color}20`,
@@ -351,7 +351,7 @@ export function Component() {
       </div>
 
       {/* ═══ CONTENT ZONE ═══ */}
-      <div style={{ padding: '16px 20px 24px' }}>
+      <div style={{ padding: '16px 0 24px' }}>
         {/* ── UPLOAD STEP ── */}
         {step === 'upload' && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

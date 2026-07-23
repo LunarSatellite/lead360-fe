@@ -22,18 +22,44 @@ import {
 import { formatDistanceToNow, format } from 'date-fns';
 
 const inputCls =
-  'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
+  'w-full px-3.5 py-2 rounded-xl bg-transparent border text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-all';
+const labelCls = 'text-xs font-semibold text-text-secondary mb-1';
 
 // ─── Slide-over ───────────────────────────────────────────────────────────────
 
 function SlideOver({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-bg shadow-2xl flex flex-col border-l border-border-subtle h-full">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {title}
+            </h2>
+            <p className="text-xs text-text-muted mt-0.5">Set up a new A/B experiment to test flow variants</p>
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -84,31 +110,41 @@ function CreateForm({ onSave, onCancel, isSaving }: {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Experiment Name *</label>
-        <input required value={form.name} onChange={set('name')} placeholder="Onboarding Flow Test" className={inputCls} />
+        <label className={labelCls}>Experiment Name *</label>
+        <input required value={form.name} onChange={set('name')} placeholder="Onboarding Flow Test" className={inputCls}
+          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }} />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
-        <textarea rows={2} value={form.description} onChange={set('description')} placeholder="What are you testing and why?" className={`${inputCls} resize-none`} />
+        <label className={labelCls}>Description</label>
+        <textarea rows={2} value={form.description} onChange={set('description')} placeholder="What are you testing and why?" className={`${inputCls} resize-none`}
+          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }} />
       </div>
 
-      <div className="rounded-xl border border-border-subtle bg-bg-elevated p-4 space-y-4">
-        <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Flow Variants</p>
+      {/* Flow Variants section */}
+      <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+        <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Flow Variants</span>
+        <div className="h-px bg-brand/20" />
+      </div>
+
+      <div className="rounded-xl border border-[rgba(0,217,138,0.20)] p-4 space-y-4"
+        style={{ background: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Control Flow ID *</label>
-          <input required value={form.controlFlowId} onChange={set('controlFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`} />
+          <label className={labelCls}>Control Flow ID *</label>
+          <input required value={form.controlFlowId} onChange={set('controlFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }} />
           <p className="text-xs text-text-muted mt-1">The existing baseline flow</p>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Challenger Flow ID *</label>
-          <input required value={form.challengerFlowId} onChange={set('challengerFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`} />
+          <label className={labelCls}>Challenger Flow ID *</label>
+          <input required value={form.challengerFlowId} onChange={set('challengerFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }} />
           <p className="text-xs text-text-muted mt-1">The new variant to test</p>
         </div>
       </div>
 
       {/* Split slider */}
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-2">Traffic Split</label>
+        <label className={labelCls}>Traffic Split</label>
         <div className="flex rounded-xl overflow-hidden h-6 text-xs font-bold mb-2">
           <div
             className="flex items-center justify-center bg-success-soft text-success transition-all"
@@ -137,16 +173,16 @@ function CreateForm({ onSave, onCancel, isSaving }: {
         </div>
       </div>
 
-      <div className="flex gap-3 pt-1">
+      <div className="flex items-center justify-end gap-3 pt-1">
+        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">
+          Cancel
+        </button>
         <button
           type="submit"
           disabled={isSaving || !form.name.trim() || !form.controlFlowId.trim() || !form.challengerFlowId.trim()}
-          className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><FlaskConical className="w-3.5 h-3.5" /> Create Experiment</>}
-        </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">
-          Cancel
+          {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><FlaskConical className="w-3.5 h-3.5" /> Create Experiment</>}
         </button>
       </div>
     </form>

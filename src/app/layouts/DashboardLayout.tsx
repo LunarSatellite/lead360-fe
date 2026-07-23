@@ -130,7 +130,6 @@ const crmNavGroups = [
       { label: 'Organizations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
       { label: 'Territories',   href: ROUTES.dashboard.crmTerritories,   icon: MapPin },
       { label: 'Assignment Rotation', href: ROUTES.dashboard.crmAssignmentRotation, icon: Shuffle },
-      { label: 'Contact cards', href: ROUTES.dashboard.crmContactCards, icon: QrCode },
     ],
   },
   {
@@ -367,6 +366,52 @@ export function DashboardLayout() {
     if (path.includes('/crm/custom-fields')) return 'Custom Fields';
     if (path.includes('/crm/workflows')) return 'Workflows';
     if (path.includes('/flows/experiments')) return 'A/B Experiments';
+    if (path.includes('/crm/contracts')) return 'Contracts';
+    if (path.includes('/crm/renewals')) return 'Renewals';
+    if (path.includes('/agents')) return 'Agents';
+    if (path.includes('/crm/price-books')) return 'Price Books';
+    if (path.includes('/crm/competitors')) return 'Competitors';
+    if (path.includes('/crm/territories')) return 'Territories';
+    if (path.includes('/crm/assignment-rotation')) return 'Assignment Rotation';
+    if (path.includes('/crm/workflow-campaigns')) return 'Workflow Campaigns';
+    if (path.includes('/crm/announcements')) return 'Announcements';
+    if (path.includes('/crm/meta-ads')) return 'Meta Ads';
+    if (path.includes('/crm/event-ingestion')) return 'Event Tracking';
+    if (path.includes('/crm/webforms')) return 'Web Forms';
+    if (path.includes('/crm/returns')) return 'Returns';
+    if (path.includes('/crm/work-orders')) return 'Work Orders';
+    if (path.includes('/crm/vendors')) return 'Vendors';
+    if (path.includes('/crm/purchase-orders')) return 'Purchase Orders';
+    if (path.includes('/crm/goods-receipts')) return 'Goods Receipts';
+    if (path.includes('/crm/inventory')) return 'Inventory';
+    if (path.includes('/crm/product-bundles')) return 'Product Bundles';
+    if (path.includes('/crm/process-tasks')) return 'Process Workflows';
+    if (path.includes('/crm/workflows')) return 'Workflows';
+    if (path.includes('/crm/credit-notes')) return 'Credit Notes';
+    if (path.includes('/crm/supplier-invoices')) return 'Supplier Invoices';
+    if (path.includes('/crm/payment-terms')) return 'Payment Terms';
+    if (path.includes('/crm/tax-rules')) return 'Tax Rules';
+    if (path.includes('/crm/quotes')) return 'Quotes';
+    if (path.includes('/crm/proposals')) return 'Proposals';
+    if (path.includes('/crm/orders')) return 'Orders';
+    if (path.includes('/crm/deliveries')) return 'Deliveries';
+    if (path.includes('/crm/commissions')) return 'Commissions';
+    if (path.includes('/crm/support')) return 'Support';
+    if (path.includes('/crm/nps')) return 'NPS Surveys';
+    if (path.includes('/crm/knowledge-base')) return 'Knowledge Base';
+    if (path.includes('/crm/customer-onboarding')) return 'Onboarding';
+    if (path.includes('/crm/meetings')) return 'Meetings';
+    if (path.includes('/crm/tasks')) return 'Tasks';
+    if (path.includes('/crm/time-tracking')) return 'Time Tracking';
+    if (path.includes('/crm/time-periods')) return 'Time Periods';
+    if (path.includes('/crm/analytics')) return 'Analytics';
+    if (path.includes('/crm/reports')) return 'Reports';
+    if (path.includes('/crm/dashboards')) return 'Dashboards';
+    if (path.includes('/crm/ops-dashboard')) return 'Ops Dashboard';
+    if (path.includes('/crm/scoring-rules')) return 'Scoring Rules';
+    if (path.includes('/crm/custom-fields')) return 'Custom Fields';
+    if (path.includes('/crm/feature-settings')) return 'Feature Settings';
+    if (path.includes('/crm/audit-log')) return 'Audit Log';
     return 'Dashboard';
   };
 
@@ -396,6 +441,53 @@ export function DashboardLayout() {
     if (path.includes('/crm/campaigns')) return Megaphone;
     if (path.includes('/crm/analytics')) return TrendingUp;
     if (path.includes('/flows/experiments')) return FlaskConical;
+    if (path.includes('/crm/contracts')) return FileSignature;
+    if (path.includes('/crm/renewals')) return CalendarClock;
+    if (path.includes('/agents')) return Bot;
+    if (path.includes('/crm/price-books')) return BookOpen;
+    if (path.includes('/crm/competitors')) return Crosshair;
+    if (path.includes('/crm/territories')) return MapPin;
+    if (path.includes('/crm/assignment-rotation')) return Shuffle;
+    if (path.includes('/crm/workflow-campaigns')) return Target;
+    if (path.includes('/crm/announcements')) return Newspaper;
+    if (path.includes('/crm/meta-ads')) return Megaphone;
+    if (path.includes('/crm/event-ingestion')) return Globe;
+    if (path.includes('/crm/webforms')) return Globe;
+    if (path.includes('/crm/returns')) return RotateCw;
+    if (path.includes('/crm/work-orders')) return Wrench;
+    if (path.includes('/crm/vendors')) return Truck;
+    if (path.includes('/crm/purchase-orders')) return ShoppingCart;
+    if (path.includes('/crm/goods-receipts')) return PackageCheck;
+    if (path.includes('/crm/inventory')) return Package;
+    if (path.includes('/crm/product-bundles')) return Package;
+    if (path.includes('/crm/process-tasks')) return ListChecks;
+    if (path.includes('/crm/workflows')) return Zap;
+    if (path.includes('/crm/credit-notes')) return Undo2;
+    if (path.includes('/crm/supplier-invoices')) return CreditCard;
+    if (path.includes('/crm/payment-terms')) return Calendar;
+    if (path.includes('/crm/tax-rules')) return Percent;
+    if (path.includes('/crm/quotes')) return FileText;
+    if (path.includes('/crm/proposals')) return ClipboardList;
+    if (path.includes('/crm/orders')) return Package;
+    if (path.includes('/crm/deliveries')) return Truck;
+    if (path.includes('/crm/invoices')) return Receipt;
+    if (path.includes('/crm/commissions')) return DollarSign;
+    if (path.includes('/crm/support')) return LifeBuoy;
+    if (path.includes('/crm/nps')) return Star;
+    if (path.includes('/crm/knowledge-base')) return BookOpen;
+    if (path.includes('/crm/customer-onboarding')) return UserPlus;
+    if (path.includes('/crm/meetings')) return CalendarCheck;
+    if (path.includes('/crm/tasks')) return CheckSquare;
+    if (path.includes('/crm/time-tracking')) return Clock;
+    if (path.includes('/crm/time-periods')) return Calendar;
+    if (path.includes('/crm/analytics')) return TrendingUp;
+    if (path.includes('/crm/reports')) return FileBarChart;
+    if (path.includes('/crm/dashboards')) return LayoutPanelTop;
+    if (path.includes('/crm/ops-dashboard')) return LayoutDashboard;
+    if (path.includes('/crm/scoring-rules')) return TrendingUp;
+    if (path.includes('/crm/custom-fields')) return SlidersHorizontal;
+    if (path.includes('/crm/feature-settings')) return SlidersHorizontal;
+    if (path.includes('/crm/audit-log')) return History;
     return LayoutGrid;
   };
 

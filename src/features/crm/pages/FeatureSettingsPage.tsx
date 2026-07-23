@@ -58,7 +58,7 @@ export function Component() {
   const set = (k: Key, v: boolean) => setDraft((d) => (d ? { ...d, [k]: v } : d));
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">

@@ -8,6 +8,7 @@ import {
   useConfirmBooking,
 } from '../api/booking.queries';
 import type { PublicBookingPageDto, MeetingSlotDto } from '../api/booking.api';
+import { useCaptchaToken } from '../hooks/useCaptchaToken';
 
 const inputCls =
   'w-full px-3 py-2 rounded-xl bg-[#0f1117] border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-all';
@@ -42,10 +43,12 @@ function PublicBookingEventPage() {
   const slots = rawSlots as unknown as MeetingSlotDto[] | undefined;
 
   const confirm = useConfirmBooking(slug ?? '', eventTypeId ?? '');
+  const captcha = useCaptchaToken();
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedSlot || !name.trim() || !email.trim()) return;
+    const captchaToken = await captcha.getToken('submit_booking');
     confirm.mutate(
       {
         contactName: name.trim(),
@@ -54,6 +57,7 @@ function PublicBookingEventPage() {
         selectedSlot,
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         notes: notes.trim() || undefined,
+        captchaToken: captchaToken ?? undefined,
       },
       {
         onSuccess: (data: any) => {

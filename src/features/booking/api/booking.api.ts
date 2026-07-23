@@ -49,6 +49,7 @@ export interface PublicBookingConfirmRequest {
   selectedSlot: string;
   timezone?: string;
   notes?: string;
+  captchaToken?: string;
 }
 
 export interface PublicBookingConfirmedDto {

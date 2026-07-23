@@ -114,3 +114,6 @@ export function useMintDownloadToken() {
     mutationFn: (blobId: string) => webformsApi.mintDownloadToken(blobId),
   });
 }
+
+// Alias used by CrmWebFormSubmissionDetailPage (legacy import name).
+export const useMintSubmissionFileToken = useMintDownloadToken;

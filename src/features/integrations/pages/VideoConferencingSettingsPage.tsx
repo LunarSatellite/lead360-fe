@@ -180,7 +180,7 @@ export function Component() {
   const allProviders: VideoProvider[] = [1, 2, 3, 4, 5];
 
   // Backend handles the OAuth callback and redirects back here with ?vc_connected or ?vc_error
-  const backendCallbackUrl = `https://surreal-denote-deviate.ngrok-free.dev/api/v1/video-conferencing/callback`;
+  const backendCallbackUrl = `${env.apiBaseUrl.replace(/\/$/, '')}/v1/video-conferencing/callback`;
 
   useEffect(() => {
     const connected = searchParams.get('vc_connected');

@@ -23,6 +23,8 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem('omniflow_token');
   const tenantId = localStorage.getItem('omniflow_tenant_id');
+  // ngrok free-tier interstitial: skip the warning page for non-browser API callers
+  config.headers['ngrok-skip-browser-warning'] = '1';
   if (token) config.headers.Authorization = `Bearer ${token}`;
   if (tenantId) config.headers['X-Tenant-Id'] = tenantId;
   return config;

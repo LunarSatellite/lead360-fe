@@ -2,13 +2,14 @@ import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Calendar, CheckCircle2, AlertCircle, Loader2, LogOut, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { env } from '@/shared/config/env';
 import {
   useCalendarIntegrationStatus,
   useConnectCalendar,
   useDisconnectCalendar,
 } from '../api/calendarIntegration.queries';
 
-const CALLBACK_URL = 'https://surreal-denote-deviate.ngrok-free.dev/api/v1/calendar/callback';
+const CALLBACK_URL = `${env.apiBaseUrl.replace(/\/$/, '')}/v1/calendar/callback`;
 
 function CalendarIntegrationSettingsPage() {
   const navigate = useNavigate();

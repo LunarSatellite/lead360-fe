@@ -122,6 +122,7 @@ export function Component() {
   const [activeTab, setActiveTab] = useState<TabKey>("fields");
   const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
   const [draggingIdx, setDraggingIdx] = useState<number | null>(null);
+  const [previewBust, setPreviewBust] = useState<number>(Date.now());
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
 
   useEffect(() => {
@@ -210,12 +211,16 @@ export function Component() {
     });
   }
 
+  // Save allowed when: name is set AND either (a) we have at least one fully-labeled field, or
+  // (b) the user has zero labeled fields (visual-only save: just changing theme/colors/etc).
+  // This lets a user tweak the hosted page theme or button shape without having to fill in fields first.
   const canSave = useMemo(() => {
     if (!draft.name.trim()) return false;
-    if (draftFields.length === 0) return false;
-    if (draftFields.some((f) => !f.label.trim())) return false;
-    return true;
-  }, [draft, draftFields]);
+    const hasAnyField = draftFields.some((f) => f.label.trim());
+    if (!hasAnyField) return true; // visual-only save
+    const incompleteFields = draftFields.filter((f) => !f.label.trim());
+    return incompleteFields.length === 0;
+  }, [draft.name, draftFields]);
 
   function save() {
     if (!canSave) return;
@@ -241,7 +246,10 @@ export function Component() {
       companyName: (draft.companyName || "").trim() || null,
       companyContactInfo: (draft.companyContactInfo || "").trim() || null,
       pageBackgroundGradient: (draft.pageBackgroundGradient || "").trim() || null,
-      fields: draftFields.map((f, i) => ({
+      // Only ship the fields list when the user actually has fields. Visual-only saves
+      // (e.g. theme change on an existing form) skip fields so we never wipe the saved field list.
+      fields: draftFields.some((f) => f.label.trim())
+        ? draftFields.filter((f) => f.label.trim()).map((f, i) => ({
         label: f.label,
         fieldKey: f.fieldKey || slugify(f.label),
         fieldType: f.fieldType || "Text",
@@ -251,11 +259,12 @@ export function Component() {
         mapsToContactField: f.mapsToContactField || null,
         validationRegex: f.validationRegex || null,
         optionsJson: f.optionsJson || null,
-      })),
+      }))
+        : null,
     };
     if (isEdit && id) {
       updateMut.mutate({ id, payload }, {
-        onSuccess: () => toast.success("Saved"),
+        onSuccess: () => { toast.success("Saved"); setPreviewBust(Date.now()); },
         onError: (e: any) => toast.error(e?.message || "Save failed"),
       });
     } else {
@@ -389,7 +398,7 @@ export function Component() {
             </div>
           </div>
           <div className="rounded-card border-thin border-border-subtle bg-glass-1 p-3 overflow-hidden">
-            <FormPreview draft={draft} draftFields={draftFields} mode={previewMode} />
+            <DeviceFramePreview formId={id} hostedSlug={draft.hostedSlug} draft={draft} draftFields={draftFields} mode={previewMode} bust={previewBust} />
           </div>
           {!draft.name.trim() && <p className="text-[11px] text-text-muted px-1">Add a form name to enable saving.</p>}
         </div>
@@ -803,6 +812,125 @@ function FormPreview({ draft, draftFields, mode }: { draft: CreateWebFormRequest
   );
 }
 
+
+function DeviceFramePreview({
+  formId, hostedSlug, draft, draftFields, mode, bust,
+}: {
+  formId?: string;
+  hostedSlug?: string | null;
+  draft: CreateWebFormRequest;
+  draftFields: DraftField[];
+  mode: "desktop" | "mobile";
+  bust: number;
+}) {
+  // Visible pane size. The right column in the builder grid is 440px with p-3
+  // (24px total) so the inner content is ~400px wide. We cap the height too so
+  // the page itself doesn't grow vertically with the iframe.
+  const PANE_W = 400;
+  const PANE_H = 560;
+
+  // Once the form has been saved at least once, point the iframe at the real
+  // hosted URL (the BE endpoint that renders the page theme). While editing a
+  // brand-new form we fall back to the offline FormPreview so the panel isn't
+  // empty/white.
+  const url = formId ? buildHostedUrl(formId, hostedSlug) : null;
+  // bust lets Save trigger an iframe reload without changing the visible URL.
+  const cacheKey = url ? `${formId}:${bust}:${mode}` : "offline";
+
+  if (!url) {
+    return <FormPreview draft={draft} draftFields={draftFields} mode={mode} />;
+  }
+
+  if (mode === "mobile") {
+    const PHONE_W = 390;
+    const PHONE_H = 844;
+    const scale = Math.min(PANE_W / PHONE_W, PANE_H / PHONE_H);
+    const w = Math.round(PHONE_W * scale);
+    const h = Math.round(PHONE_H * scale);
+    return (
+      <div className="flex justify-center items-start">
+        <div
+          className="rounded-[28px] border-thin border-border-subtle bg-bg-card shadow-sm p-1.5"
+          style={{ width: w + 12, height: h + 12 }}
+        >
+          <div
+            className="rounded-[20px] overflow-hidden bg-bg-card relative"
+            style={{ width: w, height: h }}
+          >
+            <iframe
+              key={cacheKey}
+              src={url}
+              title="Live preview (mobile)"
+              className="absolute top-0 left-0"
+              style={{
+                width: PHONE_W,
+                height: PHONE_H,
+                border: 0,
+                transform: `scale(${scale})`,
+                transformOrigin: "top left",
+              }}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Desktop: render the iframe at a fixed 1280 width and scale it down to fit
+  // the pane. The iframe height is grown to whatever the hosted page actually
+  // reports via its documentElement.scrollHeight so nothing gets clipped.
+  const DESKTOP_W = 1280;
+  const [liveH, setLiveH] = useState<number>(DESKTOP_W * 0.6);
+  const effectiveH = Math.max(420, liveH);
+  const scale = Math.min(PANE_W / DESKTOP_W, PANE_H / effectiveH);
+  const scaledW = Math.round(DESKTOP_W * scale);
+  const scaledH = Math.round(effectiveH * scale);
+  const chromeH = 28;
+
+  return (
+    <div className="flex justify-center">
+      <div
+        className="rounded-card overflow-hidden border-thin border-border-subtle bg-bg-card shadow-sm"
+        style={{ width: scaledW, height: scaledH + chromeH }}
+      >
+        {/* Browser chrome */}
+        <div className="h-7 flex items-center gap-1.5 px-3 border-b border-black/10 bg-gray-50">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+          <span className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
+          <span className="w-2.5 h-2.5 rounded-full bg-green-400" />
+          <span className="ml-2 text-[10px] text-gray-500 truncate flex-1">{url.replace(/^https?:\/\//, "")}</span>
+        </div>
+        {/* Scaled viewport - container clips, only the iframe is scrollable */}
+        <div className="overflow-hidden" style={{ width: scaledW, height: scaledH }}>
+          <iframe
+            key={cacheKey}
+            src={url}
+            title="Live preview (desktop)"
+            onLoad={(e) => {
+              try {
+                const doc = (e.target as HTMLIFrameElement).contentDocument;
+                if (doc) {
+                  const h = Math.max(
+                    doc.documentElement.scrollHeight,
+                    doc.body?.scrollHeight ?? 0,
+                  );
+                  if (h > 0 && Math.abs(h - liveH) > 4) setLiveH(h);
+                }
+              } catch { /* cross-origin: ignore */ }
+            }}
+            style={{
+              width: DESKTOP_W,
+              height: effectiveH,
+              border: 0,
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 function PreviewField({ field, primary, inputBgCls = "bg-bg-input border-border-subtle text-text-primary placeholder:text-text-muted", mutedCls = "text-text-muted" }: { field: DraftField; primary: string; inputBgCls?: string; mutedCls?: string }) {
   const baseInputCls = "w-full px-3 py-2 rounded-xl border text-sm focus:outline-none " + inputBgCls;
 
@@ -865,5 +993,4 @@ function inputTypeFor(t: WebFormFieldType | undefined): string {
     default: return "text";
   }
 }
-
 

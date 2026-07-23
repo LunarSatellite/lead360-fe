@@ -171,7 +171,24 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
                   </div>
                 ))}
               </div>
-            </div>
+
+          <div className="mt-2">
+            <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Notes prompt</label>
+            <p className="mb-1.5 text-[10px] text-text-muted">
+              What the bot asks when collecting special instructions for an item. Leave blank to use the default.
+            </p>
+            <textarea
+              value={(catalogConfig as { notesPrompt?: string } | undefined)?.notesPrompt ?? ''}
+              onChange={(e) =>
+                onUpdate(node.id, {
+                  config: { ...(data.config || {}), notesPrompt: e.target.value || undefined },
+                })
+              }
+              rows={2}
+              placeholder="e.g. Any special instructions? (reply 'no' if none)"
+              className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white resize-none"
+            />
+          </div>            </div>
           )}
         </>
       )}

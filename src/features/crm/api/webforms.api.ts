@@ -118,8 +118,12 @@ export function inferFilePreview(file: WebFormSubmissionFileDto): boolean {
 // Build a shareable hosted URL for a form. Salesforce/HubSpot-style:
 // the visitor opens this URL and sees the form on the OmniFlow domain
 // without needing to install embed.js on their own site.
+//
+// The public hosted endpoints live at /f/{formId} and /f/s/{slug} on the
+// backend root - NOT under the /api/v1 API surface. The apiBaseUrl we get
+// from VITE_API_BASE_URL always ends with /api (or /api/v1) so we strip both.
 export function buildHostedUrl(formId: string, slug?: string | null, apiBaseUrl = env.apiBaseUrl): string {
-  const base = apiBaseUrl.replace(/\/v1$/, "");
+  const base = apiBaseUrl.replace(/\/v1$/, "").replace(/\/api$/, "");
   if (slug) return `${base}/f/s/${encodeURIComponent(slug)}`;
   return `${base}/f/${formId}`;
 }

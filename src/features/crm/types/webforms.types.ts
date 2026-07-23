@@ -3,6 +3,25 @@ export type WebFormStatus = "Draft" | "Published" | "Archived";
 export type WebFormMode = "Classic" | "Conversational";
 
 export type WebFormPageTheme = "Minimal" | "HeroBanner" | "Sidebar" | "Gradient" | "FullBleed";
+export type WebFormButtonShape = "Rounded" | "Square" | "Pill";
+export type WebFormFieldStyle = "Outlined" | "Filled" | "Underlined";
+export type WebFormFormWidth = "Narrow" | "Medium" | "Wide";
+
+export const BUTTON_SHAPES: { value: WebFormButtonShape; label: string }[] = [
+  { value: "Rounded", label: "Rounded" },
+  { value: "Square",   label: "Square" },
+  { value: "Pill",     label: "Pill" },
+];
+export const FIELD_STYLES: { value: WebFormFieldStyle; label: string; description: string }[] = [
+  { value: "Outlined",    label: "Outlined",    description: "Bordered input, classic look." },
+  { value: "Filled",      label: "Filled",      description: "Soft gray fill, no border." },
+  { value: "Underlined", label: "Underlined", description: "Minimal: only a bottom line." },
+];
+export const FORM_WIDTHS: { value: WebFormFormWidth; label: string; px: string }[] = [
+  { value: "Narrow", label: "Narrow", px: "380px" },
+  { value: "Medium", label: "Medium", px: "520px" },
+  { value: "Wide",   label: "Wide",   px: "760px" },
+];
 
 export const WEB_FORM_PAGE_THEMES: { value: WebFormPageTheme; label: string; description: string; preview: string }[] = [
   { value: "Minimal",    label: "Minimal",    description: "Clean centered card on white. The HubSpot Forms default.", preview: "minimal" },
@@ -51,6 +70,7 @@ export interface WebFormDto {
   embedCode?: string | null;
   redirectUrl?: string | null;
   successMessage?: string | null;
+  fields?: WebFormFieldDto[] | null;
   sendEmailNotification: boolean;
   notificationEmails?: string | null;
   createContactOnSubmit: boolean;
@@ -67,6 +87,12 @@ export interface WebFormDto {
   designConfig?: WebFormDesignConfig | null;
   designConfigJson?: string | null;
   pageTheme?: WebFormPageTheme;
+  hideFormBrandingInPageMode?: boolean;
+  buttonShape?: WebFormButtonShape;
+  fieldStyle?: WebFormFieldStyle;
+  formWidth?: WebFormFormWidth;
+  buttonColor?: string | null;
+  buttonTextColor?: string | null;
   heroImageUrl?: string | null;
   pageTitle?: string | null;
   pageTagline?: string | null;
@@ -91,6 +117,7 @@ export interface WebFormFieldDto {
   sortOrder: number;
   validationRegex?: string | null;
   mapsToContactField?: string | null;
+  columnSpan?: 1 | 2;
 }
 
 export interface CreateWebFormFieldRequest {
@@ -123,6 +150,12 @@ export interface CreateWebFormRequest {
   mode?: WebFormMode;
   designConfigJson?: string | null;
   pageTheme?: WebFormPageTheme;
+  hideFormBrandingInPageMode?: boolean;
+  buttonShape?: WebFormButtonShape;
+  fieldStyle?: WebFormFieldStyle;
+  formWidth?: WebFormFormWidth;
+  buttonColor?: string | null;
+  buttonTextColor?: string | null;
   heroImageUrl?: string | null;
   pageTitle?: string | null;
   pageTagline?: string | null;

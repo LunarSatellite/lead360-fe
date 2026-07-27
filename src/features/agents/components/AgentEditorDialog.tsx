@@ -33,7 +33,7 @@
 //      with the raw JSON in a textarea.
 // ═══════════════════════════════════════════════════════════════
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { X, Save, Plus, Loader2, ChevronDown, ChevronRight, Info } from 'lucide-react';
 import { ApiError } from '@/shared/lib/api-client';
 import { useIntents } from '@/features/intents/api/intents.queries';
@@ -290,40 +290,59 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
     }
   };
 
-  // ─── Style tokens (mirror IntentFormModal for consistency) ─
+  // ─── Style tokens (mirror New Lead layout) ─
   const inputCls =
-    'w-full px-4 py-2.5 rounded-lg bg-glass-2 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
-  const labelCls = 'text-2xs font-bold uppercase tracking-[2px] text-text-muted block mb-2';
-  const errCls = 'text-2xs text-danger mt-1';
-  const sectionCls = 'pt-5 border-t border-t-border-subtle first:pt-0 first:border-t-0';
+    'w-full px-3.5 py-2 rounded-xl bg-transparent border text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-all';
+  const labelCls = 'text-xs font-semibold text-text-secondary mb-1';
+  const errCls = 'text-xs text-danger mt-1';
+  const sectionCls = 'pt-5 border-t border-border-subtle first:pt-0 first:border-t-0';
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={isPending ? undefined : onClose} />
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        onClick={isPending ? undefined : onClose}
-      />
-      <div
-        className="drawer-slide-in relative w-[560px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle"
-        style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}
+        className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
       >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-b-border-subtle flex-shrink-0">
-          <h2 className="text-lg font-extrabold text-text-primary tracking-tight">
-            {isEdit ? 'Edit agent' : 'New agent'}
-          </h2>
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {isEdit ? 'Edit agent' : 'New agent'}
+            </h2>
+            <p className="text-xs text-text-muted mt-0.5">
+              {isEdit ? 'Modify agent settings and configuration' : 'Create a new agent to automate workflows'}
+            </p>
+          </div>
           <button
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="w-8 h-8 rounded-lg bg-glass-2 flex items-center justify-center text-text-muted hover:text-text-primary transition-all disabled:opacity-40"
+            className="text-text-muted hover:text-text-primary mt-0.5 disabled:opacity-40"
           >
             <X className="w-4 h-4" strokeWidth={1.8} />
           </button>
         </div>
 
         {/* Form body (scrollable) */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-5">
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           {/* ═══ BASICS ═══ */}
           <section className={sectionCls}>
             <SectionTitle>Basics</SectionTitle>
@@ -340,6 +359,11 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                 placeholder="e.g. High-value approvals"
                 maxLength={80}
                 className={inputCls}
+                style={{
+                  backgroundColor: '#1A2F27',
+                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  borderColor: 'rgba(0,217,138,0.20)',
+                }}
               />
               {errors.name && <p className={errCls}>{errors.name}</p>}
             </div>
@@ -356,6 +380,11 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                 rows={2}
                 maxLength={500}
                 className={`${inputCls} resize-none`}
+                style={{
+                  backgroundColor: '#1A2F27',
+                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  borderColor: 'rgba(0,217,138,0.20)',
+                }}
               />
             </div>
 
@@ -408,7 +437,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                 })}
               </div>
               {isEdit && (
-                <p className="text-2xs text-text-muted mt-2">
+                <p className="text-xs text-text-muted mt-2">
                   Type can't be changed after the agent is created.
                 </p>
               )}
@@ -416,21 +445,13 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
 
             {/* Trigger kind */}
             <div className="mt-4">
-              <label htmlFor="agent-trigger-kind" className={labelCls}>
-                When does it fire? *
-              </label>
-              <select
-                id="agent-trigger-kind"
+              <label className={labelCls}>When does it fire? *</label>
+              <TriggerKindDropdown
                 value={form.triggerKind}
-                onChange={(e) => setField('triggerKind', Number(e.target.value) as AgentTriggerKindValue)}
-                className={inputCls}
-              >
-                {triggerOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label} — {opt.hint}
-                  </option>
-                ))}
-              </select>
+                options={triggerOptions}
+                onChange={(v) => setField('triggerKind', v as AgentTriggerKindValue)}
+                form={form}
+              />
             </div>
 
             {/* Kind-aware payload */}
@@ -453,26 +474,13 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
             <SectionTitle>Target</SectionTitle>
 
             <div>
-              <label htmlFor="agent-target-kind" className={labelCls}>
-                Where does the output go? *
-              </label>
-              <select
-                id="agent-target-kind"
+              <label className={labelCls}>Where does the output go? *</label>
+              <TargetKindDropdown
                 value={form.targetKind}
-                onChange={(e) => setField('targetKind', Number(e.target.value) as AgentTargetKindValue)}
-                className={inputCls}
-              >
-                {targetOptions.map((opt) => (
-                  <option
-                    key={opt.value}
-                    value={opt.value}
-                    disabled={!opt.available}
-                  >
-                    {opt.label}
-                    {!opt.available ? ' (coming soon)' : ''}
-                  </option>
-                ))}
-              </select>
+                options={targetOptions}
+                onChange={(v) => setField('targetKind', v as AgentTargetKindValue)}
+                form={form}
+              />
             </div>
 
             <div className="mt-4">
@@ -494,7 +502,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
             <button
               type="button"
               onClick={() => setConfigOpen((v) => !v)}
-              className="flex items-center gap-2 text-2xs font-bold uppercase tracking-[2px] text-text-muted hover:text-text-secondary transition-colors"
+              className="flex items-center gap-2 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors"
             >
               {configOpen ? (
                 <ChevronDown className="w-3.5 h-3.5" strokeWidth={2.4} />
@@ -523,9 +531,14 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                   rows={4}
                   spellCheck={false}
                   className={`${inputCls} font-mono text-xs resize-y`}
+                  style={{
+                    backgroundColor: '#1A2F27',
+                    backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                    borderColor: 'rgba(0,217,138,0.20)',
+                  }}
                 />
                 {errors.configJsonRaw && <p className={errCls}>{errors.configJsonRaw}</p>}
-                <p className="text-2xs text-text-muted mt-1.5 leading-relaxed">
+                <p className="text-xs text-text-muted mt-1.5 leading-relaxed">
                   Optional. Settings specific to this agent type. Leave blank to use defaults.
                 </p>
               </div>
@@ -534,7 +547,8 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
 
           {/* Submit error banner */}
           {errors.submit && (
-            <div className="px-3.5 py-3 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.15)] flex gap-2.5 text-sm text-danger">
+            <div className="px-3.5 py-3 rounded-xl border border-[rgba(0,217,138,0.20)] flex gap-2.5 text-sm text-danger"
+              style={{ background: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
               <Info className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={2} />
               <span>{errors.submit}</span>
             </div>
@@ -542,12 +556,12 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
         </div>
 
         {/* Footer */}
-        <div className="flex gap-2.5 px-6 py-4 border-t border-t-border-subtle bg-bg-shell flex-shrink-0">
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle flex-shrink-0">
           <button
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2.5 rounded-xl border border-border-subtle bg-bg-card text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all disabled:opacity-50"
+            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all disabled:opacity-50"
           >
             Cancel
           </button>
@@ -555,14 +569,14 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
             type="button"
             onClick={handleSubmit}
             disabled={isPending}
-            className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand hover:bg-brand-light text-bg text-sm font-bold transition-all disabled:opacity-60"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             {isPending ? (
-              <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2.4} />
+              <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={2.4} />
             ) : isEdit ? (
-              <Save className="w-4 h-4" strokeWidth={2.4} />
+              <Save className="w-3.5 h-3.5" strokeWidth={2.4} />
             ) : (
-              <Plus className="w-4 h-4" strokeWidth={2.4} />
+              <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
             )}
             {isPending ? 'Saving…' : isEdit ? 'Save changes' : 'Create agent'}
           </button>
@@ -578,9 +592,10 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="text-xs font-extrabold uppercase tracking-[2px] text-text-muted mb-3">
-      {children}
-    </h3>
+    <div className="grid grid-cols-[auto_1fr] items-center gap-2 mb-3">
+      <span className="text-[10px] font-bold text-brand uppercase tracking-widest">{children}</span>
+      <div className="h-px bg-brand/20" />
+    </div>
   );
 }
 
@@ -645,13 +660,14 @@ function TriggerPayload({
             placeholder="amount"
             aria-label="Field name"
             className={inputCls}
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }}
           />
           <select
             value={form.thOp}
             onChange={(e) => setField('thOp', e.target.value as ThresholdOp)}
             aria-label="Comparison"
             className={inputCls}
-            style={{ width: 'auto' }}
+            style={{ width: 'auto', backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }}
           >
             {THRESHOLD_OPS.map((op) => (
               <option key={op} value={op}>
@@ -666,12 +682,13 @@ function TriggerPayload({
             placeholder="500"
             aria-label="Threshold value"
             className={inputCls}
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }}
           />
         </div>
         {(errors.thField || errors.thValue) && (
           <p className={errCls}>{errors.thField || errors.thValue}</p>
         )}
-        <p className="text-2xs text-text-muted mt-1.5">
+        <p className="text-xs text-text-muted mt-1.5">
           Fires when the named field crosses this value.
         </p>
       </div>
@@ -697,6 +714,7 @@ function TriggerPayload({
             value={form.intentName}
             onChange={(e) => setField('intentName', e.target.value)}
             className={inputCls}
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }}
           >
             <option value="">Select an intent…</option>
             {intents.map((i) => (
@@ -725,12 +743,214 @@ function TriggerPayload({
         rows={3}
         spellCheck={false}
         className={`${inputCls} font-mono text-xs resize-y`}
+        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }}
       />
       {errors.triggerJsonRaw && <p className={errCls}>{errors.triggerJsonRaw}</p>}
-      <p className="text-2xs text-text-muted mt-1.5 leading-relaxed">
+      <p className="text-xs text-text-muted mt-1.5 leading-relaxed">
         Optional advanced config for this trigger kind. Leave blank if you
         don't have specific requirements yet.
       </p>
+    </div>
+  );
+}
+
+// ─── Custom Dropdowns ─────────────────────────────────────────────────────────
+
+function TriggerKindDropdown({
+  value,
+  options,
+  onChange,
+  form,
+}: {
+  value: AgentTriggerKindValue;
+  options: Array<{ value: AgentTriggerKindValue; label: string; hint: string }>;
+  onChange: (v: AgentTriggerKindValue) => void;
+  form: FormState;
+}) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((o) => o.value === value);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
+        style={{
+          backgroundColor: '#1A2F27',
+          backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+          border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+          boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+          outline: 'none',
+          transition: 'box-shadow 0.2s ease',
+        }}
+      >
+        <span className="flex-1 text-left font-medium text-text-secondary">
+          {selected ? `${selected.label} — ${selected.hint}` : 'Select…'}
+        </span>
+        <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-y-auto max-h-[240px]"
+          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+        >
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { onChange(opt.value); setOpen(false); }}
+              className={`w-full flex flex-col gap-0.5 px-3 py-2.5 text-left hover:bg-glass-1 transition-colors ${form.triggerKind === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+            >
+              <span className="text-sm font-medium text-text-primary">{opt.label}</span>
+              <span className="text-xs text-text-muted">{opt.hint}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TargetKindDropdown({
+  value,
+  options,
+  onChange,
+  form,
+}: {
+  value: AgentTargetKindValue;
+  options: Array<{ value: AgentTargetKindValue; label: string; available: boolean }>;
+  onChange: (v: AgentTargetKindValue) => void;
+  form: FormState;
+}) {
+  const [open, setOpen] = useState(false);
+  const selected = options.find((o) => o.value === value);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
+        style={{
+          backgroundColor: '#1A2F27',
+          backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+          border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+          boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+          outline: 'none',
+          transition: 'box-shadow 0.2s ease',
+        }}
+      >
+        <span className="flex-1 text-left font-medium text-text-secondary">
+          {selected ? selected.label : 'Select…'}
+          {selected && !selected.available ? ' (coming soon)' : ''}
+        </span>
+        <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-y-auto max-h-[240px]"
+          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+        >
+          {options.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              disabled={!opt.available}
+              onClick={() => { if (opt.available) { onChange(opt.value); setOpen(false); } }}
+              className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition-colors ${
+                !opt.available ? 'opacity-40 cursor-not-allowed text-text-muted' : 'text-text-primary hover:bg-glass-1'
+              } ${form.targetKind === opt.value && opt.available ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+            >
+              {opt.label}
+              {!opt.available && <span className="text-xs text-text-muted ml-1">(coming soon)</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function UserDropdown({
+  value,
+  teamMembers,
+  onChange,
+}: {
+  value: string;
+  teamMembers: UserDto[];
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const selected = teamMembers.find((u) => u.id === value);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
+        style={{
+          backgroundColor: '#1A2F27',
+          backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+          border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+          boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+          outline: 'none',
+          transition: 'box-shadow 0.2s ease',
+        }}
+      >
+        <span className="flex-1 text-left font-medium text-text-secondary truncate">
+          {selected ? formatUserLabel(selected) : 'Select a team member…'}
+        </span>
+        <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-y-auto max-h-[240px]"
+          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+        >
+          {teamMembers.map((u) => (
+            <button
+              key={u.id}
+              type="button"
+              onClick={() => { onChange(u.id); setOpen(false); }}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-glass-1 transition-colors ${value === u.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+            >
+              <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center text-xs font-bold text-brand shrink-0">
+                {formatUserLabel(u).split(' ').filter(Boolean).map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-semibold text-text-primary truncate">{formatUserLabel(u)}</div>
+                <div className="text-xs text-text-muted truncate">{u.email}</div>
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -761,19 +981,11 @@ function TargetPayload({
             No team members. Invite someone from Settings → Team first.
           </div>
         ) : (
-          <select
-            id="target-user"
+          <UserDropdown
             value={form.targetUserId}
-            onChange={(e) => setField('targetUserId', e.target.value)}
-            className={inputCls}
-          >
-            <option value="">Select a team member…</option>
-            {teamMembers.map((u) => (
-              <option key={u.id} value={u.id}>
-                {formatUserLabel(u)}
-              </option>
-            ))}
-          </select>
+            teamMembers={teamMembers}
+            onChange={(v) => setField('targetUserId', v)}
+          />
         )}
         {errors.targetUserId && <p className={errCls}>{errors.targetUserId}</p>}
       </div>
@@ -791,12 +1003,13 @@ function TargetPayload({
           value={form.targetRoleValue}
           onChange={(e) => setField('targetRoleValue', e.target.value)}
           className={inputCls}
+          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }}
         >
           <option value={String(UserRole.Owner)}>Owner</option>
           <option value={String(UserRole.Admin)}>Admin</option>
           <option value={String(UserRole.Agent)}>Agent</option>
         </select>
-        <p className="text-2xs text-text-muted mt-1.5">
+        <p className="text-xs text-text-muted mt-1.5">
           Anyone with this role in the workspace will receive notifications.
         </p>
       </div>
@@ -816,6 +1029,7 @@ function TargetPayload({
           onChange={(e) => setField('targetEmail', e.target.value)}
           placeholder="manager@company.com"
           className={inputCls}
+          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }}
         />
         {errors.targetEmail && <p className={errCls}>{errors.targetEmail}</p>}
       </div>

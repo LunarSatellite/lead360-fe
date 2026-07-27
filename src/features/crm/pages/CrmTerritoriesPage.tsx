@@ -44,7 +44,7 @@ export function Component() {
     setExpanded((prev) => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Sales Territories</h1>
@@ -52,9 +52,9 @@ export function Component() {
         </div>
         <button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 transition-all"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
         >
-          <Plus className="w-4 h-4" /> New territory
+          <Plus className="w-3.5 h-3.5" /> New territory
         </button>
       </div>
 

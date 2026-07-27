@@ -21,8 +21,8 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
 }) {
   if (!open) return null;
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div
         className="drawer-slide-in relative flex flex-col overflow-hidden"
         style={{
@@ -32,13 +32,11 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
           border: '1px solid rgba(0,217,138,0.2)',
           boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
           maxHeight: 'calc(100vh - 32px)',
-          marginTop: 16,
-          marginBottom: 16,
         }}
       >
         {/* Accent bar */}
         <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
-        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+        <div className="flex items-start justify-between px-6 py-3 border-b border-border-subtle shrink-0">
           <div>
             <h2
               className="text-base font-extrabold leading-tight"
@@ -57,8 +55,8 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
             <X className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">{children}</div>
-        {footer && <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>}
+        <div className="flex-1 overflow-y-auto px-6 py-3 space-y-3">{children}</div>
+        {footer && <div className="shrink-0 px-6 py-3 border-t border-border-subtle">{footer}</div>}
       </div>
     </div>,
     document.body
@@ -119,7 +117,7 @@ export function Component() {
   const canCreate = periodStart && periodEnd && periodStart < periodEnd;
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-text-primary">Time Periods</h1>

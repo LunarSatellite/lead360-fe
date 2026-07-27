@@ -201,7 +201,7 @@ function StepCard({
           {actionOpen && (
             <div
               className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-              style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+              style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
             >
               {Object.entries(NURTURE_ACTION_LABELS).map(([val, label]) => (
                 <button
@@ -264,7 +264,7 @@ function StepCard({
             {newStageOpen && (
               <div
                 className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
               >
                 <button
                   type="button"
@@ -346,7 +346,7 @@ function SequenceModal({
       steps: prev.steps.filter((_, i) => i !== index),
     }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     const payload = formToRequest(form);
     if (editing) {
@@ -520,7 +520,7 @@ function SequenceModal({
                   {triggerStageOpen && (
                     <div
                       className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
                     >
                       {Object.entries(LEAD_STAGE_LABELS).map(([val, label]) => (
                         <button
@@ -831,7 +831,7 @@ export function Component() {
   const sequences = (data as any) ?? [];
 
   return (
-    <div className="p-6 space-y-6 w-full">
+    <div className="space-y-6 w-full">
       {/* Page header */}
       <div className="flex items-start justify-between gap-4">
         <div>
@@ -843,9 +843,9 @@ export function Component() {
         <button
           type="button"
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand hover:bg-brand/90 rounded-xl transition-colors shrink-0"
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           New Sequence
         </button>
       </div>

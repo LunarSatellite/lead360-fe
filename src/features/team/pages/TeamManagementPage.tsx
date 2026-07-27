@@ -1,12 +1,10 @@
 ﻿import { useState, Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@/app/router/route-paths';
 import { confirmDialog } from '@/shared/ui/confirm';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Users, Mail, XCircle, RefreshCw, UserMinus, Plus, Send,
-  Shield, ChevronRight, Trash2, Lock, Check, X,
+  Users, Mail, XCircle, RefreshCw, UserMinus, Plus,
+  Shield, ChevronRight, ChevronDown, Trash2, Lock, Check, X,
   QrCode,
 } from 'lucide-react';
 import {
@@ -18,6 +16,8 @@ import { InvitationStatus, INVITATION_STATUS_LABEL } from '../types/team.types';
 import type { TeamInvitationDto } from '../types/team.types';
 import { UserRole, UserStatus, USER_ROLE_LABEL, USER_STATUS_LABEL } from '@/features/auth/types/auth.types';
 import type { UserDto, UserRoleValue, UserStatusValue } from '@/features/auth/types/auth.types';
+import { CardDetailModal, Component as ContactCardsPage } from '@/features/crm/contact-cards/pages/CrmContactCardsPage';
+import { useContactCard } from '@/features/crm/contact-cards/api/contact-cards.queries';
 import {
   useCrmRoles, useCreateCrmRole, useDeleteCrmRole,
   useUpdateCrmRolePermissions, useAssignCrmRole,
@@ -27,50 +27,74 @@ import {
 } from '@/features/crm/types/crm-rbac.types';
 import type { CrmRoleDto, CrmRolePermissionDto, CrmFeatureValue } from '@/features/crm/types/crm-rbac.types';
 
-type Tab = 'members' | 'roles';
+type Tab = 'members' | 'contact-cards' | 'roles';
 
 export function Component() {
   const [showInviteForm, setShowInviteForm] = useState(false);
   const [tab, setTab] = useState<Tab>('members');
 
   const tabCls = (t: Tab) =>
-    `px-5 py-2.5 text-sm font-bold rounded-lg transition-all ${tab === t
-      ? 'bg-glass-2 text-text-primary border border-border-medium'
-      : 'text-text-secondary hover:text-text-primary'}`;
+    `relative flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+      tab === t
+        ? 'bg-brand/[0.14] border border-border-glow text-text-primary'
+        : 'text-text-muted hover:text-text-secondary hover:bg-glass-1 border border-transparent'
+    }`;
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Team</h1>
-          <p className="text-base text-text-secondary mt-1">Manage members, roles and permissions</p>
+          <p className="text-base text-text-secondary mt-1">Manage team members, contact cards, roles and permissions</p>
         </div>
         {tab === 'members' && (
           <button
             onClick={() => setShowInviteForm(!showInviteForm)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
           >
-            <Plus className="w-4 h-4" /> Invite member
+            <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Invite member
           </button>
         )}
       </div>
 
       <div className="flex items-center gap-1">
         <button className={tabCls('members')} onClick={() => setTab('members')}>
-          <span className="flex items-center gap-2"><Users className="w-4 h-4" /> Members</span>
+          <Users className={`w-3.5 h-3.5 ${tab === 'members' ? 'text-brand' : ''}`} strokeWidth={1.6} />
+          Members
+          {tab === 'members' && (
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[calc(100%+6px)] w-4 h-[2px] rounded-full bg-brand" />
+          )}
+        </button>
+        <button className={tabCls('contact-cards')} onClick={() => setTab('contact-cards')}>
+          <QrCode className={`w-3.5 h-3.5 ${tab === 'contact-cards' ? 'text-brand' : ''}`} strokeWidth={1.6} />
+          Contact Cards
+          {tab === 'contact-cards' && (
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[calc(100%+6px)] w-4 h-[2px] rounded-full bg-brand" />
+          )}
         </button>
         <button className={tabCls('roles')} onClick={() => setTab('roles')}>
-          <span className="flex items-center gap-2"><Shield className="w-4 h-4" /> Roles & Permissions</span>
+          <Shield className={`w-3.5 h-3.5 ${tab === 'roles' ? 'text-brand' : ''}`} strokeWidth={1.6} />
+          Roles & Permissions
+          {tab === 'roles' && (
+            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[calc(100%+6px)] w-4 h-[2px] rounded-full bg-brand" />
+          )}
         </button>
       </div>
 
       {tab === 'members' && (
         <>
           {showInviteForm && <InviteForm onClose={() => setShowInviteForm(false)} />}
-          <MembersSection />
-          <InvitationsSection />
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-2">
+              <MembersSection />
+            </div>
+            <div>
+              <InvitationsSection />
+            </div>
+          </div>
         </>
       )}
+      {tab === 'contact-cards' && <ContactCardsPage inline />}
       {tab === 'roles' && <RolesSection />}
     </div>
   );
@@ -88,48 +112,152 @@ function InviteForm({ onClose }: { onClose: () => void }) {
       { onSuccess: () => { form.reset(); onClose(); } },
     );
   };
-  const input = 'w-full px-4 py-3 rounded-lg bg-bg border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
+  const inputCls = 'w-full px-4 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]';
+  const inputBg = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' };
+  const [roleOpen, setRoleOpen] = useState(false);
   return (
-    <div className="bg-glass-1 border border-brand rounded-2xl p-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="text-base font-bold text-text-primary">Send invitation</div>
-        <button onClick={onClose} className="text-text-muted hover:text-text-primary"><XCircle className="w-5 h-5" /></button>
-      </div>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Email</label>
-            <input {...form.register('email')} type="email" placeholder="team@company.com" className={input} />
-            {form.formState.errors.email && <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>}
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              Send invitation
+            </h2>
+            <p className="text-xs text-text-muted mt-0.5">Invite a team member to your workspace</p>
           </div>
-          <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Role</label>
-            <select {...form.register('role', { valueAsNumber: true })} className={input}>
-              <option value={UserRole.Admin} className="bg-bg">Admin</option>
-              <option value={UserRole.Manager} className="bg-bg">Manager</option>
-              <option value={UserRole.Agent} className="bg-bg">Agent</option>
-            </select>
-          </div>
-        </div>
-        <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">
-            Personal message <span className="opacity-40">(optional)</span>
-          </label>
-          <textarea {...form.register('personalMessage')} placeholder="Hey, join our team!" rows={2} className={`${input} resize-none`} />
-        </div>
-        {send.isError && (
-          <div className="px-4 py-3 rounded-lg bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">
-            {send.error?.message || 'Failed.'}
-          </div>
-        )}
-        <div className="flex justify-end gap-3">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary transition-all">Cancel</button>
-          <button type="submit" disabled={send.isPending} className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 disabled:opacity-50 transition-all">
-            {send.isPending ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Send className="w-4 h-4" />}
-            {send.isPending ? 'Sending...' : 'Send invitation'}
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+            <X className="w-4 h-4" />
           </button>
         </div>
-      </form>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
+          {/* Email */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
+            <input
+              {...form.register('email')}
+              type="email"
+              placeholder="team@company.com"
+              className={inputCls}
+              style={inputBg}
+            />
+            {form.formState.errors.email && (
+              <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
+            )}
+          </div>
+
+          {/* Role */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Role</label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setRoleOpen(o => !o)}
+                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-[rgba(0,217,138,0.20)] focus:outline-none transition-all"
+                style={{
+                  backgroundColor: '#1A2F27',
+                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  borderColor: roleOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)',
+                  boxShadow: roleOpen
+                    ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                    : 'none',
+                }}
+              >
+                <Shield className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                <span className="flex-1 text-left">
+                  {form.watch('role') === UserRole.Admin ? 'Admin' : form.watch('role') === UserRole.Manager ? 'Manager' : 'Agent'}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${roleOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+              </button>
+              {roleOpen && (
+                <div
+                  className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                >
+                  {([
+                    { value: UserRole.Admin, label: 'Admin' },
+                    { value: UserRole.Manager, label: 'Manager' },
+                    { value: UserRole.Agent, label: 'Agent' },
+                  ] as const).map(opt => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => { form.setValue('role', opt.value, { shouldValidate: true }); setRoleOpen(false); }}
+                      className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition-colors ${form.watch('role') === opt.value ? 'bg-[rgba(0,217,138,0.08)] text-text-primary' : 'text-text-secondary hover:bg-glass-1'}`}
+                    >
+                      <Shield className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
+                      {opt.label}
+                      {form.watch('role') === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Personal message */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">
+              Personal message <span className="opacity-40">(optional)</span>
+            </label>
+            <textarea
+              {...form.register('personalMessage')}
+              placeholder="Hey, join our team!"
+              rows={3}
+              className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+              style={inputBg}
+            />
+          </div>
+
+          {send.isError && (
+            <div className="px-4 py-3 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">
+              {send.error?.message || 'Failed.'}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={send.isPending}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {send.isPending ? (
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <Plus className="w-3.5 h-3.5" />
+              )}
+              {send.isPending ? 'Sending...' : 'Send invitation'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
@@ -141,9 +269,11 @@ function MembersSection() {
   const roles = (rolesData as unknown as CrmRoleDto[]) || [];
   const adminUpdate = useAdminUpdateUser();
   const assignCrmRole = useAssignCrmRole();
+  const [qrUserId, setQrUserId] = useState<string | null>(null);
+  const { data: qrCard } = useContactCard(qrUserId);
 
   const activeMembers = members.filter((u) => u.status !== UserStatus.Deactivated);
-  const navigate = useNavigate();
+  
   const deactivatedMembers = members.filter((u) => u.status === UserStatus.Deactivated);
 
   const roleBadge: Record<number, string> = {
@@ -173,27 +303,30 @@ function MembersSection() {
       ) : (
         <div className="divide-y divide-border-subtle">
           {activeMembers.map((user) => (
-            <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} navigate={navigate} />
+            <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} onQrClick={setQrUserId} />
           ))}
           {deactivatedMembers.length > 0 && (
             <>
               <div className="px-6 py-2 bg-glass-2 text-xs font-bold uppercase tracking-[1px] text-text-muted">Deactivated</div>
               {deactivatedMembers.map((user) => (
-                <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} navigate={navigate} />
+                <MemberRow key={user.id} user={user} roles={roles} roleBadge={roleBadge} statusBadge={statusBadge} adminUpdate={adminUpdate} assignCrmRole={assignCrmRole} onQrClick={setQrUserId} />
               ))}
             </>
           )}
         </div>
       )}
+
+      {/* QR Dialog — uses CardDetailModal from contact-cards */}
+      {qrCard && <CardDetailModal card={qrCard} onClose={() => setQrUserId(null)} />}
     </div>
   );
 }
 
-function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrmRole, navigate }: {
+function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrmRole, onQrClick }: {
   user: UserDto; roles: CrmRoleDto[];
   roleBadge: Record<number, string>; statusBadge: Record<number, string>;
   adminUpdate: ReturnType<typeof useAdminUpdateUser>; assignCrmRole: ReturnType<typeof useAssignCrmRole>;
-  navigate: (to: string) => void;
+  onQrClick: (userId: string) => void;
 }) {
   const initials = `${(user.firstName?.[0] || '').toUpperCase()}${(user.lastName?.[0] || '').toUpperCase()}`;
   const isDeactivated = user.status === UserStatus.Deactivated;
@@ -237,7 +370,7 @@ function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrm
                 </select>
               )}
               <button
-                onClick={() => navigate(ROUTES.dashboard.crmContactCards + '?user=' + user.id)}
+                onClick={() => onQrClick(user.id)}
                 className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all"
                 title="View contact card / QR"
               >
@@ -261,6 +394,7 @@ function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrm
           )}
         </div>
       )}
+
     </div>
   );
 }
@@ -412,7 +546,7 @@ function RoleListItem({ role, isSelected, onClick }: { role: CrmRoleDto; isSelec
 function CreateRoleForm({ onDone, onCancel }: { onDone: (id: string) => void; onCancel: () => void }) {
   const [name, setName] = useState('');
   const create = useCreateCrmRole();
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
     create.mutate({ name: name.trim() }, { onSuccess: (data: any) => onDone(data?.id || '') });

@@ -182,7 +182,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
     const configJson = Object.keys(configFields).length > 0 ? JSON.stringify(configFields) : undefined;
 
     create.mutate(
-      { tenantId: tenantId || undefined, channelType, channelIdentifier, displayName: displayName || undefined, configurationJson: configJson },
+      { tenantId, channelType, channelIdentifier, displayName: displayName || undefined, configurationJson: configJson },
       {
         onSuccess: (result) => {
           const channel = result as unknown as ChannelConnectionCreateResponseDto;

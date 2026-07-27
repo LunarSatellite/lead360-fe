@@ -132,7 +132,7 @@ export function Component() {
 
   // ─── Render branches ────────────────────────────────────
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
+    <div className="py-6 w-full">
       {/* Page header */}
       <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>

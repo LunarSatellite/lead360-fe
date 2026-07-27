@@ -2179,8 +2179,7 @@ export function Component() {
           <p className="text-xs text-text-muted mt-0.5">Automate CRM actions triggered by events</p>
         </div>
         <button onClick={() => setBuilderTarget('new')}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white border-none transition-all"
-          style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}>
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Workflow
         </button>
       </div>

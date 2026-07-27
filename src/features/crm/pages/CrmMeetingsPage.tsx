@@ -35,7 +35,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex justify-end">
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div
         className="drawer-slide-in relative flex flex-col overflow-hidden"
@@ -46,9 +46,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
           border: '1px solid rgba(0,217,138,0.2)',
           boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
           maxHeight: 'calc(100vh - 32px)',
-          marginTop: 16,
-          marginBottom: 16,
-        }}
+          }}
       >
         {/* Accent bar */}
         <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
@@ -407,15 +405,13 @@ function MeetingsTab() {
           {/* Additional Attendees */}
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Additional Attendees</label>
-            <div className="max-h-40 overflow-y-auto rounded-xl border border-[rgba(0,217,138,0.20)] p-2"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-            >
-              {contactsList.filter(c => c.id !== initForm.contactId).map(c => (
-                <label key={c.id} className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-glass-1 cursor-pointer text-sm text-text-secondary transition-colors">
-                  <input type="checkbox" checked={selectedAttendees.has(c.id)} onChange={() => toggleAttendee(c.id)} className="accent-brand" />
-                  {c.fullName}
-                </label>
-              ))}
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                placeholder="Type name or email..."
+              />
             </div>
           </div>
 
@@ -819,14 +815,95 @@ function CallSummariesTab() {
       </div>
 
       {/* Request SlideOver */}
-      <SlideOver open={showRequest} onClose={() => setShowRequest(false)} title="Request Call Summary">
-        <form onSubmit={handleRequest} className="space-y-4">
-          <Field label="Signal ID *"><input required value={reqForm.signalId} onChange={setR('signalId')} placeholder="Signal ID (required)" className={inputCls} /></Field>
-          <Field label="Contact ID"><input value={reqForm.contactId} onChange={setR('contactId')} placeholder="Contact ID (optional)" className={inputCls} /></Field>
-          <Field label="Deal ID"><input value={reqForm.dealId} onChange={setR('dealId')} placeholder="Deal ID (optional)" className={inputCls} /></Field>
-          <button type="submit" disabled={requestSummary.isPending} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
-            {requestSummary.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Request'}
-          </button>
+      <SlideOver
+        open={showRequest}
+        onClose={() => setShowRequest(false)}
+        title="Request Call Summary"
+        subtitle="Generate an AI summary from a recorded call"
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            <button
+              onClick={() => setShowRequest(false)}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={requestSummary.isPending}
+              onClick={handleRequest}
+              form="request-summary-form"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {requestSummary.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" strokeWidth={2} />}
+              {requestSummary.isPending ? 'Requesting…' : 'Request Summary'}
+            </button>
+          </div>
+        }
+      >
+        <form id="request-summary-form" onSubmit={handleRequest} className="space-y-4">
+          {/* ── Call Details ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Call Details</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          {/* Signal ID — required */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger">*</span></label>
+            <div className="relative">
+              <PhoneCall className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                required
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                placeholder="Signal ID from recorded call (required)"
+                value={reqForm.signalId}
+                onChange={setR('signalId')}
+              />
+            </div>
+          </div>
+
+          {/* ── Links ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Links</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          {/* Contact ID + Deal ID */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Contact ID (optional)"
+                  value={reqForm.contactId}
+                  onChange={setR('contactId')}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
+              <div className="relative">
+                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Deal ID (optional)"
+                  value={reqForm.dealId}
+                  onChange={setR('dealId')}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Helper text */}
+          <p className="text-xs text-text-muted px-1">
+            The Signal ID links this summary to a specific recorded call. Contact and Deal IDs are optional — they help associate the summary with existing CRM records.
+          </p>
         </form>
       </SlideOver>
 

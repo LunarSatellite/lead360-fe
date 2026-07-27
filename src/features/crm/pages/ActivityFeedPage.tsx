@@ -3,6 +3,7 @@ import { Loader2, Activity, MessageSquare, ArrowRightLeft, PlusCircle, UserCog, 
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { useActivityFeed } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
+import type { UserDto } from '@/features/auth/types/auth.types';
 import {
   CrmActivityEventKind,
   CrmActivityEntityKind,
@@ -38,7 +39,7 @@ export function Component() {
 
   const nameById = useMemo(() => {
     const m = new Map<string, string>();
-    (team ?? []).forEach((u) => m.set(u.id, u.fullName || [u.firstName, u.lastName].filter(Boolean).join(' ') || u.email || 'Teammate'));
+    (team?.data ?? []).forEach((u: UserDto) => m.set(u.id, u.fullName || [u.firstName, u.lastName].filter(Boolean).join(' ') || u.email || 'Teammate'));
     return m;
   }, [team]);
 

@@ -102,6 +102,7 @@ const primaryNav = [
 const settingsNav = [
   { label: 'Team',     href: ROUTES.dashboard.team,     icon: Users },
   { label: 'Settings', href: '/dashboard/settings',     icon: Settings },
+  { label: 'Domains',  href: ROUTES.dashboard.customDomainsSettings, icon: Globe },
 ];
 
 // CRM nav, split into sub-groups so the 53-item list has scannable structure

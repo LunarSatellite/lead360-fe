@@ -104,6 +104,7 @@ export const router = createBrowserRouter([
       { path: 'settings/video-conferencing', lazy: () => import('@/features/integrations/pages/VideoConferencingSettingsPage') },
       { path: 'settings/calendar', lazy: () => import('@/features/integrations/pages/CalendarIntegrationSettingsPage') },
       { path: 'settings/booking-page', lazy: () => import('@/features/booking/pages/BookingPageSettingsPage') },
+      { path: 'settings/custom-domains', lazy: () => import('@/features/tenant/pages/CustomDomainsPage') },
       { path: 'intents', lazy: () => import('@/features/intents/pages/IntentListPage') },
       { path: 'api-specs', element: <Navigate to="/dashboard/api-connection" replace /> },
       { path: 'api-specs/:id', element: <Navigate to="/dashboard/api-connection" replace /> },

@@ -124,6 +124,7 @@ export const ROUTES = {
     videoConferencingSettings: '/dashboard/settings/video-conferencing',
     calendarSettings: '/dashboard/settings/calendar',
     bookingPageSettings: '/dashboard/settings/booking-page',
+    customDomainsSettings: '/dashboard/settings/custom-domains',
   },
   schedule: (token: string) => `/schedule/${token}`,
   book: (slug: string) => `/book/${slug}`,

@@ -22,6 +22,8 @@ import {
   type WebFormPageTheme,
 } from "../types/webforms.types";
 import { ROUTES } from "@/app/router/route-paths";
+import { useTenantDomains } from "@/features/tenant/api/tenant-domains.queries";
+import { getActiveTenantDomainOrigin } from "@/features/tenant/types/tenant-domain.types";
 
 const inputCls =
   "w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow";
@@ -110,6 +112,8 @@ export function Component() {
   const navigate = useNavigate();
   const isEdit = !!id;
   const { tenantId } = useAuth();
+  const { data: tenantDomains } = useTenantDomains();
+  const publicOrigin = getActiveTenantDomainOrigin(tenantDomains);
 
   const formQuery = useWebForm(isEdit ? id : null);
   const createMut = useCreateWebForm();
@@ -291,7 +295,7 @@ export function Component() {
 
   function copyHostedUrl() {
     if (!id) return;
-    const url = buildHostedUrl(id, draft.hostedSlug || null);
+    const url = buildHostedUrl(id, draft.hostedSlug || null, publicOrigin ?? undefined);
     navigator.clipboard.writeText(url).then(() => toast.success("Hosted URL copied")).catch(() => toast.error("Clipboard write failed"));
   }
 
@@ -993,4 +997,3 @@ function inputTypeFor(t: WebFormFieldType | undefined): string {
     default: return "text";
   }
 }
-

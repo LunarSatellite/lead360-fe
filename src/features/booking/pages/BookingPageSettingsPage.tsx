@@ -25,6 +25,8 @@ import type {
   CreateEventTypeRequest,
   UpdateEventTypeRequest,
 } from '../api/booking.api';
+import { useTenantDomains } from '@/features/tenant/api/tenant-domains.queries';
+import { getActiveTenantDomainOrigin } from '@/features/tenant/types/tenant-domain.types';
 
 const COLORS = [
   '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e',
@@ -157,6 +159,7 @@ function EventTypeModal({
 
 function BookingPageSettingsPage() {
   const { data: rawPage, isLoading, isError } = useBookingPage();
+  const { data: tenantDomains } = useTenantDomains();
   const page = rawPage as unknown as BookingPageDto | undefined;
 
   const updatePage = useUpdateBookingPage();
@@ -172,7 +175,8 @@ function BookingPageSettingsPage() {
   const [editingEventType, setEditingEventType] = useState<BookingPageEventTypeDto | null>(null);
   const updateEventType = useUpdateEventType(editingEventType?.id ?? '');
 
-  const bookingUrl = page ? `${window.location.origin}/book/${page.slug}` : '';
+  const publicOrigin = getActiveTenantDomainOrigin(tenantDomains) ?? window.location.origin;
+  const bookingUrl = page ? `${publicOrigin}/book/${page.slug}` : '';
 
   const copyLink = () => {
     navigator.clipboard.writeText(bookingUrl);
@@ -258,7 +262,7 @@ function BookingPageSettingsPage() {
           <div className="flex gap-2">
             <div className="flex-1 flex items-center border border-border-glow rounded-xl overflow-hidden">
               <span className="px-3 text-xs text-text-muted whitespace-nowrap">
-                {window.location.origin}/book/
+                {publicOrigin}/book/
               </span>
               <input
                 type="text"
@@ -354,7 +358,7 @@ function BookingPageSettingsPage() {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => {
-                      const directLink = `${window.location.origin}/book/${page.slug}/${et.id}`;
+                      const directLink = `${publicOrigin}/book/${page.slug}/${et.id}`;
                       navigator.clipboard.writeText(directLink);
                       setCopiedEtId(et.id);
                       setTimeout(() => setCopiedEtId(null), 2000);

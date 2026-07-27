@@ -12,6 +12,8 @@ import {
 import { buildEmbedSnippet, buildHostedUrl } from "../api/webforms.api";
 import type { CrmWebFormFilter, WebFormDto, WebFormStatus } from "../types/webforms.types";
 import { ROUTES } from "@/app/router/route-paths";
+import { useTenantDomains } from "@/features/tenant/api/tenant-domains.queries";
+import { getActiveTenantDomainOrigin } from "@/features/tenant/types/tenant-domain.types";
 
 const inputCls =
   "w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow";
@@ -24,6 +26,8 @@ const STATUS_BADGE: Record<WebFormStatus, string> = {
 
 export function Component() {
   const navigate = useNavigate();
+  const { data: tenantDomains } = useTenantDomains();
+  const publicOrigin = getActiveTenantDomainOrigin(tenantDomains);
   const [filter, setFilter] = useState<CrmWebFormFilter>({
     page: 1, pageSize: 20, status: "All", search: "",
   });
@@ -42,7 +46,7 @@ export function Component() {
   }
 
   function copyHostedUrl(formId: string, slug?: string | null) {
-    const url = buildHostedUrl(formId, slug ?? null);
+    const url = buildHostedUrl(formId, slug ?? null, publicOrigin ?? undefined);
     navigator.clipboard.writeText(url)
       .then(() => toast.success("Hosted URL copied"))
       .catch(() => toast.error("Clipboard write failed"));

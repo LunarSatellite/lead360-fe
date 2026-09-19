@@ -24,6 +24,8 @@ export const ROUTES = {
     moderation: '/dashboard/stylemint/moderation',
     featureFlags: '/dashboard/stylemint/feature-flags',
     couriers: '/dashboard/stylemint/couriers',
+    collections: '/dashboard/stylemint/collections',
+    audio: '/dashboard/stylemint/audio',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,

@@ -104,6 +104,7 @@ const primaryNav = [
   { label: 'Platform config', href: ROUTES.dashboard.platformConfig, icon: Settings2 },
   { label: 'Audit trail', href: ROUTES.dashboard.auditTrail, icon: ScrollText },
   { label: 'Returns', href: ROUTES.dashboard.returns, icon: PackageOpen },
+  { label: 'Counter handover', href: ROUTES.dashboard.counterHandover, icon: Store },
   { label: 'Payouts', href: ROUTES.dashboard.payouts, icon: Banknote },
   { label: 'Data rights', href: ROUTES.dashboard.privacyRequests, icon: ShieldCheck },
   { label: 'Reel recipes', href: ROUTES.dashboard.recipes, icon: ChefHat },
@@ -331,6 +332,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/audio')) return 'Audio';
     if (path.includes('/stylemint/platform-config')) return 'Platform Configuration';
     if (path.includes('/stylemint/audit')) return 'Audit Trail';
+    if (path.includes('/stylemint/counter-handover')) return 'Counter handover';
     if (path.includes('/stylemint/returns')) return 'Returns';
     if (path.includes('/stylemint/payouts')) return 'Payouts';
     if (path.includes('/stylemint/privacy')) return 'Data-Rights Requests';

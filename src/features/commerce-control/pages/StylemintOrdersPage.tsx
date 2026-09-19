@@ -33,7 +33,7 @@ const STATES: Record<number, string> = {
   6: 'Expediee',
   7: 'Livree',
   8: 'Annulee',
-  9: 'Retournee',
+  9: 'Returned',
   10: 'En transit',
   11: 'En livraison',
   12: 'Acceptee',
@@ -174,7 +174,7 @@ export function StylemintOrdersPage() {
             <PackageCheck className="h-3.5 w-3.5" /> Stylemint en direct
           </div>
           <h1 className="mt-2 text-2xl font-black tracking-tight text-text-primary">Orders & fulfilment</h1>
-          <p className="mt-1 text-sm text-text-muted">Pilotez le cycle reel de chaque commande Kin Marche.</p>
+          <p className="mt-1 text-sm text-text-muted">Drive the full lifecycle of every Kin Marche order.</p>
         </div>
         <div
           className={`flex items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold ${health.isSuccess ? 'border-success/25 bg-success-soft text-success' : 'border-amber-400/25 bg-amber-400/10 text-amber-400'}`}
@@ -186,7 +186,7 @@ export function StylemintOrdersPage() {
           ) : (
             <AlertTriangle className="h-3.5 w-3.5" />
           )}
-          {health.isSuccess ? 'Stylemint connecte' : 'Connexion Stylemint a configurer'}
+          {health.isSuccess ? 'Stylemint connected' : 'Stylemint connection not configured'}
         </div>
       </div>
 
@@ -205,7 +205,7 @@ export function StylemintOrdersPage() {
           onChange={(event) => setState(event.target.value)}
           className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm font-semibold text-text-secondary outline-none"
         >
-          <option value="">Tous les statuts</option>
+          <option value="">All statuses</option>
           {Object.entries(STATES).map(([value, label]) => (
             <option key={value} value={value}>
               {label}
@@ -262,7 +262,7 @@ export function StylemintOrdersPage() {
         ) : ordersQuery.isError ? (
           <div className="flex h-56 flex-col items-center justify-center gap-3 px-6 text-center">
             <AlertTriangle className="h-8 w-8 text-amber-400" />
-            <p className="font-bold text-text-primary">Impossible de charger les commandes Stylemint</p>
+            <p className="font-bold text-text-primary">Could not load Stylemint orders</p>
             <p className="max-w-lg text-xs leading-5 text-text-muted">
               Ajoutez le jeton operateur Stylemint dans la configuration securisee de Lead360, puis
               actualisez.
@@ -271,7 +271,7 @@ export function StylemintOrdersPage() {
         ) : !orders.length ? (
           <div className="flex h-56 flex-col items-center justify-center gap-2 text-text-muted">
             <PackageCheck className="h-8 w-8 opacity-40" />
-            <p className="text-sm">Aucune commande pour ce filtre.</p>
+            <p className="text-sm">No orders for this filter.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -472,12 +472,12 @@ function OrderPanel({
           />
           <Info label="Articles" value={String(order.itemCount)} />
           <Info label="Transporteur" value={order.carrier || 'Non assigne'} />
-          <Info label="Suivi" value={order.trackingNumber || 'Non disponible'} />
+          <Info label="Tracking" value={order.trackingNumber || 'Non disponible'} />
         </div>
         {detailLoading && (
           <div className="mt-5 flex items-center gap-2 rounded-xl border border-border-subtle bg-bg-elevated p-4 text-xs text-text-muted">
             <Loader2 className="h-4 w-4 animate-spin text-brand" />
-            Chargement des details Stylemint…
+            Loading Stylemint details…
           </div>
         )}
         {detail?.shipTo && (
@@ -572,7 +572,7 @@ function OrderPanel({
               onClick={() => onOperation('tracking')}
               className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand/25 bg-brand-soft px-4 py-3 text-sm font-bold text-brand disabled:opacity-50"
             >
-              <Truck className="h-4 w-4" /> Ajouter le suivi transporteur
+              <Truck className="h-4 w-4" /> Add carrier tracking
             </button>
           )}
           {canOperate && [4, 13].includes(order.state) && (
@@ -652,7 +652,7 @@ function PackageSealDialog({
             <p className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300">
               Securite livraison
             </p>
-            <h3 className="mt-1 text-lg font-black text-text-primary">Sceller le colis</h3>
+            <h3 className="mt-1 text-lg font-black text-text-primary">Seal the parcel</h3>
           </div>
           <button type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
@@ -663,7 +663,7 @@ function PackageSealDialog({
         </p>
         <div className="mt-5 space-y-3">
           <Input label="Identifiant du scelle" value={sealId} onChange={setSealId} />
-          <Input label="Photo du scelle (URL HTTPS)" value={sealPhotoUrl} onChange={setSealPhotoUrl} />
+          <Input label="Seal photo (HTTPS URL)" value={sealPhotoUrl} onChange={setSealPhotoUrl} />
         </div>
         {error && <p className="mt-3 text-xs font-semibold text-danger">{error}</p>}
         <button
@@ -738,25 +738,25 @@ function OrderOperationDialog({
         <div className="mt-5 space-y-3">
           {isReject && (
             <label className="block space-y-1.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Motif du rejet</span>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Rejection reason</span>
               <select
                 value={reasonCode}
                 onChange={(event) => setReasonCode(event.target.value)}
                 className="w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
               >
-                <option value="1">Rupture de stock</option>
-                <option value="2">Impossible de preparer a temps</option>
-                <option value="3">Erreur de prix</option>
+                <option value="1">Out of stock</option>
+                <option value="2">Cannot prepare in time</option>
+                <option value="3">Pricing error</option>
                 <option value="4">Adresse non desservie</option>
                 <option value="5">Fraude suspectee</option>
-                <option value="6">Autre motif</option>
+                <option value="6">Other reason</option>
               </select>
             </label>
           )}
           {!isReject && (
             <>
               <Input label="Transporteur" value={carrier} onChange={setCarrier} />
-              <Input label="Numero de suivi" value={trackingNumber} onChange={setTrackingNumber} />
+              <Input label="Tracking number" value={trackingNumber} onChange={setTrackingNumber} />
             </>
           )}
           <Input
@@ -824,7 +824,7 @@ function RefundDialog({
         className="relative w-full max-w-md rounded-2xl border border-border-subtle bg-bg-card p-6"
       >
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-black text-text-primary">Emettre un remboursement</h3>
+          <h3 className="text-lg font-black text-text-primary">Issue a refund</h3>
           <button type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
@@ -835,10 +835,10 @@ function RefundDialog({
         <div className="mt-5 space-y-3">
           <Input label="Payment Intent ID" value={paymentId} onChange={setPaymentId} readOnly />
           <Input label="Montant (CDF)" value={amount} onChange={setAmount} type="number" />
-          <Input label="Motif" value={reason} onChange={setReason} />
+          <Input label="Reason" value={reason} onChange={setReason} />
         </div>
         {context.isLoading && (
-          <p className="mt-3 text-xs text-text-muted">Verification du paiement Stylemint…</p>
+          <p className="mt-3 text-xs text-text-muted">Verifying Stylemint payment…</p>
         )}
         {context.data && (
           <p className="mt-3 text-xs text-text-muted">

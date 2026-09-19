@@ -140,7 +140,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
             <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-brand">
               Catalogue Stylemint
             </p>
-            <h2 className="mt-1 text-xl font-black text-text-primary">Nouveau produit Kin Marche</h2>
+            <h2 className="mt-1 text-xl font-black text-text-primary">New Kin Marche product</h2>
             <p className="mt-1 text-xs text-text-muted">
               Produit, cinq visuels minimum, reel, prix CDF, stock et livraison dans un seul parcours.
             </p>
@@ -158,7 +158,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
           <Section title="1. Identite produit">
             <label className="block space-y-1.5">
               <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
-                Categorie
+                Category
               </span>
               <select
                 required
@@ -167,7 +167,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
                 className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
               >
                 <option value="">
-                  {categories.isLoading ? 'Chargement…' : 'Selectionner une categorie'}
+                  {categories.isLoading ? 'Chargement…' : 'Select a category'}
                 </option>
                 {(categories.data ?? [])
                   .filter((category) => category.isActive)
@@ -198,14 +198,14 @@ export function ProductComposer({ onClose, onDone }: Props) {
             />
           </Section>
 
-          <Section title="2. Images et reel">
+          <Section title="2. Images and reel">
             <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-brand/35 bg-brand/5 px-4 py-3 text-xs font-extrabold text-brand">
               {uploadImages.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Upload className="h-4 w-4" />
               )}
-              {uploadImages.isPending ? 'Envoi vers Stylemint…' : 'Televerser des images JPG/PNG'}
+              {uploadImages.isPending ? 'Envoi vers Stylemint…' : 'Upload JPG/PNG images'}
               <input
                 type="file"
                 accept="image/jpeg,image/png"
@@ -230,13 +230,13 @@ export function ProductComposer({ onClose, onDone }: Props) {
               rows={7}
             />
             <Input
-              label="URL du reel / video"
+              label="Reel / video URL"
               value={form.videoUrl}
               onChange={(value) => set('videoUrl', value)}
             />
             <div className="grid grid-cols-2 gap-3">
               <Input
-                label="Poster du reel"
+                label="Reel poster"
                 value={form.posterUrl}
                 onChange={(value) => set('posterUrl', value)}
               />
@@ -253,7 +253,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
             <Input label="SKU" value={form.sku} onChange={(value) => set('sku', value)} required />
             <div className="grid grid-cols-3 gap-3">
               <Input
-                label="Prix CDF"
+                label="Price (CDF)"
                 type="number"
                 value={form.price}
                 onChange={(value) => set('price', value)}
@@ -360,7 +360,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
               onClick={onClose}
               className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary"
             >
-              Annuler
+              Cancel
             </button>
             <button
               disabled={create.isPending || images.length < 5}

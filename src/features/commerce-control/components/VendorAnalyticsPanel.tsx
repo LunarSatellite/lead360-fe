@@ -114,7 +114,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                 className={`relative mt-3 flex items-center gap-1 text-[11px] font-bold ${delta == null ? 'text-text-muted' : positive ? 'text-success' : 'text-danger'}`}
               >
                 {delta == null ? (
-                  'Pas de periode comparable'
+                  'No comparable period'
                 ) : (
                   <>
                     {positive ? (
@@ -181,14 +181,14 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
               </ResponsiveContainer>
             </div>
           ) : (
-            <Empty label="Aucune tendance disponible" />
+            <Empty label="No trend available" />
           )}
         </section>
         <section className="rounded-2xl border border-border-subtle bg-bg-elevated p-4">
           <p className="text-xs font-extrabold uppercase tracking-wider text-text-primary">
             Origine du trafic
           </p>
-          <p className="mt-1 text-[11px] text-text-muted">Contribution par plateforme</p>
+          <p className="mt-1 text-[11px] text-text-muted">Contribution by platform</p>
           {traffic.length ? (
             <>
               <div className="h-52">
@@ -239,7 +239,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
               </div>
             </>
           ) : (
-            <Empty label="Aucune source disponible" />
+            <Empty label="No source available" />
           )}
         </section>
       </div>
@@ -248,7 +248,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
           <p className="text-xs font-extrabold uppercase tracking-wider text-text-primary">
             Produits moteurs
           </p>
-          <p className="mt-1 text-[11px] text-text-muted">Classement par chiffre d'affaires attribue</p>
+          <p className="mt-1 text-[11px] text-text-muted">Ranking by attributed revenue</p>
         </div>
         {products.length ? (
           <div className="grid gap-4 xl:grid-cols-[1.2fr_1fr]">
@@ -319,7 +319,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
             </div>
           </div>
         ) : (
-          <Empty label="Aucun produit classe" />
+          <Empty label="No ranked product" />
         )}
       </section>
     </div>

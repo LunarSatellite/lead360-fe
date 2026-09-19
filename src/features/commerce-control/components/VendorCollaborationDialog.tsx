@@ -70,11 +70,11 @@ export function VendorCollaborationDialog({
           <div className="flex gap-3">
             <span className="rounded-2xl bg-brand/10 p-3 text-brand"><Users className="h-5 w-5" /></span>
             <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-brand">Collaboration vendeur</p>
+              <p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-brand">Vendor collaboration</p>
               <h3 className="mt-1 text-xl font-black text-text-primary">
-                {kind === 'squad' ? 'Nouvelle escouade' : 'Nouveau contrat mensuel'}
+                {kind === 'squad' ? 'New squad' : 'New monthly contract'}
               </h3>
-              <p className="mt-1 text-xs text-text-muted">Tous les montants sont en francs congolais.</p>
+              <p className="mt-1 text-xs text-text-muted">All amounts are in Congolese francs.</p>
             </div>
           </div>
           <button type="button" aria-label="Fermer" onClick={onClose} className="rounded-xl p-2 text-text-muted hover:bg-bg-elevated">
@@ -84,7 +84,7 @@ export function VendorCollaborationDialog({
         <div className="mt-6 space-y-4">
           {kind === 'squad' ? (
             <>
-              <Input label="Nom de l'escouade" value={name} onChange={setName} />
+              <Input label="Squad name" value={name} onChange={setName} />
               <Input label="Identifiant du brief commercial" value={briefId} onChange={setBriefId} mono />
               <Input label="Budget total" value={amount} onChange={setAmount} type="number" suffix="CDF" />
             </>
@@ -92,18 +92,18 @@ export function VendorCollaborationDialog({
             <>
               <Input label="Identifiant du compte createur" value={creatorAccountId} onChange={setCreatorAccountId} mono />
               <Input label="Montant mensuel" value={amount} onChange={setAmount} type="number" suffix="CDF" />
-              <Input label="Livrables par mois" value={deliverables} onChange={setDeliverables} type="number" />
+              <Input label="Deliverables per month" value={deliverables} onChange={setDeliverables} type="number" />
             </>
           )}
         </div>
         {error && <p className="mt-4 rounded-xl border border-danger/20 bg-danger/5 p-3 text-xs font-semibold text-danger">{error}</p>}
         <div className="mt-6 flex justify-end gap-2">
           <button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">
-            Annuler
+            Cancel
           </button>
           <button disabled={!valid || save.isPending} className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40">
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            {kind === 'squad' ? "Creer l'escouade" : 'Proposer le contrat'}
+            {kind === 'squad' ? "Create squad" : 'Proposer le contrat'}
           </button>
         </div>
       </form>

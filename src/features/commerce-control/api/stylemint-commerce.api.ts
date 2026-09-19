@@ -568,7 +568,7 @@ export const stylemintCommerceApi = {
     apiClient.get(`${BASE}/content/accounts/${provider}/publish-scopes`) as unknown as Promise<Record<string, unknown>[]>,
   changeSocialPublishScope: (provider: string, action: 'grant' | 'revoke', reason?: string) =>
     apiClient.post(`${BASE}/content/accounts/${provider}/publish-scopes/${action}`,
-      action === 'revoke' ? { reason: reason || 'Retire depuis Lead360.' } : {}, {
+      action === 'revoke' ? { reason: reason || 'Removed from Lead360.' } : {}, {
         headers: { 'Idempotency-Key': crypto.randomUUID() },
       }) as unknown as Promise<Record<string, unknown>>,
   disconnectSocial: (provider: string, reason: string) =>

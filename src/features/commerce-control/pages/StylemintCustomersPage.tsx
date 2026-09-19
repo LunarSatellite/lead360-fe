@@ -77,7 +77,7 @@ export function StylemintCustomersPage() {
           <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-brand">
             Vue client 360 Stylemint
           </p>
-          <h1 className="mt-2 text-2xl font-black tracking-tight text-text-primary">Clients Kin Marche</h1>
+          <h1 className="mt-2 text-2xl font-black tracking-tight text-text-primary">Kin Marche customers</h1>
           <p className="mt-1 text-sm text-text-muted">
             Real accounts, verification and Stylemint access control.
           </p>
@@ -92,7 +92,7 @@ export function StylemintCustomersPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Metric icon={Users} label="Clients trouves" value={query.data?.totalCount ?? 0} />
-        <Metric icon={UserCheck} label="Actifs sur cette page" value={active} />
+        <Metric icon={UserCheck} label="Active on this page" value={active} />
         <Metric icon={ShieldCheck} label="Identite verifiee" value={verified} />
       </div>
 
@@ -117,12 +117,12 @@ export function StylemintCustomersPage() {
           onChange={(event) => setStatus(event.target.value)}
           className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm font-semibold text-text-secondary outline-none"
         >
-          <option value="">Tous les statuts</option>
-          <option value="1">Actifs</option>
+          <option value="">All statuses</option>
+          <option value="1">Active</option>
           <option value="2">Suspendus</option>
           <option value="3">Desactives</option>
         </select>
-        <button className="rounded-xl bg-brand px-5 py-2 text-xs font-extrabold text-bg">Rechercher</button>
+        <button className="rounded-xl bg-brand px-5 py-2 text-xs font-extrabold text-bg">Search</button>
       </form>
 
       <div className="overflow-hidden rounded-2xl border border-border-subtle bg-bg-card">
@@ -133,14 +133,14 @@ export function StylemintCustomersPage() {
         ) : query.isError ? (
           <div className="flex h-64 flex-col items-center justify-center gap-2 px-6 text-center">
             <Users className="h-8 w-8 text-amber-400" />
-            <p className="font-bold text-text-primary">Administration client non disponible</p>
+            <p className="font-bold text-text-primary">Customer administration unavailable</p>
             <p className="max-w-lg text-xs leading-5 text-text-muted">
               Le jeton Lead360 doit avoir le role administrateur Stylemint pour consulter les clients.
             </p>
           </div>
         ) : !customers.length ? (
           <div className="flex h-56 items-center justify-center text-sm text-text-muted">
-            Aucun client trouve.
+            No customers found.
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -207,7 +207,7 @@ export function StylemintCustomersPage() {
                     <td className="px-4 py-3 text-xs text-text-muted">
                       {customer.lastActiveUtc
                         ? new Date(customer.lastActiveUtc).toLocaleString('fr-CD')
-                        : 'Jamais'}
+                        : 'Never'}
                     </td>
                   </tr>
                 ))}
@@ -237,7 +237,7 @@ export function StylemintCustomersPage() {
               <Row label="Language" value={selected.locale} />
               <Row label="Time zone" value={selected.timezone} />
               <Row label="Pays" value={selected.countryCode || 'Non renseigne'} />
-              <Row label="Cree le" value={new Date(selected.createdUtc).toLocaleDateString('fr-CD')} />
+              <Row label="Created" value={new Date(selected.createdUtc).toLocaleDateString('fr-CD')} />
             </div>
             {selected.status === 1 ? (
               <button

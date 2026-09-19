@@ -102,7 +102,7 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
             disabled={!canOperate}
           />
           <Input
-            label="Logo HTTPS"
+            label="Logo (HTTPS)"
             value={form.logoUrl}
             onChange={(value) => set('logoUrl', value)}
             disabled={!canOperate}
@@ -110,12 +110,12 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
           {canOperate && (
             <div className="grid gap-2 sm:grid-cols-2">
               <MediaUpload
-                label="Televerser le logo"
+                label="Upload logo"
                 disabled={upload.isPending}
                 onFile={(file) => upload.mutate({ kind: 'logo', file })}
               />
               <MediaUpload
-                label="Televerser la couverture"
+                label="Upload cover"
                 disabled={upload.isPending}
                 onFile={(file) => upload.mutate({ kind: 'cover', file })}
               />
@@ -134,13 +134,13 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
             disabled={!canOperate}
           />
           <Area
-            label="Histoire de la marque"
+            label="Brand story"
             value={form.brandStory}
             onChange={(value) => set('brandStory', value)}
             disabled={!canOperate}
           />
         </Section>
-        <Section title="Service et retrait">
+        <Section title="Service and pickup">
           <div className="grid grid-cols-[1fr_110px] gap-3">
             <Input
               label="Ville d'origine"
@@ -162,7 +162,7 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
             disabled={!canOperate}
           />
           <Area
-            label="Politique de retour"
+            label="Return policy"
             value={form.returnPolicySummary}
             onChange={(value) => set('returnPolicySummary', value)}
             disabled={!canOperate}
@@ -177,13 +177,13 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
             Retrait en magasin active
           </label>
           <Input
-            label="Adresse de retrait"
+            label="Pickup address"
             value={form.pickupAddressLine}
             onChange={(value) => set('pickupAddressLine', value)}
             disabled={!canOperate || !form.pickupEnabled}
           />
           <Input
-            label="Ville de retrait"
+            label="Pickup city"
             value={form.pickupCity}
             onChange={(value) => set('pickupCity', value)}
             disabled={!canOperate || !form.pickupEnabled}

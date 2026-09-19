@@ -21,13 +21,13 @@ function display(value: unknown): string {
     const date = /^\d{4}-\d{2}-\d{2}T/.test(value) ? new Date(value) : null;
     return date && !Number.isNaN(date.getTime()) ? date.toLocaleString('fr-CD') : value;
   }
-  return Array.isArray(value) ? `${value.length} element(s)` : 'Voir les details';
+  return Array.isArray(value) ? `${value.length} element(s)` : 'View details';
 }
 
 function ObjectPanel({ value }: { value: unknown }) {
   const unwrapped = unwrap(value);
   if (Array.isArray(unwrapped)) {
-    if (!unwrapped.length) return <p className="py-8 text-center text-sm text-text-muted">Aucun resultat.</p>;
+    if (!unwrapped.length) return <p className="py-8 text-center text-sm text-text-muted">No results.</p>;
     return (
       <div className="space-y-3">
         {unwrapped.map((item, index) => (
@@ -77,7 +77,7 @@ export function VendorInsightDialog({
           <div className="flex gap-3">
             <span className="rounded-2xl bg-brand/10 p-3 text-brand"><BarChart3 className="h-5 w-5" /></span>
             <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-brand">Intelligence vendeur</p>
+              <p className="text-[10px] font-extrabold uppercase tracking-[.18em] text-brand">Vendor intelligence</p>
               <h3 className="mt-1 text-xl font-black text-text-primary">{title}</h3>
               <p className="mt-1 text-xs text-text-muted">{subtitle}</p>
             </div>

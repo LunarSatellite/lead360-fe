@@ -19,11 +19,11 @@ function required(value: string, label: string) {
 }
 
 export function buildVendorRecipePayload(draft: VendorRecipeDraft) {
-  const title = required(draft.title, 'Le titre');
-  const musicTrackRefId = required(draft.musicTrackRefId, 'La piste musicale');
-  const brandStoryAnchor = required(draft.brandStoryAnchor, "L'histoire de marque");
+  const title = required(draft.title, 'The title');
+  const musicTrackRefId = required(draft.musicTrackRefId, 'The music track');
+  const brandStoryAnchor = required(draft.brandStoryAnchor, "The brand story");
   const moodLabel = required(draft.moodLabel, "L'ambiance");
-  const songTitle = required(draft.songTitle, 'Le titre musical');
+  const songTitle = required(draft.songTitle, 'The music title');
   const artist = required(draft.artist, "L'artiste");
   const caption = required(draft.caption, 'La legende');
   const productVariantIds = draft.productVariantIds.split(',').map((value) => value.trim()).filter(Boolean);
@@ -69,7 +69,7 @@ export function buildVendorRecipePayload(draft: VendorRecipeDraft) {
       {
         order: 1, reelTimeStartMs: firstEnd, reelTimeEndMs: secondEnd,
         songTimeStartMs: firstEnd, songTimeEndMs: secondEnd, kind: 2,
-        label: 'Histoire', direction: "Montrer l'utilisation du produit et son benefice concret.",
+        label: 'Story', direction: "Montrer l'utilisation du produit et son benefice concret.",
         shotHints: ['Demonstration', 'Reaction authentique'], captionOverlay: 'Simple, frais, utile',
         productFocus: brandStoryAnchor, emphasisScore: 0.75,
       },
@@ -89,10 +89,10 @@ export function buildVendorRecipePayload(draft: VendorRecipeDraft) {
       recommendedForPlatform: index === 0 ? 'Instagram' : index === 1 ? 'Facebook' : 'TikTok',
     })),
     platformAdaptations: [
-      { platform: 1, findSoundInstructions: 'Rechercher le titre dans Instagram Audio', segmentUsageNote: 'Utiliser le segment complet', aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'Kinshasa', 'Stylemint'] },
-      { platform: 2, findSoundInstructions: 'Rechercher le titre dans TikTok Sounds', segmentUsageNote: 'Synchroniser les coupes sur le rythme', aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'TikTokRDC', 'Stylemint'] },
-      { platform: 3, findSoundInstructions: 'Rechercher le titre dans YouTube Audio', segmentUsageNote: "Conserver l'appel a l'action final", aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'Shorts', 'Stylemint'] },
-      { platform: 4, findSoundInstructions: 'Rechercher le titre dans Facebook Music', segmentUsageNote: 'Afficher les sous-titres', aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'RDC', 'Stylemint'] },
+      { platform: 1, findSoundInstructions: 'Search for the track in Instagram Audio', segmentUsageNote: 'Use the full segment', aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'Kinshasa', 'Stylemint'] },
+      { platform: 2, findSoundInstructions: 'Search for the track in TikTok Sounds', segmentUsageNote: 'Sync the cuts to the beat', aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'TikTokRDC', 'Stylemint'] },
+      { platform: 3, findSoundInstructions: 'Search for the track in YouTube Audio', segmentUsageNote: "Keep the final call to action", aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'Shorts', 'Stylemint'] },
+      { platform: 4, findSoundInstructions: 'Search for the track in Facebook Music', segmentUsageNote: 'Show subtitles', aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'RDC', 'Stylemint'] },
     ],
     reasoning: {
       headlineRationale: 'Structure narrative en trois temps adaptee a une demonstration commerciale Kin Marche.',

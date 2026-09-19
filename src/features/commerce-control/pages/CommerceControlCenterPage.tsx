@@ -334,7 +334,7 @@ export function CommerceControlCenterPage() {
             </label>
             <label className="rounded-xl border border-border-subtle bg-bg-elevated p-3">
               <span className="mb-2 block text-[10px] font-bold uppercase tracking-wider text-text-muted">
-                Logo HTTPS
+                Logo (HTTPS)
               </span>
               <input
                 disabled={!canOperate}

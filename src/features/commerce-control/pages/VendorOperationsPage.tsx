@@ -366,12 +366,12 @@ export function VendorOperationsPage() {
     mutationFn: ({ id, action }: { id: string; action: string }) => {
       if (selectedKey === 'returns') {
         const payload =
-          action === 'reject' ? { reason: window.prompt('Motif du refus') || 'Refus operateur' } : undefined;
+          action === 'reject' ? { reason: window.prompt('Rejection reason') || 'Refus operateur' } : undefined;
         return stylemintCommerceApi.returnAction(id, action as 'accept' | 'complete' | 'reject', payload);
       }
       if (selectedKey === 'products' && action === 'stock') {
         const variantId = window.prompt('Identifiant de la variante');
-        const quantity = window.prompt('Nouvelle quantite disponible');
+        const quantity = window.prompt('New available quantity');
         if (!variantId || quantity === null || !Number.isInteger(Number(quantity)) || Number(quantity) < 0)
           return Promise.reject(new Error('Variante et quantite valides requises'));
         return stylemintCommerceApi.updateVendorStock(id, {
@@ -396,7 +396,7 @@ export function VendorOperationsPage() {
           if (approve && ![1, 2, 3, 4].includes(resolutionKind!))
             return Promise.reject(new Error('Resolution invalide'));
           const note =
-            window.prompt(approve ? 'Note de decision' : 'Motif du refus') ||
+            window.prompt(approve ? 'Note de decision' : 'Rejection reason') ||
             (approve ? 'Approuve par Kin Marche' : 'Refuse par Kin Marche');
           return stylemintCommerceApi.vendorWarrantyAction(id, 'decision', { approve, resolutionKind, note });
         }
@@ -411,11 +411,11 @@ export function VendorOperationsPage() {
       if (selectedKey === 'team') {
         if (action === 'accept') return stylemintCommerceApi.acceptVendorTeamInvitation(id);
         if (action === 'role') {
-          const newRole = Number(window.prompt('Nouveau role: 2 = Admin, 3 = Membre') || '0');
+          const newRole = Number(window.prompt('New role: 2 = Admin, 3 = Member') || '0');
           if (![2, 3].includes(newRole)) return Promise.reject(new Error('Role invalide'));
           return stylemintCommerceApi.changeVendorTeamRole(id, newRole);
         }
-        const reason = window.prompt('Motif du retrait') || 'Acces retire par Lead360';
+        const reason = window.prompt('Removal reason') || 'Access removed from Lead360';
         return stylemintCommerceApi.removeVendorTeamMember(id, reason);
       }
       if (selectedKey === 'campaigns')
@@ -466,7 +466,7 @@ export function VendorOperationsPage() {
         if (action === 'file-claim') {
           const claimAmount = Number(window.prompt('Montant du sinistre en CDF') || '0');
           const reason = window.prompt('Motif detaille du sinistre')?.trim();
-          const evidenceUrls = (window.prompt('URLs de preuves, separees par virgule') || '')
+          const evidenceUrls = (window.prompt('Evidence URLs, comma separated') || '')
             .split(',').map((value) => value.trim()).filter(Boolean);
           if (!Number.isFinite(claimAmount) || claimAmount <= 0 || !reason)
             return Promise.reject(new Error('Sinistre invalide'));
@@ -494,7 +494,7 @@ export function VendorOperationsPage() {
             action === 'end' ? 'Motif de fin du partenariat' : 'Motif de suspension',
           );
           if (action === 'end' && !reason?.trim())
-            return Promise.reject(new Error('Motif requis'));
+            return Promise.reject(new Error('Reason required'));
           return stylemintCommerceApi.vendorPartnershipAction(id, action, { reason: reason?.trim() || null });
         }
         return stylemintCommerceApi.vendorPartnershipAction(
@@ -503,7 +503,7 @@ export function VendorOperationsPage() {
         );
       }
       if (selectedKey === 'squads') {
-        const creatorAccountId = window.prompt('ID du compte createur')?.trim();
+        const creatorAccountId = window.prompt('Creator account ID')?.trim();
         const budgetShare = Number(window.prompt('Part du budget en CDF') || '0');
         if (!creatorAccountId || !Number.isFinite(budgetShare) || budgetShare <= 0)
           return Promise.reject(new Error('Invitation invalide'));
@@ -708,7 +708,7 @@ export function VendorOperationsPage() {
       if (action === 'add')
         return stylemintCommerceApi.addVendorCollectionItem(collectionManageId, {
           productId: productId!,
-          note: 'Ajoute depuis Lead360',
+          note: 'Added from Lead360',
         });
       if (action === 'remove')
         return stylemintCommerceApi.removeVendorCollectionItem(collectionManageId, productId!);
@@ -853,7 +853,7 @@ export function VendorOperationsPage() {
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Nouveau produit
+                New product
               </button>
             )}
             {canOperate && selectedKey === 'collections' && (
@@ -862,7 +862,7 @@ export function VendorOperationsPage() {
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Nouvelle collection
+                New collection
               </button>
             )}
             {canOperate && selectedKey === 'briefs' && (
@@ -871,7 +871,7 @@ export function VendorOperationsPage() {
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Nouveau brief
+                New brief
               </button>
             )}
             {canOperate && selectedKey === 'campaigns' && (
@@ -900,7 +900,7 @@ export function VendorOperationsPage() {
                           bullets: reelRules.map((text) => ({ text, inlineLinks: [] })),
                         },
                       });
-                      setActionMessage('Nouvelle version des conditions publiee.');
+                      setActionMessage('New terms version published.');
                     } catch { setActionMessage('Publication impossible. Verifiez les criteres et les regles.'); }
                   }}
                   className="flex items-center gap-1.5 rounded-lg border border-brand/30 px-3 py-2 text-[11px] font-extrabold text-brand"
@@ -922,7 +922,7 @@ export function VendorOperationsPage() {
                 onClick={() => setCollaborationDialog('squad')}
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
-                <Plus className="h-3.5 w-3.5" /> Nouvelle escouade
+                <Plus className="h-3.5 w-3.5" /> New squad
               </button>
             )}
             {canOperate && selectedKey === 'retainers' && (
@@ -930,7 +930,7 @@ export function VendorOperationsPage() {
                 onClick={() => setCollaborationDialog('retainer')}
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
-                <Plus className="h-3.5 w-3.5" /> Nouveau contrat
+                <Plus className="h-3.5 w-3.5" /> New contract
               </button>
             )}
             {canOperate && selectedKey === 'recipes' && (
@@ -939,7 +939,7 @@ export function VendorOperationsPage() {
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Nouvelle recette
+                New recipe
               </button>
             )}
             {canOperate && selectedKey === 'stores' && (
@@ -948,7 +948,7 @@ export function VendorOperationsPage() {
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Nouveau magasin
+                New store
               </button>
             )}
             {canOperate && selectedKey === 'team' && (
@@ -966,7 +966,7 @@ export function VendorOperationsPage() {
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
                 <Plus className="h-3.5 w-3.5" />
-                Nouveau code
+                New code
               </button>
             )}
             {canOperate && selectedKey === 'warranties/claims' && (
@@ -981,7 +981,7 @@ export function VendorOperationsPage() {
             {canOperate && selectedKey === 'pricing/flash-sales' && (
               <button
                 onClick={async () => {
-                  const productId = window.prompt('ID du produit');
+                  const productId = window.prompt('Product ID');
                   const salePrice = Number(window.prompt('Prix promotionnel CDF') || '0');
                   const start = window.prompt('Debut (AAAA-MM-JJTHH:mm)');
                   const end = window.prompt('Fin (AAAA-MM-JJTHH:mm)');
@@ -995,7 +995,7 @@ export function VendorOperationsPage() {
                 }}
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
-                <Plus className="h-3.5 w-3.5" /> Nouvelle vente flash
+                <Plus className="h-3.5 w-3.5" /> New flash sale
               </button>
             )}
             <button
@@ -1063,7 +1063,7 @@ export function VendorOperationsPage() {
             className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-3"
           >
             <Field
-              label="Titre du brief"
+              label="Brief title"
               value={briefForm.title}
               onChange={(value) => setBriefForm((form) => ({ ...form, title: value }))}
               required
@@ -1076,12 +1076,12 @@ export function VendorOperationsPage() {
                 className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
               >
                 <option value="1">Premier achat</option>
-                <option value="2">Reactiver les clients</option>
-                <option value="3">Lancer une variante</option>
-                <option value="4">Ecouler le stock lent</option>
+                <option value="2">Re-engage customers</option>
+                <option value="3">Launch a variant</option>
+                <option value="4">Clear slow stock</option>
                 <option value="5">Notoriete saisonniere</option>
-                <option value="6">Eduquer sur l’usage</option>
-                <option value="7">Tester une audience</option>
+                <option value="6">Educate on ’usage</option>
+                <option value="7">Test an audience</option>
               </select>
             </label>
             <Field
@@ -1109,12 +1109,12 @@ export function VendorOperationsPage() {
             className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-5"
           >
             <Field
-              label="Rechercher un partenaire"
+              label="Search for a partner"
               value={creatorSearch}
               onChange={setCreatorSearch}
             />
             <label className="space-y-1.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Partenaire</span>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Partner</span>
               <select
                 required
                 value={partnershipForm.creatorProfileId}
@@ -1124,7 +1124,7 @@ export function VendorOperationsPage() {
                 className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
               >
                 <option value="">
-                  {partnershipCreators.isLoading ? 'Chargement…' : 'Selectionner un partenaire'}
+                  {partnershipCreators.isLoading ? 'Chargement…' : 'Select a partner'}
                 </option>
                 {creatorOptions.map((creator, index) => {
                   const id = String(creator.creatorProfileId ?? creator.id ?? '');
@@ -1172,13 +1172,13 @@ export function VendorOperationsPage() {
             }}
             className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-3"
           >
-            <Field label="Titre de la recette" value={recipeForm.title} onChange={(value) => setRecipeForm((form) => ({ ...form, title: value }))} required />
-            <Field label="ID piste musicale" value={recipeForm.musicTrackRefId} onChange={(value) => setRecipeForm((form) => ({ ...form, musicTrackRefId: value }))} required />
+            <Field label="Recipe title" value={recipeForm.title} onChange={(value) => setRecipeForm((form) => ({ ...form, title: value }))} required />
+            <Field label="Music track ID" value={recipeForm.musicTrackRefId} onChange={(value) => setRecipeForm((form) => ({ ...form, musicTrackRefId: value }))} required />
             <Field label="IDs variantes, separes par virgule" value={recipeForm.productVariantIds} onChange={(value) => setRecipeForm((form) => ({ ...form, productVariantIds: value }))} required />
             <Field label="Ancrage de l’histoire produit" value={recipeForm.brandStoryAnchor} onChange={(value) => setRecipeForm((form) => ({ ...form, brandStoryAnchor: value }))} required />
             <Field label="Ambiance" value={recipeForm.moodLabel} onChange={(value) => setRecipeForm((form) => ({ ...form, moodLabel: value }))} required />
             <Field label="Duree en secondes" value={recipeForm.durationSeconds} onChange={(value) => setRecipeForm((form) => ({ ...form, durationSeconds: value }))} type="number" required />
-            <Field label="Titre musical" value={recipeForm.songTitle} onChange={(value) => setRecipeForm((form) => ({ ...form, songTitle: value }))} required />
+            <Field label="Music title" value={recipeForm.songTitle} onChange={(value) => setRecipeForm((form) => ({ ...form, songTitle: value }))} required />
             <Field label="Artiste" value={recipeForm.artist} onChange={(value) => setRecipeForm((form) => ({ ...form, artist: value }))} required />
             <Field label="Legende principale" value={recipeForm.caption} onChange={(value) => setRecipeForm((form) => ({ ...form, caption: value }))} required />
             <div className="md:col-span-2 xl:col-span-3 rounded-xl border border-brand/20 bg-brand-soft px-4 py-3 text-xs leading-5 text-text-secondary">
@@ -1261,7 +1261,7 @@ export function VendorOperationsPage() {
             className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-3"
           >
             <Field
-              label="Titre"
+              label="Title"
               value={collectionForm.title}
               onChange={(value) => {
                 setCollectionForm((form) => ({
@@ -1284,12 +1284,12 @@ export function VendorOperationsPage() {
               required
             />
             <Field
-              label="Sous-titre"
+              label="Subtitle"
               value={collectionForm.subtitle}
               onChange={(value) => setCollectionForm((form) => ({ ...form, subtitle: value }))}
             />
             <Field
-              label="Image couverture HTTPS"
+              label="Cover image (HTTPS)"
               value={collectionForm.coverImageUrl}
               onChange={(value) => setCollectionForm((form) => ({ ...form, coverImageUrl: value }))}
             />
@@ -1325,7 +1325,7 @@ export function VendorOperationsPage() {
             className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-[1fr_220px_auto] md:items-end"
           >
             <Field
-              label="ID du compte membre"
+              label="Member account ID"
               value={teamForm.memberAccountId}
               onChange={(value) => setTeamForm((form) => ({ ...form, memberAccountId: value }))}
               required
@@ -1339,7 +1339,7 @@ export function VendorOperationsPage() {
                 onChange={(event) => setTeamForm((form) => ({ ...form, role: event.target.value }))}
                 className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none"
               >
-                <option value="3">Membre</option>
+                <option value="3">Member</option>
                 <option value="2">Administrateur</option>
               </select>
             </label>
@@ -1370,8 +1370,8 @@ export function VendorOperationsPage() {
                 }
                 className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none"
               >
-                <option value="Store">Magasin</option>
-                <option value="ProductTag">Produit en magasin</option>
+                <option value="Store">Store</option>
+                <option value="ProductTag">In-store product</option>
               </select>
             </label>
             <Field
@@ -1382,7 +1382,7 @@ export function VendorOperationsPage() {
             />
             {codeForm.kind === 'ProductTag' && (
               <Field
-                label="ID produit"
+                label="Product ID"
                 value={codeForm.productId}
                 onChange={(value) => setCodeForm((form) => ({ ...form, productId: value }))}
                 required
@@ -1420,7 +1420,7 @@ export function VendorOperationsPage() {
               required
             />
             <Field
-              label="Couverture (jours)"
+              label="Coverage (days)"
               type="number"
               value={warrantyPolicyForm.coverageDays}
               onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, coverageDays: value }))}
@@ -1457,7 +1457,7 @@ export function VendorOperationsPage() {
         ) : selectedQuery.isError ? (
           <div className="flex h-56 flex-col items-center justify-center gap-2 px-6 text-center">
             <PackageOpen className="h-8 w-8 text-amber-400" />
-            <p className="text-sm font-bold text-text-primary">Connexion vendeur non disponible</p>
+            <p className="text-sm font-bold text-text-primary">Vendor connection unavailable</p>
             <p className="max-w-lg text-xs leading-5 text-text-muted">
               Configurez le jeton operateur Stylemint dans Lead360. Ce module utilisera ensuite les donnees
               reelles du vendeur.
@@ -1645,7 +1645,7 @@ function CollectionItemsDialog({
           </button>
         </div>
         <section className="mt-5 rounded-xl border border-border-subtle bg-bg-elevated p-4">
-          <p className="text-xs font-extrabold text-text-primary">Ajouter ou retirer un produit</p>
+          <p className="text-xs font-extrabold text-text-primary">Add or remove a product</p>
           <div className="mt-3 flex flex-col gap-2 sm:flex-row">
             <input
               value={productId}
@@ -1658,7 +1658,7 @@ function CollectionItemsDialog({
               onClick={() => onAction('add', productId.trim())}
               className="rounded-xl bg-brand px-4 py-2 text-xs font-extrabold text-black disabled:opacity-40"
             >
-              Ajouter
+              Add
             </button>
             <button
               disabled={busy || !productId.trim()}
@@ -1860,7 +1860,7 @@ function renderValue(value: unknown): string {
 }
 
 const ACTION_LABELS: Record<string, string> = {
-  edit: 'Modifier',
+  edit: 'Edit',
   stock: 'Stock',
   publish: 'Publier',
   archive: 'Archiver',
@@ -1880,7 +1880,7 @@ const ACTION_LABELS: Record<string, string> = {
   refresh: 'Refresh',
   lock: 'Lock',
   fork: 'Duplicate',
-  retire: 'Retire',
+  retire: 'Removed',
   'recompute-roi': 'Recalculate ROI',
   'accept-request': 'Accept',
   'decline-request': 'Decline',
@@ -1919,7 +1919,7 @@ const FIELD_LABELS: Record<string, string> = {
   itemCount: 'Items',
   scanCount: 'Scans',
   totalScans: 'Scans',
-  priceAmount: 'Prix',
+  priceAmount: 'Price',
   quantityOnHand: 'Stock',
   sku: 'SKU',
   city: 'City',
@@ -1932,7 +1932,7 @@ const FIELD_LABELS: Record<string, string> = {
   orderNumber: 'Commande',
   totalAmount: 'Montant',
   currency: 'Currency',
-  reason: 'Motif',
+  reason: 'Reason',
 };
 function actionLabel(action: string) {
   return ACTION_LABELS[action] ?? action;

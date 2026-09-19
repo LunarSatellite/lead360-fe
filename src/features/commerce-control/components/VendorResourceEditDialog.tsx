@@ -233,7 +233,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
               Edition Stylemint
             </p>
             <h3 className="mt-1 text-xl font-black text-text-primary">
-              {kind === 'product' ? 'Modifier le produit complet' : 'Modifier le magasin'}
+              {kind === 'product' ? 'Edit full product' : 'Edit store'}
             </h3>
             {kind === 'product' && (
               <p className="mt-1 text-xs text-text-muted">
@@ -254,7 +254,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
             {kind === 'product' ? (
               <>
                 <Section title="Identite produit">
-                  <Field label="Categorie">
+                  <Field label="Category">
                     <select
                       required
                       value={form.categoryId}
@@ -284,7 +284,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                 </Section>
                 <OptionalSection
                   icon={<Image className="h-4 w-4" />}
-                  title="Images et reel"
+                  title="Images and reel"
                   enabled={sections.media}
                   onToggle={(value) => setSections((s) => ({ ...s, media: value }))}
                 >
@@ -294,7 +294,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                     ) : (
                       <Upload className="h-4 w-4" />
                     )}
-                    {uploadImages.isPending ? 'Envoi vers Stylemint…' : 'Ajouter des images JPG/PNG'}
+                    {uploadImages.isPending ? 'Envoi vers Stylemint…' : 'Add JPG/PNG images'}
                     <input
                       type="file"
                       accept="image/jpeg,image/png"
@@ -318,7 +318,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                     rows={6}
                   />
                   <Input
-                    label="URL du reel"
+                    label="Reel URL"
                     value={form.videoUrl}
                     onChange={(v) => set('videoUrl', v)}
                     required={false}
@@ -347,7 +347,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                   <Input label="SKU" value={form.sku} onChange={(v) => set('sku', v)} />
                   <div className="grid grid-cols-3 gap-3">
                     <Input
-                      label="Prix CDF"
+                      label="Price (CDF)"
                       type="number"
                       value={form.price}
                       onChange={(v) => set('price', v)}
@@ -367,7 +367,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                   </div>
                   <div className="grid gap-2 sm:grid-cols-2">
                     <Check
-                      label="Suivre le stock"
+                      label="Track stock"
                       checked={form.trackInventory}
                       onChange={(v) => set('trackInventory', v)}
                     />

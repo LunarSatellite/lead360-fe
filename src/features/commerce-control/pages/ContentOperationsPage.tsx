@@ -139,7 +139,7 @@ export function ContentOperationsPage() {
   const reelAction = useMutation({
     mutationFn: ({ id, action }: { id: string; action: 'publish' | 'unpublish' | 'caption' }) => {
       if (action === 'caption') {
-        const caption = window.prompt('Nouvelle legende du reel') ?? '';
+        const caption = window.prompt('New reel caption') ?? '';
         return stylemintCommerceApi.updateContentCaption(id, caption);
       }
       return stylemintCommerceApi.contentReelAction(id, action);
@@ -179,7 +179,7 @@ export function ContentOperationsPage() {
             </p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
-            <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">Couverture</p>
+            <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">Cover</p>
             <p className="mt-1 text-2xl font-black text-white">
               {connected.size}/4 <span className="text-xs font-semibold text-white/40">plateformes</span>
             </p>
@@ -300,7 +300,7 @@ export function ContentOperationsPage() {
         ) : !items.length ? (
           <div className="flex h-64 flex-col items-center justify-center gap-2">
             <Play className="h-8 w-8 text-text-muted/40" />
-            <p className="text-sm text-text-muted">Aucun contenu disponible.</p>
+            <p className="text-sm text-text-muted">No content available.</p>
           </div>
         ) : (
           <div className="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
@@ -398,7 +398,7 @@ function PublishQueue({ jobs, canOperate, cancelling, onCancel, onInspect }: { j
   if (!rows.length) return null;
   return (
     <section className="overflow-hidden rounded-2xl border border-border-subtle bg-bg-card">
-      <div className="flex items-center gap-2 border-b border-border-subtle px-5 py-4"><Users className="h-4 w-4 text-brand" /><h2 className="text-base font-extrabold text-text-primary">File de diffusion</h2></div>
+      <div className="flex items-center gap-2 border-b border-border-subtle px-5 py-4"><Users className="h-4 w-4 text-brand" /><h2 className="text-base font-extrabold text-text-primary">Publishing queue</h2></div>
       <div className="divide-y divide-border-subtle">
         {rows.map((job, index) => {
           const id = String(job.id ?? job.publishJobId ?? '');
@@ -532,7 +532,7 @@ function SchedulePublishDialog({
             <p className="text-[10px] font-extrabold uppercase tracking-wider text-brand">
               Diffusion multicanal
             </p>
-            <h3 className="mt-1 text-lg font-black text-text-primary">Programmer le reel</h3>
+            <h3 className="mt-1 text-lg font-black text-text-primary">Schedule the reel</h3>
           </div>
           <button type="button" onClick={onClose} className="text-text-muted">
             Fermer

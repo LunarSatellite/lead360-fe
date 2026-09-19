@@ -105,7 +105,7 @@ export const stylemintOperationsApi = {
     path: string;
     /** Raw query string without the leading `?`. */
     query?: string;
-    /** Raw JSON request body. Ignored for GET and DELETE. */
+    /** Raw JSON request body. Ignored for GET. */
     body?: string;
     signal?: AbortSignal;
   }): Promise<OperationResponse> => {
@@ -114,7 +114,9 @@ export const stylemintOperationsApi = {
       `${OPERATIONS_BASE}/${params.path.replace(/^\/+/, '')}` +
       (params.query ? `?${params.query.replace(/^\?/, '')}` : '');
 
-    const sendsBody = params.method !== 'GET' && params.method !== 'DELETE';
+    // DELETE included: clearing a feature-flag override identifies it by audience in the body
+    // rather than by id in the path, so dropping the body would send an empty request.
+    const sendsBody = params.method !== 'GET';
 
     const response = await rawClient.request({
       url,

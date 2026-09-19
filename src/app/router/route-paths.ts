@@ -33,6 +33,8 @@ export const ROUTES = {
     privacyRequests: '/dashboard/stylemint/privacy',
     recipes: '/dashboard/stylemint/recipes',
     logistics: '/dashboard/stylemint/logistics',
+    commerceCampaigns: '/dashboard/stylemint/campaigns',
+    discovery: '/dashboard/stylemint/discovery',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,

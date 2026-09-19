@@ -15,6 +15,7 @@ import {
   ChevronDown,
   ClipboardList,
   Clock,
+  Compass,
   Facebook,
   FileText,
   Flag,
@@ -100,6 +101,8 @@ const primaryNav = [
   { label: 'Data rights', href: ROUTES.dashboard.privacyRequests, icon: ShieldCheck },
   { label: 'Reel recipes', href: ROUTES.dashboard.recipes, icon: ChefHat },
   { label: 'Delivery ops', href: ROUTES.dashboard.logistics, icon: Route },
+  { label: 'Campaigns', href: ROUTES.dashboard.commerceCampaigns, icon: Megaphone },
+  { label: 'Discovery', href: ROUTES.dashboard.discovery, icon: Compass },
   { label: 'Operator access', href: ROUTES.dashboard.operatorAccess, icon: KeyRound },
   { label: 'Agent approvals', href: ROUTES.dashboard.agentApprovals, icon: Gavel },
   { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
@@ -306,6 +309,8 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/privacy')) return 'Data-Rights Requests';
     if (path.includes('/stylemint/recipes')) return 'Reel Recipes';
     if (path.includes('/stylemint/logistics')) return 'Delivery Operations';
+    if (path.includes('/stylemint/campaigns')) return 'Campaigns';
+    if (path.includes('/stylemint/discovery')) return 'Discovery';
     if (path.includes('/chat')) return 'Chat';
     if (path.includes('/home')) return 'Overview';
     if (path.includes('/onboarding')) return 'Setup Assistant';

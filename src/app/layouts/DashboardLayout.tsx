@@ -57,6 +57,10 @@ import {
   Target,
   Terminal,
   TrendingUp,
+  BookOpen,
+  Stethoscope,
+  Link2,
+  Gauge,
   Truck,
   User,
   UserCheck,
@@ -111,6 +115,18 @@ const primaryNav = [
   { label: 'Operator access', href: ROUTES.dashboard.operatorAccess, icon: KeyRound },
   { label: 'Agent approvals', href: ROUTES.dashboard.agentApprovals, icon: Gavel },
   { label: 'Agent credentials', href: ROUTES.dashboard.agentCredentials, icon: KeyRound },
+  // ── Intelligence console — the operator screens for the five Phase-4 read
+  //    surfaces. They sit next to agent governance because they report on the
+  //    same governed decisions from the other end: what followed them.
+  { label: 'Executive cockpit', href: ROUTES.dashboard.intelCockpit, icon: TrendingUp },
+  { label: 'Decision ledger', href: ROUTES.dashboard.intelLedger, icon: BookOpen },
+  { label: 'Failure diagnosis', href: ROUTES.dashboard.intelDiagnosis, icon: Stethoscope },
+  { label: 'Related signals', href: ROUTES.dashboard.intelRelatedSignals, icon: Link2 },
+  {
+    label: 'Autonomous operations',
+    href: ROUTES.dashboard.intelAutonomousOperations,
+    icon: Gauge,
+  },
   { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
   { label: 'Stores', href: ROUTES.dashboard.crmOrganizations, icon: Store },
   // One entry point each. Support was a link to the CRM case queue with no way to reach commerce

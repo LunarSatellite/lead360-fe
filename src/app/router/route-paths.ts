@@ -19,6 +19,10 @@ export const ROUTES = {
     stylemintCustomers: '/dashboard/stylemint/customers',
     sellerFinance: '/dashboard/stylemint/finance',
     commerceOperations: '/dashboard/stylemint/operations',
+    // ── Agent governance — the human half of the approval machinery ──
+    agentApprovals: '/dashboard/agent-governance/approvals',
+    agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,
+    agentEmergencyStop: '/dashboard/agent-governance/emergency-stop',
     // ── Chat-first primary surfaces (new) ──
     chat: '/dashboard/chat',
     home: '/dashboard/home',

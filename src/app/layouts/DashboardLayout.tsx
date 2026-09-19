@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { useTokenAutoRefresh } from '@/features/auth/hooks/useTokenAutoRefresh';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
+  Banknote,
   BarChart3,
   Bot,
   Boxes,
@@ -10,6 +11,7 @@ import {
   Building2,
   CalendarCheck,
   CheckSquare,
+  ChefHat,
   ChevronDown,
   ClipboardList,
   Clock,
@@ -39,6 +41,7 @@ import {
   Receipt,
   RefreshCw,
   Rocket,
+  Route,
   ScrollText,
   Settings,
   Settings2,
@@ -93,6 +96,10 @@ const primaryNav = [
   { label: 'Platform config', href: ROUTES.dashboard.platformConfig, icon: Settings2 },
   { label: 'Audit trail', href: ROUTES.dashboard.auditTrail, icon: ScrollText },
   { label: 'Returns', href: ROUTES.dashboard.returns, icon: PackageOpen },
+  { label: 'Payouts', href: ROUTES.dashboard.payouts, icon: Banknote },
+  { label: 'Data rights', href: ROUTES.dashboard.privacyRequests, icon: ShieldCheck },
+  { label: 'Reel recipes', href: ROUTES.dashboard.recipes, icon: ChefHat },
+  { label: 'Delivery ops', href: ROUTES.dashboard.logistics, icon: Route },
   { label: 'Operator access', href: ROUTES.dashboard.operatorAccess, icon: KeyRound },
   { label: 'Agent approvals', href: ROUTES.dashboard.agentApprovals, icon: Gavel },
   { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
@@ -295,6 +302,10 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/platform-config')) return 'Platform Configuration';
     if (path.includes('/stylemint/audit')) return 'Audit Trail';
     if (path.includes('/stylemint/returns')) return 'Returns';
+    if (path.includes('/stylemint/payouts')) return 'Payouts';
+    if (path.includes('/stylemint/privacy')) return 'Data-Rights Requests';
+    if (path.includes('/stylemint/recipes')) return 'Reel Recipes';
+    if (path.includes('/stylemint/logistics')) return 'Delivery Operations';
     if (path.includes('/chat')) return 'Chat';
     if (path.includes('/home')) return 'Overview';
     if (path.includes('/onboarding')) return 'Setup Assistant';

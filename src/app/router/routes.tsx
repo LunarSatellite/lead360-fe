@@ -96,6 +96,9 @@ export const router = createBrowserRouter([
       { path: 'stylemint/couriers', lazy: () => import('@/features/commerce-control/pages/CouriersPage') },
       { path: 'stylemint/collections', lazy: () => import('@/features/commerce-control/pages/CollectionsPage') },
       { path: 'stylemint/audio', lazy: () => import('@/features/commerce-control/pages/AudioPage') },
+      { path: 'stylemint/platform-config', lazy: () => import('@/features/commerce-control/pages/PlatformConfigPage') },
+      { path: 'stylemint/audit', lazy: () => import('@/features/commerce-control/pages/AuditPage') },
+      { path: 'stylemint/returns', lazy: () => import('@/features/commerce-control/pages/ReturnsPage') },
       // ── Agent governance ──
       { path: 'agent-governance/approvals', lazy: () => import('@/features/agent-governance/pages/AgentApprovalsPage') },
       { path: 'agent-governance/actions/:id', lazy: () => import('@/features/agent-governance/pages/AgentActionRecordPage') },

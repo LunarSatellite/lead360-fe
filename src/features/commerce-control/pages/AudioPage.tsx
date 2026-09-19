@@ -342,10 +342,12 @@ function TrackRow({
   const [error, setError] = useState<string | null>(null);
 
   const act = useMutation({
-    mutationFn: (kind: 'hide' | 'restore') =>
-      kind === 'hide'
-        ? stylemintAudioApi.hideTrack(track.id, reason)
-        : stylemintAudioApi.restoreTrack(track.id),
+    // hide answers 204, restore answers 200 with the track. Neither result is used -
+    // the list refetches through onChanged - so normalise both to void.
+    mutationFn: async (kind: 'hide' | 'restore'): Promise<void> => {
+      if (kind === 'hide') await stylemintAudioApi.hideTrack(track.id, reason);
+      else await stylemintAudioApi.restoreTrack(track.id);
+    },
     onSuccess: () => { setHiding(false); setReason(''); setError(null); onChanged?.(); },
     onError: (caught: unknown) =>
       setError(caught instanceof Error ? caught.message : 'The track could not be changed.'),

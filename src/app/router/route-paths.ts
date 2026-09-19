@@ -26,6 +26,9 @@ export const ROUTES = {
     couriers: '/dashboard/stylemint/couriers',
     collections: '/dashboard/stylemint/collections',
     audio: '/dashboard/stylemint/audio',
+    platformConfig: '/dashboard/stylemint/platform-config',
+    auditTrail: '/dashboard/stylemint/audit',
+    returns: '/dashboard/stylemint/returns',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,

@@ -33,12 +33,15 @@ import {
   Music,
   Newspaper,
   Package,
+  PackageOpen,
   Phone,
   Plug,
   Receipt,
   RefreshCw,
   Rocket,
+  ScrollText,
   Settings,
+  Settings2,
   ShieldAlert,
   ShieldCheck,
   ShoppingBag,
@@ -87,6 +90,9 @@ const primaryNav = [
   { label: 'Couriers', href: ROUTES.dashboard.couriers, icon: Truck },
   { label: 'Moderation', href: ROUTES.dashboard.moderation, icon: ShieldAlert },
   { label: 'Feature flags', href: ROUTES.dashboard.featureFlags, icon: Flag },
+  { label: 'Platform config', href: ROUTES.dashboard.platformConfig, icon: Settings2 },
+  { label: 'Audit trail', href: ROUTES.dashboard.auditTrail, icon: ScrollText },
+  { label: 'Returns', href: ROUTES.dashboard.returns, icon: PackageOpen },
   { label: 'Operator access', href: ROUTES.dashboard.operatorAccess, icon: KeyRound },
   { label: 'Agent approvals', href: ROUTES.dashboard.agentApprovals, icon: Gavel },
   { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
@@ -123,7 +129,7 @@ const SHOW_LEGACY_PLATFORM_TOOLS = true;
 const crmNav = [
   { label: 'Leads', href: ROUTES.dashboard.crmLeads, icon: Users },
   { label: 'Contacts', href: ROUTES.dashboard.crmContacts, icon: UserCheck },
-  { label: 'Doublons', href: ROUTES.dashboard.crmDedup, icon: GitMerge },
+  { label: 'Duplicates', href: ROUTES.dashboard.crmDedup, icon: GitMerge },
   { label: 'Deals', href: ROUTES.dashboard.crmDeals, icon: Briefcase },
   { label: 'Pipelines', href: '/dashboard/crm/pipelines', icon: GitBranch },
   { label: 'Approbations', href: '/dashboard/crm/approvals', icon: ShieldCheck },
@@ -135,20 +141,20 @@ const crmNav = [
   // the unified pages. The CRM-only routes still resolve for anyone with a bookmark.
   { label: 'Tasks', href: ROUTES.dashboard.crmTasks, icon: CheckSquare },
   { label: 'Quotes', href: ROUTES.dashboard.crmQuotes, icon: FileText },
-  { label: 'Propositions', href: ROUTES.dashboard.crmProposals, icon: ClipboardList },
+  { label: 'Proposals', href: ROUTES.dashboard.crmProposals, icon: ClipboardList },
   { label: 'Invoices', href: ROUTES.dashboard.crmInvoices, icon: Receipt },
   { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },
   { label: 'Orders', href: ROUTES.dashboard.crmOrders, icon: Package },
   { label: 'Meetings', href: ROUTES.dashboard.crmMeetings, icon: CalendarCheck },
   { label: 'NPS', href: ROUTES.dashboard.crmNps, icon: Star },
-  { label: 'Suivi du temps', href: ROUTES.dashboard.crmTimeTracking, icon: Clock },
-  { label: 'Champs personnalises', href: ROUTES.dashboard.crmCustomFields, icon: SlidersHorizontal },
-  { label: 'Automatisations', href: ROUTES.dashboard.crmWorkflows, icon: Zap },
+  { label: 'Time Tracking', href: ROUTES.dashboard.crmTimeTracking, icon: Clock },
+  { label: 'Custom Fields', href: ROUTES.dashboard.crmCustomFields, icon: SlidersHorizontal },
+  { label: 'Automations', href: ROUTES.dashboard.crmWorkflows, icon: Zap },
   { label: 'Automated campaigns', href: '/dashboard/crm/workflow-campaigns', icon: Target },
   { label: 'Publicites Meta', href: '/dashboard/crm/meta-ads', icon: Facebook },
   { label: 'Annonces', href: ROUTES.dashboard.crmAnnouncements, icon: Newspaper },
   { label: 'Processus', href: ROUTES.dashboard.crmProcessTasks, icon: ListChecks },
-  { label: 'Suivi des evenements', href: ROUTES.dashboard.crmEventIngestion, icon: Globe },
+  { label: 'Event Tracking', href: ROUTES.dashboard.crmEventIngestion, icon: Globe },
 ];
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───
@@ -164,8 +170,8 @@ const primaryMobileTabs = [
 // routes are currently commented out in routes.tsx. Re-add them here if you
 // uncomment the routes.
 const moreNav_build = [
-  { label: 'Carte des conversations', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'IA' },
-  { label: 'Canal de test', href: ROUTES.dashboard.testChannel, icon: Terminal },
+  { label: 'Conversation Map', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'IA' },
+  { label: 'Test Channel', href: ROUTES.dashboard.testChannel, icon: Terminal },
   // { label: 'Setup Wizard',  href: ROUTES.dashboard.onboarding, icon: Rocket },
 ];
 
@@ -173,10 +179,10 @@ const moreNav_configure = [
   // { label: 'Setup',         href: ROUTES.dashboard.setup, icon: LayoutGrid },
   { label: 'Intentions', href: ROUTES.dashboard.intents, icon: Target },
   { label: 'Agents', href: ROUTES.dashboard.agents, icon: Bot },
-  { label: 'Connexion API', href: ROUTES.dashboard.apiConnection, icon: Plug },
+  { label: 'API Connection', href: ROUTES.dashboard.apiConnection, icon: Plug },
   { label: 'Catalogue', href: ROUTES.dashboard.catalog, icon: Package },
   { label: 'Business catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
-  { label: 'Canaux', href: ROUTES.dashboard.channels, icon: Phone },
+  { label: 'Channels', href: ROUTES.dashboard.channels, icon: Phone },
   { label: 'Conversations', href: ROUTES.dashboard.conversations, icon: MessageSquare },
   { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: BarChart3 },
 ];
@@ -278,22 +284,33 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/content')) return 'Content & Social Publishing';
     if (path.includes('/stylemint/customers')) return 'Customers';
     if (path.includes('/stylemint/finance')) return 'Seller Finance';
+    if (path.includes('/stylemint/operations')) return 'Commerce Operations';
+    if (path.includes('/stylemint/applications')) return 'KYC Review';
+    if (path.includes('/stylemint/access')) return 'Operator Access';
+    if (path.includes('/stylemint/moderation')) return 'Moderation';
+    if (path.includes('/stylemint/feature-flags')) return 'Feature Flags';
+    if (path.includes('/stylemint/couriers')) return 'Couriers';
+    if (path.includes('/stylemint/collections')) return 'Collections';
+    if (path.includes('/stylemint/audio')) return 'Audio';
+    if (path.includes('/stylemint/platform-config')) return 'Platform Configuration';
+    if (path.includes('/stylemint/audit')) return 'Audit Trail';
+    if (path.includes('/stylemint/returns')) return 'Returns';
     if (path.includes('/chat')) return 'Chat';
-    if (path.includes('/home')) return 'Vue generale';
-    if (path.includes('/onboarding')) return 'Assistant de configuration';
-    if (path.includes('/flows')) return 'Concepteur de flux IA';
-    if (path.includes('/test-channel')) return 'Simulateur';
+    if (path.includes('/home')) return 'Overview';
+    if (path.includes('/onboarding')) return 'Setup Assistant';
+    if (path.includes('/flows')) return 'AI Flow Designer';
+    if (path.includes('/test-channel')) return 'Simulator';
     if (path.includes('/setup')) return 'Configuration';
-    if (path.includes('/api-connection')) return 'Connexion API';
+    if (path.includes('/api-connection')) return 'API Connection';
     if (path.includes('/business-catalog')) return 'Products & Catalogue';
     if (path.includes('/catalog')) return 'Catalogue';
     if (path.includes('/intents')) return 'Intents';
-    if (path.includes('/channels')) return 'Canaux';
+    if (path.includes('/channels')) return 'Channels';
     if (path.includes('/conversations')) return 'Conversations';
     if (path.includes('/analytics')) return 'Analytics';
-    if (path.includes('/compliance')) return 'Conformite';
-    if (path.includes('/settings')) return 'Parametres';
-    if (path.includes('/crm/dedup')) return 'Contacts en double';
+    if (path.includes('/compliance')) return 'Compliance';
+    if (path.includes('/settings')) return 'Settings';
+    if (path.includes('/crm/dedup')) return 'Duplicate Contacts';
     if (path.includes('/crm/contacts')) return 'Contacts';
     if (path.includes('/crm/leads')) return 'Leads';
     if (path.includes('/crm/deals')) return 'Deals';
@@ -305,17 +322,18 @@ export function DashboardLayout() {
     if (path.includes('/crm/support')) return 'Customer Support';
     if (path.includes('/crm/tasks')) return 'Tasks';
     if (path.includes('/crm/quotes')) return 'Quotes';
-    if (path.includes('/crm/proposals')) return 'Propositions';
+    if (path.includes('/crm/proposals')) return 'Proposals';
     if (path.includes('/crm/invoices')) return 'Invoices';
     if (path.includes('/crm/subscriptions')) return 'Subscriptions';
     if (path.includes('/crm/orders')) return 'Orders';
     if (path.includes('/crm/meetings')) return 'Meetings';
-    if (path.includes('/crm/nps')) return 'Enquetes NPS';
-    if (path.includes('/crm/time-tracking')) return 'Suivi du temps';
-    if (path.includes('/crm/custom-fields')) return 'Champs personnalises';
-    if (path.includes('/crm/workflows')) return 'Automatisations';
-    if (path.includes('/flows/experiments')) return 'Experiences A/B';
-    return 'Tableau de bord';
+    if (path.includes('/crm/nps')) return 'NPS Surveys';
+    if (path.includes('/crm/time-tracking')) return 'Time Tracking';
+    if (path.includes('/crm/custom-fields')) return 'Custom Fields';
+    if (path.includes('/crm/workflows')) return 'Automations';
+    if (path.includes('/flows/experiments')) return 'A/B Experiments';
+    if (path.includes('/support')) return 'Support';
+    return 'Dashboard';
   };
 
   const getPageIcon = () => {

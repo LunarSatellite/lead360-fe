@@ -97,14 +97,16 @@ export const stylemintAudioApi = {
       }),
     ),
 
-  hideTrack: async (trackId: string, reason: string): Promise<MusicTrack> =>
-    unwrap<MusicTrack>(
+  /** Answers 204 with no body - refetch the list rather than using a return value. */
+  hideTrack: async (trackId: string, reason: string): Promise<void> => {
+    unwrap<void>(
       await stylemintOperationsApi.invoke({
         method: 'POST',
         path: `v1/admin/audio/tracks/${encodeURIComponent(trackId)}/hide`,
         body: JSON.stringify({ reason }),
       }),
-    ),
+    );
+  },
 
   restoreTrack: async (trackId: string): Promise<MusicTrack> =>
     unwrap<MusicTrack>(

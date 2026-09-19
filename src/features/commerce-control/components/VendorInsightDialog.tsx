@@ -14,7 +14,7 @@ function label(value: string) {
 }
 
 function display(value: unknown): string {
-  if (value === null || value === undefined || value === '') return 'Non disponible';
+  if (value === null || value === undefined || value === '') return 'Unavailable';
   if (typeof value === 'boolean') return value ? 'Oui' : 'Non';
   if (typeof value === 'number') return value.toLocaleString('fr-CD', { maximumFractionDigits: 2 });
   if (typeof value === 'string') {

@@ -10,6 +10,7 @@ import {
   RefreshCw,
   RotateCcw,
   Search,
+  TrendingUp,
 } from 'lucide-react';
 import {
   CITATION_STATE_LABEL,
@@ -21,8 +22,9 @@ import {
   type TrackStateValue,
   type UnmatchedCitation,
 } from '../api/stylemint-audio.api';
+import { AudioTrendsTab } from '../components/AudioTrendsTab';
 
-type Tab = 'tracks' | 'broken' | 'citations';
+type Tab = 'tracks' | 'broken' | 'citations' | 'trends';
 
 /**
  * The audio catalogue behind reels.
@@ -58,11 +60,14 @@ export function AudioPage() {
           icon={Link2Off} label="Broken links" />
         <TabButton active={tab === 'tracks'} onClick={() => setTab('tracks')}
           icon={Music} label="Tracks" />
+        <TabButton active={tab === 'trends'} onClick={() => setTab('trends')}
+          icon={TrendingUp} label="External trends" />
       </div>
 
       {tab === 'citations' && <CitationsTab />}
       {tab === 'broken' && <BrokenLinksTab />}
       {tab === 'tracks' && <TracksTab />}
+      {tab === 'trends' && <AudioTrendsTab />}
     </div>
   );
 }

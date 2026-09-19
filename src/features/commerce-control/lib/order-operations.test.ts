@@ -3,14 +3,14 @@ import { buildVendorRejection, canSubmitVerifiedRefund } from './order-operation
 
 describe('buildVendorRejection', () => {
   it.each([1, 2, 3, 4, 5])('preserves Stylemint reason code %s', (reasonCode) => {
-    expect(buildVendorRejection(reasonCode, '  note operateur  ')).toEqual({
+    expect(buildVendorRejection(reasonCode, '  operator note  ')).toEqual({
       reasonCode,
-      note: 'note operateur',
+      note: 'operator note',
     });
   });
 
   it('requires an explanation for Other', () => {
-    expect(() => buildVendorRejection(6, '')).toThrow(/obligatoire/i);
+    expect(() => buildVendorRejection(6, '')).toThrow(/required/i);
     expect(buildVendorRejection(6, 'Cas exceptionnel')).toEqual({
       reasonCode: 6,
       note: 'Cas exceptionnel',
@@ -18,7 +18,7 @@ describe('buildVendorRejection', () => {
   });
 
   it('rejects invalid reason codes and overlong notes', () => {
-    expect(() => buildVendorRejection(7, 'note')).toThrow(/invalide/i);
+    expect(() => buildVendorRejection(7, 'note')).toThrow(/invalid/i);
     expect(() => buildVendorRejection(1, 'x'.repeat(201))).toThrow(/200/);
   });
 });

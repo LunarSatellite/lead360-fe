@@ -223,13 +223,13 @@ const resources = [
   {
     key: 'activity',
     label: 'Journal d’activite',
-    description: 'Historique controle des actions vendeur.',
+    description: 'Audited history of vendor actions.',
     icon: Activity,
   },
   {
     key: 'growth-quality',
     label: 'Croissance & qualite',
-    description: 'Indicateurs de performance operationnelle.',
+    description: 'Operational performance indicators.',
     icon: BadgeCheck,
   },
 ] as const;
@@ -366,14 +366,14 @@ export function VendorOperationsPage() {
     mutationFn: ({ id, action }: { id: string; action: string }) => {
       if (selectedKey === 'returns') {
         const payload =
-          action === 'reject' ? { reason: window.prompt('Rejection reason') || 'Refus operateur' } : undefined;
+          action === 'reject' ? { reason: window.prompt('Rejection reason') || 'Operator rejection' } : undefined;
         return stylemintCommerceApi.returnAction(id, action as 'accept' | 'complete' | 'reject', payload);
       }
       if (selectedKey === 'products' && action === 'stock') {
-        const variantId = window.prompt('Identifiant de la variante');
+        const variantId = window.prompt('Variant ID');
         const quantity = window.prompt('New available quantity');
         if (!variantId || quantity === null || !Number.isInteger(Number(quantity)) || Number(quantity) < 0)
-          return Promise.reject(new Error('Variante et quantite valides requises'));
+          return Promise.reject(new Error('A valid variant and quantity are required'));
         return stylemintCommerceApi.updateVendorStock(id, {
           adjustments: [{ variantId, quantity: Number(quantity) }],
           alertCustomersOnRestock: Number(quantity) > 0,
@@ -381,8 +381,8 @@ export function VendorOperationsPage() {
       }
       if (selectedKey === 'stores') return stylemintCommerceApi.archiveVendorStore(id);
       if (selectedKey === 'inquiries') {
-        const reply = window.prompt('Reponse au client');
-        if (!reply?.trim()) return Promise.reject(new Error('Reponse requise'));
+        const reply = window.prompt('Reply to the customer');
+        if (!reply?.trim()) return Promise.reject(new Error('Reply required'));
         return stylemintCommerceApi.replyToVendorInquiry(id, reply.trim());
       }
       if (selectedKey === 'warranties/claims') {
@@ -394,14 +394,14 @@ export function VendorOperationsPage() {
               )
             : undefined;
           if (approve && ![1, 2, 3, 4].includes(resolutionKind!))
-            return Promise.reject(new Error('Resolution invalide'));
+            return Promise.reject(new Error('Invalid resolution'));
           const note =
-            window.prompt(approve ? 'Note de decision' : 'Rejection reason') ||
-            (approve ? 'Approuve par Kin Marche' : 'Refuse par Kin Marche');
+            window.prompt(approve ? 'Decision note' : 'Rejection reason') ||
+            (approve ? 'Approved by Kin Marche' : 'Rejected by Kin Marche');
           return stylemintCommerceApi.vendorWarrantyAction(id, 'decision', { approve, resolutionKind, note });
         }
         const note =
-          action === 'resolve' ? window.prompt('Note de resolution') || 'Resolution terminee' : undefined;
+          action === 'resolve' ? window.prompt('Resolution note') || 'Resolution terminee' : undefined;
         return stylemintCommerceApi.vendorWarrantyAction(
           id,
           action as 'start' | 'resolve',
@@ -412,7 +412,7 @@ export function VendorOperationsPage() {
         if (action === 'accept') return stylemintCommerceApi.acceptVendorTeamInvitation(id);
         if (action === 'role') {
           const newRole = Number(window.prompt('New role: 2 = Admin, 3 = Member') || '0');
-          if (![2, 3].includes(newRole)) return Promise.reject(new Error('Role invalide'));
+          if (![2, 3].includes(newRole)) return Promise.reject(new Error('Invalid role'));
           return stylemintCommerceApi.changeVendorTeamRole(id, newRole);
         }
         const reason = window.prompt('Removal reason') || 'Access removed from Lead360';
@@ -433,8 +433,8 @@ export function VendorOperationsPage() {
         if (action === 'prediction')
           return stylemintCommerceApi.vendorPartnershipPrediction(id).then((result) => {
             setInsightDialog({
-              title: 'Prevision de campagne',
-              subtitle: 'Projection Stylemint avant engagement du partenariat.',
+              title: 'Campaign forecast',
+              subtitle: 'Stylemint projection before committing to the partnership.',
               data: result,
             });
             return result;
@@ -442,34 +442,34 @@ export function VendorOperationsPage() {
         if (action === 'analytics')
           return stylemintCommerceApi.vendorPartnershipCreatorAnalytics(id).then((result) => {
             setInsightDialog({
-              title: 'Attribution du partenariat',
-              subtitle: 'Conversions et valeur attribuees au partenaire.',
+              title: 'Partnership attribution',
+              subtitle: 'Conversions and value attributed to the partner.',
               data: result,
             });
             return result;
           });
         if (action === 'insurance') {
-          const coverageAmount = Number(window.prompt('Montant de couverture en CDF', '100000') || '0');
+          const coverageAmount = Number(window.prompt('Cover amount in CDF', '100000') || '0');
           if (!Number.isFinite(coverageAmount) || coverageAmount <= 0)
-            return Promise.reject(new Error('Couverture invalide'));
+            return Promise.reject(new Error('Invalid cover'));
           return stylemintCommerceApi.purchaseVendorPartnershipInsurance(id, coverageAmount);
         }
         if (action === 'claims')
           return stylemintCommerceApi.vendorPartnershipInsuranceClaims(id).then((result) => {
             setInsightDialog({
-              title: 'Sinistres du partenariat',
-              subtitle: 'Historique de couverture et de traitement.',
+              title: 'Partnership claims',
+              subtitle: 'Cover and handling history.',
               data: result,
             });
             return result;
           });
         if (action === 'file-claim') {
-          const claimAmount = Number(window.prompt('Montant du sinistre en CDF') || '0');
-          const reason = window.prompt('Motif detaille du sinistre')?.trim();
+          const claimAmount = Number(window.prompt('Claim amount in CDF') || '0');
+          const reason = window.prompt('Detailed reason for the claim')?.trim();
           const evidenceUrls = (window.prompt('Evidence URLs, comma separated') || '')
             .split(',').map((value) => value.trim()).filter(Boolean);
           if (!Number.isFinite(claimAmount) || claimAmount <= 0 || !reason)
-            return Promise.reject(new Error('Sinistre invalide'));
+            return Promise.reject(new Error('Invalid claim'));
           return stylemintCommerceApi.fileVendorPartnershipInsuranceClaim(id, {
             claimAmount, currency: 'CDF', reason, evidenceUrls,
           });
@@ -482,16 +482,16 @@ export function VendorOperationsPage() {
             commissionMaxPercent > 100 ||
             commissionMinPercent > commissionMaxPercent
           )
-            return Promise.reject(new Error('Commission invalide'));
+            return Promise.reject(new Error('Invalid commission'));
           return stylemintCommerceApi.vendorPartnershipAction(id, action, {
             commissionMinPercent,
             commissionMaxPercent,
-            reason: 'Ajustement depuis Lead360',
+            reason: 'Adjusted from Lead360',
           });
         }
         if (action === 'pause' || action === 'end') {
           const reason = window.prompt(
-            action === 'end' ? 'Motif de fin du partenariat' : 'Motif de suspension',
+            action === 'end' ? 'Reason for ending the partnership' : 'Suspension reason',
           );
           if (action === 'end' && !reason?.trim())
             return Promise.reject(new Error('Reason required'));
@@ -504,9 +504,9 @@ export function VendorOperationsPage() {
       }
       if (selectedKey === 'squads') {
         const creatorAccountId = window.prompt('Creator account ID')?.trim();
-        const budgetShare = Number(window.prompt('Part du budget en CDF') || '0');
+        const budgetShare = Number(window.prompt('Budget share in CDF') || '0');
         if (!creatorAccountId || !Number.isFinite(budgetShare) || budgetShare <= 0)
-          return Promise.reject(new Error('Invitation invalide'));
+          return Promise.reject(new Error('Invalid invitation'));
         return stylemintCommerceApi.inviteVendorSquadCreator(id, creatorAccountId, budgetShare);
       }
       if (selectedKey === 'retainers')
@@ -524,7 +524,7 @@ export function VendorOperationsPage() {
         if (action === 'pause') return stylemintCommerceApi.pauseSponsorship(id);
         const dailyImpressionCap = Number(window.prompt('Plafond quotidien d’impressions', '1000') || '0');
         const endsLocal = window.prompt('Fin de campagne (AAAA-MM-JJTHH:mm)', '');
-        if (!dailyImpressionCap || !endsLocal) return Promise.reject(new Error('Parametres requis'));
+        if (!dailyImpressionCap || !endsLocal) return Promise.reject(new Error('Parameters required'));
         return stylemintCommerceApi.sponsorProduct(id, { dailyImpressionCap, endsUtc: new Date(endsLocal).toISOString() });
       }
       if (selectedKey === 'collections')
@@ -542,10 +542,10 @@ export function VendorOperationsPage() {
     },
     onSuccess: async (_data, variables) => {
       if (!(selectedKey === 'codes' && variables.action === 'stats'))
-        setActionMessage('Action appliquee avec succes.');
+        setActionMessage('Action applied successfully.');
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', selectedKey] });
     },
-    onError: () => setActionMessage('Action impossible. Verifiez le statut et les autorisations Stylemint.'),
+    onError: () => setActionMessage('Action failed. Check the status and your Stylemint permissions.'),
   });
   const createStore = useMutation({
     mutationFn: () =>
@@ -558,12 +558,12 @@ export function VendorOperationsPage() {
         longitude: storeForm.longitude ? Number(storeForm.longitude) : undefined,
       }),
     onSuccess: async () => {
-      setActionMessage('Magasin cree et synchronise avec Stylemint.');
+      setActionMessage('Store created and synchronised with Stylemint.');
       setShowStoreForm(false);
       setStoreForm({ name: '', addressLine: '', city: 'Kinshasa', phone: '', latitude: '', longitude: '' });
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'stores'] });
     },
-    onError: () => setActionMessage('Creation impossible. Verifiez les champs et le jeton vendeur.'),
+    onError: () => setActionMessage('Could not create. Check the fields and the vendor token.'),
   });
   const createCollection = useMutation({
     mutationFn: () =>
@@ -577,7 +577,7 @@ export function VendorOperationsPage() {
         sortOrder: Number(collectionForm.sortOrder),
       }),
     onSuccess: async () => {
-      setActionMessage('Collection creee et synchronisee avec Stylemint.');
+      setActionMessage('Collection created and synchronised with Stylemint.');
       setShowCollectionForm(false);
       setCollectionForm({
         title: '',
@@ -590,7 +590,7 @@ export function VendorOperationsPage() {
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'collections'] });
     },
     onError: () =>
-      setActionMessage('Creation impossible. Utilisez un slug minuscule valide et une image HTTPS.'),
+      setActionMessage('Could not create. Use a valid lowercase slug and an HTTPS image.'),
   });
   const createBrief = useMutation({
     mutationFn: () =>
@@ -604,12 +604,12 @@ export function VendorOperationsPage() {
         currencyCode: 'CDF',
       }),
     onSuccess: async () => {
-      setActionMessage('Brief commercial cree dans Stylemint.');
+      setActionMessage('Commercial brief created in Stylemint.');
       setShowBriefForm(false);
       setBriefForm({ title: '', primaryGoal: '1', productVariantIds: '' });
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'briefs'] });
     },
-    onError: () => setActionMessage('Creation du brief impossible. Verifiez les variantes produit.'),
+    onError: () => setActionMessage('Could not create the brief. Check the product variants.'),
   });
   const createCampaign = useMutation({
     mutationFn: () =>
@@ -632,7 +632,7 @@ export function VendorOperationsPage() {
       const minimum = Number(partnershipForm.commissionMinPercent);
       const maximum = Number(partnershipForm.commissionMaxPercent);
       if (minimum < 0 || maximum > 100 || minimum > maximum)
-        return Promise.reject(new Error('Commission invalide'));
+        return Promise.reject(new Error('Invalid commission'));
       return stylemintCommerceApi.inviteVendorPartnership({
         creatorProfileId: partnershipForm.creatorProfileId.trim(),
         commissionMinPercent: minimum,
@@ -641,7 +641,7 @@ export function VendorOperationsPage() {
       });
     },
     onSuccess: async () => {
-      setActionMessage('Invitation de partenariat envoyee depuis Lead360.');
+      setActionMessage('Partnership invitation sent from Lead360.');
       setShowPartnershipForm(false);
       setPartnershipForm({
         creatorProfileId: '',
@@ -651,12 +651,12 @@ export function VendorOperationsPage() {
       });
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'partnerships'] });
     },
-    onError: () => setActionMessage('Invitation impossible. Verifiez le profil, le brief et les commissions.'),
+    onError: () => setActionMessage('Could not invite. Check the profile, the brief and the commissions.'),
   });
   const createRecipe = useMutation({
     mutationFn: () => stylemintCommerceApi.createVendorRecipe(buildVendorRecipePayload(recipeForm)),
     onSuccess: async () => {
-      setActionMessage('Recette de reel complete creee dans Stylemint.');
+      setActionMessage('Complete reel recipe created in Stylemint.');
       setShowRecipeForm(false);
       setRecipeForm({
         title: '', musicTrackRefId: '', productVariantIds: '', brandStoryAnchor: '',
@@ -664,19 +664,19 @@ export function VendorOperationsPage() {
       });
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'recipes'] });
     },
-    onError: () => setActionMessage('Creation impossible. Verifiez la piste audio, les variantes et la duree.'),
+    onError: () => setActionMessage('Could not create. Check the audio track, the variants and the duration.'),
   });
   const inviteTeamMember = useMutation({
     mutationFn: () =>
       stylemintCommerceApi.inviteVendorTeamMember(teamForm.memberAccountId.trim(), Number(teamForm.role)),
     onSuccess: async () => {
-      setActionMessage('Invitation vendeur creee dans Stylemint.');
+      setActionMessage('Vendor invitation created in Stylemint.');
       setShowTeamForm(false);
       setTeamForm({ memberAccountId: '', role: '3' });
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'team'] });
     },
     onError: () =>
-      setActionMessage('Invitation impossible. Verifiez l’identifiant du compte et vos droits vendeur.'),
+      setActionMessage('Could not invite. Check the account ID and your vendor permissions.'),
   });
   const createCode = useMutation({
     mutationFn: () =>
@@ -687,12 +687,12 @@ export function VendorOperationsPage() {
         label: codeForm.label.trim() || undefined,
       }),
     onSuccess: async () => {
-      setActionMessage('Code magasin cree et synchronise avec Stylemint.');
+      setActionMessage('Store code created and synchronised with Stylemint.');
       setShowCodeForm(false);
       setCodeForm({ kind: 'Store', storeId: '', productId: '', label: '' });
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'codes'] });
     },
-    onError: () => setActionMessage('Creation du code impossible. Verifiez le magasin et le produit.'),
+    onError: () => setActionMessage('Could not create the code. Check the store and the product.'),
   });
   const collectionItems = useMutation({
     mutationFn: ({
@@ -704,7 +704,7 @@ export function VendorOperationsPage() {
       productId?: string;
       productIds?: string[];
     }) => {
-      if (!collectionManageId) return Promise.reject(new Error('Collection non selectionnee'));
+      if (!collectionManageId) return Promise.reject(new Error('No collection selected'));
       if (action === 'add')
         return stylemintCommerceApi.addVendorCollectionItem(collectionManageId, {
           productId: productId!,
@@ -715,11 +715,11 @@ export function VendorOperationsPage() {
       return stylemintCommerceApi.reorderVendorCollectionItems(collectionManageId, productIds!);
     },
     onSuccess: async () => {
-      setActionMessage('Produits de la collection synchronises avec Stylemint.');
+      setActionMessage('Collection products synchronised with Stylemint.');
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'collections'] });
     },
     onError: () =>
-      setActionMessage('Modification de collection impossible. Verifiez les identifiants produit.'),
+      setActionMessage('Could not change the collection. Check the product IDs.'),
   });
   const saveWarrantyPolicy = useMutation({
     mutationFn: () =>
@@ -728,13 +728,13 @@ export function VendorOperationsPage() {
         terms: warrantyPolicyForm.terms.trim(),
       }),
     onSuccess: async () => {
-      setActionMessage('Politique de garantie synchronisee avec Stylemint.');
+      setActionMessage('Warranty policy synchronised with Stylemint.');
       setShowWarrantyPolicyForm(false);
       setWarrantyPolicyForm({ variantId: '', coverageDays: '30', terms: '' });
       await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'warranties/claims'] });
     },
     onError: () =>
-      setActionMessage('Politique de garantie invalide. Verifiez la variante et les conditions.'),
+      setActionMessage('Invalid warranty policy. Check the variant and the terms.'),
   });
 
   return (
@@ -887,21 +887,21 @@ export function VendorOperationsPage() {
               <>
                 <button
                   onClick={async () => {
-                    const audience = window.prompt('Qui peut rejoindre ? Separez les criteres par une virgule') || '';
-                    const rules = window.prompt('Regles des reels. Separez les regles par une virgule') || '';
+                    const audience = window.prompt('Who can join? Separate criteria with commas') || '';
+                    const rules = window.prompt('Reel rules. Separate rules with commas') || '';
                     const whoCanJoin = audience.split(',').map((value) => value.trim()).filter(Boolean);
                     const reelRules = rules.split(',').map((value) => value.trim()).filter(Boolean);
                     if (!whoCanJoin.length || !reelRules.length) return;
                     try {
                       await stylemintCommerceApi.publishVendorPartnershipTerms({
-                        whoCanJoin: { heading: 'Qui peut rejoindre', bullets: whoCanJoin },
+                        whoCanJoin: { heading: 'Who can join', bullets: whoCanJoin },
                         reelContentRules: {
-                          heading: 'Regles de contenu reel',
+                          heading: 'Reel content rules',
                           bullets: reelRules.map((text) => ({ text, inlineLinks: [] })),
                         },
                       });
                       setActionMessage('New terms version published.');
-                    } catch { setActionMessage('Publication impossible. Verifiez les criteres et les regles.'); }
+                    } catch { setActionMessage('Could not publish. Check the criteria and the rules.'); }
                   }}
                   className="flex items-center gap-1.5 rounded-lg border border-brand/30 px-3 py-2 text-[11px] font-extrabold text-brand"
                 >
@@ -991,7 +991,7 @@ export function VendorOperationsPage() {
                     await stylemintCommerceApi.createFlashSale({ productId, salePrice, startUtc: new Date(start).toISOString(), endUtc: new Date(end).toISOString(), maxUnits });
                     setActionMessage('Vente flash creee.');
                     await selectedQuery.refetch();
-                  } catch { setActionMessage('Creation impossible. Verifiez le produit, les dates et le prix.'); }
+                  } catch { setActionMessage('Could not create. Check the product, the dates and the price.'); }
                 }}
                 className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
               >
@@ -1085,7 +1085,7 @@ export function VendorOperationsPage() {
               </select>
             </label>
             <Field
-              label="IDs variantes, separes par virgule"
+              label="Variant IDs, comma separated"
               value={briefForm.productVariantIds}
               onChange={(value) => setBriefForm((form) => ({ ...form, productVariantIds: value }))}
               required
@@ -1174,8 +1174,8 @@ export function VendorOperationsPage() {
           >
             <Field label="Recipe title" value={recipeForm.title} onChange={(value) => setRecipeForm((form) => ({ ...form, title: value }))} required />
             <Field label="Music track ID" value={recipeForm.musicTrackRefId} onChange={(value) => setRecipeForm((form) => ({ ...form, musicTrackRefId: value }))} required />
-            <Field label="IDs variantes, separes par virgule" value={recipeForm.productVariantIds} onChange={(value) => setRecipeForm((form) => ({ ...form, productVariantIds: value }))} required />
-            <Field label="Ancrage de l’histoire produit" value={recipeForm.brandStoryAnchor} onChange={(value) => setRecipeForm((form) => ({ ...form, brandStoryAnchor: value }))} required />
+            <Field label="Variant IDs, comma separated" value={recipeForm.productVariantIds} onChange={(value) => setRecipeForm((form) => ({ ...form, productVariantIds: value }))} required />
+            <Field label="Anchor for the ’product story" value={recipeForm.brandStoryAnchor} onChange={(value) => setRecipeForm((form) => ({ ...form, brandStoryAnchor: value }))} required />
             <Field label="Ambiance" value={recipeForm.moodLabel} onChange={(value) => setRecipeForm((form) => ({ ...form, moodLabel: value }))} required />
             <Field label="Duree en secondes" value={recipeForm.durationSeconds} onChange={(value) => setRecipeForm((form) => ({ ...form, durationSeconds: value }))} type="number" required />
             <Field label="Music title" value={recipeForm.songTitle} onChange={(value) => setRecipeForm((form) => ({ ...form, songTitle: value }))} required />
@@ -1189,7 +1189,7 @@ export function VendorOperationsPage() {
                 disabled={createRecipe.isPending || !recipeForm.title.trim() || !recipeForm.musicTrackRefId.trim() || !recipeForm.productVariantIds.trim() || !recipeForm.brandStoryAnchor.trim() || !recipeForm.songTitle.trim() || !recipeForm.artist.trim() || !recipeForm.caption.trim()}
                 className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
               >
-                {createRecipe.isPending ? 'Creation…' : 'Generer la recette complete'}
+                {createRecipe.isPending ? 'Creation…' : 'Generate the full recipe'}
               </button>
             </div>
           </form>
@@ -1247,7 +1247,7 @@ export function VendorOperationsPage() {
                 }
                 className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
               >
-                {createStore.isPending ? 'Creation…' : 'Creer le magasin'}
+                {createStore.isPending ? 'Creation…' : 'Create store'}
               </button>
             </div>
           </form>
@@ -1311,7 +1311,7 @@ export function VendorOperationsPage() {
                 }
                 className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
               >
-                {createCollection.isPending ? 'Creation…' : 'Creer la collection'}
+                {createCollection.isPending ? 'Creation…' : 'Create collection'}
               </button>
             </div>
           </form>
@@ -1401,7 +1401,7 @@ export function VendorOperationsPage() {
               }
               className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
             >
-              {createCode.isPending ? 'Creation…' : 'Creer le code'}
+              {createCode.isPending ? 'Creation…' : 'Create code'}
             </button>
           </form>
         )}
@@ -1427,7 +1427,7 @@ export function VendorOperationsPage() {
               required
             />
             <Field
-              label="Conditions de garantie"
+              label="Warranty terms"
               value={warrantyPolicyForm.terms}
               onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, terms: value }))}
               required
@@ -1650,7 +1650,7 @@ function CollectionItemsDialog({
             <input
               value={productId}
               onChange={(event) => setProductId(event.target.value)}
-              placeholder="Identifiant du produit"
+              placeholder="Product ID"
               className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
             />
             <button
@@ -1862,7 +1862,7 @@ function renderValue(value: unknown): string {
 const ACTION_LABELS: Record<string, string> = {
   edit: 'Edit',
   stock: 'Stock',
-  publish: 'Publier',
+  publish: 'Publish',
   archive: 'Archiver',
   manage: 'Products',
   accept: 'Accept',

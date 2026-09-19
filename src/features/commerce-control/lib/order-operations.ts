@@ -4,11 +4,11 @@ export function buildVendorRejection(
   reasonCode: number,
   note: string,
 ): { reasonCode: VendorRejectionReasonCode; note: string | null } {
-  if (![1, 2, 3, 4, 5, 6].includes(reasonCode)) throw new Error('Motif de rejet invalide.');
+  if (![1, 2, 3, 4, 5, 6].includes(reasonCode)) throw new Error('Invalid rejection reason.');
   const cleanNote = note.trim();
   if (reasonCode === 6 && cleanNote.length < 3)
-    throw new Error('Une explication est obligatoire pour le motif Autre.');
-  if (cleanNote.length > 200) throw new Error('La note de rejet ne peut pas depasser 200 caracteres.');
+    throw new Error('An explanation is required when the reason is Other.');
+  if (cleanNote.length > 200) throw new Error('The rejection note cannot exceed 200 characters.');
   return { reasonCode: reasonCode as VendorRejectionReasonCode, note: cleanNote || null };
 }
 

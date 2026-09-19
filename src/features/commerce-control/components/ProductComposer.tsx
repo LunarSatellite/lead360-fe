@@ -65,7 +65,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
 
   const create = useMutation({
     mutationFn: async () => {
-      if (images.length < 5 || images.length > 10) throw new Error('Ajoutez entre 5 et 10 images.');
+      if (images.length < 5 || images.length > 10) throw new Error('Add between 5 and 10 images.');
       const draft = await stylemintCommerceApi.createVendorProduct({
         categoryId: form.categoryId.trim(),
         name: form.name.trim(),
@@ -205,7 +205,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
               ) : (
                 <Upload className="h-4 w-4" />
               )}
-              {uploadImages.isPending ? 'Envoi vers Stylemint…' : 'Upload JPG/PNG images'}
+              {uploadImages.isPending ? 'Uploading to Stylemint…' : 'Upload JPG/PNG images'}
               <input
                 type="file"
                 accept="image/jpeg,image/png"
@@ -249,7 +249,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
             </div>
           </Section>
 
-          <Section title="3. Prix et inventaire">
+          <Section title="3. Price and inventory">
             <Input label="SKU" value={form.sku} onChange={(value) => set('sku', value)} required />
             <div className="grid grid-cols-3 gap-3">
               <Input
@@ -371,7 +371,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
               ) : (
                 <PackagePlus className="h-4 w-4" />
               )}
-              {create.isPending ? 'Creation en cours…' : 'Creer le produit'}
+              {create.isPending ? 'Creation en cours…' : 'Create product'}
             </button>
           </div>
         </footer>

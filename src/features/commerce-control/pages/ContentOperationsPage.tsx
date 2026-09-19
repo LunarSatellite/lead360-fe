@@ -20,6 +20,7 @@ import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { isUsableSocialAccount, socialProviderSlug } from '../lib/social-accounts';
 import { VendorInsightDialog } from '../components/VendorInsightDialog';
+import { ReelOperatorActions } from '../components/ReelOperatorActions';
 
 const providers = [
   { slug: 'instagram', name: 'Instagram', platform: 1, icon: Instagram, color: 'from-fuchsia-500/25' },
@@ -108,7 +109,7 @@ export function ContentOperationsPage() {
     onSuccess: ({ url }) => window.open(url, '_blank', 'noopener,noreferrer'),
   });
   const disconnect = useMutation({
-    mutationFn: () => stylemintCommerceApi.disconnectSocial(provider.slug, 'Deconnexion demandee depuis Lead360.'),
+    mutationFn: () => stylemintCommerceApi.disconnectSocial(provider.slug, 'Disconnect requested from Lead360.'),
     onSuccess: async () => {
       await client.invalidateQueries({ queryKey: ['stylemint-social-accounts'] });
       await client.invalidateQueries({ queryKey: ['stylemint-social-audience'] });
@@ -171,11 +172,11 @@ export function ContentOperationsPage() {
               Social Content Hub
             </p>
             <h1 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">
-              Du reseau social au rayon Stylemint
+              From social feed to the Stylemint aisle
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">
-              Importez les contenus Kin Marche, verifiez leur rendu, puis publiez-les dans Mall et Discovery.
-              Les outils createur restent exclusivement dans l'application mobile.
+              Import Kin Marche content, check how it renders, then publish it to Mall and Discovery.
+              The creator tools stay exclusively in the mobile app.
             </p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
@@ -194,12 +195,12 @@ export function ContentOperationsPage() {
         <div>
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-4 w-4 text-brand" />
-            <h2 className="text-sm font-extrabold text-text-primary">Acces et autorisations {provider.name}</h2>
+            <h2 className="text-sm font-extrabold text-text-primary">{provider.name} access and permissions</h2>
           </div>
           <p className="mt-2 text-xs leading-5 text-text-muted">
             {providerConnected
-              ? `${scopes.data?.length ?? 0} autorisations plateforme · ${activePublishGrant(publishScopes.data) ? 'publication autorisee' : 'publication non autorisee'}`
-              : 'Liez le compte officiel Kin Marche pour importer et diffuser son contenu.'}
+              ? `${scopes.data?.length ?? 0} platform permissions · ${activePublishGrant(publishScopes.data) ? 'publishing allowed' : 'publishing not permitted'}`
+              : 'Link the official Kin Marche account to import and publish its content.'}
           </p>
           {providerConnected && !!scopes.data?.length && (
             <div className="mt-3 flex flex-wrap gap-1.5">
@@ -215,16 +216,16 @@ export function ContentOperationsPage() {
           <div className="flex flex-wrap gap-2">
             {!providerConnected ? (
               <button onClick={() => connect.mutate()} disabled={connect.isPending} className="rounded-xl bg-brand px-4 py-2.5 text-xs font-extrabold text-black disabled:opacity-50">
-                Connecter {provider.name}
+                Connect {provider.name}
               </button>
             ) : (
               <>
                 <button onClick={() => setShowAccountDetails(true)} className="rounded-xl border border-border-subtle px-3 py-2.5 text-xs font-bold text-text-secondary">Account details</button>
                 <button onClick={() => publishConsent.mutate(activePublishGrant(publishScopes.data) ? 'revoke' : 'grant')} disabled={publishConsent.isPending} className="rounded-xl border border-border-subtle px-3 py-2.5 text-xs font-bold text-text-secondary">
-                  {activePublishGrant(publishScopes.data) ? 'Retirer la publication' : 'Autoriser la publication'}
+                  {activePublishGrant(publishScopes.data) ? 'Unpublish' : 'Allow publishing'}
                 </button>
                 <button onClick={() => connect.mutate()} disabled={connect.isPending} className="rounded-xl border border-brand/30 px-3 py-2.5 text-xs font-bold text-brand">Reconnecter</button>
-                <button onClick={() => window.confirm(`Deconnecter ${provider.name} ?`) && disconnect.mutate()} disabled={disconnect.isPending} className="rounded-xl border border-danger/25 px-3 py-2.5 text-xs font-bold text-danger">Deconnecter</button>
+                <button onClick={() => window.confirm(`Disconnect ${provider.name}?`) && disconnect.mutate()} disabled={disconnect.isPending} className="rounded-xl border border-danger/25 px-3 py-2.5 text-xs font-bold text-danger">Disconnect</button>
               </>
             )}
           </div>
@@ -255,7 +256,7 @@ export function ContentOperationsPage() {
                     className={`mt-0.5 flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider ${isConnected ? 'text-success' : 'text-amber-400'}`}
                   >
                     {isConnected ? <CheckCircle2 className="h-3 w-3" /> : <Unplug className="h-3 w-3" />}
-                    {isConnected ? 'Connecte' : 'A connecter'}
+                    {isConnected ? 'Connecte' : 'Not connected'}
                   </p>
                 </div>
               </div>
@@ -267,10 +268,10 @@ export function ContentOperationsPage() {
       <section className="overflow-hidden rounded-2xl border border-border-subtle bg-bg-card">
         <div className="flex flex-col gap-3 border-b border-border-subtle px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-base font-extrabold text-text-primary">Contenus {provider.name}</h2>
+            <h2 className="text-base font-extrabold text-text-primary">{provider.name} content</h2>
             <p className="mt-0.5 text-xs text-text-muted">
               {content.data?.servedFromCache
-                ? 'Contenu sauvegarde · actualisation disponible'
+                ? 'Content saved · refresh available'
                 : 'Synchronized with the platform'}
             </p>
           </div>
@@ -291,10 +292,10 @@ export function ContentOperationsPage() {
         ) : content.isError ? (
           <div className="flex h-64 flex-col items-center justify-center gap-3 px-6 text-center">
             <Unplug className="h-8 w-8 text-amber-400" />
-            <p className="font-bold text-text-primary">Compte {provider.name} non disponible</p>
+            <p className="font-bold text-text-primary">{provider.name} account unavailable</p>
             <p className="max-w-lg text-xs leading-5 text-text-muted">
-              Connectez le compte Kin Marche ou configurez le jeton operateur Stylemint pour charger ses
-              contenus.
+              Connect the Kin Marche account, or configure the Stylemint operator token, to load its
+              content.
             </p>
           </div>
         ) : !items.length ? (
@@ -337,7 +338,7 @@ export function ContentOperationsPage() {
           </div>
         ) : !reelRows.length ? (
           <div className="flex h-44 items-center justify-center text-sm text-text-muted">
-            Importez un contenu social pour commencer.
+            Import social content to get started.
           </div>
         ) : (
           <div className="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
@@ -349,6 +350,14 @@ export function ContentOperationsPage() {
                 busy={reelAction.isPending}
                 onAction={(action) => reelAction.mutate({ id: String(reel.id), action })}
                 onSchedule={() => setScheduleReel(reel)}
+                operatorActions={
+                  <ReelOperatorActions
+                    reelId={String(reel.id)}
+                    onChanged={() =>
+                      client.invalidateQueries({ queryKey: ['stylemint-content-reels'] })
+                    }
+                  />
+                }
               />
             ))}
           </div>
@@ -420,12 +429,15 @@ function ManagedReelCard({
   busy,
   onAction,
   onSchedule,
+  operatorActions,
 }: {
   reel: Record<string, unknown>;
   canOperate: boolean;
   busy: boolean;
   onAction: (action: 'publish' | 'unpublish' | 'caption') => void;
   onSchedule: () => void;
+  /** ContentMod-only actions, rendered by the caller so this card stays presentational. */
+  operatorActions?: React.ReactNode;
 }) {
   const state = Number(reel.state ?? 0);
   const image = String(reel.thumbnailCdnUrl ?? reel.videoCdnUrl ?? '');
@@ -450,7 +462,7 @@ function ManagedReelCard({
       </div>
       <div className="p-4">
         <p className="line-clamp-2 min-h-10 text-xs leading-5 text-text-secondary">
-          {String(reel.caption ?? 'Sans legende')}
+          {String(reel.caption ?? 'No caption')}
         </p>
         {canOperate && (
           <div className="mt-3 flex flex-wrap gap-1.5">
@@ -459,7 +471,7 @@ function ManagedReelCard({
               onClick={() => onAction(state === 3 ? 'unpublish' : 'publish')}
               className="rounded-lg bg-brand px-3 py-2 text-[10px] font-extrabold text-black disabled:opacity-40"
             >
-              {state === 3 ? 'Depublier' : 'Publier'}
+              {state === 3 ? 'Depublier' : 'Publish'}
             </button>
             <button
               disabled={busy}
@@ -473,11 +485,12 @@ function ManagedReelCard({
               onClick={onSchedule}
               className="rounded-lg border border-border-subtle px-3 py-2 text-[10px] font-bold text-text-secondary"
             >
-              Programmer
+              Schedule
             </button>
           </div>
         )}
       </div>
+      {operatorActions}
     </article>
   );
 }
@@ -605,7 +618,7 @@ function ContentCard({
         {image ? (
           <img
             src={image}
-            alt={item.caption || 'Contenu social Kin Marche'}
+            alt={item.caption || 'Kin Marche social content'}
             className="h-full w-full object-cover"
           />
         ) : (
@@ -621,7 +634,7 @@ function ContentCard({
         </div>
         <div className="absolute inset-x-3 bottom-3 flex items-end justify-between gap-3">
           <p className="line-clamp-2 text-xs font-semibold leading-5 text-white">
-            {item.caption || 'Sans legende'}
+            {item.caption || 'No caption'}
           </p>
           <a
             href={item.permalink}

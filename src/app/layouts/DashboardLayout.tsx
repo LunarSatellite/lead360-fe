@@ -107,6 +107,7 @@ const primaryNav = [
   { label: 'Discovery', href: ROUTES.dashboard.discovery, icon: Compass },
   { label: 'Intelligence', href: ROUTES.dashboard.intelligence, icon: BrainCircuit },
   { label: 'Demand content', href: ROUTES.dashboard.demandContent, icon: FileSearch },
+  { label: 'Goal templates', href: ROUTES.dashboard.goalTemplates, icon: Target },
   { label: 'Operator access', href: ROUTES.dashboard.operatorAccess, icon: KeyRound },
   { label: 'Agent approvals', href: ROUTES.dashboard.agentApprovals, icon: Gavel },
   { label: 'Agent credentials', href: ROUTES.dashboard.agentCredentials, icon: KeyRound },
@@ -318,6 +319,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/discovery')) return 'Discovery';
     if (path.includes('/stylemint/intelligence')) return 'Decision Intelligence';
     if (path.includes('/stylemint/demand-content')) return 'Demand Content';
+    if (path.includes('/stylemint/goal-templates')) return 'Goal Templates';
     if (path.includes('/chat')) return 'Chat';
     if (path.includes('/home')) return 'Overview';
     if (path.includes('/onboarding')) return 'Setup Assistant';

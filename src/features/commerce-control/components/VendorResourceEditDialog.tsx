@@ -148,7 +148,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
           longitude: form.longitude ? Number(form.longitude) : undefined,
         });
       if (sections.media && (images.length < 5 || images.length > 10))
-        throw new Error('Les medias exigent entre 5 et 10 images.');
+        throw new Error('Media requires between 5 and 10 images.');
       await stylemintCommerceApi.updateVendorProduct(id, 'details/basic', {
         categoryId: form.categoryId,
         name: form.name.trim(),
@@ -294,7 +294,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                     ) : (
                       <Upload className="h-4 w-4" />
                     )}
-                    {uploadImages.isPending ? 'Envoi vers Stylemint…' : 'Add JPG/PNG images'}
+                    {uploadImages.isPending ? 'Uploading to Stylemint…' : 'Add JPG/PNG images'}
                     <input
                       type="file"
                       accept="image/jpeg,image/png"
@@ -340,7 +340,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                 </OptionalSection>
                 <OptionalSection
                   icon={<Package className="h-4 w-4" />}
-                  title="Prix et inventaire"
+                  title="Price and inventory"
                   enabled={sections.pricing}
                   onToggle={(value) => setSections((s) => ({ ...s, pricing: value }))}
                 >
@@ -372,7 +372,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                       onChange={(v) => set('trackInventory', v)}
                     />
                     <Check
-                      label="Autoriser la survente"
+                      label="Allow overselling"
                       checked={form.allowOverselling}
                       onChange={(v) => set('allowOverselling', v)}
                     />
@@ -441,7 +441,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                 </OptionalSection>
               </>
             ) : (
-              <Section title="Coordonnees du magasin">
+              <Section title="Store contact details">
                 <div className="grid gap-3 md:grid-cols-2">
                   <Input label="Nom" value={form.name} onChange={(v) => set('name', v)} />
                   <Input label="Ville" value={form.city} onChange={(v) => set('city', v)} />

@@ -72,6 +72,51 @@ function unwrap<T>(response: { status: number; body: unknown }): T {
   throw new Error(detail ?? `The audio surface returned HTTP ${response.status}.`);
 }
 
+
+/**
+ * External trends — what is rising on YouTube, Spotify, SoundCloud and TikTok, and which of
+ * those the platform has not yet matched to a track it knows.
+ *
+ * The unmatched queue is the actionable half: a trend nobody has matched is a song creators are
+ * already using that the catalogue cannot offer them.
+ */
+
+export const AudioProvider = {
+  YouTube: 1,
+  Spotify: 2,
+  SoundCloud: 3,
+  TikTokSound: 4,
+  Other: 99,
+} as const;
+export type AudioProviderValue = (typeof AudioProvider)[keyof typeof AudioProvider];
+
+export const AUDIO_PROVIDER_LABEL: Record<number, string> = {
+  1: 'YouTube',
+  2: 'Spotify',
+  3: 'SoundCloud',
+  4: 'TikTok',
+  99: 'Other',
+};
+
+export type AudioTrend = {
+  id: string;
+  provider: number;
+  externalTrackIdentifier: string;
+  matchedInternalTrackRefId?: string | null;
+  momentumScore: number;
+  regionCode?: string | null;
+  capturedUtc: string;
+  expiresUtc: string;
+  listenUrl?: string | null;
+};
+
+export type TrendPage = {
+  items: AudioTrend[];
+  totalCount: number;
+  nextCursor?: string | null;
+  pageSize: number;
+};
+
 export const stylemintAudioApi = {
   tracks: async (params: { state?: TrackStateValue; pageSize?: number }): Promise<Paged<MusicTrack>> => {
     const query = new URLSearchParams();
@@ -148,6 +193,45 @@ export const stylemintAudioApi = {
         method: 'POST',
         path: `v1/admin/audio/unmatched-citations/${encodeURIComponent(unmatchedId)}/canonicalize`,
         body: JSON.stringify({ musicTrackRefId, includeSiblings }),
+      }),
+    ),
+
+  /** Everything captured, matched or not. */
+  trends: async (params: { provider?: AudioProviderValue; pageSize?: number } = {}): Promise<TrendPage> => {
+    const query = new URLSearchParams();
+    if (params.provider) query.set('provider', String(params.provider));
+    query.set('pageSize', String(params.pageSize ?? 25));
+
+    return unwrap<TrendPage>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: 'v1/admin/audio/trends',
+        query: query.toString(),
+      }),
+    );
+  },
+
+  /** Trends with no internal track - songs creators use that the catalogue cannot offer. */
+  unmatchedTrends: async (params: { provider?: AudioProviderValue; pageSize?: number } = {}): Promise<TrendPage> => {
+    const query = new URLSearchParams();
+    if (params.provider) query.set('provider', String(params.provider));
+    query.set('pageSize', String(params.pageSize ?? 25));
+
+    return unwrap<TrendPage>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: 'v1/admin/audio/trends/unmatched-queue',
+        query: query.toString(),
+      }),
+    );
+  },
+
+  /** Re-pulls from the providers rather than waiting for the schedule. */
+  refreshTrends: async (): Promise<Record<string, unknown>> =>
+    unwrap<Record<string, unknown>>(
+      await stylemintOperationsApi.invoke({
+        method: 'POST',
+        path: 'v1/admin/audio/trends/refresh',
       }),
     ),
 

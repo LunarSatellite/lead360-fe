@@ -5,7 +5,7 @@ const draft: VendorRecipeDraft = {
   title: 'Market tomatoes',
   musicTrackRefId: '11111111-1111-4111-8111-111111111111',
   productVariantIds: '22222222-2222-4222-8222-222222222222, 33333333-3333-4333-8333-333333333333',
-  brandStoryAnchor: 'Du marche a la cuisine familiale',
+  brandStoryAnchor: 'From the market to the family kitchen',
   moodLabel: 'Chaleureux',
   durationSeconds: '40',
   songTitle: 'Kinshasa matin',
@@ -34,12 +34,12 @@ describe('buildVendorRecipePayload', () => {
   });
 
   it.each(['4', '181', '40.5', 'abc'])('rejects invalid duration %s', (durationSeconds) => {
-    expect(() => buildVendorRecipePayload({ ...draft, durationSeconds })).toThrow(/duree/i);
+    expect(() => buildVendorRecipePayload({ ...draft, durationSeconds })).toThrow(/duration/i);
   });
 
   it('rejects missing required content and malformed identifiers', () => {
-    expect(() => buildVendorRecipePayload({ ...draft, caption: ' ' })).toThrow(/legende/i);
-    expect(() => buildVendorRecipePayload({ ...draft, musicTrackRefId: 'not-an-id' })).toThrow(/piste musicale/i);
-    expect(() => buildVendorRecipePayload({ ...draft, productVariantIds: 'not-an-id' })).toThrow(/variante produit/i);
+    expect(() => buildVendorRecipePayload({ ...draft, caption: ' ' })).toThrow(/caption/i);
+    expect(() => buildVendorRecipePayload({ ...draft, musicTrackRefId: 'not-an-id' })).toThrow(/music track/i);
+    expect(() => buildVendorRecipePayload({ ...draft, productVariantIds: 'not-an-id' })).toThrow(/product variant/i);
   });
 });

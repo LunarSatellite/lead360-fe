@@ -50,8 +50,8 @@ export function VendorCollaborationDialog({
     onError: () =>
       setError(
         kind === 'squad'
-          ? 'Creation impossible. Verifiez le brief et le budget.'
-          : 'Proposition impossible. Verifiez le createur et les montants.',
+          ? 'Could not create. Check the brief and the budget.'
+          : 'Could not propose. Check the creator and the amounts.',
       ),
   });
 
@@ -85,12 +85,12 @@ export function VendorCollaborationDialog({
           {kind === 'squad' ? (
             <>
               <Input label="Squad name" value={name} onChange={setName} />
-              <Input label="Identifiant du brief commercial" value={briefId} onChange={setBriefId} mono />
+              <Input label="Commercial brief ID" value={briefId} onChange={setBriefId} mono />
               <Input label="Budget total" value={amount} onChange={setAmount} type="number" suffix="CDF" />
             </>
           ) : (
             <>
-              <Input label="Identifiant du compte createur" value={creatorAccountId} onChange={setCreatorAccountId} mono />
+              <Input label="Creator account ID" value={creatorAccountId} onChange={setCreatorAccountId} mono />
               <Input label="Montant mensuel" value={amount} onChange={setAmount} type="number" suffix="CDF" />
               <Input label="Deliverables per month" value={deliverables} onChange={setDeliverables} type="number" />
             </>
@@ -103,7 +103,7 @@ export function VendorCollaborationDialog({
           </button>
           <button disabled={!valid || save.isPending} className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40">
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-            {kind === 'squad' ? "Create squad" : 'Proposer le contrat'}
+            {kind === 'squad' ? "Create squad" : 'Propose contract'}
           </button>
         </div>
       </form>

@@ -46,7 +46,7 @@ export function StylemintCustomersPage() {
       action: 'suspend' | 'reinstate';
     }) => {
       if (action === 'suspend')
-        return stylemintCommerceApi.suspendCustomer(customer.id, 'Action operateur Kin Marche');
+        return stylemintCommerceApi.suspendCustomer(customer.id, 'Kin Marche operator action');
       return stylemintCommerceApi.reinstateCustomer(customer.id);
     },
     onSuccess: async () => {
@@ -62,7 +62,7 @@ export function StylemintCustomersPage() {
     return (
       <div className="mx-auto max-w-2xl rounded-2xl border border-amber-400/25 bg-amber-400/5 p-8 text-center">
         <ShieldCheck className="mx-auto h-9 w-9 text-amber-400" />
-        <h1 className="mt-4 text-xl font-black text-text-primary">Acces Owner requis</h1>
+        <h1 className="mt-4 text-xl font-black text-text-primary">Owner access required</h1>
         <p className="mt-2 text-sm leading-6 text-text-muted">
           Les donnees clients et la suspension des comptes sont reservees au proprietaire Kin Marche.
         </p>
@@ -108,7 +108,7 @@ export function StylemintCustomersPage() {
           <input
             value={draftSearch}
             onChange={(event) => setDraftSearch(event.target.value)}
-            placeholder="Nom, email ou telephone"
+            placeholder="Name, email or phone"
             className="w-full bg-transparent py-2.5 text-sm text-text-primary outline-none placeholder:text-text-muted"
           />
         </label>
@@ -198,7 +198,7 @@ export function StylemintCustomersPage() {
                       <span
                         className={`rounded-full px-2 py-1 text-[9px] font-bold ${customer.emailVerified || customer.phoneVerified ? 'bg-success-soft text-success' : 'bg-amber-400/10 text-amber-400'}`}
                       >
-                        {customer.emailVerified || customer.phoneVerified ? 'Verifie' : 'A verifier'}
+                        {customer.emailVerified || customer.phoneVerified ? 'Verifie' : 'To verify'}
                       </span>
                     </td>
                     <td className="px-4 py-3">
@@ -225,7 +225,7 @@ export function StylemintCustomersPage() {
             onClick={() => setSelected(null)}
           />
           <aside className="relative h-full w-full max-w-md border-l border-border-subtle bg-bg-card p-6">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-brand">Compte Stylemint</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-brand">Stylemint account</p>
             <h2 className="mt-2 text-xl font-black text-text-primary">{selected.displayName}</h2>
             <p className="mt-1 text-xs text-text-muted">
               {selected.primaryEmail || selected.primaryPhone || selected.id}
@@ -236,7 +236,7 @@ export function StylemintCustomersPage() {
             <div className="mt-6 space-y-2 text-sm">
               <Row label="Language" value={selected.locale} />
               <Row label="Time zone" value={selected.timezone} />
-              <Row label="Pays" value={selected.countryCode || 'Non renseigne'} />
+              <Row label="Pays" value={selected.countryCode || 'Not provided'} />
               <Row label="Created" value={new Date(selected.createdUtc).toLocaleDateString('fr-CD')} />
             </div>
             {selected.status === 1 ? (

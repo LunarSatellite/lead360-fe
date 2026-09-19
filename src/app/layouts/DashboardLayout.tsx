@@ -33,6 +33,7 @@ import {
   ListChecks,
   LogOut,
   Megaphone,
+  Network,
   Menu,
   MessageSquare,
   Music,
@@ -127,6 +128,9 @@ const primaryNav = [
     href: ROUTES.dashboard.intelAutonomousOperations,
     icon: Gauge,
   },
+  // The operator-side retail twin. Distinct from the vendor scenario runner,
+  // which has no web surface and lives only in the mobile app.
+  { label: 'Decision twin', href: ROUTES.dashboard.decisionTwin, icon: Network },
   { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
   { label: 'Stores', href: ROUTES.dashboard.crmOrganizations, icon: Store },
   // One entry point each. Support was a link to the CRM case queue with no way to reach commerce

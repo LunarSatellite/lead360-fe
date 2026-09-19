@@ -120,7 +120,8 @@ export const router = createBrowserRouter([
       { path: 'agents', lazy: () => import('@/features/agents/pages/AgentListPage') },
       { path: 'test-channel', lazy: () => import('@/features/test-channel/pages/TestChannelPage') },
       { path: 'conversations', lazy: () => import('@/features/conversations/pages/ConversationsPage') },
-      { path: 'analytics', lazy: () => import('@/features/analytics/pages/AnalyticsPage') },
+      { path: 'analytics', lazy: () => import('@/features/analytics/pages/AnalyticsHubPage') },
+      { path: 'support', lazy: () => import('@/features/support/pages/SupportPage') },
       { path: 'compliance', lazy: () => import('@/features/compliance/pages/ComplianceSettings') },
       // ── COMMENTED: 6-step Onboarding wizard — chat-first replaces it.
       //    Uncomment if you need the wizard back. The file

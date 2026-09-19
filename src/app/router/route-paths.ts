@@ -51,6 +51,7 @@ export const ROUTES = {
     campaignNew: '/dashboard/campaigns/new',
     agents: '/dashboard/agents',
     analytics: '/dashboard/analytics',
+    support: '/dashboard/support',
     onboarding: '/dashboard/onboarding',
     // ── CRM ──
     crmLeads: '/dashboard/crm/leads',

@@ -79,8 +79,11 @@ const primaryNav = [
   { label: 'Agent approvals', href: ROUTES.dashboard.agentApprovals, icon: Gavel },
   { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
   { label: 'Stores', href: ROUTES.dashboard.crmOrganizations, icon: Store },
-  { label: 'Support', href: ROUTES.dashboard.crmSupport, icon: LifeBuoy },
-  { label: 'Analytics', href: ROUTES.dashboard.crmAnalytics, icon: TrendingUp },
+  // One entry point each. Support was a link to the CRM case queue with no way to reach commerce
+  // tickets at all; Analytics was listed twice (here and under CRM) with both pointing at the CRM
+  // dashboard, while the conversation analytics were reachable only by typing the URL.
+  { label: 'Support', href: ROUTES.dashboard.support, icon: LifeBuoy },
+  { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: TrendingUp },
 ];
 
 const botNav = [
@@ -116,8 +119,8 @@ const crmNav = [
   { label: 'Accounts', href: ROUTES.dashboard.crmAccounts, icon: Building },
   { label: 'Nurture', href: ROUTES.dashboard.crmNurture, icon: Workflow },
   { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
-  { label: 'Analytics', href: ROUTES.dashboard.crmAnalytics, icon: TrendingUp },
-  { label: 'Support', href: ROUTES.dashboard.crmSupport, icon: LifeBuoy },
+  // Analytics and Support are deliberately absent here: both live once, in the primary rail, as
+  // the unified pages. The CRM-only routes still resolve for anyone with a bookmark.
   { label: 'Tasks', href: ROUTES.dashboard.crmTasks, icon: CheckSquare },
   { label: 'Quotes', href: ROUTES.dashboard.crmQuotes, icon: FileText },
   { label: 'Propositions', href: ROUTES.dashboard.crmProposals, icon: ClipboardList },

@@ -90,6 +90,7 @@ export const router = createBrowserRouter([
       { path: 'stylemint/finance', lazy: () => import('@/features/commerce-control/pages/SellerFinancePage') },
       { path: 'stylemint/operations', lazy: () => import('@/features/commerce-control/pages/CommerceOperationsPage') },
       { path: 'stylemint/applications', lazy: () => import('@/features/commerce-control/pages/KycReviewPage') },
+      { path: 'stylemint/access', lazy: () => import('@/features/commerce-control/pages/OperatorAccessPage') },
       // ── Agent governance ──
       { path: 'agent-governance/approvals', lazy: () => import('@/features/agent-governance/pages/AgentApprovalsPage') },
       { path: 'agent-governance/actions/:id', lazy: () => import('@/features/agent-governance/pages/AgentActionRecordPage') },

@@ -29,6 +29,7 @@ export const ROUTES = {
     platformConfig: '/dashboard/stylemint/platform-config',
     auditTrail: '/dashboard/stylemint/audit',
     returns: '/dashboard/stylemint/returns',
+    counterHandover: '/dashboard/stylemint/counter-handover',
     payouts: '/dashboard/stylemint/payouts',
     privacyRequests: '/dashboard/stylemint/privacy',
     recipes: '/dashboard/stylemint/recipes',

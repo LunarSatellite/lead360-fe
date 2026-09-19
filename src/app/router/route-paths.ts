@@ -19,6 +19,7 @@ export const ROUTES = {
     stylemintCustomers: '/dashboard/stylemint/customers',
     sellerFinance: '/dashboard/stylemint/finance',
     commerceOperations: '/dashboard/stylemint/operations',
+    kycReview: '/dashboard/stylemint/applications',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,

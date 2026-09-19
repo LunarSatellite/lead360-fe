@@ -35,10 +35,13 @@ export const ROUTES = {
     logistics: '/dashboard/stylemint/logistics',
     commerceCampaigns: '/dashboard/stylemint/campaigns',
     discovery: '/dashboard/stylemint/discovery',
+    intelligence: '/dashboard/stylemint/intelligence',
+    demandContent: '/dashboard/stylemint/demand-content',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,
     agentEmergencyStop: '/dashboard/agent-governance/emergency-stop',
+    agentCredentials: '/dashboard/agent-governance/credentials',
     // ── Chat-first primary surfaces (new) ──
     chat: '/dashboard/chat',
     home: '/dashboard/home',

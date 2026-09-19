@@ -6,6 +6,7 @@ import {
   BarChart3,
   Bot,
   Boxes,
+  BrainCircuit,
   Briefcase,
   Building,
   Building2,
@@ -17,6 +18,7 @@ import {
   Clock,
   Compass,
   Facebook,
+  FileSearch,
   FileText,
   Flag,
   FlaskConical,
@@ -103,8 +105,11 @@ const primaryNav = [
   { label: 'Delivery ops', href: ROUTES.dashboard.logistics, icon: Route },
   { label: 'Campaigns', href: ROUTES.dashboard.commerceCampaigns, icon: Megaphone },
   { label: 'Discovery', href: ROUTES.dashboard.discovery, icon: Compass },
+  { label: 'Intelligence', href: ROUTES.dashboard.intelligence, icon: BrainCircuit },
+  { label: 'Demand content', href: ROUTES.dashboard.demandContent, icon: FileSearch },
   { label: 'Operator access', href: ROUTES.dashboard.operatorAccess, icon: KeyRound },
   { label: 'Agent approvals', href: ROUTES.dashboard.agentApprovals, icon: Gavel },
+  { label: 'Agent credentials', href: ROUTES.dashboard.agentCredentials, icon: KeyRound },
   { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
   { label: 'Stores', href: ROUTES.dashboard.crmOrganizations, icon: Store },
   // One entry point each. Support was a link to the CRM case queue with no way to reach commerce
@@ -311,6 +316,8 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/logistics')) return 'Delivery Operations';
     if (path.includes('/stylemint/campaigns')) return 'Campaigns';
     if (path.includes('/stylemint/discovery')) return 'Discovery';
+    if (path.includes('/stylemint/intelligence')) return 'Decision Intelligence';
+    if (path.includes('/stylemint/demand-content')) return 'Demand Content';
     if (path.includes('/chat')) return 'Chat';
     if (path.includes('/home')) return 'Overview';
     if (path.includes('/onboarding')) return 'Setup Assistant';
@@ -349,6 +356,7 @@ export function DashboardLayout() {
     if (path.includes('/crm/workflows')) return 'Automations';
     if (path.includes('/flows/experiments')) return 'A/B Experiments';
     if (path.includes('/support')) return 'Support';
+    if (path.includes('/agent-governance/credentials')) return 'Agent Credentials';
     return 'Dashboard';
   };
 

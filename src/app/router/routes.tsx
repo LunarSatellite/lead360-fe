@@ -105,10 +105,13 @@ export const router = createBrowserRouter([
       { path: 'stylemint/logistics', lazy: () => import('@/features/commerce-control/pages/LogisticsPage') },
       { path: 'stylemint/campaigns', lazy: () => import('@/features/commerce-control/pages/CampaignsPage') },
       { path: 'stylemint/discovery', lazy: () => import('@/features/commerce-control/pages/DiscoveryPage') },
+      { path: 'stylemint/intelligence', lazy: () => import('@/features/commerce-control/pages/IntelligencePage') },
+      { path: 'stylemint/demand-content', lazy: () => import('@/features/commerce-control/pages/DemandContentPage') },
       // ── Agent governance ──
       { path: 'agent-governance/approvals', lazy: () => import('@/features/agent-governance/pages/AgentApprovalsPage') },
       { path: 'agent-governance/actions/:id', lazy: () => import('@/features/agent-governance/pages/AgentActionRecordPage') },
       { path: 'agent-governance/emergency-stop', lazy: () => import('@/features/agent-governance/pages/AgentEmergencyStopPage') },
+      { path: 'agent-governance/credentials', lazy: () => import('@/features/agent-governance/pages/AgentCredentialsPage') },
       // ── Chat-first primary surfaces (new) ──
       { path: 'chat', lazy: () => import('@/features/chat/pages/ChatPage') },
       { path: 'home', lazy: () => import('@/features/home/pages/HomePage') },

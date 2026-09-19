@@ -12,6 +12,13 @@ export const ROUTES = {
   },
   dashboard: {
     root: '/dashboard',
+    commerceControl: '/dashboard/commerce-control',
+    stylemintOrders: '/dashboard/stylemint/orders',
+    vendorOperations: '/dashboard/stylemint/vendor',
+    contentOperations: '/dashboard/stylemint/content',
+    stylemintCustomers: '/dashboard/stylemint/customers',
+    sellerFinance: '/dashboard/stylemint/finance',
+    commerceOperations: '/dashboard/stylemint/operations',
     // ── Chat-first primary surfaces (new) ──
     chat: '/dashboard/chat',
     home: '/dashboard/home',

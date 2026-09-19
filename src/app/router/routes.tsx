@@ -10,7 +10,7 @@ export const router = createBrowserRouter([
     lazy: async () => {
       const token = localStorage.getItem('omniflow_token');
       if (token) {
-        return { Component: () => <Navigate to="/dashboard/crm/analytics" replace /> };
+        return { Component: () => <Navigate to="/dashboard/commerce-control" replace /> };
       }
       return import('@/features/landing/pages/LandingPage');
     },
@@ -82,6 +82,13 @@ export const router = createBrowserRouter([
       </RequireAuth>
     ),
     children: [
+      { path: 'commerce-control', lazy: () => import('@/features/commerce-control/pages/CommerceControlCenterPage') },
+      { path: 'stylemint/orders', lazy: () => import('@/features/commerce-control/pages/StylemintOrdersPage') },
+      { path: 'stylemint/vendor', lazy: () => import('@/features/commerce-control/pages/VendorOperationsPage') },
+      { path: 'stylemint/content', lazy: () => import('@/features/commerce-control/pages/ContentOperationsPage') },
+      { path: 'stylemint/customers', lazy: () => import('@/features/commerce-control/pages/StylemintCustomersPage') },
+      { path: 'stylemint/finance', lazy: () => import('@/features/commerce-control/pages/SellerFinancePage') },
+      { path: 'stylemint/operations', lazy: () => import('@/features/commerce-control/pages/CommerceOperationsPage') },
       // ── Chat-first primary surfaces (new) ──
       { path: 'chat', lazy: () => import('@/features/chat/pages/ChatPage') },
       { path: 'home', lazy: () => import('@/features/home/pages/HomePage') },
@@ -152,7 +159,7 @@ export const router = createBrowserRouter([
       { path: 'crm/dedup', lazy: () => import('@/features/crm/pages/CrmDeduplicationPage') },
       // ── Flow A/B Experiments ──
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
-      { index: true, element: <Navigate to="analytics" replace /> },
+      { index: true, element: <Navigate to="commerce-control" replace /> },
       // OLD: { index: true, element: <Navigate to="setup" replace /> },
     ],
   },

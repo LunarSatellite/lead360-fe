@@ -2,55 +2,63 @@ import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { useTokenAutoRefresh } from '@/features/auth/hooks/useTokenAutoRefresh';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
-  LayoutGrid,
-  Target,
-  MessageSquare,
-  GitBranch,
-  Phone,
   BarChart3,
-  Settings,
-  Zap,
-  LogOut,
-  User,
-  ChevronDown,
-  Terminal,
   Bot,
-  Plug,
-  Package,
   Boxes,
-  Rocket,
-  Menu,
-  X,
-  Users,
-  Workflow,
-  Megaphone,
-  UserCheck,
   Briefcase,
-  Building2,
   Building,
-  TrendingUp,
-  FlaskConical,
-  LifeBuoy,
-  CheckSquare,
-  FileText,
-  ClipboardList,
-  Receipt,
-  RefreshCw,
+  Building2,
   CalendarCheck,
-  Star,
+  CheckSquare,
+  ChevronDown,
+  ClipboardList,
   Clock,
   Facebook,
-  Newspaper,
-  ListChecks,
-  Globe,
-  ShieldCheck,
-  SlidersHorizontal,
+  FileText,
+  FlaskConical,
+  GitBranch,
   GitMerge,
+  Globe,
+  Images,
+  LayoutGrid,
+  LifeBuoy,
+  ListChecks,
+  LogOut,
+  Megaphone,
+  Menu,
+  MessageSquare,
+  Newspaper,
+  Package,
+  Phone,
+  Plug,
+  Receipt,
+  RefreshCw,
+  Rocket,
+  Settings,
+  ShieldCheck,
+  ShoppingBag,
+  SlidersHorizontal,
+  Star,
+  Store,
+  Target,
+  Terminal,
+  TrendingUp,
+  User,
+  UserCheck,
+  Users,
+  WalletCards,
+  Workflow,
+  X,
+  Zap,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
 import { NotificationBell } from '@/features/crm/components/NotificationBell';
 import { useLeadAlerts } from '@/features/crm/hooks/useLeadAlerts';
+import { useQuery } from '@tanstack/react-query';
+import { stylemintCommerceApi } from '@/features/commerce-control/api/stylemint-commerce.api';
+import { applyTenantAccent } from '@/shared/lib/tenant-theme';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CHAT-FIRST NAVIGATION (new — primary rail shown to all users)
@@ -59,59 +67,79 @@ import { useLeadAlerts } from '@/features/crm/hooks/useLeadAlerts';
 // rendered inside the app — we just no longer list all 11 items in the rail.
 // ═══════════════════════════════════════════════════════════════════════════
 const primaryNav = [
-  { label: 'Chat',         href: '/dashboard/chat',                   icon: MessageSquare },
-  { label: 'Overview',     href: '/dashboard/home',                   icon: LayoutGrid },
-  { label: 'Bot flow',     href: ROUTES.dashboard.flows,              icon: GitBranch, badge: 'AI' },
+  { label: 'Control center', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
+  { label: 'Products & catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
+  { label: 'Content & media', href: ROUTES.dashboard.contentOperations, icon: Images },
+  { label: 'Orders', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
+  { label: 'Vendor operations', href: ROUTES.dashboard.vendorOperations, icon: Building2 },
+  { label: 'Seller finance', href: ROUTES.dashboard.sellerFinance, icon: WalletCards },
+  { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
+  { label: 'Commerce operations', href: ROUTES.dashboard.commerceOperations, icon: SlidersHorizontal },
+  { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
+  { label: 'Stores', href: ROUTES.dashboard.crmOrganizations, icon: Store },
+  { label: 'Support', href: ROUTES.dashboard.crmSupport, icon: LifeBuoy },
+  { label: 'Analytics', href: ROUTES.dashboard.crmAnalytics, icon: TrendingUp },
+];
+
+const botNav = [
+  { label: 'Chat', href: '/dashboard/chat', icon: MessageSquare },
+  { label: 'Overview', href: '/dashboard/home', icon: LayoutGrid },
+  { label: 'Bot flows', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'AI' },
   // { label: 'Bot Settings', href: ROUTES.dashboard.botSettings,        icon: Settings },
-  { label: 'Experiments',  href: ROUTES.dashboard.flowExperiments,    icon: FlaskConical },
-  { label: 'Agents',       href: ROUTES.dashboard.agents,             icon: Bot },
-  { label: 'Test preview', href: ROUTES.dashboard.testChannel,        icon: Terminal },
-  { label: 'Channels',     href: ROUTES.dashboard.channels,           icon: Phone },
-  { label: 'Business Catalog', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
+  { label: 'Experiments', href: ROUTES.dashboard.flowExperiments, icon: FlaskConical },
+  { label: 'Agents', href: ROUTES.dashboard.agents, icon: Bot },
+  { label: 'Test preview', href: ROUTES.dashboard.testChannel, icon: Terminal },
+  { label: 'Channels', href: ROUTES.dashboard.channels, icon: Phone },
+  { label: 'Business catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
 ];
 
 const settingsNav = [
-  { label: 'Team',     href: ROUTES.dashboard.team,     icon: Users },
-  { label: 'Settings', href: '/dashboard/settings',     icon: Settings },
+  { label: 'Team', href: ROUTES.dashboard.team, icon: Users },
+  { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
+// Stylemint client workspaces expose the commerce operating system only.
+// Legacy CRM and bot-builder routes remain available for platform engineers,
+// but are intentionally absent from the customer-facing shell.
+const SHOW_LEGACY_PLATFORM_TOOLS = true;
+
 const crmNav = [
-  { label: 'Leads',         href: ROUTES.dashboard.crmLeads,         icon: Users },
-  { label: 'Contacts',      href: ROUTES.dashboard.crmContacts,      icon: UserCheck },
-  { label: 'Duplicates',    href: ROUTES.dashboard.crmDedup,         icon: GitMerge },
-  { label: 'Deals',         href: ROUTES.dashboard.crmDeals,         icon: Briefcase },
-  { label: 'Pipelines',     href: '/dashboard/crm/pipelines',        icon: GitBranch },
-  { label: 'Approvals',    href: '/dashboard/crm/approvals',        icon: ShieldCheck },
-  { label: 'Organizations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
-  { label: 'Accounts',      href: ROUTES.dashboard.crmAccounts,      icon: Building },
-  { label: 'Nurture',       href: ROUTES.dashboard.crmNurture,       icon: Workflow },
-  { label: 'Campaigns',     href: ROUTES.dashboard.crmCampaigns,     icon: Megaphone },
-  { label: 'Analytics',     href: ROUTES.dashboard.crmAnalytics,     icon: TrendingUp },
-  { label: 'Support',       href: ROUTES.dashboard.crmSupport,       icon: LifeBuoy },
-  { label: 'Tasks',         href: ROUTES.dashboard.crmTasks,         icon: CheckSquare },
-  { label: 'Quotes',        href: ROUTES.dashboard.crmQuotes,        icon: FileText },
-  { label: 'Proposals',     href: ROUTES.dashboard.crmProposals,     icon: ClipboardList },
-  { label: 'Invoices',      href: ROUTES.dashboard.crmInvoices,      icon: Receipt },
+  { label: 'Leads', href: ROUTES.dashboard.crmLeads, icon: Users },
+  { label: 'Contacts', href: ROUTES.dashboard.crmContacts, icon: UserCheck },
+  { label: 'Doublons', href: ROUTES.dashboard.crmDedup, icon: GitMerge },
+  { label: 'Deals', href: ROUTES.dashboard.crmDeals, icon: Briefcase },
+  { label: 'Pipelines', href: '/dashboard/crm/pipelines', icon: GitBranch },
+  { label: 'Approbations', href: '/dashboard/crm/approvals', icon: ShieldCheck },
+  { label: 'Organisations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
+  { label: 'Accounts', href: ROUTES.dashboard.crmAccounts, icon: Building },
+  { label: 'Nurture', href: ROUTES.dashboard.crmNurture, icon: Workflow },
+  { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
+  { label: 'Analytics', href: ROUTES.dashboard.crmAnalytics, icon: TrendingUp },
+  { label: 'Support', href: ROUTES.dashboard.crmSupport, icon: LifeBuoy },
+  { label: 'Tasks', href: ROUTES.dashboard.crmTasks, icon: CheckSquare },
+  { label: 'Quotes', href: ROUTES.dashboard.crmQuotes, icon: FileText },
+  { label: 'Propositions', href: ROUTES.dashboard.crmProposals, icon: ClipboardList },
+  { label: 'Invoices', href: ROUTES.dashboard.crmInvoices, icon: Receipt },
   { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },
-  { label: 'Orders',        href: ROUTES.dashboard.crmOrders,        icon: Package },
-  { label: 'Meetings',      href: ROUTES.dashboard.crmMeetings,      icon: CalendarCheck },
-  { label: 'NPS',           href: ROUTES.dashboard.crmNps,           icon: Star },
-  { label: 'Time Tracking', href: ROUTES.dashboard.crmTimeTracking,  icon: Clock },
-  { label: 'Custom Fields', href: ROUTES.dashboard.crmCustomFields,  icon: SlidersHorizontal },
-  { label: 'Workflows',       href: ROUTES.dashboard.crmWorkflows,       icon: Zap },
-  { label: 'Campaigns',       href: '/dashboard/crm/workflow-campaigns', icon: Target },
-  { label: 'Meta Ads',      href: '/dashboard/crm/meta-ads',          icon: Facebook },
-  { label: 'Announcements', href: ROUTES.dashboard.crmAnnouncements,  icon: Newspaper },
-  { label: 'Process Workflows', href: ROUTES.dashboard.crmProcessTasks,      icon: ListChecks },
-  { label: 'Event Tracking',  href: ROUTES.dashboard.crmEventIngestion,     icon: Globe },
+  { label: 'Orders', href: ROUTES.dashboard.crmOrders, icon: Package },
+  { label: 'Meetings', href: ROUTES.dashboard.crmMeetings, icon: CalendarCheck },
+  { label: 'NPS', href: ROUTES.dashboard.crmNps, icon: Star },
+  { label: 'Suivi du temps', href: ROUTES.dashboard.crmTimeTracking, icon: Clock },
+  { label: 'Champs personnalises', href: ROUTES.dashboard.crmCustomFields, icon: SlidersHorizontal },
+  { label: 'Automatisations', href: ROUTES.dashboard.crmWorkflows, icon: Zap },
+  { label: 'Automated campaigns', href: '/dashboard/crm/workflow-campaigns', icon: Target },
+  { label: 'Publicites Meta', href: '/dashboard/crm/meta-ads', icon: Facebook },
+  { label: 'Annonces', href: ROUTES.dashboard.crmAnnouncements, icon: Newspaper },
+  { label: 'Processus', href: ROUTES.dashboard.crmProcessTasks, icon: ListChecks },
+  { label: 'Suivi des evenements', href: ROUTES.dashboard.crmEventIngestion, icon: Globe },
 ];
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───
 const primaryMobileTabs = [
-  { label: 'Chat',     href: '/dashboard/chat',            icon: MessageSquare },
-  { label: 'Home',     href: '/dashboard/home',            icon: LayoutGrid },
-  { label: 'Flow',     href: ROUTES.dashboard.flows,       icon: GitBranch },
-  { label: 'Test',     href: ROUTES.dashboard.testChannel, icon: Terminal },
+  { label: 'Home', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
+  { label: 'Products', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
+  { label: 'Orders', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
+  { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
 ];
 
 // ─── Mobile "More" sheet — reaches every legacy page so nothing is lost ───
@@ -119,21 +147,21 @@ const primaryMobileTabs = [
 // routes are currently commented out in routes.tsx. Re-add them here if you
 // uncomment the routes.
 const moreNav_build = [
-  { label: 'Conversation Map', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'AI' },
-  { label: 'Test Channel',     href: ROUTES.dashboard.testChannel, icon: Terminal },
+  { label: 'Carte des conversations', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'IA' },
+  { label: 'Canal de test', href: ROUTES.dashboard.testChannel, icon: Terminal },
   // { label: 'Setup Wizard',  href: ROUTES.dashboard.onboarding, icon: Rocket },
 ];
 
 const moreNav_configure = [
   // { label: 'Setup',         href: ROUTES.dashboard.setup, icon: LayoutGrid },
-  { label: 'Intents',       href: ROUTES.dashboard.intents, icon: Target },
-  { label: 'Agents',        href: ROUTES.dashboard.agents, icon: Bot },
-  { label: 'API Pipeline',  href: ROUTES.dashboard.apiConnection, icon: Plug },
-  { label: 'Catalog',       href: ROUTES.dashboard.catalog, icon: Package },
-  { label: 'Business Catalog', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
-  { label: 'Channels',      href: ROUTES.dashboard.channels, icon: Phone },
+  { label: 'Intentions', href: ROUTES.dashboard.intents, icon: Target },
+  { label: 'Agents', href: ROUTES.dashboard.agents, icon: Bot },
+  { label: 'Connexion API', href: ROUTES.dashboard.apiConnection, icon: Plug },
+  { label: 'Catalogue', href: ROUTES.dashboard.catalog, icon: Package },
+  { label: 'Business catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
+  { label: 'Canaux', href: ROUTES.dashboard.channels, icon: Phone },
   { label: 'Conversations', href: ROUTES.dashboard.conversations, icon: MessageSquare },
-  { label: 'Analytics',     href: ROUTES.dashboard.analytics, icon: BarChart3 },
+  { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: BarChart3 },
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -172,11 +200,18 @@ export function DashboardLayout() {
   const location = useLocation();
   const logout = useLogout();
   const { data: profile } = useProfile();
+  const { data: tenantBrand } = useQuery({
+    queryKey: ['commerce-tenant-settings'],
+    queryFn: stylemintCommerceApi.tenantSettings,
+    retry: false,
+  });
   const [menuOpen, setMenuOpen] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const [moreSheetOpen, setMoreSheetOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  useEffect(() => applyTenantAccent(tenantBrand?.accentColor), [tenantBrand?.accentColor]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -202,7 +237,13 @@ export function DashboardLayout() {
     }
   }, [moreSheetOpen]);
 
-  const profileData = profile as any;
+  const profileData = profile as unknown as {
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+    role?: number;
+    avatarUrl?: string | null;
+  } | undefined;
   const initials = profileData
     ? `${(profileData.firstName?.[0] || '').toUpperCase()}${(profileData.lastName?.[0] || '').toUpperCase()}`
     : 'U';
@@ -214,48 +255,60 @@ export function DashboardLayout() {
 
   const getPageTitle = () => {
     const path = location.pathname;
+    if (path.includes('/commerce-control')) return 'Stylemint Control Center';
+    if (path.includes('/stylemint/orders')) return 'Orders & Fulfilment';
+    if (path.includes('/stylemint/vendor')) return 'Vendor Operations';
+    if (path.includes('/stylemint/content')) return 'Content & Social Publishing';
+    if (path.includes('/stylemint/customers')) return 'Customers';
+    if (path.includes('/stylemint/finance')) return 'Seller Finance';
     if (path.includes('/chat')) return 'Chat';
-    if (path.includes('/home')) return 'Overview';
-    if (path.includes('/onboarding')) return 'Setup Wizard';
-    if (path.includes('/flows')) return 'AI Flow Builder';
-    if (path.includes('/test-channel')) return 'Simulator';
-    if (path.includes('/setup')) return 'Setup';
-    if (path.includes('/api-connection')) return 'API Pipeline';
-    if (path.includes('/business-catalog')) return 'Business Catalog';
-    if (path.includes('/catalog')) return 'Catalog';
+    if (path.includes('/home')) return 'Vue generale';
+    if (path.includes('/onboarding')) return 'Assistant de configuration';
+    if (path.includes('/flows')) return 'Concepteur de flux IA';
+    if (path.includes('/test-channel')) return 'Simulateur';
+    if (path.includes('/setup')) return 'Configuration';
+    if (path.includes('/api-connection')) return 'Connexion API';
+    if (path.includes('/business-catalog')) return 'Products & Catalogue';
+    if (path.includes('/catalog')) return 'Catalogue';
     if (path.includes('/intents')) return 'Intents';
-    if (path.includes('/channels')) return 'Channels';
+    if (path.includes('/channels')) return 'Canaux';
     if (path.includes('/conversations')) return 'Conversations';
     if (path.includes('/analytics')) return 'Analytics';
-    if (path.includes('/compliance')) return 'Compliance';
-    if (path.includes('/settings')) return 'Settings';
-    if (path.includes('/crm/dedup')) return 'Duplicate Contacts';
+    if (path.includes('/compliance')) return 'Conformite';
+    if (path.includes('/settings')) return 'Parametres';
+    if (path.includes('/crm/dedup')) return 'Contacts en double';
     if (path.includes('/crm/contacts')) return 'Contacts';
     if (path.includes('/crm/leads')) return 'Leads';
     if (path.includes('/crm/deals')) return 'Deals';
-    if (path.includes('/crm/organizations')) return 'Organizations';
+    if (path.includes('/crm/organizations')) return 'Stores';
     if (path.includes('/crm/accounts')) return 'Accounts';
-    if (path.includes('/crm/nurture')) return 'Nurture Sequences';
-    if (path.includes('/crm/campaigns')) return 'Campaigns';
-    if (path.includes('/crm/analytics')) return 'CRM Analytics';
-    if (path.includes('/crm/support')) return 'Support Cases';
+    if (path.includes('/crm/nurture')) return 'Nurture';
+    if (path.includes('/crm/campaigns')) return 'Promotions & Campaigns';
+    if (path.includes('/crm/analytics')) return 'Commerce Analytics';
+    if (path.includes('/crm/support')) return 'Customer Support';
     if (path.includes('/crm/tasks')) return 'Tasks';
     if (path.includes('/crm/quotes')) return 'Quotes';
-    if (path.includes('/crm/proposals')) return 'Proposals';
+    if (path.includes('/crm/proposals')) return 'Propositions';
     if (path.includes('/crm/invoices')) return 'Invoices';
     if (path.includes('/crm/subscriptions')) return 'Subscriptions';
     if (path.includes('/crm/orders')) return 'Orders';
     if (path.includes('/crm/meetings')) return 'Meetings';
-    if (path.includes('/crm/nps')) return 'NPS Surveys';
-    if (path.includes('/crm/time-tracking')) return 'Time Tracking';
-    if (path.includes('/crm/custom-fields')) return 'Custom Fields';
-    if (path.includes('/crm/workflows')) return 'Workflows';
-    if (path.includes('/flows/experiments')) return 'A/B Experiments';
-    return 'Dashboard';
+    if (path.includes('/crm/nps')) return 'Enquetes NPS';
+    if (path.includes('/crm/time-tracking')) return 'Suivi du temps';
+    if (path.includes('/crm/custom-fields')) return 'Champs personnalises';
+    if (path.includes('/crm/workflows')) return 'Automatisations';
+    if (path.includes('/flows/experiments')) return 'Experiences A/B';
+    return 'Tableau de bord';
   };
 
   const getPageIcon = () => {
     const path = location.pathname;
+    if (path.includes('/commerce-control')) return LayoutGrid;
+    if (path.includes('/stylemint/orders')) return ShoppingBag;
+    if (path.includes('/stylemint/vendor')) return Building2;
+    if (path.includes('/stylemint/content')) return Images;
+    if (path.includes('/stylemint/customers')) return Users;
+    if (path.includes('/stylemint/finance')) return WalletCards;
     if (path.includes('/chat')) return MessageSquare;
     if (path.includes('/home')) return LayoutGrid;
     if (path.includes('/flows')) return GitBranch;
@@ -284,7 +337,7 @@ export function DashboardLayout() {
 
   const PageIcon = getPageIcon();
 
-  const renderNavItem = (item: { label: string; href: string; icon: any; badge?: string; end?: boolean }) => {
+  const renderNavItem = (item: { label: string; href: string; icon: LucideIcon; badge?: string; end?: boolean }) => {
     const isActive = item.end
       ? location.pathname === item.href
       : location.pathname === item.href || location.pathname.startsWith(item.href + '/');
@@ -352,14 +405,18 @@ export function DashboardLayout() {
           }}
         >
           <div className="w-9 h-9 rounded-xl bg-[#050808] flex items-center justify-center p-0.5 shrink-0">
-            <img src="/Lead360logo/1.png" alt="Lead360" className="w-full h-full object-contain" />
+            <img
+              src={tenantBrand?.logoUrl || '/Lead360logo/1.png'}
+              alt={tenantBrand?.name || 'Lead360'}
+              className="w-full h-full object-contain"
+            />
           </div>
           {showExpanded && (
             <div className="min-w-0">
               <div className="text-sm font-extrabold text-text-primary tracking-tight leading-tight">
-                Lead360
+                {tenantBrand?.name || 'Kin Marche'}
               </div>
-              <div className="text-2xs text-text-muted">CRM & automation</div>
+              <div className="text-2xs text-text-muted">Stylemint Commerce OS</div>
             </div>
           )}
         </div>
@@ -389,19 +446,38 @@ export function DashboardLayout() {
           style={{ padding: showExpanded ? '8px 8px' : '8px 6px' }}
         >
           {/* ── Primary (chat-first rail) ── */}
-          {showExpanded && (
+          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
             <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-1">
               <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                 <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
               </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">Your Bot</span>
+              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
+                Commerce
+              </span>
             </div>
           )}
           {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />}
-          <div className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</div>
+          <div className="flex flex-col gap-0.5">
+            {primaryNav
+              .filter((item) => item.label !== 'Clients' || profileData?.role === 1)
+              .map(renderNavItem)}
+          </div>
+
+          {showExpanded && (
+            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
+              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
+                <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
+              </div>
+              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
+                Bot & IA
+              </span>
+            </div>
+          )}
+          {SHOW_LEGACY_PLATFORM_TOOLS && !showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
+          {SHOW_LEGACY_PLATFORM_TOOLS && <div className="flex flex-col gap-0.5">{botNav.map(renderNavItem)}</div>}
 
           {/* ── OLD: Build / Configure sections (commented for now) ─────────
-          {showExpanded && (
+          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
             <div className="text-[9px] font-bold text-text-muted uppercase tracking-[1.5px] px-3 pt-2 pb-1.5">
               Build
             </div>
@@ -427,8 +503,8 @@ export function DashboardLayout() {
               <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">CRM</span>
             </div>
           )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          <div className="flex flex-col gap-0.5">{crmNav.map(renderNavItem)}</div>
+          {SHOW_LEGACY_PLATFORM_TOOLS && !showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
+          {SHOW_LEGACY_PLATFORM_TOOLS && <div className="flex flex-col gap-0.5">{crmNav.map(renderNavItem)}</div>}
 
           {/* ── System / Settings ── */}
           {showExpanded && (
@@ -436,7 +512,9 @@ export function DashboardLayout() {
               <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                 <Settings className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
               </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">System</span>
+              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
+                Commerce settings
+              </span>
             </div>
           )}
           {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
@@ -516,7 +594,11 @@ export function DashboardLayout() {
           {/* Compact logo on mobile only — sidebar is hidden */}
           <div className="lg:hidden flex items-center shrink-0">
             <div className="w-8 h-8 rounded-lg bg-[#050808] flex items-center justify-center p-0.5">
-              <img src="/Lead360logo/1.png" alt="Lead360" className="w-full h-full object-contain" />
+              <img
+                src={tenantBrand?.logoUrl || '/Lead360logo/1.png'}
+                alt={tenantBrand?.name || 'Lead360'}
+                className="w-full h-full object-contain"
+              />
             </div>
           </div>
 
@@ -529,17 +611,18 @@ export function DashboardLayout() {
           <div className="ml-auto flex items-center gap-2 shrink-0">
             <NotificationBell />
             <button
-              onClick={() => navigate(ROUTES.dashboard.flows)}
+              onClick={() => navigate(ROUTES.dashboard.contentOperations)}
               className="hidden md:flex px-4 py-2 rounded-xl text-xs font-semibold border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-medium hover:bg-bg-elevated transition-all items-center gap-1.5"
             >
-              <Bot className="w-3.5 h-3.5" strokeWidth={1.8} /> AI Builder
+              <Images className="w-3.5 h-3.5" strokeWidth={1.8} /> Content studio
             </button>
             <button
-              aria-label="Deploy"
+              onClick={() => navigate(ROUTES.dashboard.commerceControl)}
+              aria-label="Review operations"
               className="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all flex items-center gap-1.5"
             >
               <Zap className="w-3.5 h-3.5" strokeWidth={2} />
-              <span className="hidden sm:inline">Deploy</span>
+              <span className="hidden sm:inline">Review operations</span>
             </button>
           </div>
         </header>
@@ -555,9 +638,10 @@ export function DashboardLayout() {
         className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#080A09] border-t border-border-subtle flex items-stretch h-16"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        {primaryMobileTabs.map((tab) => {
-          const isActive =
-            location.pathname === tab.href || location.pathname.startsWith(tab.href + '/');
+        {primaryMobileTabs
+          .filter((tab) => tab.label !== 'Clients' || profileData?.role === 1)
+          .map((tab) => {
+          const isActive = location.pathname === tab.href || location.pathname.startsWith(tab.href + '/');
           return (
             <NavLink
               key={tab.href}
@@ -566,9 +650,7 @@ export function DashboardLayout() {
                 isActive ? 'text-brand' : 'text-text-muted hover:text-text-secondary'
               }`}
             >
-              {isActive && (
-                <div className="absolute top-0 w-10 h-[2px] rounded-b-full bg-brand" />
-              )}
+              {isActive && <div className="absolute top-0 w-10 h-[2px] rounded-b-full bg-brand" />}
               <tab.icon className="w-[22px] h-[22px]" strokeWidth={isActive ? 2 : 1.6} />
               <span>{tab.label}</span>
             </NavLink>
@@ -596,7 +678,7 @@ export function DashboardLayout() {
         >
           {/* Sheet header */}
           <header className="h-14 flex items-center justify-between px-4 border-b border-border-subtle shrink-0">
-            <h2 className="text-sm font-extrabold text-text-primary tracking-tight">More</h2>
+            <h2 className="text-sm font-extrabold text-text-primary tracking-tight">Commerce tools</h2>
             <button
               type="button"
               onClick={() => setMoreSheetOpen(false)}
@@ -621,32 +703,38 @@ export function DashboardLayout() {
             </div>
 
             {/* Build section — items not already in bottom bar */}
-            <MoreSection title="Build">
+            {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="Build">
               {moreNav_build
                 .filter((i) => !PRIMARY_HREFS.has(i.href))
                 .map((item) => (
                   <MoreNavLink key={item.href} item={item} />
                 ))}
-            </MoreSection>
+            </MoreSection>}
 
             {/* Configure section — items not already in bottom bar */}
-            <MoreSection title="Configure">
+            {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="Configure">
               {moreNav_configure
                 .filter((i) => !PRIMARY_HREFS.has(i.href))
                 .map((item) => (
                   <MoreNavLink key={item.href} item={item} />
                 ))}
-            </MoreSection>
+            </MoreSection>}
+
+            {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="Bot & AI">
+              {botNav.map((item) => (
+                <MoreNavLink key={item.href} item={item} />
+              ))}
+            </MoreSection>}
 
             {/* CRM */}
-            <MoreSection title="CRM">
+            {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="CRM">
               {crmNav.map((item) => (
                 <MoreNavLink key={item.href} item={item} />
               ))}
-            </MoreSection>
+            </MoreSection>}
 
             {/* System */}
-            <MoreSection title="System">
+            <MoreSection title="Workspace">
               {settingsNav.map((item) => (
                 <MoreNavLink key={item.href} item={item} />
               ))}
@@ -661,7 +749,7 @@ export function DashboardLayout() {
               className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-danger hover:bg-danger-soft transition-all border border-border-subtle"
             >
               <LogOut className="w-4 h-4" strokeWidth={1.8} />
-              {logout.isPending ? 'Logging out...' : 'Log out'}
+              {logout.isPending ? 'Signing out…' : 'Sign out'}
             </button>
           </div>
         </div>
@@ -674,19 +762,13 @@ export function DashboardLayout() {
 function MoreSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-2 px-1">
-        {title}
-      </h3>
+      <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-2 px-1">{title}</h3>
       <div className="flex flex-col gap-1">{children}</div>
     </section>
   );
 }
 
-function MoreNavLink({
-  item,
-}: {
-  item: { label: string; href: string; icon: any; badge?: string };
-}) {
+function MoreNavLink({ item }: { item: { label: string; href: string; icon: LucideIcon; badge?: string } }) {
   return (
     <NavLink
       to={item.href}
@@ -700,10 +782,7 @@ function MoreNavLink({
     >
       {({ isActive }) => (
         <>
-          <item.icon
-            className={`w-5 h-5 shrink-0 ${isActive ? 'text-brand' : ''}`}
-            strokeWidth={1.6}
-          />
+          <item.icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-brand' : ''}`} strokeWidth={1.6} />
           <span className="text-sm flex-1">{item.label}</span>
           {item.badge && (
             <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-[rgba(167,139,250,0.1)] text-[#A78BFA]">

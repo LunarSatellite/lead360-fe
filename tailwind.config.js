@@ -19,7 +19,7 @@ export default {
         border: {
           subtle: '#14302A',
           medium: '#1C4132',
-          glow: 'rgba(0,217,138,0.18)',
+          glow: 'rgb(var(--brand-rgb) / 0.18)',
           success: 'rgba(16,185,129,0.15)',
         },
         text: {
@@ -28,10 +28,10 @@ export default {
           muted: '#7A9B8E',
         },
         brand: {
-          DEFAULT: '#00D98A',
-          light: '#00FFA3',
-          dark: '#00B368',
-          soft: 'rgba(0,217,138,0.08)',
+          DEFAULT: 'rgb(var(--brand-rgb) / <alpha-value>)',
+          light: 'rgb(var(--brand-light-rgb) / <alpha-value>)',
+          dark: 'rgb(var(--brand-dark-rgb) / <alpha-value>)',
+          soft: 'rgb(var(--brand-rgb) / 0.08)',
         },
         success: {
           DEFAULT: '#10B981',
@@ -72,13 +72,15 @@ export default {
       backgroundImage: {
         // ── Brand ramp (monochromatic green) ──────────────────
         // Use for: primary CTAs, progress bars, active bar indicators
-        'gradient-brand': 'linear-gradient(135deg, #00FFA3 0%, #00D98A 50%, #00B368 100%)',
+        'gradient-brand':
+          'linear-gradient(135deg, rgb(var(--brand-light-rgb)) 0%, rgb(var(--brand-rgb)) 50%, rgb(var(--brand-dark-rgb)) 100%)',
         // Horizontal shimmer variant — buttons that need the sweep animation
-        'gradient-brand-h': 'linear-gradient(105deg, #00c77a 0%, #00D98A 40%, #00FFA3 70%, #43ffb8 100%)',
+        'gradient-brand-h':
+          'linear-gradient(105deg, rgb(var(--brand-dark-rgb)) 0%, rgb(var(--brand-rgb)) 45%, rgb(var(--brand-light-rgb)) 100%)',
 
         // ── Analogous teal (green → cyan) ────────────────────
         // Use for: info banners, analytics/data widgets, secondary accent elements
-        'gradient-teal': 'linear-gradient(135deg, #00D98A 0%, #00B3C8 100%)',
+        'gradient-teal': 'linear-gradient(135deg, rgb(var(--brand-rgb)) 0%, #00B3C8 100%)',
 
         // ── Triadic violet (purple → indigo) ─────────────────
         // Use for: AI feature cards, flow-builder canvas accents, model badges
@@ -96,8 +98,8 @@ export default {
         // ── Radial orbs (background depth layers) ────────────
         // Use for: page-level background orbs behind content sections
         'orb-brand': 'radial-gradient(ellipse at center, rgba(0,217,138,0.14) 0%, transparent 65%)',
-        'orb-teal':  'radial-gradient(ellipse at center, rgba(0,179,200,0.10) 0%, transparent 65%)',
-        'orb-violet':'radial-gradient(ellipse at center, rgba(123,97,255,0.10) 0%, transparent 65%)',
+        'orb-teal': 'radial-gradient(ellipse at center, rgba(0,179,200,0.10) 0%, transparent 65%)',
+        'orb-violet': 'radial-gradient(ellipse at center, rgba(123,97,255,0.10) 0%, transparent 65%)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

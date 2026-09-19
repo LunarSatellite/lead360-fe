@@ -60,6 +60,13 @@ export const ROUTES = {
     intelRecordSignals: (targetKind: string, targetId: string) =>
       `/dashboard/intelligence-console/related-signals/${encodeURIComponent(targetKind)}/${encodeURIComponent(targetId)}`,
     intelAutonomousOperations: '/dashboard/intelligence-console/autonomous-operations',
+    // ── Retail decision twin — the operator-side twin (Define, Simulate,
+    //    Compare, Learn) over `v1/admin/retail-decision-twin`. Not to be
+    //    confused with `v1/vendor/store/digital-twin` (a dashboard field) or
+    //    `v1/vendor/digital-twin` (the vendor scenario runner, mobile-only).
+    decisionTwin: '/dashboard/decision-twin',
+    decisionTwinStudy: (studyId: string) =>
+      `/dashboard/decision-twin/studies/${encodeURIComponent(studyId)}`,
     // ── Chat-first primary surfaces (new) ──
     chat: '/dashboard/chat',
     home: '/dashboard/home',

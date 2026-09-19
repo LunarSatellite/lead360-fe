@@ -23,6 +23,7 @@ export const ROUTES = {
     operatorAccess: '/dashboard/stylemint/access',
     moderation: '/dashboard/stylemint/moderation',
     featureFlags: '/dashboard/stylemint/feature-flags',
+    couriers: '/dashboard/stylemint/couriers',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,

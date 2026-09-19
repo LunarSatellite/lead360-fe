@@ -113,6 +113,16 @@ export const router = createBrowserRouter([
       { path: 'agent-governance/actions/:id', lazy: () => import('@/features/agent-governance/pages/AgentActionRecordPage') },
       { path: 'agent-governance/emergency-stop', lazy: () => import('@/features/agent-governance/pages/AgentEmergencyStopPage') },
       { path: 'agent-governance/credentials', lazy: () => import('@/features/agent-governance/pages/AgentCredentialsPage') },
+      // ── Intelligence console — SuperAdmin read surfaces for Phase 4 ──
+      { path: 'intelligence-console/cockpit', lazy: () => import('@/features/intelligence-console/pages/ExecutiveCockpitPage') },
+      { path: 'intelligence-console/cockpit/decisions/:id', lazy: () => import('@/features/intelligence-console/pages/CockpitDecisionPage') },
+      { path: 'intelligence-console/ledger', lazy: () => import('@/features/intelligence-console/pages/DecisionLedgerPage') },
+      { path: 'intelligence-console/ledger/:decisionId', lazy: () => import('@/features/intelligence-console/pages/DecisionLedgerEntryPage') },
+      { path: 'intelligence-console/diagnosis', lazy: () => import('@/features/intelligence-console/pages/FailureDiagnosisPage') },
+      { path: 'intelligence-console/diagnosis/:fingerprint', lazy: () => import('@/features/intelligence-console/pages/DiagnosisFingerprintPage') },
+      { path: 'intelligence-console/related-signals', lazy: () => import('@/features/intelligence-console/pages/AuroraRelatePage') },
+      { path: 'intelligence-console/related-signals/:targetKind/:targetId', lazy: () => import('@/features/intelligence-console/pages/AuroraRecordPage') },
+      { path: 'intelligence-console/autonomous-operations', lazy: () => import('@/features/intelligence-console/pages/AutonomousOperationsPage') },
       // ── Chat-first primary surfaces (new) ──
       { path: 'chat', lazy: () => import('@/features/chat/pages/ChatPage') },
       { path: 'home', lazy: () => import('@/features/home/pages/HomePage') },

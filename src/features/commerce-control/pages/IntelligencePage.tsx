@@ -154,7 +154,7 @@ function ReportPanel({
         </div>
       ) : isEmptyReport(query.data) ? (
         <p className="mt-2 text-xs text-text-muted">
-          {emptyNote ?? 'Nothing has been recorded here yet.'}
+          {serverStatement(query.data) ?? emptyNote ?? 'Nothing has been recorded here yet.'}
         </p>
       ) : (
         <pre className="mt-2 max-h-[28rem] overflow-auto rounded-sm border-thin border-border-subtle bg-bg-input p-2.5 font-mono text-[11px] leading-relaxed text-text-secondary">
@@ -165,16 +165,52 @@ function ReportPanel({
   );
 }
 
-/** An empty array, or an object whose every value is empty, reads better as a sentence. */
-function isEmptyReport(data: unknown): boolean {
+/**
+ * An empty array, or an object whose every value is empty, reads better as a
+ * sentence.
+ *
+ * The arrays are the payload; scalars beside them describe the *query*, not the
+ * result. A paged response carries `pageSize: 25` and `hasMore: false` whether
+ * or not it found anything, and an incrementality readout carries its minimum
+ * and its horizon the same way. Treating those as content is what put a raw
+ * JSON dump on screen where a written sentence belonged: `values.every(...)`
+ * went false the moment any scalar sat beside the empty array, so the decision
+ * twin and the cart-offer readout both rendered as developer output.
+ *
+ * So when a response contains arrays at all, they decide. Only a response with
+ * no array anywhere falls back to the older, stricter rule.
+ */
+export function isEmptyReport(data: unknown): boolean {
   if (data == null) return true;
   if (Array.isArray(data)) return data.length === 0;
   if (typeof data === 'object') {
     const values = Object.values(data as Report);
     if (values.length === 0) return true;
+
+    const collections = values.filter(Array.isArray) as unknown[][];
+    if (collections.length > 0) return collections.every((c) => c.length === 0);
+
     return values.every((v) => v == null || (Array.isArray(v) && v.length === 0));
   }
   return false;
+}
+
+/**
+ * The server's own words for why a report is empty, when it supplies them.
+ *
+ * These surfaces were deliberately written to explain an absence rather than
+ * show a zero - "That is an absence of measurement, not a result" is the
+ * server's sentence, not ours. Falling straight through to a generic note
+ * would throw that away and say something weaker in its place.
+ */
+export function serverStatement(data: unknown): string | null {
+  if (data == null || typeof data !== 'object' || Array.isArray(data)) return null;
+  const record = data as Record<string, unknown>;
+  for (const key of ['statement', 'summary', 'note', 'explanation', 'reason']) {
+    const value = record[key];
+    if (typeof value === 'string' && value.trim().length > 0) return value;
+  }
+  return null;
 }
 
 function CockpitTab({ days }: { days: number }) {

@@ -71,6 +71,10 @@ import type {
   FlowExperimentCreateRequest,
   FlowExperimentUpdateRequest,
   ExperimentVariantKind,
+  ActivityEventDto,
+  ActivityLogRequest,
+  DealStrategyDto,
+  DealTimelineDto,
 } from '../types/crm.types';
 
 const BASE = '/v1/crm';

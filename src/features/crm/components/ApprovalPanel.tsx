@@ -4,7 +4,7 @@ import {
   useApprovalForEntity, useSubmitApproval, useApproveRequest,
   useRejectRequest, useCancelApproval,
 } from '../api/crm.queries';
-import type { CrmApprovalSummaryDto, CrmSubmitApprovalRequest } from '../types/crm.types';
+import type {  CrmSubmitApprovalRequest } from '../types/crm.types';
 import {
   ApprovalEntityType, ApprovalStatus,
   APPROVAL_STATUS_LABELS, APPROVAL_STATUS_COLORS,
@@ -102,7 +102,7 @@ function StatusBadge({ status }: { status: ApprovalStatus }) {
 
 export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
   const { data: raw, isLoading } = useApprovalForEntity(entityType, entityId);
-  const approval = raw as unknown as CrmApprovalSummaryDto | null | undefined;
+  const approval = raw;
   const submit = useSubmitApproval();
   const cancel = useCancelApproval();
   const [reviewMode, setReviewMode] = useState<'approve' | 'reject' | null>(null);

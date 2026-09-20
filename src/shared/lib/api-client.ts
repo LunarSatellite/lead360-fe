@@ -1,6 +1,40 @@
-import axios, { type InternalAxiosRequestConfig } from 'axios';
+import axios, {
+  type AxiosInstance,
+  type AxiosRequestConfig,
+  type InternalAxiosRequestConfig,
+} from 'axios';
 import { env } from '@/shared/config/env';
 import type { ServiceResult } from '@/shared/types/common.types';
+
+/**
+ * The response interceptor below **unwraps** every response: it returns
+ * `ServiceResult.data` for enveloped payloads and `response.data` for plain
+ * ones. It never resolves to an `AxiosResponse`.
+ *
+ * axios' own types cannot express that, so `apiClient` is declared with this
+ * interface rather than `AxiosInstance`: `apiClient.get<T>(...)` resolves to
+ * `T`, which is what actually arrives at runtime.
+ *
+ * This is the single place that models that contract. Call sites use the
+ * resolved value directly — they must never reach for `.data` on it (that
+ * property does not exist at runtime) and never cast around it.
+ */
+export interface UnwrappedAxiosInstance
+  extends Omit<
+    AxiosInstance,
+    'request' | 'get' | 'delete' | 'head' | 'options' | 'post' | 'put' | 'patch'
+  > {
+  <T = unknown>(config: AxiosRequestConfig): Promise<T>;
+  <T = unknown>(url: string, config?: AxiosRequestConfig): Promise<T>;
+  request<T = unknown, D = unknown>(config: AxiosRequestConfig<D>): Promise<T>;
+  get<T = unknown, D = unknown>(url: string, config?: AxiosRequestConfig<D>): Promise<T>;
+  delete<T = unknown, D = unknown>(url: string, config?: AxiosRequestConfig<D>): Promise<T>;
+  head<T = unknown, D = unknown>(url: string, config?: AxiosRequestConfig<D>): Promise<T>;
+  options<T = unknown, D = unknown>(url: string, config?: AxiosRequestConfig<D>): Promise<T>;
+  post<T = unknown, D = unknown>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T>;
+  put<T = unknown, D = unknown>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T>;
+  patch<T = unknown, D = unknown>(url: string, data?: D, config?: AxiosRequestConfig<D>): Promise<T>;
+}
 
 export class ApiError extends Error {
   constructor(
@@ -14,13 +48,15 @@ export class ApiError extends Error {
   }
 }
 
-export const apiClient = axios.create({
+// Built as a plain AxiosInstance so the interceptors keep their real axios
+// types; re-declared as UnwrappedAxiosInstance for consumers at the bottom.
+const axiosInstance = axios.create({
   baseURL: env.apiBaseUrl,
   timeout: 120_000,
   headers: { 'Content-Type': 'application/json' },
 });
 
-apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem('omniflow_token');
   const tenantId = localStorage.getItem('omniflow_tenant_id');
   if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -93,7 +129,7 @@ export async function tryRefreshToken(): Promise<string | null> {
   }
 }
 
-apiClient.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => {
     const data = response.data;
 
@@ -136,7 +172,7 @@ apiClient.interceptors.response.use(
           return new Promise((resolve, reject) => {
             subscribeTokenRefresh((newToken: string) => {
               originalRequest.headers.Authorization = `Bearer ${newToken}`;
-              resolve(apiClient(originalRequest));
+              resolve(axiosInstance(originalRequest));
             });
             // If refresh ultimately fails, the redirect below will fire
             setTimeout(() => reject(new ApiError('Session expired', undefined, undefined, 401)), 15_000);
@@ -153,7 +189,7 @@ apiClient.interceptors.response.use(
           onTokenRefreshed(newToken);
           isRefreshing = false;
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
-          return apiClient(originalRequest);
+          return axiosInstance(originalRequest);
         }
 
         // Refresh failed — reject all queued requests, clear session, redirect
@@ -192,3 +228,5 @@ apiClient.interceptors.response.use(
     throw new ApiError(error instanceof Error ? error.message : 'Unknown error');
   },
 );
+
+export const apiClient = axiosInstance as unknown as UnwrappedAxiosInstance;

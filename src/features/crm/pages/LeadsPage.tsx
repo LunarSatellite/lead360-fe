@@ -18,9 +18,7 @@ import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead } from '../api
 import { CsvToolbar } from '../components/CsvToolbar';
 import type {
   LeadSummaryDto,
-  LeadStatsDto,
   LeadFilter,
-  PagedResult,
   CreateManualLeadRequest,
 } from '../types/crm.types';
 import {
@@ -126,8 +124,8 @@ export function Component() {
   const { data: rawLeads, isLoading: leadsLoading } = useLeads(filter);
   const { data: rawStats, isLoading: statsLoading } = useLeadStats();
 
-  const pagedResult = rawLeads as unknown as PagedResult<LeadSummaryDto> | undefined;
-  const stats       = rawStats as unknown as LeadStatsDto | undefined;
+  const pagedResult = rawLeads;
+  const stats       = rawStats;
 
   const leads      = pagedResult?.items ?? [];
   const totalCount = pagedResult?.totalCount ?? 0;

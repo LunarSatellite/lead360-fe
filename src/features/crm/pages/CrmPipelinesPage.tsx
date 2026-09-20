@@ -126,7 +126,7 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
 
 function StageGateList({ stageId }: { stageId: string }) {
   const { data: rawGates, isLoading } = useStageGates(stageId);
-  const gates = (rawGates as unknown as CrmStageGateSummaryDto[] | undefined) ?? [];
+  const gates = rawGates ?? [];
   const deleteGate = useDeleteStageGate();
   const [showAdd, setShowAdd] = useState(false);
 
@@ -183,7 +183,7 @@ function StageGateList({ stageId }: { stageId: string }) {
 
 function StageGateConfigPanel({ pipelineId }: { pipelineId: string }) {
   const { data: rawStages, isLoading } = usePipelineStages(pipelineId);
-  const stages = (rawStages as unknown as CrmDealStageSummaryDto[] | undefined) ?? [];
+  const stages = rawStages ?? [];
   const [expandedStageId, setExpandedStageId] = useState<string | null>(null);
 
   const toggle = (id: string) => setExpandedStageId((prev) => (prev === id ? null : id));
@@ -440,7 +440,7 @@ export function Component() {
   const [showCreate, setShowCreate] = useState(false);
   const [expandedPipelineId, setExpandedPipelineId] = useState<string | null>(null);
   const { data: rawPipelines, isLoading } = usePipelines();
-  const pipelines = (rawPipelines as unknown as CrmPipelineSummaryDto[] | undefined) ?? [];
+  const pipelines = rawPipelines ?? [];
 
   const grouped = pipelines.reduce<Record<string, CrmPipelineSummaryDto[]>>((acc, p) => {
     const key = p.dealType != null ? (DEAL_TYPE_LABELS[p.dealType] ?? 'Custom') : 'Custom';

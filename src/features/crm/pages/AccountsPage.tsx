@@ -13,7 +13,7 @@ import {
 import type {
   CrmAccountFilter, CrmAccountSummaryDto, CrmAccountDetailDto,
   CrmAccountCreateRequest, CrmAccountUpdateRequest,
-  CrmAccountContactDto, PagedResult, CrmContactSummaryDto,
+  CrmAccountContactDto,  CrmContactSummaryDto,
 } from '../types/crm.types';
 import {
   CrmAccountStatus, CrmAccountTier, CrmAccountContactRole,
@@ -99,6 +99,9 @@ function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
     currency: d.currency,
     renewalDate: d.renewalDate ? d.renewalDate.slice(0, 10) : '',
     notes: d.notes ?? '',
+    // Was omitted entirely, so opening an account for editing reset the
+    // organization picker to "none" and saving unlinked the account.
+    organizationId: d.organizationId ?? '',
   };
 }
 
@@ -194,12 +197,12 @@ function ContactsPanel({ accountId }: { accountId: string }) {
   const [showAdd, setShowAdd] = useState(false);
 
   const { data: rawLinks } = useAccountContacts(accountId);
-  const links = rawLinks as unknown as CrmAccountContactDto[] | undefined;
+  const links = rawLinks;
 
   const { data: rawSearch } = useContacts(
     showAdd && addSearch.length >= 2 ? { search: addSearch, pageSize: 6 } : {},
   );
-  const searchResults = rawSearch as unknown as PagedResult<CrmContactSummaryDto> | undefined;
+  const searchResults = rawSearch;
 
   const addContact = useAddAccountContact();
   const removeContact = useRemoveAccountContact();
@@ -333,7 +336,7 @@ function AccountDetailPanel({
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { data: raw, isLoading } = useAccountById(accountId);
-  const account = raw as unknown as CrmAccountDetailDto | undefined;
+  const account = raw;
 
   const updateAccount = useUpdateAccount();
   const deleteAccount = useDeleteAccount();
@@ -491,7 +494,7 @@ export function Component() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { data: raw, isLoading } = useAccounts(filter);
-  const data = raw as unknown as PagedResult<CrmAccountSummaryDto> | undefined;
+  const data = raw;
 
   const createAccount = useCreateAccount();
 

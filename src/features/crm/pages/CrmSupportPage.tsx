@@ -8,7 +8,7 @@ import {
 } from '../api/crm.queries';
 import type {
   CrmSupportCaseSummaryDto, CrmSupportCaseCreateRequest, CrmSupportCaseFilter,
-  CrmSupportMessageDto, CrmSlaPolicySummaryDto, CrmSlaPolicyCreateRequest, PagedResult,
+  CrmSupportMessageDto, CrmSlaPolicySummaryDto, CrmSlaPolicyCreateRequest, 
 } from '../types/crm.types';
 import {
   CrmSupportCaseStatus, CrmSupportCasePriority,
@@ -232,7 +232,7 @@ export function Component() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { data: raw, isLoading } = useSupportCases(filter);
-  const data = (raw as unknown as PagedResult<CrmSupportCaseSummaryDto> | undefined);
+  const data = raw;
   const items: CrmSupportCaseSummaryDto[] = (raw as any)?.items ?? [];
 
   const createCase = useCreateSupportCase();

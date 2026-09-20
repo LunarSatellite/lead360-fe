@@ -86,40 +86,34 @@ export const chatApi = {
   getQuickStarts: (): QuickStart[] => QUICK_STARTS,
 
   // ─── Sessions ────────────────────────────────────────────────
-  // Note on return types: apiClient's response interceptor unwraps any
-  // ServiceResult envelope and returns the raw payload. Axios's default
-  // typing claims AxiosResponse<T> (so callers would write `res.data`),
-  // but at runtime callers receive `T` directly. Each method's return
-  // type below is annotated to reflect the runtime shape, not axios's
-  // default — without this, `await chatApi.createSession(...)` would
-  // typecheck as AxiosResponse<ChatSessionDto> and the `.id` access
-  // would compile against a property that doesn't exist at runtime.
+  // apiClient unwraps the ServiceResult envelope in its response interceptor
+  // and is typed accordingly (see `UnwrappedAxiosInstance` in
+  // shared/lib/api-client.ts), so `apiClient.get<T>()` already resolves to
+  // `T` — no casts and no `.data` access needed here.
 
   // GET /api/v1/chat/sessions → ChatSessionDto[]
   listSessions: (): Promise<ChatSessionDto[]> =>
-    apiClient.get<ChatSessionDto[]>('/v1/chat/sessions') as unknown as Promise<ChatSessionDto[]>,
+    apiClient.get<ChatSessionDto[]>('/v1/chat/sessions'),
 
   // GET /api/v1/chat/sessions/{id} → ChatSessionDetailDto (session + full thread)
   getSession: (id: string): Promise<ChatSessionDetailDto> =>
     apiClient.get<ChatSessionDetailDto>(
       `/v1/chat/sessions/${id}`,
-    ) as unknown as Promise<ChatSessionDetailDto>,
+    ),
 
   // POST /api/v1/chat/sessions → ChatSessionDto (200)
   createSession: (data: CreateSessionRequest): Promise<ChatSessionDto> =>
-    apiClient.post<ChatSessionDto>('/v1/chat/sessions', data) as unknown as Promise<ChatSessionDto>,
+    apiClient.post<ChatSessionDto>('/v1/chat/sessions', data),
 
   // DELETE /api/v1/chat/sessions/{id} → void
   archiveSession: (id: string): Promise<void> =>
-    apiClient.delete<void>(`/v1/chat/sessions/${id}`) as unknown as Promise<void>,
+    apiClient.delete<void>(`/v1/chat/sessions/${id}`),
 
   // ─── Messages ────────────────────────────────────────────────
 
   // GET /api/v1/chat/sessions/{id}/messages → ChatMessageDto[]
   listMessages: (sessionId: string): Promise<ChatMessageDto[]> =>
-    apiClient.get<ChatMessageDto[]>(`/v1/chat/sessions/${sessionId}/messages`) as unknown as Promise<
-      ChatMessageDto[]
-    >,
+    apiClient.get<ChatMessageDto[]>(`/v1/chat/sessions/${sessionId}/messages`),
 
   // POST /api/v1/chat/sessions/{id}/messages → ChatMessageDto
   // Non-streaming send. Used as a fallback when SSE isn't available.
@@ -127,7 +121,7 @@ export const chatApi = {
     apiClient.post<ChatMessageDto>(
       `/v1/chat/sessions/${sessionId}/messages`,
       data,
-    ) as unknown as Promise<ChatMessageDto>,
+    ),
 
   // ─── Onboarding accelerator ──────────────────────────────────
   // POST /api/v1/chat/sessions/{id}/documents — multipart upload of a
@@ -159,7 +153,7 @@ export const chatApi = {
       // undefined here removes the inherited default; axios then lets
       // the browser fill in the proper multipart header with boundary.
       headers: { 'Content-Type': undefined },
-    }) as unknown as Promise<DocumentUploadResultDto>;
+    });
   },
 
   // POST /api/v1/chat/sessions/{id}/messages/stream → text/event-stream
@@ -194,7 +188,6 @@ export const chatApi = {
     if (!res.ok || !res.body) {
       throw new Error(`Stream failed: ${res.status} ${res.statusText || 'unknown'}`);
     }
-    console.log('response', res);
     const reader = res.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
@@ -292,7 +285,7 @@ export const chatApi = {
   // reversible. Always show `summary` to the user; the backend writes it
   // to be user-facing.
   undoLastChange: (sessionId: string): Promise<UndoResultDto> =>
-    apiClient.post<UndoResultDto>(`/v1/chat/sessions/${sessionId}/undo`) as unknown as Promise<UndoResultDto>,
+    apiClient.post<UndoResultDto>(`/v1/chat/sessions/${sessionId}/undo`),
 
   // ─── Tools (optional discoverability) ─────────────────────────
   // GET /api/v1/chat/tools → ToolDescriptorDto[]
@@ -300,7 +293,7 @@ export const chatApi = {
   // common tools as chips in the composer if you want; the LLM picks tools
   // from natural language regardless of what chips you show.
   listTools: (): Promise<ToolDescriptorDto[]> =>
-    apiClient.get<ToolDescriptorDto[]>('/v1/chat/tools') as unknown as Promise<ToolDescriptorDto[]>,
+    apiClient.get<ToolDescriptorDto[]>('/v1/chat/tools'),
 
   // ─── Activity feed (multi-user tenants) ───────────────────────
   // GET /api/v1/chat/activity?limit=&sessionId=&userId=
@@ -319,7 +312,7 @@ export const chatApi = {
     const query = search.toString();
     return apiClient.get<ChatActivityItemDto[]>(
       `/v1/chat/activity${query ? `?${query}` : ''}`,
-    ) as unknown as Promise<ChatActivityItemDto[]>;
+    );
   },
 
 };

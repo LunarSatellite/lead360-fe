@@ -142,7 +142,7 @@ function CandidateCard({
 
 export function Component() {
   const { data: raw, isLoading } = useDedupPending();
-  const candidates = (raw as unknown as CrmDedupCandidateDto[]) ?? [];
+  const candidates = raw ?? [];
   const pending = candidates.filter(c => c.status === 1);
 
   const resolve = useResolveDedup();

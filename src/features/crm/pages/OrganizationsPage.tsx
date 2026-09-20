@@ -11,7 +11,7 @@ import {
 import type {
   CrmOrganizationFilter, CrmOrganizationSummaryDto,
   CrmOrganizationCreateRequest, CrmOrganizationUpdateRequest,
-  CrmOrganizationDetailDto, PagedResult,
+  CrmOrganizationDetailDto, 
 } from '../types/crm.types';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -180,7 +180,7 @@ function OrgDetailPanel({
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { data: raw, isLoading } = useOrganizationById(orgId);
-  const org = raw as unknown as CrmOrganizationDetailDto | undefined;
+  const org = raw;
 
   const updateOrg = useUpdateOrganization();
   const deleteOrg = useDeleteOrganization();
@@ -313,7 +313,7 @@ export function Component() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { data: raw, isLoading } = useOrganizations(filter);
-  const data = raw as unknown as PagedResult<CrmOrganizationSummaryDto> | undefined;
+  const data = raw;
 
   const createOrg = useCreateOrganization();
 

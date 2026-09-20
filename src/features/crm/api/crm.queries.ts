@@ -6,7 +6,6 @@ import type {
   LeadStage,
   NurtureSequenceCreateRequest,
   NurtureSequenceUpdateRequest,
-  NurtureEnrollmentDto,
   LeadCampaignCreateRequest,
   LeadSegmentFilter,
   CrmContactFilter,
@@ -37,6 +36,7 @@ import type {
    ExperimentVariantKind,
    DealStrategyDto,
    ActivityLogRequest,
+   CsvImportResultDto,
 } from '../types/crm.types';
 
 // ─── Query key constants ──────────────────────────────────────────────────────
@@ -348,7 +348,6 @@ export function useLeadEnrollments(leadId: string) {
     queryKey: CRM_KEYS.leadEnrollments(leadId),
     queryFn: () => crmApi.getLeadEnrollments(leadId),
     enabled: !!leadId,
-    select: (data) => data as unknown as NurtureEnrollmentDto[],
   });
 }
 
@@ -641,7 +640,7 @@ export function useCreateStageGate() {
 export function useUpdateStageGate() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ gateId, stageId, data }: { gateId: string; stageId: string; data: import('../types/crm.types').CrmStageGateUpdateRequest }) =>
+    mutationFn: ({ gateId, data }: { gateId: string; stageId: string; data: import('../types/crm.types').CrmStageGateUpdateRequest }) =>
       crmApi.updateStageGate(gateId, data),
     onSuccess: (_, { stageId }) => {
       queryClient.invalidateQueries({ queryKey: CRM_KEYS.stageGates(stageId) });
@@ -654,7 +653,7 @@ export function useUpdateStageGate() {
 export function useDeleteStageGate() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ gateId, stageId }: { gateId: string; stageId: string }) =>
+    mutationFn: ({ gateId }: { gateId: string; stageId: string }) =>
       crmApi.deleteStageGate(gateId),
     onSuccess: (_, { stageId }) => {
       queryClient.invalidateQueries({ queryKey: CRM_KEYS.stageGates(stageId) });
@@ -1747,7 +1746,7 @@ export function useUpdateMeeting() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: { status?: number; notes?: string } }) => crmApi.updateMeeting(id, data),
-    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.meetingById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.meetings() }); toast.success('Meeting updated.'); },
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.meetingById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.meetings() }); toast.success('Meeting updated.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
@@ -2212,7 +2211,7 @@ export function useUpdateCustomFieldDefinition() {
 export function useDeleteCustomFieldDefinition() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, entityType }: { id: string; entityType: number }) =>
+    mutationFn: ({ id }: { id: string; entityType: number }) =>
       crmApi.deleteCustomFieldDefinition(id),
     onSuccess: (_r, vars) => {
       qc.invalidateQueries({ queryKey: ['crm', 'custom-fields', vars.entityType] });
@@ -2245,13 +2244,27 @@ export function useSetCustomFieldValues(entityType: number) {
 
 // ── CSV Import ────────────────────────────────────────────────────────────────
 
+// Every CSV import reports the same way: a success toast only when rows
+// actually landed, and an error toast naming the first failing row. Contacts
+// and leads previously read `succeeded` off an untyped value with a `?? 0`
+// fallback, so an import where every row failed still reported success.
+function reportCsvImport(result: CsvImportResultDto, entityLabel: string) {
+  if (result.succeeded > 0) {
+    toast.success(`Imported ${result.succeeded} of ${result.total} ${entityLabel}.`);
+  }
+  if (result.failed > 0) {
+    const msg = result.errors?.[0]?.error ?? `${result.failed} rows failed`;
+    toast.error(result.succeeded === 0 ? msg : `${result.failed} rows skipped: ${msg}`);
+  }
+}
+
 export function useImportContactsCsv() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (file: File) => crmApi.importContactsCsv(file),
     onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: ['crm', 'contacts'] });
-      toast.success(`Imported ${(res as any)?.succeeded ?? 0} contacts.`);
+      reportCsvImport(res, 'contacts');
     },
     onError: (err: any) => toast.error(err?.message || 'Import failed.'),
   });
@@ -2263,7 +2276,7 @@ export function useImportLeadsCsv() {
     mutationFn: (file: File) => crmApi.importLeadsCsv(file),
     onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: ['crm', 'leads'] });
-      toast.success(`Imported ${(res as any)?.succeeded ?? 0} leads.`);
+      reportCsvImport(res, 'leads');
     },
     onError: (err: any) => toast.error(err?.message || 'Import failed.'),
   });
@@ -2275,12 +2288,7 @@ export function useImportDealsCsv() {
     mutationFn: (file: File) => crmApi.importDealsCsv(file),
     onSuccess: (res) => {
       qc.invalidateQueries({ queryKey: ['crm', 'deals'] });
-      const r = res as unknown as import('../types/crm.types').CsvImportResultDto;
-      if (r.succeeded > 0) toast.success(`Imported ${r.succeeded} of ${r.total} deals.`);
-      if (r.failed > 0) {
-        const msg = r.errors?.[0]?.error ?? `${r.failed} rows failed`;
-        toast.error(r.succeeded === 0 ? msg : `${r.failed} rows skipped: ${msg}`);
-      }
+      reportCsvImport(res, 'deals');
     },
     onError: (err: any) => toast.error(err?.message || 'Import failed.'),
   });
@@ -2318,7 +2326,7 @@ export function useScanDedup() {
     mutationFn: () => crmApi.scanDedup(),
     onSuccess: (count) => {
       qc.invalidateQueries({ queryKey: CRM_KEYS.dedup() });
-      toast.success(`Scan complete — ${count as unknown as number} new candidate pairs found`);
+      toast.success(`Scan complete — ${count} new candidate pairs found`);
     },
     onError: () => toast.error('Scan failed'),
   });

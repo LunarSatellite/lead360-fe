@@ -4,8 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, ClipboardList, Phone, Video, MessageSquare, Save, Users, Target, Sword, TrendingUp, GitBranch, Sparkles, RefreshCw, Building2, Pencil, X } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useDealById, useTimeline, useLogActivity, useDealStrategy, useUpdateDealStrategy, useMoveDealStage, useDealStages, useRefreshDealSummary, useUpdateDeal } from '../api/crm.queries';
-import type { CrmDealDetailDto, CrmDealUpdateRequest } from '../types/crm.types';
-import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS, CrmActivityEventKind, CrmActivityEntityKind } from '../types/crm.types';
+import type {  CrmDealUpdateRequest } from '../types/crm.types';
+import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS } from '../types/crm.types';
 import { formatDistanceToNow, format } from 'date-fns';
 import { DealGateChecklist } from '../components/DealGateChecklist';
 import { ApprovalPanel } from '../components/ApprovalPanel';
@@ -16,7 +16,7 @@ export function Component() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: raw, isLoading } = useDealById(id);
-  const deal = raw as unknown as CrmDealDetailDto | undefined;
+  const deal = raw;
 
   // Timeline
   const { data: timelineRaw } = useTimeline(2, id ?? '');
@@ -28,7 +28,7 @@ export function Component() {
   // Stage change
   const moveStage = useMoveDealStage();
   const { data: stagesRaw } = useDealStages(deal?.pipelineId ? { pipelineId: deal.pipelineId } : undefined);
-  const stages = (stagesRaw as any[]) ?? [];
+  const stages = stagesRaw ?? [];
 
   // AI Summary
   const refreshSummary = useRefreshDealSummary();
@@ -169,7 +169,7 @@ export function Component() {
                 disabled={moveStage.isPending}
                 className="bg-bg-elevated text-text-secondary text-sm border border-border-subtle rounded-lg px-2 py-1 outline-none cursor-pointer hover:text-text-primary focus:border-border-glow disabled:opacity-50"
               >
-                {stages.map((s: any) => (
+                {stages.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
@@ -212,7 +212,7 @@ export function Component() {
             </div>
             <button
               onClick={() => id && refreshSummary.mutate(id, {
-                onSuccess: (data) => setAiSummary(data as unknown as CrmDealAiSummaryDto),
+                onSuccess: (data) => setAiSummary(data),
               })}
               disabled={refreshSummary.isPending}
               className="flex items-center gap-1 text-2xs text-text-muted hover:text-brand transition-colors disabled:opacity-50"

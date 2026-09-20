@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SlidersHorizontal, Plus, Trash2, Loader2, PencilLine, Check, X } from 'lucide-react';
+import { SlidersHorizontal, Plus, Trash2, Loader2, Check, X } from 'lucide-react';
 import {
   useCustomFieldDefinitions,
   useCreateCustomFieldDefinition,
@@ -23,7 +23,7 @@ const ENTITY_TABS = [
 
 // ── Add Field Form ────────────────────────────────────────────────────────────
 
-function AddFieldForm({ entityType, onDone }: { entityType: number; onDone: () => void }) {
+function AddFieldForm({ entityType, onDone }: { entityType: CrmEntityType; onDone: () => void }) {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [fieldType, setFieldType] = useState<CustomFieldType>(CustomFieldType.Text);
@@ -101,7 +101,7 @@ function AddFieldForm({ entityType, onDone }: { entityType: number; onDone: () =
 
 // ── Field Row ─────────────────────────────────────────────────────────────────
 
-function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; entityType: number }) {
+function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; entityType: CrmEntityType }) {
   const [deleting, setDeleting] = useState(false);
   const [toggling, setToggling] = useState(false);
   const deleteField = useDeleteCustomFieldDefinition();
@@ -169,7 +169,7 @@ function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; enti
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export function Component() {
-  const [activeEntity, setActiveEntity] = useState<number>(CrmEntityType.Contact);
+  const [activeEntity, setActiveEntity] = useState<CrmEntityType>(CrmEntityType.Contact);
   const [showAdd, setShowAdd] = useState(false);
 
   const { data: fields, isLoading } = useCustomFieldDefinitions(activeEntity);

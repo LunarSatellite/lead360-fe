@@ -689,6 +689,17 @@ export interface OperationMonitorPage {
   outcomeSource: string;
 }
 
+/**
+ * Pausing one action for a stated span and a stated reason. Never open-ended: a window with no
+ * end is an action switched off, which is a different decision and is not made here.
+ */
+export interface DeclareMaintenanceWindowBody {
+  actionKey: string;
+  startsUtc: string;
+  endsUtc: string;
+  reason: string;
+}
+
 export interface DeclareExpectationBody {
   measureKey: string;
   measureUnit: string;

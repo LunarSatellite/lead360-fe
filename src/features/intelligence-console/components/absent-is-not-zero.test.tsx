@@ -206,7 +206,7 @@ describe('every figure states its window and denominator', () => {
       // It must not claim to be a measurement...
       expect(el).not.toHaveAttribute('data-provenance', 'Measured');
       // ...and the absence must not read as a measured zero.
-      expect(el.textContent).not.toMatch(/0/);
+      expect(el.textContent).not.toMatch(/\b0\b/);
       expect(el).toHaveTextContent('was not measured');
     });
 

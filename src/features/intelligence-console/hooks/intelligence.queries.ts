@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { intelligenceApi, type WindowQuery } from '../api/intelligence.api';
 import type {
   DeclareExpectationBody,
+  DeclareMaintenanceWindowBody,
   DeclareImplementationWindowBody,
   RecordDecisionOptionBody,
   RecordOutcomeMeasurementBody,
@@ -207,6 +208,24 @@ export function useActionLimits() {
     queryKey: intelligenceKeys.actionLimits,
     queryFn: intelligenceApi.actionLimits,
     ...REPORT,
+  });
+}
+
+/**
+ * Pausing an action. Invalidates the window list and the monitor: a paused action changes what
+ * the monitor is allowed to report as having run on its own.
+ */
+export function useDeclareMaintenanceWindow() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (body: DeclareMaintenanceWindowBody) =>
+      intelligenceApi.declareMaintenanceWindow(body),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: intelligenceKeys.maintenanceWindows });
+      void queryClient.invalidateQueries({
+        queryKey: ['intelligence-console', 'autonomous', 'monitor'],
+      });
+    },
   });
 }
 

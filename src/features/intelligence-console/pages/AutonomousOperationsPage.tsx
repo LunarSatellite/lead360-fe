@@ -4,6 +4,7 @@ import { GovernanceRefusalNotice } from '@/features/agent-governance/components/
 import {
   useActionLimits,
   useDeclareExpectation,
+  useDeclareMaintenanceWindow,
   useMaintenanceWindows,
   useOperationMonitor,
 } from '../hooks/intelligence.queries';
@@ -194,6 +195,7 @@ function AutonomousOperationsPage() {
                 ))}
               </ul>
             )}
+            <DeclareMaintenanceWindowForm />
           </Panel>
 
           <Panel testId="limits-panel" title="Action limits">
@@ -442,6 +444,117 @@ function MonitorRow({ row }: { row: OperationMonitorRow }) {
  * someone states an expectation. Nothing here edits, lifts or removes a
  * maintenance window or an action limit — those are read-only on this console.
  */
+/**
+ * Pause one action for a stated span and a stated reason.
+ *
+ * The read side of this panel arrived with the console; the write did not, and lived on a tab of
+ * the old Intelligence page. That tab is gone, so it moves here, beside the windows it creates.
+ *
+ * End is required and validated against start: a window with no end is an action switched off,
+ * which is a different decision and is not made from here.
+ */
+function DeclareMaintenanceWindowForm() {
+  const declare = useDeclareMaintenanceWindow();
+  const [open, setOpen] = useState(false);
+  const [actionKey, setActionKey] = useState('');
+  const [startsUtc, setStartsUtc] = useState('');
+  const [endsUtc, setEndsUtc] = useState('');
+  const [reason, setReason] = useState('');
+
+  const inputClass =
+    'rounded-sm border-thin border-border-subtle bg-bg-input px-2.5 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1';
+  const labelClass = 'flex flex-1 flex-col gap-1 text-2xs font-bold text-text-secondary';
+  const buttonClass =
+    'inline-flex w-fit items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-50';
+
+  if (!open) {
+    return (
+      <button type="button" onClick={() => setOpen(true)} className={buttonClass}>
+        <Plus size={13} strokeWidth={1.8} />
+        Pause an action
+      </button>
+    );
+  }
+
+  const ends = endsUtc && startsUtc && endsUtc <= startsUtc;
+
+  return (
+    <form
+      className="flex flex-col gap-2 rounded-card border-thin border-border-medium bg-bg-card p-3"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (ends) return;
+        declare.mutate(
+          {
+            actionKey,
+            startsUtc: new Date(startsUtc).toISOString(),
+            endsUtc: new Date(endsUtc).toISOString(),
+            reason,
+          },
+          { onSuccess: () => setOpen(false) },
+        );
+      }}
+    >
+      <div className="flex flex-wrap gap-2">
+        <label className={labelClass}>
+          Action key
+          <input
+            required
+            value={actionKey}
+            onChange={(e) => setActionKey(e.target.value)}
+            placeholder="e.g. pricing.reprice"
+            className={`${inputClass} font-mono`}
+          />
+        </label>
+        <label className={labelClass}>
+          Starts
+          <input
+            required
+            type="datetime-local"
+            value={startsUtc}
+            onChange={(e) => setStartsUtc(e.target.value)}
+            className={inputClass}
+          />
+        </label>
+        <label className={labelClass}>
+          Ends
+          <input
+            required
+            type="datetime-local"
+            value={endsUtc}
+            onChange={(e) => setEndsUtc(e.target.value)}
+            className={inputClass}
+          />
+        </label>
+      </div>
+      <label className={labelClass}>
+        Reason
+        <input
+          required
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder="Why this action is paused"
+          className={inputClass}
+        />
+      </label>
+      {ends && (
+        <p className="text-2xs font-medium text-rose-300">The window has to end after it starts.</p>
+      )}
+      {declare.isError && (
+        <GovernanceRefusalNotice error={declare.error} onRefresh={() => declare.reset()} />
+      )}
+      <div className="flex gap-2">
+        <button type="submit" disabled={declare.isPending || !!ends} className={buttonClass}>
+          {declare.isPending ? 'Declaring…' : 'Declare window'}
+        </button>
+        <button type="button" onClick={() => setOpen(false)} className={buttonClass}>
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}
+
 function DeclareExpectationForm({ decisionId }: { decisionId: string }) {
   const declare = useDeclareExpectation(decisionId);
   const [open, setOpen] = useState(false);

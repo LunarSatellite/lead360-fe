@@ -17,6 +17,7 @@ import type {
   ExecutiveDecisionTracePageDto,
   FailureDiagnosisDto,
   FailureDiagnosisPageDto,
+  DeclareMaintenanceWindowBody,
   MaintenanceWindowView,
   OperationExpectationView,
   OperationMonitorPage,
@@ -213,6 +214,17 @@ export const intelligenceApi = {
         via(
           `v1/admin/autonomous-operations/decisions/${encodeURIComponent(decisionId)}/expectations`,
         ),
+        body,
+        idempotent(),
+      ),
+    ),
+
+  declareMaintenanceWindow: async (
+    body: DeclareMaintenanceWindowBody,
+  ): Promise<MaintenanceWindowView> =>
+    unwrap(
+      await rawClient.post(
+        via('v1/admin/autonomous-operations/maintenance-windows'),
         body,
         idempotent(),
       ),

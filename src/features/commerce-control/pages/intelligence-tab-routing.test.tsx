@@ -16,12 +16,19 @@ vi.mock('../api/stylemint-intelligence.api', () => {
 import { IntelligencePage, isIntelligenceTab, DEFAULT_TAB } from './IntelligencePage';
 
 const TAB_LABELS: Record<string, string> = {
-  cockpit: 'Executive cockpit',
-  ledger: 'Decision ledger',
-  genome: 'Commerce genome',
-  aurora: 'Aurora signals',
   simulation: 'Retail simulation',
+  constitution: 'Commerce constitution',
 };
+
+/**
+ * Tabs this page used to own, which now answer on their own pages in `intelligence-console` and
+ * `decision-twin`. They were built twice; the pages won because a decision, a fingerprint or a
+ * study each get a real URL there instead of an id pasted into a box.
+ *
+ * The URLs are kept in this test because bookmarks to them exist: each one has to land on a real
+ * tab rather than render a blank page under a path that lies.
+ */
+const RETIRED_TABS = ['cockpit', 'ledger', 'genome', 'aurora', 'autonomy', 'twin', 'cartOffers'];
 
 function WhereAmI() {
   const location = useLocation();
@@ -60,20 +67,28 @@ describe('each decision-intelligence report answers on its own URL', () => {
     });
   }
 
-  it('opens the cockpit when the URL names no tab, so old bookmarks still work', () => {
+  it('opens the default when the URL names no tab, so old bookmarks still work', () => {
     openAt('/dashboard/stylemint/intelligence');
     expect(selectedTab()).toBe(DEFAULT_TAB);
   });
 
-  it('rewrites an unknown tab to the cockpit instead of rendering nothing', () => {
+  it('rewrites an unknown tab to the default instead of rendering nothing', () => {
     openAt('/dashboard/stylemint/intelligence/not-a-tab');
     expect(selectedTab()).toBe(DEFAULT_TAB);
   });
 
+  for (const tab of RETIRED_TABS) {
+    it(`a bookmark to the retired ${tab} tab still lands somewhere real`, () => {
+      openAt(`/dashboard/stylemint/intelligence/${tab}`);
+      expect(selectedTab()).toBe(DEFAULT_TAB);
+      expect(isIntelligenceTab(tab)).toBe(false);
+    });
+  }
+
   it('keeps the tab in the URL rather than in component state', () => {
     // The selected tab has to survive a reload and a copied link. That is only
     // true if the path itself names it.
-    expect(isIntelligenceTab('genome')).toBe(true);
+    expect(isIntelligenceTab('simulation')).toBe(true);
     expect(isIntelligenceTab('billing')).toBe(false);
     expect(isIntelligenceTab(undefined)).toBe(false);
   });

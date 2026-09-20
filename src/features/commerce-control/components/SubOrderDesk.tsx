@@ -5,6 +5,7 @@ import {
   CheckSquare,
   Loader2,
   PackageCheck,
+  Printer,
   RefreshCw,
   Square,
   Truck,
@@ -20,6 +21,7 @@ import {
   type VendorRejectionReasonValue,
   type VendorSubOrder,
 } from '../api/stylemint-suborders.api';
+import { PackingSlipSheet } from './PackingSlipSheet';
 
 /**
  * The fulfilment desk: the sub-orders waiting on a vendor step, and the step itself.
@@ -66,6 +68,9 @@ export function SubOrderDesk() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  // Null means the sheet is closed. Opening it is what triggers the fetch, so the slips are
+  // never loaded for rows nobody asked to print.
+  const [printing, setPrinting] = useState<string[] | null>(null);
 
   const queue = useQuery({
     queryKey: ['stylemint-sub-orders', state],
@@ -102,6 +107,34 @@ export function SubOrderDesk() {
       refresh();
     },
     onError: (caught) => report(caught, 'The bulk step could not be applied.'),
+  });
+
+  const slips = useQuery({
+    queryKey: ['stylemint-packing-slips', printing],
+    queryFn: async () => {
+      const ids = printing!;
+      // One id still goes through the single read: it returns the slip directly, where the bulk
+      // endpoint wraps it in a per-item envelope this would then have to unwrap for no reason.
+      if (ids.length === 1) {
+        const slip = await stylemintSubOrdersApi.packingSlip(ids[0]);
+        return { slips: [slip], failures: [] as Array<{ index: number; message: string }> };
+      }
+
+      const result = await stylemintSubOrdersApi.bulkPackingSlips(ids);
+      return {
+        slips: result.items.flatMap((item) => (item.success && item.value ? [item.value] : [])),
+        // A refused id is reported, not silently dropped: printing four slips for five selected
+        // parcels is how a parcel ships without one.
+        failures: result.items
+          .filter((item) => !item.success)
+          .map((item) => ({
+            index: item.index,
+            message: item.errorMessage ?? item.errorCode ?? 'No slip was returned.',
+          })),
+      };
+    },
+    enabled: printing !== null,
+    retry: false,
   });
 
   const toggle = (id: string) =>
@@ -175,6 +208,14 @@ export function SubOrderDesk() {
           >
             Ready to ship all
           </button>
+          {/* A read, so unlike the bulk steps it applies to any selection whatever state the
+              rows are in — an operator printing a run of slips does not sort them first. */}
+          <button
+            onClick={() => setPrinting([...selected])}
+            className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+          >
+            <Printer className="h-3 w-3" strokeWidth={1.6} /> Packing slips
+          </button>
           <button
             onClick={() => setSelected(new Set())}
             className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
@@ -219,9 +260,20 @@ export function SubOrderDesk() {
                 refresh();
               }}
               onError={(caught) => report(caught, 'The step could not be applied.')}
+              onPrint={() => setPrinting([row.id])}
             />
           ))}
         </div>
+      )}
+
+      {printing && (
+        <PackingSlipSheet
+          slips={slips.data?.slips ?? []}
+          failures={slips.data?.failures ?? []}
+          loading={slips.isLoading}
+          error={slips.isError ? describe(slips.error) : null}
+          onClose={() => setPrinting(null)}
+        />
       )}
     </div>
   );
@@ -233,12 +285,14 @@ function SubOrderRow({
   onToggle,
   onDone,
   onError,
+  onPrint,
 }: {
   row: VendorSubOrder;
   selected: boolean;
   onToggle: () => void;
   onDone: (message: string) => void;
   onError: (caught: unknown) => void;
+  onPrint: () => void;
 }) {
   // Reject, handover and tracking each need input, so the row expands rather than acting at once.
   const [form, setForm] = useState<'reject' | 'handover' | 'tracking' | null>(null);
@@ -285,10 +339,18 @@ function SubOrderRow({
           )}
         </div>
 
-        <div className="flex shrink-0 flex-wrap gap-1.5">
+        <div className="flex shrink-0 flex-wrap items-center gap-1.5">
           {steps.length === 0 && (
             <span className="text-[11px] text-text-muted">No step from here</span>
           )}
+          {/* Always offered: a slip is a read, and a parcel can need reprinting at any stage. */}
+          <button
+            onClick={onPrint}
+            title="Packing slip"
+            className="rounded-sm border-thin border-border-medium p-1 text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          >
+            <Printer className="h-3 w-3" strokeWidth={1.6} />
+          </button>
           {steps.map((action) => (
             <button
               key={action.key}

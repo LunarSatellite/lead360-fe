@@ -89,6 +89,61 @@ export type VendorSubOrder = {
   deliveredUtc?: string | null;
 };
 
+/**
+ * The packing slip the courier reads. Typed, unlike the other detail reads, because it is the
+ * one shape rendered as a document rather than inspected as JSON.
+ *
+ * The address is location-first: the postal columns can all be blank, and `locationNote` is then
+ * the only thing a courier can actually navigate by. So the slip leads with it rather than
+ * treating it as an afterthought below a set of empty fields.
+ */
+export type PackingSlipAddress = {
+  receiverName: string;
+  receiverPhone: string;
+  addressLine1: string;
+  landmark?: string | null;
+  country: string;
+  state: string;
+  city: string;
+  zipCode: string;
+  locationNote?: string | null;
+  mapsLink?: string | null;
+};
+
+export type PackingSlipLine = {
+  productTitleSnapshot: string;
+  variantLabelSnapshot?: string | null;
+  quantity: number;
+};
+
+export type PackingSlip = {
+  packingSlipNumber: string;
+  orderNumber: string;
+  subOrderId: string;
+  issuedUtc: string;
+  placedUtc: string;
+  shipTo: PackingSlipAddress;
+  carrier?: string | null;
+  trackingNumber?: string | null;
+  items: PackingSlipLine[];
+};
+
+/** One row of a bulk read: the server reports per-id outcomes rather than failing the batch. */
+export type BulkItem<T> = {
+  index: number;
+  success: boolean;
+  value?: T | null;
+  errorCode?: string | null;
+  errorMessage?: string | null;
+};
+
+export type BulkRead<T> = {
+  items: BulkItem<T>[];
+  successCount: number;
+  failureCount: number;
+  allSucceeded: boolean;
+};
+
 export type SubOrderPage = {
   items: VendorSubOrder[];
   nextCursor?: string | null;
@@ -171,7 +226,7 @@ export const stylemintSubOrdersApi = {
     call<Record<string, unknown>>('GET', `${BASE}/${encodeURIComponent(subOrderId)}`),
 
   packingSlip: (subOrderId: string) =>
-    call<Record<string, unknown>>('GET', `${BASE}/${encodeURIComponent(subOrderId)}/packing-slip`),
+    call<PackingSlip>('GET', `${BASE}/${encodeURIComponent(subOrderId)}/packing-slip`),
 
   /** The steps that take no arguments — accept, packed, ready-to-ship and the carrier states. */
   step: (subOrderId: string, step: SubOrderStep) =>
@@ -208,8 +263,10 @@ export const stylemintSubOrdersApi = {
   bulkReadyToShip: (subOrderIds: string[]) =>
     call<Record<string, unknown>>('POST', `${BASE}/bulk/ready-to-ship`, { subOrderIds }),
 
+  /** A pure read despite the POST — the ids go in the body because a batch of them would not
+   *  fit a query string. Failures come back per id rather than failing the whole batch. */
   bulkPackingSlips: (subOrderIds: string[]) =>
-    call<Record<string, unknown>>('POST', `${BASE}/bulk/packing-slips`, { subOrderIds }),
+    call<BulkRead<PackingSlip>>('POST', `${BASE}/bulk/packing-slips`, { subOrderIds }),
 };
 
 /**

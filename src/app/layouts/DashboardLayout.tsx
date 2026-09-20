@@ -148,7 +148,8 @@ const botNav = [
   { label: 'Chat', href: '/dashboard/chat', icon: MessageSquare },
   { label: 'Overview', href: '/dashboard/home', icon: LayoutGrid },
   { label: 'Bot flows', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'AI' },
-  // { label: 'Bot Settings', href: ROUTES.dashboard.botSettings,        icon: Settings },
+  // Bot Settings is not listed here because Settings already lists it, as its
+  // own section; /dashboard/bot-settings stays routed for bookmarks.
   { label: 'Experiments', href: ROUTES.dashboard.flowExperiments, icon: FlaskConical },
   { label: 'Agents', href: ROUTES.dashboard.agents, icon: Bot },
   { label: 'Test preview', href: ROUTES.dashboard.testChannel, icon: Terminal },
@@ -206,17 +207,15 @@ export const primaryMobileTabs = [
 ];
 
 // ─── Mobile "More" sheet — reaches every legacy page so nothing is lost ───
-// NOTE: Setup Wizard + Setup tabs are commented from here because their
-// routes are currently commented out in routes.tsx. Re-add them here if you
-// uncomment the routes.
+// Setup and the Setup Wizard are absent because chat-first replaced them and
+// their routes are commented out in route-table.tsx. Their pages are intact on
+// disk; uncomment the routes first if you put the entries back.
 const moreNav_build = [
   { label: 'Conversation Map', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'IA' },
   { label: 'Test Channel', href: ROUTES.dashboard.testChannel, icon: Terminal },
-  // { label: 'Setup Wizard',  href: ROUTES.dashboard.onboarding, icon: Rocket },
 ];
 
 const moreNav_configure = [
-  // { label: 'Setup',         href: ROUTES.dashboard.setup, icon: LayoutGrid },
   { label: 'Intentions', href: ROUTES.dashboard.intents, icon: Target },
   { label: 'Agents', href: ROUTES.dashboard.agents, icon: Bot },
   { label: 'API Connection', href: ROUTES.dashboard.apiConnection, icon: Plug },
@@ -226,34 +225,6 @@ const moreNav_configure = [
   { label: 'Conversations', href: ROUTES.dashboard.conversations, icon: MessageSquare },
   { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: BarChart3 },
 ];
-
-// ═══════════════════════════════════════════════════════════════════════════
-// OLD NAVIGATION — kept as reference, pages below are still reachable by URL.
-// When we're confident the chat-first rail works for everyone, delete the
-// commented blocks below and the unused icon imports at the top of the file.
-// ═══════════════════════════════════════════════════════════════════════════
-// const buildNav = [
-//   { label: 'Conversation Map', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'AI' },
-//   { label: 'Test Channel', href: ROUTES.dashboard.testChannel, icon: Terminal },
-//   { label: 'Setup Wizard', href: ROUTES.dashboard.onboarding, icon: Rocket },
-// ];
-//
-// const configureNav = [
-//   { label: 'Setup', href: ROUTES.dashboard.setup, icon: LayoutGrid },
-//   { label: 'Intents', href: ROUTES.dashboard.intents, icon: Target },
-//   { label: 'API Pipeline', href: ROUTES.dashboard.apiConnection, icon: Plug },
-//   { label: 'Catalog', href: ROUTES.dashboard.catalog, icon: Package },
-//   { label: 'Channels', href: ROUTES.dashboard.channels, icon: Phone },
-//   { label: 'Conversations', href: ROUTES.dashboard.conversations, icon: MessageSquare },
-//   { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: BarChart3 },
-// ];
-//
-// const OLD_primaryMobileTabs = [
-//   { label: 'Setup', href: ROUTES.dashboard.setup, icon: LayoutGrid },
-//   { label: 'Chats', href: ROUTES.dashboard.conversations, icon: MessageSquare },
-//   { label: 'Test', href: ROUTES.dashboard.testChannel, icon: Terminal },
-//   { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: BarChart3 },
-// ];
 
 const PRIMARY_HREFS: Set<string> = new Set(primaryMobileTabs.map((t) => t.href));
 

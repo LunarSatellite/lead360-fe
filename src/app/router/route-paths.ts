@@ -78,10 +78,11 @@ export const ROUTES = {
     chat: '/dashboard/chat',
     home: '/dashboard/home',
     // ── Existing pages (still reachable, still routed) ──
-    // NOTE: setup + onboarding kept for the type, but their routes are
-    // commented out in routes.tsx since chat-first replaces them. Don't
-    // link to them in new code.
-    setup: '/dashboard/setup',
+    // `setup` and `onboarding` used to be listed here with a note not to link
+    // to them. Their routes are commented out, so they resolved to nothing and
+    // nothing referenced them; removed rather than left as a trap. The pages
+    // themselves are intact on disk — uncomment the routes in route-table.tsx
+    // and add the keys back if chat-first onboarding is ever reversed.
     settings: '/dashboard/settings',
     team: '/dashboard/team',
     intents: '/dashboard/intents',
@@ -89,7 +90,9 @@ export const ROUTES = {
     apiSpecs: '/dashboard/api-specs',
     apiSpecDetail: (id: string) => `/dashboard/api-specs/${id}`,
     apiConnection: '/dashboard/api-connection',
-    apiConnectionDetail: (specId: string) => `/dashboard/api-connection/${specId}`,
+    // `/dashboard/intent-suggestions` and `/dashboard/api-specs/*` are legacy
+    // URLs that redirect here. They are kept so old bookmarks still land
+    // somewhere real; nothing in the app links to them.
     intentSuggestions: '/dashboard/intent-suggestions',
     catalog: '/dashboard/catalog',
     businessCatalog: '/dashboard/business-catalog',
@@ -98,12 +101,9 @@ export const ROUTES = {
     channels: '/dashboard/channels',
     testChannel: '/dashboard/test-channel',
     conversations: '/dashboard/conversations',
-    campaigns: '/dashboard/campaigns',
-    campaignNew: '/dashboard/campaigns/new',
     agents: '/dashboard/agents',
     analytics: '/dashboard/analytics',
     support: '/dashboard/support',
-    onboarding: '/dashboard/onboarding',
     // ── CRM ──
     crmLeads: '/dashboard/crm/leads',
     crmLeadDetail: (id: string) => `/dashboard/crm/leads/${id}`,
@@ -131,8 +131,6 @@ export const ROUTES = {
     crmDedup: '/dashboard/crm/dedup',
     crmAnnouncements: '/dashboard/crm/announcements',
     crmProcessTasks: '/dashboard/crm/process-tasks',
-    crmProcessDefinitions: '/dashboard/crm/process-definitions',
-    crmProcessInstances: '/dashboard/crm/process-instances',
     crmEventIngestion: '/dashboard/crm/event-ingestion',
     // ── Flow A/B Experiments ──
     flowExperiments: '/dashboard/flows/experiments',

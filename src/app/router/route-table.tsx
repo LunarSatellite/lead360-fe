@@ -152,11 +152,19 @@ export const routeObjects: RouteObject[] = [
       { path: 'api-specs', element: <Navigate to="/dashboard/api-connection" replace /> },
       { path: 'api-specs/:id', element: <Navigate to="/dashboard/api-connection" replace /> },
       { path: 'api-connection', lazy: () => import('@/features/api-connection/pages/ApiConnectionPage') },
-      { path: 'api-connection/:specId', lazy: () => import('@/features/api-connection/pages/ApiSpecDetailPage') },
+      // ApiSpecDetailPage rendered CapabilityMapView + AnalysisView for one
+      // spec id — the same two views ApiConnectionPage already shows inline for
+      // whichever spec its own list selects. Nothing ever linked here, so the
+      // only way in was to type a UUID. Redirected like api-specs/:id above so
+      // a bookmark still lands on the working page; the duplicate page is gone.
+      { path: 'api-connection/:specId', element: <Navigate to="/dashboard/api-connection" replace /> },
       { path: 'intent-suggestions', element: <Navigate to="/dashboard/api-connection" replace /> },
       { path: 'catalog', lazy: () => import('@/features/catalog/pages/CatalogDashboardPage') },
       { path: 'business-catalog', lazy: () => import('@/features/business-catalog/pages/BusinessCatalogPage') },
       { path: 'flows', lazy: () => import('@/features/flow-builder/pages/FlowBuilderPage') },
+      // Deliberately not in the nav: AccountSettingsPage already renders
+      // BotSettingsPage as its "Bot Settings" section, which is listed. This
+      // route is a bookmark door to the same component, not a second surface.
       { path: 'bot-settings', lazy: () => import('@/features/flow-builder/pages/BotSettingsPage') },
       { path: 'channels', lazy: () => import('@/features/channels/pages/ChannelListPage') },
       { path: 'agents', lazy: () => import('@/features/agents/pages/AgentListPage') },
@@ -164,6 +172,8 @@ export const routeObjects: RouteObject[] = [
       { path: 'conversations', lazy: () => import('@/features/conversations/pages/ConversationsPage') },
       { path: 'analytics', lazy: () => import('@/features/analytics/pages/AnalyticsHubPage') },
       { path: 'support', lazy: () => import('@/features/support/pages/SupportPage') },
+      // Same as bot-settings: AccountSettingsPage renders ComplianceSettings as
+      // its "Compliance" section. Unlisted on purpose, kept for bookmarks.
       { path: 'compliance', lazy: () => import('@/features/compliance/pages/ComplianceSettings') },
       // ── COMMENTED: 6-step Onboarding wizard — chat-first replaces it.
       //    Uncomment if you need the wizard back. The file

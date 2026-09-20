@@ -11,3 +11,5 @@ playwright-report
 test-results
 .tsc-audit/
 
+# Agent worktrees are separate git repos; they must never be committed here.
+.claude/worktrees/

@@ -89,6 +89,81 @@ export type VendorSubOrder = {
   deliveredUtc?: string | null;
 };
 
+export const OrderCancellationReason = {
+  OrderedByMistake: 1,
+  FoundBetterPrice: 2,
+  ChangedMyMind: 3,
+  DeliveryTooLong: 4,
+  NeedDifferentSizeOrColor: 5,
+  Other: 6,
+} as const;
+
+export const CANCELLATION_REASON_LABEL: Record<number, string> = {
+  1: 'Ordered by mistake',
+  2: 'Found a better price',
+  3: 'Changed their mind',
+  4: 'Delivery was taking too long',
+  5: 'Needed a different size or colour',
+  6: 'Other',
+};
+
+export type SubOrderLine = {
+  id: string;
+  productVariantId: string;
+  quantity: number;
+  unitPriceAmount: number;
+  unitPriceCurrency: string;
+  productTitleSnapshot: string;
+  variantLabelSnapshot?: string | null;
+  optionLabel?: string | null;
+  thumbnailUrlSnapshot?: string | null;
+  creatorAccountId?: string | null;
+  commissionRateSnapshot?: number | null;
+  commissionAmountValue?: number | null;
+  commissionAmountCurrency?: string | null;
+  originatingReelId?: string | null;
+  lineSubtotalAmount: number;
+  lineSubtotalCurrency: string;
+};
+
+/**
+ * The full sub-order. The list row deliberately omits the heavy parts; this is what the queue
+ * cannot answer — every lifecycle timestamp, the address, the money broken out, and the lines
+ * with their creator attribution.
+ *
+ * The timestamps are the reason this view exists: a row says an order is Packed, and only these
+ * say it has been Packed since Tuesday.
+ */
+export type VendorSubOrderDetail = {
+  id: string;
+  orderId: string;
+  orderNumber: string;
+  vendorAccountId: string;
+  state: number;
+  placedUtc: string;
+  shipTo: PackingSlipAddress;
+  shippingFeeAmount: number;
+  shippingFeeCurrency: string;
+  carrier?: string | null;
+  trackingNumber?: string | null;
+  acceptedUtc?: string | null;
+  packedUtc?: string | null;
+  handedOverUtc?: string | null;
+  shippedUtc?: string | null;
+  inTransitUtc?: string | null;
+  outForDeliveryUtc?: string | null;
+  deliveredUtc?: string | null;
+  cancelledUtc?: string | null;
+  cancellationReasonCode?: number | null;
+  cancellationNote?: string | null;
+  lineSubtotalAmount: number;
+  lineSubtotalCurrency: string;
+  subtotalAmount: number;
+  subtotalCurrency: string;
+  itemCount: number;
+  lines: SubOrderLine[];
+};
+
 /**
  * The packing slip the courier reads. Typed, unlike the other detail reads, because it is the
  * one shape rendered as a document rather than inspected as JSON.
@@ -223,7 +298,7 @@ export const stylemintSubOrdersApi = {
   },
 
   detail: (subOrderId: string) =>
-    call<Record<string, unknown>>('GET', `${BASE}/${encodeURIComponent(subOrderId)}`),
+    call<VendorSubOrderDetail>('GET', `${BASE}/${encodeURIComponent(subOrderId)}`),
 
   packingSlip: (subOrderId: string) =>
     call<PackingSlip>('GET', `${BASE}/${encodeURIComponent(subOrderId)}/packing-slip`),

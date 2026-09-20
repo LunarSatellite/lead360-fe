@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertTriangle,
   CheckSquare,
+  ChevronDown,
+  ChevronRight,
   Loader2,
   PackageCheck,
   Printer,
@@ -22,6 +24,7 @@ import {
   type VendorSubOrder,
 } from '../api/stylemint-suborders.api';
 import { PackingSlipSheet } from './PackingSlipSheet';
+import { SubOrderDetailPanel } from './SubOrderDetailPanel';
 
 /**
  * The fulfilment desk: the sub-orders waiting on a vendor step, and the step itself.
@@ -296,6 +299,8 @@ function SubOrderRow({
 }) {
   // Reject, handover and tracking each need input, so the row expands rather than acting at once.
   const [form, setForm] = useState<'reject' | 'handover' | 'tracking' | null>(null);
+  // Detail is opt-in per row: rendering it for every row would fire one request per row.
+  const [open, setOpen] = useState(false);
 
   const step = useMutation({
     mutationFn: (key: SubOrderStep) => stylemintSubOrdersApi.step(row.id, key),
@@ -318,9 +323,18 @@ function SubOrderRow({
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-xs font-black text-text-primary">
+            <button
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              className="flex items-center gap-1 font-mono text-xs font-black text-text-primary hover:text-brand"
+            >
+              {open ? (
+                <ChevronDown className="h-3 w-3" strokeWidth={1.6} />
+              ) : (
+                <ChevronRight className="h-3 w-3" strokeWidth={1.6} />
+              )}
               {row.orderNumber}
-            </span>
+            </button>
             <StateBadge state={row.state} />
             <span className="text-[11px] text-text-muted">
               {row.itemCount} {row.itemCount === 1 ? 'item' : 'items'}
@@ -372,6 +386,8 @@ function SubOrderRow({
           ))}
         </div>
       </div>
+
+      {open && <SubOrderDetailPanel subOrderId={row.id} />}
 
       {form === 'reject' && (
         <RejectForm

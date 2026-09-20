@@ -54,9 +54,10 @@ describe('a logged-in operator lands in one place, whichever door they came thro
   it('sends an authenticated visitor on "/" to the same landing surface', async () => {
     localStorage.setItem('omniflow_token', liveToken());
     const root = routeObjects.find((r) => r.path === '/');
-    expect(root?.lazy).toBeTypeOf('function');
+    const lazy = root?.lazy;
+    expect(lazy).toBeTypeOf('function');
 
-    const resolved = (await root!.lazy!()) as { Component?: React.ComponentType };
+    const resolved = await (lazy as () => Promise<{ Component?: React.ComponentType }>)();
     expect(resolved.Component).toBeTypeOf('function');
 
     const Landing = resolved.Component!;

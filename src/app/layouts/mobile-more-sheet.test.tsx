@@ -49,7 +49,7 @@ describe('the mobile "More" sheet reaches the commerce console', () => {
     const sheet = openMoreSheet();
 
     // A phone reaches a surface either from the bottom tab bar or from the sheet.
-    const inBottomBar = new Set(primaryMobileTabs.map((t) => t.href));
+    const inBottomBar = new Set<string>(primaryMobileTabs.map((t) => t.href));
     const inSheet = new Set(
       within(sheet)
         .getAllByRole('link')

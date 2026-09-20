@@ -1,9 +1,37 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
-export default defineConfig({
+/**
+ * A production build with no API base url is the failure this guard exists for.
+ *
+ * `env.ts` reads `import.meta.env.VITE_API_BASE_URL as string`. Vite replaces
+ * that literally at build time, and the `as string` cast makes `undefined`
+ * type-check cleanly — so an unset variable produces a bundle whose every
+ * request goes to `undefined/...`. The app loads, renders its chrome, and
+ * every panel shows an error. It looks like the API is down.
+ *
+ * There is no safe default: guessing localhost is how a deployed console ends
+ * up pointing at the operator's laptop. So the build fails instead, naming the
+ * variable. Dev and test are untouched — `.env.development` supplies it there.
+ */
+function requireApiBaseUrl(mode: string) {
+  if (mode !== 'production') return;
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
+  const value = env.VITE_API_BASE_URL ?? process.env.VITE_API_BASE_URL;
+  if (value && value.trim().length > 0) return;
+  throw new Error(
+    'VITE_API_BASE_URL is not set, so this build would ship an app that ' +
+      'calls `undefined/...` on every request and look like an API outage. ' +
+      'Set it to the deployed API origin (see .env.production.example) ' +
+      'either in .env.production or in the build environment.',
+  );
+}
+
+export default defineConfig(({ mode }) => {
+  requireApiBaseUrl(mode);
+  return {
   plugins: [react()],
   resolve: {
     alias: {
@@ -34,4 +62,5 @@ export default defineConfig({
       },
     },
   },
+};
 });

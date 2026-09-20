@@ -86,8 +86,17 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
           </p>
           <h3 className="mt-1 text-xl font-black text-text-primary">Tableau commercial Stylemint</h3>
         </div>
+        {/*
+          "donnees attribuees en direct" over four zeros claims a live
+          attribution that did not happen. The window is real either way, so
+          it is still stated; the attribution claim is only made when
+          something was actually attributed in it.
+        */}
         <p className="text-xs text-text-muted">
-          {analytics.window?.durationDays ?? 30} jours · donnees attribuees en direct
+          {analytics.window?.durationDays ?? 30} jours ·{' '}
+          {Number(analytics.grossSales?.current ?? 0) > 0
+            ? 'donnees attribuees en direct'
+            : 'aucune vente attribuee sur cette periode'}
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">

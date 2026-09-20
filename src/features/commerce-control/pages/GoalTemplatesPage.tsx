@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { VendorPolicyPanel } from '../components/VendorPolicyPanel';
 import {
   AlertTriangle,
   Archive,
@@ -142,6 +143,8 @@ export function GoalTemplatesPage() {
           ))}
         </div>
       )}
+
+      <VendorPolicyPanel />
     </div>
   );
 }

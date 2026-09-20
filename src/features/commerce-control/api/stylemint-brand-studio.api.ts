@@ -54,6 +54,28 @@ export type GoalTemplateVersion = {
   rowVersion: string;
 };
 
+/**
+ * A vendor's brand-studio limits. Per vendor, fetched by id — there is no list endpoint, so the
+ * page asks for the vendor profile id rather than offering a picker it cannot populate.
+ */
+export type VendorBrandStudioPolicy = {
+  id: string;
+  vendorProfileId: string;
+  monthlyLlmCallQuota: number;
+  commissionCeilingPercent: number;
+  defaultCurrencyCode: string;
+  createdUtc: string;
+  updatedUtc: string;
+  rowVersion: string;
+};
+
+/** PATCH semantics: omitting a field leaves it as it is. */
+export type PatchVendorPolicy = {
+  monthlyLlmCallQuota?: number | null;
+  commissionCeilingPercent?: number | null;
+  defaultCurrencyCode?: string | null;
+};
+
 const BASE = 'v1/admin/brand-studio/goal-templates';
 
 function unwrap<T>(response: { status: number; body: unknown }): T {
@@ -106,6 +128,28 @@ export const stylemintBrandStudioApi = {
         method: 'POST',
         path: BASE,
         body: JSON.stringify({ goal, promptText, notes: notes || null }),
+      }),
+    ),
+
+  /** One vendor's limits. 404s when none have been set for that vendor. */
+  vendorPolicy: async (vendorProfileId: string): Promise<VendorBrandStudioPolicy> =>
+    unwrap<VendorBrandStudioPolicy>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: `v1/admin/brand-studio/policies/${encodeURIComponent(vendorProfileId)}`,
+      }),
+    ),
+
+  /** PATCH, so only the fields supplied are changed. */
+  updateVendorPolicy: async (
+    vendorProfileId: string,
+    patch: PatchVendorPolicy,
+  ): Promise<VendorBrandStudioPolicy> =>
+    unwrap<VendorBrandStudioPolicy>(
+      await stylemintOperationsApi.invoke({
+        method: 'PATCH',
+        path: `v1/admin/brand-studio/policies/${encodeURIComponent(vendorProfileId)}`,
+        body: JSON.stringify(patch),
       }),
     ),
 

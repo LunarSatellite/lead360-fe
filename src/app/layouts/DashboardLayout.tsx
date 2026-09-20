@@ -2,8 +2,10 @@ import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { useTokenAutoRefresh } from '@/features/auth/hooks/useTokenAutoRefresh';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
+  BadgeCheck,
   Banknote,
   BarChart3,
+  BookOpen,
   Bot,
   Boxes,
   BrainCircuit,
@@ -22,6 +24,7 @@ import {
   FileText,
   Flag,
   FlaskConical,
+  Gauge,
   Gavel,
   GitBranch,
   GitMerge,
@@ -30,13 +33,14 @@ import {
   KeyRound,
   LayoutGrid,
   LifeBuoy,
+  Link2,
   ListChecks,
   LogOut,
   Megaphone,
-  Network,
   Menu,
   MessageSquare,
   Music,
+  Network,
   Newspaper,
   Package,
   PackageOpen,
@@ -54,14 +58,11 @@ import {
   ShoppingBag,
   SlidersHorizontal,
   Star,
+  Stethoscope,
   Store,
   Target,
   Terminal,
   TrendingUp,
-  BookOpen,
-  Stethoscope,
-  Link2,
-  Gauge,
   Truck,
   User,
   UserCheck,
@@ -115,6 +116,7 @@ const primaryNav = [
   { label: 'Demand content', href: ROUTES.dashboard.demandContent, icon: FileSearch },
   { label: 'Cart offer holdout', href: ROUTES.dashboard.cartOfferIncrementality, icon: FlaskConical },
   { label: 'Goal templates', href: ROUTES.dashboard.goalTemplates, icon: Target },
+  { label: 'Trust', href: ROUTES.dashboard.trust, icon: BadgeCheck },
   { label: 'Operator access', href: ROUTES.dashboard.operatorAccess, icon: KeyRound },
   { label: 'Agent approvals', href: ROUTES.dashboard.agentApprovals, icon: Gavel },
   { label: 'Agent credentials', href: ROUTES.dashboard.agentCredentials, icon: KeyRound },
@@ -344,6 +346,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/demand-content')) return 'Demand Content';
     if (path.includes('/stylemint/cart-offers')) return 'Cart Offer Holdout';
     if (path.includes('/stylemint/goal-templates')) return 'Goal Templates';
+    if (path.includes('/stylemint/trust')) return 'Trust & Verification';
     if (path.includes('/chat')) return 'Chat';
     if (path.includes('/home')) return 'Overview';
     if (path.includes('/onboarding')) return 'Setup Assistant';

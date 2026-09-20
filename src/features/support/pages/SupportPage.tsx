@@ -4,11 +4,12 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock,
-  Loader2,
   LifeBuoy,
+  Loader2,
   RefreshCw,
   Send,
   ShoppingBag,
+  Stethoscope,
 } from 'lucide-react';
 import {
   stylemintSupportApi,
@@ -18,8 +19,9 @@ import {
   type CommerceTicketSummary,
 } from '@/features/commerce-control/api/stylemint-support.api';
 import { Component as CrmSupportCases } from '@/features/crm/pages/CrmSupportPage';
+import { CareThemesPanel } from '@/features/commerce-control/components/CareThemesPanel';
 
-type Queue = 'commerce' | 'crm';
+type Queue = 'commerce' | 'crm' | 'themes';
 
 /**
  * One support entry point.
@@ -64,9 +66,17 @@ export function SupportPage() {
           icon={LifeBuoy}
           label="CRM cases"
         />
+        <QueueTab
+          active={queue === 'themes'}
+          onClick={() => setQueue('themes')}
+          icon={Stethoscope}
+          label="Order-care themes"
+        />
       </div>
 
-      {queue === 'commerce' ? <CommerceQueue /> : <CrmSupportCases />}
+      {queue === 'commerce' && <CommerceQueue />}
+      {queue === 'crm' && <CrmSupportCases />}
+      {queue === 'themes' && <CareThemesPanel />}
     </div>
   );
 }

@@ -6,4 +6,12 @@ import { routeObjects } from './route-table';
 // constructed, which is not something a reader of the routes wants to trigger.
 export { routeObjects };
 
-export const router = createBrowserRouter(routeObjects);
+// Served from a sub-path when the console is deployed alongside the API on one
+// origin (which is how it avoids CORS entirely). Vite sets BASE_URL from the
+// --base it was built with, so this is '/' for a root deployment and
+// '/console/' for a sub-path one, and the two stay in step automatically -
+// setting Vite's base without the router's basename gives you an app whose
+// assets load and whose every route 404s.
+export const router = createBrowserRouter(routeObjects, {
+  basename: import.meta.env.BASE_URL,
+});

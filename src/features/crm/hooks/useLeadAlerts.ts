@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import * as signalR from '@microsoft/signalr';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import { env } from '@/shared/config/env';
 
 export function useLeadAlerts() {
   const queryClient = useQueryClient();
@@ -10,7 +11,10 @@ export function useLeadAlerts() {
     const token = localStorage.getItem('omniflow_token');
     if (!token) return;
 
-    const apiBase = (import.meta.env.VITE_API_BASE_URL as string) || 'https://localhost:50362/api';
+    // No localhost fallback: the production build refuses to run without
+    // VITE_API_BASE_URL, so a fallback here could only ever fire in a
+    // deployed console - pointing its SignalR hub at the operator's laptop.
+    const apiBase = env.apiBaseUrl;
     // Hub URL is at the API root, not under /api
     const hubUrl = apiBase.replace('/api', '') + '/hubs/chat';
 

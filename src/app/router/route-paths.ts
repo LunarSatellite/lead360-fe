@@ -45,6 +45,23 @@ export const ROUTES = {
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,
     agentEmergencyStop: '/dashboard/agent-governance/emergency-stop',
     agentCredentials: '/dashboard/agent-governance/credentials',
+    // ── Intelligence console — the operator screens for the five Phase-4
+    //    read surfaces. Note `intelligence` above is a different, older page
+    //    under stylemint/; these live on their own prefix to avoid colliding
+    //    with it.
+    intelCockpit: '/dashboard/intelligence-console/cockpit',
+    intelCockpitDecision: (id: string) =>
+      `/dashboard/intelligence-console/cockpit/decisions/${id}`,
+    intelLedger: '/dashboard/intelligence-console/ledger',
+    intelLedgerEntry: (decisionId: string) =>
+      `/dashboard/intelligence-console/ledger/${decisionId}`,
+    intelDiagnosis: '/dashboard/intelligence-console/diagnosis',
+    intelDiagnosisFingerprint: (fingerprint: string) =>
+      `/dashboard/intelligence-console/diagnosis/${encodeURIComponent(fingerprint)}`,
+    intelRelatedSignals: '/dashboard/intelligence-console/related-signals',
+    intelRecordSignals: (targetKind: string, targetId: string) =>
+      `/dashboard/intelligence-console/related-signals/${encodeURIComponent(targetKind)}/${encodeURIComponent(targetId)}`,
+    intelAutonomousOperations: '/dashboard/intelligence-console/autonomous-operations',
     // ── Chat-first primary surfaces (new) ──
     chat: '/dashboard/chat',
     home: '/dashboard/home',

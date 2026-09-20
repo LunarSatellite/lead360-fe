@@ -13,6 +13,7 @@ import {
   ToggleLeft,
   ToggleRight,
   Trash2,
+  Webhook,
   X,
   Zap,
 } from 'lucide-react';
@@ -23,23 +24,25 @@ import {
   type PopularSearch,
   type UpsertPopularSearch,
 } from '../api/stylemint-discovery.api';
+import { ReportPanel } from '../components/ReportPanel';
 
 /**
  * What the platform promotes before a shopper searches, and the check on whether it promotes
  * fairly.
  *
- * Four surfaces on one page because they are one lever: the suggestion chips, the creator/brand
- * pairings the matcher proposes, the fairness audit over those pairings, and the reach pipeline
- * that publishes them.
+ * Five surfaces on one page because they are one lever: the suggestion chips, the creator/brand
+ * pairings the matcher proposes, the fairness audit over those pairings, the reach pipeline that
+ * publishes them, and what the social providers actually delivered back.
  */
 
-type Tab = 'searches' | 'featured' | 'fairness' | 'reach';
+type Tab = 'searches' | 'featured' | 'fairness' | 'reach' | 'webhooks';
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof Search }> = [
   { id: 'searches', label: 'Popular searches', icon: Search },
   { id: 'featured', label: 'Featured matches', icon: Sparkles },
   { id: 'fairness', label: 'Fairness audit', icon: Scale },
   { id: 'reach', label: 'Reach pipeline', icon: Zap },
+  { id: 'webhooks', label: 'Social webhooks', icon: Webhook },
 ];
 
 export function DiscoveryPage() {
@@ -81,6 +84,7 @@ export function DiscoveryPage() {
       {tab === 'featured' && <FeaturedTab />}
       {tab === 'fairness' && <FairnessTab />}
       {tab === 'reach' && <ReachTab />}
+      {tab === 'webhooks' && <SocialWebhooksTab />}
     </div>
   );
 }
@@ -628,5 +632,33 @@ function ReachTab() {
 
 const inputClass =
   'w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none';
+
+
+/**
+ * The other end of reach: what the providers called back with, newest first.
+ *
+ * Read-only, and rendered as a report — a delivery record carries whatever the provider sent, so
+ * a fixed layout over it would drift the first time a provider changes its payload.
+ */
+function SocialWebhooksTab() {
+  const deliveries = useQuery({
+    queryKey: ['stylemint-social-webhooks'],
+    queryFn: () => stylemintDiscoveryApi.socialWebhooks(),
+    retry: false,
+  });
+
+  return (
+    <div className="space-y-3">
+      <p className="rounded-card border-thin border-border-subtle bg-glass-1 p-3 text-[11px] text-text-muted">
+        When a publish looks stuck, this is where you see whether the provider ever called back.
+      </p>
+      <ReportPanel
+        title="Recent deliveries"
+        query={deliveries}
+        emptyNote="No social provider has delivered anything."
+      />
+    </div>
+  );
+}
 
 export { DiscoveryPage as Component };

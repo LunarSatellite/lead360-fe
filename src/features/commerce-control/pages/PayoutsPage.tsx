@@ -10,6 +10,7 @@ import {
   PauseCircle,
   PlayCircle,
   RefreshCw,
+  ShieldQuestion,
 } from 'lucide-react';
 import {
   PAYEE_KIND_LABEL,
@@ -21,6 +22,7 @@ import {
   type Payout,
   type PayoutStateValue,
 } from '../api/stylemint-payouts.api';
+import { InsuranceClaimsPanel } from '../components/InsuranceClaimsPanel';
 
 /**
  * The platform payout queue, with the two money actions an operator can actually take here.
@@ -43,7 +45,50 @@ const STATE_TONE: Record<number, string> = {
   5: 'text-amber-300 border-amber-400/25 bg-amber-400/5',
 };
 
+type Tab = 'queue' | 'insurance';
+
+/**
+ * Payouts and insurance claims share this page because they are one job done by one role:
+ * money the platform owes, decided by PayoutsOps.
+ */
 export function PayoutsPage() {
+  const [tab, setTab] = useState<Tab>('queue');
+
+  return (
+    <div className="mx-auto max-w-[1500px] space-y-5">
+      <div>
+        <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-brand">
+          Stylemint commerce platform
+        </p>
+        <h1 className="mt-2 flex items-center gap-2 text-2xl font-black tracking-tight text-text-primary">
+          <Banknote className="h-5 w-5 text-brand" strokeWidth={1.6} />
+          Payouts
+        </h1>
+        <p className="mt-1 text-sm text-text-muted">
+          What the platform owes vendors, creators and couriers — what is held or failing, and the
+          insurance claims filed against partnership cover.
+        </p>
+      </div>
+
+      <div className="flex flex-wrap gap-1.5">
+        <FilterChip active={tab === 'queue'} onClick={() => setTab('queue')}>
+          <span className="flex items-center gap-1.5">
+            <Banknote className="h-3.5 w-3.5" strokeWidth={1.6} /> Payout queue
+          </span>
+        </FilterChip>
+        <FilterChip active={tab === 'insurance'} onClick={() => setTab('insurance')}>
+          <span className="flex items-center gap-1.5">
+            <ShieldQuestion className="h-3.5 w-3.5" strokeWidth={1.6} /> Insurance claims
+          </span>
+        </FilterChip>
+      </div>
+
+      {tab === 'queue' ? <PayoutQueue /> : <InsuranceClaimsPanel />}
+    </div>
+  );
+}
+
+function PayoutQueue() {
   const client = useQueryClient();
   const [state, setState] = useState<PayoutStateValue | undefined>(undefined);
   const [skip, setSkip] = useState(0);
@@ -67,33 +112,9 @@ export function PayoutsPage() {
   );
 
   return (
-    <div className="mx-auto max-w-[1500px] space-y-5">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-brand">
-            Stylemint commerce platform
-          </p>
-          <h1 className="mt-2 flex items-center gap-2 text-2xl font-black tracking-tight text-text-primary">
-            <Banknote className="h-5 w-5 text-brand" strokeWidth={1.6} />
-            Payouts
-          </h1>
-          <p className="mt-1 text-sm text-text-muted">
-            What the platform owes vendors, creators and couriers — and what is held or failing.
-          </p>
-        </div>
-        <button
-          onClick={() => page.refetch()}
-          className="flex items-center gap-2 self-start rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
-        >
-          <RefreshCw
-            className={`h-3.5 w-3.5 ${page.isFetching ? 'animate-spin' : ''}`}
-            strokeWidth={1.6}
-          />
-          Refresh
-        </button>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-1.5">
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
         <FilterChip active={state === undefined} onClick={() => pick(undefined)}>
           All
         </FilterChip>
@@ -102,6 +123,17 @@ export function PayoutsPage() {
             {PAYOUT_STATE_LABEL[value]}
           </FilterChip>
         ))}
+        </div>
+        <button
+          onClick={() => page.refetch()}
+          className="flex items-center gap-2 rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
+        >
+          <RefreshCw
+            className={`h-3.5 w-3.5 ${page.isFetching ? 'animate-spin' : ''}`}
+            strokeWidth={1.6}
+          />
+          Refresh
+        </button>
       </div>
 
       <div className="flex items-start gap-2.5 rounded-card border-thin border-border-subtle bg-glass-1 p-3">

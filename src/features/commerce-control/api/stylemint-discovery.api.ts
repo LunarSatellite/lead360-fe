@@ -7,6 +7,7 @@ import { stylemintOperationsApi } from './stylemint-operations.api';
  *  - featured matches — creator/brand pairings the matcher proposed, awaiting a human
  *  - fairness audit   — whether the matcher is distributing exposure evenly
  *  - reach            — the publish pipeline and the policy alerts against it
+ *  - social webhooks  — what the social providers actually delivered, and when
  *
  * They belong together because they are the same lever: what the platform promotes, and the
  * check on whether it is promoting fairly.
@@ -200,6 +201,19 @@ export const stylemintDiscoveryApi = {
         method: 'POST',
         path: 'v1/admin/reach/publish/drain',
         query: `maxJobs=${maxJobs}`,
+      }),
+    ),
+
+  /**
+   * Recent inbound deliveries from the social providers — the other end of reach. When a publish
+   * looks stuck, this is where you see whether the provider ever called back.
+   */
+  socialWebhooks: async (take = 100): Promise<unknown> =>
+    unwrap<unknown>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: 'v1/admin/social/webhooks',
+        query: `take=${take}`,
       }),
     ),
 };

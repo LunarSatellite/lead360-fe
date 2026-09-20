@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { Download, Upload, FileUp, Loader2 } from 'lucide-react';
+import { env } from '@/shared/config/env';
 
 interface Props {
   exportUrl: string;
@@ -9,7 +10,12 @@ interface Props {
   isImporting?: boolean;
 }
 
-const BASE = 'http://localhost:50363/api';
+// Was hardcoded to http://localhost:50363/api, which shipped in the production
+// bundle: every CSV export and template download in a deployed console pointed
+// at whoever was running the API on the operator's own machine. Silent, too -
+// the fetch just fails and the download never starts. Uses the same configured
+// origin as every other request now.
+const BASE = env.apiBaseUrl;
 
 async function downloadWithAuth(url: string, filename: string) {
   const token = localStorage.getItem('omniflow_token');

@@ -125,6 +125,9 @@ export const router = createBrowserRouter([
       { path: 'intelligence-console/related-signals', lazy: () => import('@/features/intelligence-console/pages/AuroraRelatePage') },
       { path: 'intelligence-console/related-signals/:targetKind/:targetId', lazy: () => import('@/features/intelligence-console/pages/AuroraRecordPage') },
       { path: 'intelligence-console/autonomous-operations', lazy: () => import('@/features/intelligence-console/pages/AutonomousOperationsPage') },
+      // ── Retail decision twin — SuperAdmin Define/Simulate/Compare/Learn ──
+      { path: 'decision-twin', lazy: () => import('@/features/decision-twin/pages/DecisionTwinPage') },
+      { path: 'decision-twin/studies/:studyId', lazy: () => import('@/features/decision-twin/pages/DecisionTwinStudyPage') },
       // ── Chat-first primary surfaces (new) ──
       { path: 'chat', lazy: () => import('@/features/chat/pages/ChatPage') },
       { path: 'home', lazy: () => import('@/features/home/pages/HomePage') },

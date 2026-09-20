@@ -36,7 +36,15 @@ import {
  * leave the operator guessing which half.
  */
 
-/** The states worth filtering to, in the order work flows through them. */
+/**
+ * The states worth filtering to, in the order work flows through them.
+ *
+ * Every state `availableSteps` offers an action from has a chip here. That is the rule, not a
+ * convenience: a queue exists to show what is waiting, so a state with a pending step and no way
+ * to filter to it is work an operator can only find by scrolling "All". Setting tracking sends an
+ * order to Shipped, and Shipped is where the in-transit step is taken — both were missing, so an
+ * order handed to a courier fell out of the chips entirely.
+ */
 const FILTERS: Array<{ label: string; state?: number }> = [
   { label: 'All' },
   { label: 'Paid', state: SubOrderState.Paid },
@@ -44,8 +52,11 @@ const FILTERS: Array<{ label: string; state?: number }> = [
   { label: 'Accepted', state: SubOrderState.Accepted },
   { label: 'Packed', state: SubOrderState.Packed },
   { label: 'Ready to ship', state: SubOrderState.ReadyToShip },
+  { label: 'Awaiting tracking', state: SubOrderState.AwaitingTracking },
+  { label: 'Shipped', state: SubOrderState.Shipped },
   { label: 'Handed over', state: SubOrderState.HandedOver },
   { label: 'In transit', state: SubOrderState.InTransit },
+  { label: 'Out for delivery', state: SubOrderState.OutForDelivery },
   { label: 'Delivered', state: SubOrderState.Delivered },
 ];
 

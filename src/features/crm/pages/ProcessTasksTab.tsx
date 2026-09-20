@@ -375,7 +375,7 @@ function MyTasksTab({ onSelectTask }: { onSelectTask: (task: ProcessTaskDto) => 
   };
 
   const { data, isLoading } = useMyProcessTasks(filter);
-  const paged = data as unknown as { items: ProcessTaskDto[]; totalCount: number } | undefined;
+  const paged = data;
   const tasks = paged?.items ?? [];
   const totalCount = paged?.totalCount ?? 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
@@ -429,7 +429,7 @@ function TeamTasksTab({ onSelectTask }: { onSelectTask: (task: ProcessTaskDto) =
   };
 
   const { data, isLoading } = useTeamProcessTasks(searchedLabel, filter);
-  const paged = data as unknown as { items: ProcessTaskDto[]; totalCount: number } | undefined;
+  const paged = data;
   const tasks = paged?.items ?? [];
   const totalCount = paged?.totalCount ?? 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);

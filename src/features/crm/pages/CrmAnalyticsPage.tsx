@@ -16,15 +16,7 @@ import {
   useUndoAiAction,
 } from '../api/crm.queries';
 import type {
-  DealStatsDto,
-  ContactStatsDto,
-  RevenueAnalyticsDto,
-  ActivityAnalyticsDto,
-  VelocityAnalyticsDto,
-  DealPipelineDto,
   CrmAiActionDto,
-  NurtureAnalyticsDto,
-  LeadFunnelAnalyticsDto,
 } from '../types/crm.types';
 import {
   CrmAiActionStatus,
@@ -174,14 +166,14 @@ export function Component() {
   const { data: rawNurture, isLoading: loadingNurture } = useNurtureAnalytics();
   const { data: rawFunnel, isLoading: loadingFunnel } = useLeadFunnelAnalytics();
 
-  const dealStats = rawDealStats as unknown as DealStatsDto | undefined;
-  const contactStats = rawContactStats as unknown as ContactStatsDto | undefined;
-  const revenue = rawRevenue as unknown as RevenueAnalyticsDto | undefined;
-  const activity = rawActivity as unknown as ActivityAnalyticsDto | undefined;
-  const velocity = rawVelocity as unknown as VelocityAnalyticsDto | undefined;
-  const pipeline = rawPipeline as unknown as DealPipelineDto | undefined;
-  const nurture = rawNurture as unknown as NurtureAnalyticsDto | undefined;
-  const funnel = rawFunnel as unknown as LeadFunnelAnalyticsDto | undefined;
+  const dealStats = rawDealStats;
+  const contactStats = rawContactStats;
+  const revenue = rawRevenue;
+  const activity = rawActivity;
+  const velocity = rawVelocity;
+  const pipeline = rawPipeline;
+  const nurture = rawNurture;
+  const funnel = rawFunnel;
 
   const loading = loadingDeals || loadingContacts || loadingRevenue || loadingActivity || loadingVelocity || loadingPipeline || loadingNurture || loadingFunnel;
 

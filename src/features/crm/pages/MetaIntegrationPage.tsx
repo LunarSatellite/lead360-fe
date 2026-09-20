@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-  Facebook, Loader2, CheckCircle, XCircle, RefreshCw, Zap, Plus,
+  Facebook, Loader2, CheckCircle, RefreshCw, Zap, Plus,
   BarChart3, TrendingUp, Users, DollarSign,
   Eye, Play, Pause, ExternalLink, ChevronRight,
   Target, Pencil, Check, X, Bot, Copy, Link, Settings,
@@ -339,7 +339,7 @@ function CampaignDetail({
     queryFn: () => api.crmLeads(campaign.fbCampaignId),
     enabled: crmTab === 'leads',
   });
-  const crmLeads = (crmLeadsRaw as unknown as CrmLead[]) ?? [];
+  const crmLeads = crmLeadsRaw ?? [];
 
   const targeting = (() => {
     try { return JSON.parse(campaign.targetingSummaryJson ?? '{}'); }
@@ -871,12 +871,15 @@ export function Component() {
   const { data: rawMeta } = useQuery({ queryKey: ['meta-integration'], queryFn: api.metaGet });
   const { data: rawAccount } = useQuery({ queryKey: ['fb-account'], queryFn: api.accountGet });
   const { data: rawCampaigns, isLoading: campaignsLoading } = useQuery({ queryKey: ['fb-campaigns'], queryFn: api.campaigns });
-  const { data: rawAggregate } = useQuery({ queryKey: ['fb-aggregate'], queryFn: api.aggregate, enabled: !!(rawAccount as any)?.isActive });
+  const { data: rawAggregate } = useQuery({ queryKey: ['fb-aggregate'], queryFn: api.aggregate, enabled: !!rawAccount?.isActive });
 
-  const meta      = rawMeta as unknown as MetaIntegration | null;
-  const account   = rawAccount as unknown as FbAdAccount | null;
-  const campaigns = (rawCampaigns as unknown as FbAdCampaign[]) ?? [];
-  const aggregate = rawAggregate as unknown as FbAggregate | null;
+  // `?? null` because these queries read `undefined` until the first fetch
+  // settles, while the child components model "not connected" as null. The
+  // previous casts silently asserted the undefined away.
+  const meta      = rawMeta ?? null;
+  const account   = rawAccount ?? null;
+  const campaigns = rawCampaigns ?? [];
+  const aggregate = rawAggregate ?? null;
 
   const selectedCampaign = campaigns.find(c => c.id === selectedId) ?? null;
 

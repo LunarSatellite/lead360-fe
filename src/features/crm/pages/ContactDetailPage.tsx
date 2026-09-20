@@ -346,10 +346,10 @@ export function Component() {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const { data: raw, isLoading } = useContactById(id);
-  const contact = raw as unknown as CrmContactDetailDto | undefined;
+  const contact = raw;
 
   const { data: rawEnrollments } = useCrmContactEnrollments(id ?? '');
-  const enrollments = rawEnrollments as unknown as CrmNurtureEnrollmentDto[] | undefined;
+  const enrollments = rawEnrollments;
 
   const updateContact = useUpdateContact();
   const deleteContact = useDeleteContact();

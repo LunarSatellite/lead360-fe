@@ -414,7 +414,7 @@ function ProcessWorkflowDefinitionsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [startingId, setStartingId] = useState<string | null>(null);
   const { data: rawDefs, isLoading } = useProcessDefinitions();
-  const definitions = (rawDefs as unknown as ProcessDefinitionDto[] | undefined) ?? [];
+  const definitions = rawDefs ?? [];
   const deleteDef = useDeleteProcessDefinition();
 
   const editingDef = editingId ? definitions.find(d => d.id === editingId) ?? null : null;

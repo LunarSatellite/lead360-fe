@@ -9,7 +9,7 @@ import {
 } from '../api/crm.queries';
 import { CsvToolbar } from '../components/CsvToolbar';
 import type {
-  CrmContactFilter, CrmContactSummaryDto, CrmContactCreateRequest, PagedResult,
+  CrmContactFilter, CrmContactSummaryDto, CrmContactCreateRequest, 
 } from '../types/crm.types';
 import {
   CrmContactSourceKind, CRM_CONTACT_SOURCE_LABELS,
@@ -138,32 +138,6 @@ function Modal({
       </div>
     </div>,
     document.body
-  );
-}
-
-function SlideOver({
-  title, onClose, children,
-}: {
-  title: string;
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-bg shadow-2xl flex flex-col border-l border-border-subtle h-full">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
-      </div>
-    </div>
   );
 }
 
@@ -307,7 +281,7 @@ export function Component() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   const { data: raw, isLoading } = useContacts(filter);
-  const data = raw as unknown as PagedResult<CrmContactSummaryDto> | undefined;
+  const data = raw;
 
   const createContact = useCreateContact();
   const deleteContact = useDeleteContact();

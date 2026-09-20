@@ -8,7 +8,7 @@ import { format, parseISO } from 'date-fns';
 import {
   useProcessInstances, useProcessInstance, useCancelProcessInstance,
 } from '../api/process-workflow.queries';
-import type { ProcessInstanceDto, ProcessInstanceFilter, ProcessTaskDto } from '../types/process-workflow.types';
+import type { ProcessInstanceFilter, ProcessTaskDto } from '../types/process-workflow.types';
 import {
   ProcessInstanceStatus, ProcessTaskStatus,
   PROCESS_TASK_STATUS_LABELS, PROCESS_TASK_STATUS_COLORS,
@@ -67,7 +67,7 @@ function TaskItem({ task }: { task: ProcessTaskDto }) {
 
 function InstanceDetail({ instanceId, onClose }: { instanceId: string; onClose: () => void }) {
   const { data: raw, isLoading } = useProcessInstance(instanceId);
-  const instance = raw as unknown as ProcessInstanceDto | undefined;
+  const instance = raw;
   const cancel = useCancelProcessInstance();
   const config = instance ? INSTANCE_STATUS_CONFIG[instance.status] : null;
 
@@ -199,7 +199,7 @@ function ProcessWorkflowInstancesPage() {
   };
 
   const { data, isLoading } = useProcessInstances(filter);
-  const paged = data as unknown as { items: ProcessInstanceDto[]; totalCount: number } | undefined;
+  const paged = data;
   const instances = paged?.items ?? [];
   const totalCount = paged?.totalCount ?? 0;
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);

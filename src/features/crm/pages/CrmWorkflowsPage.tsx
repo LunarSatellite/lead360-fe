@@ -24,14 +24,12 @@ import {
   useDealStages, useNurtureSequences,
 } from '../api/crm.queries';
 import { useProcessDefinitions } from '../api/process-workflow.queries';
-import type { ProcessDefinitionDto } from '../types/process-workflow.types';
 import type {
   CrmWorkflowSummaryDto, CrmWorkflowCreateRequest, CrmWorkflowUpdateRequest,
-  CrmWorkflowStepRequest, CrmDealStageSummaryDto, NurtureSequenceDto,
+  CrmWorkflowStepRequest, 
 } from '../types/crm.types';
-import type { UserDto } from '@/features/auth/types/auth.types';
 import {
-  CrmWorkflowTriggerType, CrmWorkflowActionType,
+  CrmWorkflowTriggerType,
   CRM_WORKFLOW_TRIGGER_LABELS, CRM_WORKFLOW_ACTION_LABELS,
   CRM_WORKFLOW_EXECUTION_STATUS_LABELS,
 } from '../types/crm.types';
@@ -124,33 +122,6 @@ const SUBTYPE_TO_TRIGGER: Record<string, CrmWorkflowTriggerType> = {
   form_submitted:  CrmWorkflowTriggerType.Manual,
   custom_event:    CrmWorkflowTriggerType.Manual,
   lead_score:      CrmWorkflowTriggerType.LeadScoreThreshold,
-};
-const TRIGGER_TO_SUBTYPE: Record<number, string> = {
-  [CrmWorkflowTriggerType.FunnelStageChanged]:  'contact_created',
-  [CrmWorkflowTriggerType.DealStageChanged]:    'deal_updated',
-  [CrmWorkflowTriggerType.SupportCaseCreated]:  'ticket_created',
-  [CrmWorkflowTriggerType.SupportCaseEscalated]:'ticket_created',
-  [CrmWorkflowTriggerType.LeadScoreThreshold]:  'lead_score',
-  [CrmWorkflowTriggerType.TaskDueSoon]:         'custom_event',
-  [CrmWorkflowTriggerType.Manual]:              'custom_event',
-};
-const SUBTYPE_TO_ACTION: Record<string, CrmWorkflowActionType> = {
-  send_email:    CrmWorkflowActionType.SendEmail,
-  send_sms:      CrmWorkflowActionType.SendNotification,
-  create_task:   CrmWorkflowActionType.CreateTask,
-  update_record: CrmWorkflowActionType.UpdateFunnelStage,
-  assign_owner:  CrmWorkflowActionType.AssignToUser,
-  create_note:   CrmWorkflowActionType.CreateTask,
-  create_ticket: CrmWorkflowActionType.CreateTask,
-  webhook:       CrmWorkflowActionType.SendNotification,
-};
-const ACTION_TO_SUBTYPE: Record<number, string> = {
-  [CrmWorkflowActionType.CreateTask]:        'create_task',
-  [CrmWorkflowActionType.SendNotification]:  'notify',
-  [CrmWorkflowActionType.UpdateFunnelStage]: 'update_record',
-  [CrmWorkflowActionType.AssignToUser]:      'assign_owner',
-  [CrmWorkflowActionType.CreateNurtureEntry]:'create_task',
-  [CrmWorkflowActionType.SendEmail]:         'send_email',
 };
 
 // ── Validation ────────────────────────────────────────────────────────────────
@@ -304,38 +275,9 @@ function DelayNode({ id, data }: NodeProps) {
   );
 }
 
-const TRIGGER_BADGE_COLORS: Record<number, string> = {
-  1: 'bg-brand-soft text-brand border-border-glow',
-  2: 'bg-success-soft text-success border-[rgba(34,197,94,0.2)]',
-  3: 'bg-bg-elevated text-text-secondary border-border-subtle',
-  4: 'bg-danger-soft text-danger border-[rgba(244,63,94,0.2)]',
-  5: 'bg-[rgba(245,158,11,0.1)] text-[#F59E0B] border-[rgba(245,158,11,0.2)]',
-  6: 'bg-bg-elevated text-text-muted border-border-subtle',
-  7: 'bg-bg-card text-text-muted border-border-subtle',
-};
-const EXEC_STATUS_COLORS: Record<number, string> = {
-  1: 'bg-bg-elevated text-text-secondary border-border-subtle',
-  2: 'bg-brand-soft text-brand border-border-glow',
-  3: 'bg-success-soft text-success border-[rgba(34,197,94,0.2)]',
-  4: 'bg-danger-soft text-danger border-[rgba(244,63,94,0.2)]',
-  5: 'bg-bg-elevated text-text-muted border-border-subtle',
-};
 
-const CONDITION_HINTS: Partial<Record<CrmWorkflowTriggerType, string>> = {
-  [CrmWorkflowTriggerType.FunnelStageChanged]: '{"toStage":"Hot"} — fire only when stage reaches this value',
-  [CrmWorkflowTriggerType.DealStageChanged]: '{"toStage":"Closed Won"} — optional stage filter',
-  [CrmWorkflowTriggerType.LeadScoreThreshold]: '{"threshold":80} — fires once when score crosses this number',
-};
 
-const ACTION_CONFIG_HINTS: Partial<Record<CrmWorkflowActionType, string>> = {
-  [CrmWorkflowActionType.AssignToUser]: '{"userId":"<user-guid>"}',
-  [CrmWorkflowActionType.CreateTask]: '{"title":"Follow up","description":"...","priority":"High"}',
-  [CrmWorkflowActionType.SendNotification]: '{"title":"Alert","body":"...","userId":"<user-guid or omit for all>"}',
-  [CrmWorkflowActionType.UpdateFunnelStage]: '{"newStage":"Qualified"}',
-  [CrmWorkflowActionType.CreateNurtureEntry]: '{"sequenceId":"<sequence-guid>"}',
-};
 
-const EMPTY_STEP = (): CrmWorkflowStepRequest => ({ stepOrder: 1, actionType: 'create_task', actionConfigJson: '{}', delayMinutes: 0 });
 
 // ── Missing node components ────────────────────────────────────────────────────
 function AiNode({ id, data }: NodeProps) {
@@ -450,7 +392,7 @@ function stepsToGraph(steps: Array<CrmWorkflowStepRequest | { id?: string; stepO
   return { nodes, edges };
 }
 
-function graphToSteps(nodes: Node[], edges: Edge[]): CrmWorkflowStepRequest[] {
+function graphToSteps(nodes: Node[]): CrmWorkflowStepRequest[] {
   const sorted = nodes.filter((n) => n.type !== 'trigger' && n.type !== 'end');
   return sorted.map((n, i) => {
     const cfg = (n.data.config as Record<string, any>) ?? {};
@@ -542,7 +484,7 @@ function TriggerConditionEditor({ triggerType, value, onChange }: {
   triggerType: string; value: string; onChange: (json: string) => void;
 }) {
   const stagesQ = useDealStages();
-  const stages = (stagesQ.data as unknown as CrmDealStageSummaryDto[] | undefined) ?? [];
+  const stages = stagesQ.data ?? [];
   const parsed = useMemo(() => { try { return JSON.parse(value || '{}') as Record<string, unknown>; } catch { return {} as Record<string, unknown>; } }, [value]);
   const set = (k: string, v: unknown) => { const next = { ...parsed }; if (v === '' || v == null) delete next[k]; else next[k] = v; onChange(JSON.stringify(next)); };
 
@@ -597,9 +539,9 @@ function ActionConfigEditor({ actionType, value, onChange }: {
   const parsed = useMemo(() => { try { return JSON.parse(value || '{}') as Record<string, unknown>; } catch { return {} as Record<string, unknown>; } }, [value]);
   const set = (k: string, v: unknown) => { const next = { ...parsed }; if (v === '' || v == null) delete next[k]; else next[k] = v; onChange(JSON.stringify(next)); };
 
-  const users = (usersQ.data as unknown as UserDto[] | undefined) ?? [];
-  const stages = ((stagesQ.data as unknown as CrmDealStageSummaryDto[] | undefined) ?? []).filter(s => !s.isClosed);
-  const sequences = (sequencesQ.data as unknown as NurtureSequenceDto[] | undefined) ?? [];
+  const users = usersQ.data ?? [];
+  const stages = (stagesQ.data ?? []).filter(s => !s.isClosed);
+  const sequences = sequencesQ.data ?? [];
   const uLabel = (u: { id: string; fullName?: string | null; email?: string | null }) => u.fullName ?? u.email ?? u.id;
 
   const F = 'nodrag w-full px-2 py-1 border border-border-subtle rounded text-[10px] bg-bg-shell text-text-primary outline-none focus:border-brand';
@@ -713,7 +655,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
   );
 
   if (actionType === 'start_process') {
-    const defs = (processDefsQ.data as unknown as ProcessDefinitionDto[] | undefined) ?? [];
+    const defs = processDefsQ.data ?? [];
     return (
       <div><label className={L}>Process Definition *</label>
         <select className={F} value={String(parsed.definition_id ?? '')} onChange={(e) => set('definition_id', e.target.value)}>
@@ -1163,7 +1105,7 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                   <CF label="Sequence ID" value={cfg.sequenceId ?? ''} placeholder="Paste nurture sequence ID" onChange={(v) => sf('sequenceId', v)} />
                 )}
                 {cfg.actionType === 'start_process' && (() => {
-                  const defs = (processDefsQ.data as unknown as ProcessDefinitionDto[] | undefined) ?? [];
+                  const defs = processDefsQ.data ?? [];
                   return (
                     <div>
                       <label className="block text-2xs font-semibold mb-1 text-text-secondary">Process Definition *</label>
@@ -1516,13 +1458,13 @@ function WorkflowChatWidget({
       if (!workflowId) {
         // Generate mode — no workflow exists yet
         // Interceptor unwraps ServiceResult<T> at runtime; cast reflects that
-        const dto = await generateMutation.mutateAsync({ Instruction: text }) as unknown as import('../types/crm.types').CrmWorkflowDetailDto;
+        const dto = await generateMutation.mutateAsync({ Instruction: text });
         applyDto(dto);
         onWorkflowCreated(dto.id, dto.name);
         showToast(`✅ "${dto.name}" created — ${dto.steps.length} step${dto.steps.length !== 1 ? 's' : ''}`);
       } else {
         // Chat-modify mode — refine existing workflow
-        const dto = await chatMutation.mutateAsync({ id: workflowId, message: text }) as unknown as import('../types/crm.types').CrmWorkflowDetailDto;
+        const dto = await chatMutation.mutateAsync({ id: workflowId, message: text });
         applyDto(dto);
         showToast(`✅ Workflow updated — ${dto.steps.length} step${dto.steps.length !== 1 ? 's' : ''}`);
       }
@@ -1812,7 +1754,7 @@ function WorkflowBuilder({ workflow, onBack }: { workflow: CrmWorkflowSummaryDto
     if (!name.trim()) return;
     setIsSaving(true);
     try {
-      const steps = graphToSteps(nodes, edges);
+      const steps = graphToSteps(nodes);
       const trigNode = nodes.find((n) => n.type === 'trigger');
       // Prefer the explicit apiTriggerType the user chose in Configure; fall back to subtype mapping
       const trigCfg = (trigNode?.data.config as Record<string,string>) ?? {};

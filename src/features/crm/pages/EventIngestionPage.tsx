@@ -133,7 +133,7 @@ function EventIngestionPage() {
   const { data, isLoading } = useEventIngestionKey();
   const generate = useGenerateEventIngestionKey();
 
-  const responseData = data as unknown as EventIngestionKeyDto | { Key: null; Message: string } | undefined;
+  const responseData = data;
   const keyData = responseData && 'Key' in responseData && responseData.Key
     ? responseData as EventIngestionKeyDto
     : null;

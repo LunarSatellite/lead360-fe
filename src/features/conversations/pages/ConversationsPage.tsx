@@ -5,7 +5,6 @@ import { useActiveSessions, useAwaitingSessions, useMySessions, useMessages, use
 import { useMoveDealStage, useCloseDeal, useDealStages } from '../../crm/api/crm.queries';
 import { SESSION_STATUS_LABEL, SESSION_STATUS_COLOR, CHANNEL_LABEL, ROUTING_PATH_LABEL, MessageDirection } from '../types/conversation.types';
 import type { SessionDto } from '../types/conversation.types';
-import type { CrmDealStageSummaryDto } from '../../crm/types/crm.types';
 
 export function Component() {
   const [tab, setTab] = useState<'active' | 'awaiting' | 'mine'>('active');
@@ -99,7 +98,7 @@ function DealSidebar({ sessionId }: { sessionId: string }) {
   const { data: rawDeal } = useSessionDeal(sessionId);
   const deal = rawDeal as any;
   const { data: rawStages } = useDealStages();
-  const stages = (rawStages as unknown as CrmDealStageSummaryDto[] | undefined)?.slice().sort((a, b) => a.order - b.order) ?? [];
+  const stages = rawStages?.slice().sort((a, b) => a.order - b.order) ?? [];
   const moveStage = useMoveDealStage();
   const closeDeal = useCloseDeal();
 

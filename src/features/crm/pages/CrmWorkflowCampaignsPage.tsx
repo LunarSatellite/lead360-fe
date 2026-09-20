@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, X, Loader2, Play, Target, Settings } from 'lucide-react';
+import { Plus, X, Loader2, Play, Target } from 'lucide-react';
 import { useWorkflowCampaigns, useCreateWorkflowCampaign, useExecuteWorkflowCampaign, useWorkflows } from '../api/crm.queries';
 import type { CrmWorkflowCampaignDto, CrmWorkflowCampaignCreateRequest, CrmWorkflowSummaryDto } from '../types/crm.types';
 import { CRM_WORKFLOW_TRIGGER_LABELS } from '../types/crm.types';

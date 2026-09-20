@@ -5,7 +5,7 @@ import {
   useTasks, useCreateTask, useUpdateTask, useDeleteTask, useCompleteTask,
 } from '../api/crm.queries';
 import type {
-  CrmTaskSummaryDto, CrmTaskCreateRequest, CrmTaskFilter, PagedResult,
+  CrmTaskSummaryDto, CrmTaskCreateRequest, CrmTaskFilter, 
 } from '../types/crm.types';
 import {
   CrmTaskStatus, CrmTaskPriority,
@@ -299,7 +299,7 @@ export function Component() {
   };
 
   const { data: raw, isLoading } = useTasks(filter);
-  const data = raw as unknown as PagedResult<CrmTaskSummaryDto> | undefined;
+  const data = raw;
   const items: CrmTaskSummaryDto[] = (raw as any)?.items ?? [];
 
   const createTask = useCreateTask();

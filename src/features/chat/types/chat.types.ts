@@ -383,6 +383,11 @@ export interface MultiSelectCard {
   options: OptionItem[];
   minSelections?: number;
   maxSelections?: number;
+  // The backend does emit this for MultiSelect (forced `true` on the
+  // emit_turn path and on synthesized cards) — the DTO had simply drifted.
+  // Optional because the legacy attach_ui path still omits it, in which case
+  // no "Other" escape is rendered.
+  allowOther?: boolean;
 }
 
 export interface SliderCard {

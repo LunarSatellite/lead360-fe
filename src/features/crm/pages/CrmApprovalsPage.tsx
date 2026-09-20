@@ -153,8 +153,8 @@ export function Component() {
   const { data: pendingRaw, isLoading: pendingLoading } = usePendingApprovals();
   const { data: allRaw, isLoading: allLoading } = useApprovals();
 
-  const pending = (pendingRaw as unknown as CrmApprovalSummaryDto[] | undefined) ?? [];
-  const all = (allRaw as unknown as CrmApprovalSummaryDto[] | undefined) ?? [];
+  const pending = pendingRaw ?? [];
+  const all = allRaw ?? [];
   const displayed = tab === 'pending' ? pending : all;
   const isLoading = tab === 'pending' ? pendingLoading : allLoading;
 

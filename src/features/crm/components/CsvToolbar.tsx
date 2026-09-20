@@ -6,7 +6,9 @@ interface Props {
   exportUrl: string;
   templateUrl: string;
   entityLabel: string;
-  onImport: (file: File) => Promise<void>;
+  // The import mutations resolve to a CsvImportResultDto; this component only
+  // awaits completion and reports nothing itself, so the result is unconstrained.
+  onImport: (file: File) => Promise<unknown>;
   isImporting?: boolean;
 }
 

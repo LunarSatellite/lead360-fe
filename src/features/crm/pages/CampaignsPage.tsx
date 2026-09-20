@@ -20,9 +20,7 @@ import {
   useConnectFbAdAccount, useDisconnectFbAdAccount, useSyncFbAdCampaigns,
 } from '../api/crm.queries';
 import type {
-  CrmCampaignSummaryDto, CrmCampaignPreviewDto,
-  CrmCampaignPerformanceDashboardDto, CrmCampaignAttributionDto,
-  CrmCampaignRecipientDto,
+  CrmCampaignSummaryDto,  
   CrmCampaignCreateRequest, CrmCampaignAttributionCreateRequest,
   CrmCampaignBudgetUpdateRequest,
   LeadCampaignDto, LeadCampaignCreateRequest, LeadSegmentFilter,
@@ -346,7 +344,7 @@ function PreviewPanel({ onClose }: { onClose: () => void }) {
   const [filterJson, setFilterJson] = useState('{}');
   const [jsonError, setJsonError] = useState('');
   const preview = usePreviewCrmCampaign();
-  const result = preview.data as unknown as CrmCampaignPreviewDto | undefined;
+  const result = preview.data;
 
   const handlePreview = () => {
     try {
@@ -400,7 +398,7 @@ function PreviewPanel({ onClose }: { onClose: () => void }) {
 
 function PerformancePanel({ campaignId }: { campaignId: string }) {
   const { data: raw, isLoading, isError } = useCrmCampaignPerformance(campaignId);
-  const d = raw as unknown as CrmCampaignPerformanceDashboardDto | undefined;
+  const d = raw;
 
   if (isLoading) return <div className="flex items-center justify-center h-24 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>;
   if (isError) return <p className="text-sm text-danger">Failed to load performance data.</p>;
@@ -487,7 +485,7 @@ function PerformancePanel({ campaignId }: { campaignId: string }) {
 
 function AttributionPanel({ campaignId }: { campaignId: string }) {
   const { data: raw, isLoading, isError } = useCrmCampaignAttributions(campaignId);
-  const attributions = (raw as unknown as CrmCampaignAttributionDto[] | undefined) ?? [];
+  const attributions = raw ?? [];
   const addAttribution = useAddCrmCampaignAttribution();
   const removeAttribution = useDeleteCrmCampaignAttribution();
   const [showForm, setShowForm] = useState(false);
@@ -639,7 +637,7 @@ function BudgetPanel({ campaign, onDone }: { campaign: CrmCampaignSummaryDto; on
 
 function RecipientsPanel({ campaignId }: { campaignId: string }) {
   const { data: raw, isLoading, isError } = useCrmCampaignRecipients(campaignId);
-  const recipients = (raw as unknown as CrmCampaignRecipientDto[] | undefined) ?? [];
+  const recipients = raw ?? [];
 
   if (isLoading) return <div className="flex items-center justify-center h-16 text-text-muted"><Loader2 className="w-4 h-4 animate-spin" /></div>;
   if (isError) return <p className="text-xs text-danger">Failed to load recipients.</p>;
@@ -888,7 +886,7 @@ function AggregateBar() {
 function B2BCampaignsTab() {
   const [showCreate, setShowCreate] = useState(false);
   const { data: raw, isLoading } = useCrmCampaigns();
-  const campaigns = (raw as unknown as CrmCampaignSummaryDto[] | undefined) ?? [];
+  const campaigns = raw ?? [];
   const createCampaign = useCreateCrmCampaign();
 
   return (

@@ -11,11 +11,10 @@ import {
   useImportDealsCsv, useCreateDeal, useAccounts,
 } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
-import type { UserDto } from '@/features/auth/types/auth.types';
 import { CsvToolbar } from '../components/CsvToolbar';
 import type { CrmDealStageCreateRequest, CrmDealCreateRequest } from '../types/crm.types';
 import type {
-  CrmDealSummaryDto, CrmDealStageSummaryDto, CrmDealFilter, PagedResult,
+  CrmDealSummaryDto,  CrmDealFilter, 
 } from '../types/crm.types';
 import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
@@ -189,12 +188,12 @@ export function Component() {
   const activePipelineId = selectedPipelineId ?? (pipelines[0]?.id ?? null);
 
   const { data: rawStages } = useDealStages(activePipelineId ? { pipelineId: activePipelineId } : undefined);
-  const stages = (rawStages as unknown as CrmDealStageSummaryDto[] | undefined)
+  const stages = rawStages
     ?.slice()
     .sort((a, b) => a.order - b.order) ?? [];
 
   const { data: teamRaw } = useTeamMembers();
-  const teamMembers = (teamRaw as unknown as UserDto[] | undefined) ?? [];
+  const teamMembers = teamRaw ?? [];
 
   const kanbanFilter: CrmDealFilter = {
     pageSize: 500,
@@ -206,10 +205,10 @@ export function Component() {
   };
 
   const { data: rawKanban, isLoading: kanbanLoading } = useDeals(kanbanFilter);
-  const kanbanData = rawKanban as unknown as PagedResult<CrmDealSummaryDto> | undefined;
+  const kanbanData = rawKanban;
 
   const { data: rawList, isLoading: listLoading } = useDeals(listFilter);
-  const listData = rawList as unknown as PagedResult<CrmDealSummaryDto> | undefined;
+  const listData = rawList;
 
   const moveStage = useMoveDealStage();
   const closeDeal = useCloseDeal();

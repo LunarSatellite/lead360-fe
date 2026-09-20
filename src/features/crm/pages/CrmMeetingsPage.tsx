@@ -141,7 +141,7 @@ function MeetingsTab() {
 
   const setI = (k: keyof typeof initForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setInitForm(f => ({ ...f, [k]: e.target.value }));
 
-  const detail = meetingDetail as unknown as import('../types/crm.types').CrmMeetingDetailDto | undefined;
+  const detail = meetingDetail;
   const selectedSummary = items.find(m => m.id === selectedId);
 
   return (

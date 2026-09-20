@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTeamMembers } from '@/features/team/api/team.queries';
-import type { UserDto } from '@/features/auth/types/auth.types';
 import {
   ArrowLeft, Phone, Mail, Hash, Clock, Loader2, Flame,
   MessageCircle, CalendarClock, Zap, X, Users, GitMerge,
@@ -13,9 +12,9 @@ import {
   useNurtureSequences, useEnrollLead, useLeadEnrollments,
 } from '../api/crm.queries';
 import type {
-  LeadDetailDto, LeadActivityDto, LeadNurtureStatusDto,
+   LeadActivityDto, LeadNurtureStatusDto,
   LeadStage as LeadStageType, ConvertLeadRequest,
-  NurtureSequenceDto, NurtureEnrollmentDto,
+   NurtureEnrollmentDto,
 } from '../types/crm.types';
 import { LeadStage, LEAD_STAGE_LABELS, LEAD_STAGE_COLORS, CHANNEL_LABELS, CrmEntityType } from '../types/crm.types';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
@@ -49,7 +48,7 @@ export function Component() {
   const navigate = useNavigate();
 
   const { data: rawLead, isLoading } = useLeadById(id);
-  const lead = rawLead as unknown as LeadDetailDto | undefined;
+  const lead = rawLead;
 
   const updateStage = useUpdateLeadStage();
   const addNote = useAddNote();
@@ -57,9 +56,9 @@ export function Component() {
   const { data: stagesRaw } = useDealStages();
   const dealStages = (stagesRaw as any) ?? [];
   const { data: teamRaw } = useTeamMembers();
-  const teamMembers = (teamRaw as unknown as UserDto[] | undefined) ?? [];
+  const teamMembers = teamRaw ?? [];
   const { data: enrollmentsRaw } = useLeadEnrollments(id ?? '');
-  const enrollments = (enrollmentsRaw as unknown as NurtureEnrollmentDto[]) ?? [];
+  const enrollments = enrollmentsRaw ?? [];
 
   const [noteText, setNoteText] = useState('');
   const [showNoteBox, setShowNoteBox] = useState(false);
@@ -459,7 +458,7 @@ function ActivityItem({ activity, isLast }: ActivityItemProps) {
 
 function EnrollModal({ leadId, onClose }: { leadId: string; onClose: () => void }) {
   const { data: seqRaw, isLoading } = useNurtureSequences();
-  const sequences = ((seqRaw as unknown as NurtureSequenceDto[]) ?? []).filter((s) => s.isActive);
+  const sequences = (seqRaw ?? []).filter((s) => s.isActive);
   const enrollMutation = useEnrollLead();
   const [selected, setSelected] = useState<string>('');
 

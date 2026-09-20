@@ -114,6 +114,7 @@ const primaryNav = [
   { label: 'Discovery', href: ROUTES.dashboard.discovery, icon: Compass },
   { label: 'Intelligence', href: ROUTES.dashboard.intelligence, icon: BrainCircuit },
   { label: 'Demand content', href: ROUTES.dashboard.demandContent, icon: FileSearch },
+  { label: 'Cart offer holdout', href: ROUTES.dashboard.cartOfferIncrementality, icon: FlaskConical },
   { label: 'Goal templates', href: ROUTES.dashboard.goalTemplates, icon: Target },
   { label: 'Trust', href: ROUTES.dashboard.trust, icon: BadgeCheck },
   { label: 'Operator access', href: ROUTES.dashboard.operatorAccess, icon: KeyRound },
@@ -344,6 +345,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/discovery')) return 'Discovery';
     if (path.includes('/stylemint/intelligence')) return 'Decision Intelligence';
     if (path.includes('/stylemint/demand-content')) return 'Demand Content';
+    if (path.includes('/stylemint/cart-offers')) return 'Cart Offer Holdout';
     if (path.includes('/stylemint/goal-templates')) return 'Goal Templates';
     if (path.includes('/stylemint/trust')) return 'Trust & Verification';
     if (path.includes('/chat')) return 'Chat';

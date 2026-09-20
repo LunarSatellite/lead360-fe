@@ -38,6 +38,7 @@ export const ROUTES = {
     discovery: '/dashboard/stylemint/discovery',
     intelligence: '/dashboard/stylemint/intelligence',
     demandContent: '/dashboard/stylemint/demand-content',
+    cartOfferIncrementality: '/dashboard/stylemint/cart-offers',
     goalTemplates: '/dashboard/stylemint/goal-templates',
     trust: '/dashboard/stylemint/trust',
     // ── Agent governance — the human half of the approval machinery ──

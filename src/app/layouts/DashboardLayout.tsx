@@ -8,7 +8,6 @@ import {
   BookOpen,
   Bot,
   Boxes,
-  BrainCircuit,
   Briefcase,
   Building,
   Building2,
@@ -115,7 +114,7 @@ export const primaryNav = [
   { label: 'Unit markers', href: ROUTES.dashboard.unitMarkers, icon: QrCode },
   { label: 'Campaigns', href: ROUTES.dashboard.commerceCampaigns, icon: Megaphone },
   { label: 'Discovery', href: ROUTES.dashboard.discovery, icon: Compass },
-  { label: 'Intelligence', href: ROUTES.dashboard.intelligence, icon: BrainCircuit },
+  { label: 'Simulation & rules', href: ROUTES.dashboard.intelligence, icon: FlaskConical },
   { label: 'Demand content', href: ROUTES.dashboard.demandContent, icon: FileSearch },
   { label: 'Cart offer holdout', href: ROUTES.dashboard.cartOfferIncrementality, icon: FlaskConical },
   { label: 'Goal templates', href: ROUTES.dashboard.goalTemplates, icon: Target },
@@ -319,7 +318,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/logistics')) return 'Delivery Operations';
     if (path.includes('/stylemint/campaigns')) return 'Campaigns';
     if (path.includes('/stylemint/discovery')) return 'Discovery';
-    if (path.includes('/stylemint/intelligence')) return 'Decision Intelligence';
+    if (path.includes('/stylemint/intelligence')) return 'Simulation & Constitution';
     if (path.includes('/stylemint/demand-content')) return 'Demand Content';
     if (path.includes('/stylemint/cart-offers')) return 'Cart Offer Holdout';
     if (path.includes('/stylemint/goal-templates')) return 'Goal Templates';

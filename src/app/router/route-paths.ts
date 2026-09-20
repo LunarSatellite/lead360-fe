@@ -35,6 +35,7 @@ export const ROUTES = {
     recipes: '/dashboard/stylemint/recipes',
     logistics: '/dashboard/stylemint/logistics',
     vendorDesk: '/dashboard/stylemint/vendor-desk',
+    unitMarkers: '/dashboard/stylemint/unit-markers',
     commerceCampaigns: '/dashboard/stylemint/campaigns',
     discovery: '/dashboard/stylemint/discovery',
     intelligence: '/dashboard/stylemint/intelligence',

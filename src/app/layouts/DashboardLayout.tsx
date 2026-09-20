@@ -46,6 +46,7 @@ import {
   PackageOpen,
   Phone,
   Plug,
+  QrCode,
   Receipt,
   RefreshCw,
   Rocket,
@@ -111,6 +112,7 @@ export const primaryNav = [
   { label: 'Reel recipes', href: ROUTES.dashboard.recipes, icon: ChefHat },
   { label: 'Delivery ops', href: ROUTES.dashboard.logistics, icon: Route },
   { label: 'Vendor desk', href: ROUTES.dashboard.vendorDesk, icon: Store },
+  { label: 'Unit markers', href: ROUTES.dashboard.unitMarkers, icon: QrCode },
   { label: 'Campaigns', href: ROUTES.dashboard.commerceCampaigns, icon: Megaphone },
   { label: 'Discovery', href: ROUTES.dashboard.discovery, icon: Compass },
   { label: 'Intelligence', href: ROUTES.dashboard.intelligence, icon: BrainCircuit },
@@ -293,6 +295,7 @@ export function DashboardLayout() {
     if (path.includes('/commerce-control')) return 'Stylemint Control Center';
     if (path.includes('/stylemint/orders')) return 'Orders & Fulfilment';
     // Before the broader /stylemint/vendor test, which would otherwise swallow it.
+    if (path.includes('/stylemint/unit-markers')) return 'Unit Markers';
     if (path.includes('/stylemint/vendor-desk')) return 'Vendor Desk';
     if (path.includes('/stylemint/vendor')) return 'Vendor Operations';
     if (path.includes('/stylemint/content')) return 'Content & Social Publishing';

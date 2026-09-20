@@ -141,3 +141,23 @@ export const ROUTES = {
   book: (slug: string) => `/book/${slug}`,
   bookEventType: (slug: string, eventTypeId: string) => `/book/${slug}/${eventTypeId}`,
 } as const;
+
+/**
+ * Where an authenticated operator lands.
+ *
+ * There used to be two answers. `routes.tsx` sent `/` and the `/dashboard`
+ * index to the commerce control centre; `RedirectIfAuth` sent anyone who hit
+ * an `/auth/*` URL while logged in to CRM analytics instead. So the landing
+ * surface depended on which door you came through.
+ *
+ * The commerce control centre wins, for three reasons: it is what every other
+ * entry point in the shell already points at (the `/` redirect, the
+ * `/dashboard` index, the mobile "Home" tab and the header's "Review
+ * operations" button); it is the console this product is; and the CRM database
+ * is created empty by the cutover, so CRM analytics opens on a screen of
+ * zeroes that reads as a product with no customers.
+ *
+ * Both paths now import this constant. Changing where operators land is one
+ * edit, in one place.
+ */
+export const POST_AUTH_LANDING: string = ROUTES.dashboard.commerceControl;

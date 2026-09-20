@@ -252,7 +252,11 @@ function ActivityTab() {
       </div>
 
       <ReportPanel
-        title={kinds.length > 0 ? `Activity — ${kinds.length} kinds` : 'Activity, newest first'}
+        title={
+          kinds.length > 0
+            ? `Activity — ${kinds.length} ${kinds.length === 1 ? 'kind' : 'kinds'}`
+            : 'Activity, newest first'
+        }
         query={feed}
         emptyNote="Nothing has happened on this shop yet."
       />

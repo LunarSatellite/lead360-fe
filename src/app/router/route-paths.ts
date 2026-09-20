@@ -37,6 +37,10 @@ export const ROUTES = {
     commerceCampaigns: '/dashboard/stylemint/campaigns',
     discovery: '/dashboard/stylemint/discovery',
     intelligence: '/dashboard/stylemint/intelligence',
+    // Decision intelligence is five reports behind five tabs. They answer on
+    // their own URLs so a demo script, an agenda or a bug report can point at
+    // one of them; bare /stylemint/intelligence still opens the cockpit.
+    intelligenceTab: (tab: string) => `/dashboard/stylemint/intelligence/${tab}`,
     demandContent: '/dashboard/stylemint/demand-content',
     cartOfferIncrementality: '/dashboard/stylemint/cart-offers',
     goalTemplates: '/dashboard/stylemint/goal-templates',
@@ -74,10 +78,11 @@ export const ROUTES = {
     chat: '/dashboard/chat',
     home: '/dashboard/home',
     // ── Existing pages (still reachable, still routed) ──
-    // NOTE: setup + onboarding kept for the type, but their routes are
-    // commented out in routes.tsx since chat-first replaces them. Don't
-    // link to them in new code.
-    setup: '/dashboard/setup',
+    // `setup` and `onboarding` used to be listed here with a note not to link
+    // to them. Their routes are commented out, so they resolved to nothing and
+    // nothing referenced them; removed rather than left as a trap. The pages
+    // themselves are intact on disk — uncomment the routes in route-table.tsx
+    // and add the keys back if chat-first onboarding is ever reversed.
     settings: '/dashboard/settings',
     team: '/dashboard/team',
     intents: '/dashboard/intents',
@@ -85,7 +90,9 @@ export const ROUTES = {
     apiSpecs: '/dashboard/api-specs',
     apiSpecDetail: (id: string) => `/dashboard/api-specs/${id}`,
     apiConnection: '/dashboard/api-connection',
-    apiConnectionDetail: (specId: string) => `/dashboard/api-connection/${specId}`,
+    // `/dashboard/intent-suggestions` and `/dashboard/api-specs/*` are legacy
+    // URLs that redirect here. They are kept so old bookmarks still land
+    // somewhere real; nothing in the app links to them.
     intentSuggestions: '/dashboard/intent-suggestions',
     catalog: '/dashboard/catalog',
     businessCatalog: '/dashboard/business-catalog',
@@ -94,12 +101,9 @@ export const ROUTES = {
     channels: '/dashboard/channels',
     testChannel: '/dashboard/test-channel',
     conversations: '/dashboard/conversations',
-    campaigns: '/dashboard/campaigns',
-    campaignNew: '/dashboard/campaigns/new',
     agents: '/dashboard/agents',
     analytics: '/dashboard/analytics',
     support: '/dashboard/support',
-    onboarding: '/dashboard/onboarding',
     // ── CRM ──
     crmLeads: '/dashboard/crm/leads',
     crmLeadDetail: (id: string) => `/dashboard/crm/leads/${id}`,
@@ -127,8 +131,6 @@ export const ROUTES = {
     crmDedup: '/dashboard/crm/dedup',
     crmAnnouncements: '/dashboard/crm/announcements',
     crmProcessTasks: '/dashboard/crm/process-tasks',
-    crmProcessDefinitions: '/dashboard/crm/process-definitions',
-    crmProcessInstances: '/dashboard/crm/process-instances',
     crmEventIngestion: '/dashboard/crm/event-ingestion',
     // ── Flow A/B Experiments ──
     flowExperiments: '/dashboard/flows/experiments',
@@ -141,3 +143,23 @@ export const ROUTES = {
   book: (slug: string) => `/book/${slug}`,
   bookEventType: (slug: string, eventTypeId: string) => `/book/${slug}/${eventTypeId}`,
 } as const;
+
+/**
+ * Where an authenticated operator lands.
+ *
+ * There used to be two answers. `routes.tsx` sent `/` and the `/dashboard`
+ * index to the commerce control centre; `RedirectIfAuth` sent anyone who hit
+ * an `/auth/*` URL while logged in to CRM analytics instead. So the landing
+ * surface depended on which door you came through.
+ *
+ * The commerce control centre wins, for three reasons: it is what every other
+ * entry point in the shell already points at (the `/` redirect, the
+ * `/dashboard` index, the mobile "Home" tab and the header's "Review
+ * operations" button); it is the console this product is; and the CRM database
+ * is created empty by the cutover, so CRM analytics opens on a screen of
+ * zeroes that reads as a product with no customers.
+ *
+ * Both paths now import this constant. Changing where operators land is one
+ * edit, in one place.
+ */
+export const POST_AUTH_LANDING: string = ROUTES.dashboard.commerceControl;

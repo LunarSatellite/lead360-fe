@@ -409,16 +409,14 @@ export function Component() {
                     >
                       Start a new chat
                     </button>
-                    {thread.costLimitError.startsWith('Your tenant has reached its daily') && (
-                      <button
-                        type="button"
-                        onClick={() => navigate('/dashboard/settings/billing')}
-                        className="h-7 px-2.5 rounded-sm text-bg text-[11px] font-bold transition-all hover:brightness-110 flex items-center gap-1"
-                        style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
-                      >
-                        Open billing <ArrowRight className="w-3 h-3" strokeWidth={2} />
-                      </button>
-                    )}
+                    {/* There was an "Open billing" button here, navigating to
+                        /dashboard/settings/billing. No such route exists, so it
+                        dead-ended. Nor is there anywhere to send it: the billing
+                        section of account settings is badged "Soon" and renders
+                        no body at all, so wiring the button to it would swap a
+                        dead end for a blank panel and still promise a self-serve
+                        billing screen this product does not have. The server's
+                        own sentence about the cap stands above, unembellished. */}
                   </div>
                 </div>
               </div>

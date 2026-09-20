@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { env } from '@/shared/config/env';
+import { POST_AUTH_LANDING } from './route-paths';
 
 // ─── Helpers ───
 
@@ -123,5 +124,5 @@ export function RedirectIfAuth({ children }: { children: ReactNode }) {
     return <>{children}</>;
   }
 
-  return <Navigate to="/dashboard/crm/analytics" replace />;
+  return <Navigate to={POST_AUTH_LANDING} replace />;
 }

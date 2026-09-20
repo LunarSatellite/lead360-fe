@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X, Plus, Loader2 } from 'lucide-react';
@@ -12,7 +11,7 @@ interface CreateChannelDialogProps {
   onClose: () => void;
 }
 
-const CHANNEL_OPTIONS = Object.entries(ChannelType).map(([key, val]) => ({
+const CHANNEL_OPTIONS = Object.entries(ChannelType).map(([, val]) => ({
   value: val,
   label: CHANNEL_TYPE_LABEL[val],
   color: CHANNEL_TYPE_COLOR[val],
@@ -46,7 +45,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
   const onSubmit = (data: CreateChannelFormData) => {
     create.mutate(
       {
-        tenantId: tenantId || undefined,
+        tenantId,
         channelType: data.channelType as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8,
         channelIdentifier: data.channelIdentifier,
         displayName: data.displayName || undefined,

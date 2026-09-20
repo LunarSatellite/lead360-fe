@@ -223,7 +223,7 @@ export function Component() {
             gap: 6,
           }}
         >
-          {PIPELINE_STEPS.map((s, i) => {
+          {PIPELINE_STEPS.map((s) => {
             const c = STEP_META[s.id].color;
             const isActive = step === s.id;
             return (

@@ -1,4 +1,4 @@
-import { Sparkles, Database, Loader2, AlertCircle } from 'lucide-react';
+import { Sparkles, Database, Loader2 } from 'lucide-react';
 import { useEnrichAll, useEmbedAll } from '../api/catalog.queries';
 import type { EnrichmentStatusDto, EmbeddingStatusDto } from '../types/catalog.types';
 

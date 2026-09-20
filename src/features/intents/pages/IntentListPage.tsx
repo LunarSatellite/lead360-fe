@@ -1,18 +1,16 @@
 import { useState, useMemo } from 'react';
 import {
   Target, Plus, Upload, Loader2, TreePine, List, Search,
-  Filter, X, Zap, ShoppingCart, FolderTree, FileText,
-  UserCheck, Menu, Send, Brain, LayoutGrid, Pencil, Tag,
+  X, Zap, ShoppingCart, FolderTree, FileText,
+  UserCheck, Menu, Send, Brain, LayoutGrid,
 } from 'lucide-react';
 import { useIntents, useIntentTree } from '../api/intents.queries';
 import { IntentTree } from '../components/IntentTree';
 import { IntentList } from '../components/IntentList';
 import { IntentFormModal } from '../components/IntentFormModal';
 import { IntentBulkImportModal } from '../components/IntentBulkImportModal';
-import {
-  OPERATION_TYPE_LABEL, IntentOperationType,
-} from '../types/intents.types';
-import type { IntentDto, IntentOperationTypeValue } from '../types/intents.types';
+import { IntentOperationType } from '../types/intents.types';
+import type { IntentDto } from '../types/intents.types';
 
 type ViewMode = 'cards' | 'tree' | 'list';
 
@@ -80,11 +78,6 @@ export function Component() {
 
   const handleEdit = (intent: IntentDto) => { setEditIntent(intent); setCreateOpen(true); };
   const handleCloseForm = () => { setCreateOpen(false); setEditIntent(null); };
-
-  const opFilterOptions = Object.entries(IntentOperationType).map(([, val]) => ({
-    value: val as IntentOperationTypeValue,
-    label: OPERATION_TYPE_LABEL[val as IntentOperationTypeValue],
-  }));
 
   return (
     <div className="space-y-0">

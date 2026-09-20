@@ -109,10 +109,13 @@ export const COMPLIANCE_INDUSTRY_LABEL: Record<string, string> = {
 
 // ─── Data Handling Category Config ───
 
+// Icons are NOT stored here as strings — a string `icon` cannot be rendered as
+// `<cat.icon />` (React treats it as an intrinsic DOM tag and renders nothing).
+// The owning component supplies the Lucide component reference.
 export const DATA_HANDLING_CATEGORIES = {
-  prohibited: { label: 'Never collect', color: 'danger' as const, icon: 'ShieldOff' as const },
-  allowedWithConsent: { label: 'With consent only', color: 'warning' as const, icon: 'ShieldAlert' as const },
-  freelyCollected: { label: 'Freely collected', color: 'success' as const, icon: 'ShieldCheck' as const },
+  prohibited: { label: 'Never collect', color: 'danger' as const },
+  allowedWithConsent: { label: 'With consent only', color: 'warning' as const },
+  freelyCollected: { label: 'Freely collected', color: 'success' as const },
 } as const;
 
 // ─── Rule Section Config (for collapsible viewer) ───

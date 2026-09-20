@@ -1,4 +1,4 @@
-import { useApiSpecs } from '@/features/api-connection/api/api-connection.queries';
+import { useSpecs } from '@/features/api-connection/api/api-connection.queries';
 import { SpecUploadZone } from '@/features/api-connection/components/SpecUploadZone';
 import { Check } from 'lucide-react';
 
@@ -7,7 +7,7 @@ interface Step1Props {
 }
 
 export function Step1ApiConnect({ onComplete }: Step1Props) {
-  const { data: specs } = useApiSpecs();
+  const { data: specs } = useSpecs();
   const specList = (specs as unknown as unknown[]) ?? [];
   const hasSpecs = specList.length > 0;
 

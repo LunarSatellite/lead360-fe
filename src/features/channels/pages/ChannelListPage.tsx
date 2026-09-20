@@ -45,9 +45,6 @@ export function Component() {
     return bTime - aTime;
   });
 
-  const heroConn = sortedActive[0] || null;
-  const secondaryConns = sortedActive.slice(1);
-
   return (
     <div className="space-y-4">
 

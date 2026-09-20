@@ -4,7 +4,6 @@
 // system badge, and actions to view rules or change profile.
 // ═══════════════════════════════════════════════════════════════
 
-import { useState } from 'react';
 import {
   ShieldCheck,
   Lock,
@@ -14,6 +13,7 @@ import {
   RefreshCw,
 } from 'lucide-react';
 import type { ComplianceProfile } from '../types/compliance.types';
+import { RULE_SECTIONS } from '../types/compliance.types';
 
 interface ComplianceProfileCardProps {
   profile: ComplianceProfile;
@@ -26,16 +26,12 @@ export function ComplianceProfileCard({
   onViewRules,
   onChangeProfile,
 }: ComplianceProfileCardProps) {
-  const totalRules =
-    profile.prohibitedTopics.length +
-    profile.requiredDisclaimers.length +
-    profile.restrictedPhrases.length +
-    profile.mandatoryReferences.length +
-    (profile.dataHandling
-      ? profile.dataHandling.prohibited.length +
-        profile.dataHandling.allowedWithConsent.length +
-        profile.dataHandling.freelyCollected.length
-      : 0);
+  // Every rule collection on the DTO is nullable; RULE_SECTIONS' countFns
+  // already treat absent collections as zero.
+  const totalRules = RULE_SECTIONS.reduce(
+    (sum, section) => sum + section.countFn(profile),
+    0,
+  );
 
   return (
     <div className="rounded-card bg-glass-1 border border-border-subtle overflow-hidden">

@@ -3,7 +3,7 @@ import { teamApi } from './team.api';
 import { toast } from 'sonner';
 import { ApiError } from '@/shared/lib/api-client';
 import type { CreateInvitationRequest, AcceptInvitationRequest, AdminUpdateUserRequest } from '../types/team.types';
-import type { AuthResponse, UserRoleValue } from '@/features/auth/types/auth.types';
+import type { AuthResponse } from '@/features/auth/types/auth.types';
 
 export const teamKeys = {
   all: ['team'] as const,

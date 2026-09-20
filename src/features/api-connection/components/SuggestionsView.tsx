@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Sparkles, Loader2, RefreshCw, CheckCheck, Target } from 'lucide-react';
+import { useMemo } from 'react';
+import { Sparkles, Loader2, RefreshCw, CheckCheck } from 'lucide-react';
 import {
   useSuggestions,
   useGenerateSuggestions,

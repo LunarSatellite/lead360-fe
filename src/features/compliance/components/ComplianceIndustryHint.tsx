@@ -4,7 +4,7 @@
 // profile based on the selected industry during registration.
 // ═══════════════════════════════════════════════════════════════
 
-import { Info, ShieldCheck, Loader2, AlertCircle } from 'lucide-react';
+import { Info, ShieldCheck, Loader2 } from 'lucide-react';
 import { useRecommendedProfile } from '../api/compliance.queries';
 
 interface ComplianceIndustryHintProps {

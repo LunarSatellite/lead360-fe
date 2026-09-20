@@ -87,7 +87,7 @@ import { applyTenantAccent } from '@/shared/lib/tenant-theme';
 // buildNav/configureNav arrays is still reachable via direct URLs and still
 // rendered inside the app — we just no longer list all 11 items in the rail.
 // ═══════════════════════════════════════════════════════════════════════════
-const primaryNav = [
+export const primaryNav = [
   { label: 'Control center', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
   { label: 'Products & catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
   { label: 'Content & media', href: ROUTES.dashboard.contentOperations, icon: Images },
@@ -198,7 +198,7 @@ const crmNav = [
 ];
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───
-const primaryMobileTabs = [
+export const primaryMobileTabs = [
   { label: 'Home', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
   { label: 'Products', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
   { label: 'Orders', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
@@ -545,11 +545,7 @@ export function DashboardLayout() {
             </div>
           )}
           {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />}
-          <div className="flex flex-col gap-0.5">
-            {primaryNav
-              .filter((item) => item.label !== 'Clients' || profileData?.role === 1)
-              .map(renderNavItem)}
-          </div>
+          <div className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</div>
 
           {showExpanded && (
             <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
@@ -726,9 +722,7 @@ export function DashboardLayout() {
         className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#080A09] border-t border-border-subtle flex items-stretch h-16"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        {primaryMobileTabs
-          .filter((tab) => tab.label !== 'Clients' || profileData?.role === 1)
-          .map((tab) => {
+        {primaryMobileTabs.map((tab) => {
           const isActive = location.pathname === tab.href || location.pathname.startsWith(tab.href + '/');
           return (
             <NavLink
@@ -789,6 +783,18 @@ export function DashboardLayout() {
                 <div className="text-[10px] text-text-muted truncate">{displayEmail}</div>
               </div>
             </div>
+
+            {/* Commerce — the same rail the desktop sidebar renders.
+                Without this section the sheet named "Commerce tools" listed
+                none of them, and every commerce surface except the four in the
+                bottom bar was unreachable on a phone. */}
+            <MoreSection title="Commerce">
+              {primaryNav
+                .filter((i) => !PRIMARY_HREFS.has(i.href))
+                .map((item) => (
+                  <MoreNavLink key={item.href} item={item} />
+                ))}
+            </MoreSection>
 
             {/* Build section — items not already in bottom bar */}
             {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="Build">

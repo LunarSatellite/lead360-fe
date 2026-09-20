@@ -112,6 +112,7 @@ export const routeObjects: RouteObject[] = [
       { path: 'stylemint/campaigns', lazy: () => import('@/features/commerce-control/pages/CampaignsPage') },
       { path: 'stylemint/discovery', lazy: () => import('@/features/commerce-control/pages/DiscoveryPage') },
       { path: 'stylemint/intelligence', lazy: () => import('@/features/commerce-control/pages/IntelligencePage') },
+      { path: 'stylemint/intelligence/:tab', lazy: () => import('@/features/commerce-control/pages/IntelligencePage') },
       { path: 'stylemint/demand-content', lazy: () => import('@/features/commerce-control/pages/DemandContentPage') },
       { path: 'stylemint/cart-offers', lazy: () => import('@/features/commerce-control/pages/CartOfferIncrementalityPage') },
       { path: 'stylemint/goal-templates', lazy: () => import('@/features/commerce-control/pages/GoalTemplatesPage') },

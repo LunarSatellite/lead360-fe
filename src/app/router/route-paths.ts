@@ -37,6 +37,10 @@ export const ROUTES = {
     commerceCampaigns: '/dashboard/stylemint/campaigns',
     discovery: '/dashboard/stylemint/discovery',
     intelligence: '/dashboard/stylemint/intelligence',
+    // Decision intelligence is five reports behind five tabs. They answer on
+    // their own URLs so a demo script, an agenda or a bug report can point at
+    // one of them; bare /stylemint/intelligence still opens the cockpit.
+    intelligenceTab: (tab: string) => `/dashboard/stylemint/intelligence/${tab}`,
     demandContent: '/dashboard/stylemint/demand-content',
     cartOfferIncrementality: '/dashboard/stylemint/cart-offers',
     goalTemplates: '/dashboard/stylemint/goal-templates',

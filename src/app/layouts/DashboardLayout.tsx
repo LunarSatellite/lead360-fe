@@ -104,6 +104,7 @@ const primaryNav = [
   { label: 'Data rights', href: ROUTES.dashboard.privacyRequests, icon: ShieldCheck },
   { label: 'Reel recipes', href: ROUTES.dashboard.recipes, icon: ChefHat },
   { label: 'Delivery ops', href: ROUTES.dashboard.logistics, icon: Route },
+  { label: 'Vendor desk', href: ROUTES.dashboard.vendorDesk, icon: Store },
   { label: 'Campaigns', href: ROUTES.dashboard.commerceCampaigns, icon: Megaphone },
   { label: 'Discovery', href: ROUTES.dashboard.discovery, icon: Compass },
   { label: 'Intelligence', href: ROUTES.dashboard.intelligence, icon: BrainCircuit },
@@ -298,6 +299,8 @@ export function DashboardLayout() {
     const path = location.pathname;
     if (path.includes('/commerce-control')) return 'Stylemint Control Center';
     if (path.includes('/stylemint/orders')) return 'Orders & Fulfilment';
+    // Before the broader /stylemint/vendor test, which would otherwise swallow it.
+    if (path.includes('/stylemint/vendor-desk')) return 'Vendor Desk';
     if (path.includes('/stylemint/vendor')) return 'Vendor Operations';
     if (path.includes('/stylemint/content')) return 'Content & Social Publishing';
     if (path.includes('/stylemint/customers')) return 'Customers';
@@ -369,6 +372,7 @@ export function DashboardLayout() {
     const path = location.pathname;
     if (path.includes('/commerce-control')) return LayoutGrid;
     if (path.includes('/stylemint/orders')) return ShoppingBag;
+    if (path.includes('/stylemint/vendor-desk')) return Store;
     if (path.includes('/stylemint/vendor')) return Building2;
     if (path.includes('/stylemint/content')) return Images;
     if (path.includes('/stylemint/customers')) return Users;

@@ -33,6 +33,7 @@ export const ROUTES = {
     privacyRequests: '/dashboard/stylemint/privacy',
     recipes: '/dashboard/stylemint/recipes',
     logistics: '/dashboard/stylemint/logistics',
+    vendorDesk: '/dashboard/stylemint/vendor-desk',
     commerceCampaigns: '/dashboard/stylemint/campaigns',
     discovery: '/dashboard/stylemint/discovery',
     intelligence: '/dashboard/stylemint/intelligence',

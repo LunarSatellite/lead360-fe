@@ -23,6 +23,7 @@ import {
   type UnmatchedCitation,
 } from '../api/stylemint-audio.api';
 import { AudioTrendsTab } from '../components/AudioTrendsTab';
+import { HotSegmentsEditor } from '../components/HotSegmentsEditor';
 
 type Tab = 'tracks' | 'broken' | 'citations' | 'trends';
 
@@ -343,6 +344,8 @@ function TrackRow({
   actionable?: boolean;
 }) {
   const [hiding, setHiding] = useState(false);
+  // Opt-in: rendering the editor for every row would fire one query per track.
+  const [showSegments, setShowSegments] = useState(false);
   const [reason, setReason] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -431,6 +434,17 @@ function TrackRow({
       )}
 
       {error && <p className="mt-1 text-[11px] text-rose-300">{error}</p>}
+      {actionable && (
+        <>
+          <button
+            onClick={() => setShowSegments((v) => !v)}
+            className="mt-2 text-[11px] font-bold text-text-secondary hover:text-brand"
+          >
+            {showSegments ? 'Hide' : 'Show'} hot segments
+          </button>
+          {showSegments && <HotSegmentsEditor trackId={track.id} />}
+        </>
+      )}
     </div>
   );
 }

@@ -108,6 +108,7 @@ export const router = createBrowserRouter([
       { path: 'stylemint/intelligence', lazy: () => import('@/features/commerce-control/pages/IntelligencePage') },
       { path: 'stylemint/demand-content', lazy: () => import('@/features/commerce-control/pages/DemandContentPage') },
       { path: 'stylemint/goal-templates', lazy: () => import('@/features/commerce-control/pages/GoalTemplatesPage') },
+      { path: 'stylemint/trust', lazy: () => import('@/features/commerce-control/pages/TrustPage') },
       // ── Agent governance ──
       { path: 'agent-governance/approvals', lazy: () => import('@/features/agent-governance/pages/AgentApprovalsPage') },
       { path: 'agent-governance/actions/:id', lazy: () => import('@/features/agent-governance/pages/AgentActionRecordPage') },

@@ -38,6 +38,7 @@ export const ROUTES = {
     intelligence: '/dashboard/stylemint/intelligence',
     demandContent: '/dashboard/stylemint/demand-content',
     goalTemplates: '/dashboard/stylemint/goal-templates',
+    trust: '/dashboard/stylemint/trust',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,

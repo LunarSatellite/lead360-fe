@@ -147,7 +147,7 @@ export function StylemintCustomersPage() {
             <table className="w-full min-w-[900px] text-sm">
               <thead>
                 <tr className="border-b border-border-subtle bg-bg-elevated">
-                  {['Client', 'Contact', 'Pays / langue', 'Verification', 'Statut', 'Derniere activite'].map(
+                  {['Client', 'Contact', 'Pays / langue', 'Verification', 'Statut', 'Last activity'].map(
                     (heading) => (
                       <th
                         key={heading}

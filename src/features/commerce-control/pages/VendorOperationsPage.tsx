@@ -222,13 +222,13 @@ const resources = [
   },
   {
     key: 'activity',
-    label: 'Journal d’activite',
+    label: 'Activity',
     description: 'Audited history of vendor actions.',
     icon: Activity,
   },
   {
     key: 'growth-quality',
-    label: 'Croissance & qualite',
+    label: 'Growth & quality',
     description: 'Operational performance indicators.',
     icon: BadgeCheck,
   },

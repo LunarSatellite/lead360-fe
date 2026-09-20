@@ -102,10 +102,11 @@ export interface SimulatedFigure {
 export interface MeasuredFigure {
   measureKey: string;
   unit: string;
-  measuredValue: number;
+  /** Null when nothing was measured — see {@link DecisionMeasurementDto}. */
+  measuredValue: number | null;
   measurementSource: string;
-  observedFromUtc: string;
-  observedToUtc: string;
+  observedFromUtc: string | null;
+  observedToUtc: string | null;
 }
 
 export function isSimulatedFigure(value: unknown): value is SimulatedFigure {
@@ -295,9 +296,15 @@ export interface DecisionMeasurementDto {
   entryId: string;
   measureKey: string;
   measureUnit: string;
-  measuredValue: number;
-  observedFromUtc: string;
-  observedToUtc: string;
+  /**
+   * Null when nothing was measured. The server used to coalesce these to
+   * `0` and `default` — a zero presented as a measurement, and year 0001
+   * presented as an observation window. They are nullable now, and the row's
+   * own evidence stamp says in words why (`EvidenceFreshness.NotRecorded`).
+   */
+  measuredValue: number | null;
+  observedFromUtc: string | null;
+  observedToUtc: string | null;
   measurementSource: string;
   recordedByAccountId: string;
   recordedUtc: string;

@@ -30,6 +30,26 @@ export function MeasuredValue({
   figure: MeasuredFigure;
   testId?: string;
 }) {
+  // Nothing measured is not a measurement of zero. The server stopped
+  // coalescing these to `0` and year 0001; rendering that absence as a
+  // number here would put the defect back on the screen it was removed from.
+  if (figure.measuredValue === null) {
+    return (
+      <Absent
+        testId={testId}
+        state="NotRecorded"
+        meaning={`${figure.measureKey} was not measured. No value is stated because none was recorded.`}
+      />
+    );
+  }
+
+  const window =
+    figure.observedFromUtc !== null && figure.observedToUtc !== null
+      ? `Observed ${formatUtc(figure.observedFromUtc)} → ${formatUtc(figure.observedToUtc)}`
+      : // A figure whose period is unknown keeps its value — the number was
+        // really measured — but must not borrow a scope it never had.
+        'Observation window not recorded';
+
   return (
     <span
       data-testid={testId}
@@ -46,9 +66,7 @@ export function MeasuredValue({
       <span className="text-2xs font-medium text-text-muted">
         {figure.measureKey} · measured by {figure.measurementSource}
       </span>
-      <span className="text-2xs font-medium text-text-muted">
-        Observed {formatUtc(figure.observedFromUtc)} → {formatUtc(figure.observedToUtc)}
-      </span>
+      <span className="text-2xs font-medium text-text-muted">{window}</span>
     </span>
   );
 }

@@ -8,6 +8,7 @@ import {
   ShareFigure,
   ValueOrAbsent,
 } from './ReportPrimitives';
+import { MeasuredValue } from './FigureValue';
 import { period } from '../lib/__fixtures__/intelligence';
 
 /**
@@ -179,5 +180,52 @@ describe('every figure states its window and denominator', () => {
     expect(money).toHaveTextContent('Not converted, not totalled across currencies.');
     // The sum of the two would be 18,404,100 — it must appear nowhere.
     expect(money).not.toHaveTextContent('18,404,100');
+  });
+  /**
+   * The server used to coalesce an unmeasured outcome to `0` and its window to
+   * `default` — year 0001 presented as an observation period. Both are nullable
+   * now. This console must not put that defect back on the screen it was
+   * removed from, and must not throw on the null either.
+   */
+  describe('a measurement that was never taken', () => {
+    const figure = (over: Partial<Parameters<typeof MeasuredValue>[0]['figure']> = {}) => ({
+      measureKey: 'refund_rate',
+      unit: 'percent',
+      measuredValue: 12.5 as number | null,
+      measurementSource: 'commerce-genome',
+      observedFromUtc: '2026-08-01T00:00:00Z' as string | null,
+      observedToUtc: '2026-08-31T00:00:00Z' as string | null,
+      ...over,
+    });
+
+    it('renders as absent, not as zero, when no value was recorded', () => {
+      renderIsolated(<MeasuredValue testId="m" figure={figure({ measuredValue: null })} />);
+
+      const el = screen.getByTestId('m');
+      expect(el).toHaveAttribute('data-absent', 'NotRecorded');
+      // It must not claim to be a measurement...
+      expect(el).not.toHaveAttribute('data-provenance', 'Measured');
+      // ...and the absence must not read as a measured zero.
+      expect(el.textContent).not.toMatch(/0/);
+      expect(el).toHaveTextContent('was not measured');
+    });
+
+    it('keeps a real value but does not borrow a window it never had', () => {
+      renderIsolated(
+        <MeasuredValue
+          testId="m"
+          figure={figure({ observedFromUtc: null, observedToUtc: null })}
+        />,
+      );
+
+      const el = screen.getByTestId('m');
+      // The number was genuinely measured, so it stays.
+      expect(el).toHaveAttribute('data-provenance', 'Measured');
+      expect(el).toHaveTextContent('12.5');
+      expect(el).toHaveTextContent('Observation window not recorded');
+      // Year 0001 was what the old coalesce produced. It must never appear.
+      expect(el.textContent).not.toMatch(/0001/);
+      expect(el.textContent).not.toMatch(/Observed\s+→/);
+    });
   });
 });

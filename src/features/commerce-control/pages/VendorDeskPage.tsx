@@ -7,6 +7,7 @@ import {
   Check,
   LayoutDashboard,
   Loader2,
+  Megaphone,
   Search,
   Sprout,
   Store,
@@ -18,6 +19,7 @@ import {
   stylemintVendorDeskApi,
   VendorActivityKind,
 } from '../api/stylemint-vendor-desk.api';
+import { CampaignWorkspacesTab } from '../components/CampaignWorkspacesTab';
 import { ReportPanel } from '../components/ReportPanel';
 
 /**
@@ -33,7 +35,14 @@ import { ReportPanel } from '../components/ReportPanel';
  * is the exception — assignments are a fixed list with two writes, so it gets a real interface.
  */
 
-type Tab = 'dashboard' | 'analytics' | 'activity' | 'creators' | 'growth' | 'clienteling';
+type Tab =
+  | 'dashboard'
+  | 'analytics'
+  | 'activity'
+  | 'creators'
+  | 'growth'
+  | 'clienteling'
+  | 'campaignWorkspaces';
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof Store }> = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -42,6 +51,7 @@ const TABS: Array<{ id: Tab; label: string; icon: typeof Store }> = [
   { id: 'creators', label: 'Creator performance', icon: Users },
   { id: 'growth', label: 'Growth quality', icon: Sprout },
   { id: 'clienteling', label: 'Client book', icon: UserRound },
+  { id: 'campaignWorkspaces', label: 'Campaign workspaces', icon: Megaphone },
 ];
 
 const WINDOWS = [7, 30, 90];
@@ -90,7 +100,7 @@ export function VendorDeskPage() {
           ))}
         </div>
 
-        {tab !== 'activity' && tab !== 'clienteling' && (
+        {tab !== 'activity' && tab !== 'clienteling' && tab !== 'campaignWorkspaces' && (
           <div className="flex items-center gap-1">
             {WINDOWS.map((w) => (
               <button
@@ -115,6 +125,7 @@ export function VendorDeskPage() {
       {tab === 'creators' && <CreatorsTab days={days} />}
       {tab === 'growth' && <GrowthTab days={days} />}
       {tab === 'clienteling' && <ClientBookTab />}
+      {tab === 'campaignWorkspaces' && <CampaignWorkspacesTab />}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
   AlertTriangle,
+  ClipboardList,
   Loader2,
   PackageSearch,
   RefreshCw,
@@ -10,6 +11,7 @@ import {
   ShieldAlert,
   Zap,
 } from 'lucide-react';
+import { SubOrderDesk } from '../components/SubOrderDesk';
 import {
   HOP_OFFER_STATE_LABEL,
   REPLAN_REASON_LABEL,
@@ -26,16 +28,17 @@ import {
  * reachable at all, so it sits beside them.
  */
 
-type Tab = 'stuck' | 'metrics' | 'guardian';
+type Tab = 'subOrders' | 'stuck' | 'metrics' | 'guardian';
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof Route }> = [
+  { id: 'subOrders', label: 'Fulfilment desk', icon: ClipboardList },
   { id: 'stuck', label: 'Stuck packages', icon: PackageSearch },
   { id: 'metrics', label: 'Routing metrics', icon: Activity },
   { id: 'guardian', label: 'Guardian', icon: ShieldAlert },
 ];
 
 export function LogisticsPage() {
-  const [tab, setTab] = useState<Tab>('stuck');
+  const [tab, setTab] = useState<Tab>('subOrders');
 
   return (
     <div className="mx-auto max-w-[1500px] space-y-5">
@@ -48,8 +51,8 @@ export function LogisticsPage() {
           Delivery operations
         </h1>
         <p className="mt-1 text-sm text-text-muted">
-          Packages no courier took, how offers are converting, and what the guardian is
-          intervening on.
+          Orders waiting on a fulfilment step, packages no courier took, how offers are
+          converting, and what the guardian is intervening on.
         </p>
       </div>
 
@@ -70,6 +73,7 @@ export function LogisticsPage() {
         ))}
       </div>
 
+      {tab === 'subOrders' && <SubOrderDesk />}
       {tab === 'stuck' && <StuckTab />}
       {tab === 'metrics' && <MetricsTab />}
       {tab === 'guardian' && <GuardianTab />}

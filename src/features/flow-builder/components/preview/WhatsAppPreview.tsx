@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { List, X, Phone, Video, MoreVertical, Smile, Paperclip, Mic, ChevronLeft, Check, CheckCheck } from 'lucide-react';
+import { List, X, Phone, Video, MoreVertical, Smile, Paperclip, Mic, ChevronLeft, CheckCheck } from 'lucide-react';
 
 export interface WaMenuItem {
   label: string;

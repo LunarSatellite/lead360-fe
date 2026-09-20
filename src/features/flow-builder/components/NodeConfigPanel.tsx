@@ -28,7 +28,7 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
       <div className="flex items-center gap-2 pb-2 border-b border-border-subtle">
         <div
           className="w-7 h-7 rounded-md flex items-center justify-center text-sm"
-          style={{ background: meta?.bgClass ? undefined : '#F1F5F9' }}
+          style={{ background: meta?.bg ?? '#F1F5F9' }}
         >
           {meta?.icon || '📦'}
         </div>

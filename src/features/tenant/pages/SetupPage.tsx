@@ -11,7 +11,7 @@ import {
   Rocket,
   Package,
 } from 'lucide-react';
-import { GlassCard, GlassCardHeader, HttpMethodBadge, IntentTag, StatusBadge } from '@/shared/components';
+import { GlassCard, HttpMethodBadge, IntentTag, StatusBadge } from '@/shared/components';
 import type { OnboardingStepData } from '@/shared/components';
 
 import { useSpecs, useEndpoints } from '@/features/api-connection/api/api-connection.queries';
@@ -25,7 +25,6 @@ import type { ChannelConnectionDto } from '@/features/channels/types/channels.ty
 import {
   CHANNEL_TYPE_LABEL,
   CHANNEL_STATUS_LABEL,
-  CHANNEL_STATUS_COLOR,
   ChannelConnectionStatus,
 } from '@/features/channels/types/channels.types';
 import type { FlowDto } from '@/features/flow-builder/types/flow.types';

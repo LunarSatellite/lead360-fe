@@ -3,9 +3,19 @@ import { X, Sparkles, Loader2, Download, Check } from 'lucide-react';
 import { FileUploadZone } from './FileUploadZone';
 import { ImportPreviewTable } from './ImportPreviewTable';
 import { useImportParse, useImportEnrich, useImportConfirm } from '@/features/flow-builder/api/flow.queries';
-import { ImportRowStatus, type ImportRow } from '@/features/flow-builder/types/flow.types';
+import {
+  ImportRowStatus,
+  type ImportRow,
+  type ImportRowStatusValue,
+} from '@/features/flow-builder/types/flow.types';
 
 interface Props { open: boolean; onClose: () => void; }
+
+// Rows in these states cannot be approved in bulk.
+const NOT_BULK_APPROVABLE: ImportRowStatusValue[] = [
+  ImportRowStatus.Duplicate,
+  ImportRowStatus.Invalid,
+];
 
 export function ImportDialog({ open, onClose }: Props) {
   const [rows, setRows] = useState<ImportRow[]>([]);
@@ -34,7 +44,7 @@ export function ImportDialog({ open, onClose }: Props) {
   }, []);
 
   const handleApproveAll = useCallback(() => {
-    setRows(p => p.map(r => [ImportRowStatus.Duplicate, ImportRowStatus.Invalid].includes(r.status) ? r : { ...r, status: ImportRowStatus.Approved }));
+    setRows(p => p.map(r => NOT_BULK_APPROVABLE.includes(r.status) ? r : { ...r, status: ImportRowStatus.Approved }));
   }, []);
 
   const handleConfirm = useCallback(() => {

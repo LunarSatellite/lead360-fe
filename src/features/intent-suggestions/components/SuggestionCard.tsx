@@ -59,7 +59,6 @@ export function SuggestionCard({ suggestion: s }: SuggestionCardProps) {
   const [rejectDialog, setRejectDialog] = useState(false);
 
   const approve = useApproveSuggestion();
-  const reject = useRejectSuggestion();
 
   const isPending = s.status === SuggestionStatus.Pending;
   const opColor = OPERATION_TYPE_COLOR[s.operationType] || 'muted';

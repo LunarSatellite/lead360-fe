@@ -4,7 +4,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { Mic, Volume2, Play, Pause, Loader2, AlertTriangle } from 'lucide-react';
+import { Mic, Play, Pause, Loader2, AlertTriangle } from 'lucide-react';
 import { voiceApi } from '../api/voice.api';
 import {
   TtsVoice,

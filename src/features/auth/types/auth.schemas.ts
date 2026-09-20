@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { BusinessType } from './auth.types';
 
 // ─── Login ───
 export const loginSchema = z.object({

@@ -13,7 +13,6 @@ export function Component() {
   const [params] = useSearchParams();
   const token = params.get('token');
   const email = params.get('email');
-  const navigate = useNavigate();
   const { data, isLoading, isError, error } = useValidateInvitation(token, email);
   const invitation = data as unknown as TeamInvitationDto | undefined;
 

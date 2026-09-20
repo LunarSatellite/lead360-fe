@@ -23,7 +23,6 @@ import {
   ChannelConnectionStatus,
   CHANNEL_STATUS_LABEL,
   CHANNEL_TYPE_LABEL,
-  CHANNEL_TYPE_COLOR,
 } from '../types/channels.types';
 import type { ChannelConnectionDto, ChannelTypeValue } from '../types/channels.types';
 import { formatDistanceToNow } from 'date-fns';

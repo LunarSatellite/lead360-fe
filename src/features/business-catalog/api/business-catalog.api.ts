@@ -28,8 +28,13 @@ export const businessProfileApi = {
   get: () => apiClient.get<BusinessProfile>('/v1/business-profile'),
   upsert: (data: BusinessProfileUpsertRequest) =>
     apiClient.put<BusinessProfile>('/v1/business-profile', data),
+  // The apiClient response interceptor unwraps ServiceResult and resolves with the
+  // payload itself, not an AxiosResponse. Axios's second generic (R) is how that is
+  // declared, so callers get the DTO they actually receive at runtime.
   getDefaults: (type: BusinessTypeValue) =>
-    apiClient.get<BusinessProfileUpsertRequest>(`/v1/business-profile/defaults/${type}`),
+    apiClient.get<BusinessProfileUpsertRequest, BusinessProfileUpsertRequest>(
+      `/v1/business-profile/defaults/${type}`,
+    ),
 } as const;
 
 // ─── Category ───

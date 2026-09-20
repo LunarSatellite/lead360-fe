@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loader2, Brain, AlertCircle, HelpCircle, ChevronDown, ChevronRight, Send } from 'lucide-react';
+import { Loader2, Brain, HelpCircle, ChevronDown, ChevronRight, Send } from 'lucide-react';
 import { ReadinessGauge } from './ReadinessGauge';
 import { useAnalysis, useRunAnalysis, useSubmitAnswers } from '../api/api-connection.queries';
 import { parseJson, AnalysisStatus } from '../types/api-connection.types';

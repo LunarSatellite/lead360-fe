@@ -15,7 +15,6 @@ import {
   ShieldOff,
   ShieldAlert,
   ShieldCheck,
-  UserRoundX,
   Headset,
   Clock,
 } from 'lucide-react';
@@ -26,15 +25,6 @@ import type {
   DataHandlingRules,
 } from '../types/compliance.types';
 import { DATA_HANDLING_CATEGORIES } from '../types/compliance.types';
-
-// ─── Icon Lookup ───
-const SECTION_ICONS: Record<string, React.ElementType> = {
-  Ban,
-  FileWarning,
-  MessageSquareOff,
-  ArrowRightLeft,
-  Database,
-};
 
 // ─── Props ───
 
@@ -212,22 +202,22 @@ function MandatoryReferencesList({ refs }: { refs: MandatoryReferenceRule[] }) {
 function DataHandlingSection({ data }: { data: DataHandlingRules }) {
   const categories = [
     {
-      key: 'prohibited' as const,
-      items: data.prohibited,
-      icon: ShieldOff,
       ...DATA_HANDLING_CATEGORIES.prohibited,
+      key: 'prohibited' as const,
+      items: data.prohibited ?? [],
+      icon: ShieldOff,
     },
     {
-      key: 'allowedWithConsent' as const,
-      items: data.allowedWithConsent,
-      icon: ShieldAlert,
       ...DATA_HANDLING_CATEGORIES.allowedWithConsent,
+      key: 'allowedWithConsent' as const,
+      items: data.allowedWithConsent ?? [],
+      icon: ShieldAlert,
     },
     {
-      key: 'freelyCollected' as const,
-      items: data.freelyCollected,
-      icon: ShieldCheck,
       ...DATA_HANDLING_CATEGORIES.freelyCollected,
+      key: 'freelyCollected' as const,
+      items: data.freelyCollected ?? [],
+      icon: ShieldCheck,
     },
   ];
 
@@ -319,6 +309,14 @@ function AdditionalSettings({ profile }: { profile: ComplianceProfile }) {
 // ═══ Main Component ═══
 
 export function ComplianceRulesViewer({ profile, onClose }: ComplianceRulesViewerProps) {
+  // The API models every rule collection as nullable; absent means "no rules",
+  // so normalise to empty arrays rather than rendering a missing section.
+  const prohibitedTopics = profile.prohibitedTopics ?? [];
+  const requiredDisclaimers = profile.requiredDisclaimers ?? [];
+  const restrictedPhrases = profile.restrictedPhrases ?? [];
+  const mandatoryReferences = profile.mandatoryReferences ?? [];
+  const dataHandling = profile.dataHandling;
+
   return (
     <div className="flex flex-col gap-2">
       {/* Profile header */}
@@ -346,47 +344,47 @@ export function ComplianceRulesViewer({ profile, onClose }: ComplianceRulesViewe
       <RuleSection
         icon={Ban}
         label="Prohibited Topics"
-        count={profile.prohibitedTopics.length}
+        count={prohibitedTopics.length}
         defaultOpen
       >
-        <ProhibitedTopicsList topics={profile.prohibitedTopics} />
+        <ProhibitedTopicsList topics={prohibitedTopics} />
       </RuleSection>
 
       <RuleSection
         icon={FileWarning}
         label="Required Disclaimers"
-        count={profile.requiredDisclaimers.length}
+        count={requiredDisclaimers.length}
       >
-        <DisclaimersList disclaimers={profile.requiredDisclaimers} />
+        <DisclaimersList disclaimers={requiredDisclaimers} />
       </RuleSection>
 
       <RuleSection
         icon={MessageSquareOff}
         label="Restricted Phrases"
-        count={profile.restrictedPhrases.length}
+        count={restrictedPhrases.length}
       >
-        <RestrictedPhrasesList phrases={profile.restrictedPhrases} />
+        <RestrictedPhrasesList phrases={restrictedPhrases} />
       </RuleSection>
 
       <RuleSection
         icon={ArrowRightLeft}
         label="Mandatory References"
-        count={profile.mandatoryReferences.length}
+        count={mandatoryReferences.length}
       >
-        <MandatoryReferencesList refs={profile.mandatoryReferences} />
+        <MandatoryReferencesList refs={mandatoryReferences} />
       </RuleSection>
 
-      {profile.dataHandling && (
+      {dataHandling && (
         <RuleSection
           icon={Database}
           label="Data Handling Rules"
           count={
-            profile.dataHandling.prohibited.length +
-            profile.dataHandling.allowedWithConsent.length +
-            profile.dataHandling.freelyCollected.length
+            (dataHandling.prohibited?.length ?? 0) +
+            (dataHandling.allowedWithConsent?.length ?? 0) +
+            (dataHandling.freelyCollected?.length ?? 0)
           }
         >
-          <DataHandlingSection data={profile.dataHandling} />
+          <DataHandlingSection data={dataHandling} />
         </RuleSection>
       )}
 

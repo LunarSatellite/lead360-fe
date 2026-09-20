@@ -15,7 +15,6 @@ import {
   FileJson,
   Sparkles,
   FileSpreadsheet,
-  X,
 } from 'lucide-react';
 
 // ─── Types ───

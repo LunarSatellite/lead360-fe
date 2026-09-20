@@ -15,6 +15,8 @@ import type {
   ChangePasswordRequest,
   UpdateProfileRequest,
   ResendVerificationRequest,
+  UserRoleValue,
+  UserStatusValue,
 } from '../types/auth.types';
 
 // ─── Query Keys ───
@@ -96,10 +98,9 @@ export function useLogout() {
   const qc = useQueryClient();
   const navigate = useNavigate();
   return useMutation({
-    mutationFn: () => {
+    mutationFn: async () => {
       const refreshToken = localStorage.getItem('omniflow_refresh_token');
-      if (refreshToken) return authApi.revokeToken({ refreshToken });
-      return Promise.resolve();
+      if (refreshToken) await authApi.revokeToken({ refreshToken });
     },
     onSettled: () => {
       clearTokens();
@@ -217,8 +218,13 @@ export function useDeleteUser() {
 export function useAdminUpdateUser() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ userId, data }: { userId: string; data: { role?: number; status?: number } }) =>
-      userApi.adminUpdate(userId, data),
+    mutationFn: ({
+      userId,
+      data,
+    }: {
+      userId: string;
+      data: { role?: UserRoleValue; status?: UserStatusValue };
+    }) => userApi.adminUpdate(userId, data),
     onSuccess: (_res, { userId }) => {
       qc.invalidateQueries({ queryKey: userKeys.detail(userId) });
       qc.invalidateQueries({ queryKey: userKeys.list() });

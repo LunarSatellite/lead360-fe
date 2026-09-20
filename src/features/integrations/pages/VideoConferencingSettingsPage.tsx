@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Video, CheckCircle2, Link2, Loader2, Star, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
-import { env } from '@/shared/config/env';
 import {
   useVideoConferencingStatus,
   useConnectVideoProvider,

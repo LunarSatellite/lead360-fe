@@ -184,8 +184,16 @@ export function ContentOperationsPage() {
             <p className="mt-1 text-2xl font-black text-white">
               {connected.size}/4 <span className="text-xs font-semibold text-white/40">plateformes</span>
             </p>
+            {/*
+              The server returns null for totalFollowers when no connected
+              platform reported one. `?? 0` turned that into "0 abonnes au
+              total" - a measured zero, and a different claim from "nobody
+              told us". Absence is rendered as absence.
+            */}
             <p className="mt-1 text-[10px] text-white/45">
-              {Number(audience.data?.totalFollowers ?? 0).toLocaleString('fr-CD')} abonnes au total
+              {typeof audience.data?.totalFollowers === 'number'
+                ? `${audience.data.totalFollowers.toLocaleString('fr-CD')} abonnes au total`
+                : 'Nombre d’abonnes non communique'}
             </p>
           </div>
         </div>

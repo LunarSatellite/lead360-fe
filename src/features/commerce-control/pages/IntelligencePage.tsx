@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   AlertTriangle,
@@ -14,6 +15,7 @@ import {
   Telescope,
   TestTubes,
 } from 'lucide-react';
+import { ROUTES } from '@/app/router/route-paths';
 import { stylemintIntelligenceApi } from '../api/stylemint-intelligence.api';
 import { ReportPanel } from '../components/ReportPanel';
 import {
@@ -62,11 +64,31 @@ const TABS: Array<{ id: Tab; label: string; icon: typeof BrainCircuit }> = [
   { id: 'cartOffers', label: 'Cart offers', icon: ShoppingCart },
 ];
 
+/** The tab the page opens on when the URL does not name one. */
+export const DEFAULT_TAB: Tab = 'cockpit';
+
+export function isIntelligenceTab(value: string | undefined): value is Tab {
+  return TABS.some((t) => t.id === value);
+}
+
 const WINDOWS = [7, 30, 90];
 
 export function IntelligencePage() {
-  const [tab, setTab] = useState<Tab>('cockpit');
+  // The tab lives in the URL, not in component state. Five reports behind a
+  // `useState` on the 25th item of a flat sidebar could not be linked to, put
+  // in an agenda, bookmarked or backed out of.
+  const { tab: tabParam } = useParams<{ tab?: string }>();
+  const navigate = useNavigate();
   const [days, setDays] = useState(30);
+
+  // A tab name that is not one of the five rewrites itself to the cockpit
+  // rather than rendering a blank page under a URL that lies.
+  if (tabParam !== undefined && !isIntelligenceTab(tabParam)) {
+    return <Navigate to={ROUTES.dashboard.intelligenceTab(DEFAULT_TAB)} replace />;
+  }
+
+  const tab: Tab = isIntelligenceTab(tabParam) ? tabParam : DEFAULT_TAB;
+  const setTab = (next: Tab) => navigate(ROUTES.dashboard.intelligenceTab(next));
 
   return (
     <div className="mx-auto max-w-[1500px] space-y-5">

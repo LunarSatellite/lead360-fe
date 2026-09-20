@@ -1,19 +1,15 @@
 import { stylemintOperationsApi } from './stylemint-operations.api';
 
 /**
- * Typed client for the four governance surfaces that arrived with autonomous operations:
+ * The commerce constitution: the rules an agent action is assessed against before it may run,
+ * and the dry run that reports what they would allow.
  *
- *  - autonomous-operations — what the platform did on its own, the expectations declared against
- *    those decisions, and the maintenance windows that pause an action
- *  - commerce-constitution — the rules an agent action is assessed against before it may run
- *  - retail-decision-twin  — studies comparing what a decision did against what a twin predicted
- *  - cart-offers           — the incrementality readout: did the offer cause the sale
+ * This client once covered four surfaces. Autonomous operations, the decision twin and the
+ * cart-offer readout each have a dedicated page now, with their own client in
+ * `intelligence-console` and `decision-twin`, so the duplicates here were removed rather than
+ * left as a second way to call the same endpoint that could drift from the first.
  *
- * All SuperAdmin except the cart-offer readout. None carry step-up MFA.
- *
- * Opening a decision-twin study is deliberately absent: it takes nested assumption and arm
- * lists, which is a long structured form belonging with the study it defines. The governed
- * operations console generates it from the live schema. Same call as the decision-ledger writes.
+ * SuperAdmin. No step-up MFA.
  */
 
 export const AgentActionRiskTier = { Low: 1, Medium: 2, High: 3, Critical: 4 } as const;
@@ -27,25 +23,8 @@ export const RISK_TIER_LABEL: Record<number, string> = {
   4: 'Critical',
 };
 
-/** These return evolving report shapes; typed open rather than guessed at. */
+/** The constitution is an evolving report shape, typed open rather than guessed at. */
 export type Report = Record<string, unknown>;
-
-export type DeclareExpectation = {
-  measureKey: string;
-  measureUnit: string;
-  expectedValue: number;
-  expectedMeasurementSource: string;
-  observeFromUtc: string;
-  observeToUtc: string;
-  note?: string | null;
-};
-
-export type DeclareMaintenanceWindow = {
-  actionKey: string;
-  startsUtc: string;
-  endsUtc: string;
-  reason: string;
-};
 
 function unwrap<T>(response: { status: number; body: unknown }): T {
   if (response.status >= 200 && response.status < 300) return response.body as T;
@@ -61,66 +40,13 @@ function unwrap<T>(response: { status: number; body: unknown }): T {
     throw new Error(empty ? 'NOT_DEPLOYED' : 'NOT_FOUND');
   }
   if (response.status === 403) {
-    throw new Error(
-      detail ?? 'These governance surfaces take the Stylemint SuperAdmin role.',
-    );
+    throw new Error(detail ?? 'The commerce constitution takes the Stylemint SuperAdmin role.');
   }
-  throw new Error(detail ?? `The autonomy surface returned HTTP ${response.status}.`);
+  throw new Error(detail ?? `The constitution surface returned HTTP ${response.status}.`);
 }
 
 export const stylemintAutonomyApi = {
-  /** What ran autonomously in the window, and how it is being measured. */
-  monitor: async (params: { skip?: number; take?: number } = {}): Promise<Report> => {
-    const query = new URLSearchParams();
-    query.set('skip', String(params.skip ?? 0));
-    query.set('take', String(params.take ?? 50));
-
-    return unwrap<Report>(
-      await stylemintOperationsApi.invoke({
-        method: 'GET',
-        path: 'v1/admin/autonomous-operations/monitor',
-        query: query.toString(),
-      }),
-    );
-  },
-
-  /** Declaring what a decision was supposed to achieve, so the outcome can be judged later. */
-  declareExpectation: async (
-    decisionId: string,
-    expectation: DeclareExpectation,
-  ): Promise<Report> =>
-    unwrap<Report>(
-      await stylemintOperationsApi.invoke({
-        method: 'POST',
-        path: `v1/admin/autonomous-operations/decisions/${encodeURIComponent(decisionId)}/expectations`,
-        body: JSON.stringify(expectation),
-      }),
-    ),
-
-  /** Windows in which an action is paused. Filter by action key, or list them all. */
-  maintenanceWindows: async (actionKey?: string): Promise<Report> => {
-    const query = new URLSearchParams();
-    if (actionKey) query.set('actionKey', actionKey);
-
-    return unwrap<Report>(
-      await stylemintOperationsApi.invoke({
-        method: 'GET',
-        path: 'v1/admin/autonomous-operations/maintenance-windows',
-        query: query.toString(),
-      }),
-    );
-  },
-
-  declareMaintenanceWindow: async (window: DeclareMaintenanceWindow): Promise<Report> =>
-    unwrap<Report>(
-      await stylemintOperationsApi.invoke({
-        method: 'POST',
-        path: 'v1/admin/autonomous-operations/maintenance-windows',
-        body: JSON.stringify(window),
-      }),
-    ),
-
-  /** The rules an agent action is measured against. */
+  /** The rules in force. */
   constitution: async (): Promise<Report> =>
     unwrap<Report>(
       await stylemintOperationsApi.invoke({
@@ -148,32 +74,6 @@ export const stylemintAutonomyApi = {
           requestPayloadJson: params.requestPayloadJson || '{}',
           executorSupportsRollback: params.executorSupportsRollback ?? false,
         }),
-      }),
-    ),
-
-  twinStudies: async (): Promise<Report> =>
-    unwrap<Report>(
-      await stylemintOperationsApi.invoke({
-        method: 'GET',
-        path: 'v1/admin/retail-decision-twin/studies',
-      }),
-    ),
-
-  twinStudy: async (studyId: string): Promise<Report> =>
-    unwrap<Report>(
-      await stylemintOperationsApi.invoke({
-        method: 'GET',
-        path: `v1/admin/retail-decision-twin/studies/${encodeURIComponent(studyId)}`,
-      }),
-    ),
-
-  /** Whether cart offers actually caused the sales they are credited with. */
-  cartOfferIncrementality: async (days = 30): Promise<Report> =>
-    unwrap<Report>(
-      await stylemintOperationsApi.invoke({
-        method: 'GET',
-        path: 'v1/admin/cart-offers/incrementality',
-        query: `days=${days}`,
       }),
     ),
 };

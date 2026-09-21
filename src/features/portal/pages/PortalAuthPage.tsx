@@ -151,12 +151,12 @@ function AuthShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-bg flex items-center justify-center px-4">
       <div className="pointer-events-none absolute -top-40 -left-40 w-96 h-96 rounded-full blur-3xl bg-brand/10" />
-      <div className="pointer-events-none absolute top-20 right-0 w-80 h-80 rounded-full blur-3xl bg-[#00FFAA]/5" />
+      <div className="pointer-events-none absolute top-20 right-0 w-80 h-80 rounded-full blur-3xl bg-brand-beacon/5" />
       <div className="relative w-full max-w-sm">
         <div className="flex justify-center mb-6">
           <div
             className="w-10 h-10 rounded-sm flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+            style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
           >
             <Zap className="w-5 h-5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
           </div>

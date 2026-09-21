@@ -96,8 +96,8 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="e.g. Case Reference"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
             </div>
           </div>
@@ -114,9 +114,9 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
                   backgroundColor: '#1A2F27',
-                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  border: `1px solid ${typeOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: typeOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  border: `1px solid ${typeOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: typeOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}
@@ -132,8 +132,8 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
                   style={{
                     borderRadius: 12,
                     background: 'var(--bg-card)',
-                    border: '1px solid rgba(0,217,138,0.20)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)',
+                    border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)',
                   }}
                 >
                   {Object.entries(CUSTOM_FIELD_TYPE_LABELS).map(([k, v]) => (
@@ -142,11 +142,11 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
                       type="button"
                       onClick={() => { setFieldType(Number(k) as CustomFieldType); setTypeOpen(false); }}
                       className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${
-                        fieldType === Number(k) ? 'bg-[rgba(0,217,138,0.08)] text-brand' : 'text-text-secondary'
+                        fieldType === Number(k) ? 'bg-brand-soft text-brand' : 'text-text-secondary'
                       }`}
                     >
                       {fieldType === Number(k) && (
-                        <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />
+                        <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9)' }} />
                       )}
                       {v}
                       {fieldType === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -168,8 +168,8 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
             value={description}
             onChange={e => setDescription(e.target.value)}
             placeholder="Optional hint for users"
-            className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
         </div>
 
@@ -184,8 +184,8 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
               value={options}
               onChange={e => setOptions(e.target.value)}
               placeholder="Option A, Option B, Option C"
-              className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
           </div>
         )}
@@ -196,8 +196,8 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
             <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Settings</span>
             <div className="h-px bg-brand/20" />
           </div>
-          <label className="flex items-center gap-3 px-4 py-3 rounded-xl border border-[rgba(0,217,138,0.20)] cursor-pointer hover:border-[rgba(0,217,138,0.40)] transition-colors"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+          <label className="flex items-center gap-3 px-4 py-3 rounded-xl border border-brand/20 cursor-pointer hover:border-brand/40 transition-colors"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           >
             <div className="relative">
               <input
@@ -352,12 +352,12 @@ export function Component() {
             style={{
               borderRadius: 18,
               background: 'var(--bg-card)',
-              border: '1px solid rgba(0,217,138,0.2)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+              border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
             }}
           >
             {/* Accent bar */}
-            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
             <AddFieldDrawer entityType={activeEntity} onDone={() => setShowAdd(false)} />
           </div>
         </div>,

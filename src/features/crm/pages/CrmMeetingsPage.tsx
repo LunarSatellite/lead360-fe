@@ -43,13 +43,13 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
           width: 640,
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
           }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2
@@ -87,10 +87,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 const CALL_STATUS_COLORS: Record<number, string> = {
-  1: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
+  1: 'text-warning bg-warning-soft border-warning/20',
   2: 'text-brand bg-brand-soft border-border-glow',
-  3: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
-  4: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  3: 'text-success bg-success-soft border-success/20',
+  4: 'text-danger bg-danger-soft border-danger/20',
 };
 
 // ─── Meetings Tab ─────────────────────────────────────────────────────────────
@@ -286,8 +286,8 @@ function MeetingsTab() {
                 <CalendarCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
                   required
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Discovery Call"
                   value={initForm.title}
                   onChange={setI('title')}
@@ -302,10 +302,10 @@ function MeetingsTab() {
                   onClick={() => setDurationOpen(o => !o)}
                   className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                   style={{
-                    backgroundColor: '#1A332C',
-                    border: `1px solid ${durationOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    backgroundColor: 'rgb(var(--color-surface-elevated))',
+                    border: `1px solid ${durationOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                     boxShadow: durationOpen
-                      ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                      ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                       : 'none',
                     outline: 'none',
                     transition: 'box-shadow 0.2s ease',
@@ -319,7 +319,7 @@ function MeetingsTab() {
                 </button>
                 {durationOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                   >
                     {([
                       { value: '15', label: '15 min' },
@@ -332,7 +332,7 @@ function MeetingsTab() {
                         key={opt.value}
                         type="button"
                         onClick={() => { setInitForm(f => ({ ...f, durationMinutes: opt.value })); setDurationOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.durationMinutes === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.durationMinutes === opt.value ? 'bg-brand-soft' : ''}`}
                       >
                         {opt.label}
                         {initForm.durationMinutes === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -351,8 +351,8 @@ function MeetingsTab() {
               <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <textarea
                 rows={3}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 placeholder="Meeting agenda..."
                 value={initForm.agendaText}
                 onChange={setI('agendaText')}
@@ -375,10 +375,10 @@ function MeetingsTab() {
                 onClick={() => setContactOpen(o => !o)}
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A332C',
-                  border: `1px solid ${contactOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                  backgroundColor: 'rgb(var(--color-surface-elevated))',
+                  border: `1px solid ${contactOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: contactOpen
-                    ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                    ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                     : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
@@ -392,16 +392,16 @@ function MeetingsTab() {
               </button>
               {contactOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                 >
                   {contactsList.length > 0 ? contactsList.map(c => (
                     <button
                       key={c.id}
                       type="button"
                       onClick={() => { setInitForm(f => ({ ...f, contactId: c.id })); setContactOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.contactId === c.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.contactId === c.id ? 'bg-brand-soft' : ''}`}
                     >
-                      <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />
+                      <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9)' }} />
                       {c.fullName}
                       {initForm.contactId === c.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>
@@ -421,8 +421,8 @@ function MeetingsTab() {
               <input
                 value={attendeeQuery}
                 onChange={(e) => setAttendeeQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 placeholder="Type name or email..."
               />
             </div>
@@ -480,11 +480,11 @@ function MeetingsTab() {
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
                 <input
                   type="date"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                   style={{
                     backgroundColor: '#1A2F27',
                     colorScheme: 'dark',
-                    backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                    backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   }}
                   value={initForm.scheduledAt}
                   onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))}
@@ -499,10 +499,10 @@ function MeetingsTab() {
                   onClick={() => setDealOpen(o => !o)}
                   className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                   style={{
-                    backgroundColor: '#1A332C',
-                    border: `1px solid ${dealOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    backgroundColor: 'rgb(var(--color-surface-elevated))',
+                    border: `1px solid ${dealOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                     boxShadow: dealOpen
-                      ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                      ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                       : 'none',
                     outline: 'none',
                     transition: 'box-shadow 0.2s ease',
@@ -516,12 +516,12 @@ function MeetingsTab() {
                 </button>
                 {dealOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                   >
                     <button
                       type="button"
                       onClick={() => { setInitForm(f => ({ ...f, dealId: '' })); setDealOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${initForm.dealId === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${initForm.dealId === '' ? 'bg-brand-soft' : ''}`}
                     >
                       No deal linked
                       {initForm.dealId === '' && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -531,9 +531,9 @@ function MeetingsTab() {
                         key={d.id}
                         type="button"
                         onClick={() => { setInitForm(f => ({ ...f, dealId: d.id })); setDealOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.dealId === d.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.dealId === d.id ? 'bg-brand-soft' : ''}`}
                       >
-                        <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />
+                        <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9)' }} />
                         {d.name}
                         {initForm.dealId === d.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                       </button>
@@ -556,8 +556,8 @@ function MeetingsTab() {
             <div className="relative">
               <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 placeholder="https://zoom.us/j/..."
                 value={initForm.joinUrl}
                 onChange={setI('joinUrl')}
@@ -566,8 +566,8 @@ function MeetingsTab() {
           </div>
 
           {/* Google Calendar checkbox */}
-          <label className="flex items-start gap-3 cursor-pointer p-3 rounded-xl border border-[rgba(0,217,138,0.20)]"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+          <label className="flex items-start gap-3 cursor-pointer p-3 rounded-xl border border-brand/20"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           >
             <input
               type="checkbox"
@@ -906,8 +906,8 @@ function CallSummariesTab() {
               <PhoneCall className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input
                 required
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 placeholder="Signal ID from recorded call (required)"
                 value={reqForm.signalId}
                 onChange={setR('signalId')}
@@ -928,8 +928,8 @@ function CallSummariesTab() {
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Contact ID (optional)"
                   value={reqForm.contactId}
                   onChange={setR('contactId')}
@@ -941,8 +941,8 @@ function CallSummariesTab() {
               <div className="relative">
                 <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Deal ID (optional)"
                   value={reqForm.dealId}
                   onChange={setR('dealId')}

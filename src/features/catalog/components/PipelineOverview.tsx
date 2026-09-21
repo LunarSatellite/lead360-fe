@@ -180,9 +180,9 @@ function PipelineFlow({ sync, enrichment, embedding, cache }: PipelineOverviewPr
           <div
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-semibold transition-all ${
               step.done
-                ? 'bg-success-soft border-[rgba(16,185,129,0.15)] text-success'
+                ? 'bg-success-soft border-success/15 text-success'
                 : step.inProgress
-                  ? 'bg-info-soft border-[rgba(59,130,246,0.15)] text-info'
+                  ? 'bg-info-soft border-info/15 text-info'
                   : 'bg-glass-1 border-border-subtle text-text-muted'
             }`}
           >

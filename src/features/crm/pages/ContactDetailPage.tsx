@@ -35,8 +35,8 @@ const ENROLLMENT_STATUS_LABELS: Record<number, string> = {
 };
 const ENROLLMENT_STATUS_COLORS: Record<number, string> = {
   1: 'text-brand bg-brand-soft border-border-glow',
-  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  3: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  2: 'text-warning bg-warning-soft border-warning/20',
+  3: 'text-success bg-success-soft border-success/20',
   4: 'text-text-muted bg-bg-elevated border-border-subtle',
 };
 
@@ -344,7 +344,7 @@ function ContactTimeline({ contactId }: { contactId: string }) {
 
 function CsatScoreBar({ score }: { score: number }) {
   const pct = Math.max(0, Math.min(100, (score / 10) * 100));
-  const color = score >= 7 ? 'bg-success' : score >= 4 ? 'bg-[#F59E0B]' : 'bg-danger';
+  const color = score >= 7 ? 'bg-success' : score >= 4 ? 'bg-warning' : 'bg-danger';
   return (
     <div className="flex-1 h-1.5 rounded-full bg-bg-elevated overflow-hidden">
       <div className={`h-full ${color}`} style={{ width: `${pct}%` }} />
@@ -353,7 +353,7 @@ function CsatScoreBar({ score }: { score: number }) {
 }
 
 const NPS_BADGE_CLASS: Record<number, string> = {
-  1: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  1: 'text-success bg-success-soft border-success/20',
   2: 'text-text-muted bg-bg-elevated border-border-subtle',
   3: 'text-danger bg-danger-soft border-[rgba(239,68,68,0.2)]',
 };
@@ -555,7 +555,7 @@ export function Component() {
                         ) : (
                           <button
                             onClick={() => setConfirmDelete(true)}
-                            className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:border-[rgba(244,63,94,0.3)] hover:bg-danger-soft transition-all"
+                            className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:border-danger/30 hover:bg-danger-soft transition-all"
                             title="Delete contact"
                           >
                             <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />

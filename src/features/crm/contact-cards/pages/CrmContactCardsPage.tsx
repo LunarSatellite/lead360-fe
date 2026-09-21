@@ -218,7 +218,7 @@ function CardTile({
             {card.phone}
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 text-[10px] text-warning px-2 py-0.5 rounded-md bg-warning/10 border border-warning/30">
+          <span className="inline-flex items-center gap-1 text-[10px] text-warning px-2 py-0.5 rounded-md bg-warning-soft border border-warning/30">
             <Phone className="w-3 h-3" />
             Add phone
           </span>
@@ -272,14 +272,14 @@ export function CardDetailModal({
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <ModalHeader card={card} onClose={onClose} />
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5">
           <PreviewSection card={card} />

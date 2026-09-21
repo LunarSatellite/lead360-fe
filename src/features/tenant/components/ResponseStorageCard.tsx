@@ -161,7 +161,7 @@ export function ResponseStorageCard() {
     <>
       <div className="rounded-[14px] border border-border-medium bg-bg-shell p-5 transition-colors hover:border-glass-3">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-[10px] bg-[rgba(0,217,126,0.06)] border border-border-subtle flex items-center justify-center shrink-0 mt-0.5">
+          <div className="w-9 h-9 rounded-[10px] bg-brand-glow/[0.06] border border-border-subtle flex items-center justify-center shrink-0 mt-0.5">
             <Database className="w-4 h-4 text-brand" strokeWidth={1.5} />
           </div>
 
@@ -188,7 +188,7 @@ export function ResponseStorageCard() {
               <Loader2 className="w-3 h-3 text-text-muted animate-spin" strokeWidth={1.8} />
             )}
             {save.isError && !save.isPending && (
-              <span className="text-[10px] text-[#F43F5E]">Failed to save</span>
+              <span className="text-[10px] text-danger">Failed to save</span>
             )}
           </div>
         </div>

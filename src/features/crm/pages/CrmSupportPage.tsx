@@ -24,8 +24,8 @@ const PAGE_SIZE = 20;
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
 const selectCls = 'px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
-const formInputCls = 'w-full px-3 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors';
-const formInputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const formInputCls = 'w-full px-3 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brand/50 transition-colors';
+const formInputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 function Badge({ label, colorCls }: { label: string; colorCls: string }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colorCls}`}>{label}</span>;
@@ -62,7 +62,7 @@ function SlaTimer({ deadline }: { deadline: string | null }) {
   if (!deadline) return null;
   const mins = differenceInMinutes(parseISO(deadline), new Date());
   if (mins < 0) return <span className="text-xs font-semibold text-danger">Breached</span>;
-  if (mins < 120) return <span className="text-xs font-semibold text-[#F59E0B]">{Math.floor(mins / 60)}h {mins % 60}m</span>;
+  if (mins < 120) return <span className="text-xs font-semibold text-warning">{Math.floor(mins / 60)}h {mins % 60}m</span>;
   return <span className="text-xs font-semibold text-success">{Math.floor(mins / 60)}h left</span>;
 }
 
@@ -129,21 +129,21 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
 }
 
 const PRIORITY_OPTS = [
-  { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-[rgba(184,230,213,0.08)]' },
-  { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-[#F59E0B]',       hover: 'hover:bg-[rgba(245,158,11,0.08)]'  },
-  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-[rgba(244,63,94,0.08)]'   },
-  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-[rgba(244,63,94,0.12)]'   },
+  { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-text-secondary/[0.08]' },
+  { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-warning',       hover: 'hover:bg-warning/[0.08]'  },
+  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-danger/[0.08]'   },
+  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-danger/[0.12]'   },
 ] as const;
 
 const dropTriggerStyle = (open: boolean) => ({
   backgroundColor: '#1A2F27',
-  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-  border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-  boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+  border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+  boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
   outline: 'none',
   transition: 'box-shadow 0.2s ease',
 });
-const dropPanelStyle = { borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' };
+const dropPanelStyle = { borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' };
 
 function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCaseCreateRequest) => void; onCancel: () => void; isSaving: boolean }) {
   const [form, setForm] = useState({ subject: '', contactId: '', priority: '', slaPolicyId: '', description: '' });
@@ -172,8 +172,8 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
     <div className="fixed inset-0 z-[9999] flex items-center justify-end pr-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
       <div className="drawer-slide-in relative w-[540px] flex flex-col overflow-hidden"
-        style={{ borderRadius: 18, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)', maxHeight: 'calc(100vh - 32px)' }}>
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        style={{ borderRadius: 18, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)', maxHeight: 'calc(100vh - 32px)' }}>
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Support Case</h3>
           <button onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
@@ -205,7 +205,7 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
                     {PRIORITY_OPTS.map(opt => (
                       <button key={opt.value} type="button"
                         onClick={() => { setForm(f => ({ ...f, priority: opt.value })); setPriorityOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.priority === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.priority === opt.value ? 'bg-brand-soft' : ''}`}>
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
                         {opt.label}
                         {form.priority === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -232,14 +232,14 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden" style={dropPanelStyle}>
                     <button type="button"
                       onClick={() => { setForm(f => ({ ...f, slaPolicyId: '' })); setSlaOpen(false); }}
-                      className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.06)] text-text-muted ${form.slaPolicyId === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand/[0.06] text-text-muted ${form.slaPolicyId === '' ? 'bg-brand-soft' : ''}`}>
                       None
                       {form.slaPolicyId === '' && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>
                     {slaPolicies.map(p => (
                       <button key={p.id} type="button"
                         onClick={() => { setForm(f => ({ ...f, slaPolicyId: p.id })); setSlaOpen(false); }}
-                        className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.06)] text-text-primary ${form.slaPolicyId === p.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand/[0.06] text-text-primary ${form.slaPolicyId === p.id ? 'bg-brand-soft' : ''}`}>
                         {p.name}
                         {form.slaPolicyId === p.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                       </button>
@@ -291,10 +291,10 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
             <Badge label={CRM_SUPPORT_PRIORITY_LABELS[detail.priority as CrmSupportCasePriority]} colorCls={CRM_SUPPORT_PRIORITY_COLORS[detail.priority as CrmSupportCasePriority]} />
           </div>
           <div className="flex gap-2 flex-wrap">
-            <button onClick={() => escalate.mutate(caseId)} disabled={escalate.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[rgba(245,158,11,0.1)] text-[#F59E0B] text-xs font-semibold border border-[rgba(245,158,11,0.2)] hover:bg-[rgba(245,158,11,0.2)] transition-all disabled:opacity-50">
+            <button onClick={() => escalate.mutate(caseId)} disabled={escalate.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-warning-soft text-warning text-xs font-semibold border border-warning/20 hover:bg-warning/20 transition-all disabled:opacity-50">
               <AlertTriangle className="w-3.5 h-3.5" /> Escalate
             </button>
-            <button onClick={() => resolve.mutate(caseId)} disabled={resolve.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-[rgba(34,197,94,0.2)] hover:bg-success hover:text-bg transition-all disabled:opacity-50">
+            <button onClick={() => resolve.mutate(caseId)} disabled={resolve.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-bg transition-all disabled:opacity-50">
               <CheckCircle className="w-3.5 h-3.5" /> Resolve
             </button>
             <button onClick={() => close.mutate(caseId)} disabled={close.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-bg-elevated text-text-secondary text-xs font-semibold border border-border-subtle hover:bg-bg-card transition-all disabled:opacity-50">

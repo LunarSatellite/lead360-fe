@@ -38,8 +38,8 @@ import {
 const CANVAS_CSS = `
 .crm-wf .react-flow__edge-path { stroke: #3A5A4C; stroke-width: 1.5; fill: none; }
 .crm-wf .react-flow__edge.animated .react-flow__edge-path { stroke-dasharray: 6; animation: dashmove 0.8s linear infinite; }
-.crm-wf .react-flow__edge.selected .react-flow__edge-path { stroke: #00FFA3; stroke-width: 2; }
-.crm-wf .react-flow__connectionline { stroke: #00FFA3; stroke-width: 1.5; stroke-dasharray: 6 4; }
+.crm-wf .react-flow__edge.selected .react-flow__edge-path { stroke: rgb(var(--brand-light-rgb)); stroke-width: 2; }
+.crm-wf .react-flow__connectionline { stroke: rgb(var(--brand-light-rgb)); stroke-width: 1.5; stroke-dasharray: 6 4; }
 @keyframes dashmove { to { stroke-dashoffset: -12; } }
 @keyframes nodeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 .crm-wf .react-flow__node { animation: nodeIn 150ms ease-out; }
@@ -49,10 +49,10 @@ const CANVAS_CSS = `
 .crm-wf .react-flow__handle:hover { opacity: 1 !important; }
 .crm-wf .react-flow__controls { box-shadow: none !important; }
 .crm-wf .react-flow__controls-button {
-  background: var(--bg-shell, #0F1E1A) !important; border: 1px solid #14302A !important;
-  color: #7A9B8E !important; border-radius: 6px !important; margin-bottom: 2px; width: 28px; height: 28px;
+  background: var(--bg-shell, rgb(var(--color-surface-inset))) !important; border: 1px solid rgb(var(--color-border-subtle)) !important;
+  color: rgb(var(--color-text-muted)) !important; border-radius: 6px !important; margin-bottom: 2px; width: 28px; height: 28px;
 }
-.crm-wf .react-flow__controls-button:hover { background: #1A332C !important; color: #00D98A !important; }
+.crm-wf .react-flow__controls-button:hover { background: rgb(var(--color-surface-elevated)) !important; color: rgb(var(--brand-rgb)) !important; }
 .crm-wf .wf-edge-add { opacity: 0; transition: opacity 150ms; pointer-events: all; }
 .crm-wf .react-flow__edge:hover .wf-edge-add { opacity: 1; }
 .react-flow__edge-label { font-size: 10px; font-weight: 700; pointer-events: none; }
@@ -181,7 +181,7 @@ function NodeCard({ id, meta, children, sourceHandles = 1 }: {
       <Handle type="target" position={Position.Top} style={{ background: meta.handleColor }} />
       <div
         className={`w-[170px] bg-bg-card rounded-lg border hover:brightness-110 transition-all cursor-pointer select-none overflow-hidden ${hasError ? 'border-red-500' : sel ? 'border-brand' : 'border-border-subtle'}`}
-        style={{ boxShadow: sel ? '0 0 0 1.5px rgba(0,217,138,0.25)' : '0 2px 8px rgba(0,0,0,0.25)' }}
+        style={{ boxShadow: sel ? '0 0 0 1.5px rgb(var(--brand-rgb) / 0.25)' : '0 2px 8px rgba(0,0,0,0.25)' }}
       >
         {/* Left accent strip */}
         <div className="flex">
@@ -195,7 +195,7 @@ function NodeCard({ id, meta, children, sourceHandles = 1 }: {
       {sourceHandles === 2 && (
         <>
           <Handle id="true" type="source" position={Position.Bottom}
-            style={{ bottom: -5, left: '28%', background: '#22C55E' }} />
+            style={{ bottom: -5, left: '28%', background: 'rgb(var(--color-success))' }} />
           <Handle id="false" type="source" position={Position.Bottom}
             style={{ bottom: -5, left: '72%', background: '#EF4444' }} />
         </>
@@ -470,7 +470,7 @@ function FloatingPalette() {
   return (
     <div
       className="absolute left-4 top-3 z-10 w-[148px] bg-bg-shell rounded-xl flex flex-col overflow-hidden"
-      style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)', border: '1px solid #14302A', maxHeight: 'calc(100% - 24px)' }}
+      style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)', border: '1px solid rgb(var(--color-border-subtle))', maxHeight: 'calc(100% - 24px)' }}
     >
       <div className="px-3 pt-3 pb-2 shrink-0">
         <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider mb-2">Drag to canvas</p>
@@ -816,7 +816,7 @@ function CreateWorkflowForm({ onGenerate }: {
   return (
     <div
       className="absolute left-4 top-3 z-10 w-[270px] bg-bg-shell rounded-xl flex flex-col overflow-hidden"
-      style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)', border: '1px solid #14302A', maxHeight: 'calc(100% - 24px)' }}
+      style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)', border: '1px solid rgb(var(--color-border-subtle))', maxHeight: 'calc(100% - 24px)' }}
     >
       <div className="px-3 pt-3 pb-2 shrink-0 border-b border-border-subtle">
         <p className="text-[9px] font-bold text-text-muted uppercase tracking-wider">Create Workflow</p>
@@ -890,7 +890,7 @@ function CreateWorkflowForm({ onGenerate }: {
       <div className="px-3 py-2 border-t border-border-subtle shrink-0">
         <button onClick={() => onGenerate(triggerType, triggerConditionsJson, steps)}
           className="w-full py-1.5 rounded-lg text-[10px] font-bold text-white transition-all"
-          style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}>
+          style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}>
           Generate to Canvas
         </button>
       </div>
@@ -1657,8 +1657,8 @@ function WorkflowChatWidget({
       <div
         className="w-full flex items-center gap-2.5 px-3 py-2"
         style={{
-          background: '#0F1E1A',
-          border: `1px solid ${workflowId ? '#1C3B52' : '#1C4132'}`,
+          background: 'rgb(var(--color-surface-inset))',
+          border: `1px solid ${workflowId ? '#1C3B52' : 'rgb(var(--color-border-default))'}`,
           borderRadius: 16,
           boxShadow: '0 8px 32px rgba(0,0,0,0.45)',
           backdropFilter: 'blur(12px)',
@@ -1667,7 +1667,7 @@ function WorkflowChatWidget({
         {/* AI icon — green = generate, blue = modify */}
         <div
           className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-          style={{ background: workflowId ? 'linear-gradient(135deg,#1D4ED8,#3B82F6)' : 'linear-gradient(135deg,#047857,#059669)' }}
+          style={{ background: workflowId ? 'linear-gradient(135deg,#1D4ED8,rgb(var(--color-info)))' : 'linear-gradient(135deg,#047857,#059669)' }}
         >
           {loading
             ? <Loader2 className="w-3.5 h-3.5 text-white animate-spin" strokeWidth={2} />
@@ -1675,7 +1675,7 @@ function WorkflowChatWidget({
         </div>
 
         {/* Mode label */}
-        <span className="text-[10px] font-bold shrink-0 uppercase tracking-wider" style={{ color: workflowId ? '#60A5FA' : '#34D399' }}>
+        <span className="text-[10px] font-bold shrink-0 uppercase tracking-wider" style={{ color: workflowId ? '#60A5FA' : 'rgb(var(--color-success-light))' }}>
           {workflowId ? 'Modify' : 'Generate'}
         </span>
 
@@ -1696,7 +1696,7 @@ function WorkflowChatWidget({
           onClick={handleSend}
           disabled={!input.trim() || loading}
           className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all disabled:opacity-30"
-          style={{ background: input.trim() && !loading ? 'linear-gradient(135deg,#059669,#10B981)' : 'transparent', border: input.trim() && !loading ? 'none' : '1px solid #1C4132' }}
+          style={{ background: input.trim() && !loading ? 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' : 'transparent', border: input.trim() && !loading ? 'none' : '1px solid rgb(var(--color-border-default))' }}
         >
           <Send className="w-3.5 h-3.5" style={{ color: input.trim() && !loading ? '#fff' : '#4A5C52' }} strokeWidth={2} />
         </button>
@@ -1747,7 +1747,7 @@ function WfCanvas({ nodes, edges, onNodesChange, onEdgesChange, setNodes, setEdg
       onDrop={onDrop}
       onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; setIsDragOver(true); }}
       onDragLeave={() => setIsDragOver(false)}
-      style={{ outline: isDragOver ? '2px dashed rgba(0,217,138,0.3)' : undefined, outlineOffset: '-10px' }}
+      style={{ outline: isDragOver ? '2px dashed rgb(var(--brand-rgb) / 0.3)' : undefined, outlineOffset: '-10px' }}
     >
       <style dangerouslySetInnerHTML={{ __html: CANVAS_CSS }} />
 
@@ -1816,7 +1816,7 @@ function WfCanvas({ nodes, edges, onNodesChange, onEdgesChange, setNodes, setEdg
               <Plus className="w-5 h-5 text-text-muted opacity-40" strokeWidth={1.5} />
             </div>
             <p className="text-sm font-semibold text-text-muted">Drag blocks from the left panel</p>
-            <p className="text-2xs text-text-muted mt-1 opacity-60">or use <span style={{ color: '#10B981' }}>Build with AI</span> ↘</p>
+            <p className="text-2xs text-text-muted mt-1 opacity-60">or use <span style={{ color: 'rgb(var(--color-success))' }}>Build with AI</span> ↘</p>
           </div>
         </div>
       )}
@@ -1977,7 +1977,7 @@ function WorkflowBuilder({ workflow, onBack }: { workflow: CrmWorkflowSummaryDto
           {/* Active toggle */}
           <button onClick={() => setIsActive((v) => !v)}
             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-2xs font-semibold transition-all shrink-0"
-            style={{ background: isActive ? 'rgba(0,217,138,0.08)' : 'transparent', border: `1px solid ${isActive ? 'rgba(0,217,138,0.25)' : '#14302A'}`, color: isActive ? '#00D98A' : '#7A9B8E' }}>
+            style={{ background: isActive ? 'rgb(var(--brand-rgb) / 0.08)' : 'transparent', border: `1px solid ${isActive ? 'rgb(var(--brand-rgb) / 0.25)' : 'rgb(var(--color-border-subtle))'}`, color: isActive ? 'rgb(var(--brand-rgb))' : 'rgb(var(--color-text-muted))' }}>
             {isActive ? <ToggleRight className="w-3.5 h-3.5" strokeWidth={1.8} /> : <ToggleLeft className="w-3.5 h-3.5" strokeWidth={1.8} />}
             {isActive ? 'Active' : 'Paused'}
           </button>
@@ -1985,7 +1985,7 @@ function WorkflowBuilder({ workflow, onBack }: { workflow: CrmWorkflowSummaryDto
           {/* Save */}
           <button onClick={handleSave} disabled={isSaving || !name.trim()}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-2xs font-bold text-white border-none disabled:opacity-50 transition-all shrink-0"
-            style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}>
+            style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}>
             {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" strokeWidth={2} />}
             Save
           </button>
@@ -2058,7 +2058,7 @@ function WorkflowCard({ wf, onOpen, onRun, onDelete, onToggle }: {
           <p className="text-sm font-bold text-text-primary truncate">{wf.name}</p>
           <p className="text-2xs mt-0.5 font-medium" style={{ color: clr }}>{TRIG_LBL[wf.triggerType] ?? 'Trigger'}</p>
         </div>
-        <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: wf.isActive ? '#00D98A' : '#14302A' }} title={wf.isActive ? 'Active' : 'Paused'} />
+        <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ background: wf.isActive ? 'rgb(var(--brand-rgb))' : 'rgb(var(--color-border-subtle))' }} title={wf.isActive ? 'Active' : 'Paused'} />
       </div>
 
       {stepCount > 0 ? (
@@ -2079,7 +2079,7 @@ function WorkflowCard({ wf, onOpen, onRun, onDelete, onToggle }: {
           {wf.lastTriggeredAt ? ` · last ${format(parseISO(wf.lastTriggeredAt), 'MMM d')}` : ''}
         </span>
         <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-          <button onClick={onToggle} className="p-1.5 rounded-lg hover:bg-glass-1 transition-all" style={{ color: wf.isActive ? '#00D98A' : '#7A9B8E' }}>
+          <button onClick={onToggle} className="p-1.5 rounded-lg hover:bg-glass-1 transition-all" style={{ color: wf.isActive ? 'rgb(var(--brand-rgb))' : 'rgb(var(--color-text-muted))' }}>
             {wf.isActive ? <ToggleRight className="w-3.5 h-3.5" strokeWidth={1.6} /> : <ToggleLeft className="w-3.5 h-3.5" strokeWidth={1.6} />}
           </button>
           <button onClick={onRun} className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all">
@@ -2142,7 +2142,7 @@ export function Component() {
           <p className="text-sm text-text-muted">No workflows yet</p>
           <button onClick={() => setBuilderTarget('new')}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white"
-            style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}>
+            style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}>
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Create your first workflow
           </button>
         </div>

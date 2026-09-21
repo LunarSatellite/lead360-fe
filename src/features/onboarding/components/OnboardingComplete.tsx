@@ -21,7 +21,7 @@ export function OnboardingComplete() {
         <button
           onClick={() => navigate('/dashboard/analytics')}
           className="px-5 py-2.5 rounded-lg text-sm font-bold text-white"
-          style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+          style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
         >
           View Analytics
         </button>

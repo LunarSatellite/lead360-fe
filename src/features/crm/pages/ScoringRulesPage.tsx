@@ -74,7 +74,7 @@ export function Component() {
                 <td className="px-4 py-3 text-xs font-mono font-semibold text-brand">{r.eventType}</td>
                 <td className="px-4 py-3 text-sm text-text-primary">{r.label || '—'}</td>
                 <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-xs font-bold ${r.points > 0 ? 'text-success bg-success-soft' : 'text-danger bg-danger-soft'}`}>{r.points > 0 ? '+' : ''}{r.points}</span></td>
-                <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${r.isActive ? 'text-success border-success/30 bg-success/10' : 'text-text-muted border-border-medium bg-glass-2'}`}>{r.isActive ? 'Active' : 'Inactive'}</span></td>
+                <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${r.isActive ? 'text-success border-success/30 bg-success-soft' : 'text-text-muted border-border-medium bg-glass-2'}`}>{r.isActive ? 'Active' : 'Inactive'}</span></td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     <button onClick={() => openEdit(r)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
@@ -105,13 +105,13 @@ export function Component() {
             style={{
               borderRadius: 18,
               background: 'var(--bg-card)',
-              border: '1px solid rgba(0,217,138,0.2)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+              border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
               maxHeight: 'calc(100vh - 32px)',
             }}
           >
             {/* Accent bar */}
-            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
             <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
               <div>
                 <h2
@@ -136,8 +136,8 @@ export function Component() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Event type</label>
                 <input
-                  className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. email_opened"
                   value={form.eventType}
                   onChange={e => setForm(f => ({ ...f, eventType: e.target.value }))}
@@ -148,8 +148,8 @@ export function Component() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Label</label>
                 <input
-                  className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. Email Opened"
                   value={form.label}
                   onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
@@ -160,8 +160,8 @@ export function Component() {
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Points</label>
                 <input
                   type="number"
-                  className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   value={form.points}
                   onChange={e => setForm(f => ({ ...f, points: Number(e.target.value) }))}
                 />

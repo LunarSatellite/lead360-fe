@@ -85,14 +85,14 @@ const MIN_SCORE_OPTIONS = [
 
 function scoreBarColor(score: number): string {
   if (score <= 30) return 'bg-text-muted';
-  if (score <= 55) return 'bg-[#F59E0B]';
+  if (score <= 55) return 'bg-warning';
   return 'bg-brand';
 }
 
 const SOURCE_BADGE: Record<LeadSource, { label: string; cls: string } | null> = {
   0: null,
   1: { label: 'Chatbot',  cls: 'text-brand bg-brand-soft border-border-glow' },
-  2: { label: 'Campaign', cls: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]' },
+  2: { label: 'Campaign', cls: 'text-violet-light bg-violet-light/10 border-violet-light/20' },
   3: { label: 'Manual',   cls: 'text-text-muted bg-bg-elevated border-border-subtle' },
 };
 
@@ -303,13 +303,13 @@ export function Component() {
             style={{
               borderRadius: 18,
               background: 'var(--bg-card)',
-              border: '1px solid rgba(0,217,138,0.2)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+              border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
               maxHeight: 'calc(100vh - 32px)',
             }}
           >
             {/* Accent bar — mirrors AuroraBI notification panel top stripe */}
-            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
             <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
               <div>
                 <h2
@@ -338,8 +338,8 @@ export function Component() {
               <div className="relative" ref={contactDropRef}>
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Search existing contacts…"
                   autoComplete="off"
                   value={contactSearch}
@@ -360,9 +360,9 @@ export function Component() {
                     className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
                     style={{
                       borderRadius: 12,
-                      background: '#132420',
-                      border: '1px solid rgba(0,217,138,0.20)',
-                      boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)',
+                      background: 'rgb(var(--color-surface-card))',
+                      border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)',
                     }}
                   >
                     {contactSuggestions.length > 0 ? contactSuggestions.map(c => (
@@ -380,7 +380,7 @@ export function Component() {
                         <div className="relative shrink-0">
                           <div
                             className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center"
-                            style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}
+                            style={{ boxShadow: '0 0 8px rgb(var(--brand-rgb) / 0.35), 0 0 16px rgb(var(--brand-rgb) / 0.15)' }}
                           >
                             <span className="text-xs font-bold text-brand">
                               {c.fullName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
@@ -397,7 +397,7 @@ export function Component() {
                         </div>
                         <span
                           className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                          style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }}
+                          style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9), 0 0 12px rgb(var(--brand-rgb) / 0.5)' }}
                         />
                       </button>
                     )) : (
@@ -421,8 +421,8 @@ export function Component() {
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="John Doe"
                       value={form.customerName ?? ''}
                       onChange={e => setForm(f => ({ ...f, customerName: e.target.value }))}
@@ -434,8 +434,8 @@ export function Component() {
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="+977 98XXXXXXXX"
                       value={form.customerPhone ?? ''}
                       onChange={e => setForm(f => ({ ...f, customerPhone: e.target.value }))}
@@ -451,8 +451,8 @@ export function Component() {
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                   <input
                     type="email"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     placeholder="john@example.com"
                     value={form.customerEmail ?? ''}
                     onChange={e => setForm(f => ({ ...f, customerEmail: e.target.value }))}
@@ -469,8 +469,8 @@ export function Component() {
               <div className="relative" ref={orgDropRef}>
                 <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Search existing organizations…"
                   autoComplete="off"
                   value={orgSearch}
@@ -489,7 +489,7 @@ export function Component() {
                 {showOrgDrop && (
                   <div
                     className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                    style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                    style={{ borderRadius: 12, background: 'rgb(var(--color-surface-card))', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                   >
                     {orgSuggestions.length > 0 ? orgSuggestions.map(org => (
                       <button
@@ -506,7 +506,7 @@ export function Component() {
                       >
                         <div
                           className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0"
-                          style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}
+                          style={{ boxShadow: '0 0 8px rgb(var(--brand-rgb) / 0.35), 0 0 16px rgb(var(--brand-rgb) / 0.15)' }}
                         >
                           <Building2 className="w-4 h-4 text-brand" strokeWidth={1.6} />
                         </div>
@@ -520,7 +520,7 @@ export function Component() {
                         </div>
                         <span
                           className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                          style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }}
+                          style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9), 0 0 12px rgb(var(--brand-rgb) / 0.5)' }}
                         />
                       </button>
                     )) : (
@@ -544,8 +544,8 @@ export function Component() {
                   <div className="relative">
                     <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="Acme Corp"
                       value={orgDetails.name}
                       onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))}
@@ -557,8 +557,8 @@ export function Component() {
                   <div className="relative">
                     <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="acme.com"
                       value={orgDetails.domain}
                       onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))}
@@ -573,8 +573,8 @@ export function Component() {
                   <div className="relative">
                     <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="SaaS, Retail…"
                       value={orgDetails.industry}
                       onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))}
@@ -587,8 +587,8 @@ export function Component() {
                     <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input
                       type="number" min={0}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="250"
                       value={orgDetails.employeeCount}
                       onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))}
@@ -603,8 +603,8 @@ export function Component() {
                   <div className="relative">
                     <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="US"
                       value={orgDetails.country}
                       onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))}
@@ -616,8 +616,8 @@ export function Component() {
                   <div className="relative">
                     <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="New York"
                       value={orgDetails.city}
                       onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))}
@@ -631,8 +631,8 @@ export function Component() {
                 <div className="relative">
                   <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                   <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     placeholder="https://acme.com"
                     value={orgDetails.website}
                     onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))}
@@ -655,10 +655,10 @@ export function Component() {
                       onClick={() => setStageOpen(o => !o)}
                       className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                       style={{
-                        backgroundColor: '#1A332C',
-                        border: `1px solid ${stageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                        backgroundColor: 'rgb(var(--color-surface-elevated))',
+                        border: `1px solid ${stageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                         boxShadow: stageOpen
-                          ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                          ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                           : 'none',
                         outline: 'none',
                         transition: 'box-shadow 0.2s ease',
@@ -667,7 +667,7 @@ export function Component() {
                       <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
                       <span className={`flex-1 text-left font-medium ${
                         form.stage === LeadStage.Hot  ? 'text-danger' :
-                        form.stage === LeadStage.Warm ? 'text-[#F59E0B]' : 'text-text-secondary'
+                        form.stage === LeadStage.Warm ? 'text-warning' : 'text-text-secondary'
                       }`}>
                         {LEAD_STAGE_LABELS[form.stage ?? LeadStage.New]}
                       </span>
@@ -675,18 +675,18 @@ export function Component() {
                     </button>
                     {stageOpen && (
                       <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                        style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                        style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                       >
                         {([
-                          { value: LeadStage.New,  label: 'New',  dot: '#B8E6D5', hover: 'hover:bg-[rgba(184,230,213,0.08)]',  text: 'text-text-secondary' },
-                          { value: LeadStage.Warm, label: 'Warm', dot: '#F59E0B', hover: 'hover:bg-[rgba(245,158,11,0.10)]',   text: 'text-[#F59E0B]' },
-                          { value: LeadStage.Hot,  label: 'Hot',  dot: '#F43F5E', hover: 'hover:bg-[rgba(244,63,94,0.10)]',    text: 'text-danger' },
+                          { value: LeadStage.New,  label: 'New',  dot: '#B8E6D5', hover: 'hover:bg-text-secondary/[0.08]',  text: 'text-text-secondary' },
+                          { value: LeadStage.Warm, label: 'Warm', dot: '#F59E0B', hover: 'hover:bg-warning-soft',   text: 'text-warning' },
+                          { value: LeadStage.Hot,  label: 'Hot',  dot: '#F43F5E', hover: 'hover:bg-danger-soft',    text: 'text-danger' },
                         ] as const).map(opt => (
                           <button
                             key={opt.value}
                             type="button"
                             onClick={() => { setForm(f => ({ ...f, stage: opt.value })); setStageOpen(false); }}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.stage === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                            className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.stage === opt.value ? 'bg-brand-soft' : ''}`}
                           >
                             <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
                             {opt.label}
@@ -705,8 +705,8 @@ export function Component() {
                       type="number"
                       min={0}
                       max={100}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       placeholder="e.g. 75"
                       value={form.score ?? ''}
                       onChange={e => setForm(f => ({ ...f, score: e.target.value ? Math.min(100, Math.max(0, Number(e.target.value))) : undefined }))}
@@ -719,8 +719,8 @@ export function Component() {
                 <div className="relative">
                   <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                   <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     placeholder="Trade show, Referral, Cold outreach…"
                     value={form.adSource ?? ''}
                     onChange={e => setForm(f => ({ ...f, adSource: e.target.value }))}
@@ -733,8 +733,8 @@ export function Component() {
                   <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                   <textarea
                     rows={3}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     placeholder="Interested in enterprise plan, follow up next week…"
                     value={form.notes ?? ''}
                     onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
@@ -813,17 +813,17 @@ export function Component() {
         <div className="flex gap-3 overflow-x-auto pb-1">
           <StatCard label="Total Leads"     value={stats?.total ?? 0}                         valueClass="text-text-primary" />
           <StatCard label="New"             value={stats?.newCount ?? 0}                       valueClass="text-[#60A5FA]" />
-          <StatCard label="Warm"            value={stats?.warmCount ?? 0}                      valueClass="text-[#F59E0B]" />
+          <StatCard label="Warm"            value={stats?.warmCount ?? 0}                      valueClass="text-warning" />
           <StatCard label="Hot"             value={stats?.hotCount ?? 0}                       valueClass="text-danger"
             icon={<Flame className="w-4 h-4 text-danger" />} />
           <StatCard label="Converted"       value={stats?.convertedCount ?? 0}                 valueClass="text-success" />
           <StatCard label="Conversion Rate" value={`${(stats?.conversionRate ?? 0).toFixed(1)}%`} valueClass="text-brand" />
           <StatCard label="From Chatbot"    value={stats?.chatbotCount ?? 0}                   valueClass="text-brand"
             icon={<Bot className="w-4 h-4 text-brand" />} />
-          <StatCard label="From Campaign"   value={stats?.campaignCount ?? 0}                  valueClass="text-[#A78BFA]"
-            icon={<Megaphone className="w-4 h-4 text-[#A78BFA]" />} />
-          <StatCard label="In Nurture"      value={stats?.inNurtureCount ?? 0}                 valueClass="text-[#34D399]"
-            icon={<GitBranch className="w-4 h-4 text-[#34D399]" />} />
+          <StatCard label="From Campaign"   value={stats?.campaignCount ?? 0}                  valueClass="text-violet-light"
+            icon={<Megaphone className="w-4 h-4 text-violet-light" />} />
+          <StatCard label="In Nurture"      value={stats?.inNurtureCount ?? 0}                 valueClass="text-success-light"
+            icon={<GitBranch className="w-4 h-4 text-success-light" />} />
         </div>
       )}
 

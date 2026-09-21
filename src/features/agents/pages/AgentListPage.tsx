@@ -187,7 +187,7 @@ export function Component() {
                 onClick={() => setStatusFilter(s)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition-all ${
                   active
-                    ? 'bg-bg-card text-text-primary shadow-[0_0_0_1px_rgba(0,217,126,0.15)]'
+                    ? 'bg-bg-card text-text-primary shadow-[0_0_0_1px_rgb(var(--color-brand-glow)/0.15)]'
                     : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
@@ -271,7 +271,7 @@ export function Component() {
 function ErrorBlock({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <div className="w-12 h-12 rounded-2xl bg-danger-soft border border-[rgba(244,63,94,0.15)] flex items-center justify-center mb-4">
+      <div className="w-12 h-12 rounded-2xl bg-danger-soft border border-danger/15 flex items-center justify-center mb-4">
         <AlertCircle className="w-5 h-5 text-danger" strokeWidth={1.6} />
       </div>
       <h3 className="text-base font-extrabold text-text-primary mb-1">

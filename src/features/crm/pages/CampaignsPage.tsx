@@ -41,8 +41,8 @@ import { formatDistanceToNow, format } from 'date-fns';
 type MainTab = 'b2b' | 'leads' | 'fb-ads';
 
 const inputCls =
-  'w-full px-3 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors';
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+  'w-full px-3 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brand/50 transition-colors';
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 // Matches backend RecipientStatus enum: Pending=1, Sent=2, Failed=3, Replied=4, Opened=5
 const RECIPIENT_STATUS_LABEL: Record<number, string> = {
@@ -65,12 +65,12 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3
             className="font-bold leading-tight"
@@ -785,7 +785,7 @@ function B2BCampaignCard({ campaign }: { campaign: CrmCampaignSummaryDto }) {
             </div>
           ) : (
             <button onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-[rgba(244,63,94,0.2)] transition-all">
+              className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
           )}
@@ -884,7 +884,7 @@ function B2BCampaignCard({ campaign }: { campaign: CrmCampaignSummaryDto }) {
         )}
         {(isScheduled || isRunning) && (
           <button onClick={() => cancel.mutate(campaign.id)} disabled={cancel.isPending}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-danger hover:bg-danger-soft hover:border-[rgba(244,63,94,0.2)] transition-all disabled:opacity-50">
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-danger hover:bg-danger-soft hover:border-danger/20 transition-all disabled:opacity-50">
             {cancel.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Ban className="w-3.5 h-3.5" strokeWidth={1.5} /> Cancel</>}
           </button>
         )}
@@ -1064,8 +1064,8 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
     <div className="fixed inset-0 z-[9999] flex items-center justify-end pr-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="drawer-slide-in relative w-[540px] flex flex-col overflow-hidden"
-        style={{ borderRadius: 18, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)', maxHeight: 'calc(100vh - 32px)' }}>
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        style={{ borderRadius: 18, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)', maxHeight: 'calc(100vh - 32px)' }}>
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Lead Outreach Campaign</h3>
           <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
@@ -1233,9 +1233,9 @@ function LeadOutreachTab() {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 const FB_STATUS_CLS: Record<string, string> = {
-  ACTIVE: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
-  PAUSED: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  DELETED: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  ACTIVE: 'text-success bg-success-soft border-success/20',
+  PAUSED: 'text-warning bg-warning-soft border-warning/20',
+  DELETED: 'text-danger bg-danger-soft border-danger/20',
   ARCHIVED: 'text-text-muted bg-bg-card border-border-subtle',
 };
 
@@ -1319,7 +1319,7 @@ function FbAdsTab() {
             <div>
               <p className="text-sm font-bold text-text-primary">
                 {account.businessName ?? 'Facebook Ad Account'}
-                <span className="ml-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-success-soft text-success border border-[rgba(34,197,94,0.2)]">Connected</span>
+                <span className="ml-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-success-soft text-success border border-success/20">Connected</span>
               </p>
               <p className="text-xs text-text-muted mt-0.5">{account.adAccountId} · {account.currency}</p>
               {account.lastSyncedAt && (

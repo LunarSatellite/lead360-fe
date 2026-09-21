@@ -19,7 +19,7 @@ export function IntentKeywordTags({ keywords, max = 6 }: IntentKeywordTagsProps)
       {visible.map((tag) => (
         <span
           key={tag}
-          className="inline-flex items-center px-2.5 py-1 rounded-md bg-info-soft text-info text-2xs font-semibold border border-[rgba(59,130,246,0.12)]"
+          className="inline-flex items-center px-2.5 py-1 rounded-md bg-info-soft text-info text-2xs font-semibold border border-info/[0.12]"
         >
           {tag}
         </span>

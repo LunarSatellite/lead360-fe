@@ -255,7 +255,7 @@ function DraftCard({ draft }: { draft: CrmKbDraftDto }) {
         </div>
       ) : (
         <div className="flex gap-2 pt-2 border-t border-border-subtle">
-          <button onClick={approve} disabled={review.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success border border-[rgba(34,197,94,0.2)] hover:bg-success hover:text-white transition-all disabled:opacity-50">
+          <button onClick={approve} disabled={review.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success border border-success/20 hover:bg-success hover:text-white transition-all disabled:opacity-50">
             <Check className="w-3.5 h-3.5" /> Approve & publish
           </button>
           <button onClick={() => setShowReject(true)} disabled={review.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50">

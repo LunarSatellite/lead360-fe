@@ -14,12 +14,12 @@ function SlideOver({ open, onClose, title, children, footer }: { open: boolean; 
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
@@ -148,15 +148,15 @@ export function Component() {
             <div className="relative">
               <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
             <textarea value={form.description} rows={3} onChange={setF('description')} placeholder="Campaign description…"
-              className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
             <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Target & Workflow</span>
@@ -169,8 +169,8 @@ export function Component() {
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
                   backgroundColor: '#1A2F27',
-                  border: `1px solid ${entityOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: entityOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  border: `1px solid ${entityOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: entityOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}>
@@ -179,11 +179,11 @@ export function Component() {
               </button>
               {entityOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
                   {['deal', 'lead', 'contact'].map(opt => (
                     <button key={opt} type="button"
                       onClick={() => { setForm(f => ({ ...f, targetEntityType: opt })); setEntityOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary capitalize ${form.targetEntityType === opt ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary capitalize ${form.targetEntityType === opt ? 'bg-brand-soft' : ''}`}>
                       {opt}
                       {form.targetEntityType === opt && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>
@@ -199,8 +199,8 @@ export function Component() {
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
                   backgroundColor: '#1A2F27',
-                  border: `1px solid ${workflowOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: workflowOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  border: `1px solid ${workflowOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: workflowOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}>
@@ -209,13 +209,13 @@ export function Component() {
               </button>
               {workflowOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden max-h-48 overflow-y-auto"
-                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
                   {workflowsList.length === 0 ? (
                     <div className="px-3 py-2.5 text-xs text-text-muted">No workflows available</div>
                   ) : workflowsList.map(w => (
                     <button key={w.id} type="button"
                       onClick={() => { setForm(f => ({ ...f, workflowId: w.id })); setWorkflowOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${form.workflowId === w.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${form.workflowId === w.id ? 'bg-brand-soft' : ''}`}>
                       {w.name}
                       {form.workflowId === w.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>
@@ -231,8 +231,8 @@ export function Component() {
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Segment Conditions <span className="text-text-muted font-normal">(JSON)</span></label>
             <textarea value={form.segmentConditionsJson} rows={4} onChange={setF('segmentConditionsJson')}
-              className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary font-mono placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary font-mono placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               placeholder='{"filters":[{"field":"Status","op":"eq","value":"Open"}]}' />
           </div>
           <div>
@@ -242,8 +242,8 @@ export function Component() {
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
                   backgroundColor: '#1A2F27',
-                  border: `1px solid ${scheduleOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: scheduleOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  border: `1px solid ${scheduleOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: scheduleOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}>
@@ -252,11 +252,11 @@ export function Component() {
               </button>
               {scheduleOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
                   {[{ value: '', label: 'Manual only' }, { value: 'daily', label: 'Daily' }, { value: 'weekly', label: 'Weekly' }].map(opt => (
                     <button key={opt.value} type="button"
                       onClick={() => { setForm(f => ({ ...f, scheduleType: opt.value })); setScheduleOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${form.scheduleType === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${form.scheduleType === opt.value ? 'bg-brand-soft' : ''}`}>
                       {opt.label}
                       {form.scheduleType === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>

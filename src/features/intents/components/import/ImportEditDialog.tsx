@@ -89,7 +89,7 @@ export function ImportEditDialog({ row, onSave, onClose }: ImportEditDialogProps
             }}
             disabled={!name.trim()}
             className="px-4 py-2 rounded-lg text-sm font-semibold text-white disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+            style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
           >
             Save Changes
           </button>

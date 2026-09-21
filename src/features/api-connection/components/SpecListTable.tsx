@@ -119,11 +119,11 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
                   width: 40,
                   height: 40,
                   borderRadius: 12,
-                  background: 'rgba(244,63,94,0.08)',
-                  border: '1px solid rgba(244,63,94,0.15)',
+                  background: 'rgb(var(--color-danger) / 0.08)',
+                  border: '1px solid rgb(var(--color-danger) / 0.15)',
                 }}
               >
-                <AlertCircle style={{ width: 20, height: 20, color: '#F43F5E' }} strokeWidth={1.8} />
+                <AlertCircle style={{ width: 20, height: 20, color: 'rgb(var(--color-danger))' }} strokeWidth={1.8} />
               </div>
               <div>
                 <h3 style={{ fontSize: 14, fontWeight: 700, color: '#E8F0EC' }}>Delete this spec?</h3>

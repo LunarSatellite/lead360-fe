@@ -189,10 +189,10 @@ export function IntentFormModal({
                     className="flex-1 text-center transition-all"
                     style={{
                       padding: '12px 8px', borderRadius: 12, cursor: 'pointer',
-                      background: isActive ? 'rgba(0,217,126,0.06)' : '#111916',
-                      border: isActive ? '2px solid rgba(0,217,126,0.2)' : '1.5px solid #1E2E26',
+                      background: isActive ? 'rgb(var(--color-brand-glow) / 0.06)' : '#111916',
+                      border: isActive ? '2px solid rgb(var(--color-brand-glow) / 0.2)' : '1.5px solid #1E2E26',
                     }}>
-                    <div style={{ fontSize: 13, fontWeight: isActive ? 700 : 600, color: isActive ? '#00D97E' : '#8A9B91' }}>{opt.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: isActive ? 700 : 600, color: isActive ? 'rgb(var(--color-brand-glow))' : '#8A9B91' }}>{opt.label}</div>
                   </button>
                 );
               })}
@@ -397,7 +397,7 @@ export function IntentFormModal({
 
           {/* Error */}
           {(createMutation.isError || updateMutation.isError) && (
-            <div className="px-4 py-3 rounded-lg bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">
+            <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger">
               {createMutation.error?.message || updateMutation.error?.message || 'Operation failed.'}
             </div>
           )}

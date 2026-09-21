@@ -57,7 +57,7 @@ function NewSupplierInvoiceSlideOver({
 }) {
   const [vendorOpen, setVendorOpen] = useState(false);
   const vendorDropRef = useRef<HTMLDivElement>(null);
-  const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+  const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -77,12 +77,12 @@ function NewSupplierInvoiceSlideOver({
           width: '640px',
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Supplier Invoice</h2>
@@ -108,9 +108,9 @@ function NewSupplierInvoiceSlideOver({
                 onClick={() => setVendorOpen(o => !o)}
                 className="w-full flex items-center gap-2 pl-9 pr-3 py-2 rounded-xl text-sm text-text-primary text-left"
                 style={{
-                  backgroundColor: '#1A332C',
-                  border: `1px solid ${vendorOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: vendorOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  backgroundColor: 'rgb(var(--color-surface-elevated))',
+                  border: `1px solid ${vendorOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: vendorOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}
@@ -122,7 +122,7 @@ function NewSupplierInvoiceSlideOver({
               </button>
               {vendorOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                 >
                   {vendorList.length === 0 && <div className="px-3 py-2.5 text-sm text-text-muted">No active vendors</div>}
                   {vendorList.map(v => (
@@ -130,7 +130,7 @@ function NewSupplierInvoiceSlideOver({
                       key={v.id}
                       type="button"
                       onClick={() => { setVendorId(v.id); setVendorOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${form.vendorId === v.id ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-soft ${form.vendorId === v.id ? 'bg-brand-soft' : ''} text-text-secondary`}
                     >
                       <Building2 className="w-3 h-3 text-text-muted shrink-0" strokeWidth={1.6} />
                       <span className="flex-1 text-left">{v.name}</span>
@@ -148,7 +148,7 @@ function NewSupplierInvoiceSlideOver({
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input required value={form.invNumber} onChange={e => setInvNumber(e.target.value)} placeholder="INV-2024-001"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </div>
@@ -157,7 +157,7 @@ function NewSupplierInvoiceSlideOver({
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input value={form.poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </div>
@@ -169,8 +169,8 @@ function NewSupplierInvoiceSlideOver({
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input required type="date" value={form.issuedDate} onChange={e => setIssuedDate(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               </div>
             </div>
             <div>
@@ -178,8 +178,8 @@ function NewSupplierInvoiceSlideOver({
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input required type="date" value={form.dueDate} onChange={e => setDueDate(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               </div>
             </div>
           </div>
@@ -196,7 +196,7 @@ function NewSupplierInvoiceSlideOver({
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input required type="number" min="0" step="0.01" value={form.subTotal} onChange={e => setSubTotal(e.target.value)} placeholder="0.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </div>
@@ -205,7 +205,7 @@ function NewSupplierInvoiceSlideOver({
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input type="number" min="0" step="0.01" value={form.taxAmount} onChange={e => setTaxAmount(e.target.value)} placeholder="0.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </div>
@@ -214,7 +214,7 @@ function NewSupplierInvoiceSlideOver({
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input value={form.currency} onChange={e => setCurrency(e.target.value)} placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </div>
@@ -231,7 +231,7 @@ function NewSupplierInvoiceSlideOver({
             <div className="relative">
               <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <textarea value={form.notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Invoice notes, payment terms reminder…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={inputStyle} />
             </div>
           </div>
@@ -439,7 +439,7 @@ export function Component() {
                 </button>
               )}
               {selected.status === SupplierInvoiceStatus.Received && (
-                <button onClick={() => { approveSI.mutate(selected.id); setSelected(null); }} disabled={approveSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 disabled:opacity-50">
+                <button onClick={() => { approveSI.mutate(selected.id); setSelected(null); }} disabled={approveSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
                   <CheckCircle className="w-3.5 h-3.5" /> Approve
                 </button>
               )}
@@ -449,12 +449,12 @@ export function Component() {
                 </button>
               )}
               {selected.status !== SupplierInvoiceStatus.Disputed && selected.status !== SupplierInvoiceStatus.Paid && selected.status !== SupplierInvoiceStatus.Void && (
-                <button onClick={() => setShowDispute(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(245,158,11,0.3)] text-xs font-semibold text-[#F59E0B] bg-[rgba(245,158,11,0.08)] hover:opacity-80">
+                <button onClick={() => setShowDispute(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-warning/30 text-xs font-semibold text-warning bg-warning/[0.08] hover:opacity-80">
                   <AlertTriangle className="w-3.5 h-3.5" /> Dispute
                 </button>
               )}
               {selected.status !== SupplierInvoiceStatus.Void && selected.status !== SupplierInvoiceStatus.Paid && (
-                <button onClick={() => { if (confirm('Void this invoice?')) { voidSI.mutate(selected.id); setSelected(null); } }} disabled={voidSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(244,63,94,0.2)] text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 disabled:opacity-50">
+                <button onClick={() => { if (confirm('Void this invoice?')) { voidSI.mutate(selected.id); setSelected(null); } }} disabled={voidSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 disabled:opacity-50">
                   <XCircle className="w-3.5 h-3.5" /> Void
                 </button>
               )}
@@ -484,7 +484,7 @@ export function Component() {
           {selected && <p className="text-sm text-text-muted">Invoice <span className="font-semibold text-text-primary">{selected.invoiceNumber}</span></p>}
           <Field label="Dispute Reason *"><textarea required value={disputeReason} onChange={e => setDisputeReason(e.target.value)} rows={4} className={`${inputCls} resize-none`} placeholder="Describe the dispute..." /></Field>
           <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={disputeSI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-[#F59E0B] text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
+            <button type="submit" disabled={disputeSI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-warning text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {disputeSI.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Dispute'}
             </button>
             <button type="button" onClick={() => setShowDispute(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
@@ -535,7 +535,7 @@ export function Component() {
                   </div>
                 )}
                 {matchResult.riskLevel === 2 && (
-                  <div className="px-3 py-2 rounded-lg bg-[rgba(245,158,11,0.08)] border border-[rgba(245,158,11,0.3)] text-xs text-[#F59E0B]">
+                  <div className="px-3 py-2 rounded-lg bg-warning/[0.08] border border-warning/30 text-xs text-warning">
                     Minor variance — within tolerance, but worth a second look.
                   </div>
                 )}

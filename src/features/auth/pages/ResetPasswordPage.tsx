@@ -68,7 +68,7 @@ export function Component() {
             </div>
           )}
         </div>
-        {reset.isError && <div className="px-4 py-3 rounded-lg bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">{reset.error?.message || 'Reset failed.'}</div>}
+        {reset.isError && <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger">{reset.error?.message || 'Reset failed.'}</div>}
         <button type="submit" disabled={reset.isPending}
           className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-lg bg-gradient-to-br from-brand to-brand-dark text-white text-base font-bold hover:brightness-110 disabled:opacity-50 transition-all">
           {reset.isPending ? <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Lock className="w-5 h-5" />}

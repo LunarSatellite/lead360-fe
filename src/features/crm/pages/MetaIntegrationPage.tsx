@@ -166,10 +166,10 @@ const OBJECTIVE_LABELS: Record<string, string> = {
 const STAGE_LABELS: Record<number, string> = { 1:'New', 2:'Warm', 3:'Hot', 4:'Nurturing', 5:'Converted', 6:'Lost' };
 const STAGE_COLORS: Record<number, string> = {
   1:'text-text-secondary bg-bg-elevated border-border-subtle',
-  2:'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  3:'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  2:'text-warning bg-warning-soft border-warning/20',
+  3:'text-danger bg-danger-soft border-danger/20',
   4:'text-brand bg-brand-soft border-border-glow',
-  5:'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  5:'text-success bg-success-soft border-success/20',
   6:'text-text-muted bg-bg-card border-border-subtle',
 };
 
@@ -181,9 +181,9 @@ const labelCls = 'block text-xs font-semibold text-text-muted mb-1.5';
 function StatusBadge({ status }: { status: string }) {
   const s = status.toUpperCase();
   const cfg = s === 'ACTIVE'
-    ? { cls: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]', dot: 'bg-success' }
+    ? { cls: 'text-success bg-success-soft border-success/20', dot: 'bg-success' }
     : s === 'PAUSED'
-    ? { cls: 'text-[#F59E0B] bg-[rgba(245,158,11,0.08)] border-[rgba(245,158,11,0.25)]', dot: 'bg-[#F59E0B]' }
+    ? { cls: 'text-warning bg-warning/[0.08] border-warning/25', dot: 'bg-warning' }
     : { cls: 'text-text-muted bg-bg-elevated border-border-subtle', dot: 'bg-text-muted' };
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border ${cfg.cls}`}>
@@ -210,7 +210,7 @@ function Metric({ label, value, sub, accent }: { label: string; value: string | 
 function CheckIcon({ status }: { status: string }) {
   if (status === 'ok')   return <CheckCircle className="w-4 h-4 text-success shrink-0" />;
   if (status === 'fail') return <XCircle className="w-4 h-4 text-danger shrink-0" />;
-  if (status === 'warn') return <AlertTriangle className="w-4 h-4 text-[#F59E0B] shrink-0" />;
+  if (status === 'warn') return <AlertTriangle className="w-4 h-4 text-warning shrink-0" />;
   return <Circle className="w-4 h-4 text-text-muted shrink-0" />;
 }
 
@@ -254,7 +254,7 @@ function SetupChecklist() {
           </div>
           <div className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-bold ${
             status.readyToRunAds
-              ? 'bg-success-soft text-success border border-[rgba(34,197,94,0.2)]'
+              ? 'bg-success-soft text-success border border-success/20'
               : 'bg-bg-elevated text-text-muted border border-border-subtle'
           }`}>
             {status.readyToRunAds
@@ -475,8 +475,8 @@ function CampaignDetail({
             <button onClick={() => toggleMut.mutate()} disabled={toggleMut.isPending}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-50 ${
                 campaign.fbStatus === 'ACTIVE'
-                  ? 'bg-[rgba(245,158,11,0.1)] text-[#F59E0B] border border-[rgba(245,158,11,0.3)] hover:bg-[rgba(245,158,11,0.2)]'
-                  : 'bg-success-soft text-success border border-[rgba(34,197,94,0.2)] hover:bg-[rgba(34,197,94,0.2)]'
+                  ? 'bg-warning-soft text-warning border border-warning/30 hover:bg-warning/20'
+                  : 'bg-success-soft text-success border border-success/20 hover:bg-success/20'
               }`}>
               {toggleMut.isPending
                 ? <Loader2 className="w-4 h-4 animate-spin" />
@@ -570,7 +570,7 @@ function CampaignDetail({
 
           {/* Revenue */}
           {campaign.attributedRevenue > 0 && (
-            <div className="rounded-2xl border border-[rgba(34,197,94,0.2)] bg-success-soft p-4 flex items-center justify-between">
+            <div className="rounded-2xl border border-success/20 bg-success-soft p-4 flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold text-success uppercase tracking-wider">Attributed Revenue</p>
                 <p className="text-2xl font-extrabold text-success mt-1">{fmtMoney(campaign.attributedRevenue, currency)}</p>
@@ -674,7 +674,7 @@ function CampaignDetail({
                 {/* Score bar */}
                 <div className="flex items-center gap-2 w-20">
                   <div className="flex-1 h-1.5 rounded-full bg-bg-elevated overflow-hidden">
-                    <div className={`h-full rounded-full ${lead.score >= 70 ? 'bg-brand' : lead.score >= 40 ? 'bg-[#F59E0B]' : 'bg-text-muted'}`}
+                    <div className={`h-full rounded-full ${lead.score >= 70 ? 'bg-brand' : lead.score >= 40 ? 'bg-warning' : 'bg-text-muted'}`}
                       style={{ width: `${lead.score}%` }} />
                   </div>
                   <span className="text-xs font-bold text-text-muted">{lead.score}</span>
@@ -728,12 +728,12 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight flex items-center gap-2" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
@@ -773,8 +773,8 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             <label className="block text-xs font-semibold text-text-secondary mb-1">Ad Account ID <span className="text-danger">*</span></label>
             <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
               placeholder="act_123456789"
-              className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Access Token <span className="text-danger">*</span></label>
@@ -782,8 +782,8 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
               <input type={showToken ? 'text' : 'password'} value={form.accessToken}
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
                 placeholder="EAABsbCS..."
-                className="w-full pl-3 pr-10 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                className="w-full pl-3 pr-10 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               <button type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
@@ -794,15 +794,15 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             <label className="block text-xs font-semibold text-text-secondary mb-1">Business Name</label>
             <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
               placeholder="Acme Marketing"
-              className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
             <input value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
               placeholder="USD"
-              className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle flex gap-3">
@@ -877,7 +877,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           {/* Status chips */}
           {meta?.isActive && (
             <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border text-success bg-success-soft border-[rgba(34,197,94,0.2)]">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border text-success bg-success-soft border-success/20">
                 <CheckCircle className="w-3 h-3" /> Active
               </span>
               {meta.hasPageToken && (
@@ -886,7 +886,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
                 </span>
               )}
               {meta.hasCapiToken && (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border text-[#F59E0B] bg-[rgba(245,158,11,0.08)] border-[rgba(245,158,11,0.25)]">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border text-warning bg-warning/[0.08] border-warning/25">
                   <CheckCircle className="w-3 h-3" /> CAPI Token Set
                 </span>
               )}
@@ -2149,7 +2149,7 @@ export function Component() {
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}>
+            style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}>
             <Megaphone className="w-5 h-5" style={{ color: '#0A0F0D' }} />
           </div>
           <div>

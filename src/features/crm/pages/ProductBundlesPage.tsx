@@ -24,12 +24,12 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
           width: '520px',
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2
@@ -60,7 +60,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
 }
 
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 export function Component() {
   const bundlesQuery = useProductBundles();
@@ -169,7 +169,7 @@ export function Component() {
                 placeholder="e.g. Starter Kit"
                 value={form.name}
                 onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={inputStyle}
               />
             </div>
@@ -184,7 +184,7 @@ export function Component() {
                   onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))}
                   maxLength={10}
                   placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle}
                 />
               </div>
@@ -199,7 +199,7 @@ export function Component() {
                 placeholder="Optional description…"
                 value={form.description}
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={inputStyle}
               />
             </div>
@@ -255,13 +255,13 @@ function ItemEditor({ bundleId, currency, items }: { bundleId: string; currency:
       </div>
 
       <form onSubmit={add} className="flex flex-wrap gap-2 items-center">
-        <input className="flex-1 min-w-[150px] pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]" style={inputStyle} placeholder="Product name" value={form.productName}
+        <input className="flex-1 min-w-[150px] pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="Product name" value={form.productName}
           onChange={(e) => setForm((f) => ({ ...f, productName: e.target.value }))} />
-        <input className="w-24 pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]" style={inputStyle} placeholder="SKU" value={form.sku}
+        <input className="w-24 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="SKU" value={form.sku}
           onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))} />
-        <input className="w-20 pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]" style={inputStyle} type="number" min="1" step="1" placeholder="Qty" value={form.quantity}
+        <input className="w-20 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="1" step="1" placeholder="Qty" value={form.quantity}
           onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))} />
-        <input className="w-28 pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]" style={inputStyle} type="number" min="0" step="0.01" placeholder="Price" value={form.unitPrice}
+        <input className="w-28 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="0" step="0.01" placeholder="Price" value={form.unitPrice}
           onChange={(e) => setForm((f) => ({ ...f, unitPrice: e.target.value }))} />
         <button type="submit" disabled={addItem.isPending}
           className="flex items-center gap-1 px-3 py-2 rounded-xl bg-brand text-bg text-xs font-bold hover:bg-brand-light disabled:opacity-50">

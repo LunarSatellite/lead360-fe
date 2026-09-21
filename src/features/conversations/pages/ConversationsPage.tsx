@@ -169,11 +169,11 @@ function DealSidebar({ sessionId }: { sessionId: string }) {
             </select>
             <div className="flex gap-2">
               <button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: true } })}
-                className="flex-1 py-1.5 rounded-lg bg-success-soft text-success text-xs font-bold border border-[rgba(34,197,94,0.2)] hover:bg-success hover:text-white transition-all">
+                className="flex-1 py-1.5 rounded-lg bg-success-soft text-success text-xs font-bold border border-success/20 hover:bg-success hover:text-white transition-all">
                 Won ✓
               </button>
               <button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: false } })}
-                className="flex-1 py-1.5 rounded-lg bg-danger-soft text-danger text-xs font-bold border border-[rgba(244,63,94,0.2)] hover:bg-danger hover:text-white transition-all">
+                className="flex-1 py-1.5 rounded-lg bg-danger-soft text-danger text-xs font-bold border border-danger/20 hover:bg-danger hover:text-white transition-all">
                 Lost ✗
               </button>
             </div>

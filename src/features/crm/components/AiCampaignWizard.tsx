@@ -187,18 +187,18 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         {/* Header */}
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight flex items-center gap-2" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}>
+                style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}>
                 <Sparkles className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: '#0A0F0D' }} />
               </div>
               AI Campaign
@@ -213,8 +213,8 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           <textarea
-            className="w-full px-3.5 py-3 rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-all min-h-[100px] resize-none"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', border: '1px solid rgba(0,217,138,0.20)' }}
+            className="w-full px-3.5 py-3 rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-all min-h-[100px] resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', border: '1px solid rgb(var(--brand-rgb) / 0.2)' }}
             placeholder="e.g. Summer 30% off on all laptops for young professionals"
             value={prompt} onChange={e => setPrompt(e.target.value)} maxLength={500} autoFocus
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(); } }}
@@ -304,7 +304,7 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
 
 function Badge({ icon: Icon, label }: { icon: typeof Facebook; label: string }) {
   return (
-    <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold text-success bg-success-soft border border-[rgba(34,197,94,0.2)]">
+    <span className="flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold text-success bg-success-soft border border-success/20">
       <Icon className="w-3 h-3" strokeWidth={1.6} /> {label} <CheckCircle className="w-3 h-3" />
     </span>
   );

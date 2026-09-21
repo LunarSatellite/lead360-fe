@@ -74,13 +74,13 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
 
         {/* Header */}
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
@@ -113,10 +113,10 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
                 const isSelected = watchedType === opt.value;
                 const colorMap: Record<string, string> = {
                   success: 'border-[rgba(6,214,160,0.3)] bg-success-soft text-success',
-                  info: 'border-[rgba(59,130,246,0.3)] bg-info-soft text-info',
+                  info: 'border-info/30 bg-info-soft text-info',
                   brand: 'border-brand bg-brand-soft text-brand',
-                  warning: 'border-[rgba(245,158,11,0.3)] bg-warning-soft text-warning',
-                  danger: 'border-[rgba(244,63,94,0.3)] bg-danger-soft text-danger',
+                  warning: 'border-warning/30 bg-warning-soft text-warning',
+                  danger: 'border-danger/30 bg-danger-soft text-danger',
                   muted: 'border-border-medium bg-glass-2 text-text-secondary',
                 };
                 return (
@@ -146,8 +146,8 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
               className={inputClass}
               style={{
                 backgroundColor: '#1A2F27',
-                backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                borderColor: 'rgba(0,217,138,0.20)',
+                backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                borderColor: 'rgb(var(--brand-rgb) / 0.2)',
               }}
             />
             {form.formState.errors.channelIdentifier && (
@@ -166,8 +166,8 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
               className={inputClass}
               style={{
                 backgroundColor: '#1A2F27',
-                backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                borderColor: 'rgba(0,217,138,0.20)',
+                backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                borderColor: 'rgb(var(--brand-rgb) / 0.2)',
               }}
             />
           </div>
@@ -185,8 +185,8 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
                 className={`${inputClass} resize-none font-mono text-xs`}
                 style={{
                   backgroundColor: '#1A2F27',
-                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  borderColor: 'rgba(0,217,138,0.20)',
+                  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  borderColor: 'rgb(var(--brand-rgb) / 0.2)',
                 }}
               />
             </div>
@@ -194,8 +194,8 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
 
           {/* Error */}
           {create.isError && (
-            <div className="px-3.5 py-3 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-danger"
-              style={{ background: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
+            <div className="px-3.5 py-3 rounded-xl border border-brand/20 text-sm text-danger"
+              style={{ background: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
               {create.error?.message || 'Failed to create channel.'}
             </div>
           )}

@@ -12,7 +12,7 @@ import {
   CRM_NPS_CLASSIFICATION_LABELS, CRM_NPS_CLASSIFICATION_COLORS, CRM_NPS_TRIGGER_LABELS,
 } from '../types/crm.types';
 
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 function Badge({ value, labels, colors }: {
   value: number;
@@ -39,12 +39,12 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
           width: '520px',
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
@@ -105,13 +105,13 @@ function SummaryCard() {
         <span className={`text-3xl font-extrabold ${scoreColor}`}>{score}</span>
       </div>
       <div className="flex flex-wrap gap-2">
-        <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-success-soft text-success border border-[rgba(34,197,94,0.2)]">
+        <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-success-soft text-success border border-success/20">
           Promoters {summary.promoterPct?.toFixed(0) ?? 0}%
         </span>
         <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-bg-elevated text-text-secondary border border-border-subtle">
           Passives {summary.passivePct?.toFixed(0) ?? 0}%
         </span>
-        <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-danger-soft text-danger border border-[rgba(244,63,94,0.2)]">
+        <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-danger-soft text-danger border border-danger/20">
           Detractors {summary.detractorPct?.toFixed(0) ?? 0}%
         </span>
       </div>
@@ -131,16 +131,16 @@ function TriggerDropdown({ value, onChange }: { value: CrmNpsSurveyTrigger | und
     <div className="relative" ref={ref}>
       <button type="button" onClick={() => setOpen(o => !o)}
         className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary text-left"
-        style={{ backgroundColor: '#1A332C', border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`, boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
+        style={{ backgroundColor: 'rgb(var(--color-surface-elevated))', border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`, boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
       >
         <span className="flex-1 font-medium text-text-primary">{value != null ? (CRM_NPS_TRIGGER_LABELS[value] ?? 'Select trigger') : 'Select trigger'}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
           {(Object.entries(CRM_NPS_TRIGGER_LABELS) as [string, string][]).map(([v, l]) => (
             <button key={v} type="button" onClick={() => { onChange(Number(v) as CrmNpsSurveyTrigger); setOpen(false); }}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${value === Number(v) ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}>
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-soft ${value === Number(v) ? 'bg-brand-soft' : ''} text-text-secondary`}>
               {l}
               {value === Number(v) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
             </button>
@@ -184,7 +184,7 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
         <div className="relative">
           <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
           <input required value={form.contactId} onChange={set('contactId')} placeholder="contact-uuid"
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
             style={inputStyle} />
         </div>
       </div>
@@ -195,7 +195,7 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
           <div className="relative">
             <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
             <input value={form.dealId ?? ''} onChange={set('dealId')} placeholder="deal-uuid"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={inputStyle} />
           </div>
         </div>
@@ -204,7 +204,7 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
           <div className="relative">
             <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
             <input value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="case-uuid"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={inputStyle} />
           </div>
         </div>
@@ -220,7 +220,7 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
         <div className="relative">
           <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
           <textarea rows={3} value={form.customMessage ?? ''} onChange={set('customMessage')} placeholder="How was your experience?"
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
             style={inputStyle} />
         </div>
       </div>
@@ -243,9 +243,9 @@ export function Component() {
 
   const scoreChipColor = (score: number | null) => {
     if (score === null) return 'bg-bg-elevated text-text-muted border-border-subtle';
-    if (score >= 9) return 'bg-success-soft text-success border-[rgba(34,197,94,0.2)]';
+    if (score >= 9) return 'bg-success-soft text-success border-success/20';
     if (score >= 7) return 'bg-bg-elevated text-text-secondary border-border-subtle';
-    return 'bg-danger-soft text-danger border-[rgba(244,63,94,0.2)]';
+    return 'bg-danger-soft text-danger border-danger/20';
   };
 
   return (

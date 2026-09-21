@@ -71,12 +71,11 @@ function ProgressRing({ completed, total }: { completed: number; total: number }
           cy="22"
           r={r}
           fill="none"
-          stroke="#00FFAA"
           strokeWidth="3"
           strokeDasharray={circ}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          className="transition-all duration-500 ease-out"
+          className="stroke-brand-beacon transition-all duration-500 ease-out"
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
@@ -149,7 +148,7 @@ function SidebarSteps({
             className={`
               flex items-center gap-[10px] px-[10px] py-[9px] rounded-[10px] text-left
               transition-all duration-200
-              ${active ? 'bg-[rgba(0,255,170,0.04)] border border-[rgba(0,255,170,0.08)]' : 'border border-transparent'}
+              ${active ? 'bg-brand-beacon/[0.04] border border-brand-beacon/[0.08]' : 'border border-transparent'}
               ${done ? 'opacity-55 hover:opacity-80' : ''}
               ${locked ? 'opacity-20 cursor-not-allowed' : 'cursor-pointer hover:bg-bg-shell'}
             `}
@@ -158,7 +157,7 @@ function SidebarSteps({
               className={`
                 w-6 h-6 rounded-[7px] flex items-center justify-center flex-shrink-0
                 text-[10px] font-extrabold transition-all duration-200
-                ${done ? 'bg-brand-soft' : active ? 'bg-[rgba(0,255,170,0.06)] border border-[rgba(0,255,170,0.1)]' : 'bg-[#0F1A16]'}
+                ${done ? 'bg-brand-soft' : active ? 'bg-brand-beacon/[0.06] border border-brand-beacon/10' : 'bg-[#0F1A16]'}
               `}
             >
               {done ? (
@@ -213,7 +212,7 @@ function ActionCard({
         hover:shadow-[0_8px_24px_rgba(0,0,0,0.3)]
         ${
           featured
-            ? 'border-[rgba(0,255,170,0.12)] bg-gradient-to-br from-bg-card to-bg-elevated hover:border-[rgba(0,255,170,0.2)]'
+            ? 'border-brand-beacon/[0.12] bg-gradient-to-br from-bg-card to-bg-elevated hover:border-brand-beacon/20'
             : 'border-border-subtle bg-bg-card hover:border-glass-3'
         }
         ${className}
@@ -258,7 +257,7 @@ function Step1({ onDone }: { onDone: () => void }) {
       <div
         className="border-2 border-dashed border-border-subtle rounded-[16px] p-10 text-center
                     cursor-pointer transition-all duration-300
-                    hover:border-[rgba(0,255,170,0.15)] hover:bg-[rgba(0,255,170,0.01)]"
+                    hover:border-brand-beacon/15 hover:bg-brand-beacon/[0.01]"
       >
         <div className="text-4xl mb-3 inline-block animate-[float_3s_ease_infinite]">📄</div>
         <div className="text-sm font-bold text-text-primary mb-1">Drop your spec file here</div>
@@ -346,7 +345,7 @@ function Step3({ onDone }: { onDone: () => void }) {
                    transition-all duration-200"
       >
         <div
-          className="w-8 h-8 rounded-[8px] bg-[rgba(245,158,11,0.06)] border border-[rgba(245,158,11,0.1)]
+          className="w-8 h-8 rounded-[8px] bg-warning/[0.06] border border-warning/10
                         flex items-center justify-center flex-shrink-0"
         >
           <ExternalLink className="w-3.5 h-3.5 text-warning" />
@@ -440,7 +439,7 @@ function Step4({ onDone }: { onDone: () => void }) {
             className="px-4 py-2.5 border-t border-border-subtle"
             style={{
               background:
-                'linear-gradient(90deg, rgba(0,255,170,0.03), rgba(0,170,255,0.03), rgba(0,255,170,0.03))',
+                'linear-gradient(90deg, rgb(var(--color-brand-beacon) / 0.03), rgba(0,170,255,0.03), rgb(var(--color-brand-beacon) / 0.03))',
               backgroundSize: '200% 100%',
               animation: 'shimmer 2s linear infinite',
             }}
@@ -450,7 +449,7 @@ function Step4({ onDone }: { onDone: () => void }) {
             </span>
           </div>
         )}
-        <div className="px-4 py-2 border-t border-border-subtle bg-[rgba(0,255,170,0.01)]">
+        <div className="px-4 py-2 border-t border-border-subtle bg-brand-beacon/[0.01]">
           <span className="text-[9px] text-text-muted">
             💡 Tip: Be specific — mention user actions, API calls, and error handling
           </span>
@@ -487,7 +486,7 @@ function Step4({ onDone }: { onDone: () => void }) {
                    transition-all duration-200"
       >
         <div
-          className="w-8 h-8 rounded-[8px] bg-[rgba(52,211,153,0.06)] border border-[rgba(52,211,153,0.1)]
+          className="w-8 h-8 rounded-[8px] bg-success-light/[0.06] border border-success-light/10
                         flex items-center justify-center flex-shrink-0"
         >
           <GitBranch className="w-3.5 h-3.5 text-success-light" />
@@ -657,7 +656,7 @@ function Step6({ onDone }: { onDone: () => void }) {
             className="inline-flex items-center gap-2 px-8 py-3.5 rounded-[12px] text-sm font-extrabold
                        bg-brand-light text-bg disabled:opacity-40 transition-all duration-200
                        hover:bg-brand hover:scale-[1.02]
-                       shadow-[0_0_0_0_rgba(0,255,170,0.15)]
+                       shadow-[0_0_0_0_rgb(var(--color-brand-beacon)/0.15)]
                        animate-[pulseGlow_2.5s_ease_infinite]"
           >
             {actAll.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}

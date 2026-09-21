@@ -416,14 +416,14 @@ function JourneyPath({
     <svg viewBox="0 0 760 210" className="w-full h-auto" style={{ minHeight: 160 }}>
       <defs>
         <filter id="home-glowDone">
-          <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#00D97E" floodOpacity="0.4" />
+          <feDropShadow dx="0" dy="0" stdDeviation="3" style={{ floodColor: 'rgb(var(--color-brand-glow))' }} floodOpacity="0.4" />
         </filter>
         <linearGradient id="home-fadeGreenL" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#00D97E" />
+          <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} />
           <stop offset="100%" stopColor="#1A2B22" />
         </linearGradient>
         <linearGradient id="home-fadeGreenR" x1="100%" y1="0%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="#00D97E" />
+          <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} />
           <stop offset="100%" stopColor="#1A2B22" />
         </linearGradient>
       </defs>
@@ -433,7 +433,7 @@ function JourneyPath({
         const leftDone = steps[i]?.done;
         const rightDone = steps[i + 1]?.done;
         let stroke: string;
-        if (leftDone && rightDone) stroke = '#00D97E';
+        if (leftDone && rightDone) stroke = 'rgb(var(--color-brand-glow))';
         else if (leftDone && !rightDone) stroke = 'url(#home-fadeGreenL)';
         else if (!leftDone && rightDone) stroke = 'url(#home-fadeGreenR)';
         else stroke = '#1A2B22';
@@ -442,7 +442,7 @@ function JourneyPath({
             key={i}
             d={seg}
             fill="none"
-            stroke={stroke}
+            style={{ stroke }}
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -482,22 +482,23 @@ function JourneyPath({
               cx={n.x}
               cy={n.y}
               r="24"
-              fill={isDone ? 'rgba(0,217,126,0.08)' : '#0B1210'}
-              stroke={isDone ? '#00D97E' : isActive ? '#8FAEA0' : '#1A2B22'}
+              style={{
+                fill: isDone ? 'rgb(var(--color-brand-glow) / 0.08)' : '#0B1210',
+                stroke: isDone ? 'rgb(var(--color-brand-glow))' : isActive ? '#8FAEA0' : '#1A2B22',
+              }}
               strokeWidth={isSelected || isActive ? 2.5 : 2}
               filter={isDone ? 'url(#home-glowDone)' : undefined}
             />
 
             {isActive && (
               <>
-                <circle cx={n.x + 17} cy={n.y - 17} r="4" fill="#F59E0B" />
+                <circle cx={n.x + 17} cy={n.y - 17} r="4" className="fill-warning" />
                 <circle
                   cx={n.x + 17}
                   cy={n.y - 17}
                   r="4"
-                  fill="#F59E0B"
                   opacity="0.5"
-                  className="setup-beacon"
+                  className="setup-beacon fill-warning"
                 />
               </>
             )}
@@ -508,7 +509,7 @@ function JourneyPath({
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M5 12l5 5L20 7"
-                      stroke="#00D97E"
+                      className="stroke-brand-glow"
                       strokeWidth="3"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -526,7 +527,7 @@ function JourneyPath({
               textAnchor="middle"
               fontSize="11"
               fontWeight="600"
-              fill={isDone ? '#00D97E' : isSelected || isActive ? '#E8F0EC' : '#8FAEA0'}
+              style={{ fill: isDone ? 'rgb(var(--color-brand-glow))' : isSelected || isActive ? '#E8F0EC' : '#8FAEA0' }}
             >
               {step.title}
             </text>

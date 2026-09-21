@@ -389,7 +389,7 @@ export function DashboardLayout() {
         title={item.label}
         className={`sidebar-nav-item group relative flex items-center gap-3 rounded-xl transition-all duration-200 ${
           isActive
-            ? 'bg-gradient-to-r from-[rgba(0,217,138,0.18)] via-[rgba(0,217,138,0.06)] to-transparent text-text-primary font-semibold'
+            ? 'bg-gradient-to-r from-brand/[0.18] via-brand/[0.06] to-transparent text-text-primary font-semibold'
             : 'text-text-muted hover:text-text-secondary hover:bg-glass-1'
         }`}
         style={{
@@ -832,7 +832,7 @@ function MoreNavLink({ item }: { item: { label: string; href: string; icon: Luci
           <item.icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-brand' : ''}`} strokeWidth={1.6} />
           <span className="text-sm flex-1">{item.label}</span>
           {item.badge && (
-            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-[rgba(167,139,250,0.1)] text-[#A78BFA]">
+            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-violet-light/10 text-violet-light">
               {item.badge}
             </span>
           )}

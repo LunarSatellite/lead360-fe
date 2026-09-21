@@ -36,13 +36,13 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
 
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
           <div>
@@ -112,12 +112,12 @@ function CreateForm({ onSave, onCancel, isSaving }: {
       <div>
         <label className={labelCls}>Experiment Name *</label>
         <input required value={form.name} onChange={set('name')} placeholder="Onboarding Flow Test" className={inputCls}
-          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }} />
+          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
       </div>
       <div>
         <label className={labelCls}>Description</label>
         <textarea rows={2} value={form.description} onChange={set('description')} placeholder="What are you testing and why?" className={`${inputCls} resize-none`}
-          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }} />
+          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
       </div>
 
       {/* Flow Variants section */}
@@ -126,18 +126,18 @@ function CreateForm({ onSave, onCancel, isSaving }: {
         <div className="h-px bg-brand/20" />
       </div>
 
-      <div className="rounded-xl border border-[rgba(0,217,138,0.20)] p-4 space-y-4"
-        style={{ background: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
+      <div className="rounded-xl border border-brand/20 p-4 space-y-4"
+        style={{ background: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
         <div>
           <label className={labelCls}>Control Flow ID *</label>
           <input required value={form.controlFlowId} onChange={set('controlFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }} />
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
           <p className="text-xs text-text-muted mt-1">The existing baseline flow</p>
         </div>
         <div>
           <label className={labelCls}>Challenger Flow ID *</label>
           <input required value={form.challengerFlowId} onChange={set('challengerFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgba(0,217,138,0.20)' }} />
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
           <p className="text-xs text-text-muted mt-1">The new variant to test</p>
         </div>
       </div>
@@ -242,7 +242,7 @@ function VariantStats({ stats, isWinner, label, color }: {
   label: string;
   color: 'control' | 'challenger';
 }) {
-  const bg = color === 'control' ? 'bg-success-soft border-[rgba(34,197,94,0.2)]' : 'bg-brand-soft border-border-glow';
+  const bg = color === 'control' ? 'bg-success-soft border-success/20' : 'bg-brand-soft border-border-glow';
   const text = color === 'control' ? 'text-success' : 'text-brand';
 
   return (
@@ -350,7 +350,7 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
               {EXPERIMENT_STATUS_LABELS[exp.status]}
             </span>
             {exp.winner === ExperimentVariantKind.Control && (
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-success-soft text-success border border-[rgba(34,197,94,0.2)]">
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-success-soft text-success border border-success/20">
                 <Trophy className="w-3 h-3" /> Control won
               </span>
             )}
@@ -388,7 +388,7 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
           ) : (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft hover:border-[rgba(244,63,94,0.2)] transition-all"
+              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft hover:border-danger/20 transition-all"
               title="Delete"
             >
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -518,7 +518,7 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
                   <span className="text-xs text-text-muted">Winner:</span>
                   <button
                     onClick={() => { declareWinner.mutate({ id: exp.id, winner: ExperimentVariantKind.Control }); setDeclareOpen(false); }}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-success-soft text-success border border-[rgba(34,197,94,0.2)] text-xs font-semibold hover:bg-success hover:text-bg transition-all"
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-success-soft text-success border border-success/20 text-xs font-semibold hover:bg-success hover:text-bg transition-all"
                   >
                     <Trophy className="w-3 h-3" /> Control
                   </button>
@@ -589,8 +589,8 @@ export function Component() {
           <div className="flex flex-wrap gap-2">
             {(
               [
-                { status: ExperimentStatus.Running, label: 'Running', cls: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]' },
-                { status: ExperimentStatus.Paused, label: 'Paused', cls: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]' },
+                { status: ExperimentStatus.Running, label: 'Running', cls: 'text-success bg-success-soft border-success/20' },
+                { status: ExperimentStatus.Paused, label: 'Paused', cls: 'text-warning bg-warning-soft border-warning/20' },
                 { status: ExperimentStatus.Completed, label: 'Completed', cls: 'text-text-secondary bg-bg-elevated border-border-subtle' },
                 { status: ExperimentStatus.Draft, label: 'Draft', cls: 'text-text-muted bg-bg-card border-border-subtle' },
               ] as const

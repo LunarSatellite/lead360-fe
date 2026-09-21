@@ -68,13 +68,13 @@ export function Component() {
             style={{
               borderRadius: 18,
               background: 'var(--bg-card)',
-              border: '1px solid rgba(0,217,138,0.2)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+              border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
               maxHeight: 'calc(100vh - 32px)',
             }}
           >
             {/* Accent bar */}
-            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
             <ReportBuilder catalog={catalog} onDone={() => setShowBuilder(false)} onCancel={() => setShowBuilder(false)} />
           </div>
         </div>,
@@ -241,8 +241,8 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Open deals by owner"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
             </div>
           </div>
@@ -259,9 +259,9 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
                   backgroundColor: '#1A2F27',
-                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  border: `1px solid ${objectOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: objectOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  border: `1px solid ${objectOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: objectOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}
@@ -278,8 +278,8 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                   style={{
                     borderRadius: 12,
                     background: 'var(--bg-card)',
-                    border: '1px solid rgba(0,217,138,0.20)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)',
+                    border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)',
                   }}
                 >
                   {catalog.map((o) => (
@@ -288,11 +288,11 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                       type="button"
                       onClick={() => changeObject(o.objectType)}
                       className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${
-                        objectType === o.objectType ? 'bg-[rgba(0,217,138,0.08)] text-brand' : 'text-text-secondary'
+                        objectType === o.objectType ? 'bg-brand-soft text-brand' : 'text-text-secondary'
                       }`}
                     >
                       {objectType === o.objectType && (
-                        <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />
+                        <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9)' }} />
                       )}
                       {o.label}
                       {objectType === o.objectType && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -353,16 +353,16 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         const nf = object.fields.find((of) => of.key === e.target.value);
                         updateFilter(i, { field: e.target.value, operator: nf?.operators[0] ?? 'eq', value: '' });
                       }}
-                      className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors cursor-pointer"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     >
                       {object.fields.map((of) => <option key={of.key} value={of.key} className="bg-bg">{of.label}</option>)}
                     </select>
                     <select
                       value={f.operator}
                       onChange={(e) => updateFilter(i, { operator: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors cursor-pointer"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     >
                       {field.operators.map((op) => <option key={op} value={op} className="bg-bg">{op}</option>)}
                     </select>
@@ -370,8 +370,8 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                       <select
                         value={f.value ?? ''}
                         onChange={(e) => updateFilter(i, { value: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors cursor-pointer"
-                        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                        className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
+                        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       >
                         <option value="" className="bg-bg">Select...</option>
                         {field.enumValues.map((v) => <option key={v} value={v} className="bg-bg">{v}</option>)}
@@ -382,8 +382,8 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         onChange={(e) => updateFilter(i, { value: e.target.value })}
                         disabled={f.operator === 'exists'}
                         placeholder="Value..."
-                        className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors disabled:opacity-40"
-                        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                        className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors disabled:opacity-40"
+                        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       />
                     )}
                     <button onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
@@ -411,9 +411,9 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
                   backgroundColor: '#1A2F27',
-                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  border: `1px solid ${groupByOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: groupByOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  border: `1px solid ${groupByOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: groupByOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}
@@ -429,16 +429,16 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                   style={{
                     borderRadius: 12,
                     background: 'var(--bg-card)',
-                    border: '1px solid rgba(0,217,138,0.20)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)',
+                    border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)',
                   }}
                 >
                   <button
                     type="button"
                     onClick={() => { setGroupBy(''); setGroupByOpen(false); }}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${!groupBy ? 'bg-[rgba(0,217,138,0.08)] text-brand' : 'text-text-secondary'}`}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${!groupBy ? 'bg-brand-soft text-brand' : 'text-text-secondary'}`}
                   >
-                    {groupBy === '' && <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />}
+                    {groupBy === '' && <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9)' }} />}
                     None
                     {!groupBy && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                   </button>
@@ -447,9 +447,9 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                       key={f.key}
                       type="button"
                       onClick={() => { setGroupBy(f.key); setGroupByOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${groupBy === f.key ? 'bg-[rgba(0,217,138,0.08)] text-brand' : 'text-text-secondary'}`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${groupBy === f.key ? 'bg-brand-soft text-brand' : 'text-text-secondary'}`}
                     >
-                      {groupBy === f.key && <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />}
+                      {groupBy === f.key && <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9)' }} />}
                       {f.label}
                       {groupBy === f.key && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>
@@ -471,9 +471,9 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
                   backgroundColor: '#1A2F27',
-                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  border: `1px solid ${sortByOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: sortByOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  border: `1px solid ${sortByOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: sortByOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}
@@ -489,16 +489,16 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                   style={{
                     borderRadius: 12,
                     background: 'var(--bg-card)',
-                    border: '1px solid rgba(0,217,138,0.20)',
-                    boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)',
+                    border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)',
                   }}
                 >
                   <button
                     type="button"
                     onClick={() => { setSortBy(''); setSortByOpen(false); }}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${!sortBy ? 'bg-[rgba(0,217,138,0.08)] text-brand' : 'text-text-secondary'}`}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${!sortBy ? 'bg-brand-soft text-brand' : 'text-text-secondary'}`}
                   >
-                    {sortBy === '' && <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />}
+                    {sortBy === '' && <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9)' }} />}
                     Default
                     {!sortBy && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                   </button>
@@ -507,9 +507,9 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                       key={f.key}
                       type="button"
                       onClick={() => { setSortBy(`${f.key} desc`); setSortByOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${sortBy === `${f.key} desc` ? 'bg-[rgba(0,217,138,0.08)] text-brand' : 'text-text-secondary'}`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 ${sortBy === `${f.key} desc` ? 'bg-brand-soft text-brand' : 'text-text-secondary'}`}
                     >
-                      {sortBy === `${f.key} desc` && <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />}
+                      {sortBy === `${f.key} desc` && <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9)' }} />}
                       {f.label} (desc)
                       {sortBy === `${f.key} desc` && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>
@@ -531,8 +531,8 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
               <select
                 value={aggregateFunction}
                 onChange={(e) => setAggregateFunction(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors cursor-pointer"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               >
                 {AGGREGATE_FUNCTIONS.map((f) => <option key={f} value={f} className="bg-bg">{f === 'count' ? 'Count of records' : f.toUpperCase()}</option>)}
               </select>
@@ -546,8 +546,8 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 <select
                   value={aggregateField}
                   onChange={(e) => setAggregateField(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors cursor-pointer"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 >
                   <option value="" className="bg-bg">Select numeric field...</option>
                   {numericFields.map((f) => <option key={f.key} value={f.key} className="bg-bg">{f.label}</option>)}
@@ -755,8 +755,8 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
       <select
         value={frequency}
         onChange={(e) => setFrequency(e.target.value)}
-        className="w-32 px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors cursor-pointer"
-        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+        className="w-32 px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
+        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
       >
         {REPORT_SCHEDULE_FREQUENCIES.map((f) => <option key={f} value={f} className="bg-bg">{f}</option>)}
       </select>
@@ -764,8 +764,8 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
         value={emails}
         onChange={(e) => setEmails(e.target.value)}
         placeholder="recipient@company.com, another@company.com"
-        className="flex-1 pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+        className="flex-1 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
       />
       <button
         type="submit"

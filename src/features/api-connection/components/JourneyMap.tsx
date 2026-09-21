@@ -7,14 +7,20 @@ interface JourneyMapProps {
   onStepClick: (step: PipelineStep) => void;
 }
 
+/* Token *names*, not values — `paint` turns one into a CSS colour. An SVG
+   presentation attribute does not resolve var(), so every consumer below sets
+   fill/stroke through `style`, where it does. `suggestions` has no token yet,
+   so it carries its own channels. */
 const COLORS: Record<PipelineStep, string> = {
-  upload: '#10B981',
-  endpoints: '#00D97E',
-  capability: '#A78BFA',
-  analysis: '#3B82F6',
-  test: '#F59E0B',
-  suggestions: '#EC4899',
+  upload: 'var(--color-success)',
+  endpoints: 'var(--color-brand-glow)',
+  capability: 'var(--color-violet-light)',
+  analysis: 'var(--color-info)',
+  test: 'var(--color-warning)',
+  suggestions: '236 72 153',
 };
+const paint = (token: string, alpha?: number) =>
+  alpha === undefined ? `rgb(${token})` : `rgb(${token} / ${alpha})`;
 const SHORT: Record<PipelineStep, string> = {
   upload: 'Upload',
   endpoints: 'Endpoints',
@@ -55,7 +61,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
     for (let i = ci; i < SEGS.length; i++) {
       const step = PIPELINE_STEPS[i + 1];
       if (step)
-        future.push({ d: SEGS[i], color: COLORS[step.id], op: Math.max(0.04, 0.16 - (i - ci) * 0.03) });
+        future.push({ d: SEGS[i], color: paint(COLORS[step.id]), op: Math.max(0.04, 0.16 - (i - ci) * 0.03) });
     }
     return { pp: pPath, fs: future };
   }, [ci]);
@@ -88,21 +94,21 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
             <feGaussianBlur stdDeviation="12" />
           </filter>
           <linearGradient id="jpg" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#10B981" />
-            <stop offset="100%" stopColor="#00D97E" />
+            <stop offset="0%" style={{ stopColor: 'rgb(var(--color-success))' }} />
+            <stop offset="100%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} />
           </linearGradient>
           <radialGradient id="jdot">
-            <stop offset="0%" stopColor="#00FF94" />
-            <stop offset="100%" stopColor="#00FF94" stopOpacity="0" />
+            <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow-light))' }} />
+            <stop offset="100%" style={{ stopColor: 'rgb(var(--color-brand-glow-light))' }} stopOpacity="0" />
           </radialGradient>
           {/* Vertical beam gradient */}
           <linearGradient id="jbeam" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00D97E" stopOpacity="0.08" />
-            <stop offset="50%" stopColor="#00D97E" stopOpacity="0" />
+            <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} stopOpacity="0.08" />
+            <stop offset="50%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} stopOpacity="0" />
           </linearGradient>
           <linearGradient id="jbeam-down" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00D97E" stopOpacity="0" />
-            <stop offset="100%" stopColor="#00D97E" stopOpacity="0.06" />
+            <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} stopOpacity="0" />
+            <stop offset="100%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} stopOpacity="0.06" />
           </linearGradient>
         </defs>
 
@@ -143,7 +149,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
           <path
             d={pp}
             fill="none"
-            stroke="#00D97E"
+            className="stroke-brand-glow"
             strokeWidth="30"
             strokeLinecap="round"
             opacity="0.04"
@@ -185,7 +191,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
               cx={p.x}
               cy={p.y}
               r="35"
-              fill="#10B981"
+              className="fill-success"
               opacity="0.03"
               filter="url(#jgl3)"
             >
@@ -210,7 +216,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
             <path
               d={pp}
               fill="none"
-              stroke="#00D97E"
+              className="stroke-brand-glow"
               strokeWidth="14"
               strokeLinecap="round"
               opacity="0.06"
@@ -229,7 +235,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
             <path
               d={pp}
               fill="none"
-              stroke="#00FF94"
+              className="stroke-brand-glow-light"
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeDasharray="8 10"
@@ -240,18 +246,18 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
             <circle r="8" fill="url(#jdot)" opacity="0.5">
               <animateMotion dur="3s" repeatCount="indefinite" path={pp} />
             </circle>
-            <circle r="5" fill="#00FF94" filter="url(#jgl2)">
+            <circle r="5" className="fill-brand-glow-light" filter="url(#jgl2)">
               <animateMotion dur="3s" repeatCount="indefinite" path={pp} />
               <animate attributeName="r" values="3;6;3" dur="1.5s" repeatCount="indefinite" />
               <animate attributeName="opacity" values="0.9;0.3;0.9" dur="1.5s" repeatCount="indefinite" />
             </circle>
             {/* Trailing dot */}
-            <circle r="3" fill="#00FF94" opacity="0.4">
+            <circle r="3" className="fill-brand-glow-light" opacity="0.4">
               <animateMotion dur="3s" repeatCount="indefinite" path={pp} begin="-1.5s" />
               <animate attributeName="opacity" values="0.4;0.15;0.4" dur="1.5s" repeatCount="indefinite" />
             </circle>
             {/* ★ Third micro dot for depth */}
-            <circle r="2" fill="#00FF94" opacity="0.2">
+            <circle r="2" className="fill-brand-glow-light" opacity="0.2">
               <animateMotion dur="3s" repeatCount="indefinite" path={pp} begin="-0.8s" />
             </circle>
           </>
@@ -263,18 +269,18 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
             key={i}
             d={s.d}
             fill="none"
-            stroke={s.color}
             strokeWidth="2"
             strokeDasharray="5 7"
             opacity={s.op}
-            style={{ animation: `jd ${3 + i}s linear infinite reverse` }}
+            style={{ stroke: s.color, animation: `jd ${3 + i}s linear infinite reverse` }}
           />
         ))}
 
         {/* Station nodes */}
         {PIPELINE_STEPS.map((step, i) => {
           const p = ST[i];
-          const c = COLORS[step.id];
+          const token = COLORS[step.id];
+          const c = paint(token);
           const done = completedSteps.includes(step.id);
           const active = currentStep === step.id;
           const fop = Math.max(0.18, 0.6 - (i - ci) * 0.1);
@@ -290,15 +296,15 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                     cy={p.y}
                     r="22"
                     fill="none"
-                    stroke="#10B981"
+                    className="stroke-success"
                     strokeWidth="1"
                     opacity="0.15"
                   >
                     <animate attributeName="r" values="22;30;22" dur="3s" repeatCount="indefinite" />
                     <animate attributeName="opacity" values="0.15;0;0.15" dur="3s" repeatCount="indefinite" />
                   </circle>
-                  <circle cx={p.x} cy={p.y} r="22" fill="#0A0F0D" stroke="#10B981" strokeWidth="3.5" />
-                  <circle cx={p.x} cy={p.y} r="12" fill="#10B981" />
+                  <circle cx={p.x} cy={p.y} r="22" fill="#0A0F0D" className="stroke-success" strokeWidth="3.5" />
+                  <circle cx={p.x} cy={p.y} r="12" className="fill-success" />
                   <polyline
                     points={`${p.x - 6},${p.y} ${p.x - 1},${p.y + 5} ${p.x + 7},${p.y - 4}`}
                     fill="none"
@@ -312,12 +318,12 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
               {active && (
                 <>
                   {/* ★ Expanding ring 1 */}
-                  <circle cx={p.x} cy={p.y} fill="none" stroke={c} strokeWidth="1.5" opacity="0">
+                  <circle cx={p.x} cy={p.y} fill="none" style={{ stroke: c }} strokeWidth="1.5" opacity="0">
                     <animate attributeName="r" values="20;38" dur="2.5s" repeatCount="indefinite" />
                     <animate attributeName="opacity" values="0.25;0" dur="2.5s" repeatCount="indefinite" />
                   </circle>
                   {/* ★ Expanding ring 2 (offset) */}
-                  <circle cx={p.x} cy={p.y} fill="none" stroke={c} strokeWidth="1" opacity="0">
+                  <circle cx={p.x} cy={p.y} fill="none" style={{ stroke: c }} strokeWidth="1" opacity="0">
                     <animate
                       attributeName="r"
                       values="20;42"
@@ -338,19 +344,23 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                     cx={p.x}
                     cy={p.y}
                     r="28"
-                    fill={`${c}08`}
-                    stroke={c}
                     strokeWidth="4"
                     filter="url(#jgl)"
-                    style={{ animation: 'jg 3s ease infinite' }}
+                    style={{ fill: paint(token, 0.031), stroke: c, animation: 'jg 3s ease infinite' }}
                   />
                   {/* Inner filled */}
-                  <circle cx={p.x} cy={p.y} r="17" fill={`${c}20`} stroke={`${c}40`} strokeWidth="1.5" />
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r="17"
+                    style={{ fill: paint(token, 0.125), stroke: paint(token, 0.251) }}
+                    strokeWidth="1.5"
+                  />
                   <text
                     x={p.x}
                     y={p.y + 6}
                     textAnchor="middle"
-                    fill={c}
+                    style={{ fill: c }}
                     fontSize="17"
                     fontWeight="800"
                     fontFamily="Inter,system-ui,sans-serif"
@@ -358,14 +368,14 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                     {step.num}
                   </text>
                   {/* ★ Orbiting sparkle dots */}
-                  <circle r="2.5" fill={c} opacity="0.6">
+                  <circle r="2.5" style={{ fill: c }} opacity="0.6">
                     <animateMotion
                       dur="4s"
                       repeatCount="indefinite"
                       path={`M ${p.x} ${p.y - 32} A 32 32 0 1 1 ${p.x - 0.01} ${p.y - 32}`}
                     />
                   </circle>
-                  <circle r="1.5" fill={c} opacity="0.35">
+                  <circle r="1.5" style={{ fill: c }} opacity="0.35">
                     <animateMotion
                       dur="4s"
                       repeatCount="indefinite"
@@ -374,7 +384,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                     />
                   </circle>
                   {/* Pulse */}
-                  <circle cx={p.x} cy={p.y} fill={c} opacity="0.35">
+                  <circle cx={p.x} cy={p.y} style={{ fill: c }} opacity="0.35">
                     <animate attributeName="r" values="6;14;6" dur="2s" repeatCount="indefinite" />
                     <animate
                       attributeName="opacity"
@@ -392,17 +402,16 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                     cy={p.y}
                     r="19"
                     fill="#0A0F0D"
-                    stroke={c}
                     strokeWidth="2.5"
                     strokeDasharray="5 5"
                     opacity={fop}
-                    style={{ animation: `jd ${4 + i}s linear infinite` }}
+                    style={{ stroke: c, animation: `jd ${4 + i}s linear infinite` }}
                   />
                   <text
                     x={p.x}
                     y={p.y + 5}
                     textAnchor="middle"
-                    fill={c}
+                    style={{ fill: c }}
                     fontSize="14"
                     fontWeight="700"
                     opacity={fop}
@@ -418,7 +427,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                 x={p.x}
                 y={labelY}
                 textAnchor="middle"
-                fill={done ? '#10B981' : c}
+                style={{ fill: done ? 'rgb(var(--color-success))' : c }}
                 opacity={done || active ? 1 : fop}
                 fontSize={active ? 14 : 12}
                 fontWeight={active ? 700 : 600}
@@ -433,7 +442,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                   x={p.x}
                   y={labelY + 14}
                   textAnchor="middle"
-                  fill={c}
+                  style={{ fill: c }}
                   opacity={fop * 0.6}
                   fontSize="9"
                   fontWeight="600"

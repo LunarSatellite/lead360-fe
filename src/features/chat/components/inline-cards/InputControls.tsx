@@ -104,7 +104,7 @@ function FreeTextControl({ card, onSubmit, consumed }: ControlProps<FreeTextCard
 
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          {error && <p className="text-[11px] text-[#F43F5E]">{error}</p>}
+          {error && <p className="text-[11px] text-danger">{error}</p>}
           {card.maxLength && (
             <p className="text-[11px] text-text-muted">
               {value.length}/{card.maxLength}
@@ -251,7 +251,7 @@ function RadioControl({ card, onSubmit, consumed }: ControlProps<RadioCard>) {
       </fieldset>
 
       {error && (
-        <p className="text-xs px-0.5" style={{ color: '#F43F5E' }}>
+        <p className="text-xs px-0.5" style={{ color: 'rgb(var(--color-danger))' }}>
           {error}
         </p>
       )}
@@ -349,7 +349,7 @@ function DropdownControl({ card, onSubmit, consumed }: ControlProps<DropdownCard
       </div>
 
       {error && (
-        <p className="text-xs px-0.5" style={{ color: '#F43F5E' }}>
+        <p className="text-xs px-0.5" style={{ color: 'rgb(var(--color-danger))' }}>
           {error}
         </p>
       )}
@@ -510,7 +510,7 @@ function MultiSelectControl({ card, onSubmit, consumed }: ControlProps<MultiSele
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <span className="text-xs text-text-muted">{counterText}</span>
         {error && (
-          <span className="text-xs" style={{ color: '#F43F5E' }}>
+          <span className="text-xs" style={{ color: 'rgb(var(--color-danger))' }}>
             {error}
           </span>
         )}
@@ -574,7 +574,7 @@ function SliderControl({ card, onSubmit, consumed }: ControlProps<SliderCard>) {
           aria-valuetext={card.unit ? `${value} ${card.unit}` : String(value)}
           className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand [&::-webkit-slider-thumb]:cursor-pointer [&:focus::-webkit-slider-thumb]:ring-2 [&:focus::-webkit-slider-thumb]:ring-brand [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-brand [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
           style={{
-            background: `linear-gradient(to right, #00D97E ${percent}%, #253D32 ${percent}%)`,
+            background: `linear-gradient(to right, rgb(var(--color-brand-glow)) ${percent}%, #253D32 ${percent}%)`,
           }}
         />
         <div className="flex items-center gap-1.5 shrink-0">
@@ -658,7 +658,7 @@ function DateControl({ card, onSubmit, consumed }: ControlProps<DateCard>) {
       />
 
       {error && (
-        <p className="text-xs px-0.5" style={{ color: '#F43F5E' }}>
+        <p className="text-xs px-0.5" style={{ color: 'rgb(var(--color-danger))' }}>
           {error}
         </p>
       )}
@@ -685,7 +685,7 @@ function buttonRowClass(style: string): string {
     case 'ghost':
       return 'border-thin border-border-medium text-text-secondary hover:text-text-primary hover:bg-glass-2';
     case 'danger':
-      return 'bg-[rgba(244,63,94,0.06)] text-[#F43F5E] hover:bg-[rgba(244,63,94,0.15)]';
+      return 'bg-danger/[0.06] text-danger hover:bg-danger/15';
     default:
       return 'bg-glass-2 border-thin border-border-medium text-text-primary hover:bg-glass-3';
   }
@@ -704,7 +704,7 @@ function ButtonRowControl({ card, onSubmit, consumed }: ControlProps<ButtonRowCa
           }
           style={
             btn.style === 'danger'
-              ? { borderWidth: '0.5px', borderStyle: 'solid', borderColor: 'rgba(244,63,94,0.35)' }
+              ? { borderWidth: '0.5px', borderStyle: 'solid', borderColor: 'rgb(var(--color-danger) / 0.35)' }
               : undefined
           }
         >

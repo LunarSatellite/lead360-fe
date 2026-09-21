@@ -59,7 +59,7 @@ export function DeleteAgentDialog({ open, agentId, agentName, onClose }: Props) 
         {/* Body */}
         <div className="px-6 py-5 space-y-4">
           <div className="flex gap-3">
-            <div className="w-9 h-9 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.15)] flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-xl bg-danger-soft border border-danger/15 flex items-center justify-center shrink-0">
               <AlertTriangle className="w-4 h-4 text-danger" strokeWidth={2} />
             </div>
             <div className="flex-1 min-w-0">

@@ -47,6 +47,15 @@ export default {
           light: 'rgb(var(--brand-light-rgb) / <alpha-value>)',
           dark: 'rgb(var(--brand-dark-rgb) / <alpha-value>)',
           soft: 'rgb(var(--brand-rgb) / var(--alpha-brand-soft))',
+          // `brand.glow` is a *hue*, not a tint: the second brand green the
+          // AuroraBI port left behind for glows and drop-shadows — see the
+          // note beside --color-brand-glow in globals.css. Do not confuse it
+          // with `border.glow` below, which is the brand hue at
+          // --alpha-brand-glow. StyleMint collapses the two greens, so there
+          // it is simply the brand colour.
+          glow: 'rgb(var(--color-brand-glow) / <alpha-value>)',
+          'glow-light': 'rgb(var(--color-brand-glow-light) / <alpha-value>)',
+          beacon: 'rgb(var(--color-brand-beacon) / <alpha-value>)',
         },
         success: {
           DEFAULT: 'rgb(var(--color-success) / <alpha-value>)',

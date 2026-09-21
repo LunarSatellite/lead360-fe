@@ -27,23 +27,23 @@ const STATUS_PILLS: { label: string; value: CrmTaskStatus | undefined }[] = [
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
 const selectCls = 'px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
 
-const formInputCls = 'w-full px-3 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors';
-const formInputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const formInputCls = 'w-full px-3 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brand/50 transition-colors';
+const formInputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 const dropTriggerStyle = (open: boolean) => ({
   backgroundColor: '#1A2F27',
-  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-  border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-  boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+  border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+  boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
   outline: 'none',
   transition: 'box-shadow 0.2s ease',
 });
-const dropPanelStyle: React.CSSProperties = { borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' };
+const dropPanelStyle: React.CSSProperties = { borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' };
 
 const TASK_PRIORITY_OPTS = [
-  { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-[rgba(184,230,213,0.08)]' },
-  { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-[#F59E0B]',       hover: 'hover:bg-[rgba(245,158,11,0.08)]'  },
-  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-[rgba(244,63,94,0.08)]'   },
-  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-[rgba(244,63,94,0.12)]'   },
+  { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-text-secondary/[0.08]' },
+  { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-warning',       hover: 'hover:bg-warning/[0.08]'  },
+  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-danger/[0.08]'   },
+  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-danger/[0.12]'   },
 ] as const;
 
 function Badge({ label, colorCls }: { label: string; colorCls: string }) {
@@ -111,8 +111,8 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmTaskCreateR
     <div className="fixed inset-0 z-[9999] flex items-center justify-end pr-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
       <div className="drawer-slide-in relative w-[540px] flex flex-col overflow-hidden"
-        style={{ borderRadius: 18, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)', maxHeight: 'calc(100vh - 32px)' }}>
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        style={{ borderRadius: 18, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)', maxHeight: 'calc(100vh - 32px)' }}>
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Task</h3>
           <button onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
@@ -144,7 +144,7 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmTaskCreateR
                     {TASK_PRIORITY_OPTS.map(opt => (
                       <button key={opt.value} type="button"
                         onClick={() => { setForm(f => ({ ...f, priority: opt.value })); setPriorityOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.priority === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.priority === opt.value ? 'bg-brand-soft' : ''}`}>
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
                         {opt.label}
                         {form.priority === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -215,7 +215,7 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
 
         <div className="flex gap-2 pt-1">
           {!isDone && (
-            <button onClick={() => complete.mutate(task.id)} disabled={complete.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-[rgba(34,197,94,0.2)] hover:bg-success hover:text-bg transition-all disabled:opacity-50">
+            <button onClick={() => complete.mutate(task.id)} disabled={complete.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-bg transition-all disabled:opacity-50">
               {complete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckSquare className="w-3.5 h-3.5" />} Mark Complete
             </button>
           )}
@@ -224,7 +224,7 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
           </button>
           {confirmDelete ? (
             <div className="flex gap-1.5 ml-auto">
-              <button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} className="px-2 py-1 rounded-lg bg-danger-soft text-danger text-xs font-semibold border border-[rgba(244,63,94,0.2)] hover:bg-danger hover:text-bg transition-all">
+              <button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} className="px-2 py-1 rounded-lg bg-danger-soft text-danger text-xs font-semibold border border-danger/20 hover:bg-danger hover:text-bg transition-all">
                 {del.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Confirm'}
               </button>
               <button onClick={() => setConfirmDelete(false)} className="text-xs text-text-muted hover:text-text-primary px-1">×</button>
@@ -323,7 +323,7 @@ function TaskCard({ task, onClick, onComplete, isCompleting }: TaskCardProps) {
           <button
             onClick={(e) => { e.stopPropagation(); onComplete(task.id); }}
             disabled={isCompleting}
-            className="flex items-center gap-1 px-2 py-0.5 rounded-xs bg-success-soft text-success text-[10px] font-semibold border-thin border-[rgba(34,197,94,0.2)] hover:bg-success hover:text-bg transition-all disabled:opacity-50"
+            className="flex items-center gap-1 px-2 py-0.5 rounded-xs bg-success-soft text-success text-[10px] font-semibold border-thin border-success/20 hover:bg-success hover:text-bg transition-all disabled:opacity-50"
           >
             <CheckSquare className="w-2.5 h-2.5" /> Done
           </button>

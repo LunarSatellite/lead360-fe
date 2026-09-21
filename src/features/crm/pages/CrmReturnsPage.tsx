@@ -138,7 +138,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
           <Badge value={rma.status} labels={CRM_RETURN_STATUS_LABELS} colors={CRM_RETURN_STATUS_COLORS} />
           <span className="text-xs text-text-muted bg-bg-surface px-2 py-0.5 rounded-full">{CRM_RETURN_REASON_LABELS[rma.returnReason]}</span>
           {rma.resolution != null && (
-            <span className="text-xs font-semibold text-[#A78BFA] bg-[rgba(167,139,250,0.1)] px-2 py-0.5 rounded-full border border-[rgba(167,139,250,0.2)]">
+            <span className="text-xs font-semibold text-violet-light bg-violet-light/10 px-2 py-0.5 rounded-full border border-violet-light/20">
               {CRM_RETURN_RESOLUTION_LABELS[rma.resolution]}
             </span>
           )}
@@ -195,10 +195,10 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
       <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
         {rma.status === CrmReturnStatus.PendingApproval && (
           <>
-            <button onClick={() => approve.mutate(rma.id)} disabled={approve.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 disabled:opacity-50 transition-all">
+            <button onClick={() => approve.mutate(rma.id)} disabled={approve.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50 transition-all">
               <CheckCircle className="w-3.5 h-3.5" /> Approve
             </button>
-            <button onClick={() => setShowReject(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger bg-danger-soft border border-[rgba(244,63,94,0.2)] hover:opacity-80 transition-all">
+            <button onClick={() => setShowReject(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger bg-danger-soft border border-danger/20 hover:opacity-80 transition-all">
               <XCircle className="w-3.5 h-3.5" /> Reject
             </button>
           </>
@@ -209,12 +209,12 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
           </button>
         )}
         {rma.status === CrmReturnStatus.Received && (
-          <button onClick={() => setShowInspect(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-[#F59E0B] transition-all">
+          <button onClick={() => setShowInspect(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-warning transition-all">
             Record Inspection
           </button>
         )}
         {rma.status === CrmReturnStatus.Inspecting && (
-          <button onClick={() => setShowResolve(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 transition-all">
+          <button onClick={() => setShowResolve(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 transition-all">
             <CheckCircle className="w-3.5 h-3.5" /> Resolve
           </button>
         )}

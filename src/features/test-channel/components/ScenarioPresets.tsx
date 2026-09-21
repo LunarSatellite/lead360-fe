@@ -225,9 +225,9 @@ const ICON_MAP: Record<string, React.ComponentType<{ className?: string; strokeW
 const COLOR_MAP: Record<string, { bg: string; text: string; border: string }> = {
   success: { bg: 'bg-success-soft', text: 'text-success', border: 'border-[rgba(6,214,160,0.15)]' },
   brand:   { bg: 'bg-brand-soft',   text: 'text-brand',   border: 'border-brand' },
-  info:    { bg: 'bg-info-soft',    text: 'text-info',     border: 'border-[rgba(59,130,246,0.12)]' },
-  warning: { bg: 'bg-warning-soft', text: 'text-warning',  border: 'border-[rgba(245,158,11,0.12)]' },
-  danger:  { bg: 'bg-danger-soft',  text: 'text-danger',   border: 'border-[rgba(244,63,94,0.12)]' },
+  info:    { bg: 'bg-info-soft',    text: 'text-info',     border: 'border-info/[0.12]' },
+  warning: { bg: 'bg-warning-soft', text: 'text-warning',  border: 'border-warning/[0.12]' },
+  danger:  { bg: 'bg-danger-soft',  text: 'text-danger',   border: 'border-danger/[0.12]' },
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────

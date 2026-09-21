@@ -143,7 +143,7 @@ export function Component() {
           </div>
           <p style={{ fontSize: 11, color: '#708A7E', marginTop: 8 }}>
             {(sync?.productCount ?? 0).toLocaleString()} products ·{' '}
-            <span style={{ color: '#00D97E', fontWeight: 700 }}>{ready}%</span> search ready
+            <span style={{ color: 'rgb(var(--color-brand-glow))', fontWeight: 700 }}>{ready}%</span> search ready
           </p>
         </div>
 
@@ -361,14 +361,14 @@ export function Component() {
               style={{
                 padding: 18,
                 borderRadius: 16,
-                background: `linear-gradient(145deg, rgba(0,217,126,0.06), rgba(0,217,126,0.02))`,
-                border: '1.5px solid rgba(0,217,126,0.15)',
+                background: `linear-gradient(145deg, rgb(var(--color-brand-glow) / 0.06), rgb(var(--color-brand-glow) / 0.02))`,
+                border: '1.5px solid rgb(var(--color-brand-glow) / 0.15)',
               }}
             >
               <div className="flex items-center gap-[14px]">
                 <SvgRing pct={ready} color="#00D97E" size={56} sw={5} />
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: '#00D97E' }}>Search</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-brand-glow))' }}>Search</div>
                   <div style={{ fontSize: 12, color: '#708A7E' }}>readiness</div>
                 </div>
               </div>
@@ -397,11 +397,11 @@ export function Component() {
               width: 40,
               height: 40,
               borderRadius: 12,
-              background: 'rgba(0,217,126,0.12)',
-              border: '1.5px solid rgba(0,217,126,0.2)',
+              background: 'rgb(var(--color-brand-glow) / 0.12)',
+              border: '1.5px solid rgb(var(--color-brand-glow) / 0.2)',
             }}
           >
-            <Search style={{ width: 18, height: 18, color: '#00D97E' }} strokeWidth={1.5} />
+            <Search style={{ width: 18, height: 18, color: 'rgb(var(--color-brand-glow))' }} strokeWidth={1.5} />
           </div>
           <input
             value={q}
@@ -430,10 +430,10 @@ export function Component() {
             style={{
               padding: '12px 24px',
               borderRadius: 12,
-              background: '#00D97E',
+              background: 'rgb(var(--color-brand-glow))',
               color: '#050808',
               fontSize: 13,
-              boxShadow: '0 0 24px rgba(0,217,126,0.15)',
+              boxShadow: '0 0 24px rgb(var(--color-brand-glow) / 0.15)',
             }}
           >
             {sm.isPending ? (
@@ -455,7 +455,7 @@ export function Component() {
                 className="px-3 py-1.5 rounded-lg text-2xs font-semibold"
                 style={{ background: '#0A0F0D', border: '1px solid #1E2E26', color: '#8A9B91' }}
               >
-                Complexity: <span style={{ color: '#00D97E' }}>{sr.complexity}</span>
+                Complexity: <span style={{ color: 'rgb(var(--color-brand-glow))' }}>{sr.complexity}</span>
               </span>
               <span
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-2xs font-semibold"
@@ -705,8 +705,8 @@ function SyncDtl({
               style={{
                 padding: '8px 16px',
                 borderRadius: 12,
-                background: 'rgba(16,185,129,0.1)',
-                border: '1.5px solid rgba(16,185,129,0.2)',
+                background: 'rgb(var(--color-success) / 0.1)',
+                border: '1.5px solid rgb(var(--color-success) / 0.2)',
               }}
             >
               <div
@@ -714,13 +714,13 @@ function SyncDtl({
                   width: 8,
                   height: 8,
                   borderRadius: '50%',
-                  background: '#10B981',
-                  boxShadow: '0 0 8px rgba(16,185,129,0.4)',
+                  background: 'rgb(var(--color-success))',
+                  boxShadow: '0 0 8px rgb(var(--color-success) / 0.4)',
                 }}
               />
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#10B981' }}>API Healthy</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'rgb(var(--color-success))' }}>API Healthy</span>
               {hp.responseTimeMs != null && (
-                <span style={{ fontSize: 12, color: 'rgba(16,185,129,0.5)' }}>{hp.responseTimeMs}ms</span>
+                <span style={{ fontSize: 12, color: 'rgb(var(--color-success) / 0.5)' }}>{hp.responseTimeMs}ms</span>
               )}
             </div>
           ) : undefined
@@ -733,10 +733,10 @@ function SyncDtl({
           style={{
             padding: '12px 24px',
             borderRadius: 14,
-            background: '#00D97E',
+            background: 'rgb(var(--color-brand-glow))',
             color: '#050808',
             fontSize: 14,
-            boxShadow: '0 0 30px rgba(0,217,126,0.15)',
+            boxShadow: '0 0 30px rgb(var(--color-brand-glow) / 0.15)',
           }}
         >
           <RefreshCw className={`w-[18px] h-[18px] ${mut.isPending ? 'animate-spin' : ''}`} strokeWidth={2} />
@@ -759,13 +759,13 @@ function SyncDtl({
             {logs[0] ? (
               <div className="flex gap-5 mt-1">
                 <div>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: '#10B981' }}>
+                  <div style={{ fontSize: 24, fontWeight: 800, color: 'rgb(var(--color-success))' }}>
                     +{logs[0].newProducts}
                   </div>
                   <div style={{ fontSize: 11, color: '#708A7E' }}>new</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: '#3B82F6' }}>
+                  <div style={{ fontSize: 24, fontWeight: 800, color: 'rgb(var(--color-info))' }}>
                     ~{logs[0].updatedProducts}
                   </div>
                   <div style={{ fontSize: 11, color: '#708A7E' }}>updated</div>
@@ -786,7 +786,7 @@ function SyncDtl({
               <SvgRing pct={sync?.productCount ? 100 : 0} color="#00D97E" size={64} />
               <div>
                 <div
-                  style={{ fontSize: 15, fontWeight: 700, color: sync?.productCount ? '#10B981' : '#708A7E' }}
+                  style={{ fontSize: 15, fontWeight: 700, color: sync?.productCount ? 'rgb(var(--color-success))' : '#708A7E' }}
                 >
                   {sync?.productCount ? 'Healthy' : 'Not synced'}
                 </div>
@@ -872,7 +872,7 @@ function SyncDtl({
                   style={{
                     padding: '12px 24px',
                     borderRadius: 12,
-                    background: '#00D97E',
+                    background: 'rgb(var(--color-brand-glow))',
                     color: '#050808',
                     fontSize: 13,
                   }}
@@ -919,10 +919,10 @@ function SyncDtl({
                 <span style={{ color: '#8A9B91', width: 120 }}>
                   {format(new Date(l.startedAt), 'MMM d, HH:mm')}
                 </span>
-                <span style={{ color: '#10B981', fontWeight: 700, width: 44 }}>
+                <span style={{ color: 'rgb(var(--color-success))', fontWeight: 700, width: 44 }}>
                   {l.newProducts > 0 ? `+${l.newProducts}` : '0'}
                 </span>
-                <span style={{ color: '#3B82F6', width: 64 }}>~{l.updatedProducts} upd</span>
+                <span style={{ color: 'rgb(var(--color-info))', width: 64 }}>~{l.updatedProducts} upd</span>
                 <span style={{ color: '#708A7E', width: 52 }}>{l.durationMs}ms</span>
                 <StatusBadge
                   variant={l.status === 'Success' ? 'success' : l.status === 'Failed' ? 'danger' : 'warning'}
@@ -969,7 +969,7 @@ function EnrDtl({ d, mut }: { d: EnrichmentStatusDto | undefined; mut: ReturnTyp
                     style={{
                       width: `${d.enrichmentPercent}%`,
                       height: '100%',
-                      background: 'linear-gradient(90deg, #3B82F6, #60A5FA)',
+                      background: 'linear-gradient(90deg, rgb(var(--color-info)), #60A5FA)',
                       borderRadius: 5,
                       position: 'relative',
                       overflow: 'hidden',
@@ -1002,7 +1002,7 @@ function EnrDtl({ d, mut }: { d: EnrichmentStatusDto | undefined; mut: ReturnTyp
                   style={{
                     fontSize: 15,
                     fontWeight: 700,
-                    color: d.enrichmentPercent >= 100 ? '#10B981' : '#3B82F6',
+                    color: d.enrichmentPercent >= 100 ? 'rgb(var(--color-success))' : 'rgb(var(--color-info))',
                   }}
                 >
                   {d.enrichmentPercent >= 100 ? 'Complete' : 'In progress'}
@@ -1015,7 +1015,7 @@ function EnrDtl({ d, mut }: { d: EnrichmentStatusDto | undefined; mut: ReturnTyp
           </T>
           <T span={2}>
             <TL>Enriched</TL>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#3B82F6' }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-info))' }}>
               {d.enrichedCount.toLocaleString()}
             </div>
           </T>
@@ -1034,8 +1034,8 @@ function EnrDtl({ d, mut }: { d: EnrichmentStatusDto | undefined; mut: ReturnTyp
           {d.failedCount > 0 && (
             <T span={6} accent="#F43F5E">
               <div className="flex items-center gap-3">
-                <AlertTriangle style={{ width: 18, height: 18, color: '#F43F5E' }} strokeWidth={1.8} />
-                <span style={{ fontSize: 15, fontWeight: 700, color: '#F43F5E' }}>
+                <AlertTriangle style={{ width: 18, height: 18, color: 'rgb(var(--color-danger))' }} strokeWidth={1.8} />
+                <span style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-danger))' }}>
                   {d.failedCount} failed
                 </span>
               </div>
@@ -1078,7 +1078,7 @@ function EmbDtl({ d, mut }: { d: EmbeddingStatusDto | undefined; mut: ReturnType
                     style={{
                       width: `${d.embeddingPercent}%`,
                       height: '100%',
-                      background: 'linear-gradient(90deg, #10B981, #34D399)',
+                      background: 'linear-gradient(90deg, rgb(var(--color-success)), rgb(var(--color-success-light)))',
                       borderRadius: 5,
                       position: 'relative',
                       overflow: 'hidden',
@@ -1107,7 +1107,7 @@ function EmbDtl({ d, mut }: { d: EmbeddingStatusDto | undefined; mut: ReturnType
             <div className="flex items-center gap-4 h-full">
               <SvgRing pct={d.embeddingPercent} color="#10B981" size={64} />
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#10B981' }}>
+                <div style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-success))' }}>
                   {d.embeddingPercent >= 100 ? 'Complete' : 'In progress'}
                 </div>
                 <div style={{ fontSize: 13, color: '#708A7E', marginTop: 2 }}>
@@ -1130,7 +1130,7 @@ function EmbDtl({ d, mut }: { d: EmbeddingStatusDto | undefined; mut: ReturnType
           </T>
           <T span={2}>
             <TL>Embedded</TL>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#10B981' }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-success))' }}>
               {d.embeddedCount.toLocaleString()}
             </div>
           </T>
@@ -1187,7 +1187,7 @@ function FF({ l, r, children }: { l: string; r?: boolean; children: React.ReactN
   return (
     <div>
       <label className="block" style={{ fontSize: 12, fontWeight: 600, color: '#8A9B91', marginBottom: 5 }}>
-        {l} {r && <span style={{ color: '#F43F5E' }}>*</span>}
+        {l} {r && <span style={{ color: 'rgb(var(--color-danger))' }}>*</span>}
       </label>
       {children}
     </div>
@@ -1216,7 +1216,7 @@ function SRCard({ item, rank }: { item: SearchProductDto; rank: number }) {
         padding: 18,
         borderRadius: 14,
         background: '#0C1210',
-        border: `1.5px solid ${item.isRecommended ? 'rgba(16,185,129,0.2)' : '#1E2E26'}`,
+        border: `1.5px solid ${item.isRecommended ? 'rgb(var(--color-success) / 0.2)' : '#1E2E26'}`,
       }}
     >
       <div className="flex-1 min-w-0">
@@ -1239,7 +1239,7 @@ function SRCard({ item, rank }: { item: SearchProductDto; rank: number }) {
             {name}
           </h4>
           {item.isRecommended && (
-            <Star style={{ width: 14, height: 14, color: '#F59E0B', fill: '#F59E0B' }} />
+            <Star style={{ width: 14, height: 14, color: 'rgb(var(--color-warning))', fill: 'rgb(var(--color-warning))' }} />
           )}
         </div>
         {(cat || price != null) && (

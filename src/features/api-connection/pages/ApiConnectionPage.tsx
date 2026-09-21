@@ -124,8 +124,8 @@ export function Component() {
                 gap: 6,
                 padding: '4px 12px',
                 borderRadius: 8,
-                background: 'rgba(0,217,126,0.06)',
-                border: '1px solid rgba(0,217,126,0.1)',
+                background: 'rgb(var(--color-brand-glow) / 0.06)',
+                border: '1px solid rgb(var(--color-brand-glow) / 0.1)',
               }}
             >
               <div
@@ -133,8 +133,8 @@ export function Component() {
                   width: 7,
                   height: 7,
                   borderRadius: '50%',
-                  background: '#00D97E',
-                  boxShadow: '0 0 6px rgba(0,217,126,0.3)',
+                  background: 'rgb(var(--color-brand-glow))',
+                  boxShadow: '0 0 6px rgb(var(--color-brand-glow) / 0.3)',
                 }}
               />
               <span style={{ fontSize: 13, fontWeight: 600, color: '#E8F0EC' }}>{activeSpec.name}</span>
@@ -194,7 +194,7 @@ export function Component() {
           className="absolute inset-0 pointer-events-none"
           style={{
             opacity: 0.025,
-            backgroundImage: 'radial-gradient(circle, #00D97E 1px, transparent 1px)',
+            backgroundImage: 'radial-gradient(circle, rgb(var(--color-brand-glow)) 1px, transparent 1px)',
             backgroundSize: '28px 28px',
           }}
         />
@@ -365,7 +365,7 @@ export function Component() {
               }}
             >
               <div
-                style={{ height: 2, background: 'linear-gradient(90deg, #10B981, rgba(16,185,129,0.1))' }}
+                style={{ height: 2, background: 'linear-gradient(90deg, rgb(var(--color-success)), rgb(var(--color-success) / 0.1))' }}
               />
               <div style={{ padding: 22 }}>
                 <div className="flex items-center gap-2 mb-5">
@@ -374,14 +374,14 @@ export function Component() {
                       width: 32,
                       height: 32,
                       borderRadius: 10,
-                      background: 'rgba(0,217,126,0.08)',
-                      border: '1.5px solid rgba(0,217,126,0.15)',
+                      background: 'rgb(var(--color-brand-glow) / 0.08)',
+                      border: '1.5px solid rgb(var(--color-brand-glow) / 0.15)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}
                   >
-                    <Plug style={{ width: 16, height: 16, color: '#00D97E' }} strokeWidth={1.8} />
+                    <Plug style={{ width: 16, height: 16, color: 'rgb(var(--color-brand-glow))' }} strokeWidth={1.8} />
                   </div>
                   <h3 style={{ fontSize: 15, fontWeight: 700, color: '#E8F0EC' }}>Upload New Spec</h3>
                 </div>
@@ -420,7 +420,7 @@ export function Component() {
                   Previously Uploaded
                 </span>
                 {specs.length > 0 && (
-                  <span style={{ fontSize: 11, fontWeight: 700, color: '#00D97E', marginLeft: 'auto' }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: 'rgb(var(--color-brand-glow))', marginLeft: 'auto' }}>
                     {specs.length}
                   </span>
                 )}
@@ -460,8 +460,8 @@ export function Component() {
                       width: 56,
                       height: 56,
                       borderRadius: 18,
-                      background: 'rgba(0,217,126,0.06)',
-                      border: '1.5px solid rgba(0,217,126,0.1)',
+                      background: 'rgb(var(--color-brand-glow) / 0.06)',
+                      border: '1.5px solid rgb(var(--color-brand-glow) / 0.1)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -480,11 +480,11 @@ export function Component() {
                       marginTop: 14,
                       padding: '10px 20px',
                       borderRadius: 10,
-                      background: 'rgba(0,217,126,0.08)',
-                      border: '1.5px solid rgba(0,217,126,0.15)',
+                      background: 'rgb(var(--color-brand-glow) / 0.08)',
+                      border: '1.5px solid rgb(var(--color-brand-glow) / 0.15)',
                       fontSize: 13,
                       fontWeight: 600,
-                      color: '#00D97E',
+                      color: 'rgb(var(--color-brand-glow))',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
@@ -530,14 +530,14 @@ export function Component() {
                         width: 36,
                         height: 36,
                         borderRadius: 11,
-                        background: 'rgba(0,217,126,0.08)',
-                        border: '1.5px solid rgba(0,217,126,0.15)',
+                        background: 'rgb(var(--color-brand-glow) / 0.08)',
+                        border: '1.5px solid rgb(var(--color-brand-glow) / 0.15)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
                     >
-                      <FileCode2 style={{ width: 16, height: 16, color: '#00D97E' }} strokeWidth={1.5} />
+                      <FileCode2 style={{ width: 16, height: 16, color: 'rgb(var(--color-brand-glow))' }} strokeWidth={1.5} />
                     </div>
                     <div>
                       <div style={{ fontSize: 13, fontWeight: 700, color: '#E8F0EC' }}>{activeSpec.name}</div>

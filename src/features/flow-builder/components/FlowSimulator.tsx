@@ -160,7 +160,7 @@ export function FlowSimulator() {
       {/* ── Chat header ── */}
       <div
         className="px-3 py-2 flex items-center gap-2 text-white flex-shrink-0"
-        style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+        style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
       >
         <div className="w-6 h-6 bg-[rgba(255,255,255,.2)] rounded-full flex items-center justify-center text-[10px]">🤖</div>
         <h4 className="text-2xs font-semibold flex-1 truncate">Lead360 Bot</h4>
@@ -183,7 +183,7 @@ export function FlowSimulator() {
               style={{
                 borderRadius: 10,
                 ...(m.role === 'user'
-                  ? { background: 'linear-gradient(135deg,#059669,#10B981)', color: '#fff', borderBottomRightRadius: 3 }
+                  ? { background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))', color: '#fff', borderBottomRightRadius: 3 }
                   : { background: '#0D1410', color: '#E8F0EC', borderBottomLeftRadius: 3, border: '1px solid #1E2E26' }),
               }}
             >
@@ -203,7 +203,7 @@ export function FlowSimulator() {
               <div className="mt-1 space-y-0.5" style={{ maxWidth: '92%' }}>
                 {m.buttons.map((b, j) => (
                   <button key={j} onClick={() => handleMenuClick(b)}
-                    className="block w-full py-1 px-2 rounded-md bg-brand-soft border border-brand/20 text-[10px] font-medium text-brand hover:bg-[rgba(0,217,126,0.12)] transition-colors text-left truncate">
+                    className="block w-full py-1 px-2 rounded-md bg-brand-soft border border-brand/20 text-[10px] font-medium text-brand hover:bg-brand-glow/[0.12] transition-colors text-left truncate">
                     {b.icon && <span className="mr-1">{b.icon}</span>}
                     {b.label}
                   </button>
@@ -256,7 +256,7 @@ export function FlowSimulator() {
               onClick={() => sendMessage(input)}
               disabled={!input.trim() || isProcessing || isRecording}
               className="w-7 h-7 rounded-md flex items-center justify-center text-white disabled:opacity-40 flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+              style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
             >
               <Send className="w-3 h-3" />
             </button>

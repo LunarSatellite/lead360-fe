@@ -79,12 +79,12 @@ interface SectionDef {
 
 const SECTIONS: SectionDef[] = [
   { id: 'profile', label: 'Profile', icon: User, iconBg: 'bg-brand-soft', iconColor: 'text-brand', group: 'account', description: 'Manage your personal information and account details.' },
-  { id: 'team', label: 'Team', icon: Users, iconBg: 'bg-[rgba(167,139,250,0.06)]', iconColor: 'text-[#A78BFA]', group: 'account', description: 'Manage team members, roles, and invitations.' },
-  { id: 'compliance', label: 'Compliance', icon: ShieldCheck, iconBg: 'bg-[rgba(52,211,153,0.06)]', iconColor: 'text-[#34D399]', group: 'account', description: 'Industry-specific rules that control what your chatbot can and cannot say.' },
+  { id: 'team', label: 'Team', icon: Users, iconBg: 'bg-violet-light/[0.06]', iconColor: 'text-violet-light', group: 'account', description: 'Manage team members, roles, and invitations.' },
+  { id: 'compliance', label: 'Compliance', icon: ShieldCheck, iconBg: 'bg-success-light/[0.06]', iconColor: 'text-success-light', group: 'account', description: 'Industry-specific rules that control what your chatbot can and cannot say.' },
   { id: 'botSettings', label: 'Bot Settings', icon: Mic, iconBg: 'bg-brand-soft', iconColor: 'text-brand', group: 'account', description: 'Configure voice input and text-to-speech settings for your chatbot.' },
   { id: 'voice', label: 'Voice & TTS', icon: Mic, iconBg: 'bg-brand-soft', iconColor: 'text-brand', group: 'account', description: 'Configure voice input and text-to-speech settings for your chatbot.' },
-  { id: 'integrations', label: 'Integrations', icon: Plug, iconBg: 'bg-[rgba(0,217,126,0.06)]', iconColor: 'text-brand', group: 'account', description: 'Connect your external API and manage data-storage settings.' },
-  { id: 'password', label: 'Password & Security', icon: Lock, iconBg: 'bg-[rgba(245,158,11,0.06)]', iconColor: 'text-[#F59E0B]', group: 'account', description: 'Change your password and manage authentication settings.' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, iconBg: 'bg-brand-glow/[0.06]', iconColor: 'text-brand', group: 'account', description: 'Connect your external API and manage data-storage settings.' },
+  { id: 'password', label: 'Password & Security', icon: Lock, iconBg: 'bg-warning/[0.06]', iconColor: 'text-warning', group: 'account', description: 'Change your password and manage authentication settings.' },
   { id: 'billing', label: 'Billing & Plan', icon: CreditCard, iconBg: 'bg-[#0F1A16]', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
   { id: 'notifications', label: 'Notifications', icon: Bell, iconBg: 'bg-[#0F1A16]', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
   { id: 'appearance', label: 'Appearance', icon: Palette, iconBg: 'bg-[#0F1A16]', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
@@ -119,13 +119,13 @@ function NavIndicator({ id }: { id: SectionId }) {
       return <div className="w-[6px] h-[6px] rounded-full bg-brand" />;
     case 'team':
       return (
-        <span className="text-[10px] font-semibold text-[#A78BFA] bg-[rgba(167,139,250,0.06)] px-[7px] py-[2px] rounded">
+        <span className="text-[10px] font-semibold text-violet-light bg-violet-light/[0.06] px-[7px] py-[2px] rounded">
           4
         </span>
       );
     case 'compliance':
       return (
-        <span className="text-[9px] font-semibold text-[#34D399] bg-[rgba(52,211,153,0.06)] px-[7px] py-[2px] rounded">
+        <span className="text-[9px] font-semibold text-success-light bg-success-light/[0.06] px-[7px] py-[2px] rounded">
           Healthcare
         </span>
       );
@@ -211,11 +211,11 @@ export function Component() {
               <span className="px-[10px] py-1 rounded-[6px] bg-brand-soft text-[10px] font-semibold text-brand">
                 {USER_ROLE_LABEL[profile.role as UserRoleValue] || 'User'}
               </span>
-              <span className="px-[10px] py-1 rounded-[6px] bg-[rgba(0,255,170,0.04)] text-[10px] font-semibold text-text-secondary">
+              <span className="px-[10px] py-1 rounded-[6px] bg-brand-beacon/[0.04] text-[10px] font-semibold text-text-secondary">
                 Pro plan
               </span>
               {profile.tenantName && (
-                <span className="px-[10px] py-1 rounded-[6px] bg-[rgba(0,255,170,0.03)] text-[10px] font-medium text-text-muted truncate max-w-[100px]">
+                <span className="px-[10px] py-1 rounded-[6px] bg-brand-beacon/[0.03] text-[10px] font-medium text-text-muted truncate max-w-[100px]">
                   {profile.tenantName}
                 </span>
               )}
@@ -243,7 +243,7 @@ export function Component() {
                         onClick={() => handleNav(section.id)}
                         className="w-full flex items-center gap-[10px] px-[10px] py-[10px] rounded-[10px]
                                    text-left text-text-muted text-xs font-medium
-                                   transition-all duration-150 hover:text-danger hover:bg-[rgba(244,63,94,0.02)]"
+                                   transition-all duration-150 hover:text-danger hover:bg-danger/[0.02]"
                       >
                         <LogOut className="w-[15px] h-[15px]" strokeWidth={1.5} />
                         <span>Log out</span>
@@ -261,7 +261,7 @@ export function Component() {
                         w-full flex items-center gap-[10px] px-[10px] py-[10px] rounded-[10px] text-left
                         transition-all duration-150 mb-[2px] border relative
                         ${isActive
-                          ? 'bg-[rgba(0,217,126,0.03)] border-[rgba(0,217,126,0.06)]'
+                          ? 'bg-brand-glow/[0.03] border-brand-glow/[0.06]'
                           : 'border-transparent hover:bg-[rgba(255,255,255,0.015)]'
                         }
                         ${isDisabled ? 'opacity-20 cursor-not-allowed' : ''}
@@ -485,7 +485,7 @@ function ProfileSection({ profile }: { profile: UserProfileDto }) {
             disabled={update.isPending || !form.formState.isDirty}
             className="flex items-center gap-2 px-5 py-2 rounded-[10px] text-xs font-semibold
                        bg-brand text-bg hover:bg-brand-light hover:-translate-y-px
-                       hover:shadow-[0_4px_12px_rgba(0,217,126,0.15)]
+                       hover:shadow-[0_4px_12px_rgb(var(--color-brand-glow)/0.15)]
                        disabled:opacity-40 disabled:hover:transform-none transition-all"
           >
             {update.isPending ? (
@@ -564,7 +564,7 @@ function IntegrationsSection() {
         onClick={() => navigate(ROUTES.dashboard.calendarSettings)}
         className="w-full text-left flex items-center gap-4 p-4 rounded-xl bg-bg-elevated border border-border-subtle hover:border-border-glow transition-colors group"
       >
-        <div className="p-2 rounded-lg bg-[rgba(34,197,94,0.1)] shrink-0">
+        <div className="p-2 rounded-lg bg-success-soft shrink-0">
           <Calendar className="w-5 h-5 text-green-600" />
         </div>
         <div className="flex-1 min-w-0">
@@ -766,7 +766,7 @@ function PasswordSection() {
           </div>
 
           {changePw.isError && (
-            <div className="px-4 py-3 rounded-card bg-danger-soft border border-[rgba(244,63,94,0.15)] text-xs text-danger">
+            <div className="px-4 py-3 rounded-card bg-danger-soft border border-danger/15 text-xs text-danger">
               {changePw.error?.message || 'Failed to change password.'}
             </div>
           )}
@@ -793,7 +793,7 @@ function PasswordSection() {
       <SettingsCard title="Two-factor authentication" icon={ShieldCheck}>
         <div
           className="flex items-center gap-3 px-4 py-3.5 rounded-card
-                     bg-[rgba(245,158,11,0.04)] border border-[rgba(245,158,11,0.12)]"
+                     bg-warning/[0.04] border border-warning/[0.12]"
         >
           <div className="w-2 h-2 rounded-full bg-warning shrink-0" />
           <div className="flex-1">
@@ -822,7 +822,7 @@ function DangerSection() {
       <p className="text-sm text-text-secondary mb-5">End your current session.</p>
       <div className="h-px bg-border-medium mb-6" />
 
-      <SettingsCard className="!border-[rgba(244,63,94,0.12)]">
+      <SettingsCard className="!border-danger/[0.12]">
         <div className="flex items-center gap-4">
           <div className="flex-1">
             <div className="text-sm font-semibold text-text-primary">Log out of your account</div>
@@ -834,8 +834,8 @@ function DangerSection() {
             onClick={() => logout.mutate()}
             disabled={logout.isPending}
             className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-xs font-semibold
-                       bg-danger-soft border border-[rgba(244,63,94,0.12)] text-danger
-                       hover:bg-[rgba(244,63,94,0.12)] disabled:opacity-40 transition-all"
+                       bg-danger-soft border border-danger/[0.12] text-danger
+                       hover:bg-danger/[0.12] disabled:opacity-40 transition-all"
           >
             <LogOut className="w-3.5 h-3.5" />
             {logout.isPending ? 'Logging out...' : 'Log out'}

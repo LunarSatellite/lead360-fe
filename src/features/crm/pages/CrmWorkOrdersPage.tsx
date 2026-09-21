@@ -16,7 +16,7 @@ import {
   CrmWorkOrderStatus, CrmWorkOrderType, CrmWorkOrderPriority, CrmWorkOrderNoteKind,
 } from '../types/crm.types';
 
-const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]';
+const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return (
@@ -36,12 +36,12 @@ function SlideOver({ open, onClose, title, children, width = '640px', footer }: 
           width: width ?? '640px',
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
@@ -184,7 +184,7 @@ function DetailPanel({ id }: { id: string }) {
             {(TRANSITIONS[wo.status] ?? []).map(t => (
               <button key={t.status} onClick={() => handleStatusChange(t.status)}
                 disabled={updateStatus.isPending || (t.status === CrmWorkOrderStatus.Completed && !resolutionNotes.trim())}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-all disabled:opacity-50 ${t.status === CrmWorkOrderStatus.Completed ? 'text-success bg-success-soft border-[rgba(34,197,94,0.2)] hover:opacity-80' : t.status === CrmWorkOrderStatus.Cancelled ? 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)] hover:opacity-80' : 'text-text-secondary border-border-subtle hover:text-brand hover:bg-brand-soft'}`}>
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-all disabled:opacity-50 ${t.status === CrmWorkOrderStatus.Completed ? 'text-success bg-success-soft border-success/20 hover:opacity-80' : t.status === CrmWorkOrderStatus.Cancelled ? 'text-danger bg-danger-soft border-danger/20 hover:opacity-80' : 'text-text-secondary border-border-subtle hover:text-brand hover:bg-brand-soft'}`}>
                 {t.status === CrmWorkOrderStatus.Completed ? <CheckCircle className="w-3.5 h-3.5" /> : t.status === CrmWorkOrderStatus.Cancelled ? <XCircle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
                 {t.label}
               </button>
@@ -366,7 +366,7 @@ export function Component() {
         }
       >
         <form id="create-wo-form" onSubmit={handleCreate} className="space-y-4">
-          <Field label="Title *"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Repair espresso machine" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Title *"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Repair espresso machine" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
@@ -376,10 +376,10 @@ export function Component() {
                   onClick={() => setTypeOpen(o => !o)}
                   className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                   style={{
-                    backgroundColor: '#1A332C',
-                    border: `1px solid ${typeOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    backgroundColor: 'rgb(var(--color-surface-elevated))',
+                    border: `1px solid ${typeOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                     boxShadow: typeOpen
-                      ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                      ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                       : 'none',
                     outline: 'none',
                     transition: 'box-shadow 0.2s ease',
@@ -393,16 +393,16 @@ export function Component() {
                 </button>
                 {typeOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                   >
                     {Object.entries(CRM_WORK_ORDER_TYPE_LABELS).map(([k, l]) => (
                       <button
                         key={k}
                         type="button"
                         onClick={() => { setType(Number(k)); setTypeOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] text-text-secondary ${type === Number(k) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-soft text-text-secondary ${type === Number(k) ? 'bg-brand-soft' : ''}`}
                       >
-                        <span className="w-2 h-2 rounded-full shrink-0 bg-brand" style={{ boxShadow: '0 0 6px #00D97E' }} />
+                        <span className="w-2 h-2 rounded-full shrink-0 bg-brand" style={{ boxShadow: '0 0 6px rgb(var(--color-brand-glow))' }} />
                         {l}
                         {type === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                       </button>
@@ -419,10 +419,10 @@ export function Component() {
                   onClick={() => setPriorityOpen(o => !o)}
                   className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                   style={{
-                    backgroundColor: '#1A332C',
-                    border: `1px solid ${priorityOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    backgroundColor: 'rgb(var(--color-surface-elevated))',
+                    border: `1px solid ${priorityOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                     boxShadow: priorityOpen
-                      ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                      ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                       : 'none',
                     outline: 'none',
                     transition: 'box-shadow 0.2s ease',
@@ -431,7 +431,7 @@ export function Component() {
                   <Star className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
                   <span className={`flex-1 text-left font-medium ${
                     priority === 4 ? 'text-danger' :
-                    priority === 3 ? 'text-[#F59E0B]' :
+                    priority === 3 ? 'text-warning' :
                     priority === 2 ? 'text-brand' : 'text-text-secondary'
                   }`}>
                     {CRM_WORK_ORDER_PRIORITY_LABELS[priority as CrmWorkOrderPriority]}
@@ -440,22 +440,22 @@ export function Component() {
                 </button>
                 {priorityOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                   >
                     {Object.entries(CRM_WORK_ORDER_PRIORITY_LABELS).map(([k, l]) => (
                       <button
                         key={k}
                         type="button"
                         onClick={() => { setPriority(Number(k)); setPriorityOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${priority === Number(k) ? 'bg-[rgba(0,217,138,0.08)]' : ''} ${
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-soft ${priority === Number(k) ? 'bg-brand-soft' : ''} ${
                           Number(k) === 4 ? 'text-danger' :
-                          Number(k) === 3 ? 'text-[#F59E0B]' :
+                          Number(k) === 3 ? 'text-warning' :
                           Number(k) === 2 ? 'text-brand' : 'text-text-secondary'
                         }`}
                       >
                         <span className="w-2 h-2 rounded-full shrink-0" style={{
-                          background: Number(k) === 4 ? '#F43F5E' : Number(k) === 3 ? '#F59E0B' : Number(k) === 2 ? '#00D97E' : '#B8E6D5',
-                          boxShadow: `0 0 6px ${Number(k) === 4 ? '#F43F5E' : Number(k) === 3 ? '#F59E0B' : Number(k) === 2 ? '#00D97E' : '#B8E6D5'}`,
+                          background: Number(k) === 4 ? 'rgb(var(--color-danger))' : Number(k) === 3 ? 'rgb(var(--color-warning))' : Number(k) === 2 ? 'rgb(var(--color-brand-glow))' : 'rgb(var(--color-text-secondary))',
+                          boxShadow: `0 0 6px ${Number(k) === 4 ? 'rgb(var(--color-danger))' : Number(k) === 3 ? 'rgb(var(--color-warning))' : Number(k) === 2 ? 'rgb(var(--color-brand-glow))' : 'rgb(var(--color-text-secondary))'}`,
                         }} />
                         {l}
                         {priority === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -466,8 +466,8 @@ export function Component() {
               </div>
             </div>
           </div>
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Equipment ID (optional)"><input value={equipmentId} onChange={e => setEquipmentId(e.target.value)} placeholder="equipment-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Equipment ID (optional)"><input value={equipmentId} onChange={e => setEquipmentId(e.target.value)} placeholder="equipment-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Scheduled At</label>
@@ -477,18 +477,18 @@ export function Component() {
                   type="datetime-local"
                   value={scheduledAt}
                   onChange={e => setScheduledAt(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                   style={{
                     backgroundColor: '#1A2F27',
                     colorScheme: 'dark',
-                    backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                    backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   }}
                 />
               </div>
             </div>
-            <Field label="Est. Minutes"><input type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+            <Field label="Est. Minutes"><input type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           </div>
-          <Field label="Site Label"><input value={siteLabel} onChange={e => setSiteLabel(e.target.value)} placeholder="e.g. Kathmandu Branch" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Site Label"><input value={siteLabel} onChange={e => setSiteLabel(e.target.value)} placeholder="e.g. Kathmandu Branch" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
         </form>
       </SlideOver>
 

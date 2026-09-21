@@ -393,11 +393,11 @@ export function Component() {
           {/* Cost-limit banner — sits between scroll and composer, no hard bg */}
           {thread.costLimitError && (
             <div className="relative z-20 px-4 py-2">
-              <div className="max-w-[780px] mx-auto flex items-start gap-2.5 rounded-card border-thin border-[rgba(244,63,94,0.25)] bg-[rgba(244,63,94,0.06)] px-3.5 py-3">
+              <div className="max-w-[780px] mx-auto flex items-start gap-2.5 rounded-card border-thin border-danger/25 bg-danger/[0.06] px-3.5 py-3">
                 <AlertCircle
                   className="w-4 h-4 mt-0.5 shrink-0"
                   strokeWidth={1.6}
-                  style={{ color: '#F43F5E' }}
+                  style={{ color: 'rgb(var(--color-danger))' }}
                 />
                 <div className="flex-1 min-w-0">
                   <div className="text-xs font-bold text-text-primary mb-1">Chat paused</div>
@@ -457,13 +457,13 @@ export function Component() {
                       className={
                         'mb-2 flex items-start gap-2 rounded-sm border-thin px-3 py-2 text-[11px] leading-relaxed ' +
                         (thread.uploadFlash.kind === 'error'
-                          ? 'border-[rgba(244,63,94,0.35)] bg-[rgba(244,63,94,0.08)] text-text-primary'
+                          ? 'border-danger/35 bg-danger/[0.08] text-text-primary'
                           : 'border-border-subtle bg-glass-1 text-text-secondary')
                       }
                     >
                       {thread.uploadFlash.kind === 'error' ? (
                         <AlertCircle
-                          className="w-3.5 h-3.5 mt-0.5 shrink-0 text-[#F43F5E]"
+                          className="w-3.5 h-3.5 mt-0.5 shrink-0 text-danger"
                           strokeWidth={1.8}
                         />
                       ) : (
@@ -560,7 +560,7 @@ export function Component() {
                             !thread.isSending &&
                             !thread.isUploading &&
                             !thread.costLimitError
-                              ? 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)'
+                              ? 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)'
                               : undefined,
                         }}
                       >
@@ -625,15 +625,15 @@ function RecordingBar({
   const secs = seconds % 60;
   const timer = `${mins}:${secs.toString().padStart(2, '0')}`;
   return (
-    <div className="flex items-center gap-3 bg-bg-input border-thin border-[rgba(244,63,94,0.25)] rounded-card px-3.5 py-2.5">
+    <div className="flex items-center gap-3 bg-bg-input border-thin border-danger/25 rounded-card px-3.5 py-2.5">
       <span className="relative flex h-2 w-2 shrink-0">
         <span
           className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
-          style={{ background: '#F43F5E' }}
+          style={{ background: 'rgb(var(--color-danger))' }}
         />
-        <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: '#F43F5E' }} />
+        <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: 'rgb(var(--color-danger))' }} />
       </span>
-      <span className="text-xs font-bold font-mono tabular-nums" style={{ color: '#F43F5E' }}>
+      <span className="text-xs font-bold font-mono tabular-nums" style={{ color: 'rgb(var(--color-danger))' }}>
         {timer}
       </span>
       <span className="flex-1 text-xs text-text-secondary truncate">Listening…</span>
@@ -650,7 +650,7 @@ function RecordingBar({
         onClick={onStop}
         aria-label="Stop and send"
         className="w-8 h-8 flex items-center justify-center rounded-sm text-bg hover:brightness-110 transition-all shrink-0"
-        style={{ background: '#F43F5E' }}
+        style={{ background: 'rgb(var(--color-danger))' }}
       >
         <Square className="w-3 h-3" strokeWidth={2.2} fill="currentColor" />
       </button>
@@ -679,7 +679,7 @@ function AmbientOrbs() {
           height: 640,
           top: -180,
           left: '40%',
-          background: 'radial-gradient(circle, rgba(0,255,170,0.10) 0%, transparent 65%)',
+          background: 'radial-gradient(circle, rgb(var(--color-brand-beacon) / 0.1) 0%, transparent 65%)',
           filter: 'blur(60px)',
         }}
       />
@@ -690,7 +690,7 @@ function AmbientOrbs() {
           height: 560,
           top: '30%',
           left: -180,
-          background: 'radial-gradient(circle, rgba(0,217,126,0.05) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgb(var(--color-brand-glow) / 0.05) 0%, transparent 70%)',
           filter: 'blur(80px)',
         }}
       />
@@ -701,7 +701,7 @@ function AmbientOrbs() {
           height: 480,
           bottom: -120,
           right: '15%',
-          background: 'radial-gradient(circle, rgba(0,179,104,0.09) 0%, transparent 65%)',
+          background: 'radial-gradient(circle, rgb(var(--brand-dark-rgb) / 0.09) 0%, transparent 65%)',
           filter: 'blur(70px)',
         }}
       />
@@ -1375,7 +1375,7 @@ function NewChatButton({
 
   if (confirming) {
     return (
-      <div className="rounded-sm border-thin border-[rgba(244,63,94,0.25)] bg-[rgba(244,63,94,0.06)] px-2.5 py-2 flex flex-col gap-2 mt-1">
+      <div className="rounded-sm border-thin border-danger/25 bg-danger/[0.06] px-2.5 py-2 flex flex-col gap-2 mt-1">
         <div className="text-[10.5px] text-text-primary font-bold leading-snug">
           This will restart your setup from Section 1 — your progress in this chat will be lost.
         </div>
@@ -1386,7 +1386,7 @@ function NewChatButton({
               setConfirming(false);
               onNewChat();
             }}
-            className="flex-1 h-7 rounded-xs border-thin border-[rgba(244,63,94,0.35)] text-[10.5px] font-bold text-[#F43F5E] hover:bg-[rgba(244,63,94,0.1)] transition-colors"
+            className="flex-1 h-7 rounded-xs border-thin border-danger/35 text-[10.5px] font-bold text-danger hover:bg-danger-soft transition-colors"
           >
             Restart anyway
           </button>
@@ -1667,7 +1667,7 @@ function DocAssistantBlock({
     <div className="flex items-start gap-3.5 pt-5 pb-1">
       <div
         className="w-7 h-7 rounded-sm flex items-center justify-center shrink-0 mt-0.5"
-        style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+        style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
       >
         <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
       </div>
@@ -1704,7 +1704,7 @@ function DocLongRunningLine({ label, stage }: { label: string; stage?: string })
     <div className="flex items-start gap-3.5 pt-5 pb-1">
       <div
         className="w-7 h-7 rounded-sm flex items-center justify-center shrink-0 mt-0.5"
-        style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+        style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
       >
         <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
       </div>
@@ -1724,7 +1724,7 @@ function EmptyChatHints({ onChip }: { onChip: (text: string) => void }) {
       {/* Welcome mark */}
       <div
         className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
-        style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+        style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
       >
         <Sparkles className="w-5 h-5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
       </div>
@@ -1762,7 +1762,7 @@ function BotAvatar() {
   return (
     <div
       className="w-7 h-7 rounded-sm flex items-center justify-center shrink-0"
-      style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+      style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
     >
       <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
     </div>
@@ -2060,13 +2060,13 @@ function WebsiteIngestionFailedCard({ card, actions }: { card: InlineCard; actio
     <div
       className="rounded-card p-3.5"
       style={{
-        background: 'rgba(245, 158, 11, 0.06)',
-        border: '0.5px solid rgba(245, 158, 11, 0.25)',
+        background: 'rgb(var(--color-warning) / 0.06)',
+        border: '0.5px solid rgb(var(--color-warning) / 0.25)',
       }}
     >
       <div className="flex items-center gap-2 mb-2">
-        <AlertCircle className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: '#F59E0B' }} />
-        <div className="text-[10px] font-bold uppercase tracking-[1.5px]" style={{ color: '#F59E0B' }}>
+        <AlertCircle className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: 'rgb(var(--color-warning))' }} />
+        <div className="text-[10px] font-bold uppercase tracking-[1.5px]" style={{ color: 'rgb(var(--color-warning))' }}>
           {statusLabel}
         </div>
       </div>
@@ -2104,7 +2104,7 @@ function RedirectToPageCard({ card, actions }: { card: InlineCard; actions: Card
         type="button"
         onClick={() => actions.onNavigate(path)}
         className="w-full flex items-center justify-center gap-1.5 rounded-sm text-bg px-3 py-2 text-xs font-bold transition-all hover:brightness-110"
-        style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+        style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
       >
         Go to {label}
         <ExternalLink className="w-3 h-3" strokeWidth={1.8} />
@@ -2152,7 +2152,7 @@ function ProposedBotMenuCardRenderer({ card, actions }: { card: ProposedBotMenuC
           type="button"
           onClick={actions.onConfirm}
           className="flex-1 flex items-center justify-center gap-1.5 rounded-sm text-bg px-3 py-2 text-xs font-bold transition-all hover:brightness-110"
-          style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+          style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
         >
           Build this menu
         </button>
@@ -2202,13 +2202,13 @@ function ConfirmationCard({ card, actions }: { card: InlineCard; actions: CardAc
     <div
       className="rounded-card p-3.5"
       style={{
-        background: 'rgba(244, 63, 94, 0.06)',
-        border: '0.5px solid rgba(244, 63, 94, 0.25)',
+        background: 'rgb(var(--color-danger) / 0.06)',
+        border: '0.5px solid rgb(var(--color-danger) / 0.25)',
       }}
     >
       <div className="flex items-center gap-2 mb-2">
-        <AlertCircle className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: '#F43F5E' }} />
-        <div className="text-[10px] font-bold uppercase tracking-[1.5px]" style={{ color: '#F43F5E' }}>
+        <AlertCircle className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: 'rgb(var(--color-danger))' }} />
+        <div className="text-[10px] font-bold uppercase tracking-[1.5px]" style={{ color: 'rgb(var(--color-danger))' }}>
           Confirm action
         </div>
       </div>
@@ -2218,7 +2218,7 @@ function ConfirmationCard({ card, actions }: { card: InlineCard; actions: CardAc
           type="button"
           onClick={actions.onConfirm}
           className="flex-1 h-8 rounded-sm text-bg text-xs font-bold flex items-center justify-center gap-1.5 transition-all hover:brightness-110"
-          style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+          style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
         >
           <Check className="w-3.5 h-3.5" strokeWidth={2.2} />
           Yes, confirm

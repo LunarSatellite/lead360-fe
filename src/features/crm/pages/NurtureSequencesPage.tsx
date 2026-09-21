@@ -172,8 +172,8 @@ function StepCard({
           min={0}
           value={step.delayMinutes}
           onChange={(e) => set('delayMinutes', Number(e.target.value))}
-          className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+          className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
         />
       </div>
 
@@ -186,9 +186,9 @@ function StepCard({
             onClick={() => setActionOpen(o => !o)}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
             style={{
-              backgroundColor: '#1A332C',
-              border: `1px solid ${actionOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-              boxShadow: actionOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+              backgroundColor: 'rgb(var(--color-surface-elevated))',
+              border: `1px solid ${actionOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+              boxShadow: actionOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
               outline: 'none',
               transition: 'box-shadow 0.2s ease',
             }}
@@ -201,14 +201,14 @@ function StepCard({
           {actionOpen && (
             <div
               className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-              style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
+              style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)', maxHeight: 240, overflowY: 'auto' }}
             >
               {Object.entries(NURTURE_ACTION_LABELS).map(([val, label]) => (
                 <button
                   key={val}
                   type="button"
                   onClick={() => { set('actionType', Number(val) as NurtureStepAction); setActionOpen(false); }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${step.actionType === Number(val) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${step.actionType === Number(val) ? 'bg-brand-soft' : ''}`}
                 >
                   {label}
                   {step.actionType === Number(val) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -228,8 +228,8 @@ function StepCard({
             value={step.messageTemplate}
             onChange={(e) => set('messageTemplate', e.target.value)}
             placeholder="Hi {{CustomerName}}, just checking in…"
-            className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
           <p className="text-xs text-text-muted mt-1">
             Available tokens:{' '}
@@ -249,9 +249,9 @@ function StepCard({
               onClick={() => setNewStageOpen(o => !o)}
               className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
               style={{
-                backgroundColor: '#1A332C',
-                border: `1px solid ${newStageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                boxShadow: newStageOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                backgroundColor: 'rgb(var(--color-surface-elevated))',
+                border: `1px solid ${newStageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                boxShadow: newStageOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                 outline: 'none',
                 transition: 'box-shadow 0.2s ease',
               }}
@@ -264,12 +264,12 @@ function StepCard({
             {newStageOpen && (
               <div
                 className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
+                style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)', maxHeight: 240, overflowY: 'auto' }}
               >
                 <button
                   type="button"
                   onClick={() => { set('newStage', ''); setNewStageOpen(false); }}
-                  className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${step.newStage === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                  className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${step.newStage === '' ? 'bg-brand-soft' : ''}`}
                 >
                   Select stage…
                 </button>
@@ -278,7 +278,7 @@ function StepCard({
                     key={val}
                     type="button"
                     onClick={() => { set('newStage', Number(val) as LeadStage); setNewStageOpen(false); }}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${step.newStage === Number(val) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${step.newStage === Number(val) ? 'bg-brand-soft' : ''}`}
                   >
                     {label}
                     {step.newStage === Number(val) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -298,8 +298,8 @@ function StepCard({
             value={step.tagToAdd}
             onChange={(e) => set('tagToAdd', e.target.value)}
             placeholder="e.g. follow-up-needed"
-            className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
         </div>
       )}
@@ -367,13 +367,13 @@ function SequenceModal({
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         {/* Header */}
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
@@ -414,8 +414,8 @@ function SequenceModal({
               value={form.name}
               onChange={(e) => setField('name', e.target.value)}
               placeholder="e.g. Warm Lead Follow-up"
-              className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
           </div>
 
@@ -459,8 +459,8 @@ function SequenceModal({
               value={form.description}
               onChange={(e) => setField('description', e.target.value)}
               placeholder="Briefly describe what this sequence does…"
-              className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
           </div>
 
@@ -505,9 +505,9 @@ function SequenceModal({
                     onClick={() => setTriggerStageOpen(o => !o)}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                     style={{
-                      backgroundColor: '#1A332C',
-                      border: `1px solid ${triggerStageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                      boxShadow: triggerStageOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                      backgroundColor: 'rgb(var(--color-surface-elevated))',
+                      border: `1px solid ${triggerStageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                      boxShadow: triggerStageOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                       outline: 'none',
                       transition: 'box-shadow 0.2s ease',
                     }}
@@ -520,14 +520,14 @@ function SequenceModal({
                   {triggerStageOpen && (
                     <div
                       className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
+                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)', maxHeight: 240, overflowY: 'auto' }}
                     >
                       {Object.entries(LEAD_STAGE_LABELS).map(([val, label]) => (
                         <button
                           key={val}
                           type="button"
                           onClick={() => { setField('triggerStage', Number(val) as LeadStage); setTriggerStageOpen(false); }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${form.triggerStage === Number(val) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${form.triggerStage === Number(val) ? 'bg-brand-soft' : ''}`}
                         >
                           {label}
                           {form.triggerStage === Number(val) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -544,8 +544,8 @@ function SequenceModal({
                   min={0}
                   value={form.triggerDelayMinutes}
                   onChange={(e) => setField('triggerDelayMinutes', Number(e.target.value))}
-                  className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </div>
@@ -567,8 +567,8 @@ function SequenceModal({
                     setField('triggerScoreThreshold', e.target.value === '' ? null : Number(e.target.value))
                   }
                   placeholder="e.g. 30"
-                  className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
               <div>
@@ -578,8 +578,8 @@ function SequenceModal({
                   min={0}
                   value={form.triggerDelayMinutes}
                   onChange={(e) => setField('triggerDelayMinutes', Number(e.target.value))}
-                  className="w-full border border-[rgba(0,217,138,0.20)] rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </div>
@@ -719,7 +719,7 @@ function SequenceCard({
         <span
           className={`shrink-0 px-1.5 py-0.5 rounded-xs text-[10px] font-semibold border-thin ${
             sequence.isActive
-              ? 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]'
+              ? 'text-success bg-success-soft border-success/20'
               : 'text-text-muted bg-bg-elevated border-border-subtle'
           }`}
         >

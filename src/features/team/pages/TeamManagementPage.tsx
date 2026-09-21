@@ -112,7 +112,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
       { onSuccess: () => { form.reset(); onClose(); } },
     );
   };
-  const inputCls = 'w-full px-4 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]';
+  const inputCls = 'w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
   const inputBg = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' };
   const [roleOpen, setRoleOpen] = useState(false);
   return (
@@ -123,13 +123,13 @@ function InviteForm({ onClose }: { onClose: () => void }) {
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
           <div>
             <h2
@@ -172,13 +172,13 @@ function InviteForm({ onClose }: { onClose: () => void }) {
               <button
                 type="button"
                 onClick={() => setRoleOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-[rgba(0,217,138,0.20)] focus:outline-none transition-all"
+                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-brand/20 focus:outline-none transition-all"
                 style={{
                   backgroundColor: '#1A2F27',
-                  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  borderColor: roleOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)',
+                  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  borderColor: roleOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)',
                   boxShadow: roleOpen
-                    ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                    ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                     : 'none',
                 }}
               >
@@ -191,7 +191,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
               {roleOpen && (
                 <div
                   className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                 >
                   {([
                     { value: UserRole.Admin, label: 'Admin' },
@@ -202,7 +202,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
                       key={opt.value}
                       type="button"
                       onClick={() => { form.setValue('role', opt.value, { shouldValidate: true }); setRoleOpen(false); }}
-                      className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition-colors ${form.watch('role') === opt.value ? 'bg-[rgba(0,217,138,0.08)] text-text-primary' : 'text-text-secondary hover:bg-glass-1'}`}
+                      className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium transition-colors ${form.watch('role') === opt.value ? 'bg-brand-soft text-text-primary' : 'text-text-secondary hover:bg-glass-1'}`}
                     >
                       <Shield className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
                       {opt.label}
@@ -223,13 +223,13 @@ function InviteForm({ onClose }: { onClose: () => void }) {
               {...form.register('personalMessage')}
               placeholder="Hey, join our team!"
               rows={3}
-              className="w-full px-4 py-2.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+              className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={inputBg}
             />
           </div>
 
           {send.isError && (
-            <div className="px-4 py-3 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">
+            <div className="px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger">
               {send.error?.message || 'Failed.'}
             </div>
           )}

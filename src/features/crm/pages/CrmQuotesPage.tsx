@@ -50,13 +50,13 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide, pad
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2
@@ -459,8 +459,8 @@ export function Component() {
               <div className="relative" ref={dealDropRef}>
                 <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Search existing deals…"
                   autoComplete="off"
                   value={dealSearch}
@@ -475,7 +475,7 @@ export function Component() {
                 {showDealDrop && (
                   <div
                     className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                    style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                    style={{ borderRadius: 12, background: 'rgb(var(--color-surface-card))', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                   >
                     {dealsList.filter(d => !dealSearch || d.name.toLowerCase().includes(dealSearch.toLowerCase())).length > 0
                       ? dealsList.filter(d => !dealSearch || d.name.toLowerCase().includes(dealSearch.toLowerCase())).map(d => (
@@ -485,13 +485,13 @@ export function Component() {
                           onClick={() => { setDealId(d.id); setDealSearch(''); setShowDealDrop(false); }}
                           className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                          <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgb(var(--brand-rgb) / 0.35), 0 0 16px rgb(var(--brand-rgb) / 0.15)' }}>
                             <Layers className="w-4 h-4 text-brand" strokeWidth={1.6} />
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="text-sm font-semibold text-text-primary truncate">{d.name}</div>
                           </div>
-                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9), 0 0 12px rgb(var(--brand-rgb) / 0.5)' }} />
                         </button>
                       ))
                       : <div className="px-4 py-3 text-xs text-text-muted">No deals found</div>
@@ -507,8 +507,8 @@ export function Component() {
               <div className="relative" ref={contactDropRef}>
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Search existing contacts…"
                   autoComplete="off"
                   value={contactSearch}
@@ -523,7 +523,7 @@ export function Component() {
                 {showContactDrop && (
                   <div
                     className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                    style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                    style={{ borderRadius: 12, background: 'rgb(var(--color-surface-card))', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                   >
                     {contactsList.filter(c => !contactSearch || c.fullName.toLowerCase().includes(contactSearch.toLowerCase())).length > 0
                       ? contactsList.filter(c => !contactSearch || c.fullName.toLowerCase().includes(contactSearch.toLowerCase())).map(c => (
@@ -534,7 +534,7 @@ export function Component() {
                           className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
                         >
                           <div className="relative shrink-0">
-                            <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                            <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center" style={{ boxShadow: '0 0 8px rgb(var(--brand-rgb) / 0.35), 0 0 16px rgb(var(--brand-rgb) / 0.15)' }}>
                               <span className="text-xs font-bold text-brand">{c.fullName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}</span>
                             </div>
                           </div>
@@ -542,7 +542,7 @@ export function Component() {
                             <div className="text-sm font-semibold text-text-primary truncate">{c.fullName}</div>
                             {c.email && <div className="flex items-center gap-2 mt-0.5"><span className="text-xs text-text-muted truncate">{c.email}</span></div>}
                           </div>
-                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9), 0 0 12px rgb(var(--brand-rgb) / 0.5)' }} />
                         </button>
                       ))
                       : <div className="px-4 py-3 text-xs text-text-muted">No contacts found</div>
@@ -558,8 +558,8 @@ export function Component() {
               <div className="relative" ref={pbDropRef}>
                 <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Select a price book…"
                   autoComplete="off"
                   value={pbSearch}
@@ -574,7 +574,7 @@ export function Component() {
                 {showPbDrop && (
                   <div
                     className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                    style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                    style={{ borderRadius: 12, background: 'rgb(var(--color-surface-card))', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                   >
                     {priceBookList.filter(pb => !pbSearch || pb.name.toLowerCase().includes(pbSearch.toLowerCase())).length > 0
                       ? priceBookList.filter(pb => !pbSearch || pb.name.toLowerCase().includes(pbSearch.toLowerCase())).map(pb => (
@@ -584,14 +584,14 @@ export function Component() {
                           onClick={() => { setPriceBookId(pb.id); setPbSearch(''); setShowPbDrop(false); if (pb.currency) setCurrency(pb.currency); }}
                           className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                          <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgb(var(--brand-rgb) / 0.35), 0 0 16px rgb(var(--brand-rgb) / 0.15)' }}>
                             <FileText className="w-4 h-4 text-brand" strokeWidth={1.6} />
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="text-sm font-semibold text-text-primary truncate">{pb.name}</div>
                             <div className="flex items-center gap-2 mt-0.5"><span className="text-xs text-text-muted">{pb.currency}</span></div>
                           </div>
-                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                          <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9), 0 0 12px rgb(var(--brand-rgb) / 0.5)' }} />
                         </button>
                       ))
                       : <div className="px-4 py-3 text-xs text-text-muted">No price books found</div>
@@ -612,8 +612,8 @@ export function Component() {
               <input
                 value={currency}
                 onChange={e => setCurrency(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 placeholder="USD"
               />
             </div>
@@ -627,8 +627,8 @@ export function Component() {
                   type="number"
                   value={validityDays}
                   onChange={e => setValidityDays(Number(e.target.value))}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   min={1}
                 />
               </div>
@@ -651,7 +651,7 @@ export function Component() {
                   <select
                     value={bundleId}
                     onChange={e => setBundleId(e.target.value)}
-                    className="text-xs py-1 px-2 rounded-lg border border-[rgba(0,217,138,0.20)] text-text-primary focus:outline-none"
+                    className="text-xs py-1 px-2 rounded-lg border border-brand/20 text-text-primary focus:outline-none"
                     style={{ backgroundColor: '#1A2F27' }}
                   >
                     <option value="">Add bundle…</option>
@@ -677,7 +677,7 @@ export function Component() {
                     ? { ...x, productId: en.productId ?? undefined, description: en.productName, unitPrice: en.unitPrice }
                     : x));
                 }}
-                className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-xs text-text-primary focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl border border-brand/20 text-xs text-text-primary focus:outline-none"
                 style={{ backgroundColor: '#1A2F27' }}
               >
                 <option value="">＋ Pick from {bookDetail?.data?.data?.name ?? 'price book'}…</option>
@@ -696,8 +696,8 @@ export function Component() {
                     value={l.description}
                     onChange={e => updateLine(i, 'description', e.target.value)}
                     placeholder="Description"
-                    className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                   <input
                     type="number"
@@ -705,8 +705,8 @@ export function Component() {
                     onChange={e => updateLine(i, 'quantity', Number(e.target.value))}
                     placeholder="Qty"
                     min={1}
-                    className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                   <input
                     type="number"
@@ -715,8 +715,8 @@ export function Component() {
                     placeholder="Price"
                     min={0}
                     step={0.01}
-                    className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                   <button
                     onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))}
@@ -738,7 +738,7 @@ export function Component() {
                 type="number"
                 value={taxPercent}
                 onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
-                className="w-20 px-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-xs text-text-primary text-right focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-20 px-2 py-1.5 rounded-xl border border-brand/20 text-xs text-text-primary text-right focus:outline-none focus:border-brand/50"
                 style={{ backgroundColor: '#1A2F27' }}
                 min={0}
                 step={0.01}
@@ -759,8 +759,8 @@ export function Component() {
             value={notes}
             onChange={e => setNotes(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             placeholder="Optional notes…"
           />
         </div>

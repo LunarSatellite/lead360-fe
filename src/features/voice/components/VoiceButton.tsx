@@ -118,7 +118,7 @@ export function VoiceButton({
           >
             <X className={s.cancelIcon} strokeWidth={2} />
           </button>
-          <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-[rgba(244,63,94,0.08)] border border-[rgba(244,63,94,0.15)]">
+          <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-danger/[0.08] border border-danger/15">
             <span className="relative flex h-1.5 w-1.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-danger" />
@@ -146,14 +146,14 @@ export function VoiceButton({
           onClick={handleCancel}
           className={`${s.cancel} ${s.radius} bg-glass-2 border border-border-subtle
                      flex items-center justify-center text-text-muted
-                     hover:bg-danger-soft hover:text-danger hover:border-[rgba(244,63,94,0.15)]
+                     hover:bg-danger-soft hover:text-danger hover:border-danger/15
                      transition-all duration-150 flex-shrink-0`}
           title="Cancel recording"
         >
           <X className={s.cancelIcon} strokeWidth={2} />
         </button>
 
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[rgba(244,63,94,0.08)] border border-[rgba(244,63,94,0.15)]">
+        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-danger/[0.08] border border-danger/15">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-danger" />

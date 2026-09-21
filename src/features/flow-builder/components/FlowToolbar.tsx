@@ -88,7 +88,7 @@ export function FlowToolbar({
         onClick={onDeploy}
         disabled={!flowId || isDeploying}
         className="px-3 py-1.5 rounded-lg text-2xs font-bold text-white border-none cursor-pointer disabled:opacity-40 flex items-center gap-1.5 hover:-translate-y-px transition-all"
-        style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+        style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
       >
         {isDeploying ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Rocket className="w-3.5 h-3.5" />}
         Deploy

@@ -55,7 +55,7 @@ function DealCard({
       closeDateColor = 'text-danger';
       closeDateLabel = `${format(d, 'MMM d')} (overdue)`;
     } else if (daysLeft <= 7) {
-      closeDateColor = 'text-[#F59E0B]';
+      closeDateColor = 'text-warning';
       closeDateLabel = format(d, 'MMM d');
     } else {
       closeDateLabel = format(d, 'MMM d');
@@ -459,7 +459,7 @@ export function Component() {
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Stale Deals</label>
             <button
               onClick={toggleInactive}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${filterInactive ? 'bg-warning/10 border-warning text-warning' : 'bg-bg border-border-subtle text-text-secondary hover:text-text-primary'}`}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${filterInactive ? 'bg-warning-soft border-warning text-warning' : 'bg-bg border-border-subtle text-text-secondary hover:text-text-primary'}`}
             >
               {filterInactive ? '⚠ No activity 7+ days' : 'No activity 7+ days'}
             </button>
@@ -818,13 +818,13 @@ export function Component() {
             style={{
               borderRadius: 18,
               background: 'var(--bg-card)',
-              border: '1px solid rgba(0,217,138,0.2)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+              border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
               maxHeight: 'calc(100vh - 32px)',
             }}
           >
             {/* Accent bar */}
-            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
 
             {/* Header */}
             <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
@@ -856,8 +856,8 @@ export function Component() {
                     value={ndName}
                     onChange={e => setNdName(e.target.value)}
                     placeholder="e.g. Acme Corp — Enterprise"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                 </div>
               </div>
@@ -872,9 +872,9 @@ export function Component() {
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                     style={{
                       backgroundColor: '#1A2F27',
-                      backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                      border: `1px solid ${ndStageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                      boxShadow: ndStageOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                      backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                      border: `1px solid ${ndStageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                      boxShadow: ndStageOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                       outline: 'none',
                       transition: 'box-shadow 0.2s ease',
                     }}
@@ -888,14 +888,14 @@ export function Component() {
                   {ndStageOpen && (
                     <div
                       className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
+                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)', maxHeight: 240, overflowY: 'auto' }}
                     >
                       {stages.map(s => (
                         <button
                           key={s.id}
                           type="button"
                           onClick={() => { setNdStageId(s.id); setNdStageOpen(false); }}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${ndStageId === s.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${ndStageId === s.id ? 'bg-brand-soft' : ''}`}
                         >
                           {s.color && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: s.color, boxShadow: `0 0 6px ${s.color}` }} />}
                           {s.name}
@@ -918,8 +918,8 @@ export function Component() {
                       value={ndAmount}
                       onChange={e => setNdAmount(e.target.value)}
                       placeholder="0"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -931,8 +931,8 @@ export function Component() {
                       type="date"
                       value={ndCloseDate}
                       onChange={e => setNdCloseDate(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -947,8 +947,8 @@ export function Component() {
                     <select
                       value={ndOwnerId}
                       onChange={e => setNdOwnerId(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] appearance-none"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 appearance-none"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     >
                       <option value="">Assign to me (default)</option>
                       {teamMembers.map(u => (
@@ -964,8 +964,8 @@ export function Component() {
                     <select
                       value={ndAccountId}
                       onChange={e => { setNdAccountId(e.target.value); setNdContactId(''); }}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] appearance-none"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 appearance-none"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     >
                       <option value="">No account linked</option>
                       {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
@@ -1146,9 +1146,9 @@ function ContactDropdown({
         className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
         style={{
           backgroundColor: '#1A2F27',
-          backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
-          border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-          boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+          backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+          border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+          boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
           outline: 'none',
           transition: 'box-shadow 0.2s ease',
         }}
@@ -1161,7 +1161,7 @@ function ContactDropdown({
       </button>
       {open && (
         <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
+          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)', maxHeight: 240, overflowY: 'auto' }}
         >
           <div className="p-2 border-b border-border-subtle">
             <input
@@ -1180,7 +1180,7 @@ function ContactDropdown({
                 key={c.id}
                 type="button"
                 onClick={() => { onChange(c.id); setOpen(false); setSearch(''); }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-glass-1 transition-colors ${value === c.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-glass-1 transition-colors ${value === c.id ? 'bg-brand-soft' : ''}`}
               >
                 <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center text-xs font-bold text-brand shrink-0">
                   {c.fullName.split(' ').filter(Boolean).map((n) => n[0]).join('').slice(0, 2).toUpperCase()}

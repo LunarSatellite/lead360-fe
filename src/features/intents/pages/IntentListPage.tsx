@@ -85,7 +85,7 @@ export function Component() {
       {/* ═══ HEADER ═══ */}
       <div style={{ padding: '18px 24px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #111916' }}>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2.5px', color: '#00D97E' }}>Configuration</div>
+          <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2.5px', color: 'rgb(var(--color-brand-glow))' }}>Configuration</div>
           <div style={{ fontSize: 22, fontWeight: 800, color: '#E8F0EC', marginTop: 3, letterSpacing: '-0.5px' }}>Intent Management</div>
         </div>
         {/* View toggle */}
@@ -99,9 +99,9 @@ export function Component() {
               className="flex items-center gap-1.5"
               style={{
                 padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                background: viewMode === v.id ? 'rgba(0,217,126,0.08)' : 'transparent',
-                border: viewMode === v.id ? '1px solid rgba(0,217,126,0.12)' : '1px solid transparent',
-                color: viewMode === v.id ? '#00D97E' : '#708A7E',
+                background: viewMode === v.id ? 'rgb(var(--color-brand-glow) / 0.08)' : 'transparent',
+                border: viewMode === v.id ? '1px solid rgb(var(--color-brand-glow) / 0.12)' : '1px solid transparent',
+                color: viewMode === v.id ? 'rgb(var(--color-brand-glow))' : '#708A7E',
               }}>
               <v.icon style={{ width: 12, height: 12 }} strokeWidth={1.5} /> {v.label}
             </button>
@@ -121,7 +121,7 @@ export function Component() {
           <Upload style={{ width: 14, height: 14 }} strokeWidth={1.8} /> Import
         </button>
         <button onClick={() => { setEditIntent(null); setCreateOpen(true); }}
-          style={{ padding: '8px 18px', borderRadius: 10, background: '#00D97E', fontSize: 12, fontWeight: 700, color: '#050808', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 0 20px rgba(0,217,126,0.1)' }}>
+          style={{ padding: '8px 18px', borderRadius: 10, background: 'rgb(var(--color-brand-glow))', fontSize: 12, fontWeight: 700, color: '#050808', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 0 20px rgb(var(--color-brand-glow) / 0.1)' }}>
           <Plus style={{ width: 14, height: 14 }} strokeWidth={2.5} /> Add intent
         </button>
       </div>
@@ -129,11 +129,11 @@ export function Component() {
       {/* ═══ STATS ROW ═══ */}
       <div style={{ padding: '14px 20px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
         {/* Total */}
-        <div style={{ padding: 18, borderRadius: 16, background: 'linear-gradient(145deg, rgba(0,217,126,0.06), rgba(0,217,126,0.015))', border: '1.5px solid rgba(0,217,126,0.1)', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: '#00D97E' }} />
+        <div style={{ padding: 18, borderRadius: 16, background: 'linear-gradient(145deg, rgb(var(--color-brand-glow) / 0.06), rgb(var(--color-brand-glow) / 0.015))', border: '1.5px solid rgb(var(--color-brand-glow) / 0.1)', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'rgb(var(--color-brand-glow))' }} />
           <div style={{ fontSize: 10, fontWeight: 700, color: '#708A7E', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>Total</div>
           <div className="flex items-baseline gap-1.5">
-            <span style={{ fontSize: 32, fontWeight: 800, color: '#00D97E', letterSpacing: '-1px', lineHeight: 1 }}>{total}</span>
+            <span style={{ fontSize: 32, fontWeight: 800, color: 'rgb(var(--color-brand-glow))', letterSpacing: '-1px', lineHeight: 1 }}>{total}</span>
             <span style={{ fontSize: 11, color: '#708A7E' }}>intents</span>
           </div>
         </div>
@@ -142,24 +142,24 @@ export function Component() {
           <div className="relative shrink-0" style={{ width: 50, height: 50 }}>
             <svg viewBox="0 0 50 50" className="-rotate-90">
               <circle cx="25" cy="25" r="20" fill="none" stroke="#111916" strokeWidth="5" />
-              <circle cx="25" cy="25" r="20" fill="none" stroke="#10B981" strokeWidth="5"
+              <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"
                 strokeDasharray={2 * Math.PI * 20} strokeDashoffset={total > 0 ? 2 * Math.PI * 20 * (1 - active / total) : 2 * Math.PI * 20}
-                strokeLinecap="round" className="transition-all duration-700" />
+                strokeLinecap="round" className="stroke-success transition-all duration-700" />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center" style={{ fontSize: 13, fontWeight: 800, color: '#10B981' }}>
+            <div className="absolute inset-0 flex items-center justify-center" style={{ fontSize: 13, fontWeight: 800, color: 'rgb(var(--color-success))' }}>
               {total > 0 ? Math.round((active / total) * 100) : 0}%
             </div>
           </div>
           <div>
             <div style={{ fontSize: 10, fontWeight: 700, color: '#708A7E', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 4 }}>Active</div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#10B981', lineHeight: 1 }}>{active}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-success))', lineHeight: 1 }}>{active}</div>
           </div>
         </div>
         {/* API calls */}
         <div style={{ padding: 18, borderRadius: 16, background: '#0C1210', border: '1px solid #1E2E26' }}>
           <div style={{ fontSize: 10, fontWeight: 700, color: '#708A7E', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>API Calls</div>
           <div className="flex items-baseline gap-1.5">
-            <span style={{ fontSize: 32, fontWeight: 800, color: '#3B82F6', letterSpacing: '-1px', lineHeight: 1 }}>{apiCount}</span>
+            <span style={{ fontSize: 32, fontWeight: 800, color: 'rgb(var(--color-info))', letterSpacing: '-1px', lineHeight: 1 }}>{apiCount}</span>
             <span style={{ fontSize: 11, color: '#708A7E' }}>of {total}</span>
           </div>
         </div>
@@ -189,7 +189,7 @@ export function Component() {
       {/* ═══ FILTERS ═══ */}
       <div className="flex items-center gap-1.5" style={{ padding: '2px 20px 12px' }}>
         <button onClick={() => setOpFilter(null)}
-          style={{ padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 700, cursor: 'pointer', background: !opFilter ? 'rgba(0,217,126,0.08)' : 'transparent', border: !opFilter ? '1.5px solid rgba(0,217,126,0.12)' : '1px solid #1E2E26', color: !opFilter ? '#00D97E' : '#708A7E' }}>
+          style={{ padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 700, cursor: 'pointer', background: !opFilter ? 'rgb(var(--color-brand-glow) / 0.08)' : 'transparent', border: !opFilter ? '1.5px solid rgb(var(--color-brand-glow) / 0.12)' : '1px solid #1E2E26', color: !opFilter ? 'rgb(var(--color-brand-glow))' : '#708A7E' }}>
           All {total}
         </button>
         {Object.entries(OP_META).filter(([k]) => (opCounts[Number(k)] || 0) > 0).map(([k, m]) => (
@@ -203,7 +203,7 @@ export function Component() {
         {(searchFilter || opFilter !== null) && (
           <button onClick={() => { setSearchFilter(''); setOpFilter(null); }}
             className="flex items-center gap-1 ml-2"
-            style={{ padding: '5px 10px', borderRadius: 6, fontSize: 10, fontWeight: 600, color: '#F43F5E', background: 'rgba(244,63,94,0.06)', border: '1px solid rgba(244,63,94,0.1)', cursor: 'pointer' }}>
+            style={{ padding: '5px 10px', borderRadius: 6, fontSize: 10, fontWeight: 600, color: 'rgb(var(--color-danger))', background: 'rgb(var(--color-danger) / 0.06)', border: '1px solid rgb(var(--color-danger) / 0.1)', cursor: 'pointer' }}>
             <X style={{ width: 10, height: 10 }} strokeWidth={2} /> Clear
           </button>
         )}
@@ -212,7 +212,7 @@ export function Component() {
       {/* ═══ CONTENT ═══ */}
       <div style={{ padding: '0 20px 24px' }}>
         {isLoading ? (
-          <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin" style={{ color: '#00D97E' }} /></div>
+          <div className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 animate-spin" style={{ color: 'rgb(var(--color-brand-glow))' }} /></div>
         ) : filtered.length === 0 && !searchFilter && opFilter === null ? (
           <EmptyState onImport={() => setImportOpen(true)} onCreate={() => { setEditIntent(null); setCreateOpen(true); }} />
         ) : viewMode === 'cards' ? (
@@ -266,7 +266,7 @@ function IntentCard({ intent, allIntents, onEdit }: { intent: IntentDto; allInte
               {children.length > 0 ? `Root · ${children.length} children` : intent.parentIntentId ? 'Child' : 'Root'}
             </div>
           </div>
-          <div style={{ width: 7, height: 7, borderRadius: '50%', background: intent.isActive ? '#10B981' : '#F59E0B', boxShadow: intent.isActive ? '0 0 4px rgba(16,185,129,0.3)' : 'none' }} />
+          <div style={{ width: 7, height: 7, borderRadius: '50%', background: intent.isActive ? 'rgb(var(--color-success))' : 'rgb(var(--color-warning))', boxShadow: intent.isActive ? '0 0 4px rgb(var(--color-success) / 0.3)' : 'none' }} />
         </div>
 
         {/* Endpoint (if API) */}
@@ -281,7 +281,7 @@ function IntentCard({ intent, allIntents, onEdit }: { intent: IntentDto; allInte
         {keywords.length > 0 && (
           <div className="flex flex-wrap gap-1" style={{ marginBottom: 10 }}>
             {keywords.slice(0, 4).map(k => (
-              <span key={k} style={{ padding: '3px 8px', borderRadius: 10, background: 'rgba(167,139,250,0.06)', fontSize: 10, color: '#A78BFA' }}>{k}</span>
+              <span key={k} style={{ padding: '3px 8px', borderRadius: 10, background: 'rgb(var(--color-violet-light) / 0.06)', fontSize: 10, color: 'rgb(var(--color-violet-light))' }}>{k}</span>
             ))}
             {keywords.length > 4 && <span style={{ padding: '3px 8px', borderRadius: 10, background: '#111916', fontSize: 10, color: '#708A7E' }}>+{keywords.length - 4}</span>}
           </div>
@@ -301,7 +301,7 @@ function IntentCard({ intent, allIntents, onEdit }: { intent: IntentDto; allInte
 function EmptyState({ onImport, onCreate }: { onImport: () => void; onCreate: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
-      <div style={{ width: 64, height: 64, borderRadius: 20, background: 'rgba(0,217,126,0.04)', border: '1.5px dashed rgba(0,217,126,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+      <div style={{ width: 64, height: 64, borderRadius: 20, background: 'rgb(var(--color-brand-glow) / 0.04)', border: '1.5px dashed rgb(var(--color-brand-glow) / 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
         <Target style={{ width: 28, height: 28, color: '#253D32' }} strokeWidth={1.2} />
       </div>
       <p style={{ fontSize: 16, fontWeight: 700, color: '#8A9B91' }}>No intents defined yet</p>
@@ -314,7 +314,7 @@ function EmptyState({ onImport, onCreate }: { onImport: () => void; onCreate: ()
           <Upload style={{ width: 14, height: 14 }} strokeWidth={1.8} /> Bulk import
         </button>
         <button onClick={onCreate}
-          style={{ padding: '10px 18px', borderRadius: 10, background: '#00D97E', fontSize: 13, fontWeight: 700, color: '#050808', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 0 20px rgba(0,217,126,0.1)' }}>
+          style={{ padding: '10px 18px', borderRadius: 10, background: 'rgb(var(--color-brand-glow))', fontSize: 13, fontWeight: 700, color: '#050808', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 0 20px rgb(var(--color-brand-glow) / 0.1)' }}>
           <Plus style={{ width: 14, height: 14 }} strokeWidth={2} /> Create first intent
         </button>
       </div>

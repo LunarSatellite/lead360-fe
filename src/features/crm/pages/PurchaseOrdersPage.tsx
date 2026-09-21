@@ -24,12 +24,12 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide }: {
           width: wide ? '640px' : '560px',
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2
@@ -188,7 +188,7 @@ export function Component() {
                     <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
                       <div className="flex items-center gap-1">
                         {po.status === PurchaseOrderStatus.Draft && (
-                          <button onClick={() => submitApproval.mutate(po.id)} disabled={submitApproval.isPending} title="Submit for Approval" className="p-1.5 rounded-lg text-text-muted hover:text-[#F59E0B] hover:bg-[rgba(245,158,11,0.1)] transition-all disabled:opacity-50"><Send className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => submitApproval.mutate(po.id)} disabled={submitApproval.isPending} title="Submit for Approval" className="p-1.5 rounded-lg text-text-muted hover:text-warning hover:bg-warning-soft transition-all disabled:opacity-50"><Send className="w-3.5 h-3.5" /></button>
                         )}
                         {po.status === PurchaseOrderStatus.PendingApproval && (
                           <>
@@ -242,10 +242,10 @@ export function Component() {
                 onClick={() => setVendorOpen(o => !o)}
                 className="w-full flex items-center gap-2 pl-9 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A332C',
-                  border: `1px solid ${vendorOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                  backgroundColor: 'rgb(var(--color-surface-elevated))',
+                  border: `1px solid ${vendorOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: vendorOpen
-                    ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                    ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                     : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
@@ -258,7 +258,7 @@ export function Component() {
               </button>
               {vendorOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                 >
                   {vendorList.length === 0 && (
                     <div className="px-3 py-2.5 text-sm text-text-muted">No active vendors</div>
@@ -268,7 +268,7 @@ export function Component() {
                       key={v.id}
                       type="button"
                       onClick={() => { setVendorId(v.id); setVendorOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${vendorId === v.id ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-soft ${vendorId === v.id ? 'bg-brand-soft' : ''} text-text-secondary`}
                     >
                       <Building2 className="w-3 h-3 text-text-muted shrink-0" strokeWidth={1.6} />
                       <span className="flex-1 text-left">{v.name}</span>
@@ -288,8 +288,8 @@ export function Component() {
                   type="date"
                   value={expectedDelivery}
                   onChange={e => setExpectedDelivery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </Field>
@@ -300,8 +300,8 @@ export function Component() {
                   value={currency}
                   onChange={e => setCurrency(e.target.value)}
                   placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </Field>
@@ -315,8 +315,8 @@ export function Component() {
                 onChange={e => setShippingAddress(e.target.value)}
                 rows={2}
                 placeholder="123 Industrial Ave, Suite 400, New York, NY 10001"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
             </div>
           </Field>
@@ -338,21 +338,21 @@ export function Component() {
                   <div className="relative">
                     <ShoppingBag className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name"
-                      className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                      className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
                   <div className="relative">
                     <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input value={l.sku} onChange={e => setLine(i, 'sku', e.target.value)} placeholder="SKU"
-                      className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                      className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
                   <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)}
-                    className="w-full px-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                    className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <input type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00"
-                    className="w-full px-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                    className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30"><X className="w-3.5 h-3.5" /></button>
                 </div>
               ))}
@@ -370,8 +370,8 @@ export function Component() {
                 onChange={e => setNotes(e.target.value)}
                 rows={2}
                 placeholder="Special instructions, delivery requirements…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
             </div>
           </Field>
@@ -424,16 +424,16 @@ export function Component() {
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.status === PurchaseOrderStatus.Draft && (
-                <button onClick={() => { submitApproval.mutate(selected.id); setSelected(null); }} disabled={submitApproval.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-[#F59E0B] transition-all disabled:opacity-50">
+                <button onClick={() => { submitApproval.mutate(selected.id); setSelected(null); }} disabled={submitApproval.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-warning transition-all disabled:opacity-50">
                   <Send className="w-3.5 h-3.5" /> Submit for Approval
                 </button>
               )}
               {selected.status === PurchaseOrderStatus.PendingApproval && (
                 <>
-                  <button onClick={() => { approvePO.mutate(selected.id); setSelected(null); }} disabled={approvePO.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 disabled:opacity-50">
+                  <button onClick={() => { approvePO.mutate(selected.id); setSelected(null); }} disabled={approvePO.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
                     <CheckCircle className="w-3.5 h-3.5" /> Approve
                   </button>
-                  <button onClick={() => setShowReject(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger bg-danger-soft border border-[rgba(244,63,94,0.2)] hover:opacity-80">
+                  <button onClick={() => setShowReject(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger bg-danger-soft border border-danger/20 hover:opacity-80">
                     <XCircle className="w-3.5 h-3.5" /> Reject
                   </button>
                 </>
@@ -449,7 +449,7 @@ export function Component() {
                 </button>
               )}
               {selected.status <= PurchaseOrderStatus.Approved && (
-                <button onClick={() => setShowCancel(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(244,63,94,0.2)] text-xs font-semibold text-danger bg-danger-soft hover:opacity-80">
+                <button onClick={() => setShowCancel(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80">
                   <XCircle className="w-3.5 h-3.5" /> Cancel
                 </button>
               )}
@@ -462,7 +462,7 @@ export function Component() {
       <SlideOver open={showReject} onClose={() => setShowReject(false)} title="Reject Purchase Order">
         <form onSubmit={handleReject} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Rejection Reason *"><textarea required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none" style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Rejection Reason *"><textarea required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={rejectPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {rejectPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Reject'}
@@ -476,7 +476,7 @@ export function Component() {
       <SlideOver open={showCancel} onClose={() => setShowCancel(false)} title="Cancel Purchase Order">
         <form onSubmit={handleCancel} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none" style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." /></Field>
+          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={cancelPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {cancelPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancel Order'}

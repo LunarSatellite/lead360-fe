@@ -133,9 +133,9 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
           onClick={handleToggle}
           disabled={isToggling}
           className="flex items-center justify-center gap-1.5 py-[6px] px-3 rounded-[7px]
-                     bg-[rgba(245,158,11,0.04)] border border-[rgba(245,158,11,0.08)]
+                     bg-warning/[0.04] border border-warning/[0.08]
                      text-2xs font-medium text-warning
-                     hover:bg-[rgba(245,158,11,0.08)] disabled:opacity-40 transition-all"
+                     hover:bg-warning/[0.08] disabled:opacity-40 transition-all"
         >
           {isToggling ? (
             <Loader2 className="w-3 h-3 animate-spin" />
@@ -149,9 +149,9 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
           onClick={handleToggle}
           disabled={isToggling}
           className="flex items-center justify-center gap-1.5 py-[6px] px-3 rounded-[7px]
-                     bg-[rgba(16,185,129,0.04)] border border-[rgba(16,185,129,0.1)]
+                     bg-success/[0.04] border border-success/10
                      text-2xs font-medium text-success
-                     hover:bg-[rgba(16,185,129,0.08)] disabled:opacity-40 transition-all"
+                     hover:bg-success/[0.08] disabled:opacity-40 transition-all"
         >
           {isToggling ? (
             <Loader2 className="w-3 h-3 animate-spin" />
@@ -167,7 +167,7 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
         className={`flex items-center justify-center gap-1 py-[6px] px-3 rounded-[7px]
                    text-2xs font-medium transition-all disabled:opacity-40 ${
                      confirmDelete
-                       ? 'bg-danger-soft border border-[rgba(244,63,94,0.15)] text-danger'
+                       ? 'bg-danger-soft border border-danger/15 text-danger'
                        : 'text-danger hover:bg-danger-soft'
                    }`}
       >

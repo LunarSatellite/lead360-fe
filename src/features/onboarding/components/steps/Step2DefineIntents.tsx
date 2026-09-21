@@ -34,7 +34,7 @@ export function Step2DefineIntents({ onComplete }: Step2Props) {
           <button
             onClick={onComplete}
             className="mt-4 px-6 py-2.5 rounded-lg text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+            style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
           >
             Continue →
           </button>

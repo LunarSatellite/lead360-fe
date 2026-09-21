@@ -11,7 +11,7 @@ const inputCls = 'w-full px-3 py-2 rounded-lg border border-border-subtle bg-bg-
 
 const STATUS_COLORS: Record<number, string> = {
   [CrmTimePeriodStatus.Draft]:     'bg-bg-subtle text-text-muted',
-  [CrmTimePeriodStatus.Submitted]: 'bg-[rgba(245,158,11,0.1)] text-[#F59E0B]',
+  [CrmTimePeriodStatus.Submitted]: 'bg-warning-soft text-warning',
   [CrmTimePeriodStatus.Approved]:  'bg-success-soft text-success',
   [CrmTimePeriodStatus.Rejected]:  'bg-danger-soft text-danger',
 };
@@ -29,13 +29,13 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
           width: 640,
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-3 border-b border-border-subtle shrink-0">
           <div>
             <h2
@@ -171,8 +171,8 @@ export function Component() {
               <div className="relative">
                 <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. June 2026, Q2 Week 3"
                   value={name}
                   onChange={e => setName(e.target.value)}
@@ -188,11 +188,11 @@ export function Component() {
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
                   <input
                     type="date"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{
                       backgroundColor: '#1A2F27',
                       colorScheme: 'dark',
-                      backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                      backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                     }}
                     value={periodStart}
                     onChange={e => setPeriodStart(e.target.value)}
@@ -205,11 +205,11 @@ export function Component() {
                   <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
                   <input
                     type="date"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{
                       backgroundColor: '#1A2F27',
                       colorScheme: 'dark',
-                      backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                      backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                     }}
                     value={periodEnd}
                     onChange={e => setPeriodEnd(e.target.value)}
@@ -287,7 +287,7 @@ export function Component() {
                       <button
                         onClick={() => approveMutation.mutate(p.id)}
                         disabled={approveMutation.isPending}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-[rgba(34,197,94,0.2)] hover:bg-success hover:text-white transition-colors disabled:opacity-50"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-white transition-colors disabled:opacity-50"
                       >
                         <Check className="w-3.5 h-3.5" /> Approve
                       </button>

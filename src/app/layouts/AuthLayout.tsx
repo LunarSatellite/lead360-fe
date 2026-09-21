@@ -222,7 +222,7 @@ function ChatDemo({ script, botName, botColor, loop = false, onComplete }: ChatD
                         <span className="text-[13px] font-extrabold" style={{ color: botColor }}>{item.price}</span>
                         <span className="text-[9px]" style={{ color: '#8696A0', textDecoration: 'line-through' }}>{item.was}</span>
                       </div>
-                      <div className="mt-2 w-full text-center rounded-lg py-1.5" style={{ background: 'linear-gradient(135deg,#00FFAA,#00A884)', color: '#0B1F17', fontSize: 9, fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                      <div className="mt-2 w-full text-center rounded-lg py-1.5" style={{ background: 'linear-gradient(135deg,rgb(var(--color-brand-beacon)),#00A884)', color: '#0B1F17', fontSize: 9, fontWeight: 900, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
                         Shop Now
                       </div>
                     </div>
@@ -339,7 +339,7 @@ function IndustryShowcase() {
           { label: 'Setup time', value: '<5 min' },
           { label: 'Industries', value: '12+'    },
         ].map(({ label, value }) => (
-          <div key={label} className="text-center py-2 rounded-sm" style={{ background: 'rgba(0,217,126,0.05)', border: '0.5px solid #1E2E26' }}>
+          <div key={label} className="text-center py-2 rounded-sm" style={{ background: 'rgb(var(--color-brand-glow) / 0.05)', border: '0.5px solid #1E2E26' }}>
             <p className="text-sm font-extrabold text-brand">{value}</p>
             <p className="text-[10px] text-text-muted mt-0.5">{label}</p>
           </div>
@@ -403,7 +403,7 @@ function LoginPanelCarousel() {
           >
             <span
               className="rounded-full transition-all duration-300"
-              style={{ display: 'block', width: active === i ? 20 : 6, height: 6, background: active === i ? '#00D97E' : '#253D32' }}
+              style={{ display: 'block', width: active === i ? 20 : 6, height: 6, background: active === i ? 'rgb(var(--color-brand-glow))' : '#253D32' }}
             />
             {active === i && <span className="text-[11px] font-semibold text-brand">{label}</span>}
           </button>
@@ -506,7 +506,7 @@ function LoginPanel() {
                   transformOrigin: 'bottom',
                   animation: `omni-bar-grow 0.5s ease-out ${i * 0.04}s both`,
                   background: isLast
-                    ? 'linear-gradient(to top, #00D97E, #00FFAA)'
+                    ? 'linear-gradient(to top, rgb(var(--color-brand-glow)), rgb(var(--color-brand-beacon)))'
                     : `rgba(0,217,126,${0.12 + (i / SPARK.length) * 0.38})`,
                 }}
               />
@@ -653,7 +653,7 @@ export function AuthLayout() {
       <div className="w-full lg:w-1/2 lg:h-screen lg:overflow-y-auto relative">
         <div
           className="absolute top-[-200px] right-[-100px] w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] rounded-full pointer-events-none opacity-40"
-          style={{ background: 'radial-gradient(circle, rgba(0,217,126,0.04), transparent 70%)' }}
+          style={{ background: 'radial-gradient(circle, rgb(var(--color-brand-glow) / 0.04), transparent 70%)' }}
         />
         <div className="px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-6 sm:pt-8 lg:pt-12 pb-32 sm:pb-32 lg:pb-12 relative z-10">
           <div className="flex items-center justify-between mb-8 sm:mb-10 lg:mb-12">
@@ -687,7 +687,7 @@ export function AuthLayout() {
             <svg width="100%" height="100%">
               <defs>
                 <pattern id="auth-grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                  <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(0,217,126,0.03)" strokeWidth="0.5" />
+                  <path d="M 50 0 L 0 0 0 50" fill="none" className="stroke-brand-glow/[0.03]" strokeWidth="0.5" />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#auth-grid)" />

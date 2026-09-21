@@ -23,9 +23,9 @@ function relativeTime(iso: string): string {
 }
 
 const HEALTH_STYLES: Record<string, string> = {
-  Healthy: 'text-[#10B981] bg-[rgba(16,185,129,0.1)] border border-[rgba(16,185,129,0.25)]',
-  Degraded: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border border-[rgba(245,158,11,0.25)]',
-  Unhealthy: 'text-[#F43F5E] bg-[rgba(244,63,94,0.1)] border border-[rgba(244,63,94,0.25)]',
+  Healthy: 'text-success bg-success-soft border border-success/25',
+  Degraded: 'text-warning bg-warning-soft border border-warning/25',
+  Unhealthy: 'text-danger bg-danger-soft border border-danger/25',
   Unknown: 'text-text-muted bg-glass-1 border border-border-subtle',
 };
 
@@ -101,7 +101,7 @@ function SecretInput({
           autoComplete="off"
           spellCheck={false}
           autoCorrect="off"
-          className={`form-input pr-10 ${error ? '!border-[rgba(244,63,94,0.6)]' : ''}`}
+          className={`form-input pr-10 ${error ? '!border-danger/60' : ''}`}
           {...registration}
         />
         <button
@@ -114,7 +114,7 @@ function SecretInput({
           {show ? <EyeOff className="w-4 h-4" strokeWidth={1.5} /> : <Eye className="w-4 h-4" strokeWidth={1.5} />}
         </button>
       </div>
-      {error && <p className="text-[10px] text-[#F43F5E] mt-1">{error}</p>}
+      {error && <p className="text-[10px] text-danger mt-1">{error}</p>}
     </div>
   );
 }
@@ -185,12 +185,12 @@ function CredentialFields({
           </label>
           <input
             id="f-username"
-            className={`form-input ${errors.username ? '!border-[rgba(244,63,94,0.6)]' : ''}`}
+            className={`form-input ${errors.username ? '!border-danger/60' : ''}`}
             placeholder="username"
             autoComplete="off"
             {...register('username')}
           />
-          {errors.username && <p className="text-[10px] text-[#F43F5E] mt-1">{errors.username.message}</p>}
+          {errors.username && <p className="text-[10px] text-danger mt-1">{errors.username.message}</p>}
         </div>
         <div>
           <label htmlFor="f-password" className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
@@ -341,7 +341,7 @@ function CredentialsModal({
         <form onSubmit={form.handleSubmit(onSubmit)} className="overflow-y-auto flex-1">
           <div className="px-6 py-5 space-y-5">
             {form.formState.errors.root && (
-              <div className="px-3.5 py-2.5 rounded-[10px] bg-[rgba(244,63,94,0.08)] border border-[rgba(244,63,94,0.25)] text-[11px] text-[#F43F5E]">
+              <div className="px-3.5 py-2.5 rounded-[10px] bg-danger/[0.08] border border-danger/25 text-[11px] text-danger">
                 {form.formState.errors.root.message}
               </div>
             )}
@@ -354,13 +354,13 @@ function CredentialsModal({
               </label>
               <input
                 id="f-baseUrl"
-                className={`form-input ${form.formState.errors.baseUrl ? '!border-[rgba(244,63,94,0.6)]' : ''}`}
+                className={`form-input ${form.formState.errors.baseUrl ? '!border-danger/60' : ''}`}
                 placeholder="https://api.example.com/v1"
                 autoComplete="off"
                 {...form.register('baseUrl')}
               />
               {form.formState.errors.baseUrl && (
-                <p className="text-[10px] text-[#F43F5E] mt-1">{form.formState.errors.baseUrl.message}</p>
+                <p className="text-[10px] text-danger mt-1">{form.formState.errors.baseUrl.message}</p>
               )}
             </div>
 
@@ -454,7 +454,7 @@ function DisconnectDialog({ onClose, onConfirm, isPending }: { onClose: () => vo
         className="relative w-full max-w-sm mx-4"
         style={{
           background: '#0A0F0D',
-          border: '1px solid rgba(244,63,94,0.3)',
+          border: '1px solid rgb(var(--color-danger) / 0.3)',
           borderRadius: 18,
           boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
         }}
@@ -479,7 +479,7 @@ function DisconnectDialog({ onClose, onConfirm, isPending }: { onClose: () => vo
             onClick={onConfirm}
             disabled={isPending}
             className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-xs font-semibold transition-all disabled:opacity-40"
-            style={{ background: 'rgba(244,63,94,0.15)', color: '#F43F5E', border: '1px solid rgba(244,63,94,0.3)' }}
+            style={{ background: 'rgb(var(--color-danger) / 0.15)', color: 'rgb(var(--color-danger))', border: '1px solid rgb(var(--color-danger) / 0.3)' }}
           >
             {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             Disconnect
@@ -541,7 +541,7 @@ export function ApiCredentialsCard() {
         {/* Header row */}
         <div className="flex items-start justify-between gap-3 mb-1">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-[10px] bg-[rgba(0,217,126,0.06)] border border-border-subtle flex items-center justify-center shrink-0">
+            <div className="w-9 h-9 rounded-[10px] bg-brand-glow/[0.06] border border-border-subtle flex items-center justify-center shrink-0">
               <Plug className="w-4 h-4 text-brand" strokeWidth={1.5} />
             </div>
             <div className="min-w-0">
@@ -639,7 +639,7 @@ export function ApiCredentialsCard() {
                       <button
                         type="button"
                         onClick={() => { setMenuOpen(false); setDisconnectOpen(true); }}
-                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-[#F43F5E] hover:bg-[rgba(244,63,94,0.06)] transition-colors"
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-danger hover:bg-danger/[0.06] transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         Disconnect

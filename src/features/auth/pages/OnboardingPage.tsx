@@ -60,7 +60,7 @@ export function Component() {
       {/* Orbs */}
       <div className="absolute top-[-120px] right-[25%] w-[450px] h-[450px] rounded-full bg-[rgba(5,150,105,0.08)] blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-80px] left-[10%] w-[350px] h-[350px] rounded-full bg-[rgba(6,214,160,0.06)] blur-[100px] pointer-events-none" />
-      <div className="absolute top-[40%] left-[-5%] w-[200px] h-[200px] rounded-full bg-[rgba(59,130,246,0.06)] blur-[80px] pointer-events-none" />
+      <div className="absolute top-[40%] left-[-5%] w-[200px] h-[200px] rounded-full bg-info/[0.06] blur-[80px] pointer-events-none" />
 
       <div className="relative z-10 max-w-[1100px] mx-auto py-10 px-6">
         {/* Header */}
@@ -505,7 +505,7 @@ function Step4SelectChannels() {
       <div className="grid grid-cols-3 gap-3">
         {channels.map((ch) => {
           const isOn = selected.has(ch.id);
-          const colorMap = { success: 'bg-success-soft text-success border-[rgba(6,214,160,0.2)]', info: 'bg-info-soft text-info border-[rgba(59,130,246,0.2)]', brand: 'bg-brand-soft text-brand border-brand' };
+          const colorMap = { success: 'bg-success-soft text-success border-[rgba(6,214,160,0.2)]', info: 'bg-info-soft text-info border-info/20', brand: 'bg-brand-soft text-brand border-brand' };
           return (
             <button
               key={ch.id}
@@ -611,7 +611,7 @@ function Step5GoLive({ completedSteps }: { completedSteps: Set<StepId> }) {
           <p className="text-xs text-success">All steps completed. Click "Launch chatbot" to go live.</p>
         </div>
       ) : (
-        <div className="bg-warning-soft border-thin border-[rgba(245,158,11,0.15)] rounded-card p-4 text-center">
+        <div className="bg-warning-soft border-thin border-warning/15 rounded-card p-4 text-center">
           <p className="text-sm font-semibold text-warning">Complete all steps before launching</p>
           <p className="text-xs text-text-muted mt-1">Go back and finish the incomplete steps above.</p>
         </div>

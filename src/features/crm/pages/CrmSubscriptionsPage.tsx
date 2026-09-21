@@ -17,7 +17,7 @@ import {
   CRM_SUBSCRIPTION_TIER_LABELS, CRM_BILLING_CADENCE_LABELS,
 } from '../types/crm.types';
 
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 const selectCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -40,12 +40,12 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
           width: '600px',
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
@@ -84,16 +84,16 @@ function TierDropdown({ value, onChange }: { value: string; onChange: (v: string
     <div className="relative" ref={ref}>
       <button type="button" onClick={() => setOpen(o => !o)}
         className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary text-left"
-        style={{ backgroundColor: '#1A332C', border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`, boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
+        style={{ backgroundColor: 'rgb(var(--color-surface-elevated))', border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`, boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
       >
         <span className="flex-1 font-medium text-text-primary">{CRM_SUBSCRIPTION_TIER_LABELS[Number(value) as CrmSubscriptionPlanTier] ?? 'Select tier'}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
           {Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => (
             <button key={k} type="button" onClick={() => { onChange(k); setOpen(false); }}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${Number(value) === Number(k) ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}>
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-soft ${Number(value) === Number(k) ? 'bg-brand-soft' : ''} text-text-secondary`}>
               {l}
               {Number(value) === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
             </button>
@@ -116,16 +116,16 @@ function CadenceDropdown({ value, onChange }: { value: string; onChange: (v: str
     <div className="relative" ref={ref}>
       <button type="button" onClick={() => setOpen(o => !o)}
         className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary text-left"
-        style={{ backgroundColor: '#1A332C', border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`, boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
+        style={{ backgroundColor: 'rgb(var(--color-surface-elevated))', border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`, boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
       >
         <span className="flex-1 font-medium text-text-primary">{CRM_BILLING_CADENCE_LABELS[Number(value) as CrmSubscriptionBillingCadence] ?? 'Select cadence'}</span>
         <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
       </button>
       {open && (
-        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
           {Object.entries(CRM_BILLING_CADENCE_LABELS).map(([k, l]) => (
             <button key={k} type="button" onClick={() => { onChange(k); setOpen(false); }}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${Number(value) === Number(k) ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}>
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-soft ${Number(value) === Number(k) ? 'bg-brand-soft' : ''} text-text-secondary`}>
               {l}
               {Number(value) === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
             </button>
@@ -258,7 +258,7 @@ export function Component() {
                     <td className="px-4 py-3 font-medium text-text-primary">{s.contactName ?? s.contactId}</td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-text-primary">{s.planName}</div>
-                      <Badge value={s.planTier} labels={CRM_SUBSCRIPTION_TIER_LABELS} colors={{ 1: 'text-text-secondary bg-bg-elevated border-border-subtle', 2: 'text-brand bg-brand-soft border-border-glow', 3: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]', 4: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]' }} />
+                      <Badge value={s.planTier} labels={CRM_SUBSCRIPTION_TIER_LABELS} colors={{ 1: 'text-text-secondary bg-bg-elevated border-border-subtle', 2: 'text-brand bg-brand-soft border-border-glow', 3: 'text-warning bg-warning-soft border-warning/20', 4: 'text-success bg-success-soft border-success/20' }} />
                     </td>
                     <td className="px-4 py-3 text-text-secondary">{CRM_BILLING_CADENCE_LABELS[s.billingCadence as CrmSubscriptionBillingCadence]}</td>
                     <td className="px-4 py-3"><Badge value={s.status} labels={CRM_SUBSCRIPTION_STATUS_LABELS} colors={CRM_SUBSCRIPTION_STATUS_COLORS} /></td>
@@ -267,7 +267,7 @@ export function Component() {
                     <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
                       <div className="flex items-center gap-1.5">
                         {s.status === CrmSubscriptionStatus.Active && (
-                          <button onClick={() => pauseSub.mutate(s.id)} disabled={pauseSub.isPending} title="Pause" className="p-1.5 rounded-lg text-text-muted hover:text-[#F59E0B] hover:bg-[rgba(245,158,11,0.1)] transition-all disabled:opacity-50">
+                          <button onClick={() => pauseSub.mutate(s.id)} disabled={pauseSub.isPending} title="Pause" className="p-1.5 rounded-lg text-text-muted hover:text-warning hover:bg-warning-soft transition-all disabled:opacity-50">
                             <PauseCircle className="w-4 h-4" />
                           </button>
                         )}
@@ -319,7 +319,7 @@ export function Component() {
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </Field>
@@ -330,7 +330,7 @@ export function Component() {
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </Field>
@@ -338,7 +338,7 @@ export function Component() {
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </Field>
@@ -348,7 +348,7 @@ export function Component() {
             <div className="relative">
               <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={inputStyle} />
             </div>
           </Field>
@@ -367,7 +367,7 @@ export function Component() {
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </Field>
@@ -375,7 +375,7 @@ export function Component() {
               <div className="relative">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input value={createForm.currency} onChange={setC('currency')} placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </Field>
@@ -386,15 +386,15 @@ export function Component() {
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input type="date" value={createForm.startDate} onChange={setC('startDate')}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               </div>
             </Field>
             <Field label="Seats">
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </Field>
@@ -451,7 +451,7 @@ export function Component() {
 
             <div className="flex gap-2 pt-2 border-t border-border-subtle">
               {selectedSub.status === CrmSubscriptionStatus.Active && (
-                <button onClick={() => pauseSub.mutate(selectedSub.id)} disabled={pauseSub.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-[#F59E0B] hover:bg-[rgba(245,158,11,0.1)] transition-all disabled:opacity-50">
+                <button onClick={() => pauseSub.mutate(selectedSub.id)} disabled={pauseSub.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-warning hover:bg-warning-soft transition-all disabled:opacity-50">
                   <PauseCircle className="w-3.5 h-3.5" /> Pause
                 </button>
               )}
@@ -461,7 +461,7 @@ export function Component() {
                 </button>
               )}
               {selectedSub.status !== CrmSubscriptionStatus.Cancelled && (
-                <button onClick={() => { cancelSub.mutate(selectedSub.id, { onSuccess: () => setSelectedSub(null) }); }} disabled={cancelSub.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(244,63,94,0.2)] text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
+                <button onClick={() => { cancelSub.mutate(selectedSub.id, { onSuccess: () => setSelectedSub(null) }); }} disabled={cancelSub.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
                   <XCircle className="w-3.5 h-3.5" /> Cancel
                 </button>
               )}

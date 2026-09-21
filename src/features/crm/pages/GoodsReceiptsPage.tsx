@@ -22,12 +22,12 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
           width: '640px',
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2
@@ -61,7 +61,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 type GrLine = { poLineItemId: string; quantityReceived: string; condition: string; rejectedQty: string; rejectionReason: string };
 const emptyGrLine = (): GrLine => ({ poLineItemId: '', quantityReceived: '1', condition: '1', rejectedQty: '0', rejectionReason: '' });
 
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 export function Component() {
   const [filter, setFilter] = useState<GoodsReceiptFilter>({ page: 1, pageSize: 20 });
@@ -204,7 +204,7 @@ export function Component() {
             <div className="relative">
               <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={inputStyle} />
             </div>
           </Field>
@@ -213,7 +213,7 @@ export function Component() {
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={inputStyle} />
             </div>
           </Field>
@@ -236,13 +236,13 @@ export function Component() {
                     <div className="relative">
                       <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
                       <input value={l.poLineItemId} onChange={e => setLine(i, 'poLineItemId', e.target.value)} placeholder="PO Line Item ID"
-                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
                     <div className="relative">
                       <Package className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
                       <input type="number" min="0" value={l.quantityReceived} onChange={e => setLine(i, 'quantityReceived', e.target.value)} placeholder="Qty received"
-                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
                   </div>
@@ -255,10 +255,10 @@ export function Component() {
                         onClick={() => setConditionDropOpen(conditionDropOpen === i ? null : i)}
                         className="w-full flex items-center gap-2 pl-8 pr-2 py-1.5 rounded-xl text-sm text-text-primary text-left"
                         style={{
-                          backgroundColor: '#1A332C',
-                          border: `1px solid ${conditionDropOpen === i ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                          backgroundColor: 'rgb(var(--color-surface-elevated))',
+                          border: `1px solid ${conditionDropOpen === i ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                           boxShadow: conditionDropOpen === i
-                            ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                            ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)'
                             : 'none',
                           outline: 'none',
                           transition: 'box-shadow 0.2s ease',
@@ -266,7 +266,7 @@ export function Component() {
                       >
                         <span className={`flex-1 font-medium ${
                           Number(l.condition) === GoodsCondition.Good ? 'text-success' :
-                          Number(l.condition) === GoodsCondition.Damaged ? 'text-[#F59E0B]' :
+                          Number(l.condition) === GoodsCondition.Damaged ? 'text-warning' :
                           Number(l.condition) === GoodsCondition.Rejected ? 'text-danger' : 'text-text-secondary'
                         }`}>
                           {GOODS_CONDITION_LABELS[Number(l.condition) as GoodsCondition]}
@@ -275,18 +275,18 @@ export function Component() {
                       </button>
                       {conditionDropOpen === i && (
                         <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
                         >
                           {([
-                            { value: GoodsCondition.Good, label: GOODS_CONDITION_LABELS[GoodsCondition.Good], dot: '#10B981', text: 'text-success', hover: 'hover:bg-[rgba(16,185,129,0.08)]' },
-                            { value: GoodsCondition.Damaged, label: GOODS_CONDITION_LABELS[GoodsCondition.Damaged], dot: '#F59E0B', text: 'text-[#F59E0B]', hover: 'hover:bg-[rgba(245,158,11,0.10)]' },
-                            { value: GoodsCondition.Rejected, label: GOODS_CONDITION_LABELS[GoodsCondition.Rejected], dot: '#F43F5E', text: 'text-danger', hover: 'hover:bg-[rgba(244,63,94,0.10)]' },
+                            { value: GoodsCondition.Good, label: GOODS_CONDITION_LABELS[GoodsCondition.Good], dot: '#10B981', text: 'text-success', hover: 'hover:bg-success/[0.08]' },
+                            { value: GoodsCondition.Damaged, label: GOODS_CONDITION_LABELS[GoodsCondition.Damaged], dot: '#F59E0B', text: 'text-warning', hover: 'hover:bg-warning-soft' },
+                            { value: GoodsCondition.Rejected, label: GOODS_CONDITION_LABELS[GoodsCondition.Rejected], dot: '#F43F5E', text: 'text-danger', hover: 'hover:bg-danger-soft' },
                           ] as const).map(opt => (
                             <button
                               key={opt.value}
                               type="button"
                               onClick={() => { setLine(i, 'condition', String(opt.value)); setConditionDropOpen(null); }}
-                              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${Number(l.condition) === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${Number(l.condition) === opt.value ? 'bg-brand-soft' : ''}`}
                             >
                               <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
                               {opt.label}
@@ -300,7 +300,7 @@ export function Component() {
                       <div className="relative">
                         <XCircle className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
                         <input type="number" min="0" value={l.rejectedQty} onChange={e => setLine(i, 'rejectedQty', e.target.value)} placeholder="Rejected qty"
-                          className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                          className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                           style={inputStyle} />
                       </div>
                     )}
@@ -309,7 +309,7 @@ export function Component() {
                     <div className="relative">
                       <FileText className="absolute left-2.5 top-3 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
                       <input value={l.rejectionReason} onChange={e => setLine(i, 'rejectionReason', e.target.value)} placeholder="Rejection/damage reason"
-                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                        className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
                   )}
@@ -325,7 +325,7 @@ export function Component() {
             <div className="relative">
               <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Delivery notes, carrier info, exceptions…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={inputStyle} />
             </div>
           </Field>
@@ -361,7 +361,7 @@ export function Component() {
                           <span className="text-text-primary font-medium">Qty: {li.quantityReceived}</span>
                           {li.rejectedQty ? <span className="text-danger text-xs ml-2">Rejected: {li.rejectedQty}</span> : null}
                         </div>
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${li.condition === GoodsCondition.Good ? 'text-success bg-success-soft' : li.condition === GoodsCondition.Damaged ? 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)]' : 'text-danger bg-danger-soft'}`}>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${li.condition === GoodsCondition.Good ? 'text-success bg-success-soft' : li.condition === GoodsCondition.Damaged ? 'text-warning bg-warning-soft' : 'text-danger bg-danger-soft'}`}>
                           {GOODS_CONDITION_LABELS[li.condition]}
                         </span>
                       </div>
@@ -376,12 +376,12 @@ export function Component() {
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.status === GoodsReceiptStatus.Draft && (
-                <button onClick={() => { confirmGR.mutate(selected.id); setSelected(null); }} disabled={confirmGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 disabled:opacity-50">
+                <button onClick={() => { confirmGR.mutate(selected.id); setSelected(null); }} disabled={confirmGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
                   <CheckCircle className="w-3.5 h-3.5" /> Confirm Receipt
                 </button>
               )}
               {selected.status === GoodsReceiptStatus.Confirmed && (
-                <button onClick={() => { if (confirm('Void this receipt? Stock adjustments will be reversed.')) { voidGR.mutate(selected.id); setSelected(null); } }} disabled={voidGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(244,63,94,0.2)] text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 disabled:opacity-50">
+                <button onClick={() => { if (confirm('Void this receipt? Stock adjustments will be reversed.')) { voidGR.mutate(selected.id); setSelected(null); } }} disabled={voidGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 disabled:opacity-50">
                   <XCircle className="w-3.5 h-3.5" /> Void
                 </button>
               )}

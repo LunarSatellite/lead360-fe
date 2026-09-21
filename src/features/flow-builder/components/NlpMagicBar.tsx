@@ -87,7 +87,7 @@ export function NlpMagicBar({ onFlowGenerated }: NlpMagicBarProps) {
             onClick={handleGenerate}
             disabled={isThinking || !input.trim()}
             className="w-10 h-10 rounded-xl border-none text-white text-lg cursor-pointer flex-shrink-0 flex items-center justify-center disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+            style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
           >
             {isThinking ? <Loader2 className="w-5 h-5 animate-spin" /> : '→'}
           </button>
@@ -112,7 +112,7 @@ export function NlpMagicBar({ onFlowGenerated }: NlpMagicBarProps) {
                 key={i}
                 className="flex items-center gap-1.5 text-xs mb-px"
                 style={{
-                  color: i < thinkingStep ? '#10B981' : i === thinkingStep ? '#059669' : '#94A3B8',
+                  color: i < thinkingStep ? 'rgb(var(--color-success))' : i === thinkingStep ? '#059669' : '#94A3B8',
                   fontWeight: i === thinkingStep ? 600 : 400,
                 }}
               >

@@ -944,8 +944,8 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
         </div>
       )}
 
-      <div className="rounded-xl border border-[rgba(245,158,11,0.3)] bg-[rgba(245,158,11,0.05)] p-3">
-        <p className="text-xs text-[#F59E0B] font-semibold">Campaign will be saved as PAUSED</p>
+      <div className="rounded-xl border border-warning/30 bg-warning/5 p-3">
+        <p className="text-xs text-warning font-semibold">Campaign will be saved as PAUSED</p>
         <p className="text-xs text-text-muted mt-0.5">Review it in Meta Ads Manager and activate when you're ready to spend.</p>
       </div>
     </div>

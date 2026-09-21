@@ -71,7 +71,7 @@ export function ComplianceProfileSelector({
                   transition-all duration-150
                   ${
                     isActive
-                      ? 'bg-[rgba(0,217,126,0.03)] border-[rgba(0,217,126,0.1)]'
+                      ? 'bg-brand-glow/[0.03] border-brand-glow/10'
                       : 'bg-bg-card border-border-subtle hover:border-glass-3 hover:bg-bg-elevated'
                   }
                 `}

@@ -306,7 +306,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
               <button
                 onClick={() => removeContact.mutate({ accountId, linkId: l.contactId })}
                 disabled={removeContact.isPending}
-                className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-[rgba(244,63,94,0.2)] transition-all disabled:opacity-50 shrink-0"
+                className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all disabled:opacity-50 shrink-0"
                 title="Remove"
               >
                 <UserMinus className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -497,13 +497,13 @@ const glowInput = {
 const ACCOUNT_STATUS_OPTS = [
   { value: '1', label: 'Prospect', dot: '#60A5FA', text: 'text-[#60A5FA]',  hover: 'hover:bg-[rgba(96,165,250,0.08)]'   },
   { value: '2', label: 'Customer', dot: '#00D97E', text: 'text-brand',       hover: 'hover:bg-brand-soft'                },
-  { value: '3', label: 'Partner',  dot: '#A78BFA', text: 'text-[#A78BFA]',  hover: 'hover:bg-[rgba(167,139,250,0.08)]' },
-  { value: '4', label: 'Churned',  dot: '#F43F5E', text: 'text-danger',      hover: 'hover:bg-[rgba(244,63,94,0.08)]'   },
+  { value: '3', label: 'Partner',  dot: '#A78BFA', text: 'text-violet-light',  hover: 'hover:bg-violet-light/[0.08]' },
+  { value: '4', label: 'Churned',  dot: '#F43F5E', text: 'text-danger',      hover: 'hover:bg-danger/[0.08]'   },
 ] as const;
 
 const ACCOUNT_TIER_OPTS = [
-  { value: '1', label: 'SMB',        dot: '#B8E6D5', text: 'text-text-secondary', hover: 'hover:bg-[rgba(184,230,213,0.08)]' },
-  { value: '2', label: 'Mid-Market', dot: '#F59E0B', text: 'text-[#F59E0B]',      hover: 'hover:bg-[rgba(245,158,11,0.08)]'  },
+  { value: '1', label: 'SMB',        dot: '#B8E6D5', text: 'text-text-secondary', hover: 'hover:bg-text-secondary/[0.08]' },
+  { value: '2', label: 'Mid-Market', dot: '#F59E0B', text: 'text-warning',      hover: 'hover:bg-warning/[0.08]'  },
   { value: '3', label: 'Enterprise', dot: '#FFD84D', text: 'text-text-primary',   hover: 'hover:bg-[rgba(255,216,77,0.08)]'  },
 ] as const;
 
@@ -557,12 +557,12 @@ function CreateAccountModal({
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
 
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
@@ -601,7 +601,7 @@ function CreateAccountModal({
                 value={form.name}
                 onChange={set('name')}
                 placeholder="Acme — Enterprise"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={glowInput}
               />
             </div>
@@ -617,8 +617,8 @@ function CreateAccountModal({
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                   style={{
                     ...glowInput,
-                    border: `1px solid ${statusOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                    boxShadow: statusOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                    border: `1px solid ${statusOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                    boxShadow: statusOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                     outline: 'none',
                     transition: 'box-shadow 0.2s ease',
                   }}
@@ -634,11 +634,11 @@ function CreateAccountModal({
                 </button>
                 {statusOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
                     {ACCOUNT_STATUS_OPTS.map(opt => (
                       <button key={opt.value} type="button"
                         onClick={() => { onChange(f => ({ ...f, status: opt.value })); setStatusOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.status === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.status === opt.value ? 'bg-brand-soft' : ''}`}>
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
                         {opt.label}
                         {form.status === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -657,8 +657,8 @@ function CreateAccountModal({
                   className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                   style={{
                     ...glowInput,
-                    border: `1px solid ${tierOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                    boxShadow: tierOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                    border: `1px solid ${tierOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                    boxShadow: tierOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                     outline: 'none',
                     transition: 'box-shadow 0.2s ease',
                   }}
@@ -674,17 +674,17 @@ function CreateAccountModal({
                 </button>
                 {tierOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
                     <button type="button"
                       onClick={() => { onChange(f => ({ ...f, tier: '' })); setTierOpen(false); }}
-                      className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${form.tier === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${form.tier === '' ? 'bg-brand-soft' : ''}`}>
                       — None —
                       {form.tier === '' && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>
                     {ACCOUNT_TIER_OPTS.map(opt => (
                       <button key={opt.value} type="button"
                         onClick={() => { onChange(f => ({ ...f, tier: opt.value })); setTierOpen(false); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.tier === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.tier === opt.value ? 'bg-brand-soft' : ''}`}>
                         <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
                         {opt.label}
                         {form.tier === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
@@ -704,7 +704,7 @@ function CreateAccountModal({
                   value={form.contractValue}
                   onChange={set('contractValue')}
                   placeholder="50000"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={glowInput}
                 />
               </div>
@@ -717,7 +717,7 @@ function CreateAccountModal({
                   value={form.currency}
                   onChange={set('currency')}
                   placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={glowInput}
                 />
               </div>
@@ -732,7 +732,7 @@ function CreateAccountModal({
                 type="date"
                 value={form.renewalDate}
                 onChange={set('renewalDate')}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                 style={glowInput}
               />
             </div>
@@ -747,7 +747,7 @@ function CreateAccountModal({
                 value={form.notes}
                 onChange={set('notes')}
                 placeholder="Add any relevant notes…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={glowInput}
               />
             </div>
@@ -763,7 +763,7 @@ function CreateAccountModal({
           <div className="relative" ref={orgDropRef}>
             <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
             <input
-              className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={glowInput}
               placeholder="Search existing organizations…"
               autoComplete="off"
@@ -783,7 +783,7 @@ function CreateAccountModal({
             {showOrgDrop && (
               <div
                 className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
-                style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+                style={{ borderRadius: 12, background: 'rgb(var(--color-surface-card))', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}
               >
                 {orgSuggestions.length > 0 ? orgSuggestions.map((org: any) => (
                   <button
@@ -800,7 +800,7 @@ function CreateAccountModal({
                   >
                     <div
                       className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0"
-                      style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}
+                      style={{ boxShadow: '0 0 8px rgb(var(--brand-rgb) / 0.35), 0 0 16px rgb(var(--brand-rgb) / 0.15)' }}
                     >
                       <Building2 className="w-4 h-4 text-brand" strokeWidth={1.6} />
                     </div>
@@ -814,7 +814,7 @@ function CreateAccountModal({
                     </div>
                     <span
                       className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                      style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }}
+                      style={{ boxShadow: '0 0 6px rgb(var(--brand-rgb) / 0.9), 0 0 12px rgb(var(--brand-rgb) / 0.5)' }}
                     />
                   </button>
                 )) : (
@@ -838,7 +838,7 @@ function CreateAccountModal({
               <div className="relative">
                 <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={glowInput}
                   placeholder="Acme Corp"
                   value={orgDetails.name}
@@ -851,7 +851,7 @@ function CreateAccountModal({
               <div className="relative">
                 <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={glowInput}
                   placeholder="acme.com"
                   value={orgDetails.domain}
@@ -868,7 +868,7 @@ function CreateAccountModal({
               <div className="relative">
                 <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={glowInput}
                   placeholder="SaaS, Retail…"
                   value={orgDetails.industry}
@@ -883,7 +883,7 @@ function CreateAccountModal({
                 <input
                   type="number"
                   min={0}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={glowInput}
                   placeholder="250"
                   value={orgDetails.employeeCount}
@@ -900,7 +900,7 @@ function CreateAccountModal({
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={glowInput}
                   placeholder="US"
                   value={orgDetails.country}
@@ -913,7 +913,7 @@ function CreateAccountModal({
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={glowInput}
                   placeholder="New York"
                   value={orgDetails.city}
@@ -929,7 +929,7 @@ function CreateAccountModal({
             <div className="relative">
               <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={glowInput}
                 placeholder="https://acme.com"
                 value={orgDetails.website}

@@ -21,17 +21,17 @@ import {
   PICK_LIST_STATUS_LABELS,
 } from '../types/crm.types';
 
-const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]';
+const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
 
 const FULFILLMENT_COLORS: Record<number, string> = {
   1: 'text-text-secondary bg-bg-elevated border-border-subtle',
-  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  3: 'text-[#3B82F6] bg-[rgba(59,130,246,0.1)] border-[rgba(59,130,246,0.2)]',
+  2: 'text-warning bg-warning-soft border-warning/20',
+  3: 'text-info bg-info-soft border-info/20',
   4: 'text-[#8B5CF6] bg-[rgba(139,92,246,0.1)] border-[rgba(139,92,246,0.2)]',
   5: 'text-brand bg-brand-soft border-border-glow',
-  6: 'text-[#A78BFA] bg-[rgba(167,139,250,0.1)] border-[rgba(167,139,250,0.2)]',
-  7: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
-  8: 'text-danger bg-danger-soft border-[rgba(244,63,94,0.2)]',
+  6: 'text-violet-light bg-violet-light/10 border-violet-light/20',
+  7: 'text-success bg-success-soft border-success/20',
+  8: 'text-danger bg-danger-soft border-danger/20',
   9: 'text-text-muted bg-bg-card border-border-subtle',
 };
 
@@ -52,12 +52,12 @@ function SlideOver({ open, onClose, title, children, footer }: { open: boolean; 
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
@@ -370,17 +370,17 @@ export function Component() {
         }
       >
         <form id="create-order-form" onSubmit={handleCreate} className="space-y-4">
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Customer PO #"><input value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Customer PO #"><input value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <Field label="Account">
             <div className="relative">
               <button type="button" onClick={() => setAccountOpen(!accountOpen)}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
                   backgroundColor: '#1A2F27',
-                  border: `1px solid ${accountOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
-                  boxShadow: accountOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                  border: `1px solid ${accountOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
+                  boxShadow: accountOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
                   transition: 'box-shadow 0.2s ease',
                 }}>
@@ -392,7 +392,7 @@ export function Component() {
               </button>
               {accountOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
-                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
                   <button type="button" onClick={() => { setOrderAccountId(''); setAccountOpen(false); }}
                     className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary">
                     — None —
@@ -401,7 +401,7 @@ export function Component() {
                   {accountsList.map((a: any) => (
                     <button key={a.id} type="button"
                       onClick={() => { setOrderAccountId(a.id); setAccountOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${orderAccountId === a.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${orderAccountId === a.id ? 'bg-brand-soft' : ''}`}>
                       <Building2 className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />{a.name}
                       {orderAccountId === a.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
                     </button>
@@ -414,11 +414,11 @@ export function Component() {
           <div className="border-t border-border-subtle pt-3">
             <label className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary mb-2"><MapPin className="w-3 h-3" /> Shipping Address</label>
             <div className="grid grid-cols-2 gap-2">
-              <div className="col-span-2"><input value={shippingLine1} onChange={e => setShippingLine1(e.target.value)} placeholder="Address line 1" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></div>
-              <input value={shippingCity} onChange={e => setShippingCity(e.target.value)} placeholder="City" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              <input value={shippingState} onChange={e => setShippingState(e.target.value)} placeholder="State" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              <input value={shippingPostalCode} onChange={e => setShippingPostalCode(e.target.value)} placeholder="Postal code" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              <input value={shippingCountry} onChange={e => setShippingCountry(e.target.value)} placeholder="Country" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <div className="col-span-2"><input value={shippingLine1} onChange={e => setShippingLine1(e.target.value)} placeholder="Address line 1" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></div>
+              <input value={shippingCity} onChange={e => setShippingCity(e.target.value)} placeholder="City" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <input value={shippingState} onChange={e => setShippingState(e.target.value)} placeholder="State" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <input value={shippingPostalCode} onChange={e => setShippingPostalCode(e.target.value)} placeholder="Postal code" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <input value={shippingCountry} onChange={e => setShippingCountry(e.target.value)} placeholder="Country" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </div>
           </div>
 
@@ -432,9 +432,9 @@ export function Component() {
             <div className="space-y-2">
               {lines.map((l, i) => (
                 <div key={i} className="grid grid-cols-[1fr_60px_80px_28px] gap-1.5 items-center">
-                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <input type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -447,7 +447,7 @@ export function Component() {
           </div>
 
           <Field label="Notes">
-            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls + ' resize-none'} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls + ' resize-none'} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </Field>
         </form>
       </SlideOver>
@@ -574,8 +574,8 @@ export function Component() {
                           {d.status === 3 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 4 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">Out for Delivery</button>}
                           {d.status === 4 && (
                             <>
-                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} className="text-[10px] px-2 py-1 rounded bg-success/10 text-success border border-success/20 hover:bg-success/20">Delivered</button>
-                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} className="text-[10px] px-2 py-1 rounded bg-danger/10 text-danger border border-danger/20 hover:bg-danger/20">Failed</button>
+                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} className="text-[10px] px-2 py-1 rounded bg-success-soft text-success border border-success/20 hover:bg-success/20">Delivered</button>
+                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} className="text-[10px] px-2 py-1 rounded bg-danger-soft text-danger border border-danger/20 hover:bg-danger/20">Failed</button>
                             </>
                           )}
                         </div>
@@ -615,7 +615,7 @@ export function Component() {
                             const weight = prompt('Total weight (kg)?');
                             markPacked.mutate({ orderId: pickList.orderId, data: { boxCount: Number(boxC) || undefined, totalWeightKg: Number(weight) || undefined } }, { onSuccess: () => refetchPickList() });
                           }} disabled={markPacked.isPending}
-                            className="text-[10px] px-2 py-1 rounded border border-success/20 bg-success/10 text-success hover:bg-success/20 transition-all">
+                            className="text-[10px] px-2 py-1 rounded border border-success/20 bg-success-soft text-success hover:bg-success/20 transition-all">
                             Mark Packed
                           </button>
                         )}
@@ -752,7 +752,7 @@ export function Component() {
                   <button onClick={() => handleFulfillStatus(selectedOrder.id, 5)} disabled={updateFulfillment.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
                     <Truck className="w-3.5 h-3.5" /> Mark Shipped
                   </button>
-                  <button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 transition-all disabled:opacity-50">
+                  <button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 transition-all disabled:opacity-50">
                     <CheckCircle className="w-3.5 h-3.5" /> Mark Delivered
                   </button>
                 </>
@@ -777,7 +777,7 @@ export function Component() {
                   <button onClick={() => { setShowPayment(true); setPaymentAmount(String(selectedOrder.totalAmount)); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success transition-all">
                     <DollarSign className="w-3.5 h-3.5" /> Record Payment
                   </button>
-                  <button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[rgba(244,63,94,0.2)] text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
+                  <button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
                     <XCircle className="w-3.5 h-3.5" /> Cancel
                   </button>
                 </>

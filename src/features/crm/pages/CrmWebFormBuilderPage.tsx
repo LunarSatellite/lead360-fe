@@ -803,7 +803,7 @@ function FormPreview({ draft, draftFields, mode }: { draft: CreateWebFormRequest
                 ))
               )}
               {validFields.length > 0 && (
-                <button type="button" disabled className="w-full py-2.5 rounded-xl text-xs font-bold text-bg opacity-90 cursor-not-allowed" style={{ background: "#00D98A" }}>
+                <button type="button" disabled className="w-full py-2.5 rounded-xl text-xs font-bold text-bg opacity-90 cursor-not-allowed" style={{ background: "rgb(var(--brand-rgb))" }}>
                   Submit
                 </button>
               )}

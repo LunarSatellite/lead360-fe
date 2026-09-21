@@ -33,15 +33,15 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
           width: 640,
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
           marginTop: 16,
           marginBottom: 16,
         }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2
@@ -72,7 +72,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
 const ENTITY_BADGE_COLORS: Record<number, string> = {
   1: 'bg-brand-soft text-brand border-border-glow',
   2: 'bg-bg-elevated text-text-secondary border-border-subtle',
-  3: 'bg-success-soft text-success border-[rgba(34,197,94,0.2)]',
+  3: 'bg-success-soft text-success border-success/20',
   4: 'bg-bg-elevated text-text-secondary border-border-subtle',
 };
 
@@ -136,8 +136,8 @@ function LogTimeForm({ form, setForm, onSubmit }: {
               required
               type="number"
               min={1}
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               placeholder="e.g. 30"
               value={form.minutesLogged}
               onChange={set('minutesLogged')}
@@ -146,8 +146,8 @@ function LogTimeForm({ form, setForm, onSubmit }: {
         </div>
         <div className="flex flex-col justify-end">
           <label className="block text-xs font-semibold text-text-secondary mb-1">Billable</label>
-          <div className="flex items-center gap-3 p-3 rounded-xl border border-[rgba(0,217,138,0.20)]"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+          <div className="flex items-center gap-3 p-3 rounded-xl border border-brand/20"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           >
             <input
               type="checkbox"
@@ -168,8 +168,8 @@ function LogTimeForm({ form, setForm, onSubmit }: {
           <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
           <textarea
             rows={3}
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             placeholder="What did you work on?"
             value={form.description ?? ''}
             onChange={set('description')}
@@ -192,8 +192,8 @@ function LogTimeForm({ form, setForm, onSubmit }: {
             required
             value={form.entityKind}
             onChange={set('entityKind')}
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           >
             {(Object.entries(CRM_TIME_ENTITY_LABELS) as [string, string][]).map(([v, l]) => (
               <option key={v} value={v}>{l}</option>
@@ -209,8 +209,8 @@ function LogTimeForm({ form, setForm, onSubmit }: {
           <HashIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
           <input
             required
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             placeholder="e.g. deal-uuid or contact-uuid"
             value={form.entityId}
             onChange={set('entityId')}
@@ -306,7 +306,7 @@ export function Component() {
                     <td className="px-4 py-3 font-medium text-text-primary">{row.minutesLogged} min</td>
                     <td className="px-4 py-3">
                       {row.isBillable ? (
-                        <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-success-soft text-success border border-[rgba(34,197,94,0.2)]">Billable</span>
+                        <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-success-soft text-success border border-success/20">Billable</span>
                       ) : (
                         <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-bg-elevated text-text-muted border border-border-subtle">Non-billable</span>
                       )}
@@ -328,7 +328,7 @@ export function Component() {
                         </div>
                       ) : (
                         <button onClick={() => setConfirmDelete(row.id)}
-                          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-[rgba(244,63,94,0.2)] transition-all">
+                          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
                           <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       )}

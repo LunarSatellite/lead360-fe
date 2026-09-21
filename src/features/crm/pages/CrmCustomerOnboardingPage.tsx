@@ -16,7 +16,7 @@ import {
   CrmOnboardingStatus, CrmOnboardingMilestoneKind,
 } from '../types/crm.types';
 
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return (
@@ -37,12 +37,12 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, width = '
           width,
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 32px)',
         }}
       >
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
@@ -90,7 +90,7 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
   const isBlocked = m.status === CrmOnboardingStatus.Blocked;
 
   return (
-    <div className={`rounded-xl border p-3 transition-all ${isComplete ? 'border-[rgba(34,197,94,0.2)] bg-[rgba(34,197,94,0.04)]' : isBlocked ? 'border-[rgba(244,63,94,0.2)] bg-danger-soft' : 'border-border-subtle bg-bg-surface'}`}>
+    <div className={`rounded-xl border p-3 transition-all ${isComplete ? 'border-success/20 bg-success/[0.04]' : isBlocked ? 'border-danger/20 bg-danger-soft' : 'border-border-subtle bg-bg-surface'}`}>
       <div className="flex items-start gap-3">
         <button onClick={() => toggle(isComplete ? CrmOnboardingStatus.InProgress : CrmOnboardingStatus.Completed)}
           disabled={update.isPending}
@@ -111,7 +111,7 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
 
           {!isComplete && (
             <div className="flex gap-1.5 mt-2">
-              <button onClick={() => setExpanded(v => !v)} className={`text-[10px] px-2 py-0.5 rounded border transition-all ${isBlocked ? 'text-text-secondary border-border-subtle hover:bg-bg-elevated' : 'text-danger border-[rgba(244,63,94,0.2)] hover:bg-danger-soft'}`}>
+              <button onClick={() => setExpanded(v => !v)} className={`text-[10px] px-2 py-0.5 rounded border transition-all ${isBlocked ? 'text-text-secondary border-border-subtle hover:bg-bg-elevated' : 'text-danger border-danger/20 hover:bg-danger-soft'}`}>
                 {isBlocked ? 'Unblock' : 'Mark Blocked'}
               </button>
             </div>
@@ -125,8 +125,8 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
                 </button>
               ) : (
                 <>
-                  <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." className="flex-1 rounded-lg border border-[rgba(244,63,94,0.3)] bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none" />
-                  <button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-danger-soft border border-[rgba(244,63,94,0.2)] text-danger hover:opacity-80">
+                  <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none" />
+                  <button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-danger-soft border border-danger/20 text-danger hover:opacity-80">
                     Set Blocked
                   </button>
                 </>
@@ -350,7 +350,7 @@ export function Component() {
             <div className="relative">
               <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input required value={obTitle} onChange={e => setObTitle(e.target.value)} placeholder="e.g. Acme Corp Onboarding"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={inputStyle} />
             </div>
           </Field>
@@ -360,7 +360,7 @@ export function Component() {
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input required value={dealId} onChange={e => setDealId(e.target.value)} placeholder="deal-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </Field>
@@ -368,7 +368,7 @@ export function Component() {
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={inputStyle} />
               </div>
             </Field>
@@ -392,11 +392,11 @@ export function Component() {
               {milestones.map((m, i) => (
                 <div key={i} className="grid grid-cols-[1fr_1fr_28px] gap-1.5 items-center">
                   <input value={m.title} onChange={e => setMs(i, 'title', e.target.value)} placeholder="Milestone title"
-                    className="px-3 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={inputStyle} />
                   <input type="date" value={m.dueDate} onChange={e => setMs(i, 'dueDate', e.target.value)}
-                    className="px-3 py-1.5 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
-                    style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                    className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                    style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button type="button" onClick={() => setMilestones(ms => ms.filter((_, idx) => idx !== i))} disabled={milestones.length === 1}
                     className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />

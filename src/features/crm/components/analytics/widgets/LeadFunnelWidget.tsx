@@ -101,7 +101,7 @@ export function LeadFunnelWidget() {
                 <div className="h-2.5 rounded-full bg-glass-2 overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all group-hover:opacity-80"
-                    style={{ width: `${widthPct}%`, backgroundColor: STAGE_FILL[s.stage] ?? '#7B61FF' }}
+                    style={{ width: `${widthPct}%`, backgroundColor: STAGE_FILL[s.stage] ?? 'rgb(var(--color-violet))' }}
                   />
                 </div>
               </button>

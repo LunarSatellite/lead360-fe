@@ -89,7 +89,7 @@ export function Step6GoLive({ onComplete }: Step6Props) {
                   onClick={() => activateChannel.mutate(ch.channelType)}
                   disabled={!checklist.isReady || activateChannel.isPending}
                   className="px-3 py-1.5 rounded-lg text-2xs font-bold text-white disabled:opacity-40"
-                  style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+                  style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
                 >
                   Activate
                 </button>
@@ -109,7 +109,7 @@ export function Step6GoLive({ onComplete }: Step6Props) {
             onClick={() => activateAll.mutate(undefined, { onSuccess: onComplete })}
             disabled={activateAll.isPending}
             className="px-6 py-2.5 rounded-lg text-sm font-bold text-white flex items-center gap-2 disabled:opacity-40"
-            style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+            style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
           >
             {activateAll.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : '🚀'}
             Activate All Channels

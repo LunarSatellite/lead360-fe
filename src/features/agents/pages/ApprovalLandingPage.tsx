@@ -217,8 +217,8 @@ export function Component() {
             <div
               className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                 decision === ApprovalDecision.Approved
-                  ? 'bg-success-soft border border-[rgba(16,185,129,0.15)]'
-                  : 'bg-danger-soft border border-[rgba(244,63,94,0.15)]'
+                  ? 'bg-success-soft border border-success/15'
+                  : 'bg-danger-soft border border-danger/15'
               }`}
             >
               {decision === ApprovalDecision.Approved ? (
@@ -281,7 +281,7 @@ export function Component() {
               {...form.register('note')}
               rows={3}
               placeholder="Anything the team should know about this decision…"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgba(0,217,126,0.1)] transition-all resize-none"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all resize-none"
             />
             {form.formState.errors.note && (
               <p className="text-xs text-danger mt-1.5">
@@ -292,7 +292,7 @@ export function Component() {
 
           {/* Error banner */}
           {submitError && (
-            <div className="px-3.5 py-3 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.15)] flex gap-2.5 text-sm text-danger">
+            <div className="px-3.5 py-3 rounded-xl bg-danger-soft border border-danger/15 flex gap-2.5 text-sm text-danger">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={2} />
               <span>{submitError.message}</span>
             </div>
@@ -381,7 +381,7 @@ function AlreadyHandledShell({ statusLabel }: { statusLabel: string }) {
     <PageShell>
       <div className="bg-bg-card border border-border-subtle rounded-2xl overflow-hidden">
         <div className="px-6 sm:px-8 py-8 text-center space-y-4">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-success-soft border border-[rgba(16,185,129,0.15)] flex items-center justify-center">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-success-soft border border-success/15 flex items-center justify-center">
             <ShieldCheck className="w-6 h-6 text-success" strokeWidth={1.8} />
           </div>
           <h1 className="text-xl font-extrabold text-text-primary">All set</h1>
@@ -404,7 +404,7 @@ function PleaseRetryShell({ statusLabel }: { statusLabel: string }) {
     <PageShell>
       <div className="bg-bg-card border border-border-subtle rounded-2xl overflow-hidden">
         <div className="px-6 sm:px-8 py-8 text-center space-y-4">
-          <div className="w-12 h-12 mx-auto rounded-2xl bg-warning-soft border border-[rgba(245,158,11,0.15)] flex items-center justify-center">
+          <div className="w-12 h-12 mx-auto rounded-2xl bg-warning-soft border border-warning/15 flex items-center justify-center">
             <Clock className="w-6 h-6 text-warning" strokeWidth={1.8} />
           </div>
           <h1 className="text-xl font-extrabold text-text-primary">Just a moment</h1>
@@ -428,8 +428,8 @@ function ThanksShell({ decision }: { decision: ApprovalDecisionValue }) {
           <div
             className={`w-12 h-12 mx-auto rounded-2xl flex items-center justify-center ${
               approved
-                ? 'bg-success-soft border border-[rgba(16,185,129,0.15)]'
-                : 'bg-danger-soft border border-[rgba(244,63,94,0.15)]'
+                ? 'bg-success-soft border border-success/15'
+                : 'bg-danger-soft border border-danger/15'
             }`}
           >
             {approved ? (

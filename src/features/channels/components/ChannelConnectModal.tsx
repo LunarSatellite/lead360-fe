@@ -318,7 +318,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                 type="submit"
                 disabled={create.isPending}
                 className="flex items-center gap-2 px-5 py-2 rounded-sm text-sm font-bold text-bg hover:brightness-110 disabled:opacity-50 transition-all"
-                style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+                style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
               >
                 {create.isPending ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -337,7 +337,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
             <div className="flex items-center gap-3 px-4 py-3.5 rounded-card bg-glass-1 border-thin border-border-glow">
               <div
                 className="w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+                style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
               >
                 <Check className="w-4 h-4" strokeWidth={2.5} style={{ color: '#0A0F0D' }} />
               </div>
@@ -422,7 +422,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
               <button
                 onClick={handleClose}
                 className="px-5 py-2 rounded-sm text-sm font-bold text-bg hover:brightness-110 transition-all"
-                style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+                style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
               >
                 Done
               </button>

@@ -112,7 +112,7 @@ function ContactCard({
             <button
               onClick={() => onDeleteConfirm(c.id)}
               disabled={isDeleting}
-              className="px-1.5 py-0.5 rounded-xs text-[10px] font-semibold bg-danger-soft text-danger border-thin border-[rgba(244,63,94,0.2)] hover:bg-danger hover:text-bg transition-all disabled:opacity-50"
+              className="px-1.5 py-0.5 rounded-xs text-[10px] font-semibold bg-danger-soft text-danger border-thin border-danger/20 hover:bg-danger hover:text-bg transition-all disabled:opacity-50"
             >
               {isDeleting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : 'Delete'}
             </button>
@@ -153,13 +153,13 @@ function Modal({
         style={{
           borderRadius: 18,
           background: 'var(--bg-card)',
-          border: '1px solid rgba(0,217,138,0.2)',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          border: '1px solid rgb(var(--brand-rgb) / 0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgb(var(--brand-rgb) / 0.25), inset 0 1px 0 rgb(var(--brand-light-rgb) / 0.05)',
           maxHeight: 'calc(100vh - 16px)',
         }}
       >
         {/* Accent bar */}
-        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
           <div>
             <h2
@@ -241,8 +241,8 @@ function ContactCreateForm({
     submit(false);
   };
 
-  const fieldCls = 'w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors';
-  const fieldStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' };
+  const fieldCls = 'w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors';
+  const fieldStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -486,9 +486,9 @@ export function Component() {
           <button
             type="button"
             onClick={() => navigate(ROUTES.dashboard.crmContacts + '?tab=duplicates')}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[rgba(245,158,11,0.25)] bg-[rgba(245,158,11,0.06)] hover:bg-[rgba(245,158,11,0.1)] hover:border-[rgba(245,158,11,0.4)] transition-all group text-left"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-warning/25 bg-warning/[0.06] hover:bg-warning-soft hover:border-warning/40 transition-all group text-left"
           >
-            <div className="w-7 h-7 rounded-lg bg-warning/10 border border-warning/20 flex items-center justify-center shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-warning-soft border border-warning/20 flex items-center justify-center shrink-0">
               <AlertTriangle className="w-3.5 h-3.5 text-warning" strokeWidth={1.6} />
             </div>
             <div className="flex-1 min-w-0">

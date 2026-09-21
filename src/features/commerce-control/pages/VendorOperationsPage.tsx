@@ -791,7 +791,7 @@ export function VendorOperationsPage() {
             <button
               key={resource.key}
               onClick={() => setSelectedKey(resource.key)}
-              className={`group rounded-2xl border p-4 text-left transition-all ${selectedKey === resource.key ? 'border-brand/40 bg-brand-soft shadow-[0_12px_35px_rgba(0,217,138,0.08)]' : 'border-border-subtle bg-bg-card hover:border-border-medium'}`}
+              className={`group rounded-2xl border p-4 text-left transition-all ${selectedKey === resource.key ? 'border-brand/40 bg-brand-soft shadow-[0_12px_35px_rgb(var(--brand-rgb)/0.08)]' : 'border-border-subtle bg-bg-card hover:border-border-medium'}`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-bg-elevated">

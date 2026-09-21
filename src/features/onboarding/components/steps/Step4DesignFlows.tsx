@@ -44,7 +44,7 @@ export function Step4DesignFlows({ onComplete }: Step4Props) {
           <button
             onClick={onComplete}
             className="mt-4 px-6 py-2.5 rounded-lg text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+            style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
           >
             Continue →
           </button>
@@ -79,7 +79,7 @@ export function Step4DesignFlows({ onComplete }: Step4Props) {
             onClick={handleGenerate}
             disabled={generateFlow.isPending || !input.trim()}
             className="px-4 py-2 rounded-lg text-sm font-bold text-white disabled:opacity-40 flex items-center gap-1.5"
-            style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+            style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
           >
             {generateFlow.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Generate'}
           </button>

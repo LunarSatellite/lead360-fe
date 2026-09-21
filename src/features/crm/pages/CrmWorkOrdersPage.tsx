@@ -366,7 +366,7 @@ export function Component() {
         }
       >
         <form id="create-wo-form" onSubmit={handleCreate} className="space-y-4">
-          <Field label="Title *"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Repair espresso machine" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Title *"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Repair espresso machine" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
@@ -466,8 +466,8 @@ export function Component() {
               </div>
             </div>
           </div>
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Equipment ID (optional)"><input value={equipmentId} onChange={e => setEquipmentId(e.target.value)} placeholder="equipment-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Equipment ID (optional)"><input value={equipmentId} onChange={e => setEquipmentId(e.target.value)} placeholder="equipment-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Scheduled At</label>
@@ -479,16 +479,16 @@ export function Component() {
                   onChange={e => setScheduledAt(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                   style={{
-                    backgroundColor: '#1A2F27',
+                    backgroundColor: 'rgb(var(--color-glass-1))',
                     colorScheme: 'dark',
                     backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   }}
                 />
               </div>
             </div>
-            <Field label="Est. Minutes"><input type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+            <Field label="Est. Minutes"><input type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           </div>
-          <Field label="Site Label"><input value={siteLabel} onChange={e => setSiteLabel(e.target.value)} placeholder="e.g. Kathmandu Branch" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Site Label"><input value={siteLabel} onChange={e => setSiteLabel(e.target.value)} placeholder="e.g. Kathmandu Branch" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
         </form>
       </SlideOver>
 

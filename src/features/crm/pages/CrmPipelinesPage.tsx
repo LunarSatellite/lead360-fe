@@ -381,7 +381,7 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
             >
               <div
                 className="w-3 h-3 rounded-full shrink-0"
-                style={{ background: pipeline.color ?? '#6B7280' }}
+                style={{ background: pipeline.color ?? 'rgb(var(--color-text-muted))' }}
               />
               <span className="text-sm font-bold text-text-primary">{pipeline.name}</span>
               {pipeline.isDefault && (
@@ -392,7 +392,7 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
               {pipeline.dealType != null && (
                 <span
                   className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white shrink-0"
-                  style={{ background: DEAL_TYPE_COLORS[pipeline.dealType] ?? '#6B7280' }}
+                  style={{ background: DEAL_TYPE_COLORS[pipeline.dealType] ?? 'rgb(var(--color-text-muted))' }}
                 >
                   {DEAL_TYPE_LABELS[pipeline.dealType] ?? 'Custom'}
                 </span>

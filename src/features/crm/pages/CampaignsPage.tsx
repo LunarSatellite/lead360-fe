@@ -42,7 +42,7 @@ type MainTab = 'b2b' | 'leads' | 'fb-ads';
 
 const inputCls =
   'w-full px-3 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brand/50 transition-colors';
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 // Matches backend RecipientStatus enum: Pending=1, Sent=2, Failed=3, Replied=4, Opened=5
 const RECIPIENT_STATUS_LABEL: Record<number, string> = {

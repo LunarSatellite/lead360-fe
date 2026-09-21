@@ -61,7 +61,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 type GrLine = { poLineItemId: string; quantityReceived: string; condition: string; rejectedQty: string; rejectionReason: string };
 const emptyGrLine = (): GrLine => ({ poLineItemId: '', quantityReceived: '1', condition: '1', rejectedQty: '0', rejectionReason: '' });
 
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 export function Component() {
   const [filter, setFilter] = useState<GoodsReceiptFilter>({ page: 1, pageSize: 20 });

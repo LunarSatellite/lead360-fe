@@ -104,15 +104,15 @@ export function Component() {
   return (
     <div
       className="flex h-[calc(100vh-120px)] min-h-[520px] rounded-2xl overflow-hidden"
-      style={{ border: '1px solid #1E2E26' }}
+      style={{ border: '1px solid rgb(var(--color-border-subtle))' }}
     >
       {/* ═══ LEFT SIDEBAR ═══ */}
       <div
         className="w-[250px] flex flex-col shrink-0"
-        style={{ background: '#040706', borderRight: '1px solid #1E2E26' }}
+        style={{ background: 'rgb(var(--color-surface-sunken))', borderRight: '1px solid rgb(var(--color-border-subtle))' }}
       >
         <div style={{ padding: '20px 20px 16px' }}>
-          <h1 style={{ fontSize: 15, fontWeight: 700, color: '#E8F0EC' }}>Pipeline</h1>
+          <h1 style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>Pipeline</h1>
           {/* Fat segmented bar */}
           <div
             style={{
@@ -123,12 +123,12 @@ export function Component() {
               gap: 3,
               marginTop: 12,
               padding: 2,
-              background: '#0A0F0D',
-              border: '1px solid #162019',
+              background: 'rgb(var(--color-surface-sunken))',
+              border: '1px solid rgb(var(--color-border-subtle))',
             }}
           >
             {stg.map((s) => (
-              <div key={s.k} style={{ flex: 1, borderRadius: 6, overflow: 'hidden', background: '#111916' }}>
+              <div key={s.k} style={{ flex: 1, borderRadius: 6, overflow: 'hidden', background: 'rgb(var(--color-surface-inset))' }}>
                 <div
                   style={{
                     width: `${s.done ? 100 : (s.pct ?? 0)}%`,
@@ -141,7 +141,7 @@ export function Component() {
               </div>
             ))}
           </div>
-          <p style={{ fontSize: 11, color: '#708A7E', marginTop: 8 }}>
+          <p style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))', marginTop: 8 }}>
             {(sync?.productCount ?? 0).toLocaleString()} products ·{' '}
             <span style={{ color: 'rgb(var(--color-brand-glow))', fontWeight: 700 }}>{ready}%</span> search ready
           </p>
@@ -164,8 +164,8 @@ export function Component() {
                   style={{
                     padding: '16px 16px 16px 20px',
                     borderRadius: 16,
-                    border: sel ? `2px solid ${m.color}70` : '1.5px solid #1E2E26',
-                    background: sel ? `linear-gradient(145deg, ${m.color}20, ${m.color}08)` : '#0A0F0D',
+                    border: sel ? `2px solid ${m.color}70` : '1.5px solid rgb(var(--color-border-subtle))',
+                    background: sel ? `linear-gradient(145deg, ${m.color}20, ${m.color}08)` : 'rgb(var(--color-surface-sunken))',
                     boxShadow: sel ? `0 0 30px ${m.color}12, inset 0 1px 0 ${m.color}15` : 'none',
                     animation: sel ? 'breathe-glow 3s ease infinite' : 'none',
                     ['--glow-color' as any]: `${m.color}15`,
@@ -206,11 +206,13 @@ export function Component() {
                           cy="30"
                           r={R}
                           fill="none"
-                          stroke={pv > 0 ? '#1E2E26' : m.color}
                           strokeOpacity={pv > 0 ? 1 : 0.35}
                           strokeWidth="4"
                           strokeDasharray={pv > 0 ? 'none' : '5 5'}
-                          style={pv === 0 ? { animation: 'ring-dash-march 2s linear infinite' } : undefined}
+                          style={{
+                            stroke: pv > 0 ? 'rgb(var(--color-border-subtle))' : m.color,
+                            ...(pv === 0 ? { animation: 'ring-dash-march 2s linear infinite' } : {}),
+                          }}
                         />
                         {/* Progress fill */}
                         {pv > 0 && (
@@ -249,7 +251,7 @@ export function Component() {
                         style={{
                           fontSize: 10,
                           fontWeight: 700,
-                          color: '#8A9B91',
+                          color: 'rgb(var(--color-text-muted))',
                           textTransform: 'uppercase',
                           letterSpacing: '2.5px',
                         }}
@@ -295,7 +297,7 @@ export function Component() {
                       style={{
                         height: 5,
                         borderRadius: 3,
-                        background: '#111916',
+                        background: 'rgb(var(--color-surface-inset))',
                         marginTop: 12,
                         overflow: 'hidden',
                       }}
@@ -369,7 +371,7 @@ export function Component() {
                 <SvgRing pct={ready} color="#00D97E" size={56} sw={5} />
                 <div>
                   <div style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-brand-glow))' }}>Search</div>
-                  <div style={{ fontSize: 12, color: '#708A7E' }}>readiness</div>
+                  <div style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))' }}>readiness</div>
                 </div>
               </div>
             </div>
@@ -378,7 +380,7 @@ export function Component() {
       </div>
 
       {/* ═══ RIGHT DETAIL ═══ */}
-      <div className="flex-1 flex flex-col overflow-hidden" style={{ background: '#070A08' }}>
+      <div className="flex-1 flex flex-col overflow-hidden" style={{ background: 'rgb(var(--color-surface-sunken))' }}>
         <div className="flex-1 overflow-y-auto">
           {act === 'sync' && <SyncDtl sync={sync} cfg={cfg} cfgL={cfgL} hp={hp} logs={logs} mut={tSync} />}
           {act === 'enrich' && <EnrDtl d={enr} mut={tEnr} />}
@@ -389,7 +391,7 @@ export function Component() {
         {/* Search bar */}
         <div
           className="shrink-0 flex items-center gap-3"
-          style={{ padding: '14px 24px', borderTop: '1px solid #1E2E26', background: '#050808' }}
+          style={{ padding: '14px 24px', borderTop: '1px solid rgb(var(--color-border-subtle))', background: 'rgb(var(--color-surface-sunken))' }}
         >
           <div
             className="shrink-0 flex items-center justify-center"
@@ -431,7 +433,7 @@ export function Component() {
               padding: '12px 24px',
               borderRadius: 12,
               background: 'rgb(var(--color-brand-glow))',
-              color: '#050808',
+              color: 'rgb(var(--color-text-inverted))',
               fontSize: 13,
               boxShadow: '0 0 24px rgb(var(--color-brand-glow) / 0.15)',
             }}
@@ -448,30 +450,30 @@ export function Component() {
         {sr && (
           <div
             className="shrink-0 max-h-[280px] overflow-y-auto px-6 py-4 space-y-3"
-            style={{ borderTop: '1px solid #1E2E26', background: '#050808' }}
+            style={{ borderTop: '1px solid rgb(var(--color-border-subtle))', background: 'rgb(var(--color-surface-sunken))' }}
           >
             <div className="flex items-center gap-3 flex-wrap">
               <span
                 className="px-3 py-1.5 rounded-lg text-2xs font-semibold"
-                style={{ background: '#0A0F0D', border: '1px solid #1E2E26', color: '#8A9B91' }}
+                style={{ background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))', color: 'rgb(var(--color-text-muted))' }}
               >
                 Complexity: <span style={{ color: 'rgb(var(--color-brand-glow))' }}>{sr.complexity}</span>
               </span>
               <span
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-2xs font-semibold"
-                style={{ background: '#0A0F0D', border: '1px solid #1E2E26', color: '#8A9B91' }}
+                style={{ background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))', color: 'rgb(var(--color-text-muted))' }}
               >
-                <Clock className="w-3 h-3" style={{ color: '#708A7E' }} /> {sr.metrics.totalTimeMs}ms
+                <Clock className="w-3 h-3" style={{ color: 'rgb(var(--color-text-muted))' }} /> {sr.metrics.totalTimeMs}ms
               </span>
             </div>
             {sr.summary && (
               <div
                 className="px-4 py-3 rounded-xl text-xs leading-relaxed"
-                style={{ background: '#0A0F0D', border: '1px solid #1E2E26', color: '#8A9B91' }}
+                style={{ background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))', color: 'rgb(var(--color-text-muted))' }}
               >
                 <p
                   className="font-bold uppercase tracking-wide mb-1"
-                  style={{ fontSize: 10, color: '#708A7E' }}
+                  style={{ fontSize: 10, color: 'rgb(var(--color-text-muted))' }}
                 >
                   AI Summary
                 </p>
@@ -505,11 +507,13 @@ function SvgRing({ pct, color, size, sw = 5 }: { pct: number; color: string; siz
           cy={size / 2}
           r={r}
           fill="none"
-          stroke={pct > 0 ? '#1E2E26' : color}
           strokeOpacity={pct > 0 ? 1 : 0.35}
           strokeWidth={sw}
           strokeDasharray={pct > 0 ? 'none' : '5 5'}
-          style={pct === 0 ? { animation: 'ring-dash-march 2s linear infinite' } : undefined}
+          style={{
+            stroke: pct > 0 ? 'rgb(var(--color-border-subtle))' : color,
+            ...(pct === 0 ? { animation: 'ring-dash-march 2s linear infinite' } : {}),
+          }}
         />
         {pct > 0 && (
           <circle
@@ -527,7 +531,7 @@ function SvgRing({ pct, color, size, sw = 5 }: { pct: number; color: string; siz
         )}
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span style={{ fontSize: size > 50 ? 15 : 12, fontWeight: 800, color: '#E8F0EC' }}>
+        <span style={{ fontSize: size > 50 ? 15 : 12, fontWeight: 800, color: 'rgb(var(--color-text-primary))' }}>
           {Math.round(pct)}%
         </span>
       </div>
@@ -570,10 +574,10 @@ function Hdr({ stg, badge, children }: { stg: Stage; badge?: React.ReactNode; ch
           <Icon style={{ width: 26, height: 26, color: m.color }} strokeWidth={1.5} />
         </div>
         <div className="flex-1">
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#E8F0EC', letterSpacing: '-0.3px' }}>
+          <h2 style={{ fontSize: 20, fontWeight: 800, color: 'rgb(var(--color-text-primary))', letterSpacing: '-0.3px' }}>
             {m.label}
           </h2>
-          <p style={{ fontSize: 13, color: '#708A7E', marginTop: 2 }}>{m.sub}</p>
+          <p style={{ fontSize: 13, color: 'rgb(var(--color-text-muted))', marginTop: 2 }}>{m.sub}</p>
         </div>
         {badge}
         {children}
@@ -591,8 +595,8 @@ function T({ span = 2, accent, children }: { span?: number; accent?: string; chi
         gridColumn: `span ${span}`,
         padding: 22,
         borderRadius: 16,
-        background: '#0C1210',
-        border: `1.5px solid ${accent ? accent + '30' : '#1E2E26'}`,
+        background: 'rgb(var(--color-surface-app))',
+        border: `1.5px solid ${accent ? accent + '30' : 'rgb(var(--color-border-subtle))'}`,
       }}
     >
       {accent && <div className="absolute top-0 left-0 right-0" style={{ height: 3, background: accent }} />}
@@ -606,7 +610,7 @@ function TL({ children }: { children: React.ReactNode }) {
       style={{
         fontSize: 11,
         fontWeight: 700,
-        color: '#708A7E',
+        color: 'rgb(var(--color-text-muted))',
         textTransform: 'uppercase',
         letterSpacing: '1.5px',
         marginBottom: 10,
@@ -734,7 +738,7 @@ function SyncDtl({
             padding: '12px 24px',
             borderRadius: 14,
             background: 'rgb(var(--color-brand-glow))',
-            color: '#050808',
+            color: 'rgb(var(--color-text-inverted))',
             fontSize: 14,
             boxShadow: '0 0 30px rgb(var(--color-brand-glow) / 0.15)',
           }}
@@ -749,7 +753,7 @@ function SyncDtl({
             <TL>Products synced</TL>
             <TV color="#00D97E">{(sync?.productCount ?? 0).toLocaleString()}</TV>
             {sync?.lastSyncAt && (
-              <div style={{ fontSize: 12, color: '#708A7E', marginTop: 8 }}>
+              <div style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))', marginTop: 8 }}>
                 Last: {format(new Date(sync.lastSyncAt), 'MMM d, HH:mm')}
               </div>
             )}
@@ -762,23 +766,23 @@ function SyncDtl({
                   <div style={{ fontSize: 24, fontWeight: 800, color: 'rgb(var(--color-success))' }}>
                     +{logs[0].newProducts}
                   </div>
-                  <div style={{ fontSize: 11, color: '#708A7E' }}>new</div>
+                  <div style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))' }}>new</div>
                 </div>
                 <div>
                   <div style={{ fontSize: 24, fontWeight: 800, color: 'rgb(var(--color-info))' }}>
                     ~{logs[0].updatedProducts}
                   </div>
-                  <div style={{ fontSize: 11, color: '#708A7E' }}>updated</div>
+                  <div style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))' }}>updated</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 24, fontWeight: 800, color: '#708A7E' }}>
+                  <div style={{ fontSize: 24, fontWeight: 800, color: 'rgb(var(--color-text-muted))' }}>
                     {logs[0].removedProducts}
                   </div>
-                  <div style={{ fontSize: 11, color: '#708A7E' }}>removed</div>
+                  <div style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))' }}>removed</div>
                 </div>
               </div>
             ) : (
-              <div style={{ fontSize: 15, color: '#708A7E', marginTop: 4 }}>No sync yet</div>
+              <div style={{ fontSize: 15, color: 'rgb(var(--color-text-muted))', marginTop: 4 }}>No sync yet</div>
             )}
           </T>
           <T span={2}>
@@ -786,12 +790,12 @@ function SyncDtl({
               <SvgRing pct={sync?.productCount ? 100 : 0} color="#00D97E" size={64} />
               <div>
                 <div
-                  style={{ fontSize: 15, fontWeight: 700, color: sync?.productCount ? 'rgb(var(--color-success))' : '#708A7E' }}
+                  style={{ fontSize: 15, fontWeight: 700, color: sync?.productCount ? 'rgb(var(--color-success))' : 'rgb(var(--color-text-muted))' }}
                 >
                   {sync?.productCount ? 'Healthy' : 'Not synced'}
                 </div>
                 {logs[0] && (
-                  <div style={{ fontSize: 13, color: '#708A7E', marginTop: 2 }}>{logs[0].durationMs}ms</div>
+                  <div style={{ fontSize: 13, color: 'rgb(var(--color-text-muted))', marginTop: 2 }}>{logs[0].durationMs}ms</div>
                 )}
               </div>
             </div>
@@ -799,12 +803,12 @@ function SyncDtl({
         </div>
 
         {/* Config */}
-        <div style={{ padding: 22, borderRadius: 16, background: '#0C1210', border: '1.5px solid #1E2E26' }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: '#E8F0EC', marginBottom: 16 }}>
+        <div style={{ padding: 22, borderRadius: 16, background: 'rgb(var(--color-surface-app))', border: '1.5px solid rgb(var(--color-border-subtle))' }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-text-primary))', marginBottom: 16 }}>
             Configuration
           </div>
           {cfgL ? (
-            <div className="h-32 animate-pulse rounded-xl" style={{ background: '#111916' }} />
+            <div className="h-32 animate-pulse rounded-xl" style={{ background: 'rgb(var(--color-surface-inset))' }} />
           ) : (
             <form
               onSubmit={f.handleSubmit((d) => upd.mutate(d as unknown as SyncConfigDto))}
@@ -849,9 +853,9 @@ function SyncDtl({
                     {...f.register('isEnabled')}
                     type="checkbox"
                     className="w-4 h-4 rounded accent-brand"
-                    style={{ borderColor: '#253D32' }}
+                    style={{ borderColor: 'rgb(var(--color-border-default))' }}
                   />
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#8A9B91' }}>Enable auto-sync</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: 'rgb(var(--color-text-muted))' }}>Enable auto-sync</span>
                 </label>
               </div>
               <div className="col-span-2">
@@ -873,7 +877,7 @@ function SyncDtl({
                     padding: '12px 24px',
                     borderRadius: 12,
                     background: 'rgb(var(--color-brand-glow))',
-                    color: '#050808',
+                    color: 'rgb(var(--color-text-inverted))',
                     fontSize: 13,
                   }}
                 >
@@ -894,18 +898,18 @@ function SyncDtl({
           <div
             style={{
               borderRadius: 16,
-              background: '#0C1210',
-              border: '1.5px solid #1E2E26',
+              background: 'rgb(var(--color-surface-app))',
+              border: '1.5px solid rgb(var(--color-border-subtle))',
               overflow: 'hidden',
             }}
           >
             <div
               style={{
                 padding: '16px 22px',
-                borderBottom: '1px solid #162019',
+                borderBottom: '1px solid rgb(var(--color-border-subtle))',
                 fontSize: 14,
                 fontWeight: 700,
-                color: '#E8F0EC',
+                color: 'rgb(var(--color-text-primary))',
               }}
             >
               Recent syncs
@@ -914,16 +918,16 @@ function SyncDtl({
               <div
                 key={l.id}
                 className="flex items-center gap-3"
-                style={{ padding: '12px 22px', borderBottom: '1px solid #0D1410', fontSize: 13 }}
+                style={{ padding: '12px 22px', borderBottom: '1px solid rgb(var(--color-border-subtle))', fontSize: 13 }}
               >
-                <span style={{ color: '#8A9B91', width: 120 }}>
+                <span style={{ color: 'rgb(var(--color-text-muted))', width: 120 }}>
                   {format(new Date(l.startedAt), 'MMM d, HH:mm')}
                 </span>
                 <span style={{ color: 'rgb(var(--color-success))', fontWeight: 700, width: 44 }}>
                   {l.newProducts > 0 ? `+${l.newProducts}` : '0'}
                 </span>
                 <span style={{ color: 'rgb(var(--color-info))', width: 64 }}>~{l.updatedProducts} upd</span>
-                <span style={{ color: '#708A7E', width: 52 }}>{l.durationMs}ms</span>
+                <span style={{ color: 'rgb(var(--color-text-muted))', width: 52 }}>{l.durationMs}ms</span>
                 <StatusBadge
                   variant={l.status === 'Success' ? 'success' : l.status === 'Failed' ? 'danger' : 'warning'}
                 >
@@ -959,7 +963,7 @@ function EnrDtl({ d, mut }: { d: EnrichmentStatusDto | undefined; mut: ReturnTyp
                   style={{
                     height: 10,
                     borderRadius: 5,
-                    background: '#111916',
+                    background: 'rgb(var(--color-surface-inset))',
                     overflow: 'hidden',
                     position: 'relative',
                   }}
@@ -988,7 +992,7 @@ function EnrDtl({ d, mut }: { d: EnrichmentStatusDto | undefined; mut: ReturnTyp
                     />
                   </div>
                 </div>
-                <div style={{ fontSize: 12, color: '#708A7E', marginTop: 6 }}>
+                <div style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))', marginTop: 6 }}>
                   {d.enrichedCount.toLocaleString()} / {d.totalProducts.toLocaleString()}
                 </div>
               </div>
@@ -1007,7 +1011,7 @@ function EnrDtl({ d, mut }: { d: EnrichmentStatusDto | undefined; mut: ReturnTyp
                 >
                   {d.enrichmentPercent >= 100 ? 'Complete' : 'In progress'}
                 </div>
-                <div style={{ fontSize: 13, color: '#708A7E', marginTop: 2 }}>
+                <div style={{ fontSize: 13, color: 'rgb(var(--color-text-muted))', marginTop: 2 }}>
                   {d.pendingCount.toLocaleString()} pending
                 </div>
               </div>
@@ -1021,13 +1025,13 @@ function EnrDtl({ d, mut }: { d: EnrichmentStatusDto | undefined; mut: ReturnTyp
           </T>
           <T span={2}>
             <TL>Pending</TL>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#E8F0EC' }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-text-primary))' }}>
               {d.pendingCount.toLocaleString()}
             </div>
           </T>
           <T span={2}>
             <TL>Tokens used</TL>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#E8F0EC' }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-text-primary))' }}>
               {d.totalTokensUsed.toLocaleString()}
             </div>
           </T>
@@ -1068,7 +1072,7 @@ function EmbDtl({ d, mut }: { d: EmbeddingStatusDto | undefined; mut: ReturnType
                   style={{
                     height: 10,
                     borderRadius: 5,
-                    background: '#111916',
+                    background: 'rgb(var(--color-surface-inset))',
                     overflow: 'hidden',
                     position: 'relative',
                   }}
@@ -1097,7 +1101,7 @@ function EmbDtl({ d, mut }: { d: EmbeddingStatusDto | undefined; mut: ReturnType
                     />
                   </div>
                 </div>
-                <div style={{ fontSize: 12, color: '#708A7E', marginTop: 6 }}>
+                <div style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))', marginTop: 6 }}>
                   {d.embeddedCount.toLocaleString()} / {d.totalEnriched.toLocaleString()}
                 </div>
               </div>
@@ -1110,7 +1114,7 @@ function EmbDtl({ d, mut }: { d: EmbeddingStatusDto | undefined; mut: ReturnType
                 <div style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-success))' }}>
                   {d.embeddingPercent >= 100 ? 'Complete' : 'In progress'}
                 </div>
-                <div style={{ fontSize: 13, color: '#708A7E', marginTop: 2 }}>
+                <div style={{ fontSize: 13, color: 'rgb(var(--color-text-muted))', marginTop: 2 }}>
                   {d.pendingCount.toLocaleString()} pending
                 </div>
               </div>
@@ -1118,13 +1122,13 @@ function EmbDtl({ d, mut }: { d: EmbeddingStatusDto | undefined; mut: ReturnType
           </T>
           <T span={2}>
             <TL>Model</TL>
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#E8F0EC', fontFamily: 'monospace' }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-text-primary))', fontFamily: 'monospace' }}>
               {d.embeddingModel}
             </div>
           </T>
           <T span={2}>
             <TL>Dimensions</TL>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#E8F0EC' }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-text-primary))' }}>
               {d.dimensions.toLocaleString()}
             </div>
           </T>
@@ -1158,19 +1162,19 @@ function CchDtl({ d, mut }: { d: CacheStatsDto | undefined; mut: ReturnType<type
           </T>
           <T span={2}>
             <TL>Product mappings</TL>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#E8F0EC' }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-text-primary))' }}>
               {(d.totalProductMappings ?? 0).toLocaleString()}
             </div>
           </T>
           <T span={2}>
             <TL>Unique products</TL>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#E8F0EC' }}>
+            <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-text-primary))' }}>
               {(d.uniqueProducts ?? 0).toLocaleString()}
             </div>
           </T>
           <T span={6}>
             <TL>Last built</TL>
-            <div style={{ fontSize: 15, fontWeight: 600, color: '#8A9B91' }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: 'rgb(var(--color-text-muted))' }}>
               {d.builtAt
                 ? format(new Date(d.builtAt), 'MMMM d, yyyy · HH:mm')
                 : 'Cache has not been built yet'}
@@ -1186,7 +1190,7 @@ function CchDtl({ d, mut }: { d: CacheStatsDto | undefined; mut: ReturnType<type
 function FF({ l, r, children }: { l: string; r?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block" style={{ fontSize: 12, fontWeight: 600, color: '#8A9B91', marginBottom: 5 }}>
+      <label className="block" style={{ fontSize: 12, fontWeight: 600, color: 'rgb(var(--color-text-muted))', marginBottom: 5 }}>
         {l} {r && <span style={{ color: 'rgb(var(--color-danger))' }}>*</span>}
       </label>
       {children}
@@ -1196,8 +1200,8 @@ function FF({ l, r, children }: { l: string; r?: boolean; children: React.ReactN
 function EmpS() {
   return (
     <div className="flex flex-col items-center justify-center py-24">
-      <Package style={{ width: 40, height: 40, color: '#708A7E', marginBottom: 12 }} strokeWidth={1.2} />
-      <p style={{ fontSize: 15, color: '#708A7E' }}>Data unavailable</p>
+      <Package style={{ width: 40, height: 40, color: 'rgb(var(--color-text-muted))', marginBottom: 12 }} strokeWidth={1.2} />
+      <p style={{ fontSize: 15, color: 'rgb(var(--color-text-muted))' }}>Data unavailable</p>
     </div>
   );
 }
@@ -1215,8 +1219,8 @@ function SRCard({ item, rank }: { item: SearchProductDto; rank: number }) {
       style={{
         padding: 18,
         borderRadius: 14,
-        background: '#0C1210',
-        border: `1.5px solid ${item.isRecommended ? 'rgb(var(--color-success) / 0.2)' : '#1E2E26'}`,
+        background: 'rgb(var(--color-surface-app))',
+        border: `1.5px solid ${item.isRecommended ? 'rgb(var(--color-success) / 0.2)' : 'rgb(var(--color-border-subtle))'}`,
       }}
     >
       <div className="flex-1 min-w-0">
@@ -1226,8 +1230,8 @@ function SRCard({ item, rank }: { item: SearchProductDto; rank: number }) {
             style={{
               fontSize: 11,
               fontWeight: 700,
-              color: '#708A7E',
-              background: '#162019',
+              color: 'rgb(var(--color-text-muted))',
+              background: 'rgb(var(--color-surface-card))',
               width: 26,
               height: 26,
               borderRadius: 8,
@@ -1235,7 +1239,7 @@ function SRCard({ item, rank }: { item: SearchProductDto; rank: number }) {
           >
             #{rank}
           </span>
-          <h4 className="truncate" style={{ fontSize: 15, fontWeight: 700, color: '#E8F0EC' }}>
+          <h4 className="truncate" style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>
             {name}
           </h4>
           {item.isRecommended && (
@@ -1249,10 +1253,10 @@ function SRCard({ item, rank }: { item: SearchProductDto; rank: number }) {
                 style={{
                   padding: '3px 10px',
                   borderRadius: 8,
-                  background: '#162019',
+                  background: 'rgb(var(--color-surface-card))',
                   fontSize: 11,
                   fontWeight: 600,
-                  color: '#708A7E',
+                  color: 'rgb(var(--color-text-muted))',
                   textTransform: 'uppercase',
                 }}
               >
@@ -1260,7 +1264,7 @@ function SRCard({ item, rank }: { item: SearchProductDto; rank: number }) {
               </span>
             )}
             {price != null && (
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#E8F0EC' }}>${price.toFixed(2)}</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>${price.toFixed(2)}</span>
             )}
           </div>
         )}
@@ -1271,7 +1275,7 @@ function SRCard({ item, rank }: { item: SearchProductDto; rank: number }) {
           style={{
             width: 64,
             height: 7,
-            background: '#111916',
+            background: 'rgb(var(--color-surface-inset))',
             borderRadius: 4,
             marginTop: 4,
             overflow: 'hidden',

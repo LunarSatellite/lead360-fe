@@ -774,7 +774,7 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
               placeholder="act_123456789"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Access Token <span className="text-danger">*</span></label>
@@ -783,7 +783,7 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
                 placeholder="EAABsbCS..."
                 className="w-full pl-3 pr-10 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               <button type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
@@ -795,14 +795,14 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
               placeholder="Acme Marketing"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
             <input value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
               placeholder="USD"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle flex gap-3">
@@ -2150,7 +2150,7 @@ export function Component() {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
             style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}>
-            <Megaphone className="w-5 h-5" style={{ color: '#0A0F0D' }} />
+            <Megaphone className="w-5 h-5" style={{ color: 'rgb(var(--color-text-inverted))' }} />
           </div>
           <div>
             <h2 className="text-xl font-extrabold text-text-primary">Ads Manager</h2>

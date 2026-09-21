@@ -197,7 +197,7 @@ function GenInvoiceSlideOver({
   genOrderId: string; setGenOrderId: (v: string) => void;
   onGenerate: () => void; isPending: boolean; isValid: boolean;
 }) {
-  const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+  const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
   if (!open) return null;
   return (
@@ -237,7 +237,7 @@ function GenInvoiceSlideOver({
                 onClick={() => setGenSource(src)}
                 className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all"
                 style={{
-                  backgroundColor: genSource === src ? 'rgb(var(--color-surface-elevated))' : '#1A2F27',
+                  backgroundColor: genSource === src ? 'rgb(var(--color-surface-elevated))' : 'rgb(var(--color-glass-1))',
                   border: `1px solid ${genSource === src ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: genSource === src ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   color: genSource === src ? '#FFD84D' : '#BFA200',

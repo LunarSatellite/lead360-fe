@@ -73,14 +73,14 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
             <Newspaper className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
             <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1"
               className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
         </div>
         <div>
           <label className="block text-xs font-semibold text-text-secondary mb-1">Content <span className="text-danger">*</span></label>
           <textarea value={form.content} rows={4} onChange={e => set('content', e.target.value)} placeholder="Write your announcement…"
             className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </div>
         <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
           <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Settings</span>
@@ -92,7 +92,7 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
             <button type="button" onClick={() => setTypeOpen(!typeOpen)}
               className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
               style={{
-                backgroundColor: '#1A2F27',
+                backgroundColor: 'rgb(var(--color-glass-1))',
                 border: `1px solid ${typeOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                 boxShadow: typeOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                 outline: 'none',
@@ -124,7 +124,7 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
             <input type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)}
               className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
               style={{
-                backgroundColor: '#1A2F27',
+                backgroundColor: 'rgb(var(--color-glass-1))',
                 colorScheme: 'dark',
                 backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
               }} />

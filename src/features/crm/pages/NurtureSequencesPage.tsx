@@ -173,7 +173,7 @@ function StepCard({
           value={step.delayMinutes}
           onChange={(e) => set('delayMinutes', Number(e.target.value))}
           className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+          style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
         />
       </div>
 
@@ -229,7 +229,7 @@ function StepCard({
             onChange={(e) => set('messageTemplate', e.target.value)}
             placeholder="Hi {{CustomerName}}, just checking in…"
             className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
           <p className="text-xs text-text-muted mt-1">
             Available tokens:{' '}
@@ -299,7 +299,7 @@ function StepCard({
             onChange={(e) => set('tagToAdd', e.target.value)}
             placeholder="e.g. follow-up-needed"
             className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
         </div>
       )}
@@ -415,7 +415,7 @@ function SequenceModal({
               onChange={(e) => setField('name', e.target.value)}
               placeholder="e.g. Warm Lead Follow-up"
               className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
           </div>
 
@@ -460,7 +460,7 @@ function SequenceModal({
               onChange={(e) => setField('description', e.target.value)}
               placeholder="Briefly describe what this sequence does…"
               className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
           </div>
 
@@ -545,7 +545,7 @@ function SequenceModal({
                   value={form.triggerDelayMinutes}
                   onChange={(e) => setField('triggerDelayMinutes', Number(e.target.value))}
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </div>
@@ -568,7 +568,7 @@ function SequenceModal({
                   }
                   placeholder="e.g. 30"
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
               <div>
@@ -579,7 +579,7 @@ function SequenceModal({
                   value={form.triggerDelayMinutes}
                   onChange={(e) => setField('triggerDelayMinutes', Number(e.target.value))}
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </div>

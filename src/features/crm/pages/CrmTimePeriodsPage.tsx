@@ -172,7 +172,7 @@ export function Component() {
                 <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. June 2026, Q2 Week 3"
                   value={name}
                   onChange={e => setName(e.target.value)}
@@ -190,7 +190,7 @@ export function Component() {
                     type="date"
                     className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{
-                      backgroundColor: '#1A2F27',
+                      backgroundColor: 'rgb(var(--color-glass-1))',
                       colorScheme: 'dark',
                       backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                     }}
@@ -207,7 +207,7 @@ export function Component() {
                     type="date"
                     className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{
-                      backgroundColor: '#1A2F27',
+                      backgroundColor: 'rgb(var(--color-glass-1))',
                       colorScheme: 'dark',
                       backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                     }}

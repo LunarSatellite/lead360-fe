@@ -199,7 +199,7 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
             <h2 className="text-base font-extrabold leading-tight flex items-center gap-2" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                 style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}>
-                <Sparkles className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: '#0A0F0D' }} />
+                <Sparkles className="w-3.5 h-3.5" strokeWidth={1.8} style={{ color: 'rgb(var(--color-text-inverted))' }} />
               </div>
               AI Campaign
             </h2>
@@ -214,7 +214,7 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           <textarea
             className="w-full px-3.5 py-3 rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-all min-h-[100px] resize-none"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', border: '1px solid rgb(var(--brand-rgb) / 0.2)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', border: '1px solid rgb(var(--brand-rgb) / 0.2)' }}
             placeholder="e.g. Summer 30% off on all laptops for young professionals"
             value={prompt} onChange={e => setPrompt(e.target.value)} maxLength={500} autoFocus
             onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSubmit(); } }}

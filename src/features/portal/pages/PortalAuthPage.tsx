@@ -158,7 +158,7 @@ function AuthShell({ children }: { children: React.ReactNode }) {
             className="w-10 h-10 rounded-sm flex items-center justify-center"
             style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
           >
-            <Zap className="w-5 h-5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
+            <Zap className="w-5 h-5" strokeWidth={2} style={{ color: 'rgb(var(--color-text-inverted))' }} />
           </div>
         </div>
         <div className="bg-glass-1 border-thin border-border-subtle rounded-card p-6">

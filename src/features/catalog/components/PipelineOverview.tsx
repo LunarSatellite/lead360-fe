@@ -111,10 +111,10 @@ function ProgressRingSmall({ pct, accent }: { pct: number; accent: string }) {
     warning: '#F59E0B',
     brand: '#059669',
   };
-  const color = colorMap[accent] || '#94A3B8';
+  const color = colorMap[accent] || 'rgb(var(--color-text-muted))';
   return (
     <svg width={44} height={44}>
-      <circle cx={22} cy={22} r={r} fill="none" stroke="#111916" strokeWidth={4} />
+      <circle cx={22} cy={22} r={r} fill="none" className="stroke-bg-shell" strokeWidth={4} />
       <circle
         cx={22}
         cy={22}

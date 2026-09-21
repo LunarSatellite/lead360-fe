@@ -16,7 +16,7 @@ import {
   CrmOnboardingStatus, CrmOnboardingMilestoneKind,
 } from '../types/crm.types';
 
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return (
@@ -396,7 +396,7 @@ export function Component() {
                     style={inputStyle} />
                   <input type="date" value={m.dueDate} onChange={e => setMs(i, 'dueDate', e.target.value)}
                     className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button type="button" onClick={() => setMilestones(ms => ms.filter((_, idx) => idx !== i))} disabled={milestones.length === 1}
                     className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />

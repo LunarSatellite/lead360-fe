@@ -370,8 +370,8 @@ export function Component() {
                   >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-[#0F1E18] flex items-center justify-center shrink-0">
-                          <Building2 className="w-4 h-4 text-[#8FAEA0]" strokeWidth={1.5} />
+                        <div className="w-8 h-8 rounded-lg bg-bg-shell flex items-center justify-center shrink-0">
+                          <Building2 className="w-4 h-4 text-text-muted" strokeWidth={1.5} />
                         </div>
                         <span className="font-semibold text-text-primary">{o.name}</span>
                       </div>
@@ -458,7 +458,7 @@ export function Component() {
                     onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))}
                     placeholder="Acme Corp"
                     className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                 </div>
               </div>
@@ -473,7 +473,7 @@ export function Component() {
                       onChange={e => setCreateForm(f => ({ ...f, domain: e.target.value }))}
                       placeholder="acme.com"
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -486,7 +486,7 @@ export function Component() {
                       onChange={e => setCreateForm(f => ({ ...f, industry: e.target.value }))}
                       placeholder="SaaS, Retail…"
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -501,7 +501,7 @@ export function Component() {
                       onChange={e => setCreateForm(f => ({ ...f, employeeCount: e.target.value }))}
                       placeholder="250"
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -514,7 +514,7 @@ export function Component() {
                       onChange={e => setCreateForm(f => ({ ...f, country: e.target.value }))}
                       placeholder="US"
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -527,7 +527,7 @@ export function Component() {
                       onChange={e => setCreateForm(f => ({ ...f, city: e.target.value }))}
                       placeholder="New York"
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -540,7 +540,7 @@ export function Component() {
                       onChange={e => setCreateForm(f => ({ ...f, website: e.target.value }))}
                       placeholder="https://acme.com"
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -554,7 +554,7 @@ export function Component() {
                   onChange={e => setCreateForm(f => ({ ...f, description: e.target.value }))}
                   placeholder="Brief description of the organization…"
                   className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
 

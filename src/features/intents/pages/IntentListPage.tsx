@@ -83,13 +83,13 @@ export function Component() {
     <div className="space-y-0">
 
       {/* ═══ HEADER ═══ */}
-      <div style={{ padding: '18px 24px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #111916' }}>
+      <div style={{ padding: '18px 24px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid rgb(var(--color-border-subtle))' }}>
         <div style={{ flex: 1 }}>
           <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '2.5px', color: 'rgb(var(--color-brand-glow))' }}>Configuration</div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: '#E8F0EC', marginTop: 3, letterSpacing: '-0.5px' }}>Intent Management</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: 'rgb(var(--color-text-primary))', marginTop: 3, letterSpacing: '-0.5px' }}>Intent Management</div>
         </div>
         {/* View toggle */}
-        <div className="flex" style={{ padding: 3, borderRadius: 10, background: '#0A0F0D', border: '1px solid #162019' }}>
+        <div className="flex" style={{ padding: 3, borderRadius: 10, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))' }}>
           {([
             { id: 'cards' as const, icon: LayoutGrid, label: 'Cards' },
             { id: 'tree' as const, icon: TreePine, label: 'Tree' },
@@ -101,7 +101,7 @@ export function Component() {
                 padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 600, cursor: 'pointer',
                 background: viewMode === v.id ? 'rgb(var(--color-brand-glow) / 0.08)' : 'transparent',
                 border: viewMode === v.id ? '1px solid rgb(var(--color-brand-glow) / 0.12)' : '1px solid transparent',
-                color: viewMode === v.id ? 'rgb(var(--color-brand-glow))' : '#708A7E',
+                color: viewMode === v.id ? 'rgb(var(--color-brand-glow))' : 'rgb(var(--color-text-muted))',
               }}>
               <v.icon style={{ width: 12, height: 12 }} strokeWidth={1.5} /> {v.label}
             </button>
@@ -109,19 +109,19 @@ export function Component() {
         </div>
         {/* Search */}
         <div className="relative" style={{ width: 200 }}>
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2" style={{ width: 14, height: 14, color: '#708A7E' }} strokeWidth={1.5} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2" style={{ width: 14, height: 14, color: 'rgb(var(--color-text-muted))' }} strokeWidth={1.5} />
           <input value={searchFilter} onChange={e => setSearchFilter(e.target.value)}
             placeholder="Search intents..."
             className="w-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none"
-            style={{ padding: '8px 12px 8px 32px', borderRadius: 10, background: '#0A0F0D', border: '1px solid #1E3328' }} />
-          {searchFilter && <button onClick={() => setSearchFilter('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X style={{ width: 12, height: 12, color: '#708A7E' }} strokeWidth={2} /></button>}
+            style={{ padding: '8px 12px 8px 32px', borderRadius: 10, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-glass-2))' }} />
+          {searchFilter && <button onClick={() => setSearchFilter('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X style={{ width: 12, height: 12, color: 'rgb(var(--color-text-muted))' }} strokeWidth={2} /></button>}
         </div>
         <button onClick={() => setImportOpen(true)}
-          style={{ padding: '8px 16px', borderRadius: 10, background: '#0A0F0D', border: '1px solid #1E2E26', fontSize: 12, fontWeight: 600, color: '#8A9B91', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+          style={{ padding: '8px 16px', borderRadius: 10, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))', fontSize: 12, fontWeight: 600, color: 'rgb(var(--color-text-muted))', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
           <Upload style={{ width: 14, height: 14 }} strokeWidth={1.8} /> Import
         </button>
         <button onClick={() => { setEditIntent(null); setCreateOpen(true); }}
-          style={{ padding: '8px 18px', borderRadius: 10, background: 'rgb(var(--color-brand-glow))', fontSize: 12, fontWeight: 700, color: '#050808', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 0 20px rgb(var(--color-brand-glow) / 0.1)' }}>
+          style={{ padding: '8px 18px', borderRadius: 10, background: 'rgb(var(--color-brand-glow))', fontSize: 12, fontWeight: 700, color: 'rgb(var(--color-text-inverted))', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 0 20px rgb(var(--color-brand-glow) / 0.1)' }}>
           <Plus style={{ width: 14, height: 14 }} strokeWidth={2.5} /> Add intent
         </button>
       </div>
@@ -131,17 +131,17 @@ export function Component() {
         {/* Total */}
         <div style={{ padding: 18, borderRadius: 16, background: 'linear-gradient(145deg, rgb(var(--color-brand-glow) / 0.06), rgb(var(--color-brand-glow) / 0.015))', border: '1.5px solid rgb(var(--color-brand-glow) / 0.1)', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'rgb(var(--color-brand-glow))' }} />
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#708A7E', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>Total</div>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'rgb(var(--color-text-muted))', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>Total</div>
           <div className="flex items-baseline gap-1.5">
             <span style={{ fontSize: 32, fontWeight: 800, color: 'rgb(var(--color-brand-glow))', letterSpacing: '-1px', lineHeight: 1 }}>{total}</span>
-            <span style={{ fontSize: 11, color: '#708A7E' }}>intents</span>
+            <span style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))' }}>intents</span>
           </div>
         </div>
         {/* Active ring */}
-        <div style={{ padding: 18, borderRadius: 16, background: '#0C1210', border: '1px solid #1E2E26' }} className="flex items-center gap-3">
+        <div style={{ padding: 18, borderRadius: 16, background: 'rgb(var(--color-surface-app))', border: '1px solid rgb(var(--color-border-subtle))' }} className="flex items-center gap-3">
           <div className="relative shrink-0" style={{ width: 50, height: 50 }}>
             <svg viewBox="0 0 50 50" className="-rotate-90">
-              <circle cx="25" cy="25" r="20" fill="none" stroke="#111916" strokeWidth="5" />
+              <circle cx="25" cy="25" r="20" fill="none" className="stroke-bg-shell" strokeWidth="5" />
               <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"
                 strokeDasharray={2 * Math.PI * 20} strokeDashoffset={total > 0 ? 2 * Math.PI * 20 * (1 - active / total) : 2 * Math.PI * 20}
                 strokeLinecap="round" className="stroke-success transition-all duration-700" />
@@ -151,34 +151,34 @@ export function Component() {
             </div>
           </div>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: '#708A7E', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 4 }}>Active</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: 'rgb(var(--color-text-muted))', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 4 }}>Active</div>
             <div style={{ fontSize: 26, fontWeight: 800, color: 'rgb(var(--color-success))', lineHeight: 1 }}>{active}</div>
           </div>
         </div>
         {/* API calls */}
-        <div style={{ padding: 18, borderRadius: 16, background: '#0C1210', border: '1px solid #1E2E26' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#708A7E', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>API Calls</div>
+        <div style={{ padding: 18, borderRadius: 16, background: 'rgb(var(--color-surface-app))', border: '1px solid rgb(var(--color-border-subtle))' }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'rgb(var(--color-text-muted))', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 6 }}>API Calls</div>
           <div className="flex items-baseline gap-1.5">
             <span style={{ fontSize: 32, fontWeight: 800, color: 'rgb(var(--color-info))', letterSpacing: '-1px', lineHeight: 1 }}>{apiCount}</span>
-            <span style={{ fontSize: 11, color: '#708A7E' }}>of {total}</span>
+            <span style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))' }}>of {total}</span>
           </div>
         </div>
         {/* Breakdown mini bars */}
-        <div style={{ padding: 18, borderRadius: 16, background: '#0C1210', border: '1px solid #1E2E26' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: '#708A7E', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 8 }}>By type</div>
+        <div style={{ padding: 18, borderRadius: 16, background: 'rgb(var(--color-surface-app))', border: '1px solid rgb(var(--color-border-subtle))' }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: 'rgb(var(--color-text-muted))', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: 8 }}>By type</div>
           <div className="flex gap-1 items-end" style={{ height: 36 }}>
             {[1, 2, 4, 5, 6, 7].map(op => {
               const m = OP_META[op];
               const c = opCounts[op] || 0;
               const pct = c > 0 ? Math.max(10, (c / maxOp) * 100) : 4;
               return (
-                <div key={op} style={{ flex: 1, borderRadius: '4px 4px 1px 1px', height: `${pct}%`, minHeight: c > 0 ? 4 : 2, background: c > 0 ? `linear-gradient(180deg, ${m.color}CC, ${m.color})` : '#162019' }} />
+                <div key={op} style={{ flex: 1, borderRadius: '4px 4px 1px 1px', height: `${pct}%`, minHeight: c > 0 ? 4 : 2, background: c > 0 ? `linear-gradient(180deg, ${m.color}CC, ${m.color})` : 'rgb(var(--color-surface-card))' }} />
               );
             })}
           </div>
           <div className="flex gap-1" style={{ marginTop: 4 }}>
             {[1, 2, 4, 5, 6, 7].map(op => (
-              <div key={op} style={{ flex: 1, fontSize: 8, textAlign: 'center', color: (opCounts[op] || 0) > 0 ? OP_META[op].color : '#253D32', fontWeight: 700 }}>
+              <div key={op} style={{ flex: 1, fontSize: 8, textAlign: 'center', color: (opCounts[op] || 0) > 0 ? OP_META[op].color : 'rgb(var(--color-text-muted) / 0.3)', fontWeight: 700 }}>
                 {opCounts[op] || 0}
               </div>
             ))}
@@ -189,13 +189,13 @@ export function Component() {
       {/* ═══ FILTERS ═══ */}
       <div className="flex items-center gap-1.5" style={{ padding: '2px 20px 12px' }}>
         <button onClick={() => setOpFilter(null)}
-          style={{ padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 700, cursor: 'pointer', background: !opFilter ? 'rgb(var(--color-brand-glow) / 0.08)' : 'transparent', border: !opFilter ? '1.5px solid rgb(var(--color-brand-glow) / 0.12)' : '1px solid #1E2E26', color: !opFilter ? 'rgb(var(--color-brand-glow))' : '#708A7E' }}>
+          style={{ padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 700, cursor: 'pointer', background: !opFilter ? 'rgb(var(--color-brand-glow) / 0.08)' : 'transparent', border: !opFilter ? '1.5px solid rgb(var(--color-brand-glow) / 0.12)' : '1px solid rgb(var(--color-border-subtle))', color: !opFilter ? 'rgb(var(--color-brand-glow))' : 'rgb(var(--color-text-muted))' }}>
           All {total}
         </button>
         {Object.entries(OP_META).filter(([k]) => (opCounts[Number(k)] || 0) > 0).map(([k, m]) => (
           <button key={k} onClick={() => setOpFilter(opFilter === Number(k) ? null : Number(k))}
             className="flex items-center gap-1"
-            style={{ padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: opFilter === Number(k) ? `1.5px solid ${m.color}30` : '1px solid #1E2E26', background: opFilter === Number(k) ? `${m.color}0C` : 'transparent', color: opFilter === Number(k) ? m.color : '#708A7E' }}>
+            style={{ padding: '5px 12px', borderRadius: 7, fontSize: 11, fontWeight: 600, cursor: 'pointer', border: opFilter === Number(k) ? `1.5px solid ${m.color}30` : '1px solid rgb(var(--color-border-subtle))', background: opFilter === Number(k) ? `${m.color}0C` : 'transparent', color: opFilter === Number(k) ? m.color : 'rgb(var(--color-text-muted))' }}>
             <div style={{ width: 6, height: 6, borderRadius: 2, background: m.color }} />
             {m.label} {opCounts[Number(k)] || 0}
           </button>
@@ -247,7 +247,7 @@ function IntentCard({ intent, allIntents, onEdit }: { intent: IntentDto; allInte
       className="flex flex-col transition-all cursor-pointer group"
       onClick={() => onEdit(intent)}
       style={{
-        borderRadius: 16, background: '#0C1210',
+        borderRadius: 16, background: 'rgb(var(--color-surface-app))',
         border: `1px solid ${op.color}15`, overflow: 'hidden',
       }}
       onMouseOver={e => (e.currentTarget.style.borderColor = `${op.color}35`)}
@@ -261,8 +261,8 @@ function IntentCard({ intent, allIntents, onEdit }: { intent: IntentDto; allInte
             <Icon style={{ width: 14, height: 14, color: op.color }} strokeWidth={1.5} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="truncate" style={{ fontSize: 14, fontWeight: 700, color: '#E8F0EC' }}>{intent.name}</div>
-            <div style={{ fontSize: 10, color: '#708A7E', marginTop: 1 }}>
+            <div className="truncate" style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>{intent.name}</div>
+            <div style={{ fontSize: 10, color: 'rgb(var(--color-text-muted))', marginTop: 1 }}>
               {children.length > 0 ? `Root · ${children.length} children` : intent.parentIntentId ? 'Child' : 'Root'}
             </div>
           </div>
@@ -271,9 +271,9 @@ function IntentCard({ intent, allIntents, onEdit }: { intent: IntentDto; allInte
 
         {/* Endpoint (if API) */}
         {intent.apiEndpoint && (
-          <div className="flex items-center gap-1.5" style={{ padding: '8px 10px', borderRadius: 8, background: '#0A0F0D', marginBottom: 10 }}>
+          <div className="flex items-center gap-1.5" style={{ padding: '8px 10px', borderRadius: 8, background: 'rgb(var(--color-surface-sunken))', marginBottom: 10 }}>
             {intent.apiMethod && <span style={{ padding: '2px 7px', borderRadius: 5, background: `${op.color}18`, fontSize: 10, fontWeight: 800, color: op.color }}>{intent.apiMethod}</span>}
-            <span style={{ fontSize: 11, fontFamily: 'monospace', color: '#708A7E' }} className="truncate">{intent.apiEndpoint}</span>
+            <span style={{ fontSize: 11, fontFamily: 'monospace', color: 'rgb(var(--color-text-muted))' }} className="truncate">{intent.apiEndpoint}</span>
           </div>
         )}
 
@@ -283,13 +283,13 @@ function IntentCard({ intent, allIntents, onEdit }: { intent: IntentDto; allInte
             {keywords.slice(0, 4).map(k => (
               <span key={k} style={{ padding: '3px 8px', borderRadius: 10, background: 'rgb(var(--color-violet-light) / 0.06)', fontSize: 10, color: 'rgb(var(--color-violet-light))' }}>{k}</span>
             ))}
-            {keywords.length > 4 && <span style={{ padding: '3px 8px', borderRadius: 10, background: '#111916', fontSize: 10, color: '#708A7E' }}>+{keywords.length - 4}</span>}
+            {keywords.length > 4 && <span style={{ padding: '3px 8px', borderRadius: 10, background: 'rgb(var(--color-surface-inset))', fontSize: 10, color: 'rgb(var(--color-text-muted))' }}>+{keywords.length - 4}</span>}
           </div>
         )}
 
         {/* Description */}
         {intent.description && (
-          <div className="line-clamp-2" style={{ fontSize: 11, color: '#708A7E', lineHeight: 1.4, marginTop: 'auto' }}>{intent.description}</div>
+          <div className="line-clamp-2" style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))', lineHeight: 1.4, marginTop: 'auto' }}>{intent.description}</div>
         )}
         {!intent.description && <div style={{ marginTop: 'auto' }} />}
       </div>
@@ -302,19 +302,19 @@ function EmptyState({ onImport, onCreate }: { onImport: () => void; onCreate: ()
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
       <div style={{ width: 64, height: 64, borderRadius: 20, background: 'rgb(var(--color-brand-glow) / 0.04)', border: '1.5px dashed rgb(var(--color-brand-glow) / 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-        <Target style={{ width: 28, height: 28, color: '#253D32' }} strokeWidth={1.2} />
+        <Target style={{ width: 28, height: 28, color: 'rgb(var(--color-text-muted) / 0.3)' }} strokeWidth={1.2} />
       </div>
-      <p style={{ fontSize: 16, fontWeight: 700, color: '#8A9B91' }}>No intents defined yet</p>
-      <p style={{ fontSize: 13, color: '#708A7E', marginTop: 6, maxWidth: 360, lineHeight: 1.5 }}>
+      <p style={{ fontSize: 16, fontWeight: 700, color: 'rgb(var(--color-text-muted))' }}>No intents defined yet</p>
+      <p style={{ fontSize: 13, color: 'rgb(var(--color-text-muted))', marginTop: 6, maxWidth: 360, lineHeight: 1.5 }}>
         Intents define what your chatbot can do — track orders, browse products, answer FAQs, and more.
       </p>
       <div className="flex items-center gap-3 mt-6">
         <button onClick={onImport}
-          style={{ padding: '10px 18px', borderRadius: 10, background: '#0A0F0D', border: '1px solid #1E2E26', fontSize: 13, fontWeight: 600, color: '#8A9B91', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
+          style={{ padding: '10px 18px', borderRadius: 10, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))', fontSize: 13, fontWeight: 600, color: 'rgb(var(--color-text-muted))', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>
           <Upload style={{ width: 14, height: 14 }} strokeWidth={1.8} /> Bulk import
         </button>
         <button onClick={onCreate}
-          style={{ padding: '10px 18px', borderRadius: 10, background: 'rgb(var(--color-brand-glow))', fontSize: 13, fontWeight: 700, color: '#050808', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 0 20px rgb(var(--color-brand-glow) / 0.1)' }}>
+          style={{ padding: '10px 18px', borderRadius: 10, background: 'rgb(var(--color-brand-glow))', fontSize: 13, fontWeight: 700, color: 'rgb(var(--color-text-inverted))', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5, boxShadow: '0 0 20px rgb(var(--color-brand-glow) / 0.1)' }}>
           <Plus style={{ width: 14, height: 14 }} strokeWidth={2} /> Create first intent
         </button>
       </div>

@@ -30,8 +30,8 @@ const BRAND_COLOR: Record<ChannelTypeValue, string> = {
   2: '#0084FF',
   3: '#E1306C',
   4: '#2AABEE',
-  5: '#6B7280',
-  6: '#6B7280',
+  5: 'rgb(var(--color-text-muted))',
+  6: 'rgb(var(--color-text-muted))',
   7: '#00D97E',
   8: '#A78BFA',
   9: '#6650DF',
@@ -57,7 +57,7 @@ interface AvailableChannelCardProps {
 export function AvailableChannelCard({ channelType, onConnect }: AvailableChannelCardProps) {
   const Icon = ICON_MAP[channelType] ?? Globe;
   const label = CHANNEL_TYPE_LABEL[channelType];
-  const color = BRAND_COLOR[channelType] || '#708A7E';
+  const color = BRAND_COLOR[channelType] || 'rgb(var(--color-text-muted))';
   const description = CHANNEL_DESCRIPTION[channelType];
 
   return (

@@ -36,14 +36,14 @@ import {
 
 // ── Canvas CSS — cleaner n8n-inspired style ────────────────────────────────────
 const CANVAS_CSS = `
-.crm-wf .react-flow__edge-path { stroke: #3A5A4C; stroke-width: 1.5; fill: none; }
+.crm-wf .react-flow__edge-path { stroke: rgb(var(--color-border-strong)); stroke-width: 1.5; fill: none; }
 .crm-wf .react-flow__edge.animated .react-flow__edge-path { stroke-dasharray: 6; animation: dashmove 0.8s linear infinite; }
 .crm-wf .react-flow__edge.selected .react-flow__edge-path { stroke: rgb(var(--brand-light-rgb)); stroke-width: 2; }
 .crm-wf .react-flow__connectionline { stroke: rgb(var(--brand-light-rgb)); stroke-width: 1.5; stroke-dasharray: 6 4; }
 @keyframes dashmove { to { stroke-dashoffset: -12; } }
 @keyframes nodeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 .crm-wf .react-flow__node { animation: nodeIn 150ms ease-out; }
-.crm-wf .react-flow__handle { opacity: 0; transition: opacity 120ms; width: 8px !important; height: 8px !important; border: 2px solid #0A0F0D !important; }
+.crm-wf .react-flow__handle { opacity: 0; transition: opacity 120ms; width: 8px !important; height: 8px !important; border: 2px solid rgb(var(--color-border-subtle)) !important; }
 .crm-wf .react-flow__node:hover .react-flow__handle,
 .crm-wf .react-flow__node.selected .react-flow__handle { opacity: 1; }
 .crm-wf .react-flow__handle:hover { opacity: 1 !important; }
@@ -104,7 +104,7 @@ const PALETTE_GROUPS: { category: string; items: PaletteItem[] }[] = [
     items: [
       { subtype: 'wait',     label: 'Wait / Delay', hint: 'Pause N minutes',   Icon: Clock,      kind: 'delay', border: 'border-purple-700',    headerBorder: 'border-purple-800',    iconBg: 'bg-purple-950',    iconText: 'text-purple-400',    handleColor: '#7C3AED' },
       { subtype: 'approval', label: 'Approval',     hint: 'Wait for approval', Icon: ThumbsUp,   kind: 'delay', border: 'border-purple-700',    headerBorder: 'border-purple-800',    iconBg: 'bg-purple-950',    iconText: 'text-purple-400',    handleColor: '#7C3AED' },
-      { subtype: 'end',      label: 'End Workflow', hint: 'Finish here',       Icon: CircleDot,  kind: 'end',   border: 'border-border-medium', headerBorder: 'border-border-subtle', iconBg: 'bg-bg-elevated',   iconText: 'text-text-muted',    handleColor: '#4A5C52' },
+      { subtype: 'end',      label: 'End Workflow', hint: 'Finish here',       Icon: CircleDot,  kind: 'end',   border: 'border-border-medium', headerBorder: 'border-border-subtle', iconBg: 'bg-bg-elevated',   iconText: 'text-text-muted',    handleColor: 'rgb(var(--color-border-strong))' },
     ],
   },
 ];
@@ -310,16 +310,16 @@ function EndNode({ id, data }: NodeProps) {
 
 const nodeTypes = { trigger: TriggerNode, action: ActionNode, condition: ConditionNode, delay: DelayNode, ai: AiNode, api: ApiNode, end: EndNode };
 const edgeTypes = {};
-const MARKER_END = { type: MarkerType.ArrowClosed, color: '#3A5A4C', width: 12, height: 12 };
-const DEFAULT_EDGE_OPTS = { type: 'default', animated: false, style: { stroke: '#3A5A4C', strokeWidth: 1.5 }, markerEnd: MARKER_END };
+const MARKER_END = { type: MarkerType.ArrowClosed, color: 'rgb(var(--color-text-muted) / 0.45)', width: 12, height: 12 };
+const DEFAULT_EDGE_OPTS = { type: 'default', animated: false, style: { stroke: 'rgb(var(--color-border-strong))', strokeWidth: 1.5 }, markerEnd: MARKER_END };
 
 // ── Graph utilities ────────────────────────────────────────────────────────────
 function makeEdge(source: string, target: string, sourceHandle?: string, label?: string): Edge {
-  const e: Edge = { id: `e-${source}-${target}`, source, target, sourceHandle, type: 'default', markerEnd: MARKER_END, style: { stroke: '#3A5A4C', strokeWidth: 1.5 } };
+  const e: Edge = { id: `e-${source}-${target}`, source, target, sourceHandle, type: 'default', markerEnd: MARKER_END, style: { stroke: 'rgb(var(--color-border-strong))', strokeWidth: 1.5 } };
   if (label) {
     e.label = label;
     e.labelStyle = { fill: sourceHandle === 'true' ? '#22C55E' : '#EF4444', fontWeight: 700, fontSize: 10 };
-    e.labelBgStyle = { fill: '#0A0F0D', fillOpacity: 0.85 };
+    e.labelBgStyle = { fill: 'rgb(var(--color-surface-sunken))', fillOpacity: 0.85 };
     e.labelBgPadding = [4, 2];
     e.labelBgBorderRadius = 4;
   }
@@ -1698,7 +1698,7 @@ function WorkflowChatWidget({
           className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all disabled:opacity-30"
           style={{ background: input.trim() && !loading ? 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' : 'transparent', border: input.trim() && !loading ? 'none' : '1px solid rgb(var(--color-border-default))' }}
         >
-          <Send className="w-3.5 h-3.5" style={{ color: input.trim() && !loading ? '#fff' : '#4A5C52' }} strokeWidth={2} />
+          <Send className="w-3.5 h-3.5" style={{ color: input.trim() && !loading ? '#fff' : 'rgb(var(--color-text-muted) / 0.5)' }} strokeWidth={2} />
         </button>
       </div>
     </div>
@@ -1797,7 +1797,7 @@ function WfCanvas({ nodes, edges, onNodesChange, onEdgesChange, setNodes, setEdg
         onPaneClick={onPaneClick}
         deleteKeyCode={['Delete', 'Backspace']}
         snapToGrid snapGrid={[16, 16]}
-        style={{ background: '#0A0F0D' }}
+        style={{ background: 'rgb(var(--color-surface-sunken))' }}
       >
         <Background color="#1E2E26" gap={20} size={1} />
         <Controls showInteractive={false} className="!shadow-none" />

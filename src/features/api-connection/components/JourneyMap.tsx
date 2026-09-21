@@ -133,7 +133,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
           [850, 55],
           [1080, 110],
         ].map(([x, y], i) => (
-          <circle key={`star-${i}`} cx={x} cy={y} r="1" fill="#E8F0EC">
+          <circle key={`star-${i}`} cx={x} cy={y} r="1" className="fill-text-primary">
             <animate
               attributeName="opacity"
               values={`${0.05 + (i % 3) * 0.04};${0.15 + (i % 4) * 0.05};${0.05 + (i % 3) * 0.04}`}
@@ -207,7 +207,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
         })}
 
         {/* Background track */}
-        <path d={FULL} fill="none" stroke="#162019" strokeWidth="5" strokeLinecap="round" />
+        <path d={FULL} fill="none" className="stroke-border-subtle" strokeWidth="5" strokeLinecap="round" />
 
         {/* Progress fill — glowing */}
         {pp && (
@@ -303,7 +303,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                     <animate attributeName="r" values="22;30;22" dur="3s" repeatCount="indefinite" />
                     <animate attributeName="opacity" values="0.15;0;0.15" dur="3s" repeatCount="indefinite" />
                   </circle>
-                  <circle cx={p.x} cy={p.y} r="22" fill="#0A0F0D" className="stroke-success" strokeWidth="3.5" />
+                  <circle cx={p.x} cy={p.y} r="22" className="fill-bg-sunken stroke-success" strokeWidth="3.5" />
                   <circle cx={p.x} cy={p.y} r="12" className="fill-success" />
                   <polyline
                     points={`${p.x - 6},${p.y} ${p.x - 1},${p.y + 5} ${p.x + 7},${p.y - 4}`}
@@ -401,7 +401,7 @@ export function JourneyMap({ currentStep, completedSteps, onStepClick }: Journey
                     cx={p.x}
                     cy={p.y}
                     r="19"
-                    fill="#0A0F0D"
+                    className="fill-bg-sunken"
                     strokeWidth="2.5"
                     strokeDasharray="5 5"
                     opacity={fop}

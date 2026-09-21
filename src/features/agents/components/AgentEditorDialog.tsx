@@ -360,7 +360,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                 maxLength={80}
                 className={inputCls}
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   borderColor: 'rgb(var(--brand-rgb) / 0.2)',
                 }}
@@ -381,7 +381,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                 maxLength={500}
                 className={`${inputCls} resize-none`}
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   borderColor: 'rgb(var(--brand-rgb) / 0.2)',
                 }}
@@ -532,7 +532,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                   spellCheck={false}
                   className={`${inputCls} font-mono text-xs resize-y`}
                   style={{
-                    backgroundColor: '#1A2F27',
+                    backgroundColor: 'rgb(var(--color-glass-1))',
                     backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                     borderColor: 'rgb(var(--brand-rgb) / 0.2)',
                   }}
@@ -660,14 +660,14 @@ function TriggerPayload({
             placeholder="amount"
             aria-label="Field name"
             className={inputCls}
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
           />
           <select
             value={form.thOp}
             onChange={(e) => setField('thOp', e.target.value as ThresholdOp)}
             aria-label="Comparison"
             className={inputCls}
-            style={{ width: 'auto', backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
+            style={{ width: 'auto', backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
           >
             {THRESHOLD_OPS.map((op) => (
               <option key={op} value={op}>
@@ -682,7 +682,7 @@ function TriggerPayload({
             placeholder="500"
             aria-label="Threshold value"
             className={inputCls}
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
           />
         </div>
         {(errors.thField || errors.thValue) && (
@@ -714,7 +714,7 @@ function TriggerPayload({
             value={form.intentName}
             onChange={(e) => setField('intentName', e.target.value)}
             className={inputCls}
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
           >
             <option value="">Select an intent…</option>
             {intents.map((i) => (
@@ -743,7 +743,7 @@ function TriggerPayload({
         rows={3}
         spellCheck={false}
         className={`${inputCls} font-mono text-xs resize-y`}
-        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
+        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
       />
       {errors.triggerJsonRaw && <p className={errCls}>{errors.triggerJsonRaw}</p>}
       <p className="text-xs text-text-muted mt-1.5 leading-relaxed">
@@ -786,7 +786,7 @@ function TriggerKindDropdown({
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
         style={{
-          backgroundColor: '#1A2F27',
+          backgroundColor: 'rgb(var(--color-glass-1))',
           backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
           border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
           boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
@@ -850,7 +850,7 @@ function TargetKindDropdown({
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
         style={{
-          backgroundColor: '#1A2F27',
+          backgroundColor: 'rgb(var(--color-glass-1))',
           backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
           border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
           boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
@@ -916,7 +916,7 @@ function UserDropdown({
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
         style={{
-          backgroundColor: '#1A2F27',
+          backgroundColor: 'rgb(var(--color-glass-1))',
           backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
           border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
           boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
@@ -1003,7 +1003,7 @@ function TargetPayload({
           value={form.targetRoleValue}
           onChange={(e) => setField('targetRoleValue', e.target.value)}
           className={inputCls}
-          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
+          style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
         >
           <option value={String(UserRole.Owner)}>Owner</option>
           <option value={String(UserRole.Admin)}>Admin</option>
@@ -1029,7 +1029,7 @@ function TargetPayload({
           onChange={(e) => setField('targetEmail', e.target.value)}
           placeholder="manager@company.com"
           className={inputCls}
-          style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
+          style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
         />
         {errors.targetEmail && <p className={errCls}>{errors.targetEmail}</p>}
       </div>

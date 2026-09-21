@@ -97,7 +97,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
                 onChange={e => setName(e.target.value)}
                 placeholder="e.g. Case Reference"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
             </div>
           </div>
@@ -113,7 +113,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
                 onClick={() => setTypeOpen(o => !o)}
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   border: `1px solid ${typeOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: typeOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
@@ -169,7 +169,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
             onChange={e => setDescription(e.target.value)}
             placeholder="Optional hint for users"
             className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
         </div>
 
@@ -185,7 +185,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
               onChange={e => setOptions(e.target.value)}
               placeholder="Option A, Option B, Option C"
               className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
           </div>
         )}
@@ -197,7 +197,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
             <div className="h-px bg-brand/20" />
           </div>
           <label className="flex items-center gap-3 px-4 py-3 rounded-xl border border-brand/20 cursor-pointer hover:border-brand/40 transition-colors"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           >
             <div className="relative">
               <input

@@ -189,10 +189,10 @@ export function IntentFormModal({
                     className="flex-1 text-center transition-all"
                     style={{
                       padding: '12px 8px', borderRadius: 12, cursor: 'pointer',
-                      background: isActive ? 'rgb(var(--color-brand-glow) / 0.06)' : '#111916',
-                      border: isActive ? '2px solid rgb(var(--color-brand-glow) / 0.2)' : '1.5px solid #1E2E26',
+                      background: isActive ? 'rgb(var(--color-brand-glow) / 0.06)' : 'rgb(var(--color-surface-inset))',
+                      border: isActive ? '2px solid rgb(var(--color-brand-glow) / 0.2)' : '1.5px solid rgb(var(--color-border-subtle))',
                     }}>
-                    <div style={{ fontSize: 13, fontWeight: isActive ? 700 : 600, color: isActive ? 'rgb(var(--color-brand-glow))' : '#8A9B91' }}>{opt.label}</div>
+                    <div style={{ fontSize: 13, fontWeight: isActive ? 700 : 600, color: isActive ? 'rgb(var(--color-brand-glow))' : 'rgb(var(--color-text-muted))' }}>{opt.label}</div>
                   </button>
                 );
               })}
@@ -205,17 +205,17 @@ export function IntentFormModal({
             <div className="grid grid-cols-4 gap-[5px]">
               {OPERATION_OPTIONS.map((opt) => {
                 const isActive = form.watch('operationType') === opt.value;
-                const opColor = ({1:'#3B82F6',2:'#10B981',3:'#00D97E',4:'#F59E0B',5:'#F43F5E',6:'#A78BFA',7:'#EC4899',8:'#3B82F6'} as Record<number,string>)[opt.value as number] || '#708A7E';
+                const opColor = ({1:'#3B82F6',2:'#10B981',3:'#00D97E',4:'#F59E0B',5:'#F43F5E',6:'#A78BFA',7:'#EC4899',8:'#3B82F6'} as Record<number,string>)[opt.value as number] || 'rgb(var(--color-text-muted))';
                 return (
                   <button key={opt.value} type="button"
                     onClick={() => form.setValue('operationType', opt.value)}
                     className="text-center transition-all"
                     style={{
                       padding: '10px 6px', borderRadius: 10, cursor: 'pointer',
-                      background: isActive ? `${opColor}0C` : '#111916',
-                      border: isActive ? `2px solid ${opColor}30` : '1.5px solid #1E2E26',
+                      background: isActive ? `${opColor}0C` : 'rgb(var(--color-surface-inset))',
+                      border: isActive ? `2px solid ${opColor}30` : '1.5px solid rgb(var(--color-border-subtle))',
                     }}>
-                    <div style={{ fontSize: 11, fontWeight: isActive ? 700 : 500, color: isActive ? opColor : '#8A9B91' }}>{opt.label}</div>
+                    <div style={{ fontSize: 11, fontWeight: isActive ? 700 : 500, color: isActive ? opColor : 'rgb(var(--color-text-muted))' }}>{opt.label}</div>
                   </button>
                 );
               })}

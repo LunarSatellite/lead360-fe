@@ -39,7 +39,7 @@ export function ReadinessGauge({ score, size = 120 }: ReadinessGaugeProps) {
             style={{
               fontSize: 9,
               fontWeight: 700,
-              color: '#708A7E',
+              color: 'rgb(var(--color-text-muted))',
               textTransform: 'uppercase',
               letterSpacing: '1px',
             }}

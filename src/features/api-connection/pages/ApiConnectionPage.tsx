@@ -110,12 +110,12 @@ export function Component() {
           padding: '16px 0',
           display: 'flex',
           alignItems: 'center',
-          borderBottom: '1px solid #111916',
+          borderBottom: '1px solid rgb(var(--color-border-subtle))',
         }}
       >
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <h1 style={{ fontSize: 18, fontWeight: 700, color: '#E8F0EC' }}>API Connection</h1>
-          <div style={{ height: 16, width: 1, background: '#1E2E26' }} />
+          <h1 style={{ fontSize: 18, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>API Connection</h1>
+          <div style={{ height: 16, width: 1, background: 'rgb(var(--color-glass-1))' }} />
           {activeSpec ? (
             <div
               style={{
@@ -137,11 +137,11 @@ export function Component() {
                   boxShadow: '0 0 6px rgb(var(--color-brand-glow) / 0.3)',
                 }}
               />
-              <span style={{ fontSize: 13, fontWeight: 600, color: '#E8F0EC' }}>{activeSpec.name}</span>
-              <span style={{ fontSize: 12, color: '#708A7E' }}>· {activeSpec.endpointCount} endpoints</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'rgb(var(--color-text-primary))' }}>{activeSpec.name}</span>
+              <span style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))' }}>· {activeSpec.endpointCount} endpoints</span>
             </div>
           ) : (
-            <span style={{ fontSize: 12, color: '#708A7E' }}>No spec uploaded yet</span>
+            <span style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))' }}>No spec uploaded yet</span>
           )}
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
@@ -166,10 +166,10 @@ export function Component() {
             style={{
               padding: '7px 14px',
               borderRadius: 9,
-              background: '#0A0F0D',
-              border: '1px solid #162019',
+              background: 'rgb(var(--color-surface-sunken))',
+              border: '1px solid rgb(var(--color-border-subtle))',
               fontSize: 12,
-              color: '#8A9B91',
+              color: 'rgb(var(--color-text-muted))',
               cursor: 'pointer',
             }}
           >
@@ -183,8 +183,8 @@ export function Component() {
         style={{
           margin: '16px 0 0',
           borderRadius: 20,
-          background: 'linear-gradient(180deg, #080B0A, #050808)',
-          border: '1.5px solid #1E2E26',
+          background: 'linear-gradient(180deg, rgb(var(--color-surface-sunken)), rgb(var(--color-surface-sunken)))',
+          border: '1.5px solid rgb(var(--color-border-subtle))',
           overflow: 'hidden',
           position: 'relative',
         }}
@@ -238,7 +238,7 @@ export function Component() {
                   cursor: 'pointer',
                   border: isActive ? `1.5px solid ${c}40` : '1px solid transparent',
                   background: isActive ? `${c}12` : 'transparent',
-                  color: isActive ? c : '#708A7E',
+                  color: isActive ? c : 'rgb(var(--color-text-muted))',
                   transition: 'all 0.15s',
                 }}
                 onMouseOver={(e) => {
@@ -249,7 +249,7 @@ export function Component() {
                 }}
                 onMouseOut={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#708A7E';
+                    e.currentTarget.style.color = 'rgb(var(--color-text-muted))';
                     e.currentTarget.style.background = 'transparent';
                   }
                 }}
@@ -268,7 +268,7 @@ export function Component() {
           overflow: 'hidden',
           margin: '16px 0 0',
           borderRadius: 16,
-          background: '#0A0F0D',
+          background: 'rgb(var(--color-surface-sunken))',
           border: `1.5px solid ${meta.color}20`,
         }}
       >
@@ -309,10 +309,10 @@ export function Component() {
             <Icon style={{ width: 24, height: 24, color: meta.color }} strokeWidth={1.5} />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 18, fontWeight: 700, color: '#E8F0EC' }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>
               {PIPELINE_STEPS[currentIdx]?.label}
             </div>
-            <div style={{ fontSize: 13, color: '#708A7E', marginTop: 2 }}>{meta.desc}</div>
+            <div style={{ fontSize: 13, color: 'rgb(var(--color-text-muted))', marginTop: 2 }}>{meta.desc}</div>
           </div>
           <div
             style={{
@@ -359,8 +359,8 @@ export function Component() {
             <div
               style={{
                 borderRadius: 16,
-                background: '#0A0F0D',
-                border: '1.5px solid #1E2E26',
+                background: 'rgb(var(--color-surface-sunken))',
+                border: '1.5px solid rgb(var(--color-border-subtle))',
                 overflow: 'hidden',
               }}
             >
@@ -383,7 +383,7 @@ export function Component() {
                   >
                     <Plug style={{ width: 16, height: 16, color: 'rgb(var(--color-brand-glow))' }} strokeWidth={1.8} />
                   </div>
-                  <h3 style={{ fontSize: 15, fontWeight: 700, color: '#E8F0EC' }}>Upload New Spec</h3>
+                  <h3 style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>Upload New Spec</h3>
                 </div>
                 <SpecUploadZone onSuccess={handleSpecUploaded} />
               </div>
@@ -393,28 +393,28 @@ export function Component() {
             <div
               style={{
                 borderRadius: 16,
-                background: '#0A0F0D',
-                border: '1.5px solid #1E2E26',
+                background: 'rgb(var(--color-surface-sunken))',
+                border: '1.5px solid rgb(var(--color-border-subtle))',
                 overflow: 'hidden',
               }}
             >
               <div
                 style={{
                   padding: '14px 20px',
-                  borderBottom: '1px solid #162019',
+                  borderBottom: '1px solid rgb(var(--color-border-subtle))',
                   display: 'flex',
                   alignItems: 'center',
                   gap: 8,
                 }}
               >
-                <FileJson style={{ width: 16, height: 16, color: '#708A7E' }} strokeWidth={1.5} />
+                <FileJson style={{ width: 16, height: 16, color: 'rgb(var(--color-text-muted))' }} strokeWidth={1.5} />
                 <span
                   style={{
                     fontSize: 11,
                     fontWeight: 700,
                     textTransform: 'uppercase',
                     letterSpacing: '1.5px',
-                    color: '#708A7E',
+                    color: 'rgb(var(--color-text-muted))',
                   }}
                 >
                   Previously Uploaded
@@ -440,8 +440,8 @@ export function Component() {
               style={{
                 gridRow: activeSpec ? 'span 3' : undefined,
                 borderRadius: 16,
-                background: '#0A0F0D',
-                border: '1px solid #1E2E26',
+                background: 'rgb(var(--color-surface-sunken))',
+                border: '1px solid rgb(var(--color-border-subtle))',
                 overflow: 'hidden',
                 padding: step === 'endpoints' ? 0 : 20,
               }}
@@ -468,10 +468,10 @@ export function Component() {
                       marginBottom: 14,
                     }}
                   >
-                    <Plug style={{ width: 28, height: 28, color: '#708A7E' }} strokeWidth={1.4} />
+                    <Plug style={{ width: 28, height: 28, color: 'rgb(var(--color-text-muted))' }} strokeWidth={1.4} />
                   </div>
-                  <p style={{ fontSize: 15, fontWeight: 700, color: '#8A9B91' }}>Upload a spec first</p>
-                  <p style={{ fontSize: 13, color: '#708A7E', marginTop: 4 }}>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-text-muted))' }}>Upload a spec first</p>
+                  <p style={{ fontSize: 13, color: 'rgb(var(--color-text-muted))', marginTop: 4 }}>
                     Your API journey starts with an OpenAPI spec
                   </p>
                   <button
@@ -507,8 +507,8 @@ export function Component() {
                 <div
                   style={{
                     borderRadius: 14,
-                    background: '#0A0F0D',
-                    border: '1px solid #1E2E26',
+                    background: 'rgb(var(--color-surface-sunken))',
+                    border: '1px solid rgb(var(--color-border-subtle))',
                     padding: 16,
                   }}
                 >
@@ -516,7 +516,7 @@ export function Component() {
                     style={{
                       fontSize: 10,
                       fontWeight: 700,
-                      color: '#708A7E',
+                      color: 'rgb(var(--color-text-muted))',
                       textTransform: 'uppercase',
                       letterSpacing: '1.5px',
                       marginBottom: 10,
@@ -540,8 +540,8 @@ export function Component() {
                       <FileCode2 style={{ width: 16, height: 16, color: 'rgb(var(--color-brand-glow))' }} strokeWidth={1.5} />
                     </div>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: '#E8F0EC' }}>{activeSpec.name}</div>
-                      <div style={{ fontSize: 11, color: '#708A7E' }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>{activeSpec.name}</div>
+                      <div style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))' }}>
                         {activeSpec.fileFormat || 'json'} · {activeSpec.endpointCount} endpoints
                       </div>
                     </div>
@@ -605,10 +605,10 @@ export function Component() {
                             <div style={{ fontSize: 13, fontWeight: 700, color: nc }}>
                               Next: {nextStep.label}
                             </div>
-                            <div style={{ fontSize: 11, color: '#708A7E' }}>Step {nextStep.num} of 6</div>
+                            <div style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))' }}>Step {nextStep.num} of 6</div>
                           </div>
                         </div>
-                        <div style={{ fontSize: 12, color: '#708A7E', lineHeight: 1.4, marginBottom: 10 }}>
+                        <div style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))', lineHeight: 1.4, marginBottom: 10 }}>
                           {STEP_META[nextStep.id].desc}
                         </div>
                         <div
@@ -641,12 +641,12 @@ export function Component() {
 function MethodChart({ counts }: { counts: Record<string, number> }) {
   const maxC = Math.max(...Object.values(counts), 1);
   return (
-    <div style={{ borderRadius: 14, background: '#0A0F0D', border: '1px solid #1E2E26', padding: 18 }}>
+    <div style={{ borderRadius: 14, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))', padding: 18 }}>
       <div
         style={{
           fontSize: 10,
           fontWeight: 700,
-          color: '#708A7E',
+          color: 'rgb(var(--color-text-muted))',
           textTransform: 'uppercase',
           letterSpacing: '1.5px',
           marginBottom: 14,
@@ -658,10 +658,10 @@ function MethodChart({ counts }: { counts: Record<string, number> }) {
       <div style={{ display: 'flex', gap: 8, marginBottom: 6 }}>
         {METHOD_ORDER.map((m) => {
           const c = counts[m] || 0;
-          const cl = METHOD_COLORS[m] || ['#708A7E', '#8A9B91'];
+          const cl = METHOD_COLORS[m] || ['rgb(var(--color-text-muted))', 'rgb(var(--color-text-muted))'];
           return (
             <div key={m} style={{ flex: 1, textAlign: 'center' }}>
-              <span style={{ fontSize: 15, fontWeight: 800, color: c > 0 ? cl[1] : '#253D32' }}>{c}</span>
+              <span style={{ fontSize: 15, fontWeight: 800, color: c > 0 ? cl[1] : 'rgb(var(--color-text-muted) / 0.3)' }}>{c}</span>
             </div>
           );
         })}
@@ -671,7 +671,7 @@ function MethodChart({ counts }: { counts: Record<string, number> }) {
         {METHOD_ORDER.map((m) => {
           const c = counts[m] || 0;
           const pct = c > 0 ? Math.max(10, (c / maxC) * 100) : 3;
-          const cl = METHOD_COLORS[m] || ['#708A7E', '#8A9B91'];
+          const cl = METHOD_COLORS[m] || ['rgb(var(--color-text-muted))', 'rgb(var(--color-text-muted))'];
           return (
             <div
               key={m}
@@ -680,7 +680,7 @@ function MethodChart({ counts }: { counts: Record<string, number> }) {
                 borderRadius: '6px 6px 2px 2px',
                 height: `${pct}%`,
                 minHeight: c > 0 ? 10 : 3,
-                background: c > 0 ? `linear-gradient(180deg, ${cl[0]}, ${cl[1]})` : '#162019',
+                background: c > 0 ? `linear-gradient(180deg, ${cl[0]}, ${cl[1]})` : 'rgb(var(--color-surface-card))',
                 position: 'relative',
                 overflow: 'hidden',
               }}
@@ -705,10 +705,10 @@ function MethodChart({ counts }: { counts: Record<string, number> }) {
       <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
         {METHOD_ORDER.map((m) => {
           const c = counts[m] || 0;
-          const cl = METHOD_COLORS[m] || ['#708A7E', '#8A9B91'];
+          const cl = METHOD_COLORS[m] || ['rgb(var(--color-text-muted))', 'rgb(var(--color-text-muted))'];
           return (
             <div key={m} style={{ flex: 1, textAlign: 'center' }}>
-              <span style={{ fontSize: 10, fontWeight: 700, color: c > 0 ? cl[1] : '#253D32' }}>
+              <span style={{ fontSize: 10, fontWeight: 700, color: c > 0 ? cl[1] : 'rgb(var(--color-text-muted) / 0.3)' }}>
                 {m === 'DELETE' ? 'DEL' : m}
               </span>
             </div>

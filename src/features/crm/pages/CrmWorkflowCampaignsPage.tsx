@@ -149,14 +149,14 @@ export function Component() {
               <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <input required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
             <textarea value={form.description} rows={3} onChange={setF('description')} placeholder="Campaign description…"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
             <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Target & Workflow</span>
@@ -168,7 +168,7 @@ export function Component() {
               <button type="button" onClick={() => setEntityOpen(o => !o)}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${entityOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: entityOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
@@ -198,7 +198,7 @@ export function Component() {
               <button type="button" onClick={() => setWorkflowOpen(o => !o)}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${workflowOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: workflowOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',
@@ -232,7 +232,7 @@ export function Component() {
             <label className="block text-xs font-semibold text-text-secondary mb-1">Segment Conditions <span className="text-text-muted font-normal">(JSON)</span></label>
             <textarea value={form.segmentConditionsJson} rows={4} onChange={setF('segmentConditionsJson')}
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary font-mono placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               placeholder='{"filters":[{"field":"Status","op":"eq","value":"Open"}]}' />
           </div>
           <div>
@@ -241,7 +241,7 @@ export function Component() {
               <button type="button" onClick={() => setScheduleOpen(o => !o)}
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${scheduleOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: scheduleOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
                   outline: 'none',

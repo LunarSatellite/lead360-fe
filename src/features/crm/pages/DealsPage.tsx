@@ -857,7 +857,7 @@ export function Component() {
                     onChange={e => setNdName(e.target.value)}
                     placeholder="e.g. Acme Corp — Enterprise"
                     className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                 </div>
               </div>
@@ -871,7 +871,7 @@ export function Component() {
                     onClick={() => setNdStageOpen(o => !o)}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
                     style={{
-                      backgroundColor: '#1A2F27',
+                      backgroundColor: 'rgb(var(--color-glass-1))',
                       backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                       border: `1px solid ${ndStageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                       boxShadow: ndStageOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
@@ -919,7 +919,7 @@ export function Component() {
                       onChange={e => setNdAmount(e.target.value)}
                       placeholder="0"
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -932,7 +932,7 @@ export function Component() {
                       value={ndCloseDate}
                       onChange={e => setNdCloseDate(e.target.value)}
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     />
                   </div>
                 </div>
@@ -948,7 +948,7 @@ export function Component() {
                       value={ndOwnerId}
                       onChange={e => setNdOwnerId(e.target.value)}
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 appearance-none"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     >
                       <option value="">Assign to me (default)</option>
                       {teamMembers.map(u => (
@@ -965,7 +965,7 @@ export function Component() {
                       value={ndAccountId}
                       onChange={e => { setNdAccountId(e.target.value); setNdContactId(''); }}
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 appearance-none"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     >
                       <option value="">No account linked</option>
                       {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
@@ -1145,7 +1145,7 @@ function ContactDropdown({
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
         style={{
-          backgroundColor: '#1A2F27',
+          backgroundColor: 'rgb(var(--color-glass-1))',
           backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
           border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
           boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',

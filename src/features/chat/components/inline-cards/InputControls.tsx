@@ -574,7 +574,7 @@ function SliderControl({ card, onSubmit, consumed }: ControlProps<SliderCard>) {
           aria-valuetext={card.unit ? `${value} ${card.unit}` : String(value)}
           className="flex-1 h-1.5 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-brand [&::-webkit-slider-thumb]:cursor-pointer [&:focus::-webkit-slider-thumb]:ring-2 [&:focus::-webkit-slider-thumb]:ring-brand [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-brand [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
           style={{
-            background: `linear-gradient(to right, rgb(var(--color-brand-glow)) ${percent}%, #253D32 ${percent}%)`,
+            background: `linear-gradient(to right, rgb(var(--color-brand-glow)) ${percent}%, rgb(var(--color-glass-3)) ${percent}%)`,
           }}
         />
         <div className="flex items-center gap-1.5 shrink-0">

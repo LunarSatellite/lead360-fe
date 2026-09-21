@@ -20,7 +20,7 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
     return (
       <div className="space-y-2">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-12 rounded-lg animate-pulse" style={{ background: '#111916' }} />
+          <div key={i} className="h-12 rounded-lg animate-pulse" style={{ background: 'rgb(var(--color-surface-inset))' }} />
         ))}
       </div>
     );
@@ -29,9 +29,9 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
   if (specs.length === 0) {
     return (
       <div className="flex flex-col items-center py-12 text-center">
-        <FileJson style={{ width: 40, height: 40, color: '#708A7E', marginBottom: 12 }} strokeWidth={1.4} />
-        <p style={{ fontSize: 14, fontWeight: 700, color: '#8A9B91' }}>No specs uploaded yet</p>
-        <p style={{ fontSize: 12, color: '#708A7E', marginTop: 4 }}>
+        <FileJson style={{ width: 40, height: 40, color: 'rgb(var(--color-text-muted))', marginBottom: 12 }} strokeWidth={1.4} />
+        <p style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-text-muted))' }}>No specs uploaded yet</p>
+        <p style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))', marginTop: 4 }}>
           Upload your first OpenAPI / Swagger specification above.
         </p>
       </div>
@@ -41,17 +41,17 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
   return (
     <>
       <div
-        style={{ borderRadius: 16, background: '#0A0F0D', border: '1px solid #1E2E26', overflow: 'hidden' }}
+        style={{ borderRadius: 16, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))', overflow: 'hidden' }}
       >
         <div
           className="grid grid-cols-[1fr_80px_100px_80px_100px_60px] gap-3 px-5 py-3 border-b"
           style={{
-            borderColor: '#162019',
+            borderColor: 'rgb(var(--color-border-subtle))',
             fontSize: 11,
             fontWeight: 700,
             textTransform: 'uppercase',
             letterSpacing: '1.2px',
-            color: '#708A7E',
+            color: 'rgb(var(--color-text-muted))',
           }}
         >
           <span>Name</span>
@@ -66,38 +66,38 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
             key={s.id}
             onClick={() => onSelect(s)}
             className="grid grid-cols-[1fr_80px_100px_80px_100px_60px] gap-3 items-center px-5 py-3.5 cursor-pointer transition-all group"
-            style={{ borderBottom: '1px solid #0D1410' }}
-            onMouseOver={(e) => (e.currentTarget.style.background = '#0D1410')}
+            style={{ borderBottom: '1px solid rgb(var(--color-border-subtle))' }}
+            onMouseOver={(e) => (e.currentTarget.style.background = 'rgb(var(--color-surface-app))')}
             onMouseOut={(e) => (e.currentTarget.style.background = 'transparent')}
           >
             <div className="min-w-0">
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#E8F0EC' }} className="truncate">
+              <p style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }} className="truncate">
                 {s.name}
               </p>
               {s.apiTitle && (
-                <p style={{ fontSize: 12, color: '#708A7E' }} className="truncate">
+                <p style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))' }} className="truncate">
                   {s.apiTitle}
                 </p>
               )}
             </div>
-            <p style={{ fontSize: 14, fontWeight: 800, color: '#E8F0EC' }}>{s.endpointCount}</p>
+            <p style={{ fontSize: 14, fontWeight: 800, color: 'rgb(var(--color-text-primary))' }}>{s.endpointCount}</p>
             <StatusBadge variant={SPEC_STATUS_COLOR[s.status as SpecStatusValue]} dot>
               {SPEC_STATUS_LABEL[s.status as SpecStatusValue]}
             </StatusBadge>
-            <span style={{ fontSize: 11, fontWeight: 700, color: '#708A7E', textTransform: 'uppercase' }}>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'rgb(var(--color-text-muted))', textTransform: 'uppercase' }}>
               {s.fileFormat || '—'}
             </span>
-            <span style={{ fontSize: 11, color: '#708A7E' }}>
+            <span style={{ fontSize: 11, color: 'rgb(var(--color-text-muted))' }}>
               {formatDistanceToNow(new Date(s.createdAt), { addSuffix: true })}
             </span>
             <div
               className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all"
               onClick={(e) => e.stopPropagation()}
             >
-              <button onClick={() => onSelect(s)} className="p-1 rounded" style={{ color: '#708A7E' }}>
+              <button onClick={() => onSelect(s)} className="p-1 rounded" style={{ color: 'rgb(var(--color-text-muted))' }}>
                 <Eye className="w-3.5 h-3.5" strokeWidth={1.6} />
               </button>
-              <button onClick={() => setConfirmId(s.id)} className="p-1 rounded" style={{ color: '#708A7E' }}>
+              <button onClick={() => setConfirmId(s.id)} className="p-1 rounded" style={{ color: 'rgb(var(--color-text-muted))' }}>
                 <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
               </button>
             </div>
@@ -110,7 +110,7 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
           <div className="absolute inset-0 bg-black/50" onClick={() => setConfirmId(null)} />
           <div
             className="relative w-full max-w-sm mx-4"
-            style={{ background: '#0A0F0D', borderRadius: 16, border: '1px solid #1E2E26', padding: 24 }}
+            style={{ background: 'rgb(var(--color-surface-sunken))', borderRadius: 16, border: '1px solid rgb(var(--color-border-subtle))', padding: 24 }}
           >
             <div className="flex items-start gap-3 mb-4">
               <div
@@ -126,8 +126,8 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
                 <AlertCircle style={{ width: 20, height: 20, color: 'rgb(var(--color-danger))' }} strokeWidth={1.8} />
               </div>
               <div>
-                <h3 style={{ fontSize: 14, fontWeight: 700, color: '#E8F0EC' }}>Delete this spec?</h3>
-                <p style={{ fontSize: 12, color: '#708A7E', marginTop: 4 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>Delete this spec?</h3>
+                <p style={{ fontSize: 12, color: 'rgb(var(--color-text-muted))', marginTop: 4 }}>
                   This removes the spec and all parsed data.
                 </p>
               </div>
@@ -140,9 +140,9 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
                   borderRadius: 10,
                   fontSize: 13,
                   fontWeight: 600,
-                  color: '#8A9B91',
-                  background: '#0D1410',
-                  border: '1px solid #1E2E26',
+                  color: 'rgb(var(--color-text-muted))',
+                  background: 'rgb(var(--color-surface-app))',
+                  border: '1px solid rgb(var(--color-border-subtle))',
                   cursor: 'pointer',
                 }}
               >

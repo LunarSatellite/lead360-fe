@@ -65,7 +65,7 @@ function ProgressRing({ completed, total }: { completed: number; total: number }
   return (
     <div className="relative w-[44px] h-[44px] flex-shrink-0">
       <svg width="44" height="44" viewBox="0 0 44 44" className="-rotate-90">
-        <circle cx="22" cy="22" r={r} fill="none" stroke="#132A21" strokeWidth="3" />
+        <circle cx="22" cy="22" r={r} fill="none" className="stroke-glass-1" strokeWidth="3" />
         <circle
           cx="22"
           cy="22"
@@ -157,7 +157,7 @@ function SidebarSteps({
               className={`
                 w-6 h-6 rounded-[7px] flex items-center justify-center flex-shrink-0
                 text-[10px] font-extrabold transition-all duration-200
-                ${done ? 'bg-brand-soft' : active ? 'bg-brand-beacon/[0.06] border border-brand-beacon/10' : 'bg-[#0F1A16]'}
+                ${done ? 'bg-brand-soft' : active ? 'bg-brand-beacon/[0.06] border border-brand-beacon/10' : 'bg-bg-shell'}
               `}
             >
               {done ? (

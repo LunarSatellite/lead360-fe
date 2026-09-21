@@ -60,7 +60,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
 }
 
-const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
 export function Component() {
   const bundlesQuery = useProductBundles();

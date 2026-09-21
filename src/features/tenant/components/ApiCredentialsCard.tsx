@@ -310,8 +310,8 @@ function CredentialsModal({
       <div
         className="relative w-full max-w-lg mx-4 overflow-hidden flex flex-col"
         style={{
-          background: '#0A0F0D',
-          border: '1px solid #1E2E26',
+          background: 'rgb(var(--color-surface-sunken))',
+          border: '1px solid rgb(var(--color-border-subtle))',
           borderRadius: 18,
           boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
           maxHeight: '90vh',
@@ -453,7 +453,7 @@ function DisconnectDialog({ onClose, onConfirm, isPending }: { onClose: () => vo
       <div
         className="relative w-full max-w-sm mx-4"
         style={{
-          background: '#0A0F0D',
+          background: 'rgb(var(--color-surface-sunken))',
           border: '1px solid rgb(var(--color-danger) / 0.3)',
           borderRadius: 18,
           boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
@@ -634,7 +634,7 @@ export function ApiCredentialsCard() {
                   {menuOpen && (
                     <div
                       className="absolute right-0 top-full mt-1 w-40 rounded-[10px] overflow-hidden z-20"
-                      style={{ background: '#0D1410', border: '1px solid #1E2E26', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}
+                      style={{ background: 'rgb(var(--color-surface-app))', border: '1px solid rgb(var(--color-border-subtle))', boxShadow: '0 8px 24px rgba(0,0,0,0.4)' }}
                     >
                       <button
                         type="button"

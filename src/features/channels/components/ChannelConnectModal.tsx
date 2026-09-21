@@ -339,7 +339,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                 className="w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0"
                 style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
               >
-                <Check className="w-4 h-4" strokeWidth={2.5} style={{ color: '#0A0F0D' }} />
+                <Check className="w-4 h-4" strokeWidth={2.5} style={{ color: 'rgb(var(--color-text-inverted))' }} />
               </div>
               <div>
                 <p className="text-sm font-bold text-text-primary">Channel connected successfully</p>

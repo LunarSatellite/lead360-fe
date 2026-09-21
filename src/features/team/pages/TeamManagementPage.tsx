@@ -113,7 +113,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
     );
   };
   const inputCls = 'w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
-  const inputBg = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' };
+  const inputBg = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' };
   const [roleOpen, setRoleOpen] = useState(false);
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
@@ -174,7 +174,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
                 onClick={() => setRoleOpen(o => !o)}
                 className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-brand/20 focus:outline-none transition-all"
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   borderColor: roleOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)',
                   boxShadow: roleOpen

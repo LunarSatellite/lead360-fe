@@ -460,7 +460,7 @@ export function Component() {
                 <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Search existing deals…"
                   autoComplete="off"
                   value={dealSearch}
@@ -508,7 +508,7 @@ export function Component() {
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Search existing contacts…"
                   autoComplete="off"
                   value={contactSearch}
@@ -559,7 +559,7 @@ export function Component() {
                 <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="Select a price book…"
                   autoComplete="off"
                   value={pbSearch}
@@ -613,7 +613,7 @@ export function Component() {
                 value={currency}
                 onChange={e => setCurrency(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 placeholder="USD"
               />
             </div>
@@ -628,7 +628,7 @@ export function Component() {
                   value={validityDays}
                   onChange={e => setValidityDays(Number(e.target.value))}
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   min={1}
                 />
               </div>
@@ -652,7 +652,7 @@ export function Component() {
                     value={bundleId}
                     onChange={e => setBundleId(e.target.value)}
                     className="text-xs py-1 px-2 rounded-lg border border-brand/20 text-text-primary focus:outline-none"
-                    style={{ backgroundColor: '#1A2F27' }}
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
                   >
                     <option value="">Add bundle…</option>
                     {bundleList.map((b: any) => <option key={b.id} value={b.id}>{b.name} ({b.itemCount})</option>)}
@@ -678,7 +678,7 @@ export function Component() {
                     : x));
                 }}
                 className="w-full px-3 py-2 rounded-xl border border-brand/20 text-xs text-text-primary focus:outline-none"
-                style={{ backgroundColor: '#1A2F27' }}
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
               >
                 <option value="">＋ Pick from {bookDetail?.data?.data?.name ?? 'price book'}…</option>
                 {bookEntries.map((en: any) => (
@@ -697,7 +697,7 @@ export function Component() {
                     onChange={e => updateLine(i, 'description', e.target.value)}
                     placeholder="Description"
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                   <input
                     type="number"
@@ -706,7 +706,7 @@ export function Component() {
                     placeholder="Qty"
                     min={1}
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                   <input
                     type="number"
@@ -716,7 +716,7 @@ export function Component() {
                     min={0}
                     step={0.01}
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
                   <button
                     onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))}
@@ -739,7 +739,7 @@ export function Component() {
                 value={taxPercent}
                 onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
                 className="w-20 px-2 py-1.5 rounded-xl border border-brand/20 text-xs text-text-primary text-right focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: '#1A2F27' }}
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
                 min={0}
                 step={0.01}
               />
@@ -760,7 +760,7 @@ export function Component() {
             onChange={e => setNotes(e.target.value)}
             rows={3}
             className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             placeholder="Optional notes…"
           />
         </div>

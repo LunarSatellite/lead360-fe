@@ -316,7 +316,7 @@ function IndustryShowcase() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-semibold transition-all"
               style={isActive
                 ? { background: d.botColor + '18', border: `0.5px solid ${d.botColor}55`, color: d.botColor }
-                : { background: 'transparent', border: '0.5px solid #253D32', color: '#665C1A' }}
+                : { background: 'transparent', border: '0.5px solid rgb(var(--color-border-default))', color: '#665C1A' }}
             >
               <DIcon className="w-3.5 h-3.5" strokeWidth={1.6} />
               {d.label}
@@ -339,7 +339,7 @@ function IndustryShowcase() {
           { label: 'Setup time', value: '<5 min' },
           { label: 'Industries', value: '12+'    },
         ].map(({ label, value }) => (
-          <div key={label} className="text-center py-2 rounded-sm" style={{ background: 'rgb(var(--color-brand-glow) / 0.05)', border: '0.5px solid #1E2E26' }}>
+          <div key={label} className="text-center py-2 rounded-sm" style={{ background: 'rgb(var(--color-brand-glow) / 0.05)', border: '0.5px solid rgb(var(--color-border-subtle))' }}>
             <p className="text-sm font-extrabold text-brand">{value}</p>
             <p className="text-[10px] text-text-muted mt-0.5">{label}</p>
           </div>
@@ -403,7 +403,7 @@ function LoginPanelCarousel() {
           >
             <span
               className="rounded-full transition-all duration-300"
-              style={{ display: 'block', width: active === i ? 20 : 6, height: 6, background: active === i ? 'rgb(var(--color-brand-glow))' : '#253D32' }}
+              style={{ display: 'block', width: active === i ? 20 : 6, height: 6, background: active === i ? 'rgb(var(--color-brand-glow))' : 'rgb(var(--color-glass-3))' }}
             />
             {active === i && <span className="text-[11px] font-semibold text-brand">{label}</span>}
           </button>
@@ -659,7 +659,7 @@ export function AuthLayout() {
           <div className="flex items-center justify-between mb-8 sm:mb-10 lg:mb-12">
             <Link to="/" className="flex items-center gap-2.5 sm:gap-3">
               {consoleBrand.logoSrc && (
-                <div className="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-[#050808] flex items-center justify-center p-1 shrink-0">
+                <div className="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-bg-sunken flex items-center justify-center p-1 shrink-0">
                   <img src={consoleBrand.logoSrc} alt={consoleBrand.logoAlt} className="w-full h-full object-contain" />
                 </div>
               )}

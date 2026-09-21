@@ -28,9 +28,9 @@ const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-borde
 const selectCls = 'px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
 
 const formInputCls = 'w-full px-3 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted outline-none focus:border-brand/50 transition-colors';
-const formInputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
+const formInputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 const dropTriggerStyle = (open: boolean) => ({
-  backgroundColor: '#1A2F27',
+  backgroundColor: 'rgb(var(--color-glass-1))',
   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
   border: `1px solid ${open ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
   boxShadow: open ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',

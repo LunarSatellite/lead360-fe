@@ -137,7 +137,7 @@ export function Component() {
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Event type</label>
                 <input
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. email_opened"
                   value={form.eventType}
                   onChange={e => setForm(f => ({ ...f, eventType: e.target.value }))}
@@ -149,7 +149,7 @@ export function Component() {
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Label</label>
                 <input
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. Email Opened"
                   value={form.label}
                   onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
@@ -161,7 +161,7 @@ export function Component() {
                 <input
                   type="number"
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   value={form.points}
                   onChange={e => setForm(f => ({ ...f, points: Number(e.target.value) }))}
                 />

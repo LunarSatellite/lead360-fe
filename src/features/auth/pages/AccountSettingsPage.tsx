@@ -85,9 +85,9 @@ const SECTIONS: SectionDef[] = [
   { id: 'voice', label: 'Voice & TTS', icon: Mic, iconBg: 'bg-brand-soft', iconColor: 'text-brand', group: 'account', description: 'Configure voice input and text-to-speech settings for your chatbot.' },
   { id: 'integrations', label: 'Integrations', icon: Plug, iconBg: 'bg-brand-glow/[0.06]', iconColor: 'text-brand', group: 'account', description: 'Connect your external API and manage data-storage settings.' },
   { id: 'password', label: 'Password & Security', icon: Lock, iconBg: 'bg-warning/[0.06]', iconColor: 'text-warning', group: 'account', description: 'Change your password and manage authentication settings.' },
-  { id: 'billing', label: 'Billing & Plan', icon: CreditCard, iconBg: 'bg-[#0F1A16]', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
-  { id: 'notifications', label: 'Notifications', icon: Bell, iconBg: 'bg-[#0F1A16]', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
-  { id: 'appearance', label: 'Appearance', icon: Palette, iconBg: 'bg-[#0F1A16]', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
+  { id: 'billing', label: 'Billing & Plan', icon: CreditCard, iconBg: 'bg-bg-shell', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
+  { id: 'notifications', label: 'Notifications', icon: Bell, iconBg: 'bg-bg-shell', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
+  { id: 'appearance', label: 'Appearance', icon: Palette, iconBg: 'bg-bg-shell', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
   { id: 'danger', label: 'Log out', icon: LogOut, iconBg: '', iconColor: '', group: 'system', danger: true, description: '' },
 ];
 
@@ -286,7 +286,7 @@ export function Component() {
                         {section.label}
                       </span>
                       {section.badge ? (
-                        <span className="text-[8px] text-text-muted bg-[#0F1A16] px-[6px] py-[2px] rounded">
+                        <span className="text-[8px] text-text-muted bg-bg-shell px-[6px] py-[2px] rounded">
                           {section.badge}
                         </span>
                       ) : (
@@ -442,7 +442,7 @@ function ProfileSection({ profile }: { profile: UserProfileDto }) {
           <input
             value={profile.email || ''}
             disabled
-            className="form-input !border-[#1A2B22] !text-text-muted !cursor-not-allowed"
+            className="form-input !border-border-subtle !text-text-muted !cursor-not-allowed"
           />
           <p className="text-[10px] text-text-secondary mt-1.5">
             Email cannot be changed. Contact support if needed.
@@ -468,7 +468,7 @@ function ProfileSection({ profile }: { profile: UserProfileDto }) {
           <input
             value={profile.tenantName || ''}
             disabled
-            className="form-input !border-[#1A2B22] !text-text-muted !cursor-not-allowed"
+            className="form-input !border-border-subtle !text-text-muted !cursor-not-allowed"
           />
         </div>
 

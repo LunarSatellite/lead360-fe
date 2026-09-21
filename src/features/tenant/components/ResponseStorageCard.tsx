@@ -21,8 +21,8 @@ function EnableConfirmDialog({
       <div
         className="relative w-full max-w-sm mx-4"
         style={{
-          background: '#0A0F0D',
-          border: '1px solid #253D32',
+          background: 'rgb(var(--color-surface-sunken))',
+          border: '1px solid rgb(var(--color-border-default))',
           borderRadius: 18,
           boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
         }}

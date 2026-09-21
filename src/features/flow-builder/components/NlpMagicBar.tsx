@@ -112,7 +112,7 @@ export function NlpMagicBar({ onFlowGenerated }: NlpMagicBarProps) {
                 key={i}
                 className="flex items-center gap-1.5 text-xs mb-px"
                 style={{
-                  color: i < thinkingStep ? 'rgb(var(--color-success))' : i === thinkingStep ? '#059669' : '#94A3B8',
+                  color: i < thinkingStep ? 'rgb(var(--color-success))' : i === thinkingStep ? '#059669' : 'rgb(var(--color-text-muted))',
                   fontWeight: i === thinkingStep ? 600 : 400,
                 }}
               >

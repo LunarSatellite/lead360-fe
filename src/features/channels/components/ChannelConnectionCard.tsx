@@ -46,8 +46,8 @@ const BRAND_COLOR_MAP: Record<ChannelTypeValue, string> = {
   2: '#0084FF',
   3: '#E1306C',
   4: '#2AABEE',
-  5: '#6B7280',
-  6: '#6B7280',
+  5: 'rgb(var(--color-text-muted))',
+  6: 'rgb(var(--color-text-muted))',
   7: '#00D97E',
   8: '#A78BFA',
   9: '#6650DF',
@@ -58,8 +58,8 @@ const BRAND_BG_MAP: Record<ChannelTypeValue, string> = {
   2: 'rgba(0,132,255,0.06)',
   3: 'rgba(225,48,108,0.06)',
   4: 'rgba(42,171,238,0.06)',
-  5: 'rgba(107,114,128,0.04)',
-  6: 'rgba(107,114,128,0.04)',
+  5: 'rgb(var(--color-text-muted) / 0.04)',
+  6: 'rgb(var(--color-text-muted) / 0.04)',
   7: 'rgba(0,217,126,0.06)',
   8: 'rgba(167,139,250,0.06)',
   9: 'rgba(102,80,223,0.06)',
@@ -70,8 +70,8 @@ const BRAND_BORDER_MAP: Record<ChannelTypeValue, string> = {
   2: 'rgba(0,132,255,0.1)',
   3: 'rgba(225,48,108,0.1)',
   4: 'rgba(42,171,238,0.1)',
-  5: 'rgba(107,114,128,0.06)',
-  6: 'rgba(107,114,128,0.06)',
+  5: 'rgb(var(--color-text-muted) / 0.06)',
+  6: 'rgb(var(--color-text-muted) / 0.06)',
   7: 'rgba(0,217,126,0.1)',
   8: 'rgba(167,139,250,0.1)',
   9: 'rgba(102,80,223,0.1)',
@@ -92,9 +92,9 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
   const remove = useDeleteChannel();
 
   const Icon = ICON_MAP[connection.channelType] ?? Globe;
-  const brandColor = BRAND_COLOR_MAP[connection.channelType] || '#708A7E';
-  const brandBg = BRAND_BG_MAP[connection.channelType] || 'rgba(112,138,126,0.04)';
-  const brandBorder = BRAND_BORDER_MAP[connection.channelType] || 'rgba(112,138,126,0.06)';
+  const brandColor = BRAND_COLOR_MAP[connection.channelType] || 'rgb(var(--color-text-muted))';
+  const brandBg = BRAND_BG_MAP[connection.channelType] || 'rgb(var(--color-text-muted) / 0.04)';
+  const brandBorder = BRAND_BORDER_MAP[connection.channelType] || 'rgb(var(--color-text-muted) / 0.06)';
   const typeLabel = CHANNEL_TYPE_LABEL[connection.channelType];
   const isActive = connection.status === ChannelConnectionStatus.Active;
   const isToggling = activate.isPending || deactivate.isPending;
@@ -249,7 +249,7 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
                   className="flex-1 rounded-sm"
                   style={{
                     height: `${h}%`,
-                    background: i >= 8 ? `${brandColor}${i === 10 ? '' : '60'}` : '#111916',
+                    background: i >= 8 ? `${brandColor}${i === 10 ? '' : '60'}` : 'rgb(var(--color-surface-inset))',
                   }}
                 />
               ))}
@@ -262,7 +262,7 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
           <div className="flex flex-col items-center justify-center w-24 shrink-0">
             <div className="relative w-[72px] h-[72px]">
               <svg viewBox="0 0 72 72" className="-rotate-90">
-                <circle cx="36" cy="36" r="30" fill="none" stroke="#111916" strokeWidth="4" />
+                <circle cx="36" cy="36" r="30" fill="none" className="stroke-bg-shell" strokeWidth="4" />
                 <circle
                   cx="36"
                   cy="36"
@@ -339,17 +339,17 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
       {/* Brand bar */}
       <div
         className="w-1 h-8 rounded-sm shrink-0"
-        style={{ background: isActive ? brandColor : '#708A7E' }}
+        style={{ background: isActive ? brandColor : 'rgb(var(--color-text-muted))' }}
       />
 
       {/* Icon */}
       <div
         className="w-[34px] h-[34px] rounded-[10px] flex items-center justify-center shrink-0"
-        style={{ background: isActive ? brandBg : 'rgba(112,138,126,0.04)' }}
+        style={{ background: isActive ? brandBg : 'rgb(var(--color-text-muted) / 0.04)' }}
       >
         <Icon
           className="w-[15px] h-[15px]"
-          style={{ color: isActive ? brandColor : '#708A7E' }}
+          style={{ color: isActive ? brandColor : 'rgb(var(--color-text-muted))' }}
           strokeWidth={1.5}
         />
       </div>

@@ -36,6 +36,10 @@
    ═══════════════════════════════════════════════════════ */
 :root {
   /* ── Surfaces ── */
+  /* Below the body, not above it: the compact page header, the mobile bottom
+     nav and the logo tile all sit on this plane. CLAUDE.md has documented the
+     value as the header's "flat dark" since before it was a token. */
+  --color-surface-sunken:     8  10   9;   /* #080A09 — header / nav bar */
   --color-surface-app:       10  22  18;   /* #0A1612 — page body        */
   --color-surface-card:      19  36  32;   /* #132420 — card base        */
   --color-surface-elevated:  26  51  44;   /* #1A332C — modal / popover  */
@@ -139,6 +143,11 @@
    ═══════════════════════════════════════════════════════ */
 :root[data-console='stylemint'] {
   /* ── Surfaces (zinc) ── */
+  /* The mobile palette has no step below bgAppBody — it bottoms out there and
+     goes up. Derived by taking bgAppBody down by the same proportion Lead360
+     drops from its body to its header, so the header reads as recessed by the
+     same amount in both products. */
+  --color-surface-sunken:    16  16  18;   /* #101012 — derived step     */
   --color-surface-app:       24  24  27;   /* #18181B — bgAppBody        */
   --color-surface-card:      31  31  35;   /* #1F1F23 — surfaceRaised    */
   --color-surface-elevated:  39  39  42;   /* #27272A — bgAppBodyLight   */

@@ -505,7 +505,7 @@ export function Component() {
           {/* Header card */}
           <div className="rounded-2xl border border-border-subtle bg-bg-card p-6">
             <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-xl bg-[#132A21] flex items-center justify-center text-xl font-extrabold text-[#8FAEA0] shrink-0">
+              <div className="w-14 h-14 rounded-xl bg-glass-1 flex items-center justify-center text-xl font-extrabold text-text-muted shrink-0">
                 {contact.fullName[0]?.toUpperCase()}
               </div>
 

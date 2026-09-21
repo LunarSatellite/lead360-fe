@@ -35,8 +35,8 @@ export function DeleteAgentDialog({ open, agentId, agentName, onClose }: Props) 
       <div
         className="relative w-full max-w-md mx-4 overflow-hidden flex flex-col"
         style={{
-          background: '#0A0F0D',
-          border: '1.5px solid #1E2E26',
+          background: 'rgb(var(--color-surface-sunken))',
+          border: '1.5px solid rgb(var(--color-border-subtle))',
           borderRadius: 20,
           boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
         }}

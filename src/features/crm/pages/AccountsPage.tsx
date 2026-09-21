@@ -490,7 +490,7 @@ function AccountDetailPanel({
 // ─── New Account Modal ────────────────────────────────────────────────────────
 
 const glowInput = {
-  backgroundColor: '#1A2F27',
+  backgroundColor: 'rgb(var(--color-glass-1))',
   backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
 } as const;
 

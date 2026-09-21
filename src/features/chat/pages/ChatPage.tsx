@@ -432,7 +432,7 @@ export function Component() {
             {!thread.costLimitError && (
               <div
                 className="absolute -top-10 inset-x-0 h-10 pointer-events-none"
-                style={{ background: 'linear-gradient(to bottom, transparent, #0D1410)' }}
+                style={{ background: 'linear-gradient(to bottom, transparent, rgb(var(--color-surface-app)))' }}
               />
             )}
             <div className="max-w-[780px] mx-auto">
@@ -1669,7 +1669,7 @@ function DocAssistantBlock({
         className="w-7 h-7 rounded-sm flex items-center justify-center shrink-0 mt-0.5"
         style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
       >
-        <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
+        <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: 'rgb(var(--color-text-inverted))' }} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[10.5px] font-bold text-text-muted uppercase tracking-[1.5px] mb-2">
@@ -1706,7 +1706,7 @@ function DocLongRunningLine({ label, stage }: { label: string; stage?: string })
         className="w-7 h-7 rounded-sm flex items-center justify-center shrink-0 mt-0.5"
         style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
       >
-        <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
+        <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: 'rgb(var(--color-text-inverted))' }} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="text-[10.5px] font-bold text-text-muted uppercase tracking-[1.5px] mb-2">
@@ -1726,7 +1726,7 @@ function EmptyChatHints({ onChip }: { onChip: (text: string) => void }) {
         className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
         style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
       >
-        <Sparkles className="w-5 h-5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
+        <Sparkles className="w-5 h-5" strokeWidth={2} style={{ color: 'rgb(var(--color-text-inverted))' }} />
       </div>
 
       <h2 className="text-xl font-extrabold text-text-primary mb-1.5 leading-tight">
@@ -1764,7 +1764,7 @@ function BotAvatar() {
       className="w-7 h-7 rounded-sm flex items-center justify-center shrink-0"
       style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
     >
-      <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
+      <Sparkles className="w-3.5 h-3.5" strokeWidth={2} style={{ color: 'rgb(var(--color-text-inverted))' }} />
     </div>
   );
 }

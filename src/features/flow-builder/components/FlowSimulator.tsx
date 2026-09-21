@@ -184,7 +184,7 @@ export function FlowSimulator() {
                 borderRadius: 10,
                 ...(m.role === 'user'
                   ? { background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))', color: '#fff', borderBottomRightRadius: 3 }
-                  : { background: '#0D1410', color: '#E8F0EC', borderBottomLeftRadius: 3, border: '1px solid #1E2E26' }),
+                  : { background: 'rgb(var(--color-surface-app))', color: 'rgb(var(--color-text-primary))', borderBottomLeftRadius: 3, border: '1px solid rgb(var(--color-border-subtle))' }),
               }}
             >
               {m.role === 'user' && m.isVoice && (

@@ -145,7 +145,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
               placeholder={IDENTIFIER_HINTS[watchedType] ?? 'Unique channel identifier'}
               className={inputClass}
               style={{
-                backgroundColor: '#1A2F27',
+                backgroundColor: 'rgb(var(--color-glass-1))',
                 backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                 borderColor: 'rgb(var(--brand-rgb) / 0.2)',
               }}
@@ -165,7 +165,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
               placeholder="e.g. Main WhatsApp, Support SMS"
               className={inputClass}
               style={{
-                backgroundColor: '#1A2F27',
+                backgroundColor: 'rgb(var(--color-glass-1))',
                 backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                 borderColor: 'rgb(var(--brand-rgb) / 0.2)',
               }}
@@ -184,7 +184,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
                 rows={3}
                 className={`${inputClass} resize-none font-mono text-xs`}
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   borderColor: 'rgb(var(--brand-rgb) / 0.2)',
                 }}

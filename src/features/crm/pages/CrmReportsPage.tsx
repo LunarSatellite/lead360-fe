@@ -242,7 +242,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Open deals by owner"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
             </div>
           </div>
@@ -258,7 +258,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 onClick={() => setObjectOpen(o => !o)}
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   border: `1px solid ${objectOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: objectOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
@@ -354,7 +354,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         updateFilter(i, { field: e.target.value, operator: nf?.operators[0] ?? 'eq', value: '' });
                       }}
                       className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     >
                       {object.fields.map((of) => <option key={of.key} value={of.key} className="bg-bg">{of.label}</option>)}
                     </select>
@@ -362,7 +362,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                       value={f.operator}
                       onChange={(e) => updateFilter(i, { operator: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                     >
                       {field.operators.map((op) => <option key={op} value={op} className="bg-bg">{op}</option>)}
                     </select>
@@ -371,7 +371,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         value={f.value ?? ''}
                         onChange={(e) => updateFilter(i, { value: e.target.value })}
                         className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
-                        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       >
                         <option value="" className="bg-bg">Select...</option>
                         {field.enumValues.map((v) => <option key={v} value={v} className="bg-bg">{v}</option>)}
@@ -383,7 +383,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         disabled={f.operator === 'exists'}
                         placeholder="Value..."
                         className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors disabled:opacity-40"
-                        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       />
                     )}
                     <button onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
@@ -410,7 +410,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 onClick={() => setGroupByOpen(o => !o)}
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   border: `1px solid ${groupByOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: groupByOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
@@ -470,7 +470,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 onClick={() => setSortByOpen(o => !o)}
                 className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                 style={{
-                  backgroundColor: '#1A2F27',
+                  backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
                   border: `1px solid ${sortByOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
                   boxShadow: sortByOpen ? '0 0 0 1px rgb(var(--brand-rgb) / 0.5), 0 0 10px rgb(var(--brand-rgb) / 0.2), 0 0 20px rgb(var(--brand-rgb) / 0.08)' : 'none',
@@ -532,7 +532,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 value={aggregateFunction}
                 onChange={(e) => setAggregateFunction(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               >
                 {AGGREGATE_FUNCTIONS.map((f) => <option key={f} value={f} className="bg-bg">{f === 'count' ? 'Count of records' : f.toUpperCase()}</option>)}
               </select>
@@ -547,7 +547,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                   value={aggregateField}
                   onChange={(e) => setAggregateField(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 >
                   <option value="" className="bg-bg">Select numeric field...</option>
                   {numericFields.map((f) => <option key={f.key} value={f.key} className="bg-bg">{f.label}</option>)}
@@ -756,7 +756,7 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
         value={frequency}
         onChange={(e) => setFrequency(e.target.value)}
         className="w-32 px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
-        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
       >
         {REPORT_SCHEDULE_FREQUENCIES.map((f) => <option key={f} value={f} className="bg-bg">{f}</option>)}
       </select>
@@ -765,7 +765,7 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
         onChange={(e) => setEmails(e.target.value)}
         placeholder="recipient@company.com, another@company.com"
         className="flex-1 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-        style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
       />
       <button
         type="submit"

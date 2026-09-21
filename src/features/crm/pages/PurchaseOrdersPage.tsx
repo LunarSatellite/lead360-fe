@@ -289,7 +289,7 @@ export function Component() {
                   value={expectedDelivery}
                   onChange={e => setExpectedDelivery(e.target.value)}
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </Field>
@@ -301,7 +301,7 @@ export function Component() {
                   onChange={e => setCurrency(e.target.value)}
                   placeholder="USD"
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
               </div>
             </Field>
@@ -316,7 +316,7 @@ export function Component() {
                 rows={2}
                 placeholder="123 Industrial Ave, Suite 400, New York, NY 10001"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
             </div>
           </Field>
@@ -339,20 +339,20 @@ export function Component() {
                     <ShoppingBag className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name"
                       className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
                   <div className="relative">
                     <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
                     <input value={l.sku} onChange={e => setLine(i, 'sku', e.target.value)} placeholder="SKU"
                       className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
                   <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)}
                     className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <input type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00"
                     className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30"><X className="w-3.5 h-3.5" /></button>
                 </div>
               ))}
@@ -371,7 +371,7 @@ export function Component() {
                 rows={2}
                 placeholder="Special instructions, delivery requirements…"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
             </div>
           </Field>
@@ -462,7 +462,7 @@ export function Component() {
       <SlideOver open={showReject} onClose={() => setShowReject(false)} title="Reject Purchase Order">
         <form onSubmit={handleReject} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Rejection Reason *"><textarea required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Rejection Reason *"><textarea required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={rejectPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {rejectPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Reject'}
@@ -476,7 +476,7 @@ export function Component() {
       <SlideOver open={showCancel} onClose={() => setShowCancel(false)} title="Cancel Purchase Order">
         <form onSubmit={handleCancel} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." /></Field>
+          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={cancelPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {cancelPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancel Order'}

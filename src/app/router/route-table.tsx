@@ -215,7 +215,9 @@ export const routeObjects: RouteObject[] = [
       { path: 'crm/event-ingestion', lazy: () => import('@/features/crm/pages/EventIngestionPage') },
 
       // ── CRM depth: reports, webforms, knowledge base, pricing and territories ──
-      { path: 'crm/audit-log', lazy: () => import('@/features/crm/pages/AuditLogPage') },
+      // Two paths reached the same AuditLogPage. One page, one URL: the older bookmark
+      // redirects rather than rendering a second copy of the same screen.
+      { path: 'crm/audit-log', element: <Navigate to="/dashboard/crm/audit" replace /> },
       { path: 'crm/commissions', lazy: () => import('@/features/crm/pages/CommissionsPage') },
       { path: 'crm/competitors', lazy: () => import('@/features/crm/pages/CompetitorsPage') },
       { path: 'crm/contact-cards', lazy: () => import('@/features/crm/contact-cards/pages/CrmContactCardsPage') },

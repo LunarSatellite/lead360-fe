@@ -80,8 +80,7 @@ import {
   Workflow,
   Wrench,
   X,
-  Zap,
-} from 'lucide-react';
+  Zap, CalendarClock, Crosshair, DollarSign, FileBarChart, FileSignature, LayoutPanelTop, MapPin, Percent, Undo2, IdCard } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
@@ -179,7 +178,7 @@ const settingsNav = [
 // but are intentionally absent from the customer-facing shell.
 const SHOW_LEGACY_PLATFORM_TOOLS = true;
 
-const crmNav = [
+export const crmNav = [
   { label: 'Leads', href: ROUTES.dashboard.crmLeads, icon: Users },
   { label: 'Contacts', href: ROUTES.dashboard.crmContacts, icon: UserCheck },
   { label: 'Duplicates', href: ROUTES.dashboard.crmDedup, icon: GitMerge },
@@ -226,6 +225,29 @@ const crmNav = [
   { label: 'Activity feed', href: ROUTES.dashboard.crmActivity, icon: Globe },
   { label: 'Audit log', href: ROUTES.dashboard.crmAudit, icon: ScrollText },
   { label: 'Notification settings', href: ROUTES.dashboard.crmNotificationSettings, icon: Settings },
+  // ── Routed but previously unlinked: reachable only by typing the URL until now.
+  // Analytics and Support stay out on purpose — see the note above; they live once
+  // in the primary rail as the unified pages. ──
+  { label: 'Contracts', href: ROUTES.dashboard.crmContracts, icon: FileSignature },
+  { label: 'Renewals', href: ROUTES.dashboard.crmRenewals, icon: CalendarClock },
+  { label: 'Price books', href: ROUTES.dashboard.crmPriceBooks, icon: BookOpen },
+  { label: 'Competitors', href: ROUTES.dashboard.crmCompetitors, icon: Crosshair },
+  { label: 'Territories', href: ROUTES.dashboard.crmTerritories, icon: MapPin },
+  { label: 'Web forms', href: ROUTES.dashboard.crmWebForms, icon: Globe },
+  { label: 'Deliveries', href: ROUTES.dashboard.crmDeliveries, icon: Truck },
+  { label: 'Inventory', href: ROUTES.dashboard.crmInventory, icon: Package },
+  { label: 'Bundles', href: ROUTES.dashboard.crmProductBundles, icon: Package },
+  { label: 'Credit notes', href: ROUTES.dashboard.crmCreditNotes, icon: Undo2 },
+  { label: 'Payment terms', href: ROUTES.dashboard.crmPaymentTerms, icon: Calendar },
+  { label: 'Tax rules', href: ROUTES.dashboard.crmTaxRules, icon: Percent },
+  { label: 'Commissions', href: ROUTES.dashboard.crmCommissions, icon: DollarSign },
+  { label: 'Knowledge base', href: ROUTES.dashboard.crmKnowledgeBase, icon: BookOpen },
+  { label: 'Reports', href: ROUTES.dashboard.crmReports, icon: FileBarChart },
+  { label: 'Dashboards', href: ROUTES.dashboard.crmDashboards, icon: LayoutPanelTop },
+  { label: 'Scoring rules', href: ROUTES.dashboard.crmScoringRules, icon: TrendingUp },
+  { label: 'Feature settings', href: ROUTES.dashboard.crmFeatureSettings, icon: SlidersHorizontal },
+  { label: 'Contact cards', href: '/dashboard/crm/contact-cards', icon: IdCard },
+  { label: 'Equipment', href: '/dashboard/crm/equipment', icon: Wrench },
 ];
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───

@@ -70,7 +70,7 @@ export const crmNav = [
   { label: 'Organisations', href: ROUTES.dashboard.crmOrganizations, icon: Building2 },
   { label: 'Accounts', href: ROUTES.dashboard.crmAccounts, icon: Building },
   { label: 'Nurture', href: ROUTES.dashboard.crmNurture, icon: Workflow },
-  { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
+  { label: 'Outreach', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
   // Analytics and Support are deliberately absent here: both live once, in the primary rail, as
   // the unified pages. The CRM-only routes still resolve for anyone with a bookmark.
   { label: 'Tasks', href: ROUTES.dashboard.crmTasks, icon: CheckSquare },
@@ -78,7 +78,7 @@ export const crmNav = [
   { label: 'Proposals', href: ROUTES.dashboard.crmProposals, icon: ClipboardList },
   { label: 'Invoices', href: ROUTES.dashboard.crmInvoices, icon: Receipt },
   { label: 'Subscriptions', href: ROUTES.dashboard.crmSubscriptions, icon: RefreshCw },
-  { label: 'Orders', href: ROUTES.dashboard.crmOrders, icon: Package },
+  { label: 'Sales orders', href: ROUTES.dashboard.crmOrders, icon: Package },
   { label: 'Meetings', href: ROUTES.dashboard.crmMeetings, icon: CalendarCheck },
   { label: 'NPS', href: ROUTES.dashboard.crmNps, icon: Star },
   { label: 'Time Tracking', href: ROUTES.dashboard.crmTimeTracking, icon: Clock },
@@ -93,7 +93,7 @@ export const crmNav = [
   // ── After-sales, procurement and the shared inbox (from AfterSales) ──
   { label: 'Deals hub', href: ROUTES.dashboard.crmDealsHub, icon: Briefcase },
   { label: 'Shared inbox', href: ROUTES.dashboard.crmInbox, icon: LayoutDashboard },
-  { label: 'Returns', href: ROUTES.dashboard.crmReturns, icon: RotateCw },
+  { label: 'Return authorisations', href: ROUTES.dashboard.crmReturns, icon: RotateCw },
   { label: 'Work orders', href: ROUTES.dashboard.crmWorkOrders, icon: Wrench },
   { label: 'Vendors', href: ROUTES.dashboard.crmVendors, icon: Truck },
   { label: 'Purchase orders', href: ROUTES.dashboard.crmPurchaseOrders, icon: ShoppingCart },

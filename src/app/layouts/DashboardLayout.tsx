@@ -80,7 +80,7 @@ export const primaryNav = [
   { label: 'Control center', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
   { label: 'Products & catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
   { label: 'Content & media', href: ROUTES.dashboard.contentOperations, icon: Images },
-  { label: 'Orders', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
+  { label: 'Orders & fulfilment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
   { label: 'Vendor operations', href: ROUTES.dashboard.vendorOperations, icon: Building2 },
   { label: 'Seller finance', href: ROUTES.dashboard.sellerFinance, icon: WalletCards },
   { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
@@ -93,7 +93,7 @@ export const primaryNav = [
   { label: 'Feature flags', href: ROUTES.dashboard.featureFlags, icon: Flag },
   { label: 'Platform config', href: ROUTES.dashboard.platformConfig, icon: Settings2 },
   { label: 'Audit trail', href: ROUTES.dashboard.auditTrail, icon: ScrollText },
-  { label: 'Returns', href: ROUTES.dashboard.returns, icon: PackageOpen },
+  { label: 'Returns queue', href: ROUTES.dashboard.returns, icon: PackageOpen },
   { label: 'Counter handover', href: ROUTES.dashboard.counterHandover, icon: Store },
   { label: 'Payouts', href: ROUTES.dashboard.payouts, icon: Banknote },
   { label: 'Data rights', href: ROUTES.dashboard.privacyRequests, icon: ShieldCheck },
@@ -101,7 +101,7 @@ export const primaryNav = [
   { label: 'Delivery ops', href: ROUTES.dashboard.logistics, icon: Route },
   { label: 'Vendor desk', href: ROUTES.dashboard.vendorDesk, icon: Store },
   { label: 'Unit markers', href: ROUTES.dashboard.unitMarkers, icon: QrCode },
-  { label: 'Campaigns', href: ROUTES.dashboard.commerceCampaigns, icon: Megaphone },
+  { label: 'Storefront campaigns', href: ROUTES.dashboard.commerceCampaigns, icon: Megaphone },
   { label: 'Discovery', href: ROUTES.dashboard.discovery, icon: Compass },
   { label: 'Simulation & rules', href: ROUTES.dashboard.intelligence, icon: FlaskConical },
   { label: 'Demand content', href: ROUTES.dashboard.demandContent, icon: FileSearch },
@@ -126,7 +126,6 @@ export const primaryNav = [
   // The operator-side retail twin. Distinct from the vendor scenario runner,
   // which has no web surface and lives only in the mobile app.
   { label: 'Decision twin', href: ROUTES.dashboard.decisionTwin, icon: Network },
-  { label: 'Campaigns', href: ROUTES.dashboard.crmCampaigns, icon: Megaphone },
   { label: 'Stores', href: ROUTES.dashboard.crmOrganizations, icon: Store },
   // One entry point each. Support was a link to the CRM case queue with no way to reach commerce
   // tickets at all; Analytics was listed twice (here and under CRM) with both pointing at the CRM
@@ -181,7 +180,7 @@ const FALLBACK_LOGO_SRC = '/Lead360logo/1.png';
 export const primaryMobileTabs = [
   { label: 'Home', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
   { label: 'Products', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
-  { label: 'Orders', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
+  { label: 'Orders & fulfilment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
   { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
 ];
 
@@ -293,7 +292,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/privacy')) return 'Data-Rights Requests';
     if (path.includes('/stylemint/recipes')) return 'Reel Recipes';
     if (path.includes('/stylemint/logistics')) return 'Delivery Operations';
-    if (path.includes('/stylemint/campaigns')) return 'Campaigns';
+    if (path.includes('/stylemint/campaigns')) return 'Storefront campaigns';
     if (path.includes('/stylemint/discovery')) return 'Discovery';
     if (path.includes('/stylemint/intelligence')) return 'Simulation & Constitution';
     if (path.includes('/stylemint/demand-content')) return 'Demand Content';
@@ -322,7 +321,7 @@ export function DashboardLayout() {
     if (path.includes('/crm/organizations')) return 'Stores';
     if (path.includes('/crm/accounts')) return 'Accounts';
     if (path.includes('/crm/nurture')) return 'Nurture';
-    if (path.includes('/crm/campaigns')) return 'Promotions & Campaigns';
+    if (path.includes('/crm/campaigns')) return 'Outreach';
     if (path.includes('/crm/analytics')) return 'Commerce Analytics';
     if (path.includes('/crm/support')) return 'Customer Support';
     if (path.includes('/crm/tasks')) return 'Tasks';

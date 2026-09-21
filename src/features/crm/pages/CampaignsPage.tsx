@@ -1450,8 +1450,8 @@ export function Component() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Campaigns</h2>
-        <p className="text-xs text-text-muted mt-0.5">Send targeted messages to contacts and leads</p>
+        <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Outreach</h2>
+        <p className="text-xs text-text-muted mt-0.5">Reach contacts and leads directly. Storefront campaigns — the hero placements shoppers see — are a separate page.</p>
       </div>
       <div className="flex rounded-xl border border-border-subtle overflow-hidden w-fit">
         <button onClick={() => setTab('b2b')}

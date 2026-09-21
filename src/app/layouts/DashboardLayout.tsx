@@ -131,7 +131,7 @@ export const primaryNav = [
   // tickets at all; Analytics was listed twice (here and under CRM) with both pointing at the CRM
   // dashboard, while the conversation analytics were reachable only by typing the URL.
   { label: 'Support', href: ROUTES.dashboard.support, icon: LifeBuoy },
-  { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: TrendingUp },
+  { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: BarChart3 },
 ];
 
 const botNav = [
@@ -302,6 +302,7 @@ export function DashboardLayout() {
     if (path.includes('/chat')) return 'Chat';
     if (path.includes('/home')) return 'Overview';
     if (path.includes('/onboarding')) return 'Setup Assistant';
+    if (path.includes('/flows/experiments')) return 'A/B Experiments';
     if (path.includes('/flows')) return 'AI Flow Designer';
     if (path.includes('/test-channel')) return 'Simulator';
     if (path.includes('/setup')) return 'Configuration';
@@ -311,6 +312,7 @@ export function DashboardLayout() {
     if (path.includes('/intents')) return 'Intents';
     if (path.includes('/channels')) return 'Channels';
     if (path.includes('/conversations')) return 'Conversations';
+    if (path.includes('/crm/analytics')) return 'Commerce Analytics';
     if (path.includes('/analytics')) return 'Analytics';
     if (path.includes('/compliance')) return 'Compliance';
     if (path.includes('/settings')) return 'Settings';
@@ -322,7 +324,6 @@ export function DashboardLayout() {
     if (path.includes('/crm/accounts')) return 'Accounts';
     if (path.includes('/crm/nurture')) return 'Nurture';
     if (path.includes('/crm/campaigns')) return 'Outreach';
-    if (path.includes('/crm/analytics')) return 'Commerce Analytics';
     if (path.includes('/crm/support')) return 'Customer Support';
     if (path.includes('/crm/tasks')) return 'Tasks';
     if (path.includes('/crm/quotes')) return 'Quotes';
@@ -335,7 +336,6 @@ export function DashboardLayout() {
     if (path.includes('/crm/time-tracking')) return 'Time Tracking';
     if (path.includes('/crm/custom-fields')) return 'Custom Fields';
     if (path.includes('/crm/workflows')) return 'Automations';
-    if (path.includes('/flows/experiments')) return 'A/B Experiments';
     if (path.includes('/support')) return 'Support';
     if (path.includes('/agent-governance/credentials')) return 'Agent Credentials';
     return 'Dashboard';
@@ -352,6 +352,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/finance')) return WalletCards;
     if (path.includes('/chat')) return MessageSquare;
     if (path.includes('/home')) return LayoutGrid;
+    if (path.includes('/flows/experiments')) return FlaskConical;
     if (path.includes('/flows')) return GitBranch;
     if (path.includes('/test-channel')) return Terminal;
     if (path.includes('/onboarding')) return Rocket;
@@ -362,6 +363,7 @@ export function DashboardLayout() {
     if (path.includes('/catalog')) return Package;
     if (path.includes('/channels')) return Phone;
     if (path.includes('/conversations')) return MessageSquare;
+    if (path.includes('/crm/analytics')) return TrendingUp;
     if (path.includes('/analytics')) return BarChart3;
     if (path.includes('/settings')) return Settings;
     if (path.includes('/crm/contacts')) return UserCheck;
@@ -371,8 +373,6 @@ export function DashboardLayout() {
     if (path.includes('/crm/accounts')) return Building;
     if (path.includes('/crm/nurture')) return Workflow;
     if (path.includes('/crm/campaigns')) return Megaphone;
-    if (path.includes('/crm/analytics')) return TrendingUp;
-    if (path.includes('/flows/experiments')) return FlaskConical;
     return LayoutGrid;
   };
 

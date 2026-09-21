@@ -1,72 +1,88 @@
-/** @type {import('tailwindcss').Config} */
+/**
+ * Colour here is a *reference*, never a value.
+ *
+ * Every entry below resolves through a CSS custom property defined in
+ * `src/styles/globals.css`, so the same class names paint the Lead360 palette
+ * by default and StyleMint's under `:root[data-console="stylemint"]`. Writing a
+ * literal hex in this file would pin that utility to one product and silently
+ * break the other build — the classic "one theme's text on the other's ground".
+ *
+ * `<alpha-value>` is Tailwind's placeholder for the opacity modifier, so
+ * `bg-glass-1/50` keeps working exactly as it did when these were hex.
+ *
+ * @type {import('tailwindcss').Config}
+ */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
         bg: {
-          DEFAULT: '#0A1612',
-          shell: '#0F1E1A',
-          card: '#132420',
-          elevated: '#1A332C',
-          input: '#0F1E1A',
+          DEFAULT: 'rgb(var(--color-surface-app) / <alpha-value>)',
+          shell: 'rgb(var(--color-surface-inset) / <alpha-value>)',
+          card: 'rgb(var(--color-surface-card) / <alpha-value>)',
+          elevated: 'rgb(var(--color-surface-elevated) / <alpha-value>)',
+          input: 'rgb(var(--color-surface-inset) / <alpha-value>)',
         },
         glass: {
-          1: '#172C23',
-          2: '#1C3328',
-          3: '#243D30',
+          1: 'rgb(var(--color-glass-1) / <alpha-value>)',
+          2: 'rgb(var(--color-glass-2) / <alpha-value>)',
+          3: 'rgb(var(--color-glass-3) / <alpha-value>)',
         },
         border: {
-          subtle: '#14302A',
-          medium: '#1C4132',
-          glow: 'rgb(var(--brand-rgb) / 0.18)',
-          success: 'rgba(16,185,129,0.15)',
+          subtle: 'rgb(var(--color-border-subtle) / <alpha-value>)',
+          medium: 'rgb(var(--color-border-default) / <alpha-value>)',
+          // The tint alpha is itself per-product: see the note on
+          // --alpha-brand-glow in globals.css.
+          glow: 'rgb(var(--brand-rgb) / var(--alpha-brand-glow))',
+          success: 'rgb(var(--color-success) / 0.15)',
         },
         text: {
-          primary: '#FFFFFF',
-          secondary: '#B8E6D5',
-          muted: '#7A9B8E',
+          primary: 'rgb(var(--color-text-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--color-text-secondary) / <alpha-value>)',
+          muted: 'rgb(var(--color-text-muted) / <alpha-value>)',
         },
         brand: {
           DEFAULT: 'rgb(var(--brand-rgb) / <alpha-value>)',
           light: 'rgb(var(--brand-light-rgb) / <alpha-value>)',
           dark: 'rgb(var(--brand-dark-rgb) / <alpha-value>)',
-          soft: 'rgb(var(--brand-rgb) / 0.08)',
+          soft: 'rgb(var(--brand-rgb) / var(--alpha-brand-soft))',
         },
         success: {
-          DEFAULT: '#10B981',
-          light: '#34D399',
-          soft: 'rgba(16,185,129,0.1)',
+          DEFAULT: 'rgb(var(--color-success) / <alpha-value>)',
+          light: 'rgb(var(--color-success-light) / <alpha-value>)',
+          soft: 'rgb(var(--color-success) / 0.1)',
         },
         info: {
-          DEFAULT: '#3B82F6',
-          soft: 'rgba(59,130,246,0.1)',
+          DEFAULT: 'rgb(var(--color-info) / <alpha-value>)',
+          soft: 'rgb(var(--color-info) / 0.1)',
         },
         danger: {
-          DEFAULT: '#F43F5E',
-          soft: 'rgba(244,63,94,0.1)',
+          DEFAULT: 'rgb(var(--color-danger) / <alpha-value>)',
+          soft: 'rgb(var(--color-danger) / 0.1)',
         },
         warning: {
-          DEFAULT: '#F59E0B',
-          soft: 'rgba(245,158,11,0.1)',
+          DEFAULT: 'rgb(var(--color-warning) / <alpha-value>)',
+          soft: 'rgb(var(--color-warning) / 0.1)',
         },
         sidebar: {
-          DEFAULT: '#0A1612',
-          light: '#132420',
+          DEFAULT: 'rgb(var(--color-surface-app) / <alpha-value>)',
+          light: 'rgb(var(--color-surface-card) / <alpha-value>)',
         },
         // Analogous accent — green shifted toward cyan/teal (hue +18°)
         // Use for: info states, analytics charts, secondary actions, data viz
         teal: {
-          DEFAULT: '#00B3C8',
-          light: '#00D5ED',
-          soft: 'rgba(0,179,200,0.08)',
+          DEFAULT: 'rgb(var(--color-teal) / <alpha-value>)',
+          light: 'rgb(var(--color-teal-light) / <alpha-value>)',
+          soft: 'rgb(var(--color-teal) / 0.08)',
         },
-        // Triadic accent — violet/indigo (hue +120° from brand)
+        // Triadic accent — violet/indigo (hue +120° from brand) on Lead360.
         // Use for: AI features, flow builder nodes, premium badges, ML-related UI
+        // StyleMint has no violet; this slot carries its yellow accent instead.
         violet: {
-          DEFAULT: '#7B61FF',
-          light: '#A78BFA',
-          soft: 'rgba(123,97,255,0.08)',
+          DEFAULT: 'rgb(var(--color-violet) / <alpha-value>)',
+          light: 'rgb(var(--color-violet-light) / <alpha-value>)',
+          soft: 'rgb(var(--color-violet) / 0.08)',
         },
       },
       backgroundImage: {
@@ -80,26 +96,34 @@ export default {
 
         // ── Analogous teal (green → cyan) ────────────────────
         // Use for: info banners, analytics/data widgets, secondary accent elements
-        'gradient-teal': 'linear-gradient(135deg, rgb(var(--brand-rgb)) 0%, #00B3C8 100%)',
+        'gradient-teal':
+          'linear-gradient(135deg, rgb(var(--brand-rgb)) 0%, rgb(var(--color-teal)) 100%)',
 
         // ── Triadic violet (purple → indigo) ─────────────────
         // Use for: AI feature cards, flow-builder canvas accents, model badges
-        'gradient-violet': 'linear-gradient(135deg, #7B61FF 0%, #A78BFA 100%)',
+        'gradient-violet':
+          'linear-gradient(135deg, rgb(var(--color-violet)) 0%, rgb(var(--color-violet-light)) 100%)',
 
-        // ── AI / flow canvas — violet crosses to brand green ──
+        // ── AI / flow canvas — the triadic accent crosses to brand green ──
         // Use for: AI pipeline illustrations, the flow builder canvas header
-        'gradient-ai': 'linear-gradient(135deg, #7B61FF 0%, #00B3C8 55%, #00D98A 100%)',
+        'gradient-ai':
+          'linear-gradient(135deg, rgb(var(--color-violet)) 0%, rgb(var(--color-teal)) 55%, rgb(var(--brand-rgb)) 100%)',
 
         // ── Surface depth gradients ───────────────────────────
         // Use for: card backgrounds that need depth without box-shadow
-        'gradient-card': 'linear-gradient(145deg, #1C3328 0%, #132420 100%)',
-        'gradient-elevated': 'linear-gradient(145deg, #243D30 0%, #1A332C 100%)',
+        'gradient-card':
+          'linear-gradient(145deg, rgb(var(--color-glass-2)) 0%, rgb(var(--color-surface-card)) 100%)',
+        'gradient-elevated':
+          'linear-gradient(145deg, rgb(var(--color-glass-3)) 0%, rgb(var(--color-surface-elevated)) 100%)',
 
         // ── Radial orbs (background depth layers) ────────────
         // Use for: page-level background orbs behind content sections
-        'orb-brand': 'radial-gradient(ellipse at center, rgba(0,217,138,0.14) 0%, transparent 65%)',
-        'orb-teal': 'radial-gradient(ellipse at center, rgba(0,179,200,0.10) 0%, transparent 65%)',
-        'orb-violet': 'radial-gradient(ellipse at center, rgba(123,97,255,0.10) 0%, transparent 65%)',
+        'orb-brand':
+          'radial-gradient(ellipse at center, rgb(var(--brand-rgb) / 0.14) 0%, transparent 65%)',
+        'orb-teal':
+          'radial-gradient(ellipse at center, rgb(var(--color-teal) / 0.10) 0%, transparent 65%)',
+        'orb-violet':
+          'radial-gradient(ellipse at center, rgb(var(--color-violet) / 0.10) 0%, transparent 65%)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

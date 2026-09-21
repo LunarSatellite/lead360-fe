@@ -90,6 +90,13 @@ const CRM_KEYS = {
     velocity: () => ['crm', 'analytics', 'velocity'] as const,
     leadFunnel: () => ['crm', 'analytics', 'lead-funnel'] as const,
     nurture: () => ['crm', 'analytics', 'nurture'] as const,
+    aiEffectiveness: () => ['crm', 'analytics', 'ai-effectiveness'] as const,
+    nps: (months: number) => ['crm', 'analytics', 'nps', months] as const,
+    churn: () => ['crm', 'analytics', 'churn'] as const,
+    leadScore: (months: number) => ['crm', 'analytics', 'lead-score', months] as const,
+    team: () => ['crm', 'analytics', 'team'] as const,
+    recurringRevenue: () => ['crm', 'analytics', 'recurring-revenue'] as const,
+    support: () => ['crm', 'analytics', 'support'] as const,
   },
   contactEnrollments: (contactId: string) => ['crm', 'contact-enrollments', contactId] as const,
   experiments: () => ['crm', 'experiments'] as const,
@@ -110,6 +117,7 @@ const CRM_KEYS = {
   subscriptionById: (id: string) => ['crm', 'subscriptions', id] as const,
   orders: () => ['crm', 'orders'] as const,
   orderById: (id: string) => ['crm', 'orders', id] as const,
+  deliveries: (orderId: string) => ['crm', 'orders', orderId, 'deliveries'] as const,
   meetings: () => ['crm', 'meetings'] as const,
   meetingById: (id: string) => ['crm', 'meetings', id] as const,
   callSummaries: () => ['crm', 'call-summaries'] as const,
@@ -119,7 +127,15 @@ const CRM_KEYS = {
   timeEntries: () => ['crm', 'time-entries'] as const,
   timeSummary: () => ['crm', 'time-entries', 'summary'] as const,
   comments: (kind: number, entityId: string) => ['crm', 'comments', kind, entityId] as const,
+  inbox: (filter: unknown) => ['crm', 'inbox', filter] as const,
+  inboxSummary: () => ['crm', 'inbox', 'summary'] as const,
+  auditFeed: (filter: unknown) => ['crm', 'audit', filter] as const,
+  recordAudit: (kind: number, entityId: string) => ['crm', 'audit', kind, entityId] as const,
+  notifPreferences: () => ['crm', 'notification-preferences'] as const,
+  recordTimeline: (kind: number, entityId: string) => ['crm', 'timeline', kind, entityId] as const,
+  activityFeed: (filter: unknown) => ['crm', 'activity-feed', filter] as const,
   workflows: () => ['crm', 'workflows'] as const,
+  workflowTriggerDefinitions: () => ['crm', 'workflows', 'trigger-definitions'] as const,
   workflowById: (id: string) => ['crm', 'workflows', id] as const,
   workflowExecutions: (id: string) => ['crm', 'workflows', id, 'executions'] as const,
   workflowCampaigns: () => ['crm', 'workflow-campaigns'] as const,
@@ -129,12 +145,25 @@ const CRM_KEYS = {
   fbAdAccount: () => ['crm', 'fb-ads', 'account'] as const,
   fbAdCampaigns: () => ['crm', 'fb-ads', 'campaigns'] as const,
   fbAdAggregate: () => ['crm', 'fb-ads', 'aggregate'] as const,
+  tikTokAdAccount: () => ['crm', 'tiktok-ads', 'account'] as const,
+  tikTokAdCampaigns: () => ['crm', 'tiktok-ads', 'campaigns'] as const,
+  tikTokAdAggregate: () => ['crm', 'tiktok-ads', 'aggregate'] as const,
   announcements: (status?: number) => ['announcements', status] as const,
   announcementById: (id: string) => ['announcements', id] as const,
   approvals: (status?: number) => ['crm', 'approvals', status] as const,
   approvalsPending: () => ['crm', 'approvals', 'pending'] as const,
   approvalById: (id: string) => ['crm', 'approvals', id] as const,
   approvalForEntity: (entityType: number, entityId: string) => ['crm', 'approvals', 'entity', entityType, entityId] as const,
+  vendors: () => ['crm', 'vendors'] as const,
+  vendorById: (id: string) => ['crm', 'vendors', id] as const,
+  activeVendors: () => ['crm', 'vendors', 'active'] as const,
+  purchaseOrders: () => ['crm', 'purchase-orders'] as const,
+  purchaseOrderById: (id: string) => ['crm', 'purchase-orders', id] as const,
+  goodsReceipts: () => ['crm', 'goods-receipts'] as const,
+  goodsReceiptById: (id: string) => ['crm', 'goods-receipts', id] as const,
+  supplierInvoices: () => ['crm', 'supplier-invoices'] as const,
+  supplierInvoiceById: (id: string) => ['crm', 'supplier-invoices', id] as const,
+  overdueSupplierInvoices: () => ['crm', 'supplier-invoices', 'overdue'] as const,
 } as const;
 
 // ─── Leads ────────────────────────────────────────────────────────────────────
@@ -995,6 +1024,34 @@ export function useNurtureAnalytics() {
   return useQuery({ queryKey: CRM_KEYS.analytics.nurture(), queryFn: () => crmApi.getNurtureAnalytics() });
 }
 
+export function useAiEffectivenessAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.aiEffectiveness(), queryFn: () => crmApi.getAiEffectivenessAnalytics() });
+}
+
+export function useChurnRiskAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.churn(), queryFn: () => crmApi.getChurnRiskAnalytics() });
+}
+
+export function useNpsAnalytics(months = 12) {
+  return useQuery({ queryKey: CRM_KEYS.analytics.nps(months), queryFn: () => crmApi.getNpsAnalytics(months) });
+}
+
+export function useLeadScoreAnalytics(months = 6) {
+  return useQuery({ queryKey: CRM_KEYS.analytics.leadScore(months), queryFn: () => crmApi.getLeadScoreAnalytics(months) });
+}
+
+export function useTeamPerformanceAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.team(), queryFn: () => crmApi.getTeamPerformanceAnalytics() });
+}
+
+export function useRecurringRevenueAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.recurringRevenue(), queryFn: () => crmApi.getRecurringRevenueAnalytics() });
+}
+
+export function useSupportAnalytics() {
+  return useQuery({ queryKey: CRM_KEYS.analytics.support(), queryFn: () => crmApi.getSupportAnalytics() });
+}
+
 // ─── Flow A/B Experiments ─────────────────────────────────────────────────────
 
 export function useExperiments() {
@@ -1157,6 +1214,8 @@ export function useCrmCampaigns() {
   return useQuery({
     queryKey: CRM_KEYS.crmCampaignsAll(),
     queryFn: () => crmApi.getCrmCampaigns(),
+    refetchInterval: 15_000,
+    staleTime: 10_000,
   });
 }
 
@@ -1267,6 +1326,8 @@ export function useCrmCampaignPerformance(id: string | undefined) {
     queryKey: [...CRM_KEYS.crmCampaignById(id ?? ''), 'performance'] as const,
     queryFn: () => crmApi.getCrmCampaignPerformance(id!),
     enabled: !!id,
+    refetchInterval: 15_000,
+    staleTime: 10_000,
   });
 }
 
@@ -1274,6 +1335,8 @@ export function useCrmCampaignsAggregate() {
   return useQuery({
     queryKey: [...CRM_KEYS.crmCampaignsAll(), 'aggregate'] as const,
     queryFn: () => crmApi.getCrmCampaignsAggregate(),
+    refetchInterval: 15_000,
+    staleTime: 10_000,
   });
 }
 
@@ -1685,6 +1748,14 @@ export function useCreateOrder() {
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
+export function useUpdateOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').CrmOrderUpdateRequest }) => crmApi.updateOrder(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Order updated.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
 export function useConfirmOrder() {
   const qc = useQueryClient();
   return useMutation({
@@ -1706,6 +1777,47 @@ export function useCancelOrder() {
   return useMutation({
     mutationFn: (id: string) => crmApi.cancelOrder(id),
     onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Order cancelled.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useRecordOrderPayment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { amount: number; paymentMethod?: string; paymentReference?: string } }) => crmApi.recordOrderPayment(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Payment recorded.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useUpdateOrderFulfillment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: { status: number; carrier?: string; trackingNumber?: string; actualDeliveryDate?: string; failureReason?: string } }) => crmApi.updateOrderFulfillment(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orders() }); toast.success('Fulfillment updated.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Deliveries ──────────────────────────────────────────────────────────────
+export function useDeliveries(orderId: string | undefined) {
+  return useQuery({
+    queryKey: [...CRM_KEYS.deliveries(orderId ?? ''), 'deliveries'] as const,
+    queryFn: () => crmApi.getDeliveries(orderId!),
+    enabled: !!orderId,
+  });
+}
+export function useCreateDelivery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ orderId, data }: { orderId: string; data: import('../types/crm.types').CrmCreateDeliveryRequest }) => crmApi.createDelivery(orderId, data),
+    onSuccess: (_d, { orderId }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.deliveries(orderId) }); qc.invalidateQueries({ queryKey: CRM_KEYS.orderById(orderId) }); toast.success('Shipment created.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useUpdateDeliveryStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ deliveryId, data }: { deliveryId: string; data: import('../types/crm.types').CrmUpdateDeliveryStatusRequest }) => crmApi.updateDeliveryStatus(deliveryId, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'orders'] }); toast.success('Delivery status updated.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
   });
 }
@@ -1866,6 +1978,9 @@ export function useWorkflowById(id: string | undefined) {
 }
 export function useWorkflowExecutions(workflowId: string | undefined) {
   return useQuery({ queryKey: CRM_KEYS.workflowExecutions(workflowId ?? ''), queryFn: () => crmApi.getWorkflowExecutions(workflowId!), enabled: !!workflowId });
+}
+export function useWorkflowTriggerDefinitions() {
+  return useQuery({ queryKey: CRM_KEYS.workflowTriggerDefinitions(), queryFn: () => crmApi.getTriggerDefinitions(), staleTime: 5 * 60 * 1000 });
 }
 export function useCreateWorkflow() {
   const qc = useQueryClient();
@@ -2040,6 +2155,59 @@ export function useSyncFbAdCampaigns() {
   });
 }
 
+// ─── TikTok Ads ─────────────────────────────────────────────────────────────
+
+export function useTikTokAdAccount() {
+  return useQuery({ queryKey: CRM_KEYS.tikTokAdAccount(), queryFn: () => crmApi.getTikTokAdAccount() });
+}
+export function useTikTokAdCampaigns() {
+  return useQuery({ queryKey: CRM_KEYS.tikTokAdCampaigns(), queryFn: () => crmApi.getTikTokAdCampaigns() });
+}
+export function useTikTokAdAggregate() {
+  return useQuery({ queryKey: CRM_KEYS.tikTokAdAggregate(), queryFn: () => crmApi.getTikTokAdAggregate() });
+}
+export function useConnectTikTokAdAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import('../types/crm.types').TikTokAdAccountConnectRequest) => crmApi.connectTikTokAdAccount(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAccount() });
+      toast.success('TikTok Ad Account connected.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Failed to connect account.'),
+  });
+}
+export function useDisconnectTikTokAdAccount() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => crmApi.disconnectTikTokAdAccount(),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAccount() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdCampaigns() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAggregate() });
+      toast.success('TikTok Ad Account disconnected.');
+    },
+    onError: (err: any) => toast.error(err?.message || 'Failed to disconnect account.'),
+  });
+}
+export function useSyncTikTokAdCampaigns() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: () => crmApi.syncTikTokAdCampaigns(),
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdCampaigns() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAggregate() });
+      qc.invalidateQueries({ queryKey: CRM_KEYS.tikTokAdAccount() });
+      const data = (res as any)?.data;
+      const synced = data?.campaignsSynced ?? 0;
+      const errors = data?.errors ?? [];
+      if (errors.length > 0) toast.warning(`Synced ${synced} campaigns with ${errors.length} error(s).`);
+      else toast.success(`Synced ${synced} campaign${synced !== 1 ? 's' : ''} from TikTok.`);
+    },
+    onError: (err: any) => toast.error(err?.message || 'Sync failed.'),
+  });
+}
+
 // ─── Announcements ────────────────────────────────────────────────────────────
 
 export function useAnnouncements(status?: import('../types/crm.types').AnnouncementStatus) {
@@ -2094,6 +2262,28 @@ export function useScheduleAnnouncement() {
     mutationFn: ({ id, scheduledAt }: { id: string; scheduledAt: string }) => crmApi.scheduleAnnouncement(id, scheduledAt),
     onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.announcementById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.announcements() }); toast.success('Announcement scheduled.'); },
     onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useAnnouncementAnalytics(id: string | null) {
+  return useQuery({
+    queryKey: ['announcement-analytics', id],
+    queryFn: () => crmApi.getAnnouncementAnalytics(id!),
+    enabled: !!id,
+    refetchInterval: 15_000,
+  });
+}
+export function useAnnouncementRecipients(id: string | null, page = 1) {
+  return useQuery({
+    queryKey: ['announcement-recipients', id, page],
+    queryFn: () => crmApi.getAnnouncementRecipients(id!, page),
+    enabled: !!id,
+  });
+}
+export function useAnnouncementSummaryStats() {
+  return useQuery({
+    queryKey: ['announcement-summary-stats'],
+    queryFn: () => crmApi.getAnnouncementSummaryStats(),
+    refetchInterval: 30_000,
   });
 }
 
@@ -2332,3 +2522,594 @@ export function useScanDedup() {
   });
 }
 
+// ─── Deliveries (standalone list) ────────────────────────────────────────────
+
+import type { CrmDeliveryFilter, CrmEquipmentFilter, CrmEquipmentCreateRequest, CrmEquipmentUpdateRequest, CrmEquipmentStatusRequest, AddEquipmentNoteRequest, CrmReturnFilter, CrmRecordInspectionRequest, CrmWorkOrderFilter, CrmCreateWorkOrderRequest, CrmUpdateWorkOrderRequest, CrmWorkOrderStatusRequest, CrmAddWorkOrderNoteRequest, CrmOnboardingFilter, CrmStartOnboardingRequest, CrmUpdateOnboardingRequest, CrmUpdateMilestoneRequest } from '../types/crm.types';
+
+export function useAllDeliveries(filter: CrmDeliveryFilter) {
+  return useQuery({
+    queryKey: ['crm', 'deliveries', 'list', filter],
+    queryFn: () => crmApi.getAllDeliveries(filter),
+  });
+}
+
+// ─── Equipment ────────────────────────────────────────────────────────────────
+
+export function useEquipment(filter: CrmEquipmentFilter) {
+  return useQuery({
+    queryKey: ['crm', 'equipment', 'list', filter],
+    queryFn: () => crmApi.getEquipment(filter),
+  });
+}
+
+export function useEquipmentById(id: string | null) {
+  return useQuery({
+    queryKey: ['crm', 'equipment', id],
+    queryFn: () => crmApi.getEquipmentById(id!),
+    enabled: !!id,
+  });
+}
+
+export function useCreateEquipment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CrmEquipmentCreateRequest) => crmApi.createEquipment(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'equipment'] });
+      toast.success('Equipment registered');
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? 'Failed to register equipment');
+    },
+  });
+}
+
+export function useUpdateEquipment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CrmEquipmentUpdateRequest }) => crmApi.updateEquipment(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'equipment'] });
+      toast.success('Equipment updated');
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? 'Failed to update equipment');
+    },
+  });
+}
+
+export function useUpdateEquipmentStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CrmEquipmentStatusRequest }) => crmApi.updateEquipmentStatus(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'equipment'] });
+      toast.success('Equipment status updated');
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? 'Failed to update status');
+    },
+  });
+}
+
+export function useDeleteEquipment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.deleteEquipment(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'equipment'] });
+      toast.success('Equipment removed');
+    },
+    onError: () => toast.error('Failed to remove equipment'),
+  });
+}
+
+export function useAddEquipmentNote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: AddEquipmentNoteRequest }) => crmApi.addEquipmentNote(id, data),
+    onSuccess: (_, { id }) => {
+      qc.invalidateQueries({ queryKey: ['crm', 'equipment', id] });
+      toast.success('Note added');
+    },
+    onError: () => toast.error('Failed to add note'),
+  });
+}
+
+// ─── Returns / RMA ────────────────────────────────────────────────────────────
+
+export function useReturns(filter: CrmReturnFilter) {
+  return useQuery({
+    queryKey: ['crm', 'returns', 'list', filter],
+    queryFn: () => crmApi.getReturns(filter),
+  });
+}
+
+export function useReturnById(id: string | null) {
+  return useQuery({
+    queryKey: ['crm', 'returns', id],
+    queryFn: () => crmApi.getReturnById(id!),
+    enabled: !!id,
+  });
+}
+
+export function useApproveReturn() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.approveReturn(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'returns'] }); toast.success('Return approved'); },
+    onError: () => toast.error('Failed to approve return'),
+  });
+}
+
+export function useRejectReturn() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) => crmApi.rejectReturn(id, reason),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'returns'] }); toast.success('Return rejected'); },
+    onError: () => toast.error('Failed to reject return'),
+  });
+}
+
+export function useMarkReturnReceived() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.markReturnReceived(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'returns'] }); toast.success('Return marked received'); },
+    onError: () => toast.error('Failed to update return'),
+  });
+}
+
+export function useRecordReturnInspection() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CrmRecordInspectionRequest }) => crmApi.recordReturnInspection(id, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'returns'] }); toast.success('Inspection recorded'); },
+    onError: () => toast.error('Failed to record inspection'),
+  });
+}
+
+export function useResolveReturn() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.resolveReturn(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'returns'] }); toast.success('Return resolved'); },
+    onError: () => toast.error('Failed to resolve return'),
+  });
+}
+
+export function useCancelReturn() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.cancelReturn(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'returns'] }); toast.success('Return cancelled'); },
+    onError: () => toast.error('Failed to cancel return'),
+  });
+}
+
+// ─── Work Orders ──────────────────────────────────────────────────────────────
+
+export function useWorkOrders(filter: CrmWorkOrderFilter) {
+  return useQuery({
+    queryKey: ['crm', 'work-orders', 'list', filter],
+    queryFn: () => crmApi.getWorkOrders(filter),
+  });
+}
+
+export function useWorkOrderById(id: string | null) {
+  return useQuery({
+    queryKey: ['crm', 'work-orders', id],
+    queryFn: () => crmApi.getWorkOrderById(id!),
+    enabled: !!id,
+  });
+}
+
+export function useWorkOrdersScheduledToday() {
+  return useQuery({
+    queryKey: ['crm', 'work-orders', 'scheduled-today'],
+    queryFn: () => crmApi.getWorkOrdersScheduledToday(),
+  });
+}
+
+export function useCreateWorkOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CrmCreateWorkOrderRequest) => crmApi.createWorkOrder(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'work-orders'] });
+      toast.success('Work order created');
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? 'Failed to create work order');
+    },
+  });
+}
+
+export function useUpdateWorkOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CrmUpdateWorkOrderRequest }) => crmApi.updateWorkOrder(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'work-orders'] });
+      toast.success('Work order updated');
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? 'Failed to update work order');
+    },
+  });
+}
+
+export function useUpdateWorkOrderStatus() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CrmWorkOrderStatusRequest }) => crmApi.updateWorkOrderStatus(id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'work-orders'] });
+      toast.success('Status updated');
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? 'Failed to update status');
+    },
+  });
+}
+
+export function useDeleteWorkOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.deleteWorkOrder(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'work-orders'] }); toast.success('Work order deleted'); },
+    onError: () => toast.error('Failed to delete work order'),
+  });
+}
+
+export function useAddWorkOrderNote() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CrmAddWorkOrderNoteRequest }) => crmApi.addWorkOrderNote(id, data),
+    onSuccess: (_, { id }) => {
+      qc.invalidateQueries({ queryKey: ['crm', 'work-orders', id] });
+      toast.success('Note added');
+    },
+    onError: () => toast.error('Failed to add note'),
+  });
+}
+
+// ─── Customer Onboarding ──────────────────────────────────────────────────────
+
+export function useOnboardings(filter: CrmOnboardingFilter) {
+  return useQuery({
+    queryKey: ['crm', 'onboardings', 'list', filter],
+    queryFn: () => crmApi.getOnboardings(filter),
+  });
+}
+
+export function useOnboardingById(id: string | null) {
+  return useQuery({
+    queryKey: ['crm', 'onboardings', id],
+    queryFn: () => crmApi.getOnboardingById(id!),
+    enabled: !!id,
+  });
+}
+
+export function useStartOnboarding() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: CrmStartOnboardingRequest) => crmApi.startOnboarding(data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['crm', 'onboardings'] });
+      toast.success('Onboarding started');
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      toast.error(msg ?? 'Failed to start onboarding');
+    },
+  });
+}
+
+export function useUpdateOnboarding() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: CrmUpdateOnboardingRequest }) => crmApi.updateOnboarding(id, data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'onboardings'] }); toast.success('Onboarding updated'); },
+    onError: () => toast.error('Failed to update onboarding'),
+  });
+}
+
+export function useUpdateOnboardingMilestone() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, milestoneId, data }: { id: string; milestoneId: string; data: CrmUpdateMilestoneRequest }) =>
+      crmApi.updateOnboardingMilestone(id, milestoneId, data),
+    onSuccess: (_, { id }) => {
+      qc.invalidateQueries({ queryKey: ['crm', 'onboardings', id] });
+      qc.invalidateQueries({ queryKey: ['crm', 'onboardings', 'list'] });
+      toast.success('Milestone updated');
+    },
+    onError: () => toast.error('Failed to update milestone'),
+  });
+}
+
+export function useCompleteOnboarding() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.completeOnboarding(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['crm', 'onboardings'] }); toast.success('Onboarding completed'); },
+    onError: () => toast.error('Failed to complete onboarding'),
+  });
+}
+
+// ─── Vendors ──────────────────────────────────────────────────────────────────
+
+export function useVendors(filter: import('../types/crm.types').VendorFilter = {}) {
+  return useQuery({ queryKey: [...CRM_KEYS.vendors(), filter] as const, queryFn: () => crmApi.getVendors(filter) });
+}
+export function useVendorById(id: string | undefined) {
+  return useQuery({ queryKey: CRM_KEYS.vendorById(id ?? ''), queryFn: () => crmApi.getVendorById(id!), enabled: !!id });
+}
+export function useActiveVendors() {
+  return useQuery({ queryKey: CRM_KEYS.activeVendors(), queryFn: () => crmApi.getActiveVendors() });
+}
+export function useCreateVendor() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import('../types/crm.types').VendorCreateRequest) => crmApi.createVendor(data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CRM_KEYS.vendors() }); qc.invalidateQueries({ queryKey: CRM_KEYS.activeVendors() }); toast.success('Vendor created.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useUpdateVendor() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').VendorUpdateRequest }) => crmApi.updateVendor(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.vendorById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.vendors() }); qc.invalidateQueries({ queryKey: CRM_KEYS.activeVendors() }); toast.success('Vendor updated.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useDeleteVendor() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.deleteVendor(id),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CRM_KEYS.vendors() }); qc.invalidateQueries({ queryKey: CRM_KEYS.activeVendors() }); toast.success('Vendor deleted.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Purchase Orders ──────────────────────────────────────────────────────────
+
+export function usePurchaseOrders(filter: import('../types/crm.types').PurchaseOrderFilter = {}) {
+  return useQuery({ queryKey: [...CRM_KEYS.purchaseOrders(), filter] as const, queryFn: () => crmApi.getPurchaseOrders(filter) });
+}
+export function usePurchaseOrderById(id: string | undefined) {
+  return useQuery({ queryKey: CRM_KEYS.purchaseOrderById(id ?? ''), queryFn: () => crmApi.getPurchaseOrderById(id!), enabled: !!id });
+}
+export function useCreatePurchaseOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import('../types/crm.types').PurchaseOrderCreateRequest) => crmApi.createPurchaseOrder(data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Purchase order created.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useSubmitPurchaseOrderForApproval() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.submitPurchaseOrderForApproval(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Submitted for approval.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useApprovePurchaseOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.approvePurchaseOrder(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Purchase order approved.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useRejectPurchaseOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').PoRejectRequest }) => crmApi.rejectPurchaseOrder(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Purchase order rejected.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useMarkPurchaseOrderSentToVendor() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.markPurchaseOrderSentToVendor(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Marked as sent to vendor.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useCancelPurchaseOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason?: string }) => crmApi.cancelPurchaseOrder(id, reason),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Purchase order cancelled.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useClosePurchaseOrder() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.closePurchaseOrder(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrderById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Purchase order closed.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Goods Receipts ───────────────────────────────────────────────────────────
+
+export function useGoodsReceipts(filter: import('../types/crm.types').GoodsReceiptFilter = {}) {
+  return useQuery({ queryKey: [...CRM_KEYS.goodsReceipts(), filter] as const, queryFn: () => crmApi.getGoodsReceipts(filter) });
+}
+export function useGoodsReceiptById(id: string | undefined) {
+  return useQuery({ queryKey: CRM_KEYS.goodsReceiptById(id ?? ''), queryFn: () => crmApi.getGoodsReceiptById(id!), enabled: !!id });
+}
+export function useCreateGoodsReceipt() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import('../types/crm.types').GoodsReceiptCreateRequest) => crmApi.createGoodsReceipt(data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CRM_KEYS.goodsReceipts() }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Goods receipt created.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useConfirmGoodsReceipt() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.confirmGoodsReceipt(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.goodsReceiptById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.goodsReceipts() }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Goods receipt confirmed. Stock updated.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useVoidGoodsReceipt() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.voidGoodsReceipt(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.goodsReceiptById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.goodsReceipts() }); qc.invalidateQueries({ queryKey: CRM_KEYS.purchaseOrders() }); toast.success('Goods receipt voided.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Supplier Invoices ────────────────────────────────────────────────────────
+
+export function useSupplierInvoices(filter: import('../types/crm.types').SupplierInvoiceFilter = {}) {
+  return useQuery({ queryKey: [...CRM_KEYS.supplierInvoices(), filter] as const, queryFn: () => crmApi.getSupplierInvoices(filter) });
+}
+export function useSupplierInvoiceById(id: string | undefined) {
+  return useQuery({ queryKey: CRM_KEYS.supplierInvoiceById(id ?? ''), queryFn: () => crmApi.getSupplierInvoiceById(id!), enabled: !!id });
+}
+export function useOverdueSupplierInvoices() {
+  return useQuery({ queryKey: CRM_KEYS.overdueSupplierInvoices(), queryFn: () => crmApi.getOverdueSupplierInvoices() });
+}
+export function useCreateSupplierInvoice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: import('../types/crm.types').SupplierInvoiceCreateRequest) => crmApi.createSupplierInvoice(data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoices() }); toast.success('Supplier invoice created.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useApproveSupplierInvoice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.approveSupplierInvoice(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoiceById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoices() }); toast.success('Invoice approved.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useRecordSupplierInvoicePayment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').SupplierInvoiceRecordPaymentRequest }) => crmApi.recordSupplierInvoicePayment(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoiceById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoices() }); toast.success('Payment recorded.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useDisputeSupplierInvoice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: import('../types/crm.types').SupplierInvoiceDisputeRequest }) => crmApi.disputeSupplierInvoice(id, data),
+    onSuccess: (_d, { id }) => { qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoiceById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoices() }); toast.success('Invoice disputed.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+export function useVoidSupplierInvoice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => crmApi.voidSupplierInvoice(id),
+    onSuccess: (_d, id) => { qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoiceById(id) }); qc.invalidateQueries({ queryKey: CRM_KEYS.supplierInvoices() }); toast.success('Invoice voided.'); },
+    onError: (err: any) => toast.error(err?.message || 'Something went wrong.'),
+  });
+}
+
+// ─── Shared inbox, audit and notification preferences ────────────────────────
+//
+// The AfterSales pages imported these hooks; nobody had written them, so those pages did not
+// compile on that branch either. The controllers they call are real.
+
+/** Unassigned, still-open work across every kind. */
+export function useInbox(filter: import('../types/crm.types').CrmInboxFilter = {}) {
+  return useQuery({ queryKey: CRM_KEYS.inbox(filter), queryFn: () => crmApi.getInbox(filter) });
+}
+
+export function useInboxSummary() {
+  return useQuery({ queryKey: CRM_KEYS.inboxSummary(), queryFn: () => crmApi.getInboxSummary() });
+}
+
+/**
+ * Taking a row for yourself. Invalidates the list and the summary together, because the two
+ * read the same predicate and would otherwise disagree until the next refetch.
+ */
+export function useClaimInboxItem() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ kind, entityId }: { kind: number; entityId: string }) =>
+      crmApi.claimInboxItem(kind, entityId),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['crm', 'inbox'] });
+    },
+  });
+}
+
+/** Every recorded field change, newest first. */
+/**
+ * Every recorded field change, newest first.
+ *
+ * `enabled` exists because the endpoint is role-gated: firing it for an Agent returns 401, and a
+ * page that knows the caller is not a manager should not ask.
+ */
+export function useAuditFeed(filter: import('../types/crm.types').CrmAuditFilter = {}, enabled = true) {
+  return useQuery({
+    queryKey: CRM_KEYS.auditFeed(filter),
+    queryFn: () => crmApi.getAuditFeed(filter),
+    enabled,
+  });
+}
+
+/** The field changes on one record. */
+export function useRecordAudit(kind: number, entityId: string) {
+  return useQuery({
+    queryKey: CRM_KEYS.recordAudit(kind, entityId),
+    queryFn: () => crmApi.getRecordAudit(kind, entityId),
+    enabled: !!entityId,
+  });
+}
+
+export function useNotifPreferences() {
+  return useQuery({ queryKey: CRM_KEYS.notifPreferences(), queryFn: () => crmApi.getNotifPreferences() });
+}
+
+export function useSaveNotifPreferences() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (request: { preferences: import('../types/crm.types').CrmNotifPreferenceDto[] }) => crmApi.saveNotifPreferences(request),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: CRM_KEYS.notifPreferences() });
+    },
+  });
+}
+
+/** The events on one record, newest first. */
+export function useRecordTimeline(kind: number, entityId: string) {
+  return useQuery({
+    queryKey: CRM_KEYS.recordTimeline(kind, entityId),
+    queryFn: () => crmApi.getRecordTimeline(kind, entityId),
+    enabled: !!entityId,
+  });
+}
+
+/** The tenant-wide feed across every record kind. */
+export function useActivityFeed(filter: import('../types/crm.types').CrmActivityFeedFilter = {}) {
+  return useQuery({
+    queryKey: CRM_KEYS.activityFeed(filter),
+    queryFn: () => crmApi.getActivityFeed(filter),
+  });
+}

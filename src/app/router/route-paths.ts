@@ -113,6 +113,7 @@ export const ROUTES = {
     crmContactDetail: (id: string) => `/dashboard/crm/contacts/${id}`,
     crmOrganizations: '/dashboard/crm/organizations',
     crmAccounts: '/dashboard/crm/accounts',
+    crmDealsHub: '/dashboard/crm/deals-hub',
     crmDeals: '/dashboard/crm/deals',
     crmDealDetail: (id: string) => `/dashboard/crm/deals/${id}`,
     crmNurture: '/dashboard/crm/nurture',
@@ -134,6 +135,22 @@ export const ROUTES = {
     crmAnnouncements: '/dashboard/crm/announcements',
     crmProcessTasks: '/dashboard/crm/process-tasks',
     crmEventIngestion: '/dashboard/crm/event-ingestion',
+    crmInbox: '/dashboard/crm/inbox',
+    crmActivity: '/dashboard/crm/activity',
+    crmAudit: '/dashboard/crm/audit',
+    crmNotificationSettings: '/dashboard/crm/notification-settings',
+    crmReturns: '/dashboard/crm/returns',
+    crmWorkOrders: '/dashboard/crm/work-orders',
+    crmCustomerOnboarding: '/dashboard/crm/customer-onboarding',
+    crmOpsDashboard: '/dashboard/crm/ops-dashboard',
+    crmTimePeriods: '/dashboard/crm/time-periods',
+    crmApprovalChains: '/dashboard/crm/approval-chains',
+    crmAssignmentRotation: '/dashboard/crm/assignment-rotation',
+    // ── Procurement ──
+    crmVendors: '/dashboard/crm/vendors',
+    crmPurchaseOrders: '/dashboard/crm/purchase-orders',
+    crmGoodsReceipts: '/dashboard/crm/goods-receipts',
+    crmSupplierInvoices: '/dashboard/crm/supplier-invoices',
     // ── Flow A/B Experiments ──
     flowExperiments: '/dashboard/flows/experiments',
     // ── Integrations ──
@@ -144,6 +161,15 @@ export const ROUTES = {
   schedule: (token: string) => `/schedule/${token}`,
   book: (slug: string) => `/book/${slug}`,
   bookEventType: (slug: string, eventTypeId: string) => `/book/${slug}/${eventTypeId}`,
+  portal: {
+    auth: '/portal/auth',
+    cases: '/portal/cases',
+    caseDetail: (id: string) => `/portal/cases/${id}`,
+    newCase: '/portal/cases/new',
+    invoices: '/portal/invoices',
+    orders: '/portal/orders',
+    subscriptions: '/portal/subscriptions',
+  },
 } as const;
 
 /**

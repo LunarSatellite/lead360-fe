@@ -395,7 +395,7 @@ export function Component() {
   ) ?? [];
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-4">
       {/* Back */}
       <button
         onClick={() => navigate(-1)}
@@ -404,197 +404,192 @@ export function Component() {
         <ArrowLeft className="w-3.5 h-3.5" /> Back
       </button>
 
-      {/* Header card */}
-      <div className="rounded-2xl border border-border-subtle bg-bg-card p-6">
-        <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-xl bg-[#132A21] flex items-center justify-center text-xl font-extrabold text-[#8FAEA0] shrink-0">
-            {contact.fullName[0]?.toUpperCase()}
-          </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          <div className="flex-1 min-w-0">
-            {isEditing ? (
-              <EditForm
-                contact={contact}
-                onSave={handleSave}
-                onCancel={() => setIsEditing(false)}
-                isSaving={updateContact.isPending}
-              />
-            ) : (
-              <>
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="text-lg font-extrabold text-text-primary">{contact.fullName}</h2>
-                    {contact.jobTitle && (
-                      <p className="text-sm text-text-secondary mt-0.5">{contact.jobTitle}</p>
-                    )}
-                    <span className="inline-flex mt-2 px-2 py-0.5 rounded-md text-xs font-medium bg-bg-elevated text-text-secondary border border-border-subtle">
-                      {CRM_CONTACT_SOURCE_LABELS[contact.sourceKind]}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      onClick={() => setIsEditing(true)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
-                    >
-                      <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> Edit
-                    </button>
-                    {confirmDelete ? (
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={handleDelete}
-                          disabled={deleteContact.isPending}
-                          className="px-3 py-1.5 rounded-lg bg-danger text-bg text-xs font-bold disabled:opacity-50 transition-all"
-                        >
-                          {deleteContact.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Delete'}
-                        </button>
-                        <button
-                          onClick={() => setConfirmDelete(false)}
-                          className="text-xs text-text-muted hover:text-text-primary"
-                        >
-                          ×
-                        </button>
+        {/* ── Left column ──────────────────────────────────────────────── */}
+        <div className="lg:col-span-2 space-y-4">
+
+          {/* Header card */}
+          <div className="rounded-2xl border border-border-subtle bg-bg-card p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-xl bg-[#132A21] flex items-center justify-center text-xl font-extrabold text-[#8FAEA0] shrink-0">
+                {contact.fullName[0]?.toUpperCase()}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                {isEditing ? (
+                  <EditForm
+                    contact={contact}
+                    onSave={handleSave}
+                    onCancel={() => setIsEditing(false)}
+                    isSaving={updateContact.isPending}
+                  />
+                ) : (
+                  <>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h2 className="text-lg font-extrabold text-text-primary">{contact.fullName}</h2>
+                        {contact.jobTitle && (
+                          <p className="text-sm text-text-secondary mt-0.5">{contact.jobTitle}</p>
+                        )}
+                        <span className="inline-flex mt-2 px-2 py-0.5 rounded-md text-xs font-medium bg-bg-elevated text-text-secondary border border-border-subtle">
+                          {CRM_CONTACT_SOURCE_LABELS[contact.sourceKind]}
+                        </span>
                       </div>
-                    ) : (
-                      <button
-                        onClick={() => setConfirmDelete(true)}
-                        className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:border-[rgba(244,63,94,0.3)] hover:bg-danger-soft transition-all"
-                        title="Delete contact"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
-                      </button>
-                    )}
-                  </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <button
+                          onClick={() => setIsEditing(true)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+                        >
+                          <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> Edit
+                        </button>
+                        {confirmDelete ? (
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={handleDelete}
+                              disabled={deleteContact.isPending}
+                              className="px-3 py-1.5 rounded-lg bg-danger text-bg text-xs font-bold disabled:opacity-50 transition-all"
+                            >
+                              {deleteContact.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Delete'}
+                            </button>
+                            <button
+                              onClick={() => setConfirmDelete(false)}
+                              className="text-xs text-text-muted hover:text-text-primary"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDelete(true)}
+                            className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:border-[rgba(244,63,94,0.3)] hover:bg-danger-soft transition-all"
+                            title="Delete contact"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <p className="mt-3 text-xs text-text-muted">
+                      Created {formatDistanceToNow(new Date(contact.createdAt), { addSuffix: true })}
+                      {contact.updatedAt && (
+                        <> · Updated {formatDistanceToNow(new Date(contact.updatedAt), { addSuffix: true })}</>
+                      )}
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Details */}
+          {!isEditing && (
+            <div className="rounded-2xl border border-border-subtle bg-bg-card p-5 space-y-3.5">
+              <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">Details</h3>
+
+              {contact.email && (
+                <div className="flex items-center gap-3 text-sm">
+                  <Mail className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
+                  <a href={`mailto:${contact.email}`} className="text-brand hover:underline">{contact.email}</a>
                 </div>
-
-                <p className="mt-3 text-xs text-text-muted">
-                  Created {formatDistanceToNow(new Date(contact.createdAt), { addSuffix: true })}
-                  {contact.updatedAt && (
-                    <> · Updated {formatDistanceToNow(new Date(contact.updatedAt), { addSuffix: true })}</>
-                  )}
-                </p>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Details */}
-      {!isEditing && (
-        <div className="rounded-2xl border border-border-subtle bg-bg-card p-5 space-y-3.5">
-          <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">Details</h3>
-
-          {contact.email && (
-            <div className="flex items-center gap-3 text-sm">
-              <Mail className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
-              <a href={`mailto:${contact.email}`} className="text-brand hover:underline">
-                {contact.email}
-              </a>
-            </div>
-          )}
-          {contact.phone && (
-            <div className="flex items-center gap-3 text-sm">
-              <Phone className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
-              <span className="text-text-secondary">{contact.phone}</span>
-            </div>
-          )}
-          {contact.linkedIn && (
-            <div className="flex items-center gap-3 text-sm">
-              <Globe className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
-              <a
-                href={contact.linkedIn}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-brand hover:underline truncate"
-              >
-                {contact.linkedIn}
-              </a>
-            </div>
-          )}
-          {contact.preferredLanguage && (
-            <div className="flex items-center gap-3 text-sm">
-              <Tag className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
-              <span className="text-text-secondary">
-                Language: <strong className="text-text-primary">{contact.preferredLanguage}</strong>
-              </span>
-            </div>
-          )}
-
-          {!contact.email && !contact.phone && !contact.linkedIn && !contact.preferredLanguage && (
-            <p className="text-sm text-text-muted">No contact details on record.</p>
-          )}
-
-          {contact.notes && (
-            <div className="pt-3 border-t border-border-subtle">
-              <p className="text-xs font-semibold text-text-muted mb-1.5">Notes</p>
-              <p className="text-sm text-text-secondary whitespace-pre-line">{contact.notes}</p>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Nurture enrollments */}
-      {!isEditing && (
-        <div className="rounded-2xl border border-border-subtle bg-bg-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-2">
-              <Activity className="w-3.5 h-3.5" strokeWidth={1.5} />
-              Nurture Sequences
-              {activeEnrollments.length > 0 && (
-                <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand-soft text-brand border border-border-glow">
-                  {activeEnrollments.length} active
-                </span>
               )}
-            </h3>
-            {activeEnrollments.length > 0 && (
-              <button
-                onClick={() => cancelEnrollments.mutate(contact.id)}
-                disabled={cancelEnrollments.isPending}
-                className="text-xs text-danger hover:text-danger font-semibold opacity-70 hover:opacity-100 transition-opacity disabled:opacity-40"
-              >
-                Cancel all
-              </button>
-            )}
-          </div>
-
-          {!enrollments || enrollments.length === 0 ? (
-            <p className="text-sm text-text-muted">Not enrolled in any sequence.</p>
-          ) : (
-            <div className="space-y-2.5">
-              {enrollments.map((e: CrmNurtureEnrollmentDto) => (
-                <div
-                  key={e.id}
-                  className="flex items-center justify-between gap-3 p-3 rounded-xl bg-bg-elevated border border-border-subtle"
-                >
-                  <div className="min-w-0">
-                    <div className="font-semibold text-sm text-text-primary truncate">
-                      {e.sequenceName ?? e.sequenceId}
-                    </div>
-                    <div className="text-xs text-text-muted mt-0.5">
-                      Step {e.currentStep}
-                      {e.nextStepAt && (
-                        <> · Next: {format(new Date(e.nextStepAt), 'MMM d, HH:mm')}</>
-                      )}
-                      {e.completedAt && (
-                        <> · Completed {formatDistanceToNow(new Date(e.completedAt), { addSuffix: true })}</>
-                      )}
-                    </div>
-                  </div>
-                  <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border shrink-0 ${ENROLLMENT_STATUS_COLORS[e.status]}`}>
-                    {ENROLLMENT_STATUS_LABELS[e.status]}
+              {contact.phone && (
+                <div className="flex items-center gap-3 text-sm">
+                  <Phone className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
+                  <span className="text-text-secondary">{contact.phone}</span>
+                </div>
+              )}
+              {contact.linkedIn && (
+                <div className="flex items-center gap-3 text-sm">
+                  <Globe className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
+                  <a href={contact.linkedIn} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline truncate">
+                    {contact.linkedIn}
+                  </a>
+                </div>
+              )}
+              {contact.preferredLanguage && (
+                <div className="flex items-center gap-3 text-sm">
+                  <Tag className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
+                  <span className="text-text-secondary">
+                    Language: <strong className="text-text-primary">{contact.preferredLanguage}</strong>
                   </span>
                 </div>
-              ))}
+              )}
+              {!contact.email && !contact.phone && !contact.linkedIn && !contact.preferredLanguage && (
+                <p className="text-sm text-text-muted">No contact details on record.</p>
+              )}
+              {contact.notes && (
+                <div className="pt-3 border-t border-border-subtle">
+                  <p className="text-xs font-semibold text-text-muted mb-1.5">Notes</p>
+                  <p className="text-sm text-text-secondary whitespace-pre-line">{contact.notes}</p>
+                </div>
+              )}
             </div>
           )}
+
+          {/* Deals */}
+          {!isEditing && <ContactDealsPanel contactId={contact.id} />}
+
+          {/* Activity timeline */}
+          {!isEditing && <ContactTimeline contactId={contact.id} />}
         </div>
-      )}
 
-      {!isEditing && <ContactDealsPanel contactId={contact.id} />}
+        {/* ── Right column ─────────────────────────────────────────────── */}
+        <div className="lg:col-span-1 space-y-4">
 
-      {!isEditing && <CustomFieldsPanel recordId={contact.id} entityType={CrmEntityType.Contact} />}
+          {/* Nurture enrollments */}
+          {!isEditing && (
+            <div className="rounded-2xl border border-border-subtle bg-bg-card p-5">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-2">
+                  <Activity className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  Nurture
+                  {activeEnrollments.length > 0 && (
+                    <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand-soft text-brand border border-border-glow">
+                      {activeEnrollments.length}
+                    </span>
+                  )}
+                </h3>
+                {activeEnrollments.length > 0 && (
+                  <button
+                    onClick={() => cancelEnrollments.mutate(contact.id)}
+                    disabled={cancelEnrollments.isPending}
+                    className="text-xs text-danger font-semibold opacity-70 hover:opacity-100 transition-opacity disabled:opacity-40"
+                  >
+                    Cancel all
+                  </button>
+                )}
+              </div>
 
-      {/* Activity timeline — campaign sends, replies, signals */}
-      {!isEditing && <ContactTimeline contactId={contact.id} />}
+              {!enrollments || enrollments.length === 0 ? (
+                <p className="text-xs text-text-muted">Not enrolled in any sequence.</p>
+              ) : (
+                <div className="space-y-2">
+                  {enrollments.map((e: CrmNurtureEnrollmentDto) => (
+                    <div key={e.id} className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-bg-elevated border border-border-subtle">
+                      <div className="min-w-0">
+                        <div className="font-semibold text-xs text-text-primary truncate">{e.sequenceName ?? e.sequenceId}</div>
+                        <div className="text-[10px] text-text-muted mt-0.5">
+                          Step {e.currentStep}
+                          {e.nextStepAt && <> · Next: {format(new Date(e.nextStepAt), 'MMM d')}</>}
+                        </div>
+                      </div>
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border shrink-0 ${ENROLLMENT_STATUS_COLORS[e.status]}`}>
+                        {ENROLLMENT_STATUS_LABELS[e.status]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Custom fields */}
+          {!isEditing && <CustomFieldsPanel recordId={contact.id} entityType={CrmEntityType.Contact} />}
+
+        </div>
+      </div>
     </div>
   );
 }

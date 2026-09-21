@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Briefcase, Plus, Loader2, LayoutGrid, List, Trophy,
   CheckCircle, XCircle, DollarSign, Calendar, ChevronLeft, ChevronRight, Search,
@@ -146,7 +146,7 @@ function CsvDealsToolbar() {
       exportUrl="/v1/crm/deals/export-csv"
       templateUrl="/v1/crm/deals/csv-template"
       entityLabel="deals"
-      onImport={file => importCsv.mutateAsync(file)}
+      onImport={async (file) => { await importCsv.mutateAsync(file); }}
       isImporting={importCsv.isPending}
     />
   );
@@ -156,10 +156,23 @@ function CsvDealsToolbar() {
 
 export function Component() {
   const navigate = useNavigate();
-  const [view, setView] = useState<View>('kanban');
+  // Drill-down from analytics widgets lands here pre-filtered: ?status= / ?stageId= / ?ownedByUserId= open the list view filtered.
+  const [searchParams] = useSearchParams();
+  const initialStatus = searchParams.get('status');
+  const initialStageId = searchParams.get('stageId');
+  const initialOwnedByUserId = searchParams.get('ownedByUserId');
+  const [view, setView] = useState<View>(
+    initialStatus || initialStageId || initialOwnedByUserId ? 'list' : 'kanban',
+  );
   const [search, setSearch] = useState('');
   const [selectedPipelineId, setSelectedPipelineId] = useState<string | null>(null);
-  const [listFilter, setListFilter] = useState<CrmDealFilter>({ page: 1, pageSize: LIST_PAGE_SIZE });
+  const [listFilter, setListFilter] = useState<CrmDealFilter>({
+    page: 1,
+    pageSize: LIST_PAGE_SIZE,
+    status: initialStatus ? (Number(initialStatus) as CrmDealFilter['status']) : undefined,
+    stageId: initialStageId ?? undefined,
+    ownedByUserId: initialOwnedByUserId ?? undefined,
+  });
   const [dragOverStageId, setDragOverStageId] = useState<string | null>(null);
   const [closeMenuId, setCloseMenuId] = useState<string | null>(null);
   const dragDealRef = useRef<string | null>(null);
@@ -504,6 +517,8 @@ export function Component() {
                   </div>
                 );
               })}
+
+
 
               {stages.length === 0 && (
                 <div className="flex flex-col items-center justify-center w-full h-64 gap-3 text-text-muted rounded-2xl border border-border-subtle">

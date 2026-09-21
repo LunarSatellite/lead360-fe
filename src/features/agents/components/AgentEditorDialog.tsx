@@ -298,19 +298,14 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
   const sectionCls = 'pt-5 border-t border-t-border-subtle first:pt-0 first:border-t-0';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex justify-end">
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={isPending ? undefined : onClose}
       />
       <div
-        className="relative w-full max-w-2xl mx-4 overflow-hidden max-h-[90vh] flex flex-col"
-        style={{
-          background: '#0A0F0D',
-          border: '1.5px solid #1E2E26',
-          borderRadius: 20,
-          boxShadow: '0 20px 60px rgba(0,0,0,0.4)',
-        }}
+        className="drawer-slide-in relative w-[560px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle"
+        style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-b-border-subtle flex-shrink-0">

@@ -118,11 +118,10 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
   const parentOptions = categories.filter((c) => c.id !== category?.id);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative w-full max-w-md mx-4 rounded-frame bg-bg-shell border border-border-subtle
-                      overflow-hidden shadow-[0_24px_64px_rgba(0,0,0,0.5)]">
+      <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle">
           <div>
             <h2 className="text-sm font-bold text-text-primary tracking-tight">
@@ -141,7 +140,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
           </button>
         </div>
 
-        <div className="px-5 py-4 space-y-3 max-h-[70vh] overflow-y-auto">
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           <Field label="Name">
             <input
               value={name}

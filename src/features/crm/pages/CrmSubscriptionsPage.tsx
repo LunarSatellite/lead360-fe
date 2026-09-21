@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus, X, Loader2, RefreshCw, PauseCircle, PlayCircle, XCircle } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
@@ -30,9 +31,9 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function SlideOver({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-bg-elevated shadow-2xl flex flex-col border-thin border-border-subtle rounded-card max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
           <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-input transition-all">
@@ -60,10 +61,19 @@ const EMPTY_CREATE: CreateForm = { contactId: '', accountId: '', dealId: '', pla
 type EditForm = { planName: string; planTier: string; billingCadence: string; amount: string; seats: string; };
 
 export function Component() {
-  const [filter, setFilter] = useState<CrmSubscriptionFilter>({ page: 1, pageSize: 20 });
+  // Drill-down from the Recurring-revenue widget lands here pre-filtered: ?planTier= (MRR-by-tier) / ?status= open the list filtered.
+  const [searchParams] = useSearchParams();
+  const initialTier = searchParams.get('planTier') ?? '';
+  const initialStatus = searchParams.get('status') ?? '';
+  const [filter, setFilter] = useState<CrmSubscriptionFilter>({
+    page: 1,
+    pageSize: 20,
+    planTier: initialTier ? (Number(initialTier) as CrmSubscriptionPlanTier) : undefined,
+    status: initialStatus ? (Number(initialStatus) as CrmSubscriptionStatus) : undefined,
+  });
   const [search, setSearch] = useState('');
-  const [statusF, setStatusF] = useState('');
-  const [tierF, setTierF] = useState('');
+  const [statusF, setStatusF] = useState(initialStatus);
+  const [tierF, setTierF] = useState(initialTier);
 
   const [showCreate, setShowCreate] = useState(false);
   const [createForm, setCreateForm] = useState<CreateForm>(EMPTY_CREATE);

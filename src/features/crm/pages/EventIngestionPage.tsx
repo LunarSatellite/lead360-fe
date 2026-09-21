@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  Globe, Copy, Check, RefreshCw, Loader2, Key, Code2, X, Zap,
+  Globe, Copy, Check, RefreshCw, Loader2, Key, Code2, X, Zap, Activity,
+  Mail, Workflow, Clock, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { format, parseISO } from 'date-fns';
 import { apiClient } from '@/shared/lib/api-client';
+import { crmApi } from '../api/crm.api';
+import type { WebEventSummaryDto } from '../types/crm.types';
 
 // ─── API ──────────────────────────────────────────────────────────────────────
 
@@ -23,13 +27,11 @@ const eventsApi = {
 
 const EI_KEYS = {
   key: ['events', 'key'] as const,
+  list: (page: number) => ['events', 'list', page] as const,
 };
 
 function useEventIngestionKey() {
-  return useQuery({
-    queryKey: EI_KEYS.key,
-    queryFn: () => eventsApi.getKey(),
-  });
+  return useQuery({ queryKey: EI_KEYS.key, queryFn: () => eventsApi.getKey() });
 }
 
 function useGenerateEventIngestionKey() {
@@ -44,7 +46,14 @@ function useGenerateEventIngestionKey() {
   });
 }
 
-// ─── Copy button ──────────────────────────────────────────────────────────────
+function useWebEvents(page: number) {
+  return useQuery({
+    queryKey: EI_KEYS.list(page),
+    queryFn: () => crmApi.getWebEvents(page, 20),
+  });
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function CopyButton({ value, label = 'Copy' }: { value: string; label?: string }) {
   const [copied, setCopied] = useState(false);
@@ -64,8 +73,6 @@ function CopyButton({ value, label = 'Copy' }: { value: string; label?: string }
   );
 }
 
-// ─── Confirm regenerate modal ─────────────────────────────────────────────────
-
 function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; onClose: () => void; loading: boolean }) {
   return createPortal(
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
@@ -73,10 +80,7 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
       <div className="relative w-full max-w-sm bg-bg shadow-2xl rounded-2xl border border-border-subtle">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <h3 className="font-bold text-text-primary">Regenerate Key?</h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
-          >
+          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -86,10 +90,7 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
             Any website using the old snippet will stop tracking until updated.
           </p>
           <div className="flex gap-3">
-            <button
-              onClick={onClose}
-              className="flex-1 px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all"
-            >
+            <button onClick={onClose} className="flex-1 px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
               Cancel
             </button>
             <button
@@ -108,8 +109,6 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
   );
 }
 
-// ─── Code block ───────────────────────────────────────────────────────────────
-
 function CodeBlock({ code, label }: { code: string; label: string }) {
   return (
     <div className="rounded-xl border border-border-subtle bg-bg-elevated overflow-hidden">
@@ -120,6 +119,138 @@ function CodeBlock({ code, label }: { code: string; label: string }) {
       <pre className="px-4 py-3 text-xs font-mono text-text-secondary overflow-x-auto whitespace-pre-wrap break-all">
         {code}
       </pre>
+    </div>
+  );
+}
+
+// ─── Event row ────────────────────────────────────────────────────────────────
+
+function EventRow({ event }: { event: WebEventSummaryDto }) {
+  const [expanded, setExpanded] = useState(false);
+
+  let props: Record<string, unknown> | null = null;
+  if (event.propertiesJson) {
+    try {
+      const meta = JSON.parse(event.propertiesJson);
+      props = meta.properties ?? null;
+    } catch { /* ignore */ }
+  }
+
+  return (
+    <div className="rounded-xl border border-border-subtle bg-bg-elevated overflow-hidden">
+      <div className="flex items-center gap-3 px-4 py-3">
+        <div className="w-8 h-8 rounded-lg bg-teal-DEFAULT/10 border border-teal-DEFAULT/20 flex items-center justify-center shrink-0">
+          <Activity className="w-4 h-4 text-teal-DEFAULT" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-text-primary truncate">{event.eventType}</p>
+          <div className="flex items-center gap-3 mt-0.5">
+            {event.contactEmail && (
+              <span className="flex items-center gap-1 text-xs text-text-muted">
+                <Mail className="w-3 h-3" />{event.contactEmail}
+              </span>
+            )}
+            <span className="flex items-center gap-1 text-xs text-text-muted">
+              <Workflow className="w-3 h-3" />{event.workflowsTriggered} workflow{event.workflowsTriggered !== 1 ? 's' : ''}
+            </span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="flex items-center gap-1 text-xs text-text-muted">
+            <Clock className="w-3 h-3" />
+            {format(parseISO(event.receivedAt), 'MMM d, HH:mm')}
+          </span>
+          {props && Object.keys(props).length > 0 && (
+            <button
+              onClick={() => setExpanded(v => !v)}
+              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-subtle transition-all"
+            >
+              {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+            </button>
+          )}
+        </div>
+      </div>
+      {expanded && props && (
+        <div className="border-t border-border-subtle px-4 py-3 bg-bg-subtle">
+          <p className="text-xs font-semibold text-text-muted mb-1.5">Properties</p>
+          <pre className="text-xs font-mono text-text-secondary whitespace-pre-wrap">
+            {JSON.stringify(props, null, 2)}
+          </pre>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Events list ──────────────────────────────────────────────────────────────
+
+function EventsList() {
+  const [page, setPage] = useState(1);
+  const { data, isLoading, refetch, isFetching } = useWebEvents(page);
+
+  const items: WebEventSummaryDto[] = (data as any)?.items ?? [];
+  const total: number = (data as any)?.totalCount ?? 0;
+  const totalPages = Math.ceil(total / 20);
+
+  return (
+    <div className="glass-surface rounded-2xl p-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-bold text-text-primary flex items-center gap-2">
+          <Activity className="w-4 h-4 text-teal-DEFAULT" />
+          Received Events
+          {total > 0 && (
+            <span className="px-1.5 py-0.5 rounded-md bg-bg-elevated border border-border-subtle text-xs text-text-muted font-normal">
+              {total}
+            </span>
+          )}
+        </h2>
+        <button
+          onClick={() => refetch()}
+          disabled={isFetching}
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated hover:text-text-primary transition-all disabled:opacity-50"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
+      </div>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-10">
+          <Loader2 className="w-5 h-5 animate-spin text-text-muted" />
+        </div>
+      ) : items.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-10 text-text-muted gap-2">
+          <Activity className="w-8 h-8 opacity-30" strokeWidth={1.2} />
+          <p className="text-sm">No events received yet</p>
+          <p className="text-xs text-center max-w-xs">
+            Once you embed the tracking snippet and fire <code className="bg-bg-elevated px-1 rounded">omniflow('track', ...)</code> calls, events will appear here.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {items.map(e => <EventRow key={e.id} event={e} />)}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between pt-2">
+          <button
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary disabled:opacity-40 hover:bg-bg-elevated transition-all"
+          >
+            Previous
+          </button>
+          <span className="text-xs text-text-muted">Page {page} of {totalPages}</span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary disabled:opacity-40 hover:bg-bg-elevated transition-all"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -231,14 +362,12 @@ ${embedTag}
           </div>
         ) : hasKey ? (
           <div className="space-y-3">
-            {/* Key value */}
             <div className="flex items-center gap-2">
               <code className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm font-mono text-brand truncate">
                 {keyData!.Key}
               </code>
               <CopyButton value={keyData!.Key} />
             </div>
-            {/* Snippet URL */}
             <div>
               <p className="text-xs font-semibold text-text-muted mb-1.5">Snippet URL</p>
               <div className="flex items-center gap-2">
@@ -280,6 +409,9 @@ ${embedTag}
           </p>
         </div>
       )}
+
+      {/* Events list */}
+      <EventsList />
 
       {/* Confirm modal */}
       {showConfirm && (

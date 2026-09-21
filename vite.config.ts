@@ -42,6 +42,13 @@ export default defineConfig(({ mode }) => {
     port: 3000,
     open: true,
   },
+  optimizeDeps: {
+    // recharts is only pulled in by the lazy-loaded CRM analytics page. Pre-bundle
+    // it up front so Vite doesn't re-optimize mid-navigation (which forces a reload
+    // that fails the in-flight dynamic import of CrmAnalyticsPage).
+    include: ['recharts'],
+  },
+
   // Vitest was already a dependency with @testing-library/react, but had no
   // configuration and so no DOM: the three existing suites are pure-logic and
   // run under Node. Pointing it at jsdom keeps those passing and makes the
@@ -50,6 +57,10 @@ export default defineConfig(({ mode }) => {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    // Agent worktrees under .claude/ are whole checkouts of this repo. Without this every
+    // suite is collected once per worktree, so one failure reports N times and each run pays
+    // for trees that are not this one.
+    exclude: ['**/node_modules/**', '**/dist/**', '.claude/**'],
   },
   build: {
     rollupOptions: {

@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search, UserCheck, Plus, Loader2, ChevronLeft, ChevronRight, X, Trash2,
+  User, Mail, Phone, Briefcase, Link, FileText,
 } from 'lucide-react';
 import {
   useContacts, useCreateContact, useDeleteContact, useImportContactsCsv,
@@ -18,11 +19,6 @@ import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow } from 'date-fns';
 
 const PAGE_SIZE = 20;
-
-// ─── Shared input style ───────────────────────────────────────────────────────
-
-const inputCls =
-  'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
 
 // ─── Contact card ─────────────────────────────────────────────────────────────
 
@@ -115,22 +111,41 @@ function ContactCard({
 // ─── Slide-over ───────────────────────────────────────────────────────────────
 
 function Modal({
-  title, onClose, children,
+  onClose, children,
 }: {
   title: string;
   onClose: () => void;
   children: React.ReactNode;
 }) {
   return createPortal(
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-md bg-bg shadow-2xl flex flex-col rounded-2xl border border-border-subtle max-h-[90vh]">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
-          >
+    <div className="fixed inset-0 z-[9999] flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 16px)',
+        }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >New Contact</h2>
+            <p className="text-xs text-text-muted mt-0.5">Add a new contact to your CRM</p>
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -185,69 +200,71 @@ function ContactCreateForm({
     onSave(req);
   };
 
+  const fieldCls = 'w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors';
+  const fieldStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Full Name *</label>
-        <input
-          required
-          value={form.fullName}
-          onChange={set('fullName')}
-          placeholder="Jane Smith"
-          className={inputCls}
-        />
+
+      {/* Full Name + Phone — two columns */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Full Name *</label>
+          <div className="relative">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input required value={form.fullName} onChange={set('fullName')} placeholder="Jane Smith" className={fieldCls} style={fieldStyle} />
+          </div>
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Phone</label>
+          <div className="relative">
+            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.phone} onChange={set('phone')} placeholder="+1 555 000 0000" className={fieldCls} style={fieldStyle} />
+          </div>
+        </div>
       </div>
 
+      {/* Email */}
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Email</label>
-        <input
-          type="email"
-          value={form.email}
-          onChange={set('email')}
-          placeholder="jane@company.com"
-          className={inputCls}
-        />
+        <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
+        <div className="relative">
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <input type="email" value={form.email} onChange={set('email')} placeholder="jane@company.com" className={fieldCls} style={fieldStyle} />
+        </div>
       </div>
 
+      {/* Job Title */}
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Phone</label>
-        <input
-          value={form.phone}
-          onChange={set('phone')}
-          placeholder="+1 555 000 0000"
-          className={inputCls}
-        />
+        <label className="block text-xs font-semibold text-text-secondary mb-1">Job Title</label>
+        <div className="relative">
+          <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <input value={form.jobTitle} onChange={set('jobTitle')} placeholder="VP of Sales" className={fieldCls} style={fieldStyle} />
+        </div>
       </div>
 
+      {/* LinkedIn */}
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Job Title</label>
-        <input
-          value={form.jobTitle}
-          onChange={set('jobTitle')}
-          placeholder="VP of Sales"
-          className={inputCls}
-        />
+        <label className="block text-xs font-semibold text-text-secondary mb-1">LinkedIn URL</label>
+        <div className="relative">
+          <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <input value={form.linkedIn} onChange={set('linkedIn')} placeholder="https://linkedin.com/in/..." className={fieldCls} style={fieldStyle} />
+        </div>
       </div>
 
+      {/* Notes */}
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">LinkedIn URL</label>
-        <input
-          value={form.linkedIn}
-          onChange={set('linkedIn')}
-          placeholder="https://linkedin.com/in/..."
-          className={inputCls}
-        />
-      </div>
-
-      <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Notes</label>
-        <textarea
-          rows={3}
-          value={form.notes}
-          onChange={set('notes')}
-          placeholder="Any additional context..."
-          className={`${inputCls} resize-none`}
-        />
+        <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
+        <div className="relative">
+          <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+          <textarea
+            rows={3}
+            value={form.notes}
+            onChange={set('notes')}
+            placeholder="Any additional context..."
+            className={`${fieldCls} resize-none`}
+            style={fieldStyle}
+          />
+        </div>
       </div>
 
       <div className="flex gap-3 pt-2">
@@ -274,9 +291,23 @@ function ContactCreateForm({
 
 export function Component() {
   const navigate = useNavigate();
-  const [filter, setFilter] = useState<CrmContactFilter>({ page: 1, pageSize: PAGE_SIZE });
+  // Drill-down from the "Contacts by source" donut lands here pre-filtered (?sourceKind=);
+  // the churn-risk donut lands here with a churn probability range (?minChurnProbability=&maxChurnProbability=).
+  const [searchParams] = useSearchParams();
+  const initialSource = searchParams.get('sourceKind') ?? '';
+  const initialMinChurn = searchParams.get('minChurnProbability');
+  const initialMaxChurn = searchParams.get('maxChurnProbability');
+  const initialChurnKind = searchParams.get('churnKind');
+  const [filter, setFilter] = useState<CrmContactFilter>({
+    page: 1,
+    pageSize: PAGE_SIZE,
+    sourceKind: initialSource ? (Number(initialSource) as CrmContactSourceKind) : undefined,
+    minChurnProbability: initialMinChurn ? Number(initialMinChurn) : undefined,
+    maxChurnProbability: initialMaxChurn ? Number(initialMaxChurn) : undefined,
+    churnKind: initialChurnKind ? Number(initialChurnKind) : undefined,
+  });
   const [search, setSearch] = useState('');
-  const [sourceFilter, setSourceFilter] = useState<string>('');
+  const [sourceFilter, setSourceFilter] = useState<string>(initialSource);
   const [showCreate, setShowCreate] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
@@ -312,6 +343,13 @@ export function Component() {
   const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
   const currentPage = filter.page ?? 1;
 
+  const churnActive = filter.minChurnProbability !== undefined || filter.maxChurnProbability !== undefined;
+  const churnHorizon = filter.churnKind === 3 ? '60-day' : '30-day';
+  const churnBandLabel =
+    ((filter.minChurnProbability ?? 0) >= 0.7 ? 'High churn risk (≥70%)'
+      : (filter.minChurnProbability ?? 0) >= 0.4 ? 'Medium churn risk (40–70%)'
+      : 'Low churn risk (<40%)') + ` · ${churnHorizon}`;
+
   return (
     <>
       <div className="space-y-6">
@@ -328,7 +366,9 @@ export function Component() {
               exportUrl="/v1/crm/contacts/export-csv"
               templateUrl="/v1/crm/contacts/csv-template"
               entityLabel="contacts"
-              onImport={file => importCsv.mutateAsync(file)}
+              onImport={async (file) => {
+                await importCsv.mutateAsync(file);
+              }}
               isImporting={importCsv.isPending}
             />
             <button
@@ -339,6 +379,22 @@ export function Component() {
             </button>
           </div>
         </div>
+
+        {/* Churn-band drill indicator */}
+        {churnActive && (
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl bg-brand-soft text-brand border-thin border-border-glow">
+              Filtered: {churnBandLabel}
+              <button
+                onClick={() => setFilter((f) => ({ ...f, minChurnProbability: undefined, maxChurnProbability: undefined, churnKind: undefined, page: 1 }))}
+                className="hover:text-text-primary transition-colors"
+                aria-label="Clear churn filter"
+              >
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            </span>
+          </div>
+        )}
 
         {/* Filters */}
         <form onSubmit={handleSearch} className="flex gap-2 flex-wrap">

@@ -163,7 +163,7 @@ export function FlowSimulator() {
         style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
       >
         <div className="w-6 h-6 bg-[rgba(255,255,255,.2)] rounded-full flex items-center justify-center text-[10px]">🤖</div>
-        <h4 className="text-2xs font-semibold flex-1 truncate">OmniFlow Bot</h4>
+        <h4 className="text-2xs font-semibold flex-1 truncate">Lead360 Bot</h4>
         <button onClick={handleReset} className="p-1 rounded-md hover:bg-[rgba(255,255,255,.2)]" title="Reset session">
           <RotateCcw className="w-3 h-3" />
         </button>

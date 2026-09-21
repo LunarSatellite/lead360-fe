@@ -1,18 +1,23 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Briefcase, Plus, Loader2, LayoutGrid, List, Trophy,
   CheckCircle, XCircle, DollarSign, Calendar, ChevronLeft, ChevronRight, Search,
-  Settings, Trash2, ChevronUp, ChevronDown, X, GitBranch, Filter, User,
+  Settings, Trash2, ChevronUp, ChevronDown, X, GitBranch, Filter, User, Check, Building2,
 } from 'lucide-react';
+import { confirmDialog } from '@/shared/ui/confirm';
+import { crmApi } from '../api/crm.api';
 import {
   useDeals, useDealStages, useMoveDealStage, useCloseDeal,
   useCreateDealStage, useUpdateDealStage, useDeleteDealStage, usePipelines,
-  useImportDealsCsv, useCreateDeal, useAccounts,
+  useImportDealsCsv, useCreateDeal, useBulkDeleteDeals, useBulkDealAction, useAccounts, useContacts,
 } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
+import { useAuth } from '@/shared/hooks/useAuth';
 import { CsvToolbar } from '../components/CsvToolbar';
 import type { CrmDealStageCreateRequest, CrmDealCreateRequest } from '../types/crm.types';
+import { CrmEntityType, BulkDealAction } from '../types/crm.types';
+import { CustomFieldsInline } from '../components/CustomFieldsInline';
 import type {
   CrmDealSummaryDto,  CrmDealFilter, 
 } from '../types/crm.types';
@@ -156,6 +161,7 @@ function CsvDealsToolbar() {
 
 export function Component() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   // Drill-down from analytics widgets lands here pre-filtered: ?status= / ?stageId= / ?ownedByUserId= open the list view filtered.
   const [searchParams] = useSearchParams();
   const initialStatus = searchParams.get('status');
@@ -180,10 +186,14 @@ export function Component() {
   const [showNewDeal, setShowNewDeal] = useState(false);
   const [ndName, setNdName] = useState('');
   const [ndStageId, setNdStageId] = useState('');
+  const [ndStageOpen, setNdStageOpen] = useState(false);
+  const ndStageRef = useRef<HTMLDivElement>(null);
   const [ndAmount, setNdAmount] = useState('');
   const [ndCloseDate, setNdCloseDate] = useState('');
   const [ndOwnerId, setNdOwnerId] = useState('');
   const [ndAccountId, setNdAccountId] = useState('');
+  const [ndContactId, setNdContactId] = useState('');
+  const [ndCustomFields, setNdCustomFields] = useState<Record<string, string>>({});
   const [showFilters, setShowFilters] = useState(false);
   const [filterOwnerId, setFilterOwnerId] = useState('');
   const [filterCloseDateFrom, setFilterCloseDateFrom] = useState('');
@@ -225,15 +235,64 @@ export function Component() {
 
   const moveStage = useMoveDealStage();
   const closeDeal = useCloseDeal();
+  const [winReason, setWinReason] = useState('');
+  const [winDealId, setWinDealId] = useState<string | null>(null);
   const createDeal = useCreateDeal();
+  const bulkDelete = useBulkDeleteDeals();
+  const bulkAction = useBulkDealAction();
+
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const listItems = listData?.items ?? [];
+  const toggleSelect = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  const clearSelection = () => setSelected(new Set());
+  // Drop selections when the visible list changes (filter/page) or the view switches.
+  useEffect(() => { setSelected(new Set()); }, [listFilter, view]);
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ndStageRef.current && !ndStageRef.current.contains(e.target as Node)) setNdStageOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+  const runBulkDelete = async () => {
+    if (selected.size === 0) return;
+    const ok = await confirmDialog({
+      message: `Delete ${selected.size} selected deal${selected.size > 1 ? 's' : ''}? This can't be undone from here.`,
+      confirmText: 'Delete',
+      danger: true,
+    });
+    if (!ok) return;
+    bulkDelete.mutate([...selected], { onSuccess: () => clearSelection() });
+  };
+  const runBulkStage = (stageId: string) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { dealIds: [...selected], action: BulkDealAction.Stage, stageId },
+      { onSuccess: () => clearSelection() },
+    );
+  };
+  const runBulkAssign = (userId: string | null) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { dealIds: [...selected], action: BulkDealAction.Assign, assignToUserId: userId },
+      { onSuccess: () => clearSelection() },
+    );
+  };
 
   const activeFiltersCount = [filterOwnerId, filterCloseDateFrom, filterCloseDateTo, filterInactive ? 'inactive' : ''].filter(Boolean).length;
 
   const { data: accountsRaw } = useAccounts({ pageSize: 200 });
   const accountsList = (accountsRaw as any)?.items ?? [];
+  const { data: contactsRaw } = useContacts({ pageSize: 200 });
+  const contactsList = (contactsRaw as any)?.items ?? [];
 
   function resetNewDeal() {
-    setNdName(''); setNdStageId(''); setNdAmount(''); setNdCloseDate(''); setNdOwnerId(''); setNdAccountId('');
+    setNdName(''); setNdStageId(''); setNdStageOpen(false); setNdAmount(''); setNdCloseDate(''); setNdOwnerId(''); setNdAccountId(''); setNdContactId(''); setNdCustomFields({});
   }
 
   function submitNewDeal() {
@@ -246,9 +305,19 @@ export function Component() {
       closeDate: ndCloseDate || undefined,
       ownedByUserId: ndOwnerId || undefined,
       accountId: ndAccountId || undefined,
+      contactId: ndContactId || undefined,
     };
     createDeal.mutate(payload, {
-      onSuccess: () => { setShowNewDeal(false); resetNewDeal(); toast.success('Deal created'); },
+      onSuccess: (result: any) => {
+        const dealId = result?.id;
+        if (dealId) {
+          const toSave = Object.entries(ndCustomFields).filter(([, v]) => v);
+          if (toSave.length > 0) {
+            crmApi.setCustomFieldValues(dealId, CrmEntityType.Deal, { values: toSave.map(([definitionId, value]) => ({ definitionId, value })) });
+          }
+        }
+        setShowNewDeal(false); resetNewDeal(); toast.success('Deal created');
+      },
       onError: () => toast.error('Failed to create deal'),
     });
   }
@@ -259,6 +328,7 @@ export function Component() {
   const [editingStageId, setEditingStageId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
   const [editingColor, setEditingColor] = useState('');
+  const [editingProb, setEditingProb] = useState(0);
   const [newStageName, setNewStageName] = useState('');
   const [newStageColor, setNewStageColor] = useState('#6366f1');
 
@@ -333,8 +403,20 @@ export function Component() {
           </button>
           <CsvDealsToolbar />
           <button
-            onClick={() => setShowFilters(v => !v)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${showFilters || activeFiltersCount > 0 ? 'border-brand bg-brand/10 text-brand' : 'border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary'}`}
+            onClick={() => {
+              if (filterOwnerId === user?.id) { setFilterOwnerId(''); setListFilter(f => ({ ...f, ownedByUserId: undefined, page: 1 })); }
+              else { setFilterOwnerId(user?.id ?? ''); setListFilter(f => ({ ...f, ownedByUserId: user?.id, page: 1 })); }
+            }}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all ${
+              filterOwnerId === user?.id ? 'bg-brand text-bg border-brand' : 'bg-bg-elevated border-border-subtle text-text-secondary hover:text-text-primary'
+            }`}
+          >
+            <User className="w-3.5 h-3.5" />
+            My Deals
+          </button>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-bg-elevated border-border-subtle text-text-secondary hover:text-text-primary"
           >
             <Filter className="w-3.5 h-3.5" />
             Filter{activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}
@@ -489,10 +571,7 @@ export function Component() {
                             e.stopPropagation();
                             setCloseMenuId(closeMenuId === deal.id ? null : deal.id);
                           }}
-                          onCloseWon={() => {
-                            closeDeal.mutate({ id: deal.id, data: { isWon: true } });
-                            setCloseMenuId(null);
-                          }}
+                          onCloseWon={() => { setWinDealId(deal.id); setWinReason(''); setCloseMenuId(null); }}
                           onCloseLost={() => {
                             closeDeal.mutate({ id: deal.id, data: { isWon: false } });
                             setCloseMenuId(null);
@@ -581,6 +660,23 @@ export function Component() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border-subtle">
+                    <th className="w-10 px-4 py-3">
+                      <button
+                        onClick={() =>
+                          setSelected((prev) =>
+                            prev.size === listItems.length ? new Set() : new Set(listItems.map((d) => d.id)),
+                          )
+                        }
+                        className={`w-4 h-4 rounded-[5px] border flex items-center justify-center transition-all ${
+                          listItems.length > 0 && selected.size === listItems.length
+                            ? 'bg-brand border-brand text-bg'
+                            : 'border-border-medium text-transparent hover:border-brand'
+                        }`}
+                        title="Select all on page"
+                      >
+                        <Check className="w-3 h-3" strokeWidth={3} />
+                      </button>
+                    </th>
                     <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider">Deal</th>
                     <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden md:table-cell">Stage</th>
                     <th className="text-left px-4 py-3 text-xs font-bold text-text-muted uppercase tracking-wider hidden lg:table-cell">Amount</th>
@@ -594,8 +690,21 @@ export function Component() {
                     <tr
                       key={d.id}
                       onClick={() => navigate(ROUTES.dashboard.crmDealDetail(d.id))}
-                      className="border-b border-border-subtle last:border-0 hover:bg-bg-elevated cursor-pointer transition-colors"
+                      className={`border-b border-border-subtle last:border-0 cursor-pointer transition-colors ${
+                        selected.has(d.id) ? 'bg-brand-soft' : 'hover:bg-bg-elevated'
+                      }`}
                     >
+                      <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => toggleSelect(d.id)}
+                          className={`w-4 h-4 rounded-[5px] border flex items-center justify-center transition-all ${
+                            selected.has(d.id) ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'
+                          }`}
+                          title={selected.has(d.id) ? 'Deselect' : 'Select'}
+                        >
+                          <Check className="w-3 h-3" strokeWidth={3} />
+                        </button>
+                      </td>
                       <td className="px-4 py-3">
                         <div className="font-semibold text-text-primary">{d.name}</div>
                         {d.accountName && (
@@ -649,72 +758,250 @@ export function Component() {
               </div>
             </div>
           )}
+
+          {/* Bulk action bar */}
+          {selected.size > 0 && (
+            <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl bg-bg-elevated border border-border-medium shadow-2xl">
+              <span className="text-xs font-bold text-text-primary whitespace-nowrap">{selected.size} selected</span>
+              <div className="h-5 w-px bg-border-subtle" />
+              <select
+                value=""
+                disabled={bulkAction.isPending}
+                onChange={(e) => { if (e.target.value) runBulkStage(e.target.value); }}
+                className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+              >
+                <option value="">Set stage…</option>
+                {stages.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+              <select
+                value=""
+                disabled={bulkAction.isPending}
+                onChange={(e) => {
+                  if (e.target.value === 'unassign') runBulkAssign(null);
+                  else if (e.target.value) runBulkAssign(e.target.value);
+                }}
+                className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+              >
+                <option value="">Assign to…</option>
+                <option value="unassign">Unassign</option>
+                {teamMembers.map((u) => (
+                  <option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>
+                ))}
+              </select>
+              <button
+                onClick={runBulkDelete}
+                disabled={bulkDelete.isPending}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+              >
+                {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                Delete
+              </button>
+              <button
+                onClick={clearSelection}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+              >
+                <X className="w-3.5 h-3.5" /> Clear
+              </button>
+            </div>
+          )}
         </div>
       )}
 
-      {/* ── New Deal Slide-over ── */}
+      {/* ── New Deal Modal ── */}
       {showNewDeal && (
-        <div className="fixed inset-0 z-50 flex justify-end">
-          <div className="absolute inset-0 bg-black/40" onClick={() => { setShowNewDeal(false); resetNewDeal(); }} />
-          <div className="relative w-full max-w-md bg-bg-card border-l border-border-subtle h-full overflow-y-auto shadow-2xl flex flex-col">
-            <div className="p-5 border-b border-border-subtle flex items-center justify-between shrink-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={() => { setShowNewDeal(false); resetNewDeal(); }} />
+          <div
+            className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+            style={{
+              borderRadius: 18,
+              background: 'var(--bg-card)',
+              border: '1px solid rgba(0,217,138,0.2)',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+              maxHeight: 'calc(100vh - 32px)',
+            }}
+          >
+            {/* Accent bar */}
+            <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+
+            {/* Header */}
+            <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
               <div>
-                <h2 className="text-sm font-bold text-text-primary">New Deal</h2>
-                <p className="text-xs text-text-muted mt-0.5">Create a deal directly</p>
+                <h2
+                  className="text-base font-extrabold leading-tight"
+                  style={{
+                    background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}
+                >New Deal</h2>
+                <p className="text-xs text-text-muted mt-0.5">Create a deal directly in your pipeline</p>
               </div>
-              <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+              <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="text-text-muted hover:text-text-primary mt-0.5">
+                <X className="w-4 h-4" />
+              </button>
             </div>
-            <div className="p-5 space-y-4 flex-1">
+
+            {/* Body */}
+            <div className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
+              {/* Deal Name */}
               <div>
-                <label className="text-xs font-semibold text-text-secondary block mb-1">Deal Name *</label>
-                <input value={ndName} onChange={e => setNdName(e.target.value)} placeholder="e.g. Acme Corp — Enterprise"
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Deal Name *</label>
+                <div className="relative">
+                  <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                  <input
+                    value={ndName}
+                    onChange={e => setNdName(e.target.value)}
+                    placeholder="e.g. Acme Corp — Enterprise"
+                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                    style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  />
+                </div>
               </div>
+
+              {/* Stage */}
               <div>
-                <label className="text-xs font-semibold text-text-secondary block mb-1">Stage *</label>
-                <select value={ndStageId} onChange={e => setNdStageId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                  <option value="">Select stage</option>
-                  {stages.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                </select>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Stage *</label>
+                <div className="relative" ref={ndStageRef}>
+                  <button
+                    type="button"
+                    onClick={() => setNdStageOpen(o => !o)}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                    style={{
+                      backgroundColor: '#1A2F27',
+                      backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                      border: `1px solid ${ndStageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                      boxShadow: ndStageOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                      outline: 'none',
+                      transition: 'box-shadow 0.2s ease',
+                    }}
+                  >
+                    <GitBranch className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                    <span className={`flex-1 text-left font-medium ${ndStageId ? 'text-text-primary' : 'text-text-muted'}`}>
+                      {ndStageId ? (stages.find(s => s.id === ndStageId)?.name ?? 'Select stage') : 'Select stage'}
+                    </span>
+                    <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${ndStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                  </button>
+                  {ndStageOpen && (
+                    <div
+                      className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                      style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
+                    >
+                      {stages.map(s => (
+                        <button
+                          key={s.id}
+                          type="button"
+                          onClick={() => { setNdStageId(s.id); setNdStageOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${ndStageId === s.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                        >
+                          {s.color && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: s.color, boxShadow: `0 0 6px ${s.color}` }} />}
+                          {s.name}
+                          {ndStageId === s.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                <label className="text-xs font-semibold text-text-secondary block mb-1">Amount</label>
-                <input type="number" value={ndAmount} onChange={e => setNdAmount(e.target.value)} placeholder="0"
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+
+              {/* Amount + Close Date */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Amount</label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      type="number"
+                      value={ndAmount}
+                      onChange={e => setNdAmount(e.target.value)}
+                      placeholder="0"
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Expected Close Date</label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <input
+                      type="date"
+                      value={ndCloseDate}
+                      onChange={e => setNdCloseDate(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="text-xs font-semibold text-text-secondary block mb-1">Expected Close Date</label>
-                <input type="date" value={ndCloseDate} onChange={e => setNdCloseDate(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+
+              {/* Owner + Account */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Owner</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <select
+                      value={ndOwnerId}
+                      onChange={e => setNdOwnerId(e.target.value)}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] appearance-none"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    >
+                      <option value="">Assign to me (default)</option>
+                      {teamMembers.map(u => (
+                        <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Account</label>
+                  <div className="relative">
+                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <select
+                      value={ndAccountId}
+                      onChange={e => { setNdAccountId(e.target.value); setNdContactId(''); }}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)] appearance-none"
+                      style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                    >
+                      <option value="">No account linked</option>
+                      {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                    </select>
+                  </div>
+                </div>
               </div>
+
+              {/* Primary Contact */}
               <div>
-                <label className="text-xs font-semibold text-text-secondary block mb-1">Owner</label>
-                <select value={ndOwnerId} onChange={e => setNdOwnerId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                  <option value="">Assign to me (default)</option>
-                  {teamMembers.map(u => (
-                    <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-xs font-semibold text-text-secondary block mb-1">Account</label>
-                <select value={ndAccountId} onChange={e => setNdAccountId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                  <option value="">No account linked</option>
-                  {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                </select>
+                <label className="text-xs font-semibold text-text-secondary block mb-1">Primary Contact</label>
+                <ContactDropdown
+                  value={ndContactId}
+                  contacts={contactsList}
+                  onChange={setNdContactId}
+                />
               </div>
             </div>
-            <div className="p-5 border-t border-border-subtle shrink-0 flex gap-3">
-              <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }}
-                className="flex-1 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+            <div className="px-5 py-3">
+              <CustomFieldsInline entityType={CrmEntityType.Deal} onValuesChange={setNdCustomFields} />
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle shrink-0">
+              <button
+                onClick={() => { setShowNewDeal(false); resetNewDeal(); }}
+                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              >
                 Cancel
               </button>
-              <button onClick={submitNewDeal} disabled={!ndName.trim() || !ndStageId || createDeal.isPending}
-                className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-                {createDeal.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+              <button
+                onClick={submitNewDeal}
+                disabled={!ndName.trim() || !ndStageId || createDeal.isPending}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                {createDeal.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Deal
               </button>
             </div>
@@ -745,8 +1032,15 @@ export function Component() {
                         <input type="color" value={editingColor} onChange={e => setEditingColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
                         <span className="text-xs text-text-muted">Color</span>
                       </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-text-muted">Win probability</span>
+                        <div className="flex items-center gap-1">
+                          <input type="range" min={0} max={100} value={editingProb} onChange={e => setEditingProb(Number(e.target.value))} className="w-24 accent-brand" />
+                          <span className="text-xs text-text-primary font-semibold tabular-nums w-8 text-right">{editingProb}%</span>
+                        </div>
+                      </div>
                       <div className="flex gap-2">
-                        <button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor } }); setEditingStageId(null); }}
+                        <button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor, defaultProbability: editingProb / 100 } }); setEditingStageId(null); }}
                           className="flex-1 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold">Save</button>
                         <button onClick={() => setEditingStageId(null)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
                       </div>
@@ -755,13 +1049,14 @@ export function Component() {
                     <div className="flex items-center gap-3 px-3 py-2.5">
                       <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: stage.color ?? '#6366f1' }} />
                       <span className="flex-1 text-sm text-text-primary">{stage.name}</span>
+                      <span className="text-xs text-text-muted font-semibold tabular-nums">{Math.round((stage.defaultProbability ?? 0) * 100)}%</span>
                       {stage.isClosed && <span className="text-2xs text-text-muted border border-border-subtle px-1.5 py-0.5 rounded">{stage.isWon ? 'Won' : 'Lost'}</span>}
                       <div className="flex items-center gap-1">
                         <button disabled={idx === 0} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order - 1 } })}
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
                         <button disabled={idx === stages.length - 1} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order + 1 } })}
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); }}
+                        <button onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
                           className="p-1 text-text-muted hover:text-text-primary"><Settings className="w-3.5 h-3.5" /></button>
                         <button onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
@@ -785,6 +1080,118 @@ export function Component() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Win Reason Modal */}
+      {winDealId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
+          <div className="w-full max-w-md bg-bg border border-border-subtle rounded-2xl p-6 space-y-4 shadow-2xl">
+            <h3 className="text-sm font-bold text-text-primary">Mark as Won</h3>
+            <p className="text-xs text-text-muted">Enter the win reason to record why this deal was closed.</p>
+            <textarea
+              autoFocus
+              value={winReason}
+              onChange={e => setWinReason(e.target.value)}
+              rows={4}
+              placeholder="e.g. Best TCO vs DeLonghi. Anita championed. Rajesh approved."
+              className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary resize-none focus:outline-none focus:border-border-glow"
+            />
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => setWinDealId(null)} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+              <button onClick={() => { closeDeal.mutate({ id: winDealId, data: { isWon: true, winReason: winReason.trim() || undefined } }); setWinDealId(null); }}
+                disabled={closeDeal.isPending}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-success hover:opacity-90 disabled:opacity-50">
+                {closeDeal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />} Confirm Won
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ContactDropdown({
+  value,
+  contacts,
+  onChange,
+}: {
+  value: string;
+  contacts: Array<{ id: string; fullName: string; email?: string; phone?: string }>;
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const selected = contacts.find((c) => c.id === value);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const filtered = contacts.filter((c) =>
+    !search ? true : c.fullName.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+        style={{
+          backgroundColor: '#1A2F27',
+          backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+          border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+          boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+          outline: 'none',
+          transition: 'box-shadow 0.2s ease',
+        }}
+      >
+        <User className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+        <span className={`flex-1 text-left font-medium ${value ? 'text-text-primary' : 'text-text-muted'}`}>
+          {selected ? selected.fullName : 'Select a contact…'}
+        </span>
+        <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+          style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)', maxHeight: 240, overflowY: 'auto' }}
+        >
+          <div className="p-2 border-b border-border-subtle">
+            <input
+              autoFocus
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search contacts…"
+              className="w-full px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow"
+            />
+          </div>
+          {filtered.length === 0 ? (
+            <div className="px-4 py-3 text-xs text-text-muted">No contacts found</div>
+          ) : (
+            filtered.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                onClick={() => { onChange(c.id); setOpen(false); setSearch(''); }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-glass-1 transition-colors ${value === c.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+              >
+                <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center text-xs font-bold text-brand shrink-0">
+                  {c.fullName.split(' ').filter(Boolean).map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="text-sm font-semibold text-text-primary truncate">{c.fullName}</div>
+                  {c.email && <div className="text-xs text-text-muted truncate">{c.email}</div>}
+                </div>
+              </button>
+            ))
+          )}
         </div>
       )}
     </div>

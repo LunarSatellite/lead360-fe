@@ -3,11 +3,13 @@ import { Loader2, Activity, MessageSquare, ArrowRightLeft, PlusCircle, UserCog, 
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { useActivityFeed } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
+import type { UserDto } from '@/features/auth/types/auth.types';
 import {
   CrmActivityEventKind,
   CrmActivityEntityKind,
   CRM_ACTIVITY_ENTITY_LABELS,
   type CrmActivityFeedFilter,
+  type ActivityEventDto,
 } from '../types/crm.types';
 
 const EVENT_ICON: Record<number, typeof Activity> = {
@@ -37,11 +39,11 @@ export function Component() {
 
   const nameById = useMemo(() => {
     const m = new Map<string, string>();
-    (team ?? []).forEach((u) => m.set(u.id, u.fullName || [u.firstName, u.lastName].filter(Boolean).join(' ') || u.email || 'Teammate'));
+    (team ?? []).forEach((u: UserDto) => m.set(u.id, u.fullName || [u.firstName, u.lastName].filter(Boolean).join(' ') || u.email || 'Teammate'));
     return m;
   }, [team]);
 
-  const events = data?.items ?? [];
+  const events = (data as unknown as { items?: ActivityEventDto[] } | undefined)?.items ?? [];
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">

@@ -21,6 +21,7 @@ import {
   Plug,
   Video,
   Calendar,
+  Globe2,
   ChevronRight,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -571,6 +572,21 @@ function IntegrationsSection() {
           <span className="font-semibold text-text-primary text-sm">Booking Page</span>
           <p className="text-xs text-text-muted mt-0.5">
             Create a public Calendly-style page where contacts can book meetings directly.
+          </p>
+        </div>
+        <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-text-primary transition-colors shrink-0" />
+      </button>
+      <button
+        onClick={() => navigate(ROUTES.dashboard.customDomainsSettings)}
+        className="w-full text-left flex items-center gap-4 p-4 rounded-xl bg-bg-elevated border border-border-subtle hover:border-border-glow transition-colors group"
+      >
+        <div className="p-2 rounded-lg bg-[rgba(14,165,233,0.1)] shrink-0">
+          <Globe2 className="w-5 h-5 text-sky-400" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <span className="font-semibold text-text-primary text-sm">Custom Domains</span>
+          <p className="text-xs text-text-muted mt-0.5">
+            Use your business domain for hosted booking pages and public webforms.
           </p>
         </div>
         <ChevronRight className="w-4 h-4 text-text-muted group-hover:text-text-primary transition-colors shrink-0" />

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { GitBranch, Plus, Trash2, Star, Loader2, Check, X, Pencil, ChevronRight, Shield, Lock } from 'lucide-react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   usePipelines, useCreatePipeline, useUpdatePipeline, useDeletePipeline, useSetPipelineDefault,
   usePipelineStages, useStageGates, useCreateStageGate, useDeleteStageGate,
@@ -234,6 +235,7 @@ function StageGateConfigPanel({ pipelineId }: { pipelineId: string }) {
                 strokeWidth={2}
               />
               <span className="text-sm font-medium text-text-primary flex-1">{stage.name}</span>
+              <span className="text-xs font-semibold text-text-muted tabular-nums mr-2">{Math.round(stage.defaultProbability * 100)}%</span>
               {stage.order != null && (
                 <span className="text-[10px] text-text-muted">#{stage.order + 1}</span>
               )}
@@ -356,8 +358,12 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
   const deletePipeline = useDeletePipeline();
   const setDefault = useSetPipelineDefault();
 
-  const handleDelete = () => {
-    if (!confirm(`Delete pipeline "${pipeline.name}"? Stages will be unlinked but not deleted.`)) return;
+  const handleDelete = async () => {
+    const ok = await confirmDialog({
+      message: `Delete pipeline "${pipeline.name}"? Stages will be unlinked but not deleted.`,
+      confirmText: 'Delete', danger: true,
+    });
+    if (!ok) return;
     deletePipeline.mutate(pipeline.id);
   };
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
   Calendar,
   Copy,
@@ -24,6 +25,8 @@ import type {
   CreateEventTypeRequest,
   UpdateEventTypeRequest,
 } from '../api/booking.api';
+import { useTenantDomains } from '@/features/tenant/api/tenant-domains.queries';
+import { getActiveTenantDomainOrigin } from '@/features/tenant/types/tenant-domain.types';
 
 const COLORS = [
   '#6366f1', '#8b5cf6', '#ec4899', '#f43f5e',
@@ -156,6 +159,7 @@ function EventTypeModal({
 
 function BookingPageSettingsPage() {
   const { data: rawPage, isLoading, isError } = useBookingPage();
+  const { data: tenantDomains } = useTenantDomains();
   const page = rawPage as unknown as BookingPageDto | undefined;
 
   const updatePage = useUpdateBookingPage();
@@ -171,7 +175,8 @@ function BookingPageSettingsPage() {
   const [editingEventType, setEditingEventType] = useState<BookingPageEventTypeDto | null>(null);
   const updateEventType = useUpdateEventType(editingEventType?.id ?? '');
 
-  const bookingUrl = page ? `${window.location.origin}/book/${page.slug}` : '';
+  const publicOrigin = getActiveTenantDomainOrigin(tenantDomains) ?? window.location.origin;
+  const bookingUrl = page ? `${publicOrigin}/book/${page.slug}` : '';
 
   const copyLink = () => {
     navigator.clipboard.writeText(bookingUrl);
@@ -257,7 +262,7 @@ function BookingPageSettingsPage() {
           <div className="flex gap-2">
             <div className="flex-1 flex items-center border border-border-glow rounded-xl overflow-hidden">
               <span className="px-3 text-xs text-text-muted whitespace-nowrap">
-                {window.location.origin}/book/
+                {publicOrigin}/book/
               </span>
               <input
                 type="text"
@@ -353,7 +358,7 @@ function BookingPageSettingsPage() {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => {
-                      const directLink = `${window.location.origin}/book/${page.slug}/${et.id}`;
+                      const directLink = `${publicOrigin}/book/${page.slug}/${et.id}`;
                       navigator.clipboard.writeText(directLink);
                       setCopiedEtId(et.id);
                       setTimeout(() => setCopiedEtId(null), 2000);
@@ -373,9 +378,7 @@ function BookingPageSettingsPage() {
                     <Pencil className="w-3.5 h-3.5" />
                   </button>
                   <button
-                    onClick={() => {
-                      if (window.confirm(`Delete "${et.title}"?`)) deleteEventType.mutate(et.id);
-                    }}
+                    onClick={() => confirmDialog({ message: `Delete "${et.title}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteEventType.mutate(et.id); })}
                     className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
                   >
                     <Trash2 className="w-3.5 h-3.5" />

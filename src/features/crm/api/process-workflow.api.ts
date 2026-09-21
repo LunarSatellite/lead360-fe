@@ -62,4 +62,7 @@ export const processWorkflowApi = {
 
   deleteDefinition: (id: string) =>
     apiClient.delete(`${BASE}/definitions/${id}`),
+
+  getRoles: () =>
+    apiClient.get<{ id: string; name: string }[]>(`${BASE}/roles`),
 } as const;

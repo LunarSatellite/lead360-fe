@@ -294,12 +294,12 @@ export function stripProgressLine(content: string): string {
 // inside a 200 response — they are NOT errors per §2; the UI shows the
 // `message` field as a neutral system note and the interview continues.
 
-export type DocumentUploadStatus = 'Completed' | 'Failed' | 'RateLimited';
+export type DocumentUploadStatus = 'Completed' | 'Failed' | 'RateLimited' | 'ApiSpecParsed';
 
 export interface DocumentUploadResultDto {
   ingestionId: string;
   fileName: string;
-  format: 'pdf' | 'docx';
+  format: 'pdf' | 'docx' | 'json' | 'yaml';
   status: DocumentUploadStatus;
   pagesParsed: number;
   businessName: string | null;
@@ -348,6 +348,30 @@ export interface DocumentExtractionDraftsCard {
   policies: string | null;
   productCount: number;
   topicCount: number;
+}
+
+export interface ProposedMenuEndpoint {
+  method: string;
+  path: string;
+}
+
+export interface ProposedMenuTopic {
+  name: string;
+  description: string | null;
+  endpoints: ProposedMenuEndpoint[];
+}
+
+// Shown right after a chat-uploaded API spec is parsed — Capability Map + Intent
+// Suggestions already ran, this is the grouped result: one row per proposed bot
+// menu topic with the exact endpoints backing it. Nothing is built yet — the
+// owner still has to say "yes" or tweak it first.
+export interface ProposedBotMenuCard {
+  type: 'ProposedBotMenu';
+  specId: string;
+  specName: string;
+  endpointCount: number;
+  topics: ProposedMenuTopic[];
+  reviewPath: string;
 }
 
 // ─── Typed input-control cards (spec: Inline UI Cards) ─────────────────────

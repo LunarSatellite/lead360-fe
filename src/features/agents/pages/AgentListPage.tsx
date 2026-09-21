@@ -87,7 +87,6 @@ export function Component() {
     }
     // searchParams object identity changes on every render — only
     // run when the actual deep-link state shifts.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editIdFromUrl, editFromUrlQuery.data, editFromUrlQuery.isError]);
 
   // ── Filter pipeline ──
@@ -132,7 +131,7 @@ export function Component() {
 
   // ─── Render branches ────────────────────────────────────
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto w-full">
+    <div className="py-6 w-full">
       {/* Page header */}
       <header className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>

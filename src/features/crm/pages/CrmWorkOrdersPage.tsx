@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Plus, X, Loader2, Hammer, Clock, CheckCircle, XCircle } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { Plus, X, Loader2, Hammer, Clock, CheckCircle, XCircle, ChevronDown, Layers, Star, Calendar } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useWorkOrders, useCreateWorkOrder, useUpdateWorkOrderStatus,
@@ -16,7 +16,7 @@ import {
   CrmWorkOrderStatus, CrmWorkOrderType, CrmWorkOrderPriority, CrmWorkOrderNoteKind,
 } from '../types/crm.types';
 
-const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
+const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return (
@@ -26,24 +26,42 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
   );
 }
 
-function SlideOver({ open, onClose, title, children, width = '560px' }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; width?: string }) {
+function SlideOver({ open, onClose, title, children, width = '640px', footer }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; width?: string; footer?: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative h-full flex flex-col bg-bg-shell border-l border-border-subtle" style={{ width, boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: width ?? '640px',
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
+            <p className="text-xs text-text-muted mt-0.5">Create a new work order</p>
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
 }
 
 const TRANSITIONS: Record<number, { status: number; label: string }[]> = {
@@ -136,7 +154,7 @@ function DetailPanel({ id }: { id: string }) {
           </form>
           <div className="space-y-2">
             {wo.notes.length === 0 && <p className="text-sm text-text-muted text-center py-6">No notes yet.</p>}
-            {wo.notes.map(n => (
+            {wo.notes.map((n: any) => (
               <div key={n.id} className="bg-bg-surface rounded-xl p-3 text-sm">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-semibold text-text-secondary">{CRM_WORK_ORDER_NOTE_KIND_LABELS[n.kind as CrmWorkOrderNoteKind]}</span>
@@ -200,6 +218,32 @@ export function Component() {
   const [scheduledAt, setScheduledAt] = useState('');
   const [siteLabel, setSiteLabel] = useState('');
   const [estimatedMinutes, setEstimatedMinutes] = useState('');
+  const [typeOpen, setTypeOpen] = useState(false);
+  const [priorityOpen, setPriorityOpen] = useState(false);
+  const typeDropRef = useRef<HTMLDivElement>(null);
+  const priorityDropRef = useRef<HTMLDivElement>(null);
+
+  // Close type dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (typeDropRef.current && !typeDropRef.current.contains(e.target as Node)) {
+        setTypeOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // Close priority dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (priorityDropRef.current && !priorityDropRef.current.contains(e.target as Node)) {
+        setPriorityOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const { data: raw, isLoading } = useWorkOrders(filter);
   const items: CrmWorkOrderSummaryDto[] = (raw as any)?.item1 ?? [];
@@ -250,16 +294,16 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search work orders..." className="flex-1 min-w-48 rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search work orders..." className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Status</option>
             {Object.entries(CRM_WORK_ORDER_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <select value={priorityF} onChange={e => setPriorityF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none">
+          <select value={priorityF} onChange={e => setPriorityF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Priority</option>
             {Object.entries(CRM_WORK_ORDER_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-surface text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <button onClick={applyFilter} className="px-4 py-2 rounded-xl border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -310,34 +354,141 @@ export function Component() {
         )}
       </div>
 
-      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Work Order">
-        <form onSubmit={handleCreate} className="space-y-4">
-          <Field label="Title *"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Repair espresso machine" className={inputCls} /></Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Type">
-              <select value={type} onChange={e => setType(Number(e.target.value))} className={inputCls}>
-                {Object.entries(CRM_WORK_ORDER_TYPE_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-              </select>
-            </Field>
-            <Field label="Priority">
-              <select value={priority} onChange={e => setPriority(Number(e.target.value))} className={inputCls}>
-                {Object.entries(CRM_WORK_ORDER_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-              </select>
-            </Field>
-          </div>
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} /></Field>
-          <Field label="Equipment ID (optional)"><input value={equipmentId} onChange={e => setEquipmentId(e.target.value)} placeholder="equipment-uuid" className={inputCls} /></Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Scheduled At"><input type="datetime-local" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)} className={inputCls} /></Field>
-            <Field label="Est. Minutes"><input type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} /></Field>
-          </div>
-          <Field label="Site Label"><input value={siteLabel} onChange={e => setSiteLabel(e.target.value)} placeholder="e.g. Kathmandu Branch" className={inputCls} /></Field>
-          <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createWo.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Work Order"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button type="submit" form="create-wo-form" disabled={createWo.isPending}
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
               {createWo.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Work Order'}
             </button>
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
           </div>
+        }
+      >
+        <form id="create-wo-form" onSubmit={handleCreate} className="space-y-4">
+          <Field label="Title *"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Repair espresso machine" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
+              <div className="relative" ref={typeDropRef}>
+                <button
+                  type="button"
+                  onClick={() => setTypeOpen(o => !o)}
+                  className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
+                  style={{
+                    backgroundColor: '#1A332C',
+                    border: `1px solid ${typeOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: typeOpen
+                      ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                      : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
+                >
+                  <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                  <span className="flex-1 text-left font-medium text-text-secondary">
+                    {CRM_WORK_ORDER_TYPE_LABELS[type as CrmWorkOrderType]}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${typeOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {typeOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    {Object.entries(CRM_WORK_ORDER_TYPE_LABELS).map(([k, l]) => (
+                      <button
+                        key={k}
+                        type="button"
+                        onClick={() => { setType(Number(k)); setTypeOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] text-text-secondary ${type === Number(k) ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                      >
+                        <span className="w-2 h-2 rounded-full shrink-0 bg-brand" style={{ boxShadow: '0 0 6px #00D97E' }} />
+                        {l}
+                        {type === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Priority</label>
+              <div className="relative" ref={priorityDropRef}>
+                <button
+                  type="button"
+                  onClick={() => setPriorityOpen(o => !o)}
+                  className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
+                  style={{
+                    backgroundColor: '#1A332C',
+                    border: `1px solid ${priorityOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: priorityOpen
+                      ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                      : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
+                >
+                  <Star className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                  <span className={`flex-1 text-left font-medium ${
+                    priority === 4 ? 'text-danger' :
+                    priority === 3 ? 'text-[#F59E0B]' :
+                    priority === 2 ? 'text-brand' : 'text-text-secondary'
+                  }`}>
+                    {CRM_WORK_ORDER_PRIORITY_LABELS[priority as CrmWorkOrderPriority]}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${priorityOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {priorityOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    {Object.entries(CRM_WORK_ORDER_PRIORITY_LABELS).map(([k, l]) => (
+                      <button
+                        key={k}
+                        type="button"
+                        onClick={() => { setPriority(Number(k)); setPriorityOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${priority === Number(k) ? 'bg-[rgba(0,217,138,0.08)]' : ''} ${
+                          Number(k) === 4 ? 'text-danger' :
+                          Number(k) === 3 ? 'text-[#F59E0B]' :
+                          Number(k) === 2 ? 'text-brand' : 'text-text-secondary'
+                        }`}
+                      >
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{
+                          background: Number(k) === 4 ? '#F43F5E' : Number(k) === 3 ? '#F59E0B' : Number(k) === 2 ? '#00D97E' : '#B8E6D5',
+                          boxShadow: `0 0 6px ${Number(k) === 4 ? '#F43F5E' : Number(k) === 3 ? '#F59E0B' : Number(k) === 2 ? '#00D97E' : '#B8E6D5'}`,
+                        }} />
+                        {l}
+                        {priority === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Equipment ID (optional)"><input value={equipmentId} onChange={e => setEquipmentId(e.target.value)} placeholder="equipment-uuid" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Scheduled At</label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+                <input
+                  type="datetime-local"
+                  value={scheduledAt}
+                  onChange={e => setScheduledAt(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{
+                    backgroundColor: '#1A2F27',
+                    colorScheme: 'dark',
+                    backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  }}
+                />
+              </div>
+            </div>
+            <Field label="Est. Minutes"><input type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          </div>
+          <Field label="Site Label"><input value={siteLabel} onChange={e => setSiteLabel(e.target.value)} placeholder="e.g. Kathmandu Branch" className={inputCls} style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
         </form>
       </SlideOver>
 

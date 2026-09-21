@@ -324,7 +324,6 @@ export function useFlowEditor() {
         { id: state.flowId, data: reactFlowToSave(state) },
         { onSuccess: () => dispatch({ type: 'MARK_CLEAN' }) },
       );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedDirty]);
 
   const setFlow = useCallback((f: FlowDto) => {

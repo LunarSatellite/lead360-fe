@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { toast } from 'sonner';
-import { Plus, X, Loader2, CalendarCheck, PhoneCall, Play, Copy } from 'lucide-react';
+import { Plus, X, Loader2, CalendarCheck, Calendar, PhoneCall, Play, Copy, Sparkles, FileText, User, Link as LinkIcon, ChevronDown } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import {
   useMeetings, useMeetingById, useInitiateMeeting, useBookMeeting, useCancelMeeting,
@@ -12,6 +13,8 @@ import type {
   CrmMeetingSummaryDto, CrmMeetingInitiateRequest, CrmMeetingAttendeeDto, CrmMeetingFilter,
   CrmCallSummarySummaryDto, CrmCallSummaryRequestDto, CrmCallSummaryFilter,
 } from '../types/crm.types';
+import { useTeamMembers } from '@/features/team/api/team.queries';
+import type { UserDto } from '@/features/auth/types/auth.types';
 import {
   CrmMeetingStatus,
   CRM_MEETING_STATUS_LABELS, CRM_MEETING_STATUS_COLORS,
@@ -29,21 +32,48 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
   );
 }
 
-function SlideOver({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
+function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="text-base font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+      <div
+        className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: 640,
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+          }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              {title}
+            </h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">{children}</div>
+        {footer && <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
@@ -71,8 +101,12 @@ function MeetingsTab() {
   const [search, setSearch] = useState('');
 
   const [showInitiate, setShowInitiate] = useState(false);
-  const [initForm, setInitForm] = useState<{ contactId: string; dealId: string; title: string; agendaText: string; joinUrl: string; durationMinutes: string; generateSlots: boolean }>({ contactId: '', dealId: '', title: '', agendaText: '', joinUrl: '', durationMinutes: '30', generateSlots: false });
+  const [initForm, setInitForm] = useState<{ contactId: string; dealId: string; title: string; agendaText: string; joinUrl: string; durationMinutes: string; generateSlots: boolean; scheduledAt: string }>({ contactId: '', dealId: '', title: '', agendaText: '', joinUrl: '', durationMinutes: '30', generateSlots: false, scheduledAt: '' });
   const [selectedAttendees, setSelectedAttendees] = useState<Set<string>>(new Set());
+  const [attendeeQuery, setAttendeeQuery] = useState('');
+  const [durationOpen, setDurationOpen] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+  const [dealOpen, setDealOpen] = useState(false);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [bookDate, setBookDate] = useState('');
@@ -87,18 +121,35 @@ function MeetingsTab() {
   const { data: contactsRaw } = useContacts({ pageSize: 200 });
   const contactsList: { id: string; fullName: string; email: string | null }[] = (contactsRaw as any)?.items ?? [];
 
+  // Match on name or email, and never offer the primary contact as an extra attendee.
+  const attendeeMatches = useMemo(() => {
+    const q = attendeeQuery.trim().toLowerCase();
+    if (!q) return [];
+    return contactsList
+      .filter((c) => c.id !== initForm.contactId)
+      .filter((c) => c.fullName.toLowerCase().includes(q) || (c.email ?? '').toLowerCase().includes(q))
+      .slice(0, 20);
+  }, [attendeeQuery, contactsList, initForm.contactId]);
+
   const { data: dealsRaw } = useDeals({ pageSize: 200 });
   const dealsList: { id: string; name: string }[] = (dealsRaw as any)?.items ?? [];
+  const { data: teamRaw } = useTeamMembers();
+  const teamMembers: UserDto[] = (teamRaw as any) ?? [];
 
   const [notes, setNotes] = useState('');
   const [showCompleteSummary, setShowCompleteSummary] = useState(false);
   const [completeSummaryText, setCompleteSummaryText] = useState('');
+  const [taskTitle, setTaskTitle] = useState('');
+  const [taskAssigneeId, setTaskAssigneeId] = useState('');
+  const [showRequestSummary, setShowRequestSummary] = useState(false);
+  const [reqSummaryText, setReqSummaryText] = useState('');
 
   const initiateMeeting = useInitiateMeeting();
   const bookMeeting = useBookMeeting();
   const cancelMeeting = useCancelMeeting();
   const updateMeeting = useUpdateMeeting();
   const createTask = useCreateTaskFromMeeting();
+  const requestSummary = useRequestCallSummary();
   const logActivity = useLogActivity();
 
   const applyFilter = () => setFilter({ page: 1, pageSize: 20, search: search || undefined, status: statusF ? Number(statusF) as CrmMeetingStatus : undefined });
@@ -127,8 +178,9 @@ function MeetingsTab() {
       attendees: attendees.length > 0 ? attendees : undefined,
       generateSlots: initForm.generateSlots,
       durationMinutes: Number(initForm.durationMinutes) || 30,
+      scheduledAt: initForm.scheduledAt ? initForm.scheduledAt + 'T00:00:00Z' : undefined,
     };
-    initiateMeeting.mutate(req, { onSuccess: () => { setShowInitiate(false); setInitForm({ contactId: '', dealId: '', title: '', agendaText: '', joinUrl: '', durationMinutes: '30', generateSlots: false }); setSelectedAttendees(new Set()); } });
+    initiateMeeting.mutate(req, { onSuccess: () => { setShowInitiate(false); setInitForm({ contactId: '', dealId: '', title: '', agendaText: '', joinUrl: '', durationMinutes: '30', generateSlots: false, scheduledAt: '' }); setSelectedAttendees(new Set()); setAttendeeQuery(''); } });
   };
 
   const toggleAttendee = (id: string) => {
@@ -194,57 +246,340 @@ function MeetingsTab() {
       </div>
 
       {/* Initiate SlideOver */}
-      <SlideOver open={showInitiate} onClose={() => setShowInitiate(false)} title="Initiate Meeting">
-        <form onSubmit={handleInitiate} className="space-y-4">
-          <Field label="Title *"><input required value={initForm.title} onChange={setI('title')} placeholder="Discovery Call" className={inputCls} /></Field>
-          <Field label="Primary Contact *">
-            <select required value={initForm.contactId} onChange={setI('contactId')} className={selectCls}>
-              <option value="">Select primary contact</option>
-              {contactsList.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
-            </select>
-          </Field>
-          <Field label="Additional Attendees">
-            <div className="max-h-40 overflow-y-auto space-y-1.5 rounded-xl bg-bg-elevated border border-border-subtle p-2">
-              {contactsList.filter(c => c.id !== initForm.contactId).map(c => (
-                <label key={c.id} className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-bg-card cursor-pointer text-sm text-text-secondary">
-                  <input type="checkbox" checked={selectedAttendees.has(c.id)} onChange={() => toggleAttendee(c.id)} className="accent-brand" />
-                  {c.fullName}
-                </label>
-              ))}
+      <SlideOver
+        open={showInitiate}
+        onClose={() => setShowInitiate(false)}
+        title="Initiate Meeting"
+        subtitle="Schedule a new meeting with a contact"
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            <button
+              onClick={() => setShowInitiate(false)}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={initiateMeeting.isPending}
+              onClick={handleInitiate}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {initiateMeeting.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+              Initiate
+            </button>
+          </div>
+        }
+      >
+        <form id="initiate-form" onSubmit={handleInitiate} className="space-y-4">
+          {/* ── Meeting Details ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Meeting Details</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          {/* Title + Duration */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Title *</label>
+              <div className="relative">
+                <CalendarCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  required
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Discovery Call"
+                  value={initForm.title}
+                  onChange={setI('title')}
+                />
+              </div>
             </div>
-          </Field>
-          <Field label="Duration">
-            <select value={initForm.durationMinutes} onChange={setI('durationMinutes')} className={selectCls}>
-              <option value="15">15 min</option>
-              <option value="30">30 min</option>
-              <option value="45">45 min</option>
-              <option value="60">1 hour</option>
-              <option value="90">1.5 hours</option>
-            </select>
-          </Field>
-          <Field label="Deal (optional)">
-            <select value={initForm.dealId} onChange={setI('dealId')} className={selectCls}>
-              <option value="">No deal linked</option>
-              {dealsList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-            </select>
-          </Field>
-          <Field label="Agenda"><textarea value={initForm.agendaText} onChange={setI('agendaText')} placeholder="Meeting agenda..." className={inputCls + ' min-h-[80px]'} /></Field>
-          <Field label="Join Link"><input value={initForm.joinUrl} onChange={setI('joinUrl')} placeholder="https://zoom.us/j/..." className={inputCls} /></Field>
-          <label className="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-bg-elevated border border-border-subtle">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Duration</label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setDurationOpen(o => !o)}
+                  className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
+                  style={{
+                    backgroundColor: '#1A332C',
+                    border: `1px solid ${durationOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: durationOpen
+                      ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                      : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
+                >
+                  <Loader2 className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                  <span className="flex-1 text-left font-medium text-text-secondary">
+                    {initForm.durationMinutes === '15' ? '15 min' : initForm.durationMinutes === '30' ? '30 min' : initForm.durationMinutes === '45' ? '45 min' : initForm.durationMinutes === '60' ? '1 hour' : '1.5 hours'}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${durationOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {durationOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    {([
+                      { value: '15', label: '15 min' },
+                      { value: '30', label: '30 min' },
+                      { value: '45', label: '45 min' },
+                      { value: '60', label: '1 hour' },
+                      { value: '90', label: '1.5 hours' },
+                    ] as const).map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => { setInitForm(f => ({ ...f, durationMinutes: opt.value })); setDurationOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.durationMinutes === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                      >
+                        {opt.label}
+                        {initForm.durationMinutes === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Agenda */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Agenda</label>
+            <div className="relative">
+              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <textarea
+                rows={3}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                placeholder="Meeting agenda..."
+                value={initForm.agendaText}
+                onChange={setI('agendaText')}
+              />
+            </div>
+          </div>
+
+          {/* ── Participants ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Participants</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          {/* Primary Contact */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Primary Contact *</label>
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setContactOpen(o => !o)}
+                className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
+                style={{
+                  backgroundColor: '#1A332C',
+                  border: `1px solid ${contactOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                  boxShadow: contactOpen
+                    ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                    : 'none',
+                  outline: 'none',
+                  transition: 'box-shadow 0.2s ease',
+                }}
+              >
+                <User className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                <span className={`flex-1 text-left font-medium ${initForm.contactId ? 'text-text-secondary' : 'text-text-muted'}`}>
+                  {contactsList.find(c => c.id === initForm.contactId)?.fullName ?? 'Select primary contact'}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${contactOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+              </button>
+              {contactOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                  style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                >
+                  {contactsList.length > 0 ? contactsList.map(c => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => { setInitForm(f => ({ ...f, contactId: c.id })); setContactOpen(false); }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.contactId === c.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                    >
+                      <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />
+                      {c.fullName}
+                      {initForm.contactId === c.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                    </button>
+                  )) : (
+                    <div className="px-4 py-3 text-xs text-text-muted">No contacts found</div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Additional Attendees */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Additional Attendees</label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                value={attendeeQuery}
+                onChange={(e) => setAttendeeQuery(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                placeholder="Type name or email..."
+              />
+            </div>
+
+            {/* The picker only lists people once you have typed, so the primary-contact
+                field above stays the fast path for the common one-attendee meeting. */}
+            {attendeeQuery.trim().length > 0 && (
+              <div className="mt-1.5 max-h-40 overflow-y-auto rounded-card border-thin border-border-subtle bg-glass-1 divide-y divide-border-subtle">
+                {attendeeMatches.length === 0 ? (
+                  <p className="px-3 py-2 text-xs text-text-muted">No contact matches "{attendeeQuery.trim()}".</p>
+                ) : attendeeMatches.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    onClick={() => toggleAttendee(c.id)}
+                    className={`w-full text-left px-3 py-2 text-xs transition-all ${selectedAttendees.has(c.id) ? 'bg-brand-soft text-brand' : 'text-text-secondary hover:bg-glass-2'}`}
+                  >
+                    {c.fullName}{c.email ? ` · ${c.email}` : ''}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {selectedAttendees.size > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-1.5">
+                {[...selectedAttendees].map((id) => {
+                  const c = contactsList.find((x) => x.id === id);
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => toggleAttendee(id)}
+                      className="inline-flex items-center gap-1 rounded-xs bg-brand-soft border-thin border-border-glow px-2 py-0.5 text-[11px] text-brand"
+                    >
+                      {c?.fullName ?? 'Contact'}
+                      <X className="w-3 h-3" strokeWidth={1.6} />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* ── Scheduling ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Scheduling</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          {/* Date + Deal */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Date</label>
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
+                <input
+                  type="date"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{
+                    backgroundColor: '#1A2F27',
+                    colorScheme: 'dark',
+                    backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  }}
+                  value={initForm.scheduledAt}
+                  onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Linked Deal</label>
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setDealOpen(o => !o)}
+                  className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
+                  style={{
+                    backgroundColor: '#1A332C',
+                    border: `1px solid ${dealOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: dealOpen
+                      ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
+                      : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
+                >
+                  <Plus className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                  <span className={`flex-1 text-left font-medium ${initForm.dealId ? 'text-text-secondary' : 'text-text-muted'}`}>
+                    {dealsList.find(d => d.id === initForm.dealId)?.name ?? 'No deal linked'}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${dealOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {dealOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => { setInitForm(f => ({ ...f, dealId: '' })); setDealOpen(false); }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${initForm.dealId === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                    >
+                      No deal linked
+                      {initForm.dealId === '' && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                    </button>
+                    {dealsList.map(d => (
+                      <button
+                        key={d.id}
+                        type="button"
+                        onClick={() => { setInitForm(f => ({ ...f, dealId: d.id })); setDealOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-secondary ${initForm.dealId === d.id ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}
+                      >
+                        <span className="w-2 h-2 rounded-full bg-brand shrink-0" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9)' }} />
+                        {d.name}
+                        {initForm.dealId === d.id && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ── Connection ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Connection</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          {/* Join Link */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Join Link</label>
+            <div className="relative">
+              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                placeholder="https://zoom.us/j/..."
+                value={initForm.joinUrl}
+                onChange={setI('joinUrl')}
+              />
+            </div>
+          </div>
+
+          {/* Google Calendar checkbox */}
+          <label className="flex items-start gap-3 cursor-pointer p-3 rounded-xl border border-[rgba(0,217,138,0.20)]"
+            style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+          >
             <input
               type="checkbox"
               checked={initForm.generateSlots}
               onChange={e => setInitForm(f => ({ ...f, generateSlots: e.target.checked }))}
-              className="accent-brand w-4 h-4"
+              className="accent-brand w-4 h-4 mt-0.5"
             />
             <div>
               <p className="text-sm font-medium text-text-primary">Generate slots from Google Calendar</p>
-              <p className="text-xs text-text-muted">Auto-detect your available times for the contact to pick from</p>
+              <p className="text-xs text-text-muted mt-0.5">Auto-detect your available times for the contact to pick from</p>
             </div>
           </label>
-          <button type="submit" disabled={initiateMeeting.isPending} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
-            {initiateMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Initiate'}
-          </button>
         </form>
       </SlideOver>
 
@@ -376,6 +711,24 @@ function MeetingsTab() {
               </div>
             )}
 
+            {showRequestSummary ? (
+              <div className="rounded-xl border border-border-subtle bg-bg-elevated p-4 space-y-3">
+                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Request AI Call Summary</p>
+                <input value={reqSummaryText} onChange={e => setReqSummaryText(e.target.value)} placeholder="What happened in this call / meeting?" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                <div className="flex gap-2">
+                  <button onClick={() => {
+                    requestSummary.mutate({ contactId: detail.contactId, meetingId: detail.id, trigger: 1 }, { onSuccess: () => { setShowRequestSummary(false); setReqSummaryText(''); toast.success('Summary requested.'); } });
+                  }} disabled={requestSummary.isPending} className="px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+                    {requestSummary.isPending ? 'Requesting...' : 'Request Summary'}
+                  </button>
+                  <button onClick={() => setShowRequestSummary(false)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <button onClick={() => setShowRequestSummary(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-text-secondary text-sm font-bold hover:bg-bg-card transition-all">
+                <Sparkles className="w-4 h-4" strokeWidth={1.5} /> Request AI Summary
+              </button>
+            )}
             <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border-subtle">
               {detail.status === CrmMeetingStatus.ProposalDrafted && bookDate && bookTime && (
                 <button
@@ -408,9 +761,27 @@ function MeetingsTab() {
                   <CalendarCheck className="w-4 h-4" strokeWidth={1.5} /> Mark Completed
                 </button>
               )}
-              <button onClick={() => createTask.mutate(detail.id)} disabled={createTask.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-text-secondary text-sm font-bold hover:bg-bg-card transition-all disabled:opacity-60">
-                {createTask.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.5} />} Create Task
-              </button>
+              <div className="space-y-2">
+                <div className="flex gap-2 items-center">
+                  <input value={taskTitle} onChange={e => setTaskTitle(e.target.value)} placeholder="Task description..."
+                    className="flex-1 px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                  <button onClick={() => taskTitle.trim() && createTask.mutate({ id: detail.id, title: taskTitle.trim(), assignedToUserId: taskAssigneeId || undefined })}
+                    disabled={createTask.isPending || !taskTitle.trim()}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all shrink-0">
+                    {createTask.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.5} />}
+                    {createTask.isPending ? 'Creating...' : 'Create Task'}
+                  </button>
+                </div>
+                <div className="flex justify-end">
+                  <select value={taskAssigneeId} onChange={e => setTaskAssigneeId(e.target.value)}
+                    className="px-2 py-1 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-border-glow w-48">
+                    <option value="">Assign to me (default)</option>
+                    {teamMembers.filter((u: any) => u.role !== 1).map((u: any) => (
+                      <option key={u.id} value={u.id}>{u.fullName || `${u.firstName} ${u.lastName}`}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               {detail.status !== CrmMeetingStatus.Cancelled && detail.status !== CrmMeetingStatus.Completed && (
                 <button onClick={() => { cancelMeeting.mutate(detail.id, { onSuccess: () => setSelectedId(null) }); }} disabled={cancelMeeting.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger text-sm font-bold hover:bg-danger hover:text-bg transition-all disabled:opacity-60">
                   {cancelMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" strokeWidth={1.5} />} Cancel
@@ -444,6 +815,7 @@ function CallSummariesTab() {
       signalId: reqForm.signalId.trim(),
       contactId: reqForm.contactId.trim() || undefined,
       dealId: reqForm.dealId.trim() || undefined,
+      trigger: 1,
     };
     requestSummary.mutate(req, { onSuccess: () => { setShowRequest(false); setReqForm({ signalId: '', contactId: '', dealId: '' }); } });
   };
@@ -494,14 +866,95 @@ function CallSummariesTab() {
       </div>
 
       {/* Request SlideOver */}
-      <SlideOver open={showRequest} onClose={() => setShowRequest(false)} title="Request Call Summary">
-        <form onSubmit={handleRequest} className="space-y-4">
-          <Field label="Signal ID *"><input required value={reqForm.signalId} onChange={setR('signalId')} placeholder="Signal ID (required)" className={inputCls} /></Field>
-          <Field label="Contact ID"><input value={reqForm.contactId} onChange={setR('contactId')} placeholder="Contact ID (optional)" className={inputCls} /></Field>
-          <Field label="Deal ID"><input value={reqForm.dealId} onChange={setR('dealId')} placeholder="Deal ID (optional)" className={inputCls} /></Field>
-          <button type="submit" disabled={requestSummary.isPending} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
-            {requestSummary.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Request'}
-          </button>
+      <SlideOver
+        open={showRequest}
+        onClose={() => setShowRequest(false)}
+        title="Request Call Summary"
+        subtitle="Generate an AI summary from a recorded call"
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            <button
+              onClick={() => setShowRequest(false)}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              disabled={requestSummary.isPending}
+              onClick={handleRequest}
+              form="request-summary-form"
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {requestSummary.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" strokeWidth={2} />}
+              {requestSummary.isPending ? 'Requesting…' : 'Request Summary'}
+            </button>
+          </div>
+        }
+      >
+        <form id="request-summary-form" onSubmit={handleRequest} className="space-y-4">
+          {/* ── Call Details ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Call Details</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          {/* Signal ID — required */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger">*</span></label>
+            <div className="relative">
+              <PhoneCall className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                required
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                placeholder="Signal ID from recorded call (required)"
+                value={reqForm.signalId}
+                onChange={setR('signalId')}
+              />
+            </div>
+          </div>
+
+          {/* ── Links ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Links</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          {/* Contact ID + Deal ID */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Contact ID (optional)"
+                  value={reqForm.contactId}
+                  onChange={setR('contactId')}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
+              <div className="relative">
+                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Deal ID (optional)"
+                  value={reqForm.dealId}
+                  onChange={setR('dealId')}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Helper text */}
+          <p className="text-xs text-text-muted px-1">
+            The Signal ID links this summary to a specific recorded call. Contact and Deal IDs are optional — they help associate the summary with existing CRM records.
+          </p>
         </form>
       </SlideOver>
 

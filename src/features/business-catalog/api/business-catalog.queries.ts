@@ -21,6 +21,7 @@ import type {
   CatalogItemUpdateRequest,
   TransactionFilter,
   TransactionManualCreateRequest,
+  TransactionNotifyRequest,
   TransactionStatusUpdateRequest,
 } from '../types/business-catalog.types';
 
@@ -67,8 +68,7 @@ export function useUpsertBusinessProfile() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (data: BusinessProfileUpsertRequest) => businessProfileApi.upsert(data),
-    onSuccess: (data) => {
-      qc.setQueryData(businessCatalogKeys.profile(), data);
+    onSuccess: () => {
       qc.invalidateQueries({ queryKey: businessCatalogKeys.profile() });
       toast.success('Business profile saved');
     },
@@ -237,11 +237,32 @@ export function useUpdateTransactionStatus() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: TransactionStatusUpdateRequest }) =>
       transactionApi.updateStatus(id, data),
-    onSuccess: (_data, vars) => {
+    onSuccess: (data: any, vars) => {
       qc.invalidateQueries({ queryKey: businessCatalogKeys.transactions() });
       qc.invalidateQueries({ queryKey: businessCatalogKeys.transactionDetail(vars.id) });
-      toast.success('Status updated');
+      // notificationSent is null/undefined when no notification was applicable for this status
+      // (e.g. Cancel) — only true/false (an actual attempt) should produce a send-related toast.
+      if (data?.notificationSent === true) {
+        toast.success('Status updated — customer notified');
+      } else if (data?.notificationSent === false) {
+        toast.warning('Status updated, but the customer notification failed to send');
+      } else {
+        toast.success('Status updated');
+      }
     },
     onError: (err: any) => toast.error(err?.message ?? 'Failed to update status'),
+  });
+}
+
+export function useNotifyTransaction() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: TransactionNotifyRequest }) =>
+      transactionApi.notify(id, data),
+    onSuccess: (_data, vars) => {
+      qc.invalidateQueries({ queryKey: businessCatalogKeys.transactionDetail(vars.id) });
+      toast.success('Customer notified');
+    },
+    onError: (err: any) => toast.error(err?.message ?? 'Failed to notify customer'),
   });
 }

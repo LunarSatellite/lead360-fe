@@ -174,3 +174,10 @@ export function useDeleteProcessDefinition() {
     onError: () => toast.error('Failed to delete definition'),
   });
 }
+
+export function useProcessRoles() {
+  return useQuery({
+    queryKey: ['crm', 'process-roles'],
+    queryFn: () => processWorkflowApi.getRoles(),
+  });
+}

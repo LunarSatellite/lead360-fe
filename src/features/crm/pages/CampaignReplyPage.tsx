@@ -59,7 +59,7 @@ export function Component() {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-green-600 mb-3">
             <Send className="w-6 h-6 text-white" strokeWidth={1.5} />
           </div>
-          <p className="text-sm text-gray-500">OmniFlow</p>
+          <p className="text-sm text-gray-500">Lead360</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -164,7 +164,7 @@ export function Component() {
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          Powered by OmniFlow AI
+          Powered by Lead360 AI
         </p>
       </div>
     </div>

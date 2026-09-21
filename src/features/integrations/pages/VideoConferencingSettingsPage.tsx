@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Video, CheckCircle2, Link2, Loader2, Star, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
+import { env } from '@/shared/config/env';
 import {
   useVideoConferencingStatus,
   useConnectVideoProvider,
@@ -179,7 +180,7 @@ export function Component() {
   const allProviders: VideoProvider[] = [1, 2, 3, 4, 5];
 
   // Backend handles the OAuth callback and redirects back here with ?vc_connected or ?vc_error
-  const backendCallbackUrl = `https://surreal-denote-deviate.ngrok-free.dev/api/v1/video-conferencing/callback`;
+  const backendCallbackUrl = `${env.apiBaseUrl.replace(/\/$/, '')}/v1/video-conferencing/callback`;
 
   useEffect(() => {
     const connected = searchParams.get('vc_connected');
@@ -276,7 +277,7 @@ export function Component() {
         <p>• Connect your preferred provider using the OAuth button above.</p>
         <p>• When a CRM meeting is booked, a video link is automatically created and included in the calendar invite sent to the contact.</p>
         <p>• You can connect multiple providers and set one as the default.</p>
-        <p>• Credentials are encrypted at rest — OmniFlow only stores the OAuth access token, never your password.</p>
+        <p>• Credentials are encrypted at rest — Lead360 only stores the OAuth access token, never your password.</p>
       </div>
     </div>
   );

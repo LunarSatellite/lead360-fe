@@ -1,4 +1,5 @@
 import { X, Loader2, Trash2, Copy, Check } from 'lucide-react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import { useFlows, useDeleteFlow, useDuplicateFlow } from '../api/flow.queries';
 import { FLOW_STATUS_LABEL, type FlowDto } from '../types/flow.types';
 
@@ -77,7 +78,7 @@ export function FlowListDialog({ open, onClose, onSelect }: FlowListDialogProps)
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (confirm(`Delete "${f.name}"?`)) deleteFlow.mutate(f.id);
+                        confirmDialog({ message: `Delete "${f.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteFlow.mutate(f.id); });
                       }}
                       disabled={f.isActive}
                       className="p-1.5 rounded-md hover:bg-danger-soft disabled:opacity-30"

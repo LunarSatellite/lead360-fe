@@ -2,13 +2,14 @@ import { useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Calendar, CheckCircle2, AlertCircle, Loader2, LogOut, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { env } from '@/shared/config/env';
 import {
   useCalendarIntegrationStatus,
   useConnectCalendar,
   useDisconnectCalendar,
 } from '../api/calendarIntegration.queries';
 
-const CALLBACK_URL = 'https://surreal-denote-deviate.ngrok-free.dev/api/v1/calendar/callback';
+const CALLBACK_URL = `${env.apiBaseUrl.replace(/\/$/, '')}/v1/calendar/callback`;
 
 function CalendarIntegrationSettingsPage() {
   const navigate = useNavigate();
@@ -114,12 +115,12 @@ function CalendarIntegrationSettingsPage() {
             <AlertCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <p className="text-sm text-amber-300">
               Connect Google Calendar to enable the "Generate available slots" feature when scheduling meetings with contacts.
-              OmniFlow only reads your free/busy data — it cannot modify your calendar.
+              Lead360 only reads your free/busy data — it cannot modify your calendar.
             </p>
           </div>
 
           <div className="space-y-2 text-sm text-text-muted">
-            <p className="font-medium text-text-primary">What OmniFlow does with access:</p>
+            <p className="font-medium text-text-primary">What Lead360 does with access:</p>
             <ul className="space-y-1.5 list-disc list-inside text-text-muted">
               <li>Reads your free/busy times to generate open slots</li>
               <li>Never reads event titles, descriptions, or attendees</li>

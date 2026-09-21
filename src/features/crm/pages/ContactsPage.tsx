@@ -1,19 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
-  Search, UserCheck, Plus, Loader2, ChevronLeft, ChevronRight, X, Trash2,
-  User, Mail, Phone, Briefcase, Link, FileText,
+  Search, UserCheck, Plus, Loader2, ChevronLeft, ChevronRight, X, Trash2, Check,
+  User, Mail, Phone, Briefcase, Link, FileText, AlertTriangle, ArrowRight,
 } from 'lucide-react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import {
-  useContacts, useCreateContact, useDeleteContact, useImportContactsCsv,
+  useContacts, useCreateContact, useDeleteContact, useBulkDeleteContacts, useBulkContactAction, useImportContactsCsv,
+  useFindContactDuplicates, usePendingDedupCount,
 } from '../api/crm.queries';
+import { useTeamMembers } from '@/features/team/api/team.queries';
+import type { UserDto } from '@/features/auth/types/auth.types';
 import { CsvToolbar } from '../components/CsvToolbar';
+import { CustomFieldsInline } from '../components/CustomFieldsInline';
+import { CrmEntityType } from '../types/crm.types';
+import { crmApi } from '../api/crm.api';
+import { DuplicateWarning } from '../components/DuplicateWarning';
+import { useDebounce } from '@/shared/hooks/useDebounce';
 import type {
-  CrmContactFilter, CrmContactSummaryDto, CrmContactCreateRequest, 
+  CrmContactFilter, CrmContactSummaryDto, CrmContactCreateRequest,
+  CrmDuplicateMatchDto,
 } from '../types/crm.types';
 import {
   CrmContactSourceKind, CRM_CONTACT_SOURCE_LABELS,
+  BulkContactAction, CrmFunnelStage, CRM_FUNNEL_STAGE_LABELS,
 } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow } from 'date-fns';
@@ -26,6 +37,8 @@ interface ContactCardProps {
   contact: CrmContactSummaryDto;
   deleteId: string | null;
   isDeleting: boolean;
+  selected: boolean;
+  onToggle: () => void;
   onClick: () => void;
   onDeleteRequest: (id: string) => void;
   onDeleteConfirm: (id: string) => void;
@@ -36,6 +49,8 @@ function ContactCard({
   contact: c,
   deleteId,
   isDeleting,
+  selected,
+  onToggle,
   onClick,
   onDeleteRequest,
   onDeleteConfirm,
@@ -47,12 +62,25 @@ function ContactCard({
   return (
     <div
       onClick={onClick}
-      className="bg-glass-1 border-thin border-border-subtle rounded-card p-3.5 flex flex-col gap-3 cursor-pointer hover:bg-glass-2 hover:border-border-medium transition-all group"
+      className={`bg-glass-1 border-thin rounded-card p-3.5 flex flex-col gap-3 cursor-pointer hover:bg-glass-2 transition-all group ${
+        selected ? 'border-border-glow bg-brand-soft' : 'border-border-subtle hover:border-border-medium'
+      }`}
     >
       {/* Avatar + source badge */}
       <div className="flex items-start justify-between">
-        <div className="w-10 h-10 rounded-card bg-brand-soft border-thin border-border-glow flex items-center justify-center text-sm font-black text-brand">
-          {initial}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggle(); }}
+            className={`w-5 h-5 rounded-[5px] border flex items-center justify-center transition-all shrink-0 ${
+              selected ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'
+            }`}
+            title={selected ? 'Deselect' : 'Select'}
+          >
+            <Check className="w-3 h-3" strokeWidth={3} />
+          </button>
+          <div className="w-10 h-10 rounded-card bg-brand-soft border-thin border-border-glow flex items-center justify-center text-sm font-black text-brand">
+            {initial}
+          </div>
         </div>
         <span className="px-1.5 py-0.5 rounded-xs text-[10px] font-semibold border-thin border-border-subtle bg-bg-elevated text-text-secondary">
           {CRM_CONTACT_SOURCE_LABELS[c.sourceKind]}
@@ -156,6 +184,7 @@ function Modal({
   );
 }
 
+
 // ─── Create form ──────────────────────────────────────────────────────────────
 
 type ContactFormState = {
@@ -187,8 +216,14 @@ function ContactCreateForm({
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm((f) => ({ ...f, [k]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // ── Real-time dedup check (debounced) ──
+  const debouncedEmail = useDebounce(form.email, 400);
+  const debouncedPhone = useDebounce(form.phone, 400);
+  const { data: dupes } = useFindContactDuplicates(debouncedEmail, debouncedPhone);
+  const matches = (dupes as unknown as CrmDuplicateMatchDto[] | undefined) ?? [];
+  const hasDupes = matches.length > 0;
+
+  const submit = (allowDuplicate: boolean) => {
     const req: CrmContactCreateRequest = {
       fullName: form.fullName,
       email: form.email || undefined,
@@ -196,8 +231,14 @@ function ContactCreateForm({
       jobTitle: form.jobTitle || undefined,
       linkedIn: form.linkedIn || undefined,
       notes: form.notes || undefined,
+      allowDuplicate,
     };
     onSave(req);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submit(false);
   };
 
   const fieldCls = 'w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors';
@@ -267,13 +308,21 @@ function ContactCreateForm({
         </div>
       </div>
 
+      {hasDupes && (
+        <DuplicateWarning
+          matches={matches}
+          onCreateAnyway={() => submit(true)}
+          isSaving={isSaving}
+        />
+      )}
+
       <div className="flex gap-3 pt-2">
         <button
           type="submit"
-          disabled={isSaving || !form.fullName.trim()}
+          disabled={isSaving || !form.fullName.trim() || hasDupes}
           className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Create Contact'}
+          {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : hasDupes ? 'Review duplicates above' : 'Create Contact'}
         </button>
         <button
           type="button"
@@ -310,13 +359,53 @@ export function Component() {
   const [sourceFilter, setSourceFilter] = useState<string>(initialSource);
   const [showCreate, setShowCreate] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  const dedupCount = usePendingDedupCount();
 
   const { data: raw, isLoading } = useContacts(filter);
   const data = raw;
 
   const createContact = useCreateContact();
   const deleteContact = useDeleteContact();
+  const bulkDelete = useBulkDeleteContacts();
+  const bulkAction = useBulkContactAction();
   const importCsv = useImportContactsCsv();
+  const { data: teamRaw } = useTeamMembers();
+  const teamMembers = (teamRaw as unknown as UserDto[] | undefined) ?? [];
+
+  const items = data?.items ?? [];
+  const toggleSelect = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  const clearSelection = () => setSelected(new Set());
+  const runBulkDelete = async () => {
+    if (selected.size === 0) return;
+    const ok = await confirmDialog({
+      message: `Delete ${selected.size} selected contact${selected.size > 1 ? 's' : ''}? This can't be undone from here.`,
+      confirmText: 'Delete',
+      danger: true,
+    });
+    if (!ok) return;
+    bulkDelete.mutate([...selected], { onSuccess: () => clearSelection() });
+  };
+  const runBulkFunnelStage = (stage: CrmFunnelStage) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { contactIds: [...selected], action: BulkContactAction.FunnelStage, funnelStage: stage },
+      { onSuccess: () => clearSelection() },
+    );
+  };
+  const runBulkAssign = (userId: string | null) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { contactIds: [...selected], action: BulkContactAction.Assign, assignToUserId: userId },
+      { onSuccess: () => clearSelection() },
+    );
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -328,9 +417,18 @@ export function Component() {
     }));
   };
 
+  const [contactCustomFields, setContactCustomFields] = useState<Record<string, string>>({});
+
   const handleCreate = (req: CrmContactCreateRequest) => {
     createContact.mutate(req, {
-      onSuccess: () => setShowCreate(false),
+      onSuccess: (result: any) => {
+        const id = result?.id;
+        if (id) {
+          const toSave = Object.entries(contactCustomFields).filter(([, v]) => v);
+          if (toSave.length > 0) crmApi.setCustomFieldValues(id, CrmEntityType.Contact, { values: toSave.map(([d, v]) => ({ definitionId: d, value: v })) });
+        }
+        setShowCreate(false);
+      },
     });
   };
 
@@ -339,6 +437,9 @@ export function Component() {
       onSuccess: () => setDeleteId(null),
     });
   };
+
+  // Drop selections whenever the visible set changes.
+  useEffect(() => { setSelected(new Set()); }, [filter]);
 
   const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
   const currentPage = filter.page ?? 1;
@@ -379,6 +480,30 @@ export function Component() {
             </button>
           </div>
         </div>
+
+        {/* Duplicate alert banner */}
+        {dedupCount > 0 && (
+          <button
+            type="button"
+            onClick={() => navigate(ROUTES.dashboard.crmContacts + '?tab=duplicates')}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-[rgba(245,158,11,0.25)] bg-[rgba(245,158,11,0.06)] hover:bg-[rgba(245,158,11,0.1)] hover:border-[rgba(245,158,11,0.4)] transition-all group text-left"
+          >
+            <div className="w-7 h-7 rounded-lg bg-warning/10 border border-warning/20 flex items-center justify-center shrink-0">
+              <AlertTriangle className="w-3.5 h-3.5 text-warning" strokeWidth={1.6} />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-xs font-bold text-warning">
+                {dedupCount} potential duplicate{dedupCount !== 1 ? 's' : ''} detected
+              </span>
+              <span className="text-xs text-text-muted ml-1.5">
+                — review and merge to keep your contacts clean
+              </span>
+            </div>
+            <div className="flex items-center gap-1 text-xs font-semibold text-warning/70 group-hover:text-warning shrink-0 transition-colors">
+              Review <ArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
+            </div>
+          </button>
+        )}
 
         {/* Churn-band drill indicator */}
         {churnActive && (
@@ -439,19 +564,91 @@ export function Component() {
             <p className="text-sm">No contacts found</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {data.items.map((c: CrmContactSummaryDto) => (
-              <ContactCard
-                key={c.id}
-                contact={c}
-                deleteId={deleteId}
-                isDeleting={deleteContact.isPending}
-                onClick={() => navigate(ROUTES.dashboard.crmContactDetail(c.id))}
-                onDeleteRequest={(id) => setDeleteId(id)}
-                onDeleteConfirm={handleDelete}
-                onDeleteCancel={() => setDeleteId(null)}
-              />
-            ))}
+          <>
+            <div className="flex items-center gap-3 -mb-1">
+              <button
+                onClick={() =>
+                  setSelected((prev) =>
+                    prev.size === items.length ? new Set() : new Set(items.map((c) => c.id)),
+                  )
+                }
+                className="flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-text-primary transition-colors"
+              >
+                <span
+                  className={`w-4 h-4 rounded-[5px] border flex items-center justify-center transition-all ${
+                    selected.size === items.length ? 'bg-brand border-brand text-bg' : 'border-border-medium'
+                  }`}
+                >
+                  {selected.size === items.length && <Check className="w-3 h-3" strokeWidth={3} />}
+                </span>
+                {selected.size === items.length ? 'Deselect all' : 'Select all on page'}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {items.map((c: CrmContactSummaryDto) => (
+                <ContactCard
+                  key={c.id}
+                  contact={c}
+                  deleteId={deleteId}
+                  isDeleting={deleteContact.isPending}
+                  selected={selected.has(c.id)}
+                  onToggle={() => toggleSelect(c.id)}
+                  onClick={() => navigate(ROUTES.dashboard.crmContactDetail(c.id))}
+                  onDeleteRequest={(id) => setDeleteId(id)}
+                  onDeleteConfirm={handleDelete}
+                  onDeleteCancel={() => setDeleteId(null)}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Bulk action bar */}
+        {selected.size > 0 && (
+          <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl bg-bg-elevated border border-border-medium shadow-2xl">
+            <span className="text-xs font-bold text-text-primary whitespace-nowrap">{selected.size} selected</span>
+            <div className="h-5 w-px bg-border-subtle" />
+            <select
+              value=""
+              disabled={bulkAction.isPending}
+              onChange={(e) => { if (e.target.value !== '') runBulkFunnelStage(Number(e.target.value) as CrmFunnelStage); }}
+              className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+            >
+              <option value="">Set funnel stage…</option>
+              {Object.entries(CRM_FUNNEL_STAGE_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+            <select
+              value=""
+              disabled={bulkAction.isPending}
+              onChange={(e) => {
+                if (e.target.value === 'unassign') runBulkAssign(null);
+                else if (e.target.value) runBulkAssign(e.target.value);
+              }}
+              className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+            >
+              <option value="">Assign to…</option>
+              <option value="unassign">Unassign</option>
+              {teamMembers.map((u) => (
+                <option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>
+              ))}
+            </select>
+            <button
+              onClick={runBulkDelete}
+              disabled={bulkDelete.isPending}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+            >
+              {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+              Delete
+            </button>
+            <button
+              onClick={clearSelection}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+            >
+              <X className="w-3.5 h-3.5" /> Clear
+            </button>
           </div>
         )}
 
@@ -487,6 +684,9 @@ export function Component() {
             onCancel={() => setShowCreate(false)}
             isSaving={createContact.isPending}
           />
+          <div className="px-6 py-3">
+            <CustomFieldsInline entityType={CrmEntityType.Contact} onValuesChange={setContactCustomFields} />
+          </div>
         </Modal>
       )}
     </>

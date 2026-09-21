@@ -33,6 +33,12 @@ export default defineConfig(({ mode }) => {
   requireApiBaseUrl(mode);
   return {
   plugins: [react()],
+  // react-draggable (a react-grid-layout dependency) reads process.env.DRAGGABLE_DEBUG
+  // unconditionally. Vite doesn't polyfill `process` in the browser, so without this the
+  // access throws ReferenceError the instant a drag starts, silently aborting it.
+  define: {
+    'process.env': {},
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),

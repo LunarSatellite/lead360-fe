@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Plus, X, Loader2, RefreshCw, PauseCircle, PlayCircle, XCircle } from 'lucide-react';
+import { Plus, X, Loader2, RefreshCw, PauseCircle, PlayCircle, XCircle, User, DollarSign, Calendar, Hash, ChevronDown, Layers } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import {
@@ -17,6 +17,7 @@ import {
   CRM_SUBSCRIPTION_TIER_LABELS, CRM_BILLING_CADENCE_LABELS,
 } from '../types/crm.types';
 
+const inputStyle = { backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 const selectCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -28,19 +29,32 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
   );
 }
 
-function SlideOver({ open, onClose, title, children }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode }) {
+function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-input transition-all">
-            <X className="w-4 h-4" />
-          </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative flex flex-col overflow-hidden"
+        style={{
+          width: '600px',
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>}
       </div>
     </div>
   );
@@ -49,7 +63,7 @@ function SlideOver({ open, onClose, title, children }: { open: boolean; onClose:
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>
+      <label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>
       {children}
     </div>
   );
@@ -57,6 +71,70 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 type CreateForm = { contactId: string; accountId: string; dealId: string; planName: string; planTier: string; billingCadence: string; amount: string; currency: string; startDate: string; seats: string; };
 const EMPTY_CREATE: CreateForm = { contactId: '', accountId: '', dealId: '', planName: '', planTier: '1', billingCadence: '1', amount: '', currency: 'USD', startDate: '', seats: '' };
+
+function TierDropdown({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+  return (
+    <div className="relative" ref={ref}>
+      <button type="button" onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary text-left"
+        style={{ backgroundColor: '#1A332C', border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`, boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
+      >
+        <span className="flex-1 font-medium text-text-primary">{CRM_SUBSCRIPTION_TIER_LABELS[Number(value) as CrmSubscriptionPlanTier] ?? 'Select tier'}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+          {Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => (
+            <button key={k} type="button" onClick={() => { onChange(k); setOpen(false); }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${Number(value) === Number(k) ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}>
+              {l}
+              {Number(value) === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CadenceDropdown({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+  return (
+    <div className="relative" ref={ref}>
+      <button type="button" onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary text-left"
+        style={{ backgroundColor: '#1A332C', border: `1px solid ${open ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`, boxShadow: open ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none', outline: 'none', transition: 'box-shadow 0.2s ease' }}
+      >
+        <span className="flex-1 font-medium text-text-primary">{CRM_BILLING_CADENCE_LABELS[Number(value) as CrmSubscriptionBillingCadence] ?? 'Select cadence'}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+      </button>
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden" style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+          {Object.entries(CRM_BILLING_CADENCE_LABELS).map(([k, l]) => (
+            <button key={k} type="button" onClick={() => { onChange(k); setOpen(false); }}
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-[rgba(0,217,138,0.08)] ${Number(value) === Number(k) ? 'bg-[rgba(0,217,138,0.08)]' : ''} text-text-secondary`}>
+              {l}
+              {Number(value) === Number(k) && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 type EditForm = { planName: string; planTier: string; billingCadence: string; amount: string; seats: string; };
 
@@ -214,25 +292,112 @@ export function Component() {
       </div>
 
       {/* Create SlideOver */}
-      <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Subscription">
-        <form onSubmit={handleCreate} className="space-y-4">
-          <Field label="Contact ID *"><input required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid" className={inputCls} /></Field>
-          <Field label="Account ID"><input value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid" className={inputCls} /></Field>
-          <Field label="Deal ID"><input value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid" className={inputCls} /></Field>
-          <Field label="Plan Name"><input required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly" className={inputCls} /></Field>
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Plan Tier"><select value={createForm.planTier} onChange={setC('planTier')} className={selectCls}>{Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
-            <Field label="Billing Cadence"><select value={createForm.billingCadence} onChange={setC('billingCadence')} className={selectCls}>{Object.entries(CRM_BILLING_CADENCE_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
-            <Field label="Amount"><input required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00" className={inputCls} /></Field>
-            <Field label="Currency"><input value={createForm.currency} onChange={setC('currency')} placeholder="USD" className={inputCls} /></Field>
-            <Field label="Start Date"><input type="date" value={createForm.startDate} onChange={setC('startDate')} className={inputCls} /></Field>
-            <Field label="Seats"><input type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5" className={inputCls} /></Field>
-          </div>
-          <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createSub.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+      <SlideOver
+        open={showCreate}
+        onClose={() => setShowCreate(false)}
+        title="New Subscription"
+        subtitle="Create a recurring subscription"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <button type="submit" form="sub-form" disabled={createSub.isPending}
+              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
               {createSub.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Subscription'}
             </button>
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">Cancel</button>
+          </div>
+        }
+      >
+        <form id="sub-form" onSubmit={handleCreate} className="space-y-4">
+          {/* ── Subscription ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Subscription</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          <div>
+            <Field label="Contact ID *">
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={inputStyle} />
+              </div>
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Account ID">
+              <div className="relative">
+                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={inputStyle} />
+              </div>
+            </Field>
+            <Field label="Deal ID">
+              <div className="relative">
+                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={inputStyle} />
+              </div>
+            </Field>
+          </div>
+
+          <Field label="Plan Name">
+            <div className="relative">
+              <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={inputStyle} />
+            </div>
+          </Field>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Plan Tier">
+              <TierDropdown value={createForm.planTier} onChange={v => setCreateForm(f => ({ ...f, planTier: v }))} />
+            </Field>
+            <Field label="Billing Cadence">
+              <CadenceDropdown value={createForm.billingCadence} onChange={v => setCreateForm(f => ({ ...f, billingCadence: v }))} />
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Amount *">
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={inputStyle} />
+              </div>
+            </Field>
+            <Field label="Currency">
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input value={createForm.currency} onChange={setC('currency')} placeholder="USD"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={inputStyle} />
+              </div>
+            </Field>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Start Date">
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input type="date" value={createForm.startDate} onChange={setC('startDate')}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={{ backgroundColor: '#1A2F27', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </div>
+            </Field>
+            <Field label="Seats">
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={inputStyle} />
+              </div>
+            </Field>
           </div>
         </form>
       </SlideOver>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle2, XCircle, Clock, Loader2, ShieldCheck, X } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useApprovals, usePendingApprovals, useApproveRequest, useRejectRequest } from '../api/crm.queries';
+import { useMyApprovals, usePendingApprovals, useApproveRequest, useRejectRequest } from '../api/crm.queries';
 import type { CrmApprovalSummaryDto } from '../types/crm.types';
 import {
   ApprovalStatus, APPROVAL_STATUS_LABELS, APPROVAL_STATUS_COLORS,
@@ -108,6 +108,11 @@ function ApprovalRow({ approval }: { approval: CrmApprovalSummaryDto }) {
               {approval.status === ApprovalStatus.Rejected && <XCircle className="w-3 h-3" />}
               {APPROVAL_STATUS_LABELS[approval.status]}
             </span>
+            {!isPending && approval.decidedViaEmail && (
+              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-bg-elevated text-text-muted border border-border-subtle">
+                via email
+              </span>
+            )}
           </div>
 
           <p className="text-xs text-text-muted">
@@ -151,7 +156,7 @@ type Tab = 'pending' | 'all';
 export function Component() {
   const [tab, setTab] = useState<Tab>('pending');
   const { data: pendingRaw, isLoading: pendingLoading } = usePendingApprovals();
-  const { data: allRaw, isLoading: allLoading } = useApprovals();
+  const { data: allRaw, isLoading: allLoading } = useMyApprovals();
 
   const pending = pendingRaw ?? [];
   const all = allRaw ?? [];
@@ -159,7 +164,7 @@ export function Component() {
   const isLoading = tab === 'pending' ? pendingLoading : allLoading;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight flex items-center gap-2">
@@ -217,7 +222,7 @@ export function Component() {
             )}
           </div>
         ) : (
-          <div className="px-5">
+          <div>
             {displayed.map((a) => (
               <ApprovalRow key={a.id} approval={a} />
             ))}

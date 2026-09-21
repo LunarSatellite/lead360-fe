@@ -25,10 +25,11 @@ export interface ProcessStepDto {
   id: string;
   stepOrder: number;
   name: string;
-  description: string | null;
+  description?: string;
   assignedTeamLabel: string | null;
   assignedToUserId: string | null;
   slaHours: number;
+  assignedRoleId?: string | null;
 }
 
 export interface ProcessDefinitionDto {
@@ -49,6 +50,7 @@ export interface ProcessTaskDto {
   definitionName: string;
   assignedTeamLabel: string | null;
   assignedToUserId: string | null;
+  assignedRoleId?: string | null;
   status: ProcessTaskStatus;
   assignedAt: string;
   firstOpenedAt: string | null;
@@ -100,6 +102,7 @@ export interface CreateProcessStepRequest {
   description?: string;
   assignedTeamLabel?: string;
   assignedToUserId?: string;
+  assignedRoleId?: string;
   slaHours?: number;
 }
 

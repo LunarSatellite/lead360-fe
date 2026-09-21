@@ -30,7 +30,7 @@ function EnableConfirmDialog({
         <div className="px-6 py-5">
           <h2 className="text-sm font-bold text-text-primary mb-2">Enable response-body storage?</h2>
           <p className="text-xs text-text-secondary leading-relaxed">
-            OmniFlow will save the full JSON of every API response to the database. This can increase storage usage
+            Lead360 will save the full JSON of every API response to the database. This can increase storage usage
             and may capture sensitive data. Only enable it if you need to audit or replay API responses.
           </p>
         </div>

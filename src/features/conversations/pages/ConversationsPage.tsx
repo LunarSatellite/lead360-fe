@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { MessageSquare, Users, UserCheck, Clock, ArrowLeftRight, X as XIcon, Loader2, Send, Bot, User, History } from 'lucide-react';
 import { GlassCard, GlassCardHeader, StatusBadge } from '@/shared/components';
 import { useActiveSessions, useAwaitingSessions, useMySessions, useMessages, useCloseSession, useReturnToBot, useAgentReply, useSessionDeal } from '../api/conversation.queries';
@@ -7,8 +8,13 @@ import { SESSION_STATUS_LABEL, SESSION_STATUS_COLOR, CHANNEL_LABEL, ROUTING_PATH
 import type { SessionDto } from '../types/conversation.types';
 
 export function Component() {
+  // Deep-link support: /dashboard/conversations?session=<id> (used by the Home
+  // page's "Recent conversations" list) preselects that session on load.
+  const [searchParams] = useSearchParams();
+  const deepLinkedSessionId = searchParams.get('session');
+
   const [tab, setTab] = useState<'active' | 'awaiting' | 'mine'>('active');
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(deepLinkedSessionId);
   const { data: active, isLoading } = useActiveSessions();
   const { data: awaiting } = useAwaitingSessions();
   const { data: mine } = useMySessions();

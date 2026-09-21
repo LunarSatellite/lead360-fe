@@ -4,17 +4,20 @@ import {
   ArrowLeft, Loader2, UserCheck, Mail, Phone, Globe, Tag,
   Pencil, Trash2, X, Check, Activity,
   Send, MessageSquare, Clock, ChevronDown, ChevronUp,
-  Briefcase,
+  Briefcase, Smile,
 } from 'lucide-react';
 import {
   useContactById, useUpdateContact, useDeleteContact,
   useCrmContactEnrollments, useCancelCrmContactEnrollments,
   useSignals, useContactDeals,
 } from '../api/crm.queries';
+import { useCsatByContact } from '../api/crm-csat.queries';
 import type {
   CrmContactDetailDto, CrmContactUpdateRequest, CrmNurtureEnrollmentDto,
   CrmSignalDto, CrmDealSummaryDto,
 } from '../types/crm.types';
+import type { CrmCsatRecordDto } from '../types/crm-csat.types';
+import { CrmCsatRecordType, CRM_NPS_CLASSIFICATION_LABELS } from '../types/crm-csat.types';
 import {
   EnrollmentStatus, CRM_CONTACT_SOURCE_LABELS,
   CrmSignalKind, CrmSignalSource, CrmEntityType,
@@ -337,6 +340,96 @@ function ContactTimeline({ contactId }: { contactId: string }) {
   );
 }
 
+// ─── Customer sentiment (AI-inferred CSAT/NPS) ─────────────────────────────────
+
+function CsatScoreBar({ score }: { score: number }) {
+  const pct = Math.max(0, Math.min(100, (score / 10) * 100));
+  const color = score >= 7 ? 'bg-success' : score >= 4 ? 'bg-[#F59E0B]' : 'bg-danger';
+  return (
+    <div className="flex-1 h-1.5 rounded-full bg-bg-elevated overflow-hidden">
+      <div className={`h-full ${color}`} style={{ width: `${pct}%` }} />
+    </div>
+  );
+}
+
+const NPS_BADGE_CLASS: Record<number, string> = {
+  1: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  2: 'text-text-muted bg-bg-elevated border-border-subtle',
+  3: 'text-danger bg-danger-soft border-[rgba(239,68,68,0.2)]',
+};
+
+function CsatRecordRow({ record }: { record: CrmCsatRecordDto }) {
+  return (
+    <div className="pb-4 border-b border-border-subtle last:border-0">
+      <div className="flex items-center justify-between gap-2 mb-1.5">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-xs font-bold text-text-primary shrink-0">
+            {record.recordType === CrmCsatRecordType.Nps ? 'NPS' : 'CSAT'} {record.implicitScore.toFixed(1)}/10
+          </span>
+          {record.npsClassification && (
+            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border shrink-0 ${NPS_BADGE_CLASS[record.npsClassification]}`}>
+              {CRM_NPS_CLASSIFICATION_LABELS[record.npsClassification]}
+            </span>
+          )}
+          {record.topicTag && (
+            <span className="text-[10px] text-text-muted truncate">{record.topicTag}</span>
+          )}
+        </div>
+        <span className="text-[10px] text-text-muted shrink-0">{format(new Date(record.extractedAt), 'MMM d, HH:mm')}</span>
+      </div>
+      <div className="flex items-center gap-2 mb-2">
+        <CsatScoreBar score={record.implicitScore} />
+        <span className="text-[10px] text-text-muted shrink-0">{Math.round(record.confidence * 100)}% confidence</span>
+      </div>
+      {record.evidenceQuotes.length > 0 && (
+        <div className="space-y-1">
+          {record.evidenceQuotes.slice(0, 2).map((q, i) => (
+            <p key={i} className="text-xs text-text-secondary bg-bg-elevated rounded-lg px-3 py-2 border border-border-subtle italic">"{q}"</p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ContactSentimentPanel({ contactId }: { contactId: string }) {
+  const { data: records = [], isLoading } = useCsatByContact(contactId);
+
+  return (
+    <div className="rounded-2xl border border-border-subtle bg-bg-card p-5">
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-2">
+          <Smile className="w-3.5 h-3.5" strokeWidth={1.5} />
+          Customer Sentiment (AI)
+          {records.length > 0 && (
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-bg-elevated text-text-secondary border border-border-subtle">
+              {records.length}
+            </span>
+          )}
+        </h3>
+      </div>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8 text-text-muted">
+          <Loader2 className="w-4 h-4 animate-spin" />
+        </div>
+      ) : records.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8 gap-2 text-text-muted">
+          <Smile className="w-6 h-6 opacity-30" strokeWidth={1.2} />
+          <p className="text-sm">No sentiment data yet.</p>
+          <p className="text-xs text-center max-w-xs">
+            Satisfaction and NPS signals are inferred automatically from this contact's conversations.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-0">
+          {records.map((r) => <CsatRecordRow key={r.id} record={r} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function Component() {
@@ -530,6 +623,9 @@ export function Component() {
 
           {/* Deals */}
           {!isEditing && <ContactDealsPanel contactId={contact.id} />}
+
+          {/* Customer sentiment (AI-inferred CSAT/NPS) */}
+          {!isEditing && <ContactSentimentPanel contactId={contact.id} />}
 
           {/* Activity timeline */}
           {!isEditing && <ContactTimeline contactId={contact.id} />}

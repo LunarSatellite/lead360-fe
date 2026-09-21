@@ -12,6 +12,8 @@ import {
   GitBranch,
   Plus,
   X,
+  Check,
+  Trash2,
   User,
   Phone,
   Mail,
@@ -23,8 +25,17 @@ import {
   Building2,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead, useContacts, useOrganizations } from '../api/crm.queries';
+import { confirmDialog } from '@/shared/ui/confirm';
+import { useLeads, useLeadStats, useImportLeadsCsv, useCreateLead, useFindContactDuplicates, useBulkLeadAction, useContacts, useOrganizations } from '../api/crm.queries';
+import { useTeamMembers } from '@/features/team/api/team.queries';
+import type { UserDto } from '@/features/auth/types/auth.types';
+import { BulkLeadAction } from '../types/crm.types';
 import { CsvToolbar } from '../components/CsvToolbar';
+import { DuplicateWarning } from '../components/DuplicateWarning';
+import { useDebounce } from '@/shared/hooks/useDebounce';
+import { CrmEntityType } from '../types/crm.types';
+import { CustomFieldsInline } from '../components/CustomFieldsInline';
+import { crmApi } from '../api/crm.api';
 import type {
   LeadSummaryDto,
   LeadFilter,
@@ -32,6 +43,7 @@ import type {
   CrmContactSummaryDto,
   CrmOrganizationSummaryDto,
   PagedResult,
+  CrmDuplicateMatchDto,
 } from '../types/crm.types';
 import {
   LeadStage,
@@ -118,7 +130,30 @@ export function Component() {
   const orgDropRef                        = useRef<HTMLDivElement>(null);
   const [orgDetails, setOrgDetails]       = useState({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' });
   const [form, setForm]               = useState<CreateManualLeadRequest>({ stage: LeadStage.New });
+  const [leadCustomFields, setLeadCustomFields] = useState<Record<string, string>>({});
+  const [selected, setSelected]       = useState<Set<string>>(new Set());
   const createLead                    = useCreateLead();
+  const bulkAction                    = useBulkLeadAction();
+  const { data: teamRaw }             = useTeamMembers();
+  const teamMembers                   = (teamRaw as unknown as UserDto[] | undefined) ?? [];
+
+  const toggleSelect = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  const clearSelection = () => setSelected(new Set());
+
+  // Advisory dedup check while creating a lead (debounced). Non-blocking: leads can legitimately
+  // recur per channel, so we surface existing contacts/leads but don't prevent creation.
+  const dupEmail = useDebounce(form.customerEmail ?? '', 400);
+  const dupPhone = useDebounce(form.customerPhone ?? '', 400);
+  const { data: leadDupes } = useFindContactDuplicates(
+    showCreate ? dupEmail : undefined,
+    showCreate ? dupPhone : undefined,
+  );
+  const leadMatches = (leadDupes as unknown as CrmDuplicateMatchDto[] | undefined) ?? [];
 
   const { data: rawContactData } = useContacts({ search: contactQuery || undefined, pageSize: 6 });
   const contactSuggestions = ((rawContactData as unknown as PagedResult<CrmContactSummaryDto> | undefined)?.items ?? [])
@@ -172,6 +207,39 @@ export function Component() {
   useEffect(() => {
     setPage(1);
   }, [activeTab, selectedStage, search, minScore]);
+
+  // Drop selections whenever the visible set changes — selected ids may no longer be on screen.
+  useEffect(() => {
+    setSelected(new Set());
+  }, [activeTab, selectedStage, search, minScore, page]);
+
+  const runBulkStage = (stage: LeadStage) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { leadIds: [...selected], action: BulkLeadAction.Stage, stage },
+      { onSuccess: () => clearSelection() },
+    );
+  };
+  const runBulkAssign = (userId: string | null) => {
+    if (selected.size === 0) return;
+    bulkAction.mutate(
+      { leadIds: [...selected], action: BulkLeadAction.Assign, assignToUserId: userId },
+      { onSuccess: () => clearSelection() },
+    );
+  };
+  const runBulkDelete = async () => {
+    if (selected.size === 0) return;
+    const ok = await confirmDialog({
+      message: `Delete ${selected.size} selected lead${selected.size > 1 ? 's' : ''}? This can't be undone from here.`,
+      confirmText: 'Delete',
+      danger: true,
+    });
+    if (!ok) return;
+    bulkAction.mutate(
+      { leadIds: [...selected], action: BulkLeadAction.Delete },
+      { onSuccess: () => clearSelection() },
+    );
+  };
 
   const filter: LeadFilter = {
     stage:      selectedStage,
@@ -585,13 +653,15 @@ export function Component() {
                     <button
                       type="button"
                       onClick={() => setStageOpen(o => !o)}
-                      className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl bg-bg-elevated border text-sm text-text-primary focus:outline-none transition-all"
+                      className="w-full flex items-center gap-2 pl-3 pr-3 py-2 rounded-xl text-sm text-text-primary"
                       style={{
                         backgroundColor: '#1A332C',
-                        borderColor: stageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)',
+                        border: `1px solid ${stageOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
                         boxShadow: stageOpen
                           ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)'
                           : 'none',
+                        outline: 'none',
+                        transition: 'box-shadow 0.2s ease',
                       }}
                     >
                       <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
@@ -671,6 +741,32 @@ export function Component() {
                   />
                 </div>
               </div>
+              {leadMatches.length > 0 && (
+                <DuplicateWarning
+                  matches={leadMatches}
+                  onCreateAnyway={() => createLead.mutate({
+                    ...form,
+                    companyName: orgDetails.name || undefined,
+                    companyDomain: orgDetails.domain || undefined,
+                    companyIndustry: orgDetails.industry || undefined,
+                    companyEmployeeCount: orgDetails.employeeCount ? Number(orgDetails.employeeCount) : undefined,
+                    companyCity: orgDetails.city || undefined,
+                    companyCountry: orgDetails.country || undefined,
+                    companyWebsite: orgDetails.website || undefined,
+                  }, { onSuccess: (result: any) => {
+                    const id = result?.id;
+                    if (id) {
+                      const toSave = Object.entries(leadCustomFields).filter(([, v]) => v);
+                      if (toSave.length > 0) crmApi.setCustomFieldValues(id, CrmEntityType.Lead, { values: toSave.map(([d, v]) => ({ definitionId: d, value: v })) });
+                    }
+                    setShowCreate(false);
+                  }})}
+                  isSaving={createLead.isPending}
+                />
+              )}
+            </div>
+            <div className="px-6 py-3">
+              <CustomFieldsInline entityType={CrmEntityType.Lead} onValuesChange={setLeadCustomFields} />
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
               <button
@@ -681,7 +777,23 @@ export function Component() {
               </button>
               <button
                 disabled={createLead.isPending || (!form.customerName && !form.customerPhone && !form.customerEmail)}
-                onClick={() => createLead.mutate(form, { onSuccess: () => setShowCreate(false) })}
+                onClick={() => createLead.mutate({
+                  ...form,
+                  companyName: orgDetails.name || undefined,
+                  companyDomain: orgDetails.domain || undefined,
+                  companyIndustry: orgDetails.industry || undefined,
+                  companyEmployeeCount: orgDetails.employeeCount ? Number(orgDetails.employeeCount) : undefined,
+                  companyCountry: orgDetails.country || undefined,
+                  companyCity: orgDetails.city || undefined,
+                  companyWebsite: orgDetails.website || undefined,
+                }, { onSuccess: (result: any) => {
+                  const id = result?.id;
+                  if (id) {
+                    const toSave = Object.entries(leadCustomFields).filter(([, v]) => v);
+                    if (toSave.length > 0) crmApi.setCustomFieldValues(id, CrmEntityType.Lead, { values: toSave.map(([d, v]) => ({ definitionId: d, value: v })) });
+                  }
+                  setShowCreate(false);
+                }})}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 {createLead.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
@@ -812,10 +924,91 @@ export function Component() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {leads.map((lead) => (
-            <LeadCard key={lead.id} lead={lead} onClick={() => navigate(`/dashboard/crm/leads/${lead.id}`)} />
-          ))}
+        <>
+          {/* Select-all toolbar */}
+          <div className="flex items-center gap-3 -mb-1">
+            <button
+              onClick={() =>
+                setSelected((prev) =>
+                  prev.size === leads.length ? new Set() : new Set(leads.map((l) => l.id)),
+                )
+              }
+              className="flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-text-primary transition-colors"
+            >
+              <span
+                className={`w-4 h-4 rounded-[5px] border flex items-center justify-center transition-all ${
+                  selected.size === leads.length
+                    ? 'bg-brand border-brand text-bg'
+                    : 'border-border-medium'
+                }`}
+              >
+                {selected.size === leads.length && <Check className="w-3 h-3" strokeWidth={3} />}
+              </span>
+              {selected.size === leads.length ? 'Deselect all' : 'Select all on page'}
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {leads.map((lead) => (
+              <LeadCard
+                key={lead.id}
+                lead={lead}
+                selected={selected.has(lead.id)}
+                onToggle={() => toggleSelect(lead.id)}
+                onClick={() => navigate(`/dashboard/crm/leads/${lead.id}`)}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Bulk action bar */}
+      {selected.size > 0 && (
+        <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 px-4 py-3 rounded-2xl bg-bg-elevated border border-border-medium shadow-2xl">
+          <span className="text-xs font-bold text-text-primary whitespace-nowrap">
+            {selected.size} selected
+          </span>
+          <div className="h-5 w-px bg-border-subtle" />
+          <select
+            value=""
+            disabled={bulkAction.isPending}
+            onChange={(e) => { if (e.target.value) runBulkStage(Number(e.target.value) as LeadStage); }}
+            className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+          >
+            <option value="">Set stage…</option>
+            {STAGE_PILLS.filter((p) => p.value !== undefined).map((p) => (
+              <option key={p.label} value={p.value}>{p.label}</option>
+            ))}
+          </select>
+          <select
+            value=""
+            disabled={bulkAction.isPending}
+            onChange={(e) => {
+              if (e.target.value === 'unassign') runBulkAssign(null);
+              else if (e.target.value) runBulkAssign(e.target.value);
+            }}
+            className="text-xs bg-bg border border-border-subtle rounded-xl px-3 py-1.5 text-text-secondary focus:outline-none focus:border-border-glow cursor-pointer disabled:opacity-50"
+          >
+            <option value="">Assign to…</option>
+            <option value="unassign">Unassign</option>
+            {teamMembers.map((u) => (
+              <option key={u.id} value={u.id}>{u.firstName} {u.lastName}</option>
+            ))}
+          </select>
+          <button
+            onClick={runBulkDelete}
+            disabled={bulkAction.isPending}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+          >
+            {bulkAction.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+            Delete
+          </button>
+          <button
+            onClick={clearSelection}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+          >
+            <X className="w-3.5 h-3.5" /> Clear
+          </button>
         </div>
       )}
 
@@ -873,9 +1066,11 @@ function StatCard({ label, value, valueClass = 'text-text-primary', icon }: Stat
 interface LeadCardProps {
   lead: LeadSummaryDto;
   onClick: () => void;
+  selected: boolean;
+  onToggle: () => void;
 }
 
-function LeadCard({ lead, onClick }: LeadCardProps) {
+function LeadCard({ lead, onClick, selected, onToggle }: LeadCardProps) {
   const displayName = lead.customerName || lead.channelHandle;
   const initial = (displayName?.[0] ?? '?').toUpperCase();
   const channelLabel = CHANNEL_LABELS[lead.channel] ?? 'Unknown';
@@ -894,12 +1089,25 @@ function LeadCard({ lead, onClick }: LeadCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-glass-1 border-thin border-border-subtle rounded-card p-3.5 flex flex-col gap-3 cursor-pointer hover:bg-glass-2 hover:border-border-medium transition-all"
+      className={`relative bg-glass-1 border-thin rounded-card p-3.5 flex flex-col gap-3 cursor-pointer hover:bg-glass-2 transition-all ${
+        selected ? 'border-border-glow bg-brand-soft' : 'border-border-subtle hover:border-border-medium'
+      }`}
     >
       {/* Avatar + stage badge */}
       <div className="flex items-start justify-between">
-        <div className="w-10 h-10 rounded-card bg-brand-soft border-thin border-border-glow flex items-center justify-center text-sm font-black text-brand">
-          {initial}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggle(); }}
+            className={`w-5 h-5 rounded-[5px] border flex items-center justify-center transition-all shrink-0 ${
+              selected ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'
+            }`}
+            title={selected ? 'Deselect' : 'Select'}
+          >
+            <Check className="w-3 h-3" strokeWidth={3} />
+          </button>
+          <div className="w-10 h-10 rounded-card bg-brand-soft border-thin border-border-glow flex items-center justify-center text-sm font-black text-brand">
+            {initial}
+          </div>
         </div>
         <span className={`px-1.5 py-0.5 rounded-xs text-[10px] font-semibold border-thin ${stageColor}`}>
           {stageLabel}

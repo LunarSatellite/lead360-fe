@@ -1,15 +1,17 @@
-import { useState, useEffect } from 'react';
-import { Plus, X, Loader2, ClipboardList, Send, AlertTriangle, FilePlus } from 'lucide-react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { Plus, X, Loader2, ClipboardList, Send, AlertTriangle, FilePlus, RefreshCw, Save, Layers, User } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import { toast } from 'sonner';
 import { useSearchParams } from 'react-router-dom';
-import { useProposals, useProposalById, useGenerateProposal, useCreateProposal, useCreateProposalFromLead, useSendProposal, useAcceptProposal, useRejectProposal, useProposalTemplates, useDeals, useContacts, useLeads } from '../api/crm.queries';
+import { useProposals, useProposalById, useGenerateProposal, useCreateProposal, useCreateProposalFromLead, useSendProposal, useAcceptProposal, useRejectProposal, useProposalTemplates, useDeals, useContacts, useLeads, useUpdateProposalSection, useRegenerateProposalSection } from '../api/crm.queries';
 import type {
   CrmProposalSummaryDto, CrmProposalDetailDto, CrmProposalGenerateRequest, CrmProposalCreateRequest,
   CrmProposalFromLeadRequest, CrmProposalSectionInput, CrmProposalFilter, CrmDealSummaryDto, CrmContactSummaryDto,
   LeadSummaryDto,
 } from '../types/crm.types';
-import { CrmProposalStatus, CRM_PROPOSAL_STATUS_LABELS, CRM_PROPOSAL_STATUS_COLORS, PROPOSAL_SECTION_KINDS } from '../types/crm.types';
+import { CrmProposalStatus, CRM_PROPOSAL_STATUS_LABELS, CRM_PROPOSAL_STATUS_COLORS, PROPOSAL_SECTION_KINDS, ApprovalEntityType } from '../types/crm.types';
+import { ApprovalPanel } from '../components/ApprovalPanel';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -22,7 +24,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="space-y-1">
       <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
@@ -31,22 +33,102 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function SlideOver({ open, onClose, title, children, wide }: {
-  open: boolean; onClose: () => void; title: string; children: React.ReactNode; wide?: boolean;
+function SlideOver({ open, onClose, title, subtitle, children, footer, wide, padRight }: {
+  open: boolean; onClose: () => void; title: string; subtitle?: string; children: ReactNode; footer?: ReactNode; wide?: boolean; padRight?: boolean;
 }) {
   if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[520px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="text-base font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+  return createPortal(
+    <div className={`fixed inset-0 z-50 flex items-center justify-end${padRight ? ' pr-4' : ''}`}>
+      <div className="absolute inset-0 min-h-screen bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className={`drawer-slide-in relative ${wide ? 'w-[640px]' : 'w-[520px]'} flex flex-col overflow-hidden`}
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        {/* Accent bar */}
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >{title}</h2>
+            {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">{children}</div>
+        {footer && (
+          <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>
+        )}
       </div>
+    </div>,
+    document.body
+  );
+}
+
+// ─── Editable Section ─────────────────────────────────────────────────────────
+function EditableSection({ proposalId, section }: { proposalId: string; section: any }) {
+  const [editing, setEditing] = useState(false);
+  const [content, setContent] = useState(section.content ?? '');
+  const updateSection = useUpdateProposalSection();
+  const regenerateSection = useRegenerateProposalSection();
+
+  const handleSave = () => {
+    updateSection.mutate({ proposalId, sectionId: section.id, content });
+    setEditing(false);
+  };
+
+  return (
+    <div className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-bold text-text-primary">{section.title}</p>
+        <div className="flex gap-1">
+          {!editing ? (
+            <button onClick={() => { setContent(section.content ?? ''); setEditing(true); }} className="text-[10px] text-brand hover:underline">Edit</button>
+          ) : (
+            <>
+              <button onClick={handleSave} disabled={updateSection.isPending} className="flex items-center gap-1 text-[10px] text-success hover:underline font-medium">
+                {updateSection.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />} Save
+              </button>
+              <button onClick={() => setEditing(false)} className="text-[10px] text-text-muted hover:underline">Cancel</button>
+            </>
+          )}
+          <button onClick={() => regenerateSection.mutate({ proposalId, sectionId: section.id })} disabled={regenerateSection.isPending}
+            className="flex items-center gap-1 text-[10px] text-brand hover:underline font-medium">
+            {regenerateSection.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />} Regenerate
+          </button>
+        </div>
+      </div>
+
+      {editing ? (
+        <textarea value={content} onChange={e => setContent(e.target.value)} rows={6}
+          className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary resize-y focus:outline-none focus:border-border-glow" />
+      ) : (
+        <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{section.content || '—'}</p>
+      )}
+
+      {section.gapFlags?.length > 0 && !section.gapsDismissed && (
+        <div className="flex flex-wrap gap-1.5 pt-1">
+          {section.gapFlags.map((g: string, i: number) => (
+            <span key={i} className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FEF3C7] text-[#92400E] text-xs font-medium border border-[#FDE68A]">
+              <AlertTriangle className="w-3 h-3 shrink-0" strokeWidth={1.5} /> {g}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -60,6 +142,29 @@ export function Component() {
   const [dealId, setDealId] = useState(searchParams.get('dealId') ?? '');
   const [contactId, setContactId] = useState(searchParams.get('contactId') ?? '');
   const [templateId, setTemplateId] = useState('');
+
+  // Dropdown state for Generate form
+  const [genDealSearch, setGenDealSearch] = useState('');
+  const [showGenDealDrop, setShowGenDealDrop] = useState(false);
+  const genDealDropRef = useRef<HTMLDivElement>(null);
+
+  const [genContactSearch, setGenContactSearch] = useState('');
+  const [showGenContactDrop, setShowGenContactDrop] = useState(false);
+  const genContactDropRef = useRef<HTMLDivElement>(null);
+
+  const [genTemplateSearch, setGenTemplateSearch] = useState('');
+  const [showGenTemplateDrop, setShowGenTemplateDrop] = useState(false);
+  const genTemplateDropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (genDealDropRef.current && !genDealDropRef.current.contains(e.target as Node)) setShowGenDealDrop(false);
+      if (genContactDropRef.current && !genContactDropRef.current.contains(e.target as Node)) setShowGenContactDrop(false);
+      if (genTemplateDropRef.current && !genTemplateDropRef.current.contains(e.target as Node)) setShowGenTemplateDrop(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   // Consume query params once on mount — don't reopen on refresh
   useEffect(() => {
@@ -75,6 +180,7 @@ export function Component() {
   const items: CrmProposalSummaryDto[] = (raw as any)?.items ?? [];
 
   const { data: detail, isLoading: detailLoading } = useProposalById(selectedId ?? undefined);
+  const detailData = detail as unknown as CrmProposalDetailDto | undefined;
 
   const { data: rawTemplates } = useProposalTemplates();
   const templates: any[] = (rawTemplates as any) ?? [];
@@ -211,50 +317,45 @@ export function Component() {
       <SlideOver open={!!selectedId} onClose={() => setSelectedId(null)} title="Proposal Detail" wide>
         {detailLoading ? (
           <div className="flex items-center justify-center py-12 text-text-muted"><Loader2 className="w-6 h-6 animate-spin" /></div>
-        ) : detail && (
+        ) : detailData && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <Field label="Title"><span className="text-text-primary font-semibold text-sm">{detail.title}</span></Field>
-              <Field label="Status"><Badge value={detail.status} labels={CRM_PROPOSAL_STATUS_LABELS} colors={CRM_PROPOSAL_STATUS_COLORS} /></Field>
+              <Field label="Title"><span className="text-text-primary font-semibold text-sm">{detailData.title}</span></Field>
+              <Field label="Status"><Badge value={detailData.status} labels={CRM_PROPOSAL_STATUS_LABELS} colors={CRM_PROPOSAL_STATUS_COLORS} /></Field>
               <Field label="Deal"><span className="text-text-secondary text-sm">{selectedSummary?.dealName ?? '—'}</span></Field>
               <Field label="Contact"><span className="text-text-secondary text-sm">{selectedSummary?.contactName ?? '—'}</span></Field>
             </div>
 
-            {/* Sections with gap warnings */}
-            {detail.sections?.length > 0 && (
+            {/* Editable Sections */}
+            {(detailData.sections?.length ?? 0) > 0 && (
               <div className="space-y-3">
-                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Sections ({detail.openGapsCount} open gap{detail.openGapsCount !== 1 ? 's' : ''})</p>
-                {detail.sections.map((s) => (
-                  <div key={s.id} className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
-                    <p className="text-xs font-bold text-text-primary">{s.title}</p>
-                    <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{s.content?.slice(0, 200)}{s.content?.length > 200 ? '…' : ''}</p>
-                    {s.gapFlags?.length > 0 && !s.gapsDismissed && (
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {s.gapFlags.map((g, i) => (
-                          <span key={i} className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-[#FEF3C7] text-[#92400E] text-xs font-medium border border-[#FDE68A]">
-                            <AlertTriangle className="w-3 h-3 shrink-0" strokeWidth={1.5} /> {g}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Sections ({detailData.openGapsCount} open gap{detailData.openGapsCount !== 1 ? 's' : ''})</p>
+                {detailData.sections!.map((s) => (
+                  <EditableSection
+                    key={s.id}
+                    proposalId={detailData.id}
+                    section={s}
+                  />
                 ))}
               </div>
             )}
 
-            {canSend(detail) && (
-              <button onClick={() => { sendProposal.mutate(detail.id); setSelectedId(null); }} disabled={sendProposal.isPending}
+            {/* Approval */}
+            {detailData.id && <ApprovalPanel entityType={ApprovalEntityType.Proposal} entityId={detailData.id} entityName={detailData.title} />}
+
+            {canSend(detailData) && (
+              <button onClick={() => { sendProposal.mutate(detailData.id); setSelectedId(null); }} disabled={sendProposal.isPending}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
                 {sendProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" strokeWidth={1.5} />} Send Proposal
               </button>
             )}
-            {detail.status === 4 && (
+            {detailData.status === 4 && (
               <div className="flex gap-2">
-                <button onClick={() => { acceptProposal.mutate(detail.id); setSelectedId(null); }} disabled={acceptProposal.isPending}
+                <button onClick={() => { acceptProposal.mutate(detailData.id); setSelectedId(null); }} disabled={acceptProposal.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   {acceptProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Accept
                 </button>
-                <button onClick={() => { rejectProposal.mutate(detail.id); setSelectedId(null); }} disabled={rejectProposal.isPending}
+                <button onClick={() => { rejectProposal.mutate(detailData.id); setSelectedId(null); }} disabled={rejectProposal.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   {rejectProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Reject
                 </button>
@@ -265,29 +366,186 @@ export function Component() {
       </SlideOver>
 
       {/* Generate SlideOver */}
-      <SlideOver open={genOpen} onClose={() => { setGenOpen(false); resetForm(); }} title="Generate Proposal">
-        <Field label="Deal *">
-          <select value={dealId} onChange={e => setDealId(e.target.value)} className={selectCls}>
-            <option value="">Select a deal (required)</option>
-            {dealsList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-          </select>
-        </Field>
-        <Field label="Contact">
-          <select value={contactId} onChange={e => setContactId(e.target.value)} className={selectCls}>
-            <option value="">Select a contact (optional)</option>
-            {contactsList.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
-          </select>
-        </Field>
-        <Field label="Template">
-          <select value={templateId} onChange={e => setTemplateId(e.target.value)} className={selectCls}>
-            <option value="">No template</option>
-            {templates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </select>
-        </Field>
-        <button onClick={handleGenerate} disabled={generateProposal.isPending || !dealId.trim()}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
-          {generateProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <ClipboardList className="w-4 h-4" />} Generate
-        </button>
+      <SlideOver
+        open={genOpen}
+        onClose={() => { setGenOpen(false); resetForm(); }}
+        title="Generate Proposal"
+        subtitle="Create a proposal from an existing deal"
+        wide
+        padRight
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            <button
+              onClick={() => { setGenOpen(false); resetForm(); }}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleGenerate}
+              disabled={generateProposal.isPending || !dealId.trim()}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {generateProposal.isPending
+                ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                : <ClipboardList className="w-3.5 h-3.5" />}
+              Generate Proposal
+            </button>
+          </div>
+        }
+      >
+        {/* ── Deal & Contact ── */}
+        <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+          <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Deal & Contact</span>
+          <div className="h-px bg-brand/20" />
+        </div>
+
+        {/* Deal */}
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal <span className="text-danger">*</span></label>
+          <div className="relative" ref={genDealDropRef}>
+            <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              placeholder="Search existing deals…"
+              autoComplete="off"
+              value={genDealSearch}
+              onChange={e => { setGenDealSearch(e.target.value); setShowGenDealDrop(true); }}
+              onFocus={() => setShowGenDealDrop(true)}
+            />
+            {genDealSearch ? (
+              <button type="button" onClick={() => { setGenDealSearch(''); setShowGenDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            ) : null}
+            {showGenDealDrop && (
+              <div
+                className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+              >
+                {dealsList.filter(d => !genDealSearch || d.name.toLowerCase().includes(genDealSearch.toLowerCase())).length > 0
+                  ? dealsList.filter(d => !genDealSearch || d.name.toLowerCase().includes(genDealSearch.toLowerCase())).map(d => (
+                    <button
+                      key={d.id}
+                      type="button"
+                      onClick={() => { setDealId(d.id); setGenDealSearch(''); setShowGenDealDrop(false); }}
+                      className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                        <Layers className="w-4 h-4 text-brand" strokeWidth={1.6} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-text-primary truncate">{d.name}</div>
+                      </div>
+                      <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                    </button>
+                  ))
+                  : <div className="px-4 py-3 text-xs text-text-muted">No deals found</div>
+                }
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Contact */}
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Contact</label>
+          <div className="relative" ref={genContactDropRef}>
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              placeholder="Search existing contacts…"
+              autoComplete="off"
+              value={genContactSearch}
+              onChange={e => { setGenContactSearch(e.target.value); setShowGenContactDrop(true); }}
+              onFocus={() => setShowGenContactDrop(true)}
+            />
+            {genContactSearch ? (
+              <button type="button" onClick={() => { setGenContactSearch(''); setShowGenContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            ) : null}
+            {showGenContactDrop && (
+              <div
+                className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+              >
+                {contactsList.filter(c => !genContactSearch || c.fullName.toLowerCase().includes(genContactSearch.toLowerCase())).length > 0
+                  ? contactsList.filter(c => !genContactSearch || c.fullName.toLowerCase().includes(genContactSearch.toLowerCase())).map(c => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      onClick={() => { setContactId(c.id); setGenContactSearch(''); setShowGenContactDrop(false); }}
+                      className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                    >
+                      <div className="relative shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                          <span className="text-xs font-bold text-brand">{c.fullName.split(' ').filter(Boolean).map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}</span>
+                        </div>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-text-primary truncate">{c.fullName}</div>
+                        {c.email && <div className="flex items-center gap-2 mt-0.5"><span className="text-xs text-text-muted truncate">{c.email}</span></div>}
+                      </div>
+                      <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                    </button>
+                  ))
+                  : <div className="px-4 py-3 text-xs text-text-muted">No contacts found</div>
+                }
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Template */}
+        <div>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Template</label>
+          <div className="relative" ref={genTemplateDropRef}>
+            <ClipboardList className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+              style={{ backgroundColor: '#1A2F27', backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              placeholder="Select a template…"
+              autoComplete="off"
+              value={genTemplateSearch}
+              onChange={e => { setGenTemplateSearch(e.target.value); setShowGenTemplateDrop(true); }}
+              onFocus={() => setShowGenTemplateDrop(true)}
+            />
+            {genTemplateSearch ? (
+              <button type="button" onClick={() => { setGenTemplateSearch(''); setShowGenTemplateDrop(false); setTemplateId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            ) : null}
+            {showGenTemplateDrop && (
+              <div
+                className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+              >
+                {templates.filter((t: any) => !genTemplateSearch || t.name.toLowerCase().includes(genTemplateSearch.toLowerCase())).length > 0
+                  ? templates.filter((t: any) => !genTemplateSearch || t.name.toLowerCase().includes(genTemplateSearch.toLowerCase())).map((t: any) => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => { setTemplateId(t.id); setGenTemplateSearch(''); setShowGenTemplateDrop(false); }}
+                      className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0" style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}>
+                        <ClipboardList className="w-4 h-4 text-brand" strokeWidth={1.6} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-semibold text-text-primary truncate">{t.name}</div>
+                      </div>
+                      <span className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }} />
+                    </button>
+                  ))
+                  : <div className="px-4 py-3 text-xs text-text-muted">No templates found</div>
+                }
+              </div>
+            )}
+          </div>
+        </div>
       </SlideOver>
 
       {/* Manual Build SlideOver */}

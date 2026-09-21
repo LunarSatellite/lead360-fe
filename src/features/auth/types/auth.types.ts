@@ -1,21 +1,21 @@
 // ═══════════════════════════════════════════════════════════════
-// Auth types — exact mirror of OmniFlow Swagger spec
+// Auth types — exact mirror of Lead360 Swagger spec
 // Source: /api/v1/auth/* + /api/v1/users/*
 // ═══════════════════════════════════════════════════════════════
 
 // ─── Enums ───
 
-export const UserRole = { Owner: 1, Admin: 2, Agent: 3 } as const;
+export const UserRole = { Owner: 1, Admin: 2, Agent: 3, Manager: 4 } as const;
 export type UserRoleValue = (typeof UserRole)[keyof typeof UserRole];
 export const USER_ROLE_LABEL: Record<UserRoleValue, string> = {
-  [UserRole.Owner]: 'Owner', [UserRole.Admin]: 'Admin', [UserRole.Agent]: 'Agent',
+  [UserRole.Owner]: 'Owner', [UserRole.Admin]: 'Admin', [UserRole.Agent]: 'Agent', [UserRole.Manager]: 'Manager',
 };
 
-export const UserStatus = { Active: 1, Inactive: 2, Suspended: 3, PendingVerification: 4 } as const;
+export const UserStatus = { Pending: 1, Active: 2, Suspended: 3, Deactivated: 4 } as const;
 export type UserStatusValue = (typeof UserStatus)[keyof typeof UserStatus];
 export const USER_STATUS_LABEL: Record<UserStatusValue, string> = {
-  [UserStatus.Active]: 'Active', [UserStatus.Inactive]: 'Inactive',
-  [UserStatus.Suspended]: 'Suspended', [UserStatus.PendingVerification]: 'Pending verification',
+  [UserStatus.Pending]: 'Pending', [UserStatus.Active]: 'Active',
+  [UserStatus.Suspended]: 'Suspended', [UserStatus.Deactivated]: 'Deactivated',
 };
 
 export const BusinessType = { Goods: 1, Services: 2, Hybrid: 3 } as const;
@@ -111,6 +111,8 @@ export interface UpdateProfileRequest {
   lastName?: string | null;   // maxLength 100
   phone?: string | null;      // maxLength 20
   avatarUrl?: string | null;  // maxLength 500
+  jobTitle?: string | null;     // optional, maxLength 100
+  department?: string | null;  // optional, maxLength 100
 }
 
 // ─── UserProfileDto (returned in AuthResponse.user, GET /api/v1/users/me) ───
@@ -121,6 +123,8 @@ export interface UserProfileDto {
   lastName: string | null;
   phone: string | null;
   avatarUrl: string | null;
+  jobTitle: string | null;
+  department: string | null;
   role: UserRoleValue;
   tenantName: string | null;
   tenantId: string;
@@ -149,4 +153,7 @@ export interface UserDto {
   isEmailVerified: boolean;
   emailVerifiedAt: string | null;
   lastLoginAt: string | null;
+  crmRoleId: string | null;
+  jobTitle: string | null;     // optional, maxLength 100
+  department: string | null;  // optional, maxLength 100 (e.g. "Support", "Sales")
 }

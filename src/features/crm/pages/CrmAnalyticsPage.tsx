@@ -238,10 +238,8 @@ function AiActionsTab({ filter, onClearFilter }: { filter?: AiActionFilter; onCl
 
 export function Component() {
   const [activeTab, setActiveTab] = useState<'analytics' | 'ai-actions'>('analytics');
-
   // Set when a card/donut/row in the AI-effectiveness widget is clicked; filters the AI Actions list.
   const [aiActionFilter, setAiActionFilter] = useState<AiActionFilter | undefined>(undefined);
-
 
   return (
     <div className="space-y-6">

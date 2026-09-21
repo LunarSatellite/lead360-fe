@@ -7,6 +7,7 @@ import { apiClient } from '@/shared/lib/api-client';
 import type {
   ChannelConnectionDto,
   ChannelConnectionCreateRequest,
+  ChannelConnectionCreateResponseDto,
   ChannelStatsResponse,
 } from '../types/channels.types';
 
@@ -19,9 +20,9 @@ export const channelApi = {
   getById: (id: string) =>
     apiClient.get<ChannelConnectionDto>(`/v1/channels/${id}`),
 
-  // POST /api/v1/channels → ChannelConnectionDto (201)
+  // POST /api/v1/channels → ChannelConnectionCreateResponseDto (201, includes one-time webhookVerifyToken)
   create: (data: ChannelConnectionCreateRequest) =>
-    apiClient.post<ChannelConnectionDto>('/v1/channels', data),
+    apiClient.post<ChannelConnectionCreateResponseDto>('/v1/channels', data),
 
   // POST /api/v1/channels/{id}/connect → void
   activate: (id: string) =>

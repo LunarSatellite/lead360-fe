@@ -103,7 +103,6 @@ export function Component() {
     // We intentionally only check this on mount — once logged in,
     // we don't want a stale localStorage read kicking us back to
     // login mid-flow.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Fetch the run ──────────────────────────────────────────

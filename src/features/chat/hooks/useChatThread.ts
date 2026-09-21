@@ -402,9 +402,9 @@ export function useChatThread(): UseChatThreadResult {
         const sid = await ensureSession(file.name.replace(/\.[^.]+$/, ''));
         const result = await chatApi.uploadDocument(sid, file);
 
-        if (result.status === 'Completed') {
+        if (result.status === 'Completed' || result.status === 'ApiSpecParsed') {
           // Refetch the session detail to pick up the new System message
-          // (and its inline DocumentExtractionDrafts card). Per spec §4
+          // (and its inline DocumentExtractionDrafts / RedirectToPage card). Per spec §4
           // we could "rely on the next stream" but refetching is more
           // reliable — the user might never send another message.
           try {
@@ -420,7 +420,7 @@ export function useChatThread(): UseChatThreadResult {
               `Read ${result.fileName} — ${result.productDraftCount} products, ${result.topicDraftCount} topics drafted.`,
           });
 
-          // Trigger the LLM to react to the document. Without this the
+          // Trigger the LLM to react to the upload. Without this the
           // bot just sits silent — the upload endpoint persists a System
           // note but never invokes the orchestrator. The system prompt's
           // post-upload phase recognises this trigger and replies with a
@@ -430,7 +430,11 @@ export function useChatThread(): UseChatThreadResult {
           // upload still completes successfully — we just lose the
           // auto-reply, and the user can type anything to wake the bot.
           if (sendRef.current) {
-            void sendRef.current("Use what's in my document — what do you need from me?");
+            void sendRef.current(
+              result.status === 'ApiSpecParsed'
+                ? "I just uploaded an API spec — what should we do with it?"
+                : "Use what's in my document — what do you need from me?",
+            );
           }
         } else {
           // Soft failure inside 200. Backend did NOT append a thread note.

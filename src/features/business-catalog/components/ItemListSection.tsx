@@ -1,9 +1,10 @@
 // ═══════════════════════════════════════════════════════════════
+import { confirmDialog } from '@/shared/ui/confirm';
 // ItemListSection — Lists items with filter / create / edit / delete
 // ═══════════════════════════════════════════════════════════════
 
 import { useState } from 'react';
-import { Plus, Pencil, Trash2, Search, Loader2, Package, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, Loader2, Package, PackageCheck, PackageX, ArrowLeft } from 'lucide-react';
 import {
   useCategories,
   useDeleteItem,
@@ -46,8 +47,8 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
   const items: CatalogItem[] = ((data as any)?.items as CatalogItem[]) ?? [];
   const total: number = ((data as any)?.totalCount as number) ?? 0;
 
-  const handleDelete = (i: CatalogItem) => {
-    if (!confirm(`Delete "${i.name}"? This cannot be undone.`)) return;
+  const handleDelete = async (i: CatalogItem) => {
+    if (!(await confirmDialog({ message: `Delete "${i.name}"? This cannot be undone.`, confirmText: 'Delete', danger: true }))) return;
     deleteMutation.mutate(i.id);
   };
 
@@ -208,11 +209,12 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
                   className="w-7 h-7 rounded-sm flex items-center justify-center
                              hover:bg-glass-2 transition-colors"
                   title={i.isAvailable ? 'Mark unavailable' : 'Mark available'}
+                  aria-label={i.isAvailable ? `Mark ${i.name} unavailable` : `Mark ${i.name} available`}
                 >
                   {i.isAvailable ? (
-                    <Eye className="w-3.5 h-3.5 text-text-secondary" strokeWidth={1.6} />
+                    <PackageCheck className="w-3.5 h-3.5 text-success" strokeWidth={1.8} />
                   ) : (
-                    <EyeOff className="w-3.5 h-3.5 text-text-muted" strokeWidth={1.6} />
+                    <PackageX className="w-3.5 h-3.5 text-danger" strokeWidth={1.8} />
                   )}
                 </button>
                 <button

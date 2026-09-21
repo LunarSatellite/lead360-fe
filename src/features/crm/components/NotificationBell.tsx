@@ -11,6 +11,9 @@ function SkeletonLine({ width }: { width: string }) {
   return <div className={`h-3 bg-bg-elevated rounded-full animate-pulse ${width}`} />;
 }
 
+// Height of a single row — kept fixed so exactly 5 rows are visible before scrolling.
+const ROW_HEIGHT = 92;
+
 // ─── Notification item ────────────────────────────────────────────────────────
 function NotificationItem({
   id,
@@ -42,20 +45,22 @@ function NotificationItem({
     <button
       type="button"
       onClick={handleClick}
-      className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-bg-elevated transition-colors ${
-        !isRead ? 'bg-brand-soft' : ''
+      style={{ height: ROW_HEIGHT }}
+      className={`relative w-full text-left px-4 py-3 flex items-start gap-3 shrink-0 transition-colors ${
+        !isRead ? 'bg-brand-soft hover:bg-brand-soft/70' : 'hover:bg-glass-2'
       }`}
     >
-      {/* Unread dot */}
-      <span
-        className={`mt-1.5 shrink-0 w-2 h-2 rounded-full ${
-          !isRead ? 'bg-brand' : 'bg-transparent'
-        }`}
-      />
+      {/* Unread accent bar */}
+      {!isRead && <span className="absolute left-0 top-0 bottom-0 w-0.5 bg-brand" />}
+
+      <span className="mt-0.5 shrink-0 w-1.5 h-1.5 rounded-full bg-brand" style={{ visibility: isRead ? 'hidden' : 'visible' }} />
+
       <div className="flex-1 min-w-0 space-y-0.5">
-        <p className="text-sm font-medium text-text-primary truncate">{title}</p>
+        <p className={`text-sm truncate ${!isRead ? 'font-bold text-text-primary' : 'font-medium text-text-secondary'}`}>
+          {title}
+        </p>
         <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">{body}</p>
-        <p className="text-xs text-text-muted mt-1">
+        <p className="text-[10px] font-semibold text-text-muted/80 mt-1 uppercase tracking-wide">
           {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
         </p>
       </div>
@@ -102,12 +107,12 @@ export function NotificationBell() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="relative p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-colors"
+        className="relative w-9 h-9 flex items-center justify-center rounded-sm text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-colors"
         aria-label="Notifications"
       >
-        <Bell className="w-5 h-5" />
+        <Bell className="w-4 h-4" strokeWidth={1.6} />
         {badgeLabel && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center text-[10px] font-bold text-white bg-danger rounded-full leading-none">
+          <span className="absolute -top-1 -right-1 min-w-[16px] h-4 px-1 flex items-center justify-center text-[10px] font-bold text-white bg-danger rounded-full leading-none">
             {badgeLabel}
           </span>
         )}
@@ -115,35 +120,44 @@ export function NotificationBell() {
 
       {/* Dropdown panel */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-80 bg-bg-card border border-border-subtle rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-50 overflow-hidden">
+        <div className="absolute left-1/2 top-full mt-2 -translate-x-1/2 w-96 bg-bg-elevated border-thin border-border-subtle rounded-card z-50 overflow-hidden shadow-xl">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border-subtle">
-            <span className="text-sm font-semibold text-text-primary">Notifications</span>
+          <div className="flex items-center justify-between px-4 py-3 border-b border-thin border-border-subtle">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-text-primary">Notifications</span>
+              {unreadCount > 0 && (
+                <span className="px-1.5 py-0.5 rounded-xs text-[10px] font-bold bg-brand-soft text-brand border-thin border-border-glow">
+                  {unreadCount} new
+                </span>
+              )}
+            </div>
             {unreadCount > 0 && (
               <button
                 type="button"
                 onClick={() => markAllRead.mutate()}
                 disabled={markAllRead.isPending}
-                className="flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-text-primary transition-colors disabled:opacity-60"
+                className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors disabled:opacity-60"
               >
                 {markAllRead.isPending ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={1.8} />
                 ) : (
-                  <Check className="w-3.5 h-3.5" />
+                  <Check className="w-3.5 h-3.5" strokeWidth={1.8} />
                 )}
                 Mark all read
               </button>
             )}
           </div>
 
-          {/* Body */}
-          <div className="divide-y divide-border-subtle">
+          {/* Body — fixed row height so exactly 5 notifications are fully visible before scrolling */}
+          <div
+            className="divide-y divide-border-subtle overflow-y-auto"
+            style={{ maxHeight: notifications.length > 5 ? ROW_HEIGHT * 5 : undefined }}
+          >
             {isLoading ? (
-              // Skeleton — 3 lines
               <div className="px-4 py-3 space-y-4">
                 {[1, 2, 3].map((i) => (
                   <div key={i} className="flex items-start gap-3">
-                    <div className="mt-1.5 w-2 h-2 rounded-full bg-bg-elevated shrink-0" />
+                    <div className="mt-1.5 w-2 h-2 rounded-full bg-glass-2 shrink-0" />
                     <div className="flex-1 space-y-2">
                       <SkeletonLine width="w-3/4" />
                       <SkeletonLine width="w-full" />
@@ -153,11 +167,14 @@ export function NotificationBell() {
                 ))}
               </div>
             ) : notifications.length === 0 ? (
-              <div className="py-10 text-center">
+              <div className="py-12 flex flex-col items-center gap-2">
+                <div className="w-10 h-10 rounded-sm bg-glass-1 border-thin border-border-subtle flex items-center justify-center">
+                  <Bell className="w-4 h-4 text-text-muted" strokeWidth={1.6} />
+                </div>
                 <p className="text-sm text-text-muted">No notifications</p>
               </div>
             ) : (
-              notifications.slice(0, 5).map((n: any) => (
+              notifications.map((n: any) => (
                 <NotificationItem
                   key={n.id}
                   id={n.id}
@@ -170,16 +187,6 @@ export function NotificationBell() {
                 />
               ))
             )}
-          </div>
-
-          {/* Footer */}
-          <div className="px-4 py-3 border-t border-border-subtle text-center">
-            <button
-              type="button"
-              className="text-xs text-text-muted hover:text-text-secondary transition-colors"
-            >
-              View all
-            </button>
           </div>
         </div>
       )}

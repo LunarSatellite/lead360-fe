@@ -18,5 +18,6 @@ export const QUERY_KEYS = {
   crm: ['crm'] as const,
   // The customer portal authenticates separately from the operator console, so its cache
   // is namespaced apart: signing out of one must not evict the other.
+  webforms: ['crm', 'webforms'] as const,
   portal: ['portal'] as const,
 } as const;

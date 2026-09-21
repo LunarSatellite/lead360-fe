@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useState, useRef, useEffect } from 'react';
 import {
-  Search, Building, Plus, Loader2, ChevronLeft, ChevronRight,
+  Search, Building, Building2, Plus, Loader2, ChevronLeft, ChevronRight,
   X, Trash2, DollarSign, Calendar, Pencil, Check, UserPlus, UserMinus,
+  Layers, Star, FileText, Globe, MapPin, Users, ChevronDown,
 } from 'lucide-react';
 import {
   useAccounts, useAccountById, useAccountContacts,
@@ -10,6 +10,9 @@ import {
   useAddAccountContact, useRemoveAccountContact,
   useContacts, useOrganizations,
 } from '../api/crm.queries';
+import { CrmEntityType } from '../types/crm.types';
+import { CustomFieldsInline } from '../components/CustomFieldsInline';
+import { crmApi } from '../api/crm.api';
 import type {
   CrmAccountFilter, CrmAccountSummaryDto, CrmAccountDetailDto,
   CrmAccountCreateRequest, CrmAccountUpdateRequest,
@@ -27,29 +30,6 @@ const inputCls =
   'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
 
 // ─── Slide-over shell ─────────────────────────────────────────────────────────
-
-function Modal({
-  title, onClose, children,
-}: { title: string; onClose: () => void; children: React.ReactNode }) {
-  return createPortal(
-    <div className="fixed inset-0 z-[9999] flex justify-end">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
-          <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
-      </div>
-    </div>,
-    document.body
-  );
-}
 
 function SlideOver({
   title, onClose, children,
@@ -80,14 +60,16 @@ type AccountFormState = {
   status: string;
   tier: string;
   contractValue: string;
+  creditLimit: string;
   currency: string;
   renewalDate: string;
   notes: string;
   organizationId: string;
+  parentAccountId: string;
 };
 
 const EMPTY_ACCOUNT: AccountFormState = {
-  name: '', status: '1', tier: '', contractValue: '', currency: 'USD', renewalDate: '', notes: '', organizationId: '',
+  name: '', status: '1', tier: '', contractValue: '', creditLimit: '', currency: 'USD', renewalDate: '', notes: '', organizationId: '', parentAccountId: '',
 };
 
 function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
@@ -95,20 +77,20 @@ function toAccountForm(d: CrmAccountDetailDto): AccountFormState {
     name: d.name,
     status: d.status.toString(),
     tier: d.tier?.toString() ?? '',
+    organizationId: d.organizationId ?? '',
+    parentAccountId: d.parentAccountId ?? '',
     contractValue: d.contractValue?.toString() ?? '',
+    creditLimit: (d as any).creditLimit?.toString() ?? '',
     currency: d.currency,
     renewalDate: d.renewalDate ? d.renewalDate.slice(0, 10) : '',
     notes: d.notes ?? '',
-    // Was omitted entirely, so opening an account for editing reset the
-    // organization picker to "none" and saving unlinked the account.
-    organizationId: d.organizationId ?? '',
   };
 }
 
 function AccountForm({
   initial, submitLabel, onSave, onCancel, isSaving,
 }: {
-  initial?: AccountFormState;
+  initial?: AccountFormState & { id?: string };
   submitLabel: string;
   onSave: (f: AccountFormState) => void;
   onCancel: () => void;
@@ -120,12 +102,21 @@ function AccountForm({
       setForm((f) => ({ ...f, [k]: e.target.value }));
   const { data: orgsRaw } = useOrganizations({ pageSize: 200 });
   const orgsList = (orgsRaw as any)?.items ?? [];
+  const { data: allAccountsRaw } = useAccounts({ pageSize: 200 });
+  const allAccountsList = ((allAccountsRaw as any)?.items ?? []).filter((a: any) => a.id !== initial?.id);
 
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div>
         <label className="block text-xs font-semibold text-text-muted mb-1.5">Account Name *</label>
         <input required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" className={inputCls} />
+      </div>
+      <div>
+        <label className="block text-xs font-semibold text-text-muted mb-1.5">Parent Account</label>
+        <select value={form.parentAccountId} onChange={set('parentAccountId')} className={inputCls}>
+          <option value="">No parent (top-level)</option>
+          {allAccountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+        </select>
       </div>
       <div>
         <label className="block text-xs font-semibold text-text-muted mb-1.5">Organization</label>
@@ -155,6 +146,10 @@ function AccountForm({
         <div>
           <label className="block text-xs font-semibold text-text-muted mb-1.5">Contract Value</label>
           <input type="number" min="0" value={form.contractValue} onChange={set('contractValue')} placeholder="50000" className={inputCls} />
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-text-muted mb-1.5">Credit Limit</label>
+          <input type="number" min="0" value={form.creditLimit} onChange={set('creditLimit')} placeholder="100000" className={inputCls} />
         </div>
         <div>
           <label className="block text-xs font-semibold text-text-muted mb-1.5">Currency</label>
@@ -309,7 +304,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
                 </div>
               </div>
               <button
-                onClick={() => removeContact.mutate({ accountId, linkId: l.id })}
+                onClick={() => removeContact.mutate({ accountId, linkId: l.contactId })}
                 disabled={removeContact.isPending}
                 className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-[rgba(244,63,94,0.2)] transition-all disabled:opacity-50 shrink-0"
                 title="Remove"
@@ -356,9 +351,11 @@ function AccountDetailPanel({
       status: Number(f.status) as CrmAccountStatus,
       tier: f.tier ? (Number(f.tier) as CrmAccountTier) : undefined,
       contractValue: f.contractValue ? Number(f.contractValue) : undefined,
+      creditLimit: f.creditLimit ? Number(f.creditLimit) : undefined,
       currency: f.currency || undefined,
       renewalDate: f.renewalDate || undefined,
       notes: f.notes || undefined,
+      parentAccountId: f.parentAccountId || undefined,
     };
     updateAccount.mutate({ id: account.id, data: req }, { onSuccess: () => setIsEditing(false) });
   };
@@ -448,6 +445,12 @@ function AccountDetailPanel({
           {/* Details tab */}
           {tab === 'details' && (
             <div className="space-y-3 text-sm">
+              {account.parentAccountName && (
+                <div className="flex items-center gap-3">
+                  <Building className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
+                  <span className="text-text-secondary">Parent: <span className="text-text-primary font-medium">{account.parentAccountName}</span></span>
+                </div>
+              )}
               {account.contractValue != null && (
                 <div className="flex items-center gap-3">
                   <DollarSign className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
@@ -484,6 +487,481 @@ function AccountDetailPanel({
   );
 }
 
+// ─── New Account Modal ────────────────────────────────────────────────────────
+
+const glowInput = {
+  backgroundColor: '#1A2F27',
+  backgroundImage: 'linear-gradient(to bottom, rgba(123,97,255,0.11) 0%, rgba(123,97,255,0.03) 40%, rgba(0,0,0,0.08) 100%)',
+} as const;
+
+const ACCOUNT_STATUS_OPTS = [
+  { value: '1', label: 'Prospect', dot: '#60A5FA', text: 'text-[#60A5FA]',  hover: 'hover:bg-[rgba(96,165,250,0.08)]'   },
+  { value: '2', label: 'Customer', dot: '#00D97E', text: 'text-brand',       hover: 'hover:bg-brand-soft'                },
+  { value: '3', label: 'Partner',  dot: '#A78BFA', text: 'text-[#A78BFA]',  hover: 'hover:bg-[rgba(167,139,250,0.08)]' },
+  { value: '4', label: 'Churned',  dot: '#F43F5E', text: 'text-danger',      hover: 'hover:bg-[rgba(244,63,94,0.08)]'   },
+] as const;
+
+const ACCOUNT_TIER_OPTS = [
+  { value: '1', label: 'SMB',        dot: '#B8E6D5', text: 'text-text-secondary', hover: 'hover:bg-[rgba(184,230,213,0.08)]' },
+  { value: '2', label: 'Mid-Market', dot: '#F59E0B', text: 'text-[#F59E0B]',      hover: 'hover:bg-[rgba(245,158,11,0.08)]'  },
+  { value: '3', label: 'Enterprise', dot: '#FFD84D', text: 'text-text-primary',   hover: 'hover:bg-[rgba(255,216,77,0.08)]'  },
+] as const;
+
+function CreateAccountModal({
+  form, onChange, isSaving, onClose, onSubmit, customFieldsContent,
+}: {
+  form: AccountFormState;
+  onChange: React.Dispatch<React.SetStateAction<AccountFormState>>;
+  isSaving: boolean;
+  onClose: () => void;
+  onSubmit: () => void;
+  customFieldsContent?: React.ReactNode;
+}) {
+  const [orgSearch, setOrgSearch] = useState('');
+  const [orgQuery, setOrgQuery] = useState('');
+  const [showOrgDrop, setShowOrgDrop] = useState(false);
+  const orgDropRef = useRef<HTMLDivElement>(null);
+  const [orgDetails, setOrgDetails] = useState({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' });
+  const [statusOpen, setStatusOpen] = useState(false);
+  const statusRef = useRef<HTMLDivElement>(null);
+  const [tierOpen, setTierOpen] = useState(false);
+  const tierRef = useRef<HTMLDivElement>(null);
+
+  const { data: orgsRaw } = useOrganizations({ search: orgQuery || undefined, pageSize: 6 });
+  const orgSuggestions = (orgsRaw as any)?.items ?? [];
+
+  useEffect(() => {
+    const t = setTimeout(() => setOrgQuery(orgSearch), 300);
+    return () => clearTimeout(t);
+  }, [orgSearch]);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (orgDropRef.current && !orgDropRef.current.contains(e.target as Node)) setShowOrgDrop(false);
+      if (statusRef.current && !statusRef.current.contains(e.target as Node)) setStatusOpen(false);
+      if (tierRef.current && !tierRef.current.contains(e.target as Node)) setTierOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const set = (k: keyof AccountFormState) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+      onChange(f => ({ ...f, [k]: e.target.value }));
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-end pr-4">
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="drawer-slide-in relative w-[640px] flex flex-col overflow-hidden"
+        style={{
+          borderRadius: 18,
+          background: 'var(--bg-card)',
+          border: '1px solid rgba(0,217,138,0.2)',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 24px rgba(0,217,138,0.25), inset 0 1px 0 rgba(0,255,163,0.05)',
+          maxHeight: 'calc(100vh - 32px)',
+        }}
+      >
+        <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, #00D98A 35%, #00FFA3 65%, transparent)', flexShrink: 0 }} />
+
+        <div className="flex items-start justify-between px-6 py-4 border-b border-border-subtle shrink-0">
+          <div>
+            <h2
+              className="text-base font-extrabold leading-tight"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >New Account</h2>
+            <p className="text-xs text-text-muted mt-0.5">Add a new account to your CRM</p>
+          </div>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <form
+          onSubmit={(e) => { e.preventDefault(); onSubmit(); }}
+          className="flex-1 px-6 py-5 space-y-4 overflow-y-auto"
+        >
+          {/* ── Account Details ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Account Details</span>
+            <div className="h-px bg-brand/20" />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Account Name *</label>
+            <div className="relative">
+              <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                required
+                value={form.name}
+                onChange={set('name')}
+                placeholder="Acme — Enterprise"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={glowInput}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Status</label>
+              <div className="relative" ref={statusRef}>
+                <button
+                  type="button"
+                  onClick={() => setStatusOpen(o => !o)}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                  style={{
+                    ...glowInput,
+                    border: `1px solid ${statusOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: statusOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
+                >
+                  <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                  {(() => { const opt = ACCOUNT_STATUS_OPTS.find(o => o.value === form.status); return opt ? (
+                    <>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                      <span className={`flex-1 text-left font-medium ${opt.text}`}>{opt.label}</span>
+                    </>
+                  ) : <span className="flex-1 text-left text-text-muted">Select status</span>; })()}
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${statusOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {statusOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                    {ACCOUNT_STATUS_OPTS.map(opt => (
+                      <button key={opt.value} type="button"
+                        onClick={() => { onChange(f => ({ ...f, status: opt.value })); setStatusOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.status === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                        {opt.label}
+                        {form.status === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Tier</label>
+              <div className="relative" ref={tierRef}>
+                <button
+                  type="button"
+                  onClick={() => setTierOpen(o => !o)}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                  style={{
+                    ...glowInput,
+                    border: `1px solid ${tierOpen ? 'rgba(0,217,138,0.50)' : 'rgba(0,217,138,0.20)'}`,
+                    boxShadow: tierOpen ? '0 0 0 1px rgba(0,217,138,0.50), 0 0 10px rgba(0,217,138,0.20), 0 0 20px rgba(0,217,138,0.08)' : 'none',
+                    outline: 'none',
+                    transition: 'box-shadow 0.2s ease',
+                  }}
+                >
+                  <Star className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
+                  {(() => { const opt = ACCOUNT_TIER_OPTS.find(o => o.value === form.tier); return opt ? (
+                    <>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                      <span className={`flex-1 text-left font-medium ${opt.text}`}>{opt.label}</span>
+                    </>
+                  ) : <span className="flex-1 text-left text-text-muted">— None —</span>; })()}
+                  <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${tierOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
+                </button>
+                {tierOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
+                    style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgba(0,217,138,0.08)' }}>
+                    <button type="button"
+                      onClick={() => { onChange(f => ({ ...f, tier: '' })); setTierOpen(false); }}
+                      className={`w-full flex items-center px-3 py-2.5 text-sm font-medium transition-colors hover:bg-glass-1 text-text-muted ${form.tier === '' ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                      — None —
+                      {form.tier === '' && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                    </button>
+                    {ACCOUNT_TIER_OPTS.map(opt => (
+                      <button key={opt.value} type="button"
+                        onClick={() => { onChange(f => ({ ...f, tier: opt.value })); setTierOpen(false); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors ${opt.hover} ${opt.text} ${form.tier === opt.value ? 'bg-[rgba(0,217,138,0.08)]' : ''}`}>
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ background: opt.dot, boxShadow: `0 0 6px ${opt.dot}` }} />
+                        {opt.label}
+                        {form.tier === opt.value && <span className="ml-auto text-[10px] font-bold text-text-muted">selected</span>}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Contract Value</label>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  type="number"
+                  min={0}
+                  value={form.contractValue}
+                  onChange={set('contractValue')}
+                  placeholder="50000"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={glowInput}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
+              <div className="relative">
+                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  value={form.currency}
+                  onChange={set('currency')}
+                  placeholder="USD"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={glowInput}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Renewal Date</label>
+            <div className="relative">
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                type="date"
+                value={form.renewalDate}
+                onChange={set('renewalDate')}
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={glowInput}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
+            <div className="relative">
+              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <textarea
+                rows={3}
+                value={form.notes}
+                onChange={set('notes')}
+                placeholder="Add any relevant notes…"
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] resize-none"
+                style={glowInput}
+              />
+            </div>
+          </div>
+
+          {/* ── Organization Details ── */}
+          <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
+            <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Organization Details</span>
+            <div className="h-[1.5px] bg-brand/20" />
+          </div>
+
+          {/* Org search combobox */}
+          <div className="relative" ref={orgDropRef}>
+            <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input
+              className="w-full pl-9 pr-8 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)] transition-colors"
+              style={glowInput}
+              placeholder="Search existing organizations…"
+              autoComplete="off"
+              value={orgSearch}
+              onChange={e => { setOrgSearch(e.target.value); setShowOrgDrop(true); }}
+              onFocus={() => setShowOrgDrop(true)}
+            />
+            {orgSearch && (
+              <button
+                type="button"
+                onClick={() => { setOrgSearch(''); setOrgQuery(''); setShowOrgDrop(false); onChange(f => ({ ...f, organizationId: '' })); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
+              >
+                <X className="w-3.5 h-3.5" strokeWidth={2} />
+              </button>
+            )}
+            {showOrgDrop && (
+              <div
+                className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
+                style={{ borderRadius: 12, background: '#132420', border: '1px solid rgba(0,217,138,0.20)', boxShadow: '0 8px 32px rgba(0,0,0,0.6), 0 0 12px rgba(0,217,138,0.08)' }}
+              >
+                {orgSuggestions.length > 0 ? orgSuggestions.map((org: any) => (
+                  <button
+                    key={org.id}
+                    type="button"
+                    onClick={() => {
+                      onChange(f => ({ ...f, organizationId: org.id }));
+                      setOrgSearch(org.name);
+                      setOrgQuery('');
+                      setShowOrgDrop(false);
+                      setOrgDetails({ name: org.name, domain: org.domain ?? '', industry: org.industry ?? '', employeeCount: org.employeeCount?.toString() ?? '', country: org.country ?? '', city: org.city ?? '', website: org.website ?? '' });
+                    }}
+                    className="group w-full flex items-center gap-3 px-3 py-2.5 hover:bg-glass-1 transition-colors text-left"
+                  >
+                    <div
+                      className="w-8 h-8 rounded-lg bg-brand-soft border border-border-glow flex items-center justify-center shrink-0"
+                      style={{ boxShadow: '0 0 8px rgba(0,217,138,0.35), 0 0 16px rgba(0,217,138,0.15)' }}
+                    >
+                      <Building2 className="w-4 h-4 text-brand" strokeWidth={1.6} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-sm font-semibold text-text-primary truncate">{org.name}</div>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {org.domain && <span className="text-xs text-text-muted">{org.domain}</span>}
+                        {org.domain && org.industry && <span className="text-xs text-text-muted">·</span>}
+                        {org.industry && <span className="text-xs text-text-muted truncate">{org.industry}</span>}
+                      </div>
+                    </div>
+                    <span
+                      className="w-2 h-2 rounded-full bg-brand shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                      style={{ boxShadow: '0 0 6px rgba(0,217,138,0.9), 0 0 12px rgba(0,217,138,0.5)' }}
+                    />
+                  </button>
+                )) : (
+                  <div className="px-4 py-3 text-xs text-text-muted">No organizations found</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* or fill manually */}
+          <div className="flex items-center gap-2">
+            <div className="flex-1 h-px bg-border-subtle" />
+            <span className="text-[10px] text-text-muted">or fill manually</span>
+            <div className="flex-1 h-px bg-border-subtle" />
+          </div>
+
+          {/* Company Name + Domain */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Company Name</label>
+              <div className="relative">
+                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={glowInput}
+                  placeholder="Acme Corp"
+                  value={orgDetails.name}
+                  onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
+              <div className="relative">
+                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={glowInput}
+                  placeholder="acme.com"
+                  value={orgDetails.domain}
+                  onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Industry + Employees */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
+              <div className="relative">
+                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={glowInput}
+                  placeholder="SaaS, Retail…"
+                  value={orgDetails.industry}
+                  onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
+              <div className="relative">
+                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  type="number"
+                  min={0}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={glowInput}
+                  placeholder="250"
+                  value={orgDetails.employeeCount}
+                  onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Country + City */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={glowInput}
+                  placeholder="US"
+                  value={orgDetails.country}
+                  onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <input
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                  style={glowInput}
+                  placeholder="New York"
+                  value={orgDetails.city}
+                  onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Website */}
+          <div>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
+            <div className="relative">
+              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input
+                className="w-full pl-9 pr-3 py-2 rounded-xl border border-[rgba(0,217,138,0.20)] text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-[rgba(0,217,138,0.50)]"
+                style={glowInput}
+                placeholder="https://acme.com"
+                value={orgDetails.website}
+                onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))}
+              />
+            </div>
+          </div>
+
+          {customFieldsContent}
+          <div className="flex items-center justify-end gap-3 pt-2 border-t border-border-subtle">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSaving || !form.name.trim()}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
+              Create Account
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function Component() {
@@ -491,12 +969,14 @@ export function Component() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [showCreate, setShowCreate] = useState(false);
+  const [createForm, setCreateForm] = useState<AccountFormState>(EMPTY_ACCOUNT);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const { data: raw, isLoading } = useAccounts(filter);
   const data = raw;
 
   const createAccount = useCreateAccount();
+  const [accountCustomFields, setAccountCustomFields] = useState<Record<string, string>>({});
 
   const handleCreate = (f: AccountFormState) => {
     const req: CrmAccountCreateRequest = {
@@ -505,11 +985,21 @@ export function Component() {
       status: Number(f.status) as CrmAccountStatus,
       tier: f.tier ? (Number(f.tier) as CrmAccountTier) : undefined,
       contractValue: f.contractValue ? Number(f.contractValue) : undefined,
+      creditLimit: f.creditLimit ? Number(f.creditLimit) : undefined,
       currency: f.currency || undefined,
       renewalDate: f.renewalDate || undefined,
       notes: f.notes || undefined,
+      parentAccountId: f.parentAccountId || undefined,
     };
-    createAccount.mutate(req, { onSuccess: () => setShowCreate(false) });
+    createAccount.mutate(req, { onSuccess: (result: any) => {
+      const id = result?.id;
+      if (id) {
+        const toSave = Object.entries(accountCustomFields).filter(([, v]) => v);
+        if (toSave.length > 0) crmApi.setCustomFieldValues(id, CrmEntityType.Account, { values: toSave.map(([d, v]) => ({ definitionId: d, value: v })) });
+      }
+      setShowCreate(false);
+      setCreateForm(EMPTY_ACCOUNT);
+    } });
   };
 
   const totalPages = data ? Math.ceil(data.totalCount / PAGE_SIZE) : 1;
@@ -648,14 +1138,14 @@ export function Component() {
       </div>
 
       {showCreate && (
-        <Modal title="New Account" onClose={() => setShowCreate(false)}>
-          <AccountForm
-            submitLabel="Create Account"
-            onSave={handleCreate}
-            onCancel={() => setShowCreate(false)}
-            isSaving={createAccount.isPending}
-          />
-        </Modal>
+        <CreateAccountModal
+          form={createForm}
+          onChange={setCreateForm}
+          isSaving={createAccount.isPending}
+          onClose={() => { setShowCreate(false); setCreateForm(EMPTY_ACCOUNT); }}
+          onSubmit={() => handleCreate(createForm)}
+          customFieldsContent={<CustomFieldsInline entityType={CrmEntityType.Account} onValuesChange={setAccountCustomFields} />}
+        />
       )}
 
       {selectedId && (

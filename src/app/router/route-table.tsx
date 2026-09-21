@@ -214,6 +214,32 @@ export const routeObjects: RouteObject[] = [
       { path: 'crm/process-tasks', lazy: () => import('@/features/crm/pages/ProcessTasksPage') },
       { path: 'crm/event-ingestion', lazy: () => import('@/features/crm/pages/EventIngestionPage') },
 
+      // ── CRM depth: reports, webforms, knowledge base, pricing and territories ──
+      { path: 'crm/audit-log', lazy: () => import('@/features/crm/pages/AuditLogPage') },
+      { path: 'crm/commissions', lazy: () => import('@/features/crm/pages/CommissionsPage') },
+      { path: 'crm/competitors', lazy: () => import('@/features/crm/pages/CompetitorsPage') },
+      { path: 'crm/contact-cards', lazy: () => import('@/features/crm/contact-cards/pages/CrmContactCardsPage') },
+      { path: 'crm/contracts', lazy: () => import('@/features/crm/pages/ContractsPage') },
+      { path: 'crm/credit-notes', lazy: () => import('@/features/crm/pages/CreditNotesPage') },
+      { path: 'crm/dashboards', lazy: () => import('@/features/crm/pages/CrmDashboardsPage') },
+      { path: 'crm/feature-settings', lazy: () => import('@/features/crm/pages/FeatureSettingsPage') },
+      { path: 'crm/inventory', lazy: () => import('@/features/crm/pages/InventoryPage') },
+      { path: 'crm/knowledge-base', lazy: () => import('@/features/crm/pages/CrmKnowledgeBasePage') },
+      { path: 'crm/payment-terms', lazy: () => import('@/features/crm/pages/PaymentTermsPage') },
+      { path: 'crm/price-books', lazy: () => import('@/features/crm/pages/PriceBooksPage') },
+      { path: 'crm/product-bundles', lazy: () => import('@/features/crm/pages/ProductBundlesPage') },
+      { path: 'crm/renewals', lazy: () => import('@/features/crm/pages/RenewalsPage') },
+      { path: 'crm/reports', lazy: () => import('@/features/crm/pages/CrmReportsPage') },
+      { path: 'crm/scoring-rules', lazy: () => import('@/features/crm/pages/ScoringRulesPage') },
+      { path: 'crm/tax-rules', lazy: () => import('@/features/crm/pages/TaxRulesPage') },
+      { path: 'crm/territories', lazy: () => import('@/features/crm/pages/CrmTerritoriesPage') },
+      { path: 'crm/webforms', lazy: () => import('@/features/crm/pages/CrmWebFormsPage') },
+      { path: 'crm/webforms/new', lazy: () => import('@/features/crm/pages/CrmWebFormBuilderPage') },
+      { path: 'crm/webforms/:id/edit', lazy: () => import('@/features/crm/pages/CrmWebFormBuilderPage') },
+      { path: 'crm/webforms/:id/submissions', lazy: () => import('@/features/crm/pages/CrmWebFormSubmissionsPage') },
+      { path: 'crm/webforms/:id/submissions/:submissionId', lazy: () => import('@/features/crm/pages/CrmWebFormSubmissionDetailPage') },
+      { path: 'settings/custom-domains', lazy: () => import('@/features/tenant/pages/CustomDomainsPage') },
+
       // ── After-sales, procurement and the shared inbox (AfterSales) ──
       { path: 'crm/activity', lazy: () => import('@/features/crm/pages/ActivityFeedPage') },
       { path: 'crm/approval-chains', lazy: () => import('@/features/crm/pages/CrmApprovalChainsPage') },
@@ -241,6 +267,12 @@ export const routeObjects: RouteObject[] = [
       { path: 'flows/experiments', lazy: () => import('@/features/flow-builder/pages/ExperimentsPage') },
       { index: true, element: <Navigate to={POST_AUTH_LANDING} replace /> },
     ],
+  },
+
+  // ─── Public pay-online page — no auth ───
+  {
+    path: '/pay/:token',
+    lazy: () => import('@/features/crm/pages/PublicPayPage'),
   },
 
   // ─── Campaign reply page — public, no auth ───

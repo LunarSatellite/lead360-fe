@@ -1,27 +1,30 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/shared/lib/api-client';
-import {
-  MessageSquare,
-  ShoppingBag,
-  Heart,
-  Zap,
-  ArrowRight,
-  Sparkles,
-  Rocket,
-} from 'lucide-react';
+import { ArrowRight, Sparkles, Rocket, Users, Flame, Briefcase, TrendingUp } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 import { ROUTES } from '@/app/router/route-paths';
 import { useProfile } from '@/features/auth/api/auth.queries';
 import { useSpecs } from '@/features/api-connection/api/api-connection.queries';
 import { useIntents } from '@/features/intents/api/intents.queries';
 import { useChannels } from '@/features/channels/api/channels.queries';
 import { useFlows } from '@/features/flow-builder/api/flow.queries';
+import { useLeadStats, useDealStatsAnalytics, useLeads } from '@/features/crm/api/crm.queries';
+import { LEAD_STAGE_LABELS } from '@/features/crm/types/crm.types';
+import type { LeadStatsDto, DealStatsDto, LeadSummaryDto } from '@/features/crm/types/crm.types';
 import type { ApiSpecDto } from '@/features/api-connection/types/api-connection.types';
 import type { IntentDto } from '@/features/intents/types/intents.types';
 import type { ChannelConnectionDto } from '@/features/channels/types/channels.types';
 import { ChannelConnectionStatus } from '@/features/channels/types/channels.types';
 import type { FlowDto } from '@/features/flow-builder/types/flow.types';
+import { useActiveSessions } from '@/features/conversations/api/conversation.queries';
+import { SESSION_STATUS_LABEL, SESSION_STATUS_COLOR, CHANNEL_LABEL } from '@/features/conversations/types/conversation.types';
+import type { SessionDto } from '@/features/conversations/types/conversation.types';
+import { StatusBadge } from '@/shared/components';
+
+function relAgo(iso?: string): string {
+  if (!iso) return '';
+  try { return formatDistanceToNow(new Date(iso), { addSuffix: true }); } catch { return ''; }
+}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Home / Overview
@@ -33,13 +36,23 @@ export function Component() {
   const p = (profile ?? null) as { firstName?: string } | null;
   const firstName = p?.firstName || 'there';
 
-  const { data: summaryRaw, isLoading: summaryLoading } = useQuery({
-    queryKey: ['home-summary'],
-    queryFn: () => apiClient.get<any>('/v1/home/summary'),
-    refetchInterval: 60_000,
-    staleTime: 30_000,
-  });
-  const summary = summaryRaw as any;
+  const { data: leadStatsRaw } = useLeadStats();
+  const leadStats = leadStatsRaw as unknown as LeadStatsDto | undefined;
+  const { data: dealStatsRaw } = useDealStatsAnalytics();
+  const dealStats = dealStatsRaw as unknown as DealStatsDto | undefined;
+  const { data: recentRaw } = useLeads({ pageSize: 5 });
+  const recent = (recentRaw as unknown as { items?: LeadSummaryDto[] } | undefined)?.items ?? [];
+  const { data: channelsRaw } = useChannels();
+  const channels = (channelsRaw as unknown as ChannelConnectionDto[]) ?? [];
+  const isLive = channels.some((c) => c.status === ChannelConnectionStatus.Active);
+
+  const { data: sessionsRaw } = useActiveSessions();
+  const recentConversations = ((sessionsRaw as unknown as SessionDto[]) ?? [])
+    .slice()
+    .sort((a, b) => new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime())
+    .slice(0, 5);
+
+  const num = (n?: number) => (n ?? 0).toLocaleString();
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -48,90 +61,107 @@ export function Component() {
         <div>
           <p className="text-xs text-text-secondary mb-1">Welcome back, {firstName}</p>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
-            Your bot at a glance
+            Your CRM at a glance
           </h1>
         </div>
-        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success-soft border-thin border-border-success shrink-0">
-          <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-          <span className="text-xs font-bold text-success">Live on WhatsApp</span>
-        </div>
+        {isLive ? (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success-soft border-thin border-border-success shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+            <span className="text-xs font-bold text-success">Live</span>
+          </div>
+        ) : (
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-glass-2 border-thin border-border-subtle shrink-0">
+            <span className="w-1.5 h-1.5 rounded-full bg-text-muted" />
+            <span className="text-xs font-bold text-text-muted">Not live yet</span>
+          </div>
+        )}
       </div>
 
       {/* ─── Setup journey — same visual as SetupPage ─── */}
       <SetupJourneyCard />
 
-      {/* ─── Stat cards ─── */}
+      {/* ─── Stat cards (live CRM data) ─── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard icon={MessageSquare} label="Conversations today"
-          value={summaryLoading ? '—' : String(summary?.conversationsToday ?? 0)} />
-        <StatCard icon={ShoppingBag} label="Orders"
-          value={summaryLoading ? '—' : String(summary?.ordersToday ?? 0)} />
-        <StatCard icon={Heart} label="Happy customers"
-          value={summaryLoading ? '—' : `${summary?.customerSatisfactionPct ?? 0}%`} />
-        <StatCard icon={Zap} label="Avg reply"
-          value={summaryLoading ? '—' : summary?.avgReplyTimeSeconds > 0
-            ? summary.avgReplyTimeSeconds < 60
-              ? `${summary.avgReplyTimeSeconds}s`
-              : `${Math.round(summary.avgReplyTimeSeconds / 60)}m`
-            : '—'} />
+        <StatCard icon={Users} label="Total leads" value={num(leadStats?.total)} />
+        <StatCard icon={Flame} label="Hot leads" value={num(leadStats?.hotCount)} />
+        <StatCard icon={Briefcase} label="Open deals" value={num(dealStats?.openCount)} />
+        <StatCard icon={TrendingUp} label="Conversion" value={`${(leadStats?.conversionRate ?? 0).toFixed(0)}%`} />
       </div>
 
       {/* ─── Two-column content ─── */}
       <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-4">
-        <div className="bg-glass-1 border-thin border-border-subtle rounded-card p-4">
-          <h2 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-3">
-            Happening now
-          </h2>
-          <div className="flex flex-col">
-            {summaryLoading ? (
-              <div className="py-4 text-center">
-                <div className="w-4 h-4 border-2 border-brand border-r-transparent rounded-full animate-spin mx-auto" />
-              </div>
-            ) : (summary?.recentActivity ?? []).length > 0 ? (
-              (summary.recentActivity as any[]).map((item: any, i: number) => (
-                <LiveRow key={i} name={item.name} action={item.action} time={item.timeAgo} />
-              ))
+        <div className="flex flex-col gap-4">
+          <div className="bg-glass-1 border-thin border-border-subtle rounded-card p-4">
+            <h2 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-3">
+              Recent leads
+            </h2>
+            {recent.length === 0 ? (
+              <p className="text-xs text-text-muted text-center py-6">
+                No leads yet — they'll appear here as they come in.
+              </p>
             ) : (
-              <div className="py-4 text-center text-xs text-text-muted">No recent activity yet.</div>
+              <div className="flex flex-col">
+                {recent.map((l) => (
+                  <LiveRow
+                    key={l.id}
+                    name={l.customerName || l.channelHandle || 'New lead'}
+                    action={LEAD_STAGE_LABELS[l.stage] ?? 'lead'}
+                    time={relAgo(l.lastActivityAt)}
+                  />
+                ))}
+              </div>
             )}
+            <Link
+              to={ROUTES.dashboard.crmLeads}
+              className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-thin border-border-subtle text-xs font-semibold text-brand hover:text-brand-light transition-colors"
+            >
+              See all leads
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+            </Link>
           </div>
-          <Link
-            to={ROUTES.dashboard.conversations}
-            className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-thin border-border-subtle text-xs font-semibold text-brand hover:text-brand-light transition-colors"
-          >
-            See all conversations
-            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
-          </Link>
+
+          <div className="bg-glass-1 border-thin border-border-subtle rounded-card p-4">
+            <h2 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-3">
+              Recent conversations
+            </h2>
+            {recentConversations.length === 0 ? (
+              <p className="text-xs text-text-muted text-center py-6">
+                No conversations yet — they'll appear here as customers message your bot.
+              </p>
+            ) : (
+              <div className="flex flex-col">
+                {recentConversations.map((s) => (
+                  <ConversationRow key={s.id} session={s} />
+                ))}
+              </div>
+            )}
+            <Link
+              to={ROUTES.dashboard.conversations}
+              className="flex items-center justify-center gap-1.5 mt-3 pt-3 border-t border-thin border-border-subtle text-xs font-semibold text-brand hover:text-brand-light transition-colors"
+            >
+              See all conversations
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
+            </Link>
+          </div>
         </div>
 
         <div className="bg-brand-soft border-thin border-border-glow rounded-card p-4">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-3.5 h-3.5 text-brand" strokeWidth={1.8} />
             <h2 className="text-[10px] font-bold text-brand uppercase tracking-[1.5px]">
-              AI suggestion
+              AI assistant
             </h2>
           </div>
           <p className="text-sm text-text-primary leading-relaxed mb-4">
-            {summary?.conversationsToday > 0
-              ? `${summary.conversationsToday} conversation${summary.conversationsToday !== 1 ? 's' : ''} started today. Want me to review recent conversations and suggest improvements?`
-              : "Set up your first bot flow to start handling customer conversations automatically."}
+            Ask the assistant to find leads, draft a quote, summarize a deal, or set up a flow — it can
+            take actions for you.
           </p>
-          <div className="flex gap-2">
-            <Link
-              to={`/dashboard/chat?prefill=${encodeURIComponent(
-                'Add a custom cake request flow — let customers describe the cake they want, and forward those to me.',
-              )}`}
-              className="px-3.5 py-2 rounded-sm bg-brand hover:bg-brand-light text-bg text-xs font-bold transition-colors"
-            >
-              Yes, add it
-            </Link>
-            <button
-              type="button"
-              className="px-3 py-2 rounded-sm border-thin border-border-medium text-text-secondary hover:text-text-primary hover:bg-glass-2 text-xs font-semibold transition-colors"
-            >
-              Later
-            </button>
-          </div>
+          <Link
+            to={ROUTES.dashboard.chat}
+            className="inline-block px-3.5 py-2 rounded-sm bg-brand hover:bg-brand-light text-bg text-xs font-bold transition-colors"
+          >
+            Open assistant
+          </Link>
         </div>
       </div>
 
@@ -141,10 +171,10 @@ export function Component() {
           Jump to
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          <QuickLink to={ROUTES.dashboard.flows} label="Bot flow" />
-          <QuickLink to={ROUTES.dashboard.testChannel} label="Test preview" />
-          <QuickLink to={ROUTES.dashboard.channels} label="Channels" />
-          <QuickLink to={ROUTES.dashboard.analytics} label="Analytics" />
+          <QuickLink to={ROUTES.dashboard.crmLeads} label="Leads" />
+          <QuickLink to={ROUTES.dashboard.crmDeals} label="Deals" />
+          <QuickLink to={ROUTES.dashboard.crmContacts} label="Contacts" />
+          <QuickLink to={ROUTES.dashboard.crmAnalytics} label="Analytics" />
         </div>
       </div>
     </div>
@@ -514,7 +544,7 @@ function StatCard({
   label,
   value,
 }: {
-  icon: typeof MessageSquare;
+  icon: typeof Users;
   label: string;
   value: string;
 }) {
@@ -544,6 +574,35 @@ function LiveRow({ name, action, time }: { name: string; action: string; time: s
       </div>
       <span className="text-[10px] text-text-muted shrink-0">{time}</span>
     </div>
+  );
+}
+
+/* ─── ConversationRow — clicking opens the full chat in Conversations ─── */
+function ConversationRow({ session }: { session: SessionDto }) {
+  const navigate = useNavigate();
+  const initial = (session.customerId || '?').charAt(0).toUpperCase();
+  return (
+    <button
+      type="button"
+      onClick={() => navigate(`${ROUTES.dashboard.conversations}?session=${session.id}`)}
+      className="w-full flex items-center gap-2.5 py-2 border-b border-thin border-border-subtle last:border-b-0 text-left hover:bg-glass-2 transition-colors rounded-sm px-1 -mx-1"
+    >
+      <div className="w-7 h-7 rounded-full bg-[#132A21] flex items-center justify-center text-2xs font-bold text-brand shrink-0">
+        {initial}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-semibold text-text-primary truncate">{session.customerId}</span>
+          <StatusBadge variant={SESSION_STATUS_COLOR[session.status]}>
+            {SESSION_STATUS_LABEL[session.status]}
+          </StatusBadge>
+        </div>
+        <span className="text-xs text-text-secondary">
+          {CHANNEL_LABEL[session.channel] || 'Unknown'} · {session.messageCount} msgs
+        </span>
+      </div>
+      <span className="text-[10px] text-text-muted shrink-0">{relAgo(session.lastActivityAt)}</span>
+    </button>
   );
 }
 

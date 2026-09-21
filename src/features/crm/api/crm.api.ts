@@ -58,6 +58,10 @@ import type {
   CrmCampaignRecipientDto,
   CrmCampaignAggregateDto,
   DealPipelineDto,
+  DealTimelineDto,
+  DealStrategyDto,
+  ActivityEventDto,
+  ActivityLogRequest,
   DealStatsDto,
   ContactStatsDto,
   RevenueAnalyticsDto,
@@ -71,10 +75,6 @@ import type {
   FlowExperimentCreateRequest,
   FlowExperimentUpdateRequest,
   ExperimentVariantKind,
-  ActivityEventDto,
-  ActivityLogRequest,
-  DealStrategyDto,
-  DealTimelineDto,
 } from '../types/crm.types';
 
 const BASE = '/v1/crm';
@@ -101,6 +101,9 @@ export const crmApi = {
   assignLead: (id: string, userId: string | null) =>
     apiClient.put<LeadDetailDto>(`${BASE}/leads/${id}/assign`, { userId }),
 
+  bulkLeadAction: (req: import('../types/crm.types').BulkLeadActionRequest) =>
+    apiClient.post<import('../types/crm.types').BulkLeadActionResult>(`${BASE}/leads/bulk`, req),
+
   addNote: (id: string, note: string) =>
     apiClient.post(`${BASE}/leads/${id}/notes`, { note }),
 
@@ -115,6 +118,11 @@ export const crmApi = {
 
   markAllRead: () =>
     apiClient.put(`${BASE}/notifications/read-all`, {}),
+
+  getNotifPreferences: () =>
+    apiClient.get<import('../types/crm.types').CrmNotifPreferenceDto[]>(`${BASE}/notifications/preferences`),
+  saveNotifPreferences: (data: { preferences: import('../types/crm.types').CrmNotifPreferenceDto[] }) =>
+    apiClient.put(`${BASE}/notifications/preferences`, data),
 
   // ─── Nurture Sequences ────────────────────────────────────────────────────
   getNurtureSequences: () =>
@@ -163,11 +171,22 @@ export const crmApi = {
   createContact: (data: CrmContactCreateRequest) =>
     apiClient.post<CrmContactDetailDto>(`${BASE}/contacts`, data),
 
+  findContactDuplicates: (email?: string, phone?: string) =>
+    apiClient.get<import('../types/crm.types').CrmDuplicateMatchDto[]>(`${BASE}/contacts/duplicates`, {
+      params: { email: email || undefined, phone: phone || undefined },
+    }),
+
   updateContact: (id: string, data: CrmContactUpdateRequest) =>
     apiClient.put<CrmContactDetailDto>(`${BASE}/contacts/${id}`, data),
 
   deleteContact: (id: string) =>
     apiClient.delete(`${BASE}/contacts/${id}`),
+
+  bulkDeleteContacts: (ids: string[]) =>
+    apiClient.post<import('../types/crm.types').CrmBulkResult>(`${BASE}/contacts/bulk-delete`, { ids }),
+
+  bulkContactAction: (req: import('../types/crm.types').BulkContactActionRequest) =>
+    apiClient.post<import('../types/crm.types').CrmBulkResult>(`${BASE}/contacts/bulk`, req),
 
   setContactLanguage: (id: string, language: string | null) =>
     apiClient.put(`${BASE}/contacts/${id}/language`, { language }),
@@ -283,6 +302,12 @@ export const crmApi = {
   deleteDeal: (id: string) =>
     apiClient.delete(`${BASE}/deals/${id}`),
 
+  bulkDeleteDeals: (ids: string[]) =>
+    apiClient.post<import('../types/crm.types').CrmBulkResult>(`${BASE}/deals/bulk-delete`, { ids }),
+
+  bulkDealAction: (req: import('../types/crm.types').BulkDealActionRequest) =>
+    apiClient.post<import('../types/crm.types').CrmBulkResult>(`${BASE}/deals/bulk`, req),
+
   moveDealStage: (id: string, data: MoveDealStageRequest) =>
     apiClient.put<CrmDealDetailDto>(`${BASE}/deals/${id}/stage`, data),
   convertLead: (id: string, data: import('../types/crm.types').ConvertLeadRequest) =>
@@ -294,6 +319,12 @@ export const crmApi = {
   refreshDealSummary: (id: string) =>
     apiClient.post<import('../types/crm.types').CrmDealAiSummaryDto>(`${BASE}/deals/${id}/summary/refresh`),
 
+  getDealContacts: (dealId: string) =>
+    apiClient.get<any[]>(`${BASE}/deals/${dealId}/contacts`),
+  addDealContact: (dealId: string, data: { contactId: string; role?: string }) =>
+    apiClient.post<any>(`${BASE}/deals/${dealId}/contacts`, data),
+  removeDealContact: (dealContactId: string) =>
+    apiClient.delete<void>(`${BASE}/deals/contacts/${dealContactId}`),
   getDealTimeline: (id: string) =>
     apiClient.get<DealTimelineDto>(`${BASE}/deals/${id}/timeline`),
 
@@ -303,8 +334,28 @@ export const crmApi = {
   updateDealStrategy: (id: string, data: DealStrategyDto) =>
     apiClient.put(`${BASE}/deals/${id}/strategy`, data),
 
+  getFeatureSettings: () =>
+    apiClient.get<import('../types/crm.types').TenantFeatureSettings>(`${BASE}/feature-settings`),
+
+  updateFeatureSettings: (settings: import('../types/crm.types').TenantFeatureSettings) =>
+    apiClient.put<import('../types/crm.types').TenantFeatureSettings>(`${BASE}/feature-settings`, settings),
+
   getTimeline: (kind: number, entityId: string, page = 1, pageSize = 50) =>
     apiClient.get<PagedResult<ActivityEventDto>>(`${BASE}/timeline/${kind}/${entityId}`, { params: { page, pageSize } }),
+
+  getActivityFeed: (filter: import('../types/crm.types').CrmActivityFeedFilter) =>
+    // `indexes: null` => arrays serialize as repeated `eventKinds=1&eventKinds=2`,
+    // which ASP.NET model-binds to List<T> (the default `eventKinds[]=` form does not).
+    apiClient.get<PagedResult<ActivityEventDto>>(`${BASE}/activity-feed`, {
+      params: filter,
+      paramsSerializer: { indexes: null },
+    }),
+
+  getAuditFeed: (filter: import('../types/crm.types').CrmAuditFilter) =>
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').CrmAuditLogDto>>(`${BASE}/audit-feed`, {
+      params: filter,
+      paramsSerializer: { indexes: null },
+    }),
 
   logActivity: (data: ActivityLogRequest) =>
     apiClient.post<ActivityEventDto>(`${BASE}/activities`, data),
@@ -419,13 +470,15 @@ export const crmApi = {
 
   // ─── Deliveries ──────────────────────────────────────────────────────────
   getAllDeliveries: (filter: import('../types/crm.types').CrmDeliveryFilter) =>
-    apiClient.get<{ item1: import('../types/crm.types').CrmDeliveryDto[]; item2: number }>(`${BASE}/deliveries`, { params: filter }),
+    apiClient.get<import('../types/crm.types').PagedResult<import('../types/crm.types').CrmDeliveryDto>>(`${BASE}/deliveries`, { params: filter }),
   getDeliveries: (orderId: string) =>
     apiClient.get<import('../types/crm.types').CrmDeliveryDto[]>(`${BASE}/orders/${orderId}/deliveries`),
   createDelivery: (orderId: string, data: import('../types/crm.types').CrmCreateDeliveryRequest) =>
     apiClient.post<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/orders/${orderId}/deliveries`, data),
   updateDeliveryStatus: (deliveryId: string, data: import('../types/crm.types').CrmUpdateDeliveryStatusRequest) =>
     apiClient.patch<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/deliveries/${deliveryId}/status`, data),
+  recordDeliveryPOD: (deliveryId: string, formData: FormData) =>
+    apiClient.post<import('../types/crm.types').CrmDeliveryDto>(`${BASE}/deliveries/${deliveryId}/pod`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 
   // ─── Equipment / Asset ────────────────────────────────────────────────────
   getEquipment: (filter: import('../types/crm.types').CrmEquipmentFilter) =>
@@ -456,6 +509,8 @@ export const crmApi = {
     apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/receive`, {}),
   recordReturnInspection: (id: string, data: import('../types/crm.types').CrmRecordInspectionRequest) =>
     apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/inspect`, data),
+  updateReturn: (id: string, data: import('../types/crm.types').CrmUpdateReturnRequest) =>
+    apiClient.put<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}`, data),
   resolveReturn: (id: string) =>
     apiClient.post<import('../types/crm.types').CrmReturnRequestDto>(`${BASE}/returns/${id}/resolve`, {}),
   cancelReturn: (id: string) =>
@@ -583,12 +638,18 @@ export const crmApi = {
     apiClient.post<import('../types/crm.types').CrmQuoteDetailDto>(`${BASE}/quotes`, data),
   updateQuote: (id: string, data: import('../types/crm.types').CrmQuoteUpdateRequest) =>
     apiClient.put<import('../types/crm.types').CrmQuoteDetailDto>(`${BASE}/quotes/${id}`, data),
-  sendQuote: (id: string) =>
-    apiClient.post(`${BASE}/quotes/${id}/send`, {}),
+  sendQuote: (id: string, introText?: string) =>
+    apiClient.post(`${BASE}/quotes/${id}/send`, { introText }),
+  draftQuoteSendEmail: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmEmailIntroDraftDto>(`${BASE}/quotes/${id}/draft-send-email`, {}),
   acceptQuote: (id: string) =>
     apiClient.post(`${BASE}/quotes/${id}/accept`, {}),
   rejectQuote: (id: string) =>
     apiClient.post(`${BASE}/quotes/${id}/reject`, {}),
+  reviseQuote: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmQuoteSummaryDto>(`${BASE}/quotes/${id}/revise`),
+  createOrderFromQuote: (quoteId: string) =>
+    apiClient.post<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/from-quote/${quoteId}`),
   updateQuoteStatus: (id: string, status: number) =>
     apiClient.patch(`${BASE}/quotes/${id}/status`, { status }),
   deleteQuote: (id: string) =>
@@ -613,6 +674,8 @@ export const crmApi = {
     apiClient.post(`${BASE}/proposals/${id}/reject`, {}),
   getProposalTemplates: () =>
     apiClient.get<import('../types/crm.types').CrmProposalTemplateSummaryDto[]>(`${BASE}/proposals/templates`),
+  updateProposalSection: (proposalId: string, sectionId: string, content: string) =>
+    apiClient.put<import('../types/crm.types').CrmProposalSectionDto>(`${BASE}/proposals/${proposalId}/sections/${sectionId}`, { content }),
   regenerateProposalSection: (proposalId: string, sectionId: string) =>
     apiClient.post(`${BASE}/proposals/${proposalId}/sections/${sectionId}/regenerate`, {}),
 
@@ -623,14 +686,38 @@ export const crmApi = {
     apiClient.get<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/${id}`),
   generateInvoiceFromDeal: (dealId: string) =>
     apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-deal/${dealId}`, {}),
+  generateInvoiceFromOrder: (orderId: string) =>
+    apiClient.post<import('../types/crm.types').CrmInvoiceDetailDto>(`${BASE}/invoices/generate-from-order/${orderId}`, {}),
   recordInvoicePayment: (id: string, data: import('../types/crm.types').CrmRecordPaymentRequest) =>
     apiClient.post(`${BASE}/invoices/${id}/payment`, data),
   disputeInvoice: (id: string) =>
     apiClient.post(`${BASE}/invoices/${id}/dispute`, {}),
   voidInvoice: (id: string) =>
     apiClient.post(`${BASE}/invoices/${id}/void`, {}),
-  sendInvoice: (id: string) =>
-    apiClient.post(`${BASE}/invoices/${id}/send`, {}),
+  sendInvoice: (id: string, introText?: string) =>
+    apiClient.post(`${BASE}/invoices/${id}/send`, { introText }),
+  draftInvoiceSendEmail: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmEmailIntroDraftDto>(`${BASE}/invoices/${id}/draft-send-email`, {}),
+  getDunningHistory: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmDunningEventDto[]>(`${BASE}/invoices/${id}/dunning`),
+  pauseDunning: (id: string, data: import('../types/crm.types').CrmDunningPauseRequest) =>
+    apiClient.post<boolean>(`${BASE}/invoices/${id}/dunning/pause`, data),
+  resumeDunning: (id: string) =>
+    apiClient.post<boolean>(`${BASE}/invoices/${id}/dunning/resume`, {}),
+  sendReminderNow: (id: string) =>
+    apiClient.post<boolean>(`${BASE}/invoices/${id}/dunning/send-now`, {}),
+
+  // ─── Credit Notes ─────────────────────────────────────────────────────────
+  getCreditNotes: (filter: import('../types/crm.types').CrmCreditNoteFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmCreditNoteDto>>(`${BASE}/credit-notes`, { params: filter }),
+  getCreditNoteById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmCreditNoteDto>(`${BASE}/credit-notes/${id}`),
+  issueCreditNote: (data: import('../types/crm.types').CrmCreditNoteIssueRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCreditNoteDto>(`${BASE}/credit-notes`, data),
+  applyCreditNote: (id: string, data: import('../types/crm.types').CrmCreditNoteApplyRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCreditNoteDto>(`${BASE}/credit-notes/${id}/apply`, data),
+  refundCreditNote: (id: string, data: import('../types/crm.types').CrmCreditNoteRefundRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCreditNoteDto>(`${BASE}/credit-notes/${id}/refund`, data),
 
   // ─── Subscriptions ────────────────────────────────────────────────────────
   getSubscriptions: (filter: import('../types/crm.types').CrmSubscriptionFilter = {}) =>
@@ -668,6 +755,18 @@ export const crmApi = {
   updateOrderFulfillment: (id: string, data: { status: number; carrier?: string; trackingNumber?: string; actualDeliveryDate?: string; failureReason?: string }) =>
     apiClient.patch<import('../types/crm.types').CrmOrderDetailDto>(`${BASE}/orders/${id}/fulfillment`, data),
 
+  // ─── Pick List / Packing ──────────────────────────────────────────────────
+  generatePickList: (orderId: string) =>
+    apiClient.post<import('../types/crm.types').PickListDto>(`${BASE}/orders/${orderId}/pick-list`),
+  getPickList: (orderId: string) =>
+    apiClient.get<import('../types/crm.types').PickListDto>(`${BASE}/orders/${orderId}/pick-list`),
+  updatePickListItem: (orderId: string, itemId: string, data: import('../types/crm.types').UpdatePickListItemRequest) =>
+    apiClient.put<import('../types/crm.types').PickListItemDto>(`${BASE}/orders/${orderId}/pick-list/items/${itemId}`, data),
+  markPickListPicked: (orderId: string) =>
+    apiClient.post<import('../types/crm.types').PickListDto>(`${BASE}/orders/${orderId}/pick-list/mark-picked`),
+  markPickListPacked: (orderId: string, data: import('../types/crm.types').MarkPackedRequest) =>
+    apiClient.post<import('../types/crm.types').PickListDto>(`${BASE}/orders/${orderId}/pick-list/pack`, data),
+
   // ─── Meetings ─────────────────────────────────────────────────────────────
   getMeetings: (filter: import('../types/crm.types').CrmMeetingFilter = {}) =>
     apiClient.get<PagedResult<import('../types/crm.types').CrmMeetingSummaryDto>>(`${BASE}/meetings`, { params: filter }),
@@ -681,8 +780,8 @@ export const crmApi = {
     apiClient.post(`${BASE}/meetings/${id}/cancel`, {}),
   updateMeeting: (id: string, data: { status?: number; notes?: string }) =>
     apiClient.put<import('../types/crm.types').CrmMeetingDetailDto>(`${BASE}/meetings/${id}`, data),
-  createTaskFromMeeting: (id: string) =>
-    apiClient.post(`${BASE}/meetings/${id}/tasks`, {}),
+  createTaskFromMeeting: (id: string, title?: string, assignedToUserId?: string) =>
+    apiClient.post(`${BASE}/meetings/${id}/tasks`, { title, assignedToUserId }),
 
   // ─── Public Scheduling (no-auth) ─────────────────────────────────────────
   getPublicSchedule: (token: string) =>
@@ -831,6 +930,8 @@ export const crmApi = {
   // ─── Approval Workflows ───────────────────────────────────────────────────
   getApprovals: (status?: import('../types/crm.types').ApprovalStatus) =>
     apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto[]>(`${BASE}/approvals`, { params: status != null ? { status } : undefined }),
+  getMyApprovals: (status?: import('../types/crm.types').ApprovalStatus) =>
+    apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto[]>(`${BASE}/approvals/my`, { params: status != null ? { status } : undefined }),
   getPendingApprovals: () =>
     apiClient.get<import('../types/crm.types').CrmApprovalSummaryDto[]>(`${BASE}/approvals/pending`),
   getApprovalById: (id: string) =>
@@ -883,6 +984,95 @@ export const crmApi = {
     const form = new FormData(); form.append('file', file);
     return apiClient.post<import('../types/crm.types').CsvImportResultDto>(`${BASE}/deals/import-csv`, form, { headers: { 'Content-Type': undefined } });
   },
+
+  // ─── Contracts (CLM) ──────────────────────────────────────────────────────
+  getContracts: (params?: { status?: number; accountId?: string }) =>
+    apiClient.get<import('../types/crm.types').CrmContractDto[]>(`${BASE}/contracts`, { params }),
+  getContractById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts/${id}`),
+  createContract: (data: import('../types/crm.types').CrmContractCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts`, data),
+  updateContractStatus: (id: string, status: number) =>
+    apiClient.patch<import('../types/crm.types').CrmContractDetailDto>(`${BASE}/contracts/${id}/status`, { status }),
+  deleteContract: (id: string) =>
+    apiClient.delete(`${BASE}/contracts/${id}`),
+  // Signatories
+  addContractSignatory: (contractId: string, data: import('../types/crm.types').CrmContractSignatoryRequest) =>
+    apiClient.post<import('../types/crm.types').CrmContractSignatoryDto>(`${BASE}/contracts/${contractId}/signatories`, data),
+  recordContractSignature: (signatoryId: string, data: import('../types/crm.types').CrmRecordSignatureRequest) =>
+    apiClient.put<import('../types/crm.types').CrmContractSignatoryDto>(`${BASE}/contracts/signatories/${signatoryId}/sign`, data),
+  removeContractSignatory: (signatoryId: string) =>
+    apiClient.delete(`${BASE}/contracts/signatories/${signatoryId}`),
+  // Templates
+  getContractTemplates: (category?: number) =>
+    apiClient.get<import('../types/crm.types').CrmContractTemplateDto[]>(`${BASE}/contracts/templates`, { params: { category } }),
+  getContractTemplateById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates/${id}`),
+  createContractTemplate: (data: import('../types/crm.types').CrmContractTemplateCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates`, data),
+  updateContractTemplate: (id: string, data: Partial<import('../types/crm.types').CrmContractTemplateDto>) =>
+    apiClient.put<import('../types/crm.types').CrmContractTemplateDto>(`${BASE}/contracts/templates/${id}`, data),
+  deleteContractTemplate: (id: string) =>
+    apiClient.delete(`${BASE}/contracts/templates/${id}`),
+  previewContractTemplate: (id: string, context: import('../types/crm.types').CrmContractCreateRequest) =>
+    apiClient.post<string>(`${BASE}/contracts/templates/${id}/preview`, context),
+
+  // ─── Invoice payment links ────────────────────────────────────────────────
+  generateInvoicePaymentLink: (id: string) =>
+    apiClient.post<string>(`${BASE}/invoices/${id}/payment-link`, {}),
+
+  // public, no-auth (token is the secret)
+  getPublicInvoice: (token: string) =>
+    apiClient.get<import('../types/crm.types').CrmInvoicePublicDto>(`/v1/public/pay/${token}`),
+  payPublicInvoice: (token: string, reference?: string) =>
+    apiClient.post<boolean>(`/v1/public/pay/${token}`, { reference }),
+
+  // ─── Business Catalog Items (for Price Book product picker) ───────────────
+  getCatalogItems: () =>
+    apiClient.get<any>('/v1/business-catalog/items', { params: { pageSize: 1000 } })
+      .then((r: any) => r?.items ?? []),
+
+  // ─── CPQ Price Books ──────────────────────────────────────────────────────
+  getPriceBooks: () =>
+    apiClient.get<import('../types/crm.types').CrmPriceBookDto[]>(`${BASE}/price-books`),
+  getPriceBookById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmPriceBookDetailDto>(`${BASE}/price-books/${id}`),
+  createPriceBook: (data: import('../types/crm.types').CrmPriceBookCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmPriceBookDto>(`${BASE}/price-books`, data),
+  updatePriceBook: (id: string, data: Partial<import('../types/crm.types').CrmPriceBookDto>) =>
+    apiClient.put<import('../types/crm.types').CrmPriceBookDto>(`${BASE}/price-books/${id}`, data),
+  deletePriceBook: (id: string) =>
+    apiClient.delete(`${BASE}/price-books/${id}`),
+  addPriceBookEntry: (id: string, data: import('../types/crm.types').CrmPriceBookEntryRequest) =>
+    apiClient.post<import('../types/crm.types').CrmPriceBookEntryDto>(`${BASE}/price-books/${id}/entries`, data),
+  updatePriceBookEntry: (entryId: string, data: import('../types/crm.types').CrmPriceBookEntryRequest) =>
+    apiClient.put<import('../types/crm.types').CrmPriceBookEntryDto>(`${BASE}/price-books/entries/${entryId}`, data),
+  deletePriceBookEntry: (entryId: string) =>
+    apiClient.delete(`${BASE}/price-books/entries/${entryId}`),
+
+  // ─── Product bundles (CPQ) ────────────────────────────────────────────────
+  getProductBundles: () =>
+    apiClient.get<import('../types/crm.types').CrmProductBundleDto[]>(`${BASE}/product-bundles`),
+  getProductBundleById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmProductBundleDetailDto>(`${BASE}/product-bundles/${id}`),
+  createProductBundle: (data: import('../types/crm.types').CrmProductBundleCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProductBundleDto>(`${BASE}/product-bundles`, data),
+  deleteProductBundle: (id: string) =>
+    apiClient.delete(`${BASE}/product-bundles/${id}`),
+  addProductBundleItem: (id: string, data: import('../types/crm.types').CrmProductBundleItemRequest) =>
+    apiClient.post<import('../types/crm.types').CrmProductBundleItemDto>(`${BASE}/product-bundles/${id}/items`, data),
+  deleteProductBundleItem: (itemId: string) =>
+    apiClient.delete(`${BASE}/product-bundles/items/${itemId}`),
+
+  // ─── Renewals ─────────────────────────────────────────────────────────────
+  getRenewals: (filter: import('../types/crm.types').CrmRenewalFilter = {}) =>
+    apiClient.get<PagedResult<import('../types/crm.types').CrmRenewalListItemDto>>(`${BASE}/renewals`, { params: filter }),
+  initiateRenewalOutreach: (id: string) =>
+    apiClient.post(`${BASE}/renewals/${id}/initiate-outreach`, {}),
+  recordRenewalOutcome: (id: string, data: import('../types/crm.types').CrmRenewalOutcomeRequest) =>
+    apiClient.post(`${BASE}/renewals/${id}/outcome`, data),
+  evaluateRenewals: () =>
+    apiClient.post<number>(`${BASE}/renewals/evaluate-all`, {}),
 
   // ─── Deduplication ──────────────────────────────────────────────────────────
   getDedupPending: () =>
@@ -1016,29 +1206,115 @@ export const crmApi = {
     apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/dispute`, data),
   voidSupplierInvoice: (id: string) =>
     apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/void`, {}),
+  matchSupplierInvoice: (id: string) =>
+    apiClient.post<import('../types/crm.types').ThreeWayMatchResult>(`${BASE}/supplier-invoices/${id}/match`, {}),
 
-  // ─── Shared inbox, audit and notification preferences ─────────────────────
-  getInbox: (filter: import('../types/crm.types').CrmInboxFilter = {}) =>
-    apiClient.get<PagedResult<import('../types/crm.types').CrmInboxItemDto>>(`${BASE}/inbox`, { params: filter }),
+  // ─── Tax Rules ────────────────────────────────────────────────────────────────
+  getTaxRules: () =>
+    apiClient.get<import('../types/crm.types').CrmTaxRuleDto[]>('/v1/crm/tax-rules'),
+  getTaxRuleById: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmTaxRuleDto>(`/v1/crm/tax-rules/${id}`),
+  createTaxRule: (data: import('../types/crm.types').CrmTaxRuleCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmTaxRuleDto>('/v1/crm/tax-rules', data),
+  updateTaxRule: (id: string, data: import('../types/crm.types').CrmTaxRuleUpdateRequest) =>
+    apiClient.put<import('../types/crm.types').CrmTaxRuleDto>(`/v1/crm/tax-rules/${id}`, data),
+  deleteTaxRule: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/tax-rules/${id}`),
+
+  // ─── Lead Scoring Rules ─────────────────────────────────────────────────────────
+  getScoringRules: () =>
+    apiClient.get<any[]>('/v1/crm/scoring-rules'),
+  createScoringRule: (data: any) =>
+    apiClient.post<any>('/v1/crm/scoring-rules', data),
+  updateScoringRule: (id: string, data: any) =>
+    apiClient.put<any>(`/v1/crm/scoring-rules/${id}`, data),
+  deleteScoringRule: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/scoring-rules/${id}`),
+  triggerScoreEvent: (leadId: string, data: { eventType: string; note?: string }) =>
+    apiClient.post<any>(`/v1/crm/scoring-rules/trigger/${leadId}`, data),
+  getScoreEventHistory: (leadId: string) =>
+    apiClient.get<any[]>(`/v1/crm/scoring-rules/history/${leadId}`),
+
+  // ─── Payment Terms ────────────────────────────────────────────────────────────
+  getPaymentTerms: () =>
+    apiClient.get<any[]>('/v1/crm/payment-terms'),
+  createPaymentTerm: (data: any) =>
+    apiClient.post<any>('/v1/crm/payment-terms', data),
+  updatePaymentTerm: (id: string, data: any) =>
+    apiClient.put<any>(`/v1/crm/payment-terms/${id}`, data),
+  deletePaymentTerm: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/payment-terms/${id}`),
+
+  // ─── Competitors ────────────────────────────────────────────────────────────
+  getCompetitors: () =>
+    apiClient.get<import('../types/crm.types').CrmCompetitorDto[]>('/v1/crm/competitors'),
+  createCompetitor: (data: import('../types/crm.types').CrmCompetitorCreateRequest) =>
+    apiClient.post<import('../types/crm.types').CrmCompetitorDto>('/v1/crm/competitors', data),
+  updateCompetitor: (id: string, data: Partial<import('../types/crm.types').CrmCompetitorDto>) =>
+    apiClient.put<import('../types/crm.types').CrmCompetitorDto>(`/v1/crm/competitors/${id}`, data),
+  deleteCompetitor: (id: string) =>
+    apiClient.delete<void>(`/v1/crm/competitors/${id}`),
+  getCompetitorAnalytics: () =>
+    apiClient.get<import('../types/crm.types').CrmCompetitorAnalyticsDto[]>('/v1/crm/competitors/analytics'),
+  getCompetitorDetail: (id: string) =>
+    apiClient.get<import('../types/crm.types').CrmCompetitorDetailDto>(`/v1/crm/competitors/${id}/detail`),
+  getDealCompetitors: (dealId: string) =>
+    apiClient.get<import('../types/crm.types').CrmDealCompetitorDto[]>(`/v1/crm/competitors/deal/${dealId}`),
+  addDealCompetitor: (dealId: string, data: { competitorId: string; ourStrengths?: string; theirStrengths?: string }) =>
+    apiClient.post<import('../types/crm.types').CrmDealCompetitorDto>(`/v1/crm/competitors/deal/${dealId}`, data),
+  updateDealCompetitorOutcome: (dealCompetitorId: string, outcome: number) =>
+    apiClient.put<import('../types/crm.types').CrmDealCompetitorDto>(`/v1/crm/competitors/deal/${dealCompetitorId}/outcome`, outcome),
+  removeDealCompetitor: (dealCompetitorId: string) =>
+    apiClient.delete<void>(`/v1/crm/competitors/deal/${dealCompetitorId}`),
+
+  // ─── Inventory ────────────────────────────────────────────────────────────────
+  getInventory: (filter?: { belowReorderPoint?: boolean; search?: string; page?: number; pageSize?: number }) =>
+    apiClient.get<PagedResult<import('../types/crm.types').InventoryItemDto>>(`/v1/inventory`, { params: filter }),
+  getInventoryByProduct: (productId: string) =>
+    apiClient.get<import('../types/crm.types').InventoryItemDto>(`/v1/inventory/${productId}`),
+  checkStock: (items: import('../types/crm.types').StockCheckItem[]) =>
+    apiClient.post<import('../types/crm.types').StockCheckResult>(`/v1/inventory/check`, items),
+  adjustInventory: (productId: string, data: import('../types/crm.types').InventoryAdjustRequest) =>
+    apiClient.post<import('../types/crm.types').InventoryItemDto>(`/v1/inventory/${productId}/adjust`, data),
+  getInventoryTransactions: (productId: string) =>
+    apiClient.get<any[]>(`/v1/inventory/${productId}/transactions`),
+
+  acknowledgeOrder: (id: string, introText?: string) =>
+    apiClient.post(`/v1/crm/orders/${id}/acknowledge`, { introText }),
+  draftOrderAcknowledgment: (id: string) =>
+    apiClient.post<import('../types/crm.types').CrmEmailIntroDraftDto>(`/v1/crm/orders/${id}/draft-acknowledgment-email`, {}),
+  creditCheck: (accountId: string, orderValue: number) =>
+    apiClient.post<import('../types/crm.types').CreditCheckResult>(`/v1/crm/orders/credit-check`, { accountId, orderValue }),
+  getDealHandover: (dealId: string) =>
+    apiClient.get<import('../types/crm.types').DealHandoverDto | null>(`/v1/crm/deals/${dealId}/handover`),
+  submitDealHandover: (dealId: string, data: import('../types/crm.types').DealHandoverSubmitRequest) =>
+    apiClient.post<import('../types/crm.types').DealHandoverDto>(`/v1/crm/deals/${dealId}/handover`, data),
+
+  // ─── Shared Inbox ──────────────────────────────────────────────────────────────
+  getInbox: (filter: { kind?: number }) =>
+    apiClient.get<{ items: import('../types/crm.types').CrmInboxItemDto[] }>(`/v1/crm/inbox`, { params: filter }),
   getInboxSummary: () =>
-    apiClient.get<import('../types/crm.types').CrmInboxSummaryDto>(`${BASE}/inbox/summary`),
-  claimInboxItem: (kind: number, entityId: string) =>
-    apiClient.post<import('../types/crm.types').CrmInboxItemDto>(`${BASE}/inbox/${kind}/${entityId}/claim`, {}),
+    apiClient.get<import('../types/crm.types').CrmInboxSummaryDto>(`/v1/crm/inbox/summary`),
+  claimInboxItem: ({ kind, entityId }: { kind: number; entityId: string }) =>
+    apiClient.post(`/v1/crm/inbox/${kind}/${entityId}/claim`),
 
-  getAuditFeed: (filter: import('../types/crm.types').CrmAuditFilter = {}) =>
-    apiClient.get<PagedResult<import('../types/crm.types').CrmAuditLogDto>>(`${BASE}/audit`, { params: filter }),
+  // ─── Commissions ──────────────────────────────────────────────────────────────
+  getCommissionEntries: (filter: import('../types/crm.types').CrmCommissionFilter) =>
+    apiClient.get<import('../types/crm.types').CrmCommissionEntryDto[]>(`/v1/crm/commissions/entries`, { params: filter }),
+  getCommissionPayouts: (periodCode?: string) =>
+    apiClient.get<import('../types/crm.types').CrmCommissionPayoutDto[]>(`/v1/crm/commissions/payouts`, { params: periodCode ? { periodCode } : undefined }),
+  runCommission: (data: { periodCode: string; periodStart: string; periodEnd: string }) =>
+    apiClient.post(`/v1/crm/commissions/run`, data),
+  createCommissionPlan: (data: { name: string; rateType: number; rateValue: number; targetEntity: number }) =>
+    apiClient.post(`/v1/crm/commissions/plans`, data),
+  finalizePayout: (id: string, data: import('../types/crm.types').CrmFinalizePayoutRequest) =>
+    apiClient.post(`/v1/crm/commissions/payouts/${id}/finalize`, data),
+  markPayoutPaid: (id: string) =>
+    apiClient.post(`/v1/crm/commissions/payouts/${id}/pay`),
+
+  // ─── Carried over from main ───
   getRecordAudit: (kind: number, entityId: string, page = 1, pageSize = 50) =>
     apiClient.get<PagedResult<import('../types/crm.types').CrmAuditLogDto>>(`${BASE}/audit/${kind}/${entityId}`, { params: { page, pageSize } }),
-
-  getNotifPreferences: () =>
-    apiClient.get<import('../types/crm.types').CrmNotifPreferenceDto[]>(`${BASE}/notification-preferences`),
-  saveNotifPreferences: (request: { preferences: import('../types/crm.types').CrmNotifPreferenceDto[] }) =>
-    apiClient.put<import('../types/crm.types').CrmNotifPreferenceDto[]>(`${BASE}/notification-preferences`, request),
-
-  // ─── Activity timeline and feed ───────────────────────────────────────────
   getRecordTimeline: (kind: number, entityId: string, page = 1, pageSize = 50) =>
     apiClient.get<PagedResult<import('../types/crm.types').CrmActivityEventDto>>(`${BASE}/timeline/${kind}/${entityId}`, { params: { page, pageSize } }),
-  getActivityFeed: (filter: import('../types/crm.types').CrmActivityFeedFilter = {}) =>
-    apiClient.get<PagedResult<import('../types/crm.types').CrmActivityEventDto>>(`${BASE}/activity-feed`, { params: filter }),
-
 } as const;

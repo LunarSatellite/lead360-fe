@@ -7,6 +7,7 @@ const ACTION_LABEL: Record<string, string> = {
   items:  '🛍️ Show Items',
   detail: '🔍 Item Detail',
   order:  '🛒 Collect Order',
+  track:  '📋 Track Order',
 };
 
 function Inner({ data }: { data: FlowNodeData }) {

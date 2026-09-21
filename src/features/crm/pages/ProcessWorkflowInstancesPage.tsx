@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { confirmDialog } from '@/shared/ui/confirm';
 import { createPortal } from 'react-dom';
 import {
   Activity, X, Loader2, ChevronLeft, ChevronRight, Circle, CheckCircle2,
@@ -120,11 +121,7 @@ function InstanceDetail({ instanceId, onClose }: { instanceId: string; onClose: 
           {/* Cancel button */}
           {instance.status === ProcessInstanceStatus.Active && (
             <button
-              onClick={() => {
-                if (confirm('Cancel this process instance? Pending tasks will be skipped.')) {
-                  cancel.mutate(instance.id, { onSuccess: onClose });
-                }
-              }}
+              onClick={() => confirmDialog({ message: 'Cancel this process instance? Pending tasks will be skipped.', confirmText: 'Cancel instance', danger: true }).then((ok) => { if (ok) cancel.mutate(instance.id, { onSuccess: onClose }); })}
               disabled={cancel.isPending}
               className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-danger/30 text-danger text-sm font-semibold hover:bg-danger/10 transition-all disabled:opacity-50"
             >

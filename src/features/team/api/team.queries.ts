@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+﻿import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { teamApi } from './team.api';
 import { toast } from 'sonner';
 import { ApiError } from '@/shared/lib/api-client';
@@ -100,8 +100,13 @@ export function useAdminUpdateUser() {
   return useMutation({
     mutationFn: ({ userId, data }: { userId: string; data: AdminUpdateUserRequest }) =>
       teamApi.adminUpdateUser(userId, data),
-    onSuccess: () => {
+    onSuccess: (_updated, vars) => {
       qc.invalidateQueries({ queryKey: teamKeys.users() });
+      // Admin profile edits (phone/jobTitle/department) drive the vCard QR
+      // card for that user. Invalidate the contact-cards queries so any
+      // open modal/list picks up the fresh values from the server.
+      qc.invalidateQueries({ queryKey: ["contact-cards", "list"] });
+      qc.invalidateQueries({ queryKey: ["contact-cards", "detail", vars.userId] });
       toast.success('User updated.');
     },
     onError: (err: ApiError) => toast.error(err.message || 'Failed to update user.'),

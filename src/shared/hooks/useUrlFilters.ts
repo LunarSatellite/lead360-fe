@@ -28,7 +28,6 @@ export function useUrlFilters<T extends Record<string, string | number>>(
     }
     return out;
     // defaults is a stable literal owned by the caller; re-run only on URL change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const setFilters = useCallback(

@@ -3,12 +3,13 @@
 // ═══════════════════════════════════════════════════════════════
 
 import { useState } from 'react';
-import { Boxes, Settings, Inbox, Loader2, AlertCircle } from 'lucide-react';
+import { Boxes, Settings, Inbox, Loader2, AlertCircle, FileUp } from 'lucide-react';
 import { useBusinessProfile } from '../api/business-catalog.queries';
 import { BusinessProfileForm } from '../components/BusinessProfileForm';
 import { CategoryListSection } from '../components/CategoryListSection';
 import { ItemListSection } from '../components/ItemListSection';
 import { TransactionListSection } from '../components/TransactionListSection';
+import { CatalogImportDialog } from '../components/CatalogImportDialog';
 import type { BusinessProfile, CatalogCategory } from '../types/business-catalog.types';
 
 type Tab = 'profile' | 'catalog' | 'inbox';
@@ -24,6 +25,7 @@ export function BusinessCatalogPage() {
 
   // null = show category list; CatalogCategory = drilled into that category's items
   const [selectedCategory, setSelectedCategory] = useState<CatalogCategory | null>(null);
+  const [showImport, setShowImport] = useState(false);
 
   if (isLoading) {
     return (
@@ -78,6 +80,18 @@ export function BusinessCatalogPage() {
 
       {tab === 'catalog' && (
         <div className="space-y-5">
+          {!selectedCategory && (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={() => setShowImport(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+              >
+                <FileUp className="w-3.5 h-3.5" strokeWidth={2.2} />
+                Bulk import CSV
+              </button>
+            </div>
+          )}
           {selectedCategory ? (
             // ── Drilled in: show only items for the selected category ──
             <ItemListSection
@@ -101,6 +115,8 @@ export function BusinessCatalogPage() {
       {tab === 'profile' && (
         <BusinessProfileForm existing={profile} onSaved={() => {}} />
       )}
+
+      {showImport && <CatalogImportDialog onClose={() => setShowImport(false)} />}
     </div>
   );
 }

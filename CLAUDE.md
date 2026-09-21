@@ -1,6 +1,6 @@
 # CLAUDE.md — OmniFlow Frontend
 
-This file guides Claude Code when working on the **OmniFlow AI frontend** (React + TypeScript + Tailwind). It reflects the current **Dark Green Bato-Inspired** design system that replaced the earlier purple/cosmic theme during the gradual redesign.
+This file guides Claude Code when working on the **OmniFlow AI frontend** (React + TypeScript + Tailwind) — one codebase that ships as two consoles, Lead360 and StyleMint. The design system is shared; the palette is per-product and lives in `src/styles/globals.css`. See section 2.
 
 > **Golden rule:** Read this file, check the skills in `.claude/skills/` (`omniflow-design-system`, `omniflow-data-layer`, `omniflow-forms`, `omniflow-feature-scaffold`, `omniflow-flow-builder`, `omniflow-simplify`), and match existing patterns in the codebase before writing any new UI.
 
@@ -40,46 +40,60 @@ This file guides Claude Code when working on the **OmniFlow AI frontend** (React
 
 ---
 
-## 2. Design System — Dark Green (current)
+## 2. Design System — per-product palette
 
 ### Core principle
 Dark-only, editorial, confident. No light mode, no `dark:` prefix. Typography and spacing carry the design; color is used sparingly and always *means* something.
 
-### Color tokens (from `tailwind.config.js`)
+**One codebase ships two consoles** (see `src/shared/config/env.ts`). The structure below — every token name, every radius, every border width — is shared. Only the *values* differ, and they differ in exactly one place: the token table at the top of `src/styles/globals.css`.
+
+| | Lead360 (default) | StyleMint (`VITE_CONSOLE_PRODUCT=stylemint`) |
+|---|---|---|
+| Brand | `#00D98A` dark green | `#2ECC71` emerald |
+| Body / card / elevated | `#0A1612` / `#132420` / `#1A332C` | `#18181B` / `#1F1F23` / `#27272A` (zinc) |
+| Text ramp | `#FFFFFF` / `#B8E6D5` / `#7A9B8E` | `#FFFFFF` / `#D4D4D8` / `#9F9FA9` |
+| Second accent | violet `#7B61FF` (AI, premium) | yellow `#F1C40F` — sparingly |
+| Status | emerald / blue / amber / rose | `#2ECC71` / `#00A6F4` / `#F1C40F` / `#FF6467` |
+
+StyleMint's values are not invented: they come from the mobile app's `lib/theme/design_tokens.dart`, which is generated from the Figma variables. A few tints the mobile file has no equivalent for are derived from `#2ECC71` and labelled `derived` in the token table. **Do not add a colour to the StyleMint palette that is not in that Dart file or derived from something in it.**
+
+> **On the gold ramp.** Earlier revisions of this file documented a gold text ramp (`#FFD84D` / `#BFA200` / `#665C1A`) as the Lead360 identity, and `.claude/skills/omniflow-design-system/SKILL.md` still describes the system as "gold-on-green". `tailwind.config.js` has never shipped those values — `text.primary` has been `#FFFFFF` and `text.secondary` `#B8E6D5` throughout. The gold survives only as hardcoded hex at three call sites (`AuthLayout.tsx`, `AccountsPage.tsx`, `CrmInvoicesPage.tsx`). Treat the table above as authoritative and the gold as documentation drift, not a palette. StyleMint has no gold ramp at all.
+
+### How the swap works
+
+`globals.css` defines every colour as an RGB channel triple on `:root`, and redefines the same names under `:root[data-console='stylemint']`. `tailwind.config.js` contains **no colour literals** — every entry reads `rgb(var(--token) / <alpha-value>)`. So `bg-glass-1` and `text-text-muted` paint the right product's colour without a single conditional in a component.
+
+Two rules keep that honest, and `src/styles/theme-tokens.test.ts` enforces both:
+
+1. **Every literal token in `:root` has a StyleMint counterpart.** A missing one does not disappear — it keeps Lead360's value, which is how you get one theme's text on the other's ground.
+2. **Derived tokens** (those whose value contains `var(`, like `--bg-card: rgb(var(--color-surface-card))`) are declared once, in `:root` only, and follow automatically. Restating one in the StyleMint block silently unpins it.
+
+The same suite also checks WCAG contrast for every text-on-surface pair in both palettes, and asserts the StyleMint text ramp stays neutral.
+
+**What sets the attribute:** `consoleHtmlBrand` in `vite.config.ts` rewrites `index.html` at build time for the StyleMint build. With the attribute absent the Lead360 palette applies — an unwired build looks like Lead360, never like an unreadable half-theme.
+
+### Adding or changing a colour
+1. Add the literal to `:root` **and** to `:root[data-console='stylemint']`, as an RGB triple. The test fails if you do only one.
+2. Reference it from `tailwind.config.js` as `rgb(var(--your-token) / <alpha-value>)`.
+3. Use the resulting utility class. **Never** a hex or `rgba()` at a call site — not in `className`, not in a `style` object, not in an arbitrary value like `bg-[rgba(0,217,138,0.08)]`. Those bypass both files and stay Lead360 green in the StyleMint build.
+
+There is a large backlog of exactly that: roughly 2,300 colour literals across ~120 feature files duplicate a token instead of reading it. They are a known defect, not a pattern to copy.
+
+### Color tokens (from `tailwind.config.js` — names, not values)
 
 ```ts
-bg: {
-  DEFAULT:  '#0A0F0D',   // body
-  shell:    '#0D1410',   // app shell / outer panels
-  card:     '#111916',   // card base
-  elevated: '#162019',   // elevated card / modal / popover
-  input:    '#0D1410',   // form inputs
-},
-glass: { 1:'#182420', 2:'#1E2E26', 3:'#253D32' },
-border: {
-  subtle:  '#1E2E26',
-  medium:  '#253D32',
-  glow:    'rgba(0,255,136,0.15)',      // active/selected
-  success: 'rgba(16,185,129,0.15)',
-},
-// Text is GOLD, not neutral — deliberate gold-on-green palette.
-text: {
-  primary:   '#FFD84D',                 // warm gold — body text, headings
-  secondary: '#BFA200',                 // dark gold — labels, muted body
-  muted:     '#665C1A',                 // olive — helper text, timestamps
-},
-brand: {
-  DEFAULT: '#00D97E',                   // main accent
-  light:   '#00FF94',                   // hover / highlight
-  dark:    '#00B368',
-  soft:    'rgba(0,217,126,0.08)',      // active bg
-},
-// status: success (emerald), info (blue), warning (amber), danger (rose)
+bg:     { DEFAULT, shell, card, elevated, input }   // page → panel → card → modal
+glass:  { 1, 2, 3 }                                 // card → hover → raised
+border: { subtle, medium, glow, success }           // glow = brand tint, active/selected
+text:   { primary, secondary, muted }
+brand:  { DEFAULT, light, dark, soft }              // soft = brand tint, active bg
+// status: success, info, warning, danger — each with a `soft` tint
+// accents: teal (analytics, data viz), violet (AI, flow builder, premium badges)
 ```
 
-> The gold text ramp is intentional — it's the identity of the current redesign. Older components written against the previous off-white ramp (`#E8F0EC` etc.) should be updated to `text-text-primary` which now resolves to gold. Never hardcode `#E8F0EC`, `text-white`, or `text-gray-*`.
+The brand tint *alpha* is per-product too (`--alpha-brand-soft`, `--alpha-brand-glow`): 8%/18% over Lead360's near-black reads the same as 14%/28% over StyleMint's much lighter zinc. Adjust those rather than reaching for a different green.
 
-**Accent gradient (logos, CTAs, active bars):** `linear-gradient(135deg, #00FFAA 0%, #00B368 100%)`
+**Accent gradient (logos, CTAs, active bars):** `bg-gradient-brand`
 
 ### Surfaces & borders
 - Borders are **always `0.5px`** (`border-thin` token) — never 1px or thicker.
@@ -240,10 +254,11 @@ If `/simplify` flags a change that feels risky (touches runtime behavior, API co
 
 ## 10. Quick reference
 
-- **Design tokens source:** `tailwind.config.js` + `src/styles/globals.css`
-- **Accent gradient:** `from-[#00FFAA] to-[#00B368]`
-- **Primary brand:** `#00D97E` (`brand.DEFAULT`)
-- **Body bg:** `#0A0F0D` (`bg.DEFAULT`)
+- **Design tokens source:** the token table at the top of `src/styles/globals.css` (values) + `tailwind.config.js` (names). Both palettes live in the CSS; nothing in the config is a literal.
+- **Accent gradient:** `bg-gradient-brand` — never a hardcoded pair of stops
+- **Primary brand:** `brand` → `#00D98A` on Lead360, `#2ECC71` on StyleMint
+- **Body bg:** `bg` → `#0A1612` on Lead360, `#18181B` on StyleMint
+- **Theme guard:** `src/styles/theme-tokens.test.ts`
 - **Skill reference (if available):** `/mnt/skills/user/omniflow-frontend/SKILL.md`
 
 ---

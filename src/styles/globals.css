@@ -5,60 +5,205 @@
 @tailwind utilities;
 
 /* ═══════════════════════════════════════════════════════
-   Dark Green Theme — ported from AuroraBI
-   RGB channel format allows opacity compositing:
-   e.g. rgb(var(--color-surface-card) / 0.5)
+   Colour tokens — per-product, one codebase.
+
+   Every colour in this console resolves through the tokens below.
+   `:root` carries the Lead360 palette (dark green, the original
+   identity); `:root[data-console='stylemint']` redefines the same
+   names with StyleMint's (emerald on zinc, no green cast).
+
+   CONTRACT: the StyleMint build must put `data-console="stylemint"`
+   on the <html> element. Nothing in this file can do it — CSS cannot
+   read a build flag — and it must be in the markup rather than set by
+   React, or the first paint is Lead360 green. The `console-html-brand`
+   plugin in vite.config.ts already rewrites index.html for this build;
+   one more line there:
+
+       out = out.replace(/<html([^>]*)>/, '<html$1 data-console="stylemint">');
+
+   With the attribute absent the Lead360 palette applies, which is the
+   correct default: an unwired build looks like Lead360 rather than
+   like a half-applied theme. See `theme-tokens.test.ts` beside this
+   file for what keeps the two palettes in step.
+
+   Two rules keep this honest:
+     1. Tokens are RGB channel triples, so every consumer can
+        composite alpha:  rgb(var(--color-surface-card) / 0.5).
+     2. A token whose value is *derived* from another token (it
+        contains `var(`) is declared once, in `:root` only. The
+        StyleMint block redefines the literals; the derived aliases
+        follow. The test enforces both halves of this.
    ═══════════════════════════════════════════════════════ */
 :root {
-  /* ── Surfaces (RGB) ── */
+  /* ── Surfaces ── */
   --color-surface-app:       10  22  18;   /* #0A1612 — page body        */
   --color-surface-card:      19  36  32;   /* #132420 — card base        */
   --color-surface-elevated:  26  51  44;   /* #1A332C — modal / popover  */
   --color-surface-inset:     15  30  26;   /* #0F1E1A — shell / input bg */
   --color-surface-overlay:    0   0   0;   /* #000000 — backdrop         */
 
-  /* ── Text (RGB) ── */
+  /* ── Glass ramp (card → hover → raised) ── */
+  --color-glass-1:           23  44  35;   /* #172C23                    */
+  --color-glass-2:           28  51  40;   /* #1C3328                    */
+  --color-glass-3:           36  61  48;   /* #243D30                    */
+
+  /* ── Text ── */
   --color-text-primary:     255 255 255;   /* #FFFFFF                    */
   --color-text-body:        184 230 213;   /* #B8E6D5                    */
   --color-text-secondary:   184 230 213;   /* #B8E6D5                    */
   --color-text-muted:       122 155 142;   /* #7A9B8E                    */
   --color-text-inverted:     10  22  18;   /* #0A1612 — text on brand bg */
+  --color-text-on-brand:      2  26  16;   /* #021A10 — CTA label        */
 
-  /* ── Borders (RGB) ── */
-  --color-border-default:    28  65  50;   /* subtle green separator     */
-  --color-border-subtle:     20  48  37;   /* very faint border          */
-  --color-border-strong:     42  90  68;   /* visible dark green border  */
+  /* ── Borders ── */
+  --color-border-default:    28  65  50;   /* #1C4132 — separator        */
+  /* 20 48 37 until this became a live token: it had no consumer, while
+     `border.subtle` in tailwind.config.js — the value every card and input
+     actually paints — was #14302A. Aligned to the one that renders. */
+  --color-border-subtle:     20  48  42;   /* #14302A — very faint       */
+  --color-border-strong:     42  90  68;   /* #2A5A44 — visible          */
 
-  /* ── Accent / Ring (RGB) ── */
-  --color-accent-text:        0 217 138;   /* #00D98A — brand primary    */
-  --color-ring-offset:       10  22  18;   /* #0A1612 — focus ring       */
+  /* ── Brand ── */
+  --brand-rgb:                0 217 138;   /* #00D98A — primary          */
+  --brand-light-rgb:          0 255 163;   /* #00FFA3 — hover/highlight  */
+  --brand-dark-rgb:           0 179 104;   /* #00B368 — gradient end     */
+  --color-brand-deep:         0 184 114;   /* #00B872 — deep mesh glow   */
+  --color-brand-cta-start:    0 199 122;   /* #00C77A — sign-in sweep    */
+  --color-brand-cta-end:     67 255 184;   /* #43FFB8 — sign-in sweep    */
+  --color-brand-beacon:       0 255 170;   /* #00FFAA — setup-page beacon*/
+  /* Two brand greens one step apart have coexisted here since the AuroraBI
+     port: #00D98A paints surfaces, #00D97E the glows and drop-shadows. Kept
+     apart rather than collapsed, so the Lead360 build renders unchanged. */
+  --color-brand-glow:         0 217 126;   /* #00D97E — glow / shadow    */
+  --color-brand-glow-light:   0 255 148;   /* #00FF94 — glow / shadow    */
 
-  /* ── Legacy direct-value aliases (hex / rgba) ── */
-  --bg-primary:             #0A1612;
-  --bg-secondary:           #0F1E1A;
-  --bg-card:                #132420;
-  --bg-elevated:            #1A332C;
+  /* Brand tint strength. The alpha, not just the hue, is per-product:
+     a fixed 8% emerald reads clearly over Lead360's near-black
+     #0A1612 but almost vanishes over StyleMint's much lighter
+     #18181B, so the StyleMint block raises it to keep active and
+     selected states as separable as they are here. */
+  --alpha-brand-soft:        0.08;
+  --alpha-brand-glow:        0.18;
 
-  --primary:                #00D98A;
-  --primary-dark:           #00B872;
-  --primary-light:          #00FFA3;
-  --glow-primary:           rgba(0, 217, 138, 0.25);
+  /* ── Status ── */
+  --color-success:           16 185 129;   /* #10B981                    */
+  --color-success-light:     52 211 153;   /* #34D399                    */
+  --color-info:              59 130 246;   /* #3B82F6                    */
+  --color-danger:           244  63  94;   /* #F43F5E                    */
+  --color-warning:          245 158  11;   /* #F59E0B                    */
+  --color-warning-light:    251 191  36;   /* #FBBF24                    */
 
-  --border-primary:         rgba(0, 217, 138, 0.20);
-  --border-subtle:          rgba(184, 230, 213, 0.10);
+  /* ── Secondary accents ── */
+  --color-teal:               0 179 200;   /* #00B3C8 — analogous        */
+  --color-teal-light:         0 213 237;   /* #00D5ED                    */
+  --color-violet:           123  97 255;   /* #7B61FF — triadic / AI     */
+  --color-violet-light:     167 139 250;   /* #A78BFA                    */
+  /* Top sheen on every enabled button (see the `button` rule below). */
+  --color-button-sheen:     123  97 255;   /* #7B61FF                    */
 
-  --text-primary:           #FFFFFF;
-  --text-secondary:         #B8E6D5;
-  --text-muted:             #7A9B8E;
+  /* ── Derived aliases — declared here only, never overridden ── */
+  --color-accent-text:      var(--brand-rgb);
+  --color-ring-offset:      var(--color-surface-app);
+
+  --bg-primary:             rgb(var(--color-surface-app));
+  --bg-secondary:           rgb(var(--color-surface-inset));
+  --bg-card:                rgb(var(--color-surface-card));
+  --bg-elevated:            rgb(var(--color-surface-elevated));
+
+  --primary:                rgb(var(--brand-rgb));
+  --primary-dark:           rgb(var(--color-brand-deep));
+  --primary-light:          rgb(var(--brand-light-rgb));
+  --glow-primary:           rgb(var(--brand-rgb) / 0.25);
+
+  --border-primary:         rgb(var(--brand-rgb) / 0.2);
+  --border-subtle:          rgb(var(--color-text-secondary) / 0.1);
+
+  --text-primary:           rgb(var(--color-text-primary));
+  --text-secondary:         rgb(var(--color-text-secondary));
+  --text-muted:             rgb(var(--color-text-muted));
+
+  --kinmarche-accent:       rgb(var(--brand-rgb));
+}
+
+/* ═══════════════════════════════════════════════════════
+   StyleMint — emerald on zinc.
+
+   Values come from the mobile app's lib/theme/design_tokens.dart
+   (itself pulled from the Figma variables), not from taste. The
+   handful the mobile file has no equivalent for are tints derived
+   from #2ECC71 and marked "derived" below.
+
+   The defining difference from Lead360: there is no gold or green
+   text ramp. Text is white → zinc-300 → zinc-400 on zinc surfaces,
+   and green appears only where something is branded or active.
+   ═══════════════════════════════════════════════════════ */
+:root[data-console='stylemint'] {
+  /* ── Surfaces (zinc) ── */
+  --color-surface-app:       24  24  27;   /* #18181B — bgAppBody        */
+  --color-surface-card:      31  31  35;   /* #1F1F23 — surfaceRaised    */
+  --color-surface-elevated:  39  39  42;   /* #27272A — bgAppBodyLight   */
+  --color-surface-inset:     28  28  32;   /* #1C1C20 — derived step     */
+  --color-surface-overlay:    0   0   0;   /* #000000 — baseBlack        */
+
+  /* ── Glass ramp ── */
+  --color-glass-1:           34  34  38;   /* #222226 — derived step     */
+  --color-glass-2:           39  39  42;   /* #27272A — bgAppBodyLight   */
+  --color-glass-3:           46  46  51;   /* #2E2E33 — derived step     */
+
+  /* ── Text (no gold, no green) ── */
+  --color-text-primary:     255 255 255;   /* #FFFFFF — textWhite        */
+  --color-text-body:        212 212 216;   /* #D4D4D8 — textLight        */
+  --color-text-secondary:   212 212 216;   /* #D4D4D8 — textLight        */
+  --color-text-muted:       159 159 169;   /* #9F9FA9 — textMuted        */
+  --color-text-inverted:     24  24  27;   /* #18181B — textDark         */
+  --color-text-on-brand:      6  25  14;   /* #06190E — buttonPrimaryText*/
+
+  /* ── Borders (zinc) ── */
+  --color-border-default:    63  63  70;   /* #3F3F46 — borderDefault    */
+  --color-border-subtle:     39  39  42;   /* #27272A                    */
+  --color-border-strong:     82  82  92;   /* #52525C — sectionOnBase    */
+
+  /* ── Brand (emerald) ── */
+  --brand-rgb:               46 204 113;   /* #2ECC71 — primaryGreen     */
+  --brand-light-rgb:         88 214 141;   /* #58D68D — derived tint     */
+  --brand-dark-rgb:          38 166  92;   /* #26A65C — chipsSelectedBorder */
+  --color-brand-deep:        38 166  92;   /* #26A65C                    */
+  --color-brand-cta-start:   38 166  92;   /* #26A65C                    */
+  --color-brand-cta-end:    126 231 173;   /* #7EE7AD — derived tint     */
+  --color-brand-beacon:      88 214 141;   /* #58D68D — derived tint     */
+  --color-brand-glow:        46 204 113;   /* #2ECC71 — primaryGreen     */
+  --color-brand-glow-light:  88 214 141;   /* #58D68D — derived tint     */
+
+  /* Raised to match Lead360's perceived tint strength over a body
+     roughly six times lighter. Colour only — the geometry of every
+     active/selected state is unchanged. */
+  --alpha-brand-soft:        0.14;
+  --alpha-brand-glow:        0.28;
+
+  /* ── Status ── */
+  --color-success:           46 204 113;   /* #2ECC71 — colorSuccess     */
+  --color-success-light:     88 214 141;   /* #58D68D — derived tint     */
+  --color-info:               0 166 244;   /* #00A6F4 — colorInfo        */
+  --color-danger:           255 100 103;   /* #FF6467 — colorError       */
+  --color-warning:          241 196  15;   /* #F1C40F — secondaryYellow  */
+  --color-warning-light:    255 223  32;   /* #FFDF20 — warning300       */
+
+  /* ── Secondary accents ──
+     StyleMint has exactly two accents: emerald and yellow. The
+     analogous "teal" slot takes the palette's one blue; the triadic
+     "violet" slot — the AI / premium badge colour — takes the yellow,
+     because inventing a purple would put a colour on screen that is
+     in neither the Figma file nor the app. */
+  --color-teal:               0 166 244;   /* #00A6F4 — colorInfo        */
+  --color-teal-light:         0 188 255;   /* #00BCFF — statusOngoingRipple1 */
+  --color-violet:           241 196  15;   /* #F1C40F — secondaryYellow  */
+  --color-violet-light:     255 223  32;   /* #FFDF20 — warning300       */
+  /* Neutral sheen: a yellow wash on every button would spend the
+     accent everywhere, which is exactly what it is not for. */
+  --color-button-sheen:     255 255 255;   /* #FFFFFF                    */
 }
 
 @layer base {
-  :root {
-    --brand-rgb: 0 217 138;
-    --brand-light-rgb: 0 255 163;
-    --brand-dark-rgb: 0 179 104;
-    --kinmarche-accent: #00d98a;
-  }
   * {
     box-sizing: border-box;
     margin: 0;
@@ -66,8 +211,8 @@
   }
 
   body {
-    background: #0a1612;
-    color: #b8e6d5;
+    background: rgb(var(--color-surface-app));
+    color: rgb(var(--color-text-secondary));
     font-family:
       'Inter',
       system-ui,
@@ -90,17 +235,17 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(42, 90, 68, 0.6);
+    background-color: rgb(var(--color-border-strong) / 0.6);
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background-color: #7a9b8e;
+    background-color: rgb(var(--color-text-muted));
   }
 
   :focus-visible {
     outline: none;
     box-shadow:
-      0 0 0 2px #0a1612,
+      0 0 0 2px rgb(var(--color-ring-offset)),
       0 0 0 4px rgb(var(--brand-rgb) / 0.4);
   }
 
@@ -108,9 +253,9 @@
   select:focus-visible,
   textarea:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 1px rgba(0, 217, 138, 0.50),
-                0 0 10px rgba(0, 217, 138, 0.20),
-                0 0 20px rgba(0, 217, 138, 0.08);
+    box-shadow: 0 0 0 1px rgb(var(--brand-rgb) / 0.50),
+                0 0 10px rgb(var(--brand-rgb) / 0.20),
+                0 0 20px rgb(var(--brand-rgb) / 0.08);
   }
 
   /* Remove number input spinners */
@@ -130,8 +275,8 @@
   button:not(:disabled) {
     background-image: linear-gradient(
       to bottom,
-      rgba(123, 97, 255, 0.11) 0%,
-      rgba(123, 97, 255, 0.03) 40%,
+      rgb(var(--color-button-sheen) / 0.11) 0%,
+      rgb(var(--color-button-sheen) / 0.03) 40%,
       rgba(0, 0, 0, 0.08) 100%
     );
   }
@@ -139,20 +284,20 @@
 
 @layer components {
   .glass-surface {
-    background: #132420;
-    border: 0.5px solid #14302a;
+    background: rgb(var(--color-surface-card));
+    border: 0.5px solid rgb(var(--color-border-subtle));
     border-radius: 12px;
   }
 
   .glass-surface-hover {
-    background: #132420;
-    border: 0.5px solid #14302a;
+    background: rgb(var(--color-surface-card));
+    border: 0.5px solid rgb(var(--color-border-subtle));
     border-radius: 12px;
     transition: all 0.15s ease;
   }
   .glass-surface-hover:hover {
-    background: #1a332c;
-    border-color: #1c4132;
+    background: rgb(var(--color-surface-elevated));
+    border-color: rgb(var(--color-border-default));
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
@@ -166,13 +311,13 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: #7a9b8e;
+    color: rgb(var(--color-text-muted));
   }
 
   .text-value {
     font-size: 17px;
     font-weight: 800;
-    color: #ffffff;
+    color: rgb(var(--color-text-primary));
     letter-spacing: -0.3px;
   }
 
@@ -180,17 +325,17 @@
     width: 100%;
     padding: 10px 15px;
     border-radius: 11px;
-    background: #0f1e1a;
-    border: 0.5px solid #1c4132;
+    background: rgb(var(--color-surface-inset));
+    border: 0.5px solid rgb(var(--color-border-default));
     font-size: 14px;
-    color: #ffffff;
+    color: rgb(var(--color-text-primary));
     transition: all 0.15s ease;
   }
   .form-input:hover {
-    border-color: #2a5a44;
+    border-color: rgb(var(--color-border-strong));
   }
   .form-input::placeholder {
-    color: #7a9b8e;
+    color: rgb(var(--color-text-muted));
   }
   .form-input:focus {
     outline: none;
@@ -236,10 +381,10 @@
 @keyframes glow {
   0%,
   100% {
-    box-shadow: 0 0 5px rgba(0, 217, 126, 0.3);
+    box-shadow: 0 0 5px rgb(var(--color-brand-glow) / 0.3);
   }
   50% {
-    box-shadow: 0 0 20px rgba(0, 217, 126, 0.5);
+    box-shadow: 0 0 20px rgb(var(--color-brand-glow) / 0.5);
   }
 }
 
@@ -402,13 +547,13 @@
 .landing-nav-link {
   position: relative;
   font-size: 14px;
-  color: #b8e6d5;
+  color: rgb(var(--color-text-secondary));
   font-weight: 500;
   text-decoration: none;
   transition: color 0.25s;
 }
 .landing-nav-link:hover {
-  color: #00ffa3;
+  color: rgb(var(--brand-light-rgb));
 }
 .landing-nav-link::after {
   content: '';
@@ -417,7 +562,7 @@
   left: 0;
   width: 0;
   height: 1.5px;
-  background: #00ffa3;
+  background: rgb(var(--brand-light-rgb));
   transition: width 0.3s;
 }
 .landing-nav-link:hover::after {
@@ -467,9 +612,9 @@
   gap: 8px;
   padding: 14px 36px;
   border-radius: 60px;
-  border: 0.5px solid #1c4132;
+  border: 0.5px solid rgb(var(--color-border-default));
   background: transparent;
-  color: #7a9b8e;
+  color: rgb(var(--color-text-muted));
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -477,9 +622,9 @@
   text-decoration: none;
 }
 .landing-cta2:hover {
-  border-color: #00ffa3;
-  color: #00ffa3;
-  background: rgba(0, 255, 163, 0.06);
+  border-color: rgb(var(--brand-light-rgb));
+  color: rgb(var(--brand-light-rgb));
+  background: rgb(var(--brand-light-rgb) / 0.06);
 }
 
 /* Shimmer gradient text */
@@ -701,7 +846,7 @@
     box-shadow: 0 0 0 0 transparent;
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(167, 139, 250, 0.15);
+    box-shadow: 0 0 0 8px rgb(var(--color-violet-light) / 0.15);
   }
 }
 
@@ -757,8 +902,8 @@
   align-items: center;
   justify-content: center;
   font-size: 32px;
-  background: rgba(167, 139, 250, 0.08);
-  border: 2px solid rgba(167, 139, 250, 0.25);
+  background: rgb(var(--color-violet-light) / 0.08);
+  border: 2px solid rgb(var(--color-violet-light) / 0.25);
   animation:
     ch-voice-ring 2s ease infinite,
     ch-msg-pop 0.4s ease both;
@@ -837,7 +982,7 @@
     filter: drop-shadow(0 0 0 transparent);
   }
   50% {
-    filter: drop-shadow(0 0 6px rgba(0, 255, 170, 0.4));
+    filter: drop-shadow(0 0 6px rgb(var(--color-brand-beacon) / 0.4));
   }
 }
 
@@ -854,10 +999,10 @@
 @keyframes setup-beacon-pulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 170, 0.3);
+    box-shadow: 0 0 0 0 rgb(var(--color-brand-beacon) / 0.3);
   }
   50% {
-    box-shadow: 0 0 0 8px rgba(0, 255, 170, 0);
+    box-shadow: 0 0 0 8px rgb(var(--color-brand-beacon) / 0);
   }
 }
 
@@ -879,10 +1024,10 @@
 @keyframes pulseGlow {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 148, 0.15);
+    box-shadow: 0 0 0 0 rgb(var(--color-brand-glow-light) / 0.15);
   }
   50% {
-    box-shadow: 0 0 20px 4px rgba(0, 255, 148, 0.08);
+    box-shadow: 0 0 20px 4px rgb(var(--color-brand-glow-light) / 0.08);
   }
 }
 
@@ -927,10 +1072,10 @@
 @keyframes icon-glow {
   0%,
   100% {
-    box-shadow: 0 0 8px var(--icon-glow, rgba(0, 217, 126, 0.1));
+    box-shadow: 0 0 8px var(--icon-glow, rgb(var(--color-brand-glow) / 0.1));
   }
   50% {
-    box-shadow: 0 0 20px var(--icon-glow, rgba(0, 217, 126, 0.25));
+    box-shadow: 0 0 20px var(--icon-glow, rgb(var(--color-brand-glow) / 0.25));
   }
 }
 
@@ -971,18 +1116,18 @@
   width: 100%;
   padding: 10px 14px;
   border-radius: 10px;
-  background: #0f1e1a;
-  border: 0.5px solid #1c4132;
+  background: rgb(var(--color-surface-inset));
+  border: 0.5px solid rgb(var(--color-border-default));
   font-size: 13px;
-  color: #ffffff;
+  color: rgb(var(--color-text-primary));
   outline: none;
   transition: border-color 0.15s;
 }
 .cfi::placeholder {
-  color: #7a9b8e;
+  color: rgb(var(--color-text-muted));
 }
 .cfi:focus {
-  border-color: #00d98a;
+  border-color: rgb(var(--brand-rgb));
 }
 
 /* Breathing glow for selected pipeline nodes */
@@ -990,13 +1135,13 @@
   0%,
   100% {
     box-shadow:
-      0 0 20px var(--glow-color, rgba(0, 217, 126, 0.08)),
-      inset 0 0 0 1px var(--glow-color, rgba(0, 217, 126, 0.05));
+      0 0 20px var(--glow-color, rgb(var(--color-brand-glow) / 0.08)),
+      inset 0 0 0 1px var(--glow-color, rgb(var(--color-brand-glow) / 0.05));
   }
   50% {
     box-shadow:
-      0 0 45px var(--glow-color, rgba(0, 217, 126, 0.18)),
-      inset 0 0 0 1px var(--glow-color, rgba(0, 217, 126, 0.1));
+      0 0 45px var(--glow-color, rgb(var(--color-brand-glow) / 0.18)),
+      inset 0 0 0 1px var(--glow-color, rgb(var(--color-brand-glow) / 0.1));
   }
 }
 
@@ -1027,10 +1172,10 @@
 @keyframes jg {
   0%,
   100% {
-    filter: drop-shadow(0 0 4px rgba(0, 217, 126, 0.15));
+    filter: drop-shadow(0 0 4px rgb(var(--color-brand-glow) / 0.15));
   }
   50% {
-    filter: drop-shadow(0 0 12px rgba(0, 217, 126, 0.3));
+    filter: drop-shadow(0 0 12px rgb(var(--color-brand-glow) / 0.3));
   }
 }
 
@@ -1064,7 +1209,7 @@
 
 /* Hero headings, page titles — white fading into brand green */
 .text-gradient-brand {
-  background: linear-gradient(135deg, #ffffff 0%, #b8e6d5 45%, #00d98a 100%);
+  background: linear-gradient(135deg, rgb(var(--color-text-primary)) 0%, rgb(var(--color-text-secondary)) 45%, rgb(var(--brand-rgb)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1072,7 +1217,7 @@
 
 /* Section headings — pure green ramp, slightly brighter */
 .text-gradient-emerald {
-  background: linear-gradient(135deg, #00ffa3 0%, #00d98a 60%, #00b368 100%);
+  background: linear-gradient(135deg, rgb(var(--brand-light-rgb)) 0%, rgb(var(--brand-rgb)) 60%, rgb(var(--brand-dark-rgb)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1080,7 +1225,7 @@
 
 /* AI / flow builder headings — violet crossing into green */
 .text-gradient-ai {
-  background: linear-gradient(135deg, #a78bfa 0%, #00b3c8 55%, #00d98a 100%);
+  background: linear-gradient(135deg, rgb(var(--color-violet-light)) 0%, rgb(var(--color-teal)) 55%, rgb(var(--brand-rgb)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1091,39 +1236,39 @@
 
 /* Brand green icon bg */
 .icon-bg-brand {
-  background: linear-gradient(135deg, rgba(0, 255, 163, 0.16) 0%, rgba(0, 217, 138, 0.08) 100%);
-  border: 0.5px solid rgba(0, 217, 138, 0.2);
+  background: linear-gradient(135deg, rgb(var(--brand-light-rgb) / 0.16) 0%, rgb(var(--brand-rgb) / 0.08) 100%);
+  border: 0.5px solid rgb(var(--brand-rgb) / 0.2);
 }
 
 /* Analogous teal icon bg (info / analytics) */
 .icon-bg-teal {
-  background: linear-gradient(135deg, rgba(0, 213, 237, 0.16) 0%, rgba(0, 179, 200, 0.08) 100%);
-  border: 0.5px solid rgba(0, 179, 200, 0.2);
+  background: linear-gradient(135deg, rgb(var(--color-teal-light) / 0.16) 0%, rgb(var(--color-teal) / 0.08) 100%);
+  border: 0.5px solid rgb(var(--color-teal) / 0.2);
 }
 
 /* Triadic violet icon bg (AI / model / premium) */
 .icon-bg-violet {
-  background: linear-gradient(135deg, rgba(167, 139, 250, 0.16) 0%, rgba(123, 97, 255, 0.08) 100%);
-  border: 0.5px solid rgba(123, 97, 255, 0.2);
+  background: linear-gradient(135deg, rgb(var(--color-violet-light) / 0.16) 0%, rgb(var(--color-violet) / 0.08) 100%);
+  border: 0.5px solid rgb(var(--color-violet) / 0.2);
 }
 
 /* Warning amber icon bg */
 .icon-bg-warning {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(245, 158, 11, 0.08) 100%);
-  border: 0.5px solid rgba(245, 158, 11, 0.2);
+  background: linear-gradient(135deg, rgb(var(--color-warning-light) / 0.16) 0%, rgb(var(--color-warning) / 0.08) 100%);
+  border: 0.5px solid rgb(var(--color-warning) / 0.2);
 }
 
 /* ── Card depth ──────────────────────────────────────── */
 /* Subtle gradient on card backgrounds — replaces flat   */
 /* glass layers for cards that need to feel "lifted"     */
 .card-depth {
-  background: linear-gradient(145deg, #1c3328 0%, #132420 100%);
-  border: 0.5px solid #14302a;
+  background: linear-gradient(145deg, rgb(var(--color-glass-2)) 0%, rgb(var(--color-surface-card)) 100%);
+  border: 0.5px solid rgb(var(--color-border-subtle));
   border-radius: 12px;
 }
 .card-depth-elevated {
-  background: linear-gradient(145deg, #243d30 0%, #1a332c 100%);
-  border: 0.5px solid #1c4132;
+  background: linear-gradient(145deg, rgb(var(--color-glass-3)) 0%, rgb(var(--color-surface-elevated)) 100%);
+  border: 0.5px solid rgb(var(--color-border-default));
   border-radius: 12px;
 }
 
@@ -1139,7 +1284,7 @@
   inset: 0;
   border-radius: inherit;
   padding: 0.5px;
-  background: linear-gradient(135deg, #00ffa3, #00b368);
+  background: linear-gradient(135deg, rgb(var(--brand-light-rgb)), rgb(var(--brand-dark-rgb)));
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -1154,20 +1299,20 @@
 
 /* Auth panel — left side background */
 .auth-panel-bg {
-  background: linear-gradient(160deg, #0a1612 0%, #0f1e1a 50%, #132420 100%);
+  background: linear-gradient(160deg, rgb(var(--color-surface-app)) 0%, rgb(var(--color-surface-inset)) 50%, rgb(var(--color-surface-card)) 100%);
 }
 
 /* Auth panel — mesh glow overlay */
 .auth-panel-mesh {
   background:
-    radial-gradient(at 20% 80%, rgba(0, 217, 138, 0.14) 0%, transparent 50%),
-    radial-gradient(at 80% 20%, rgba(0, 184, 114, 0.1) 0%, transparent 50%),
-    radial-gradient(at 50% 50%, rgba(0, 217, 138, 0.06) 0%, transparent 70%);
+    radial-gradient(at 20% 80%, rgb(var(--brand-rgb) / 0.14) 0%, transparent 50%),
+    radial-gradient(at 80% 20%, rgb(var(--color-brand-deep) / 0.1) 0%, transparent 50%),
+    radial-gradient(at 50% 50%, rgb(var(--brand-rgb) / 0.06) 0%, transparent 70%);
 }
 
 /* Auth heading gradient text */
 .auth-heading-gradient {
-  background: linear-gradient(135deg, #ffffff 0%, #00d98a 100%);
+  background: linear-gradient(135deg, rgb(var(--color-text-primary)) 0%, rgb(var(--brand-rgb)) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1177,23 +1322,23 @@
 .btn-signin {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(105deg, #00c77a 0%, #00d98a 35%, #00ffa3 70%, #43ffb8 100%);
+  background: linear-gradient(105deg, rgb(var(--color-brand-cta-start)) 0%, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 70%, rgb(var(--color-brand-cta-end)) 100%);
   background-size: 200% 100%;
   background-position: 0% center;
-  color: #021a10;
+  color: rgb(var(--color-text-on-brand));
   transition:
     background-position 0.45s ease,
     box-shadow 0.3s ease,
     transform 0.15s ease;
   box-shadow:
-    0 0 20px rgba(0, 217, 138, 0.35),
-    0 4px 12px rgba(0, 199, 122, 0.25);
+    0 0 20px rgb(var(--brand-rgb) / 0.35),
+    0 4px 12px rgb(var(--color-brand-cta-start) / 0.25);
 }
 .btn-signin:hover:not(:disabled) {
   background-position: 100% center;
   box-shadow:
-    0 0 32px rgba(0, 255, 163, 0.55),
-    0 6px 18px rgba(0, 217, 138, 0.4);
+    0 0 32px rgb(var(--brand-light-rgb) / 0.55),
+    0 6px 18px rgb(var(--brand-rgb) / 0.4);
   transform: translateY(-1px);
 }
 .btn-signin:active:not(:disabled) {
@@ -1224,13 +1369,13 @@
 
 /* Subscription plan card CTA hover */
 .plan-card:hover .plan-cta-btn {
-  background: linear-gradient(105deg, #00c77a 0%, #00d98a 35%, #00ffa3 70%, #43ffb8 100%);
+  background: linear-gradient(105deg, rgb(var(--color-brand-cta-start)) 0%, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 70%, rgb(var(--color-brand-cta-end)) 100%);
   background-size: 200% 100%;
-  color: #021a10;
+  color: rgb(var(--color-text-on-brand));
   border-color: transparent;
   box-shadow:
-    0 0 24px rgba(0, 217, 138, 0.4),
-    0 4px 12px rgba(0, 199, 122, 0.25);
+    0 0 24px rgb(var(--brand-rgb) / 0.4),
+    0 4px 12px rgb(var(--color-brand-cta-start) / 0.25);
   transition:
     background 0.3s ease,
     color 0.3s ease,
@@ -1243,13 +1388,13 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 textarea:-webkit-autofill,
 select:-webkit-autofill {
-  -webkit-text-fill-color: #ffffff !important;
+  -webkit-text-fill-color: rgb(var(--color-text-primary)) !important;
 
   /* Match your .form-input background */
-  -webkit-box-shadow: 0 0 0px 1000px #0f1e1a inset !important;
-  box-shadow: 0 0 0px 1000px #0f1e1a inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgb(var(--color-surface-inset)) inset !important;
+  box-shadow: 0 0 0px 1000px rgb(var(--color-surface-inset)) inset !important;
 
-  border: 0.5px solid #1c4132 !important;
+  border: 0.5px solid rgb(var(--color-border-default)) !important;
 
   transition: background-color 9999s ease-in-out 0s;
 }

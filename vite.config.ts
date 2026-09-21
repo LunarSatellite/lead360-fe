@@ -1,6 +1,8 @@
 /// <reference types="vitest" />
 import { defineConfig, loadEnv } from 'vite';
+import type { Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import fs from 'fs';
 import path from 'path';
 
 /**
@@ -29,10 +31,60 @@ function requireApiBaseUrl(mode: string) {
   );
 }
 
+/**
+ * The browser tab is the one surface React never reaches.
+ *
+ * `index.html` is served before any module runs, so it cannot read
+ * `isStyleMintConsole` — the title and the favicon are already on screen by the
+ * time `env.ts` exists. An operator with both consoles open sees two tabs both
+ * labelled "Lead360" and has to guess. So the same build flag is resolved here,
+ * at build time, and the markup is rewritten before it ships.
+ *
+ * The title is text and can simply be replaced. The icon cannot: there is no
+ * StyleMint mark in `public/`, and drawing one is a design decision. Rather
+ * than invent a mark or silently ship Lead360's green "L" tile, this looks for
+ * one agreed path and warns by name when it is missing — so the gap is visible
+ * in the build log instead of only in the tab. Dropping that one file finishes
+ * the job with no code change (and see `logoSrc` in
+ * `src/shared/config/console-brand.ts` for the matching in-app wordmark).
+ */
+const STYLEMINT_FAVICON = 'brand/stylemint/favicon.svg';
+
+function consoleHtmlBrand(mode: string): Plugin {
+  return {
+    name: 'console-html-brand',
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html: string) {
+        const env = loadEnv(mode, process.cwd(), 'VITE_');
+        const product = env.VITE_CONSOLE_PRODUCT ?? process.env.VITE_CONSOLE_PRODUCT;
+        if (product !== 'stylemint') return html;
+
+        let out = html.replace(/<title>[^<]*<\/title>/, '<title>StyleMint</title>');
+
+        const favicon = path.resolve(__dirname, 'public', STYLEMINT_FAVICON);
+        if (fs.existsSync(favicon)) {
+          out = out.replace(
+            /(<link rel="icon"[^>]*href=")[^"]*(")/,
+            `$1/${STYLEMINT_FAVICON}$2`,
+          );
+        } else {
+          console.warn(
+            `[console-html-brand] No StyleMint favicon at public/${STYLEMINT_FAVICON}, so this build ` +
+              "keeps Lead360's icon in the browser tab. Add that file to fix it " +
+              '— no code change needed.',
+          );
+        }
+        return out;
+      },
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   requireApiBaseUrl(mode);
   return {
-  plugins: [react()],
+  plugins: [react(), consoleHtmlBrand(mode)],
   // react-draggable (a react-grid-layout dependency) reads process.env.DRAGGABLE_DEBUG
   // unconditionally. Vite doesn't polyfill `process` in the browser, so without this the
   // access throws ReferenceError the instant a drag starts, silently aborting it.

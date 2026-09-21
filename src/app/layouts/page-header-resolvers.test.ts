@@ -53,20 +53,25 @@ function resolvers(): { name: string; rules: { pattern: string; value: string }[
   });
 }
 
-/** Every path the nav can send an operator to. */
-function navDestinations(): Set<string> {
+/** Every `[href, label]` the nav offers, with route keys resolved to paths. */
+function navEntries(): [string, string][] {
   const paths = new Map(
     [...ROUTE_PATHS.matchAll(/^\s+([a-zA-Z][A-Za-z0-9]*): '(\/[^']*)'/gm)].map((m) => [m[1], m[2]]),
   );
-  const out = new Set<string>();
+  const out: [string, string][] = [];
   for (const source of [LAYOUT, CRM_NAV]) {
-    for (const m of source.matchAll(/href: ROUTES\.dashboard\.([A-Za-z0-9]+),/g)) {
-      const path = paths.get(m[1]);
-      if (path) out.add(path);
+    for (const m of source.matchAll(/\{ label: '([^']+)', href: ROUTES\.dashboard\.([A-Za-z0-9]+),/g)) {
+      const path = paths.get(m[2]);
+      if (path) out.push([path, m[1]]);
     }
-    for (const m of source.matchAll(/href: '(\/[^']+)',/g)) out.add(m[1]);
+    for (const m of source.matchAll(/\{ label: '([^']+)', href: '(\/[^']+)',/g)) out.push([m[2], m[1]]);
   }
   return out;
+}
+
+/** Every path the nav can send an operator to. */
+function navDestinations(): Set<string> {
+  return new Set(navEntries().map(([href]) => href));
 }
 
 describe('the page header identifies the page you are actually on', () => {
@@ -90,15 +95,42 @@ describe('the page header identifies the page you are actually on', () => {
     expect(unreachable).toEqual([]);
   });
 
-  it('gives no two nav destinations the same header title', () => {
+  /**
+   * `getPageTitle` falls back to the nav label when no rule matches, so this mirrors both
+   * halves: the explicit chain first, then the longest matching nav destination.
+   */
+  function titleOf(path: string): string | null {
     const rules = resolvers().find((r) => r.name === 'getPageTitle')!.rules;
-    const titleOf = (path: string) => rules.find((r) => path.includes(r.pattern))?.value ?? null;
+    const explicit = rules.find((r) => path.includes(r.pattern))?.value;
+    if (explicit) return explicit;
 
+    let best: string | null = null;
+    let bestLength = 0;
+    for (const [href, label] of navEntries()) {
+      if ((path === href || path.startsWith(`${href}/`)) && href.length > bestLength) {
+        best = label;
+        bestLength = href.length;
+      }
+    }
+    return best;
+  }
+
+  /**
+   * Asserted against the source, not against `titleOf` above. `titleOf` reimplements the nav
+   * fallback, so every nav destination resolves through it by construction — an assertion
+   * phrased over it would hold even with the fallback deleted from the layout, which is
+   * exactly what a first draft of this test did.
+   */
+  it('still falls back to the nav rather than to the literal "Dashboard"', () => {
+    const body = LAYOUT.slice(LAYOUT.indexOf('const getPageTitle'));
+    const resolver = body.slice(0, body.indexOf('};'));
+    expect(resolver).toContain("return navTitleFor(path) ?? 'Dashboard';");
+  });
+
+  it('gives no two nav destinations the same header title', () => {
     const byTitle = new Map<string, string[]>();
     for (const path of navDestinations()) {
       const title = titleOf(path);
-      // A destination matching no rule falls through to 'Dashboard'. That is a separate and
-      // much larger gap — 50 of them do — so it is not what this assertion is about.
       if (!title) continue;
       byTitle.set(title, [...(byTitle.get(title) ?? []), path]);
     }

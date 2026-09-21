@@ -184,6 +184,45 @@ export const primaryMobileTabs = [
   { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
 ];
 
+/**
+ * The nav already names every page it links to, so it is the fallback for the header title.
+ *
+ * Before this, a path matching none of the `getPageTitle` rules fell through to the literal
+ * string "Dashboard" — which 50 of the 116 nav destinations did. Adding 50 more branches to
+ * that chain would have been the wrong repair twice over: the chain is where the shadowing
+ * and inheritance bugs came from, and a second hand-written copy of every name drifts from
+ * the nav the moment either is edited.
+ *
+ * The explicit rules still win. Thirteen of them deliberately read longer than the nav entry
+ * ("Delivery ops" in the rail, "Delivery Operations" as the header), and this changes none of
+ * them — it only speaks when the chain has nothing to say.
+ */
+const NAV_TITLES: readonly (readonly [string, string])[] = [
+  ...primaryNav,
+  ...botNav,
+  ...settingsNav,
+  ...crmNav,
+  ...primaryMobileTabs,
+].map((item) => [item.href, item.label] as const);
+
+/**
+ * Longest match wins, so `/dashboard/crm/deals-hub` beats `/dashboard/crm/deals` rather than
+ * inheriting its name — the same trap the explicit chain fell into. A detail route resolves
+ * to the list it belongs to, which is the nearest true thing the nav knows.
+ */
+function navTitleFor(path: string): string | null {
+  let best: string | null = null;
+  let bestLength = 0;
+  for (const [href, label] of NAV_TITLES) {
+    const matches = path === href || path.startsWith(`${href}/`);
+    if (matches && href.length > bestLength) {
+      best = label;
+      bestLength = href.length;
+    }
+  }
+  return best;
+}
+
 // ─── Mobile "More" sheet — reaches every legacy page so nothing is lost ───
 // Setup and the Setup Wizard are absent because chat-first replaced them and
 // their routes are commented out in route-table.tsx. Their pages are intact on
@@ -340,7 +379,7 @@ export function DashboardLayout() {
     if (path.includes('/crm/workflows')) return 'Automations';
     if (path.includes('/support')) return 'Support';
     if (path.includes('/agent-governance/credentials')) return 'Agent Credentials';
-    return 'Dashboard';
+    return navTitleFor(path) ?? 'Dashboard';
   };
 
   const getPageIcon = () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { routeObjects } from '@/app/router/route-table';
-import { crmNav } from './DashboardLayout';
+import { crmNav } from './crm-nav';
 
 /**
  * Every CRM page that has a route should be reachable from the CRM navigation.

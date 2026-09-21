@@ -68,6 +68,7 @@ import { useLeadAlerts } from '@/features/crm/hooks/useLeadAlerts';
 import { useQuery } from '@tanstack/react-query';
 import { stylemintCommerceApi } from '@/features/commerce-control/api/stylemint-commerce.api';
 import { applyTenantAccent } from '@/shared/lib/tenant-theme';
+import { isStyleMintConsole } from '@/shared/config/env';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CHAT-FIRST NAVIGATION (new — primary rail shown to all users)
@@ -155,7 +156,25 @@ const settingsNav = [
 // Stylemint client workspaces expose the commerce operating system only.
 // Legacy CRM and bot-builder routes remain available for platform engineers,
 // but are intentionally absent from the customer-facing shell.
-const SHOW_LEGACY_PLATFORM_TOOLS = true;
+//
+// One switch for the whole shell: the sidebar sections, their collapsed-rail
+// dividers and the mobile "More" sheet all read this, so the bot/CRM surfaces
+// appear or disappear together rather than in eleven independent decisions.
+// The routes stay registered either way — this hides doors, it does not remove
+// rooms, and a bookmarked /dashboard/crm/... still resolves.
+const SHOW_LEGACY_PLATFORM_TOOLS = !isStyleMintConsole;
+
+/**
+ * The name and mark the shell falls back to before `tenantBrand` loads, and
+ * for a tenant that never set either.
+ *
+ * StyleMint has no mark of its own in `/public` yet, so both builds point at
+ * the same file rather than shipping a broken image. **This constant is the
+ * only place the shell names a logo** — drop a StyleMint asset in `/public`
+ * and branch here, and both the sidebar and the mobile header follow.
+ */
+const FALLBACK_BRAND_NAME = isStyleMintConsole ? 'StyleMint' : 'Lead360';
+const FALLBACK_LOGO_SRC = '/Lead360logo/1.png';
 
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───
@@ -429,8 +448,8 @@ export function DashboardLayout() {
         >
           <div className="w-9 h-9 rounded-xl bg-[#050808] flex items-center justify-center p-0.5 shrink-0">
             <img
-              src={tenantBrand?.logoUrl || '/Lead360logo/1.png'}
-              alt={tenantBrand?.name || 'Lead360'}
+              src={tenantBrand?.logoUrl || FALLBACK_LOGO_SRC}
+              alt={tenantBrand?.name || FALLBACK_BRAND_NAME}
               className="w-full h-full object-contain"
             />
           </div>
@@ -469,7 +488,7 @@ export function DashboardLayout() {
           style={{ padding: showExpanded ? '8px 8px' : '8px 6px' }}
         >
           {/* ── Primary (chat-first rail) ── */}
-          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
+          {showExpanded && (
             <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-1">
               <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                 <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
@@ -482,7 +501,7 @@ export function DashboardLayout() {
           {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />}
           <div className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</div>
 
-          {showExpanded && (
+          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
             <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
               <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                 <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
@@ -514,7 +533,7 @@ export function DashboardLayout() {
           ─────────────────────────────────────────────────────────────── */}
 
           {/* ── CRM ── */}
-          {showExpanded && (
+          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
             <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
               <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
                 <Users className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
@@ -614,8 +633,8 @@ export function DashboardLayout() {
           <div className="lg:hidden flex items-center shrink-0">
             <div className="w-8 h-8 rounded-lg bg-[#050808] flex items-center justify-center p-0.5">
               <img
-                src={tenantBrand?.logoUrl || '/Lead360logo/1.png'}
-                alt={tenantBrand?.name || 'Lead360'}
+                src={tenantBrand?.logoUrl || FALLBACK_LOGO_SRC}
+                alt={tenantBrand?.name || FALLBACK_BRAND_NAME}
                 className="w-full h-full object-contain"
               />
             </div>

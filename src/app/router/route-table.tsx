@@ -4,19 +4,39 @@ import { AuthLayout } from '@/app/layouts/AuthLayout';
 import { DashboardLayout } from '@/app/layouts/DashboardLayout';
 import PortalLayout from '@/app/layouts/PortalLayout';
 import { RequireAuth, RedirectIfAuth, RequirePortalAuth, RedirectIfPortalAuth } from './guards';
-import { POST_AUTH_LANDING } from './route-paths';
+import { POST_AUTH_LANDING, ROUTES } from './route-paths';
+
+/**
+ * Does this build ship the chatbot marketing landing page?
+ *
+ * Written against the raw build variable, unlike every other call site, which
+ * reads `isStyleMintConsole`. Vite substitutes `import.meta.env.*` with a
+ * string literal at build time, so Rollup can fold this constant, see the
+ * branch below is unreachable, and drop the `import()` with it.
+ * `isStyleMintConsole` reads a property off an exported object and survives as
+ * a runtime value — both branches would then be kept and 1,097 lines of
+ * pricing tiers and WhatsApp pitch would ship inside a console that can never
+ * render them. `console-product.test.tsx` holds the two in agreement.
+ */
+const SHIP_MARKETING_LANDING = import.meta.env.VITE_CONSOLE_PRODUCT !== 'stylemint';
 
 // The route table, separate from the router instance. `createBrowserRouter`
 // starts navigating the moment it is constructed, so anything that only wants
 // to read the routes — a test, a link checker — imports this instead.
 export const routeObjects: RouteObject[] = [
   // ─── Landing — logged in users skip to dashboard ───
+  // Signed in, both consoles land in the same place. Signed out, lead360 has a
+  // product to pitch and shows the marketing page; the StyleMint console is an
+  // operator tool that starts behind a login, so `/` is only the door to it.
   {
     path: '/',
     lazy: async () => {
       const token = localStorage.getItem('omniflow_token');
       if (token) {
         return { Component: () => <Navigate to={POST_AUTH_LANDING} replace /> };
+      }
+      if (!SHIP_MARKETING_LANDING) {
+        return { Component: () => <Navigate to={ROUTES.auth.login} replace /> };
       }
       return import('@/features/landing/pages/LandingPage');
     },

@@ -62,6 +62,14 @@ function consoleHtmlBrand(mode: string): Plugin {
 
         let out = html.replace(/<title>[^<]*<\/title>/, '<title>StyleMint</title>');
 
+        // The palette hangs off :root[data-console='stylemint']. It has to be
+        // in the served markup rather than set by React: set at runtime, the
+        // first paint is Lead360 green and the console visibly repaints. And
+        // because the attribute is what selects the palette, a build that
+        // somehow missed this line renders wholly as Lead360 rather than as a
+        // half-applied theme.
+        out = out.replace(/<html([^>]*)>/, '<html$1 data-console="stylemint">');
+
         const favicon = path.resolve(__dirname, 'public', STYLEMINT_FAVICON);
         if (fs.existsSync(favicon)) {
           out = out.replace(

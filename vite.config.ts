@@ -99,6 +99,15 @@ export default defineConfig(({ mode }) => {
   server: {
     port: 3000,
     open: true,
+    // Agent worktrees under .claude/ are whole checkouts of this repo, so without this the
+    // dev server watches N copies of every file. That is not just wasteful: a `dist/` build
+    // running in a sibling worktree locks files the watcher is holding, and chokidar raises
+    // EBUSY as an unhandled 'error' event — which kills the dev server outright, with a
+    // stack trace pointing at a PNG in a directory you are not working in.
+    // vitest (`test.exclude`) and eslint (`ignores`) already exclude the same directory.
+    watch: {
+      ignored: ['**/.claude/**'],
+    },
   },
   optimizeDeps: {
     // recharts is only pulled in by the lazy-loaded CRM analytics page. Pre-bundle

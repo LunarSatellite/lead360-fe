@@ -120,9 +120,9 @@ export const crmApi = {
     apiClient.put(`${BASE}/notifications/read-all`, {}),
 
   getNotifPreferences: () =>
-    apiClient.get<import('../types/crm.types').CrmNotifPreferenceDto[]>(`${BASE}/notifications/preferences`),
+    apiClient.get<import('../types/crm.types').CrmNotifPreferenceDto[]>(`${BASE}/notification-preferences`),
   saveNotifPreferences: (data: { preferences: import('../types/crm.types').CrmNotifPreferenceDto[] }) =>
-    apiClient.put(`${BASE}/notifications/preferences`, data),
+    apiClient.put(`${BASE}/notification-preferences`, data),
 
   // ─── Nurture Sequences ────────────────────────────────────────────────────
   getNurtureSequences: () =>
@@ -156,10 +156,10 @@ export const crmApi = {
     apiClient.post<LeadCampaignDto>(`${BASE}/campaigns`, data),
 
   previewSegment: (filter: LeadSegmentFilter) =>
-    apiClient.post<LeadSegmentPreviewDto>(`${BASE}/campaigns/preview-segment`, filter),
+    apiClient.post<LeadSegmentPreviewDto>(`/v1/leads/campaigns/preview-segment`, filter),
 
   executeCampaign: (id: string) =>
-    apiClient.post(`${BASE}/campaigns/${id}/execute`, {}),
+    apiClient.post(`/v1/leads/campaigns/${id}/execute`, {}),
 
   // ─── Contacts ─────────────────────────────────────────────────────────────
   getContacts: (filter: CrmContactFilter = {}) =>
@@ -1155,7 +1155,7 @@ export const crmApi = {
   getPurchaseOrderById: (id: string) =>
     apiClient.get<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders/${id}`),
   getPurchaseOrdersByVendor: (vendorId: string) =>
-    apiClient.get<import('../types/crm.types').PurchaseOrderDto[]>(`${BASE}/purchase-orders/by-vendor/${vendorId}`),
+    apiClient.get<import('../types/crm.types').PurchaseOrderDto[]>(`${BASE}/purchase-orders/vendors/${vendorId}`),
   createPurchaseOrder: (data: import('../types/crm.types').PurchaseOrderCreateRequest) =>
     apiClient.post<import('../types/crm.types').PurchaseOrderDto>(`${BASE}/purchase-orders`, data),
   updatePurchaseOrder: (id: string, data: import('../types/crm.types').PurchaseOrderUpdateRequest) =>
@@ -1179,7 +1179,7 @@ export const crmApi = {
   getGoodsReceiptById: (id: string) =>
     apiClient.get<import('../types/crm.types').GoodsReceiptDto>(`${BASE}/goods-receipts/${id}`),
   getGoodsReceiptsByPurchaseOrder: (poId: string) =>
-    apiClient.get<import('../types/crm.types').GoodsReceiptDto[]>(`${BASE}/goods-receipts/by-purchase-order/${poId}`),
+    apiClient.get<import('../types/crm.types').GoodsReceiptDto[]>(`${BASE}/goods-receipts/purchase-orders/${poId}`),
   createGoodsReceipt: (data: import('../types/crm.types').GoodsReceiptCreateRequest) =>
     apiClient.post<import('../types/crm.types').GoodsReceiptDto>(`${BASE}/goods-receipts`, data),
   confirmGoodsReceipt: (id: string) =>
@@ -1201,7 +1201,7 @@ export const crmApi = {
   approveSupplierInvoice: (id: string) =>
     apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/approve`, {}),
   recordSupplierInvoicePayment: (id: string, data: import('../types/crm.types').SupplierInvoiceRecordPaymentRequest) =>
-    apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/pay`, data),
+    apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/payment`, data),
   disputeSupplierInvoice: (id: string, data: import('../types/crm.types').SupplierInvoiceDisputeRequest) =>
     apiClient.post<import('../types/crm.types').SupplierInvoiceDto>(`${BASE}/supplier-invoices/${id}/dispute`, data),
   voidSupplierInvoice: (id: string) =>

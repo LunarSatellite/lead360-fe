@@ -4,6 +4,22 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import type { RouteObject } from 'react-router-dom';
 
 /**
+ * Each case here resets the module registry and re-imports the whole route graph, which takes
+ * 1.4-2.5s on its own. Against vitest's 5s default that is comfortable alone and marginal
+ * inside the full suite, where 32 other files hold their own jsdom environments.
+ *
+ * It failed roughly two runs in three when the suite's output was piped to another process,
+ * and in none of ten runs when it was redirected to a file — consistent with the reporter
+ * blocking on a slow reader and stealing from the budget, though that mechanism is inferred
+ * from the correlation rather than measured.
+ *
+ * The second failure was always a consequence of the first: a timed-out test's `render()`
+ * still resolves, but after its own cleanup has run, so the stray tree is found by the next
+ * case as a duplicate `data-testid="landed"`. Only the timeout needs fixing.
+ */
+vi.setConfig({ testTimeout: 20_000 });
+
+/**
  * What `/` opens, per build.
  *
  * `VITE_CONSOLE_PRODUCT` is read at module scope — by `env.ts` and, for the

@@ -287,7 +287,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/platform-config')) return 'Platform Configuration';
     if (path.includes('/stylemint/audit')) return 'Audit Trail';
     if (path.includes('/stylemint/counter-handover')) return 'Counter handover';
-    if (path.includes('/stylemint/returns')) return 'Returns';
+    if (path.includes('/stylemint/returns')) return 'Returns queue';
     if (path.includes('/stylemint/payouts')) return 'Payouts';
     if (path.includes('/stylemint/privacy')) return 'Data-Rights Requests';
     if (path.includes('/stylemint/recipes')) return 'Reel Recipes';
@@ -319,6 +319,8 @@ export function DashboardLayout() {
     if (path.includes('/crm/dedup')) return 'Duplicate Contacts';
     if (path.includes('/crm/contacts')) return 'Contacts';
     if (path.includes('/crm/leads')) return 'Leads';
+    if (path.includes('/crm/returns')) return 'Return authorisations';
+    if (path.includes('/crm/deals-hub')) return 'Deals hub';
     if (path.includes('/crm/deals')) return 'Deals';
     if (path.includes('/crm/organizations')) return 'Stores';
     if (path.includes('/crm/accounts')) return 'Accounts';
@@ -330,7 +332,7 @@ export function DashboardLayout() {
     if (path.includes('/crm/proposals')) return 'Proposals';
     if (path.includes('/crm/invoices')) return 'Invoices';
     if (path.includes('/crm/subscriptions')) return 'Subscriptions';
-    if (path.includes('/crm/orders')) return 'Orders';
+    if (path.includes('/crm/orders')) return 'Sales orders';
     if (path.includes('/crm/meetings')) return 'Meetings';
     if (path.includes('/crm/nps')) return 'NPS Surveys';
     if (path.includes('/crm/time-tracking')) return 'Time Tracking';

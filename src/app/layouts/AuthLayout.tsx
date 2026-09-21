@@ -3,8 +3,9 @@ import { Outlet, Link, useLocation } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import {
   TrendingUp, Sparkles, ArrowLeft, Phone, ShoppingBag, MessageSquare,
-  Utensils, Headphones,
+  Utensils, Headphones, PackageCheck, Wallet, Store, Users,
 } from 'lucide-react';
+import { consoleBrand } from '@/shared/config/console-brand';
 
 // ─── Chatbot preview types ───
 type ProductCard = { name: string; price: string; was: string; bg: string };
@@ -583,6 +584,64 @@ function LoginPanel() {
   );
 }
 
+// ─── Commerce console panel ───
+// The StyleMint half of the auth screen. Deliberately not a pitch: an operator
+// opening this console was given it to do a day's work, so the panel says what
+// the console covers and stops. No demo, no channel count, no "50+ teams" —
+// those answer "should I buy this?", a question nobody on this screen is asking.
+const OPERATIONS_SURFACES: Array<{ Icon: LucideIcon; title: string; detail: string }> = [
+  {
+    Icon: PackageCheck,
+    title: 'Orders and returns',
+    detail: 'Follow suborders through fulfilment, and settle returns and refunds.',
+  },
+  {
+    Icon: Wallet,
+    title: 'Payouts',
+    detail: 'Review seller balances, and hold or release a settlement.',
+  },
+  {
+    Icon: Store,
+    title: 'Vendors and catalogue',
+    detail: 'Vendor accounts, products, collections and campaign workspaces.',
+  },
+  {
+    Icon: Users,
+    title: 'Customers',
+    detail: 'Accounts and order history, with the context support needs.',
+  },
+];
+
+function CommerceOperationsPanel() {
+  return (
+    <div>
+      <h2 className="text-[26px] font-black text-text-primary leading-tight mb-2">
+        The shop, from the back.
+      </h2>
+      <p className="text-sm text-text-secondary mb-8 max-w-md">
+        One console for the work behind the storefront.
+      </p>
+
+      <div className="space-y-3">
+        {OPERATIONS_SURFACES.map(({ Icon, title, detail }) => (
+          <div
+            key={title}
+            className="flex items-start gap-3 p-3.5 rounded-card bg-glass-1 border-thin border-border-subtle"
+          >
+            <div className="w-8 h-8 rounded-sm bg-brand-soft flex items-center justify-center shrink-0">
+              <Icon className="w-4 h-4 text-brand" strokeWidth={1.6} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-text-primary leading-tight">{title}</p>
+              <p className="text-xs text-text-muted mt-1 leading-relaxed">{detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main layout ───
 export function AuthLayout() {
   const location = useLocation();
@@ -599,12 +658,14 @@ export function AuthLayout() {
         <div className="px-5 sm:px-8 md:px-12 lg:px-16 xl:px-20 pt-6 sm:pt-8 lg:pt-12 pb-32 sm:pb-32 lg:pb-12 relative z-10">
           <div className="flex items-center justify-between mb-8 sm:mb-10 lg:mb-12">
             <Link to="/" className="flex items-center gap-2.5 sm:gap-3">
-              <div className="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-[#050808] flex items-center justify-center p-1 shrink-0">
-                <img src="/Lead360logo/1.png" alt="Lead360" className="w-full h-full object-contain" />
-              </div>
+              {consoleBrand.logoSrc && (
+                <div className="w-10 sm:w-11 h-10 sm:h-11 rounded-xl bg-[#050808] flex items-center justify-center p-1 shrink-0">
+                  <img src={consoleBrand.logoSrc} alt={consoleBrand.logoAlt} className="w-full h-full object-contain" />
+                </div>
+              )}
               <div className="min-w-0">
-                <span className="text-lg sm:text-xl font-extrabold text-text-primary tracking-tight block leading-tight">Lead360</span>
-                <p className="text-[10px] sm:text-2xs text-text-muted">CRM & automation</p>
+                <span className="text-lg sm:text-xl font-extrabold text-text-primary tracking-tight block leading-tight">{consoleBrand.name}</span>
+                <p className="text-[10px] sm:text-2xs text-text-muted">{consoleBrand.tagline}</p>
               </div>
             </Link>
             <Link to="/" className="lg:hidden flex items-center gap-1.5 text-xs text-text-muted hover:text-text-primary transition-colors">
@@ -634,7 +695,9 @@ export function AuthLayout() {
           </div>
 
           <div className="relative z-10">
-            {isRegister ? (
+            {!consoleBrand.showsProductMarketing ? (
+              <CommerceOperationsPanel />
+            ) : isRegister ? (
               <>
                 <p className="text-2xs font-bold uppercase tracking-[3px] text-brand mb-3">See it in action</p>
                 <h2 className="text-2xl font-extrabold text-text-primary leading-tight mb-2">This is what you'll build</h2>

@@ -6,6 +6,7 @@ import { Eye, EyeOff, Check, X } from 'lucide-react';
 import { registerSchema, type RegisterFormData } from '../types/auth.schemas';
 import { useRegister } from '../api/auth.queries';
 import { BusinessType } from '../types/auth.types';
+import { consoleBrand } from '@/shared/config/console-brand';
 
 export function Component() {
   const navigate = useNavigate();
@@ -49,10 +50,10 @@ export function Component() {
       {/* Header */}
       <div>
         <h1 className="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
-          Create your account
+          {consoleBrand.register.heading}
         </h1>
         <p className="text-sm sm:text-base text-text-secondary mt-1.5 sm:mt-2">
-          Create your account to get started
+          {consoleBrand.register.subheading}
         </p>
       </div>
 

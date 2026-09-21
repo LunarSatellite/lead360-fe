@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '../types/auth.schemas';
 import { useLogin, useGoogleLogin } from '../api/auth.queries';
+import { consoleBrand } from '@/shared/config/console-brand';
 
 import { GoogleLogin } from '@react-oauth/google';
 
@@ -51,8 +52,8 @@ export function Component() {
     <div className="space-y-6 sm:space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">Welcome back</h1>
-        <p className="text-sm sm:text-base text-text-secondary mt-1.5 sm:mt-2">Sign in to your workspace</p>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">{consoleBrand.signIn.heading}</h1>
+        <p className="text-sm sm:text-base text-text-secondary mt-1.5 sm:mt-2">{consoleBrand.signIn.subheading}</p>
       </div>
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
@@ -157,12 +158,12 @@ export function Component() {
       </div>
 
       <p className="text-center text-sm text-text-muted">
-        No account?{' '}
+        {consoleBrand.noAccount.prompt}{' '}
         <Link
           to="/auth/register"
           className="text-brand font-semibold hover:text-brand-light transition-colors"
         >
-          Create one free
+          {consoleBrand.noAccount.action}
         </Link>
       </p>
     </div>

@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/app/router/route-paths';
+import { isStyleMintConsole } from '@/shared/config/env';
 import { useVideoConferencingStatus } from '@/features/integrations/api/videoConferencing.queries';
 import { useCalendarIntegrationStatus } from '@/features/integrations/api/calendarIntegration.queries';
 import { ApiCredentialsCard } from '@/features/tenant/components/ApiCredentialsCard';
@@ -89,6 +90,27 @@ const SECTIONS: SectionDef[] = [
   { id: 'appearance', label: 'Appearance', icon: Palette, iconBg: 'bg-[#0F1A16]', iconColor: 'text-text-muted', group: 'preferences', badge: 'Soon', description: '' },
   { id: 'danger', label: 'Log out', icon: LogOut, iconBg: '', iconColor: '', group: 'system', danger: true, description: '' },
 ];
+
+/**
+ * Sections that only mean something when the tenant runs a chatbot.
+ *
+ * The StyleMint console has no bot, so "Bot Settings" and "Voice & TTS" open on
+ * controls for a thing that does not exist, and Compliance describes itself as
+ * rules for "what your chatbot can and cannot say". They are hidden rather than
+ * reworded, because there is no commerce reading of them to write.
+ *
+ * `SECTIONS` stays whole: `activeConfig` still resolves by id, and only the nav
+ * reads the filtered list — so a hidden section can never be the active one.
+ */
+const CHATBOT_ONLY_SECTIONS: ReadonlySet<SectionId> = new Set<SectionId>([
+  'compliance',
+  'botSettings',
+  'voice',
+]);
+
+const VISIBLE_SECTIONS: SectionDef[] = isStyleMintConsole
+  ? SECTIONS.filter((s) => !CHATBOT_ONLY_SECTIONS.has(s.id))
+  : SECTIONS;
 
 /* ═══ NAV ITEM RIGHT-SIDE INDICATORS ═══ */
 function NavIndicator({ id }: { id: SectionId }) {
@@ -204,7 +226,7 @@ export function Component() {
         {/* Nav */}
         <div className="flex-1 px-3 py-3 flex flex-col">
           {['account', 'preferences', 'system'].map((group) => {
-            const items = SECTIONS.filter((s) => s.group === group);
+            const items = VISIBLE_SECTIONS.filter((s) => s.group === group);
             return (
               <div key={group}>
                 {group === 'preferences' && <div className="h-px bg-border-subtle mx-2 my-2" />}

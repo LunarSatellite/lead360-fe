@@ -155,13 +155,20 @@ export const stylemintKycApi = {
       }),
     ),
 
-  /** Takes the item, so two reviewers do not decide the same application. */
-  assign: async (kycItemId: string, reviewerAdminId: string): Promise<KycReviewItem> =>
+  /**
+   * Takes the item, moving it Pending → In review. A decision is only legal on an
+   * item that is already In review, so this is the first half of every review.
+   *
+   * Omitting the reviewer claims the item for whoever is calling — and the console
+   * has no choice but to omit it. Lead360 forwards these calls with a server-side
+   * Stylemint credential, so the browser never learns its own admin account id.
+   */
+  assign: async (kycItemId: string, reviewerAdminId?: string): Promise<KycReviewItem> =>
     unwrap<KycReviewItem>(
       await stylemintOperationsApi.invoke({
         method: 'POST',
         path: `${BASE}/${encodeURIComponent(kycItemId)}/assign`,
-        body: JSON.stringify({ reviewerAdminId }),
+        body: JSON.stringify(reviewerAdminId ? { reviewerAdminId } : {}),
       }),
     ),
 

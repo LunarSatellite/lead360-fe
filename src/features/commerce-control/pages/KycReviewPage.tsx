@@ -247,9 +247,18 @@ function DecisionPanel({
     enabled: Boolean(item?.id),
   });
 
+  // Deciding is only legal on an item that is In review — the queue hands them
+  // out Pending, and the reviewer takes one by claiming it. Rather than make that
+  // a button of its own, opening an application and deciding it IS the claim: we
+  // take the item on the way through. Skipping this is what made every approval
+  // come back 409 "Cannot transition KycReviewItem from Pending to Decided".
   const decide = useMutation({
-    mutationFn: (decision: KycDecisionValue) =>
-      stylemintKycApi.decide(item!.id, decision, reasonCode, note),
+    mutationFn: async (decision: KycDecisionValue) => {
+      if (item!.state !== ReviewState.InReview) {
+        await stylemintKycApi.assign(item!.id);
+      }
+      return stylemintKycApi.decide(item!.id, decision, reasonCode, note);
+    },
     onSuccess: () => {
       setReasonCode('');
       setNote('');

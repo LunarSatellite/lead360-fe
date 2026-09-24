@@ -46,6 +46,51 @@ export type KycReviewItem = {
   decisionNote?: string | null;
 };
 
+/**
+ * One identity/business document the applicant uploaded.
+ *
+ * Metadata only — the file itself is not served here. Identity treats the blob
+ * reference as internal storage detail, and a KYC image is not something to
+ * hand out on a list endpoint.
+ */
+export type KycApplicationDocument = {
+  id: string;
+  documentType: string;
+  status: string;
+  originalFilename?: string | null;
+  contentType: string;
+  contentSizeBytes: number;
+  uploadedUtc: string;
+  rejectionReason?: string | null;
+};
+
+/**
+ * The case file behind a queue row: who applied, what they said, what they sent.
+ *
+ * The queue item itself carries only ids, so until this endpoint existed a
+ * reviewer was deciding on a GUID.
+ */
+export type KycApplicationDetail = {
+  kycItemId: string;
+  applicantKind: number;
+  applicationId: string;
+  accountId: string;
+  displayName: string;
+  legalName?: string | null;
+  countryCode?: string | null;
+  city?: string | null;
+  addressLine?: string | null;
+  website?: string | null;
+  registrationNumber?: string | null;
+  taxId?: string | null;
+  story?: string | null;
+  commissionMinPercent?: number | null;
+  commissionMaxPercent?: number | null;
+  submittedUtc: string;
+  expectedDecisionByUtc?: string | null;
+  documents: KycApplicationDocument[];
+};
+
 export type KycQueuePage = {
   items: KycReviewItem[];
   totalCount: number;
@@ -98,6 +143,15 @@ export const stylemintKycApi = {
       await stylemintOperationsApi.invoke({
         method: 'GET',
         path: `${BASE}/${encodeURIComponent(kycItemId)}`,
+      }),
+    ),
+
+  /** The applicant's details and uploaded documents behind a queue row. */
+  application: async (kycItemId: string): Promise<KycApplicationDetail> =>
+    unwrap<KycApplicationDetail>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: `${BASE}/${encodeURIComponent(kycItemId)}/application`,
       }),
     ),
 

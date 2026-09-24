@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryResult,
+} from '@tanstack/react-query';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -18,6 +23,7 @@ import {
   REVIEW_STATE_LABEL,
   ReviewState,
   stylemintKycApi,
+  type KycApplicationDetail,
   type KycDecisionValue,
   type KycReviewItem,
 } from '../api/stylemint-kyc.api';
@@ -232,6 +238,15 @@ function DecisionPanel({
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<KycDecisionValue | null>(null);
 
+  // The case file. Its own query rather than part of the queue read: the
+  // queue returns 50 rows and only the selected one is ever being reviewed,
+  // so fetching every applicant's documents up front would be wasteful.
+  const detail = useQuery({
+    queryKey: ['stylemint-kyc-detail', item?.id],
+    queryFn: () => stylemintKycApi.application(item!.id),
+    enabled: Boolean(item?.id),
+  });
+
   const decide = useMutation({
     mutationFn: (decision: KycDecisionValue) =>
       stylemintKycApi.decide(item!.id, decision, reasonCode, note),
@@ -265,9 +280,14 @@ function DecisionPanel({
     <div className="space-y-3 rounded-frame border-thin border-border-subtle bg-bg-card p-4">
       <div>
         <p className="text-sm font-bold text-text-primary">
-          {APPLICANT_KIND_LABEL[item.applicantKind] ?? 'Applicant'} application
+          {detail.data?.displayName ??
+            `${APPLICANT_KIND_LABEL[item.applicantKind] ?? 'Applicant'} application`}
         </p>
-        <p className="mt-0.5 font-mono text-[11px] text-text-muted">{item.accountId}</p>
+        <p className="mt-0.5 text-[11px] text-text-muted">
+          {APPLICANT_KIND_LABEL[item.applicantKind] ?? 'Applicant'}
+          {detail.data?.legalName ? ` · ${detail.data.legalName}` : ''}
+        </p>
+        <p className="mt-0.5 font-mono text-[10px] text-text-muted">{item.accountId}</p>
       </div>
 
       <dl className="space-y-1 text-[11px]">
@@ -279,6 +299,8 @@ function DecisionPanel({
         />
         <Row label="State" value={REVIEW_STATE_LABEL[item.state] ?? String(item.state)} />
       </dl>
+
+      <ApplicantDetail query={detail} />
 
       {decided ? (
         <div className="rounded-card border-thin border-border-subtle bg-bg-elevated p-3">
@@ -409,6 +431,106 @@ function DecisionButton({
       <Icon className="h-3.5 w-3.5" strokeWidth={1.6} />
       {label}
     </button>
+  );
+}
+
+/**
+ * The applicant's own account of themselves, and what they uploaded.
+ *
+ * Kept deliberately plain: a reviewer is checking whether a registration
+ * number and a set of documents look right, not reading a dashboard.
+ */
+function ApplicantDetail({
+  query,
+}: {
+  query: UseQueryResult<KycApplicationDetail, unknown>;
+}) {
+  if (query.isLoading) {
+    return <p className="text-[11px] text-text-muted">Loading the application…</p>;
+  }
+
+  if (query.isError || !query.data) {
+    const message =
+      query.error instanceof Error ? query.error.message : 'The application could not be read.';
+    return (
+      <div className="flex items-start gap-2 rounded-card border-thin border-amber-400/25 bg-amber-400/5 p-2.5">
+        <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-300" strokeWidth={1.6} />
+        <p className="text-[11px] text-text-secondary">{message}</p>
+      </div>
+    );
+  }
+
+  const d = query.data;
+  const noCommission =
+    (d.commissionMinPercent ?? 0) === 0 && (d.commissionMaxPercent ?? 0) === 0;
+
+  return (
+    <div className="space-y-3 rounded-card border-thin border-border-subtle bg-bg-elevated p-3">
+      <dl className="space-y-1 text-[11px]">
+        {d.legalName && <Row label="Legal name" value={d.legalName} />}
+        {d.registrationNumber && <Row label="Reg. no." value={d.registrationNumber} />}
+        {d.taxId && <Row label="Tax ID" value={d.taxId} />}
+        {(d.city || d.countryCode) && (
+          <Row label="Location" value={[d.addressLine, d.city, d.countryCode].filter(Boolean).join(', ')} />
+        )}
+        {d.website && <Row label="Website" value={d.website} />}
+        {d.commissionMinPercent != null && (
+          <Row
+            label="Commission"
+            value={`${d.commissionMinPercent}% – ${d.commissionMaxPercent}%`}
+            // Both zero means the client never collected a real band. Worth
+            // flagging: it is a reason to send the application back, and it
+            // is easy to approve past without noticing.
+            tone={noCommission ? 'danger' : undefined}
+          />
+        )}
+      </dl>
+
+      {d.story && <p className="text-[11px] leading-relaxed text-text-secondary">{d.story}</p>}
+
+      <div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-text-muted">
+          Documents ({d.documents.length})
+        </p>
+        {d.documents.length === 0 ? (
+          <p className="mt-1.5 text-[11px] text-text-secondary">
+            Nothing uploaded. There is no KYC evidence to check — reject as
+            <span className="font-mono"> DOCS_UNCLEAR</span> rather than approving on trust.
+          </p>
+        ) : (
+          <ul className="mt-1.5 space-y-1">
+            {d.documents.map((doc) => (
+              <li
+                key={doc.id}
+                className="flex items-center justify-between gap-2 rounded border-thin border-border-subtle px-2 py-1.5"
+              >
+                <span className="min-w-0">
+                  <span className="block text-[11px] font-bold text-text-primary">
+                    {doc.documentType}
+                  </span>
+                  <span className="block truncate font-mono text-[10px] text-text-muted">
+                    {doc.originalFilename ?? doc.contentType}
+                  </span>
+                </span>
+                <span className="shrink-0 text-right">
+                  <span className="block text-[10px] text-text-secondary">{doc.status}</span>
+                  <span className="block text-[10px] text-text-muted">
+                    {Math.round(doc.contentSizeBytes / 1024)} KB
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {d.documents.length > 0 && (
+          // Stated rather than left to be discovered: the list proves the
+          // files exist, it does not let anyone look inside them.
+          <p className="mt-1.5 text-[10px] text-text-muted">
+            Filenames and status only — the images are not viewable here yet.
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 

@@ -17,6 +17,10 @@ import {
   CourierState,
   TIER_LABEL,
   stylemintCouriersApi,
+  DOCUMENT_SIDE_LABEL,
+  DOCUMENT_STATUS_LABEL,
+  DOCUMENT_TYPE_LABEL,
+  type CourierDocument,
   type CourierProfile,
   type CourierStateValue,
 } from '../api/stylemint-couriers.api';
@@ -120,10 +124,22 @@ export function CouriersPage() {
                 }`}
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-mono text-sm font-bold text-text-primary">
-                    {courier.accountId.slice(0, 8)}
+                  {/*
+                    The person, not their account id. This row showed the first
+                    eight characters of a GUID, which is unreadable and tells a
+                    reviewer nothing about who they are about to approve. The
+                    id stays available in the panel.
+                  */}
+                  <p className="truncate text-sm font-bold text-text-primary">
+                    {courier.accountDisplayName?.trim() || (
+                      <span className="font-mono text-text-muted">
+                        {courier.accountId.slice(0, 8)}
+                      </span>
+                    )}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-text-muted">
+                  <p className="mt-0.5 truncate text-[11px] text-text-muted">
+                    {courier.accountEmail ?? courier.accountPhone ?? 'No contact on file'}
+                    {' · '}
                     {courier.homeGeohash || 'No home area'}
                     {courier.failureStreak > 0
                       ? ` · ${courier.failureStreak} failure(s) in a row`
@@ -216,11 +232,46 @@ function CourierPanel({
   return (
     <div className="space-y-3 rounded-frame border-thin border-border-subtle bg-bg-card p-4">
       <div>
-        <p className="font-mono text-sm font-bold text-text-primary">{courier.accountId}</p>
+        <p className="text-sm font-bold text-text-primary">
+          {courier.accountDisplayName?.trim() || (
+            <span className="text-text-muted">Name unknown</span>
+          )}
+        </p>
         <p className="mt-0.5 text-[11px] text-text-muted">
           {COURIER_STATE_LABEL[courier.state]} · {TIER_LABEL[courier.currentTier]} tier
         </p>
       </div>
+
+      {/*
+        Contact details, so a reviewer can match the documents to a person and
+        reach them. Email carries its verified state: an unverified address is
+        weaker evidence and the reviewer should not have to assume either way.
+      */}
+      <dl className="space-y-1 text-[11px]">
+        <div className="flex justify-between gap-3">
+          <dt className="text-text-muted">Email</dt>
+          <dd className="truncate text-right font-bold text-text-primary">
+            {courier.accountEmail ?? '—'}
+            {courier.accountEmail && courier.accountEmailVerified === false && (
+              <span className="ml-1 font-normal text-amber-300">(unverified)</span>
+            )}
+          </dd>
+        </div>
+        <div className="flex justify-between gap-3">
+          <dt className="text-text-muted">Phone</dt>
+          <dd className="text-right font-bold text-text-primary">
+            {courier.accountPhone ?? '—'}
+          </dd>
+        </div>
+        <div className="flex justify-between gap-3">
+          <dt className="text-text-muted">Account</dt>
+          <dd className="truncate text-right font-mono text-text-secondary">
+            {courier.accountId}
+          </dd>
+        </div>
+      </dl>
+
+      <CourierDocuments accountId={courier.accountId} />
 
       <dl className="space-y-1 text-[11px]">
         <Check label="Identity verified" at={courier.kycVerifiedUtc} />
@@ -369,6 +420,89 @@ function Action({
       <Icon className="h-3.5 w-3.5" strokeWidth={1.6} />
       {label}
     </button>
+  );
+}
+
+/**
+ * The courier's identity documents — the ID photos and selfie the review is
+ * actually made of.
+ *
+ * Before this the panel showed four digits of a government ID and a match
+ * reference, and a reviewer had no way to see the document those came from.
+ *
+ * The file's location is fetched per document on demand rather than listed
+ * with the metadata, so the URL of someone's passport scan is only disclosed
+ * when a reviewer opens it. That is also why this opens in a new tab instead
+ * of rendering a thumbnail grid: an `<img>` per document would fetch every
+ * link as soon as the panel mounted, which is the opposite of on demand.
+ */
+function CourierDocuments({ accountId }: { accountId: string }) {
+  const documents = useQuery({
+    queryKey: ['stylemint-courier-documents', accountId],
+    queryFn: () => stylemintCouriersApi.listDocuments(accountId),
+  });
+
+  const open = useMutation({
+    mutationFn: (document: CourierDocument) =>
+      stylemintCouriersApi.documentLink(accountId, document.id),
+    onSuccess: (url) => window.open(url, '_blank', 'noopener,noreferrer'),
+  });
+
+  return (
+    <div className="space-y-2 rounded-frame border-thin border-border-subtle bg-bg-elevated p-3">
+      <p className="text-[11px] font-black uppercase tracking-wide text-text-muted">
+        Documents
+      </p>
+
+      {documents.isLoading && (
+        <p className="flex items-center gap-2 text-[11px] text-text-muted">
+          <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} /> Loading…
+        </p>
+      )}
+
+      {documents.isError && (
+        <p className="text-[11px] text-rose-300">
+          {(documents.error as Error).message}
+        </p>
+      )}
+
+      {documents.data?.length === 0 && (
+        // Distinguish "nothing uploaded" from a failure: a courier who applied
+        // before document capture existed genuinely has none, and that is a
+        // reason to ask them for one rather than to retry.
+        <p className="text-[11px] text-text-muted">
+          No documents uploaded. Couriers who applied before document capture
+          was added will have none — ask them to resubmit their identity check.
+        </p>
+      )}
+
+      {(documents.data ?? []).map((document) => {
+        const side = DOCUMENT_SIDE_LABEL[document.side];
+        return (
+          <button
+            key={document.id}
+            onClick={() => open.mutate(document)}
+            disabled={open.isPending}
+            className="flex w-full items-center gap-2 rounded-sm border-thin border-border-subtle px-2 py-1.5 text-left hover:bg-bg-card disabled:opacity-60"
+          >
+            <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-text-muted" strokeWidth={1.6} />
+            <span className="min-w-0 flex-1 truncate text-[11px] font-bold text-text-primary">
+              {DOCUMENT_TYPE_LABEL[document.documentType] ?? `Type ${document.documentType}`}
+              {side ? ` (${side})` : ''}
+            </span>
+            <span className="shrink-0 text-[10px] text-text-muted">
+              {DOCUMENT_STATUS_LABEL[document.status] ?? document.status}
+            </span>
+          </button>
+        );
+      })}
+
+      {open.isError && (
+        <p className="text-[11px] text-rose-300">
+          {(open.error as Error).message}
+        </p>
+      )}
+    </div>
   );
 }
 

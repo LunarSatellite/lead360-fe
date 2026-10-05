@@ -46,6 +46,21 @@ export type CourierProfile = {
   accountId: string;
   state: number;
   currentTier: number;
+
+  /**
+   * Who the courier is, hydrated by the backend from Identity at read time.
+   *
+   * Undefined/null means Identity did not resolve the account — render it as
+   * "unknown" rather than blank. A reviewer deciding an identity question has
+   * to be able to tell "no name on file" from "we could not ask", and the
+   * previous page showed neither because these fields did not exist: it listed
+   * account GUIDs, four ID digits and an opaque reference.
+   */
+  accountDisplayName?: string | null;
+  accountEmail?: string | null;
+  accountEmailVerified?: boolean | null;
+  accountPhone?: string | null;
+
   governmentIdLast4?: string | null;
   kycVerifiedUtc?: string | null;
   backgroundCheckPassedUtc?: string | null;
@@ -57,6 +72,57 @@ export type CourierProfile = {
   suspendedReason?: string | null;
   failureStreak: number;
   homeGeohash: string;
+};
+
+/**
+ * One identity document on the courier's account. Mirrors Identity's
+ * `VerificationDocumentDto`, which carries metadata only — the file's location
+ * is fetched per document through {@link stylemintCouriersApi.documentLink},
+ * so the URL of someone's passport scan is not in every list response.
+ */
+export type CourierDocument = {
+  id: string;
+  accountId: string;
+  sessionId: string;
+  documentType: number;
+  side: number;
+  contentType: string;
+  contentSizeBytes: number;
+  originalFilename?: string | null;
+  status: number;
+  uploadedUtc: string;
+  reviewedUtc?: string | null;
+  rejectionReason?: string | null;
+};
+
+/** Identity's `VerificationDocumentType`. 1-6 personal, 7-10 vendor business. */
+export const DOCUMENT_TYPE_LABEL: Record<number, string> = {
+  1: 'Passport',
+  2: 'National ID card',
+  3: "Driver's license",
+  4: 'Residence permit',
+  5: 'Selfie',
+  6: 'Proof of address',
+  7: 'PAN card',
+  8: 'Citizenship certificate',
+  9: 'Business registration',
+  10: 'Tax document',
+};
+
+/** Identity's `VerificationDocumentSide`. 0 = single-page. */
+export const DOCUMENT_SIDE_LABEL: Record<number, string> = {
+  0: '',
+  1: 'front',
+  2: 'back',
+};
+
+/** Identity's `VerificationDocumentStatus`. */
+export const DOCUMENT_STATUS_LABEL: Record<number, string> = {
+  1: 'Uploaded',
+  2: 'Under review',
+  3: 'Approved',
+  4: 'Rejected',
+  5: 'Expired',
 };
 
 const BASE = 'v1/admin/couriers';
@@ -102,6 +168,43 @@ export const stylemintCouriersApi = {
       await stylemintOperationsApi.invoke({ method: 'GET', path: BASE, query: query.toString() }),
     );
   },
+
+  /**
+   * The identity documents the courier uploaded — the ID photos and the
+   * selfie a reviewer has to actually look at.
+   *
+   * Lives on Identity's account-scoped pipeline (`v1/accounts/{id}/
+   * verification-documents`), not on the courier surface: that pipeline
+   * already handles sessions, blob storage and per-document approve/reject,
+   * and vendors and creators use the same one. Keyed by `accountId`, not
+   * `courierProfileId`.
+   *
+   * Returns an empty list rather than throwing when the account has no
+   * documents, so a courier who applied before document capture existed opens
+   * without an error — there is genuinely nothing to show for them.
+   */
+  listDocuments: async (accountId: string): Promise<CourierDocument[]> => {
+    const response = await stylemintOperationsApi.invoke({
+      method: 'GET',
+      path: `v1/accounts/${encodeURIComponent(accountId)}/verification-documents`,
+    });
+    if (response.status === 404) return [];
+    return unwrap<CourierDocument[]>(response);
+  },
+
+  /**
+   * Where to fetch one document's file. Separate call per document, by design
+   * — see the backend's `GetContentLinkAsync`.
+   */
+  documentLink: async (accountId: string, documentId: string): Promise<string> =>
+    unwrap<{ url: string }>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path:
+          `v1/accounts/${encodeURIComponent(accountId)}` +
+          `/verification-documents/${encodeURIComponent(documentId)}/link`,
+      }),
+    ).url,
 
   /** Approves or rejects the identity check. Rejection needs a reason. */
   completeKyc: async (

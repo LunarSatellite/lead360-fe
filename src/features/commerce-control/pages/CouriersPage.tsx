@@ -20,6 +20,7 @@ import {
   DOCUMENT_SIDE_LABEL,
   DOCUMENT_STATUS_LABEL,
   DOCUMENT_TYPE_LABEL,
+  SELFIE_DOCUMENT_TYPE,
   type CourierDocument,
   type CourierProfile,
   type CourierStateValue,
@@ -181,15 +182,43 @@ function CourierPanel({
   onChanged: () => void;
 }) {
   const [reason, setReason] = useState('');
+  const [last4, setLast4] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [confirming, setConfirming] = useState<string | null>(null);
+
+  /*
+    Approving writes the identity details onto the profile, so the reviewer
+    has to supply them: `CompleteKycVm` requires a 4-digit GovernmentIdLast4
+    and a non-empty SelfieMatchRef whenever Approved is true.
+
+    They cannot be prefilled from what the rider submitted, because that is
+    not kept anywhere: CourierOnboardingService.SubmitKycAsync hands the
+    rider's values to IKycReviewSink, whose only implementation logs a line
+    and drops them, and the profile's own columns are written by CompleteKyc —
+    at approval. So the last four digits are read off the ID document above
+    and typed by the reviewer, which is the attestation the endpoint is
+    asking for, and the selfie reference points at the registered selfie.
+
+    This used to send `{ approved: true }` with both fields empty and get a
+    400 back with four validation errors, so identity could not be approved
+    from here at all.
+  */
+  const documents = useCourierDocuments(courier?.id);
+  const selfie = documents.data?.find(
+    (document) => document.documentType === SELFIE_DOCUMENT_TYPE,
+  );
+  const last4Valid = /^[0-9]{4}$/.test(last4);
 
   const run = useMutation({
     mutationFn: async (action: string) => {
       const id = courier!.id;
       switch (action) {
         case 'kyc-approve':
-          return stylemintCouriersApi.completeKyc(id, { approved: true });
+          return stylemintCouriersApi.completeKyc(id, {
+            approved: true,
+            governmentIdLast4: last4,
+            selfieMatchRef: selfie!.id,
+          });
         case 'kyc-reject':
           return stylemintCouriersApi.completeKyc(id, {
             approved: false,
@@ -209,7 +238,13 @@ function CourierPanel({
           return stylemintCouriersApi.suspend(id, reason);
       }
     },
-    onSuccess: () => { setReason(''); setConfirming(null); setError(null); onChanged(); },
+    onSuccess: () => {
+      setReason('');
+      setLast4('');
+      setConfirming(null);
+      setError(null);
+      onChanged();
+    },
     onError: (caught: unknown) => {
       setConfirming(null);
       setError(caught instanceof Error ? caught.message : 'The action could not be completed.');
@@ -228,6 +263,9 @@ function CourierPanel({
   const suspended = courier.state === CourierState.Suspended;
   /** Rejecting KYC and suspending both need a written reason. */
   const needsReason = confirming === 'kyc-reject' || confirming === 'suspend';
+  /** Approving needs the ID's last four digits and a selfie to match against. */
+  const approving = confirming === 'kyc-approve';
+  const canApprove = last4Valid && Boolean(selfie);
 
   return (
     <div className="space-y-3 rounded-frame border-thin border-border-subtle bg-bg-card p-4">
@@ -271,7 +309,7 @@ function CourierPanel({
         </div>
       </dl>
 
-      <CourierDocuments accountId={courier.accountId} />
+      <CourierDocuments courierProfileId={courier.id} />
 
       <dl className="space-y-1 text-[11px]">
         <Check label="Identity verified" at={courier.kycVerifiedUtc} />
@@ -313,10 +351,55 @@ function CourierPanel({
               className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
             />
           )}
+
+          {approving && (
+            <div className="space-y-2">
+              <label className="block space-y-1">
+                <span className="text-[11px] text-text-secondary">
+                  Last 4 digits of the ID, as shown on the document above
+                </span>
+                <input
+                  value={last4}
+                  onChange={(event) =>
+                    setLast4(event.target.value.replace(/\D/g, '').slice(0, 4))
+                  }
+                  inputMode="numeric"
+                  autoComplete="off"
+                  placeholder="0000"
+                  className="w-24 rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 font-mono text-xs tracking-widest text-text-primary outline-none focus:border-border-glow"
+                />
+              </label>
+
+              {documents.isLoading ? (
+                <p className="text-[11px] text-text-muted">Checking for a selfie…</p>
+              ) : selfie ? (
+                <p className="text-[11px] text-text-muted">
+                  Matching against the selfie uploaded{' '}
+                  {new Date(selfie.uploadedUtc).toLocaleDateString()}.
+                </p>
+              ) : (
+                /*
+                  Not approvable without one, and deliberately not worked
+                  around: the endpoint stores this reference as the evidence
+                  the identity was matched, so inventing a placeholder would
+                  record an attestation nobody made.
+                */
+                <p className="text-[11px] text-amber-300">
+                  No selfie on file for this courier, so there is nothing to
+                  match the ID against. Ask them to resubmit from the app.
+                </p>
+              )}
+            </div>
+          )}
+
           <div className="flex gap-2">
             <button
               onClick={() => run.mutate(confirming)}
-              disabled={run.isPending || (needsReason && !reason.trim())}
+              disabled={
+                run.isPending ||
+                (needsReason && !reason.trim()) ||
+                (approving && !canApprove)
+              }
               className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
             >
               {run.isPending ? 'Applying…' : 'Confirm'}
@@ -424,6 +507,20 @@ function Action({
 }
 
 /**
+ * One courier's documents, shared by the list below and by the approval form.
+ *
+ * Both need them — the form because approving requires a reference to the
+ * selfie — and react-query dedupes on the key, so asking twice is one request.
+ */
+function useCourierDocuments(courierProfileId: string | undefined) {
+  return useQuery({
+    queryKey: ['stylemint-courier-documents', courierProfileId],
+    queryFn: () => stylemintCouriersApi.listDocuments(courierProfileId!),
+    enabled: Boolean(courierProfileId),
+  });
+}
+
+/**
  * The courier's identity documents — the ID photos and selfie the review is
  * actually made of.
  *
@@ -436,15 +533,12 @@ function Action({
  * of rendering a thumbnail grid: an `<img>` per document would fetch every
  * link as soon as the panel mounted, which is the opposite of on demand.
  */
-function CourierDocuments({ accountId }: { accountId: string }) {
-  const documents = useQuery({
-    queryKey: ['stylemint-courier-documents', accountId],
-    queryFn: () => stylemintCouriersApi.listDocuments(accountId),
-  });
+function CourierDocuments({ courierProfileId }: { courierProfileId: string }) {
+  const documents = useCourierDocuments(courierProfileId);
 
   const open = useMutation({
     mutationFn: (document: CourierDocument) =>
-      stylemintCouriersApi.documentLink(accountId, document.id),
+      stylemintCouriersApi.documentLink(courierProfileId, document.id),
     onSuccess: (url) => window.open(url, '_blank', 'noopener,noreferrer'),
   });
 

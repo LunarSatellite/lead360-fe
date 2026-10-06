@@ -82,8 +82,13 @@ export type CourierProfile = {
  */
 export type CourierDocument = {
   id: string;
-  accountId: string;
-  sessionId: string;
+  /**
+   * Optional because the admin surface does not echo them: it resolved the
+   * account from the courier profile to answer at all, so repeating the id
+   * back would only invite a caller to key off it.
+   */
+  accountId?: string;
+  sessionId?: string;
   documentType: number;
   side: number;
   contentType: string;
@@ -96,6 +101,13 @@ export type CourierDocument = {
 };
 
 /** Identity's `VerificationDocumentType`. 1-6 personal, 7-10 vendor business. */
+/**
+ * `VerificationDocumentType.SelfiePhoto`. The approval call's
+ * `selfieMatchRef` has to point at something a later reviewer can open, and
+ * this is how the selfie is found among the uploads.
+ */
+export const SELFIE_DOCUMENT_TYPE = 5;
+
 export const DOCUMENT_TYPE_LABEL: Record<number, string> = {
   1: 'Passport',
   2: 'National ID card',
@@ -173,20 +185,26 @@ export const stylemintCouriersApi = {
    * The identity documents the courier uploaded — the ID photos and the
    * selfie a reviewer has to actually look at.
    *
-   * Lives on Identity's account-scoped pipeline (`v1/accounts/{id}/
-   * verification-documents`), not on the courier surface: that pipeline
-   * already handles sessions, blob storage and per-document approve/reject,
-   * and vendors and creators use the same one. Keyed by `accountId`, not
-   * `courierProfileId`.
+   * Keyed by `courierProfileId`, and read from the ADMIN surface.
+   *
+   * The documents themselves live on Identity's account-scoped pipeline
+   * (`v1/accounts/{accountId}/verification-documents`), and this used to call
+   * that directly — which can never work from here. The operator proxy
+   * forwards `v1/admin/**` and vendor operations and answers 403
+   * `unsupported_path` for everything else (`StylemintOperatorSurface`), so
+   * every reviewer saw "no documents" against applicants who had uploaded
+   * three. The backend now re-exposes them under
+   * `v1/admin/couriers/{id}/documents`, which resolves the account from the
+   * profile rather than taking it from us.
    *
    * Returns an empty list rather than throwing when the account has no
    * documents, so a courier who applied before document capture existed opens
    * without an error — there is genuinely nothing to show for them.
    */
-  listDocuments: async (accountId: string): Promise<CourierDocument[]> => {
+  listDocuments: async (courierProfileId: string): Promise<CourierDocument[]> => {
     const response = await stylemintOperationsApi.invoke({
       method: 'GET',
-      path: `v1/accounts/${encodeURIComponent(accountId)}/verification-documents`,
+      path: `${BASE}/${encodeURIComponent(courierProfileId)}/documents`,
     });
     if (response.status === 404) return [];
     return unwrap<CourierDocument[]>(response);
@@ -194,15 +212,18 @@ export const stylemintCouriersApi = {
 
   /**
    * Where to fetch one document's file. Separate call per document, by design
-   * — see the backend's `GetContentLinkAsync`.
+   * — see the backend's `GetDocumentLink`.
    */
-  documentLink: async (accountId: string, documentId: string): Promise<string> =>
+  documentLink: async (
+    courierProfileId: string,
+    documentId: string,
+  ): Promise<string> =>
     unwrap<{ url: string }>(
       await stylemintOperationsApi.invoke({
         method: 'GET',
         path:
-          `v1/accounts/${encodeURIComponent(accountId)}` +
-          `/verification-documents/${encodeURIComponent(documentId)}/link`,
+          `${BASE}/${encodeURIComponent(courierProfileId)}` +
+          `/documents/${encodeURIComponent(documentId)}/link`,
       }),
     ).url,
 

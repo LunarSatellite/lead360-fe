@@ -64,6 +64,40 @@ export type StuckPage = {
   pageSize: number;
 };
 
+/**
+ * A parcel that exists and has no courier on it.
+ *
+ * Not the same thing as a stuck offer, and the distinction is the whole point. `stuck` pages
+ * hop offers in Pending or Expired state — an offer went out and nothing came back. This is the
+ * case that produces no offer at all: the router ran, the rules matched, no eligible courier was
+ * found, and `offersIssued` was zero. There is nothing for an offer query to page, so these
+ * parcels were absent from every operator surface while sitting undelivered.
+ */
+export type PackageAwaitingCourier = {
+  packageId: string;
+  subOrderId: string;
+  trackingNumber: string;
+  state: number;
+  originGeohash: string;
+  destinationGeohash: string;
+  /**
+   * Whether both ends share a 5-character geohash cell. Usually the answer to "why has nothing
+   * happened": the routing rules scope Neighbour couriers to one locality, so a cross-locality
+   * parcel cannot reach them however many are on shift.
+   */
+  sameLocality: boolean;
+  createdUtc: string;
+  waitingHours: number;
+};
+
+export type AwaitingCourierPage = {
+  items: PackageAwaitingCourier[];
+  totalCount: number;
+  nextCursor?: string | null;
+  previousCursor?: string | null;
+  pageSize: number;
+};
+
 export type RoutingMetrics = {
   totalOffers: number;
   accepted: number;
@@ -93,6 +127,26 @@ function unwrap<T>(response: { status: number; body: unknown }): T {
 }
 
 export const stylemintLogisticsApi = {
+  /**
+   * The dispatch queue: parcels with no courier, longest wait first.
+   *
+   * Read this before `stuck` when diagnosing "nothing reached a delivery partner". A parcel the
+   * router found nobody for never produced an offer, so `stuck` cannot show it.
+   */
+  awaitingCourier: async (params: { skip?: number; take?: number } = {}): Promise<AwaitingCourierPage> => {
+    const query = new URLSearchParams();
+    query.set('skip', String(params.skip ?? 0));
+    query.set('take', String(params.take ?? 25));
+
+    return unwrap<AwaitingCourierPage>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: 'v1/admin/delivery/packages/awaiting-courier',
+        query: query.toString(),
+      }),
+    );
+  },
+
   /** Offers that nobody took — the packages actually stuck in routing. */
   stuck: async (params: { cursor?: string; pageSize?: number } = {}): Promise<StuckPage> => {
     const query = new URLSearchParams();

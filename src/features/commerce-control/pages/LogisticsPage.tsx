@@ -18,21 +18,29 @@ import {
   ReplanReason,
   stylemintLogisticsApi,
   type HopOffer,
+  type PackageAwaitingCourier,
 } from '../api/stylemint-logistics.api';
 
 /**
- * Delivery operations: what is stuck, how routing is performing, and what the guardian is doing.
+ * Delivery operations: what has no courier, what is stuck, how routing is performing, and what the
+ * guardian is doing.
  *
- * These are one page rather than three because they are one job. Replan and the fulfilment reads
- * both need a packageId and nothing else hands one out — the stuck queue is what makes them
- * reachable at all, so it sits beside them.
+ * These are one page rather than four because they are one job. Replan and the fulfilment reads
+ * both need a packageId and nothing else hands one out — the queues are what make them reachable
+ * at all, so they sit beside them.
+ *
+ * Two queues, and the order matters. "Awaiting courier" lists parcels with no courier on them;
+ * "Stuck offers" lists offers that went out and died. A parcel the router found nobody for never
+ * produced an offer, so it appears only in the first — which is why that one leads. Reading them
+ * the other way round shows an empty Stuck tab and suggests, wrongly, that nothing is wrong.
  */
 
-type Tab = 'subOrders' | 'stuck' | 'metrics' | 'guardian';
+type Tab = 'subOrders' | 'awaiting' | 'stuck' | 'metrics' | 'guardian';
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof Route }> = [
   { id: 'subOrders', label: 'Fulfilment desk', icon: ClipboardList },
-  { id: 'stuck', label: 'Stuck packages', icon: PackageSearch },
+  { id: 'awaiting', label: 'Awaiting courier', icon: PackageSearch },
+  { id: 'stuck', label: 'Stuck offers', icon: AlertTriangle },
   { id: 'metrics', label: 'Routing metrics', icon: Activity },
   { id: 'guardian', label: 'Guardian', icon: ShieldAlert },
 ];
@@ -74,6 +82,7 @@ export function LogisticsPage() {
       </div>
 
       {tab === 'subOrders' && <SubOrderDesk />}
+      {tab === 'awaiting' && <AwaitingCourierTab />}
       {tab === 'stuck' && <StuckTab />}
       {tab === 'metrics' && <MetricsTab />}
       {tab === 'guardian' && <GuardianTab />}
@@ -97,6 +106,170 @@ function Loading({ what }: { what: string }) {
     <div className="flex items-center gap-3 rounded-frame border-thin border-border-subtle bg-bg-card p-8 text-sm text-text-muted">
       <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.6} />
       Loading {what}…
+    </div>
+  );
+}
+
+
+/**
+ * Parcels with no courier on them — the dispatch queue.
+ *
+ * Deliberately the FIRST tab, ahead of the stuck-offer queue. "Stuck" pages hop offers in Pending
+ * or Expired state, which only exist once an offer has gone out. The failure that strands a parcel
+ * most often produces no offer at all: the router runs, the rules match, no eligible courier is
+ * found, `offersIssued` is zero, and there is nothing for an offer query to show. An operator
+ * asking "why has nothing reached a delivery partner" was being handed an empty Stuck tab and no
+ * way to tell an idle platform from a broken one.
+ */
+function AwaitingCourierTab() {
+  const client = useQueryClient();
+  const awaiting = useQuery({
+    queryKey: ['stylemint-awaiting-courier'],
+    queryFn: () => stylemintLogisticsApi.awaitingCourier({ take: 50 }),
+  });
+
+  if (awaiting.isError) return <ErrorBox error={awaiting.error} />;
+  if (awaiting.isLoading) return <Loading what="the dispatch queue" />;
+
+  const items = awaiting.data?.items ?? [];
+  const crossLocality = items.filter((p) => !p.sameLocality).length;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-xs text-text-muted">
+        <span>
+          {awaiting.data?.totalCount ?? 0}{' '}
+          {awaiting.data?.totalCount === 1 ? 'parcel' : 'parcels'} with no courier
+          {crossLocality > 0 && ` · ${crossLocality} cross-locality`}
+        </span>
+        <button
+          onClick={() => awaiting.refetch()}
+          className="flex items-center gap-1.5 text-text-secondary hover:text-brand"
+        >
+          <RefreshCw
+            className={`h-3.5 w-3.5 ${awaiting.isFetching ? 'animate-spin' : ''}`}
+            strokeWidth={1.6}
+          />
+          Refresh
+        </button>
+      </div>
+
+      {crossLocality > 0 && (
+        <div className="rounded-sm border-thin border-amber-400/25 bg-amber-400/5 p-3">
+          <p className="text-xs font-bold text-amber-300">
+            {crossLocality} of these cross a locality boundary
+          </p>
+          <p className="mt-0.5 text-[11px] text-text-muted">
+            Neighbour-tier couriers are scoped to one locality by the routing rules, so a
+            cross-locality parcel cannot reach them however many are on shift. Replanning will not
+            help until a Traveller or Pro courier exists. The others are worth a replan.
+          </p>
+        </div>
+      )}
+
+      {items.length === 0 ? (
+        <div className="rounded-frame border-thin border-border-subtle bg-bg-card p-10 text-center">
+          <PackageSearch className="mx-auto h-7 w-7 text-text-muted" strokeWidth={1.6} />
+          <p className="mt-3 text-sm text-text-secondary">
+            Every parcel has a courier. Nothing is waiting for dispatch.
+          </p>
+        </div>
+      ) : (
+        items.map((parcel) => (
+          <AwaitingRow
+            key={parcel.packageId}
+            parcel={parcel}
+            onReplanned={() => {
+              client.invalidateQueries({ queryKey: ['stylemint-awaiting-courier'] });
+              client.invalidateQueries({ queryKey: ['stylemint-routing-stuck'] });
+            }}
+          />
+        ))
+      )}
+    </div>
+  );
+}
+
+function AwaitingRow({
+  parcel,
+  onReplanned,
+}: {
+  parcel: PackageAwaitingCourier;
+  onReplanned: () => void;
+}) {
+  const [note, setNote] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const replan = useMutation({
+    mutationFn: () =>
+      stylemintLogisticsApi.replan(parcel.packageId, ReplanReason.AdminReplan, note.trim()),
+    onSuccess: () => {
+      setNote('');
+      setError(null);
+      onReplanned();
+    },
+    onError: (caught: unknown) =>
+      setError(caught instanceof Error ? caught.message : 'The replan could not be started.'),
+  });
+
+  // A day is the point at which "recently paid" stops explaining it.
+  const stale = parcel.waitingHours >= 24;
+
+  return (
+    <div className="rounded-card border-thin border-border-subtle bg-glass-1 p-3.5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-mono text-xs text-text-primary">{parcel.trackingNumber}</span>
+            <span
+              className={`rounded-xs border-thin px-1.5 py-0.5 text-[10px] font-bold ${
+                parcel.sameLocality
+                  ? 'border-border-glow bg-brand-soft text-brand'
+                  : 'border-amber-400/25 bg-amber-400/5 text-amber-300'
+              }`}
+            >
+              {parcel.sameLocality ? 'Same locality' : 'Cross-locality'}
+            </span>
+            <span className={`text-[11px] ${stale ? 'text-rose-300' : 'text-text-muted'}`}>
+              waiting {parcel.waitingHours}h
+            </span>
+          </div>
+          <p className="mt-1 text-[11px] text-text-muted">
+            {parcel.originGeohash} → {parcel.destinationGeohash} · placed{' '}
+            {new Date(parcel.createdUtc).toLocaleString()}
+          </p>
+          <p className="mt-0.5 font-mono text-[10px] text-text-muted">{parcel.packageId}</p>
+        </div>
+
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <button
+            disabled={replan.isPending}
+            onClick={() => replan.mutate()}
+            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          >
+            {replan.isPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
+            ) : (
+              <Zap className="h-3.5 w-3.5" strokeWidth={1.6} />
+            )}
+            Replan
+          </button>
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Note (optional)"
+            className="w-44 rounded-sm border-thin border-border-subtle bg-bg-input px-2 py-1 text-[11px] text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
+          />
+        </div>
+      </div>
+
+      {replan.isSuccess && (
+        <p className="mt-2 text-[11px] text-brand">
+          Routing ran again. If it still issues no offer, no eligible courier was found — check
+          that a courier is online and that their tier covers this route.
+        </p>
+      )}
+      {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
     </div>
   );
 }

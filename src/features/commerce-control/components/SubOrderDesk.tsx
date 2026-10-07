@@ -23,6 +23,10 @@ import {
   type VendorRejectionReasonValue,
   type VendorSubOrder,
 } from '../api/stylemint-suborders.api';
+import {
+  DELIVERY_TIER_LABEL,
+  stylemintLogisticsApi,
+} from '../api/stylemint-logistics.api';
 import { PackingSlipSheet } from './PackingSlipSheet';
 import { SubOrderDetailPanel } from './SubOrderDetailPanel';
 
@@ -482,6 +486,136 @@ function RejectForm({
   );
 }
 
+/**
+ * Name the delivery partner taking this parcel, from inside the handover form.
+ *
+ * Handover is the moment the parcel physically changes hands, and until now this form asked only
+ * for a free-text carrier and tracking number — a third-party courier model. There was nowhere to
+ * say "this went to one of our delivery partners", so a parcel handed to a StyleMint courier left
+ * no record of which one and no offer for them to accept.
+ *
+ * Offering is how a partner is assigned; there is no "assign" that skips their consent. The chosen
+ * courier gets the parcel alone for 90 seconds and the round advances to every eligible courier if
+ * they do not answer, so naming someone here cannot strand the parcel on one person.
+ *
+ * The carrier and tracking fields stay. They are for genuine third-party couriers, which is a
+ * different case from an in-house partner rather than a worse one.
+ */
+function HandoverPartnerChooser({ subOrderId }: { subOrderId: string }) {
+  const [chosen, setChosen] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [offered, setOffered] = useState(false);
+
+  const parcel = useQuery({
+    queryKey: ['stylemint-package-by-sub-order', subOrderId],
+    queryFn: () => stylemintLogisticsApi.packageBySubOrder(subOrderId),
+  });
+
+  const packageId = parcel.data?.id ?? null;
+
+  const candidates = useQuery({
+    queryKey: ['stylemint-routing-candidates', packageId],
+    queryFn: () => stylemintLogisticsApi.candidates(packageId!),
+    enabled: packageId !== null,
+  });
+
+  const offer = useMutation({
+    mutationFn: (courierProfileId: string) =>
+      stylemintLogisticsApi.offerToCourier(packageId!, courierProfileId),
+    onSuccess: () => {
+      setError(null);
+      setOffered(true);
+      setChosen(null);
+    },
+    onError: (caught: unknown) =>
+      setError(caught instanceof Error ? caught.message : 'The offer could not be sent.'),
+  });
+
+  if (parcel.isLoading) {
+    return <p className="text-[11px] text-text-muted">Looking for the parcel…</p>;
+  }
+  if (parcel.isError) {
+    return <p className="text-[11px] text-rose-300">{(parcel.error as Error).message}</p>;
+  }
+  if (packageId === null) {
+    return (
+      <p className="text-[11px] text-text-muted">
+        No parcel exists for this sub-order yet, so there is no delivery partner to name. Parcels
+        are created when the order is paid.
+      </p>
+    );
+  }
+
+  if (offered) {
+    return (
+      <p className="text-[11px] text-brand">
+        Offered. The partner has 90 seconds alone before it goes to every eligible courier.
+      </p>
+    );
+  }
+
+  if (candidates.isLoading) {
+    return <p className="text-[11px] text-text-muted">Asking the router who can take this…</p>;
+  }
+  if (candidates.isError) {
+    return <p className="text-[11px] text-rose-300">{(candidates.error as Error).message}</p>;
+  }
+
+  const picks = candidates.data ?? [];
+
+  if (picks.length === 0) {
+    return (
+      <p className="text-[11px] text-text-muted">
+        No delivery partner is eligible for this parcel — the router found nobody, which is why no
+        offer has gone out. A partner has to be on shift, inside the locality their tier covers, and
+        cleared to carry. Hand over to a third-party carrier below instead.
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-1.5">
+      {picks.map((pick, index) => (
+        <button
+          key={pick.courierProfileId}
+          onClick={() => {
+            setChosen(pick.courierProfileId);
+            setError(null);
+          }}
+          className={`block w-full rounded-sm border-thin p-2 text-left ${
+            chosen === pick.courierProfileId
+              ? 'border-border-glow bg-brand-soft'
+              : 'border-border-subtle bg-bg-input'
+          }`}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-bold text-text-primary">
+              {DELIVERY_TIER_LABEL[pick.tier] ?? `Tier ${pick.tier}`}
+              {index === 0 && ' · router’s first choice'}
+            </span>
+            <span className="text-[11px] text-text-secondary">
+              {pick.proposedPayoutAmount} {pick.proposedPayoutCurrency}
+            </span>
+          </div>
+          <p className="mt-0.5 font-mono text-[10px] text-text-muted">{pick.courierProfileId}</p>
+        </button>
+      ))}
+
+      {error && <p className="text-[11px] text-rose-300">{error}</p>}
+
+      {chosen && (
+        <button
+          disabled={offer.isPending}
+          onClick={() => offer.mutate(chosen)}
+          className="mt-1 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        >
+          {offer.isPending ? 'Offering…' : 'Offer to this partner'}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function HandoverForm({
   subOrderId,
   onCancel,
@@ -506,13 +640,23 @@ function HandoverForm({
   return (
     <ExpandedForm
       title="Hand over to a courier"
-      note="Carrier and tracking are optional — some couriers issue the number later, and a placeholder would show the buyer a tracking number that does not exist."
+      note="Name one of our delivery partners, or fill carrier and tracking for a third-party courier. Both are optional — some couriers issue the number later, and a placeholder would show the buyer a tracking number that does not exist."
       busy={handOver.isPending}
       ready
       submitLabel="Hand over"
       onCancel={onCancel}
       onSubmit={() => handOver.mutate()}
     >
+      <div className="rounded-sm border-thin border-border-subtle bg-glass-1 p-2.5">
+        <p className="text-[11px] font-bold uppercase tracking-wide text-text-secondary">
+          Delivery partner
+        </p>
+        <p className="mt-0.5 mb-2 text-[11px] text-text-muted">
+          One of ours takes it — pick them here. For a third-party courier, leave this and fill the
+          carrier below instead.
+        </p>
+        <HandoverPartnerChooser subOrderId={subOrderId} />
+      </div>
       <input
         value={carrier}
         onChange={(e) => setCarrier(e.target.value)}

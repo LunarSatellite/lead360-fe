@@ -203,6 +203,22 @@ export const stylemintLogisticsApi = {
     );
   },
 
+  /**
+   * The parcel created for a sub-order, or null when none exists yet.
+   *
+   * The bridge between the fulfilment desk, which works in sub-orders, and the routing surfaces,
+   * which work in packages. A 404 is a real answer rather than an error: a sub-order that was
+   * never paid has no parcel, so there is nothing to dispatch and nobody to pick.
+   */
+  packageBySubOrder: async (subOrderId: string): Promise<{ id: string; trackingNumber: string } | null> => {
+    const response = await stylemintOperationsApi.invoke({
+      method: 'GET',
+      path: `v1/admin/delivery/packages/by-sub-order/${encodeURIComponent(subOrderId)}`,
+    });
+    if (response.status === 404) return null;
+    return unwrap<{ id: string; trackingNumber: string }>(response);
+  },
+
   /** Couriers this parcel may be offered to, best score first. Reads only. */
   candidates: async (packageId: string): Promise<CourierPick[]> =>
     unwrap<CourierPick[]>(

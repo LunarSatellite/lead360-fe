@@ -98,6 +98,34 @@ export type AwaitingCourierPage = {
   pageSize: number;
 };
 
+/**
+ * A courier this parcel may be offered to, with the figures behind the choice.
+ *
+ * Produced by the routing pipeline itself, not a separate query — so a courier absent from this
+ * list is one the router would refuse, and a directed offer to them is rejected for the same
+ * reason. An empty list means no eligible courier exists for this parcel right now, which is the
+ * honest answer rather than an empty dropdown.
+ */
+export type CourierPick = {
+  courierProfileId: string;
+  tier: number;
+  currentGeohash: string;
+  /** The router's own score. The order the automatic auction would have used. */
+  score: number;
+  reliability: number;
+  rating: number;
+  recentDeclines24h: number;
+  earningsLast7Days: number;
+  proposedPayoutAmount: number;
+  proposedPayoutCurrency: string;
+};
+
+export const DELIVERY_TIER_LABEL: Record<number, string> = {
+  1: 'Neighbour',
+  2: 'Traveller',
+  3: 'Pro',
+};
+
 export type RoutingMetrics = {
   totalOffers: number;
   accepted: number;
@@ -174,6 +202,38 @@ export const stylemintLogisticsApi = {
       }),
     );
   },
+
+  /** Couriers this parcel may be offered to, best score first. Reads only. */
+  candidates: async (packageId: string): Promise<CourierPick[]> =>
+    unwrap<CourierPick[]>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: `v1/admin/routing/candidates/${encodeURIComponent(packageId)}`,
+      }),
+    ),
+
+  /**
+   * Offers the parcel to one named courier instead of the open pool.
+   *
+   * Refused with routing.courier_not_eligible when that courier is off shift, outside the
+   * locality, or of a tier the route does not admit. The offer carries the ordinary 90-second
+   * window, so an unanswered pick expires and the round advances to the open pool on its own —
+   * a pick delays dispatch by at most one window rather than stranding the parcel.
+   */
+  offerToCourier: async (
+    packageId: string,
+    courierProfileId: string,
+    note?: string,
+  ): Promise<unknown> =>
+    unwrap<unknown>(
+      await stylemintOperationsApi.invoke({
+        method: 'POST',
+        path:
+          `v1/admin/routing/offer/${encodeURIComponent(packageId)}` +
+          `/courier/${encodeURIComponent(courierProfileId)}`,
+        body: JSON.stringify({ note: note || null }),
+      }),
+    ),
 
   /** Forces a fresh routing pass for one package. */
   replan: async (packageId: string, reason: number, note?: string): Promise<unknown> =>

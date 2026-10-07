@@ -9,6 +9,7 @@ import {
   RefreshCw,
   Route,
   ShieldAlert,
+  UserCheck,
   Zap,
 } from 'lucide-react';
 import { SubOrderDesk } from '../components/SubOrderDesk';
@@ -18,6 +19,8 @@ import {
   ReplanReason,
   stylemintLogisticsApi,
   type HopOffer,
+  type CourierPick,
+  DELIVERY_TIER_LABEL,
   type PackageAwaitingCourier,
 } from '../api/stylemint-logistics.api';
 
@@ -198,6 +201,7 @@ function AwaitingRow({
   onReplanned: () => void;
 }) {
   const [note, setNote] = useState('');
+  const [picking, setPicking] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const replan = useMutation({
@@ -254,6 +258,13 @@ function AwaitingRow({
             )}
             Replan
           </button>
+          <button
+            onClick={() => setPicking((v) => !v)}
+            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          >
+            <UserCheck className="h-3.5 w-3.5" strokeWidth={1.6} />
+            {picking ? 'Hide couriers' : 'Choose courier'}
+          </button>
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -263,6 +274,16 @@ function AwaitingRow({
         </div>
       </div>
 
+      {picking && (
+        <CourierPicker
+          packageId={parcel.packageId}
+          onOffered={() => {
+            setPicking(false);
+            onReplanned();
+          }}
+        />
+      )}
+
       {replan.isSuccess && (
         <p className="mt-2 text-[11px] text-brand">
           Routing ran again. If it still issues no offer, no eligible courier was found — check
@@ -270,6 +291,166 @@ function AwaitingRow({
         </p>
       )}
       {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
+    </div>
+  );
+}
+
+/**
+ * Choose a courier for one parcel.
+ *
+ * Only opens on demand: the candidate list runs the routing pipeline server-side, so fetching it
+ * for every row of the queue would run the router once per row for information nobody asked for.
+ *
+ * The list is the router's own, in the router's own order, with its score on each row. An operator
+ * overriding that ordering can see what they are overriding — which is the point of showing a
+ * score nobody is asked to interpret.
+ */
+function CourierPicker({
+  packageId,
+  onOffered,
+}: {
+  packageId: string;
+  onOffered: () => void;
+}) {
+  const [note, setNote] = useState('');
+  const [chosen, setChosen] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const candidates = useQuery({
+    queryKey: ['stylemint-routing-candidates', packageId],
+    queryFn: () => stylemintLogisticsApi.candidates(packageId),
+  });
+
+  const offer = useMutation({
+    mutationFn: (courierProfileId: string) =>
+      stylemintLogisticsApi.offerToCourier(packageId, courierProfileId, note.trim()),
+    onSuccess: () => {
+      setError(null);
+      setNote('');
+      setChosen(null);
+      onOffered();
+    },
+    onError: (caught: unknown) =>
+      setError(caught instanceof Error ? caught.message : 'The offer could not be sent.'),
+  });
+
+  if (candidates.isLoading) {
+    return <p className="mt-3 text-xs text-text-muted">Asking the router who can take this…</p>;
+  }
+  if (candidates.isError) {
+    return (
+      <p className="mt-3 text-xs text-rose-300">{(candidates.error as Error).message}</p>
+    );
+  }
+
+  const picks: CourierPick[] = candidates.data ?? [];
+
+  if (picks.length === 0) {
+    return (
+      <div className="mt-3 rounded-sm border-thin border-amber-400/25 bg-amber-400/5 p-3">
+        <p className="text-xs font-bold text-amber-300">No courier is eligible for this parcel</p>
+        <p className="mt-0.5 text-[11px] text-text-muted">
+          Not a UI limitation — the router found nobody, which is why no offer went out. A courier
+          has to be on shift, within the locality for their tier, and cleared to carry. Replanning
+          will keep returning this until one is.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-3 space-y-2">
+      <p className="text-[11px] font-bold uppercase tracking-wide text-text-secondary">
+        {picks.length} eligible {picks.length === 1 ? 'courier' : 'couriers'} · the router's order
+      </p>
+
+      {picks.map((pick, index) => (
+        <div
+          key={pick.courierProfileId}
+          className={`rounded-sm border-thin p-2.5 ${
+            chosen === pick.courierProfileId
+              ? 'border-border-glow bg-brand-soft'
+              : 'border-border-subtle bg-bg-input'
+          }`}
+        >
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <button
+              onClick={() => {
+                setChosen(pick.courierProfileId);
+                setError(null);
+              }}
+              className="min-w-0 flex-1 text-left"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                {index === 0 && (
+                  <span className="rounded-xs border-thin border-border-glow bg-brand-soft px-1.5 py-0.5 text-[10px] font-bold text-brand">
+                    Router's first choice
+                  </span>
+                )}
+                <span className="text-[10px] font-bold text-text-secondary">
+                  {DELIVERY_TIER_LABEL[pick.tier] ?? `Tier ${pick.tier}`}
+                </span>
+                <span className="font-mono text-[11px] text-text-primary">
+                  {pick.currentGeohash}
+                </span>
+              </div>
+              <p className="mt-1 text-[11px] text-text-muted">
+                score {pick.score.toFixed(2)} · reliability{' '}
+                {Math.round(pick.reliability * 100)}% · rating {pick.rating.toFixed(1)}
+                {pick.recentDeclines24h > 0 && ` · ${pick.recentDeclines24h} declined today`}
+              </p>
+              <p className="mt-0.5 font-mono text-[10px] text-text-muted">
+                {pick.courierProfileId}
+              </p>
+            </button>
+
+            <div className="shrink-0 text-right">
+              <p className="text-xs font-bold text-text-primary">
+                {pick.proposedPayoutAmount} {pick.proposedPayoutCurrency}
+              </p>
+              <p className="text-[10px] text-text-muted">
+                earned {pick.earningsLast7Days} / 7d
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {chosen && (
+        <div className="rounded-sm border-thin border-border-glow bg-brand-soft p-3">
+          <p className="text-xs font-bold text-text-primary">Offer this parcel to that courier</p>
+          <p className="mt-0.5 text-[11px] text-text-muted">
+            They get it alone for 90 seconds. If they do not answer it expires and the round
+            advances to every eligible courier, so a pick cannot hold the parcel up for longer
+            than that.
+          </p>
+          <input
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Why this courier (optional) — recorded on the routing decision"
+            className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
+          />
+          {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              disabled={offer.isPending}
+              onClick={() => offer.mutate(chosen)}
+              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            >
+              {offer.isPending && (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
+              )}
+              Send offer
+            </button>
+            <button
+              onClick={() => setChosen(null)}
+              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

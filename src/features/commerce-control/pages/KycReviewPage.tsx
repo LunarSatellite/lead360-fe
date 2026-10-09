@@ -16,29 +16,38 @@ import {
   XCircle,
 } from 'lucide-react';
 import {
-  APPLICANT_KIND_LABEL,
-  ApplicantKind,
   DECISION_LABEL,
   KycDecision,
+  REASON_CODE_LABEL,
   REVIEW_STATE_LABEL,
   ReviewState,
   stylemintKycApi,
+  type ApplicantKindName,
   type KycApplicationDetail,
   type KycDecisionValue,
+  type KycReasonCode,
   type KycReviewItem,
 } from '../api/stylemint-kyc.api';
+import { CustomerKycDetail } from '../components/CustomerKycDetail';
+import {
+  applicantKindLabel,
+  applicantKindName,
+  isCustomerKyc,
+  matchesApplicantKind,
+  reasonCodesFor,
+} from '../lib/kyc-review';
 
 /**
- * Creator and vendor application review.
+ * Creator, vendor and (EMI phase 1) buyer identity review.
  *
- * This is the gate every seller passes through before they can list anything, and it was
- * reachable only through the generic operations console — where an overdue application looks
- * exactly like a fresh one. The queue carries a due date, so the thing an operator needs first is
- * to see what has blown it.
+ * This is the gate every seller passes through before they can list anything, and every buyer
+ * passes through before they can pay in instalments. It was reachable only through the generic
+ * operations console — where an overdue application looks exactly like a fresh one. The queue
+ * carries a due date, so the thing an operator needs first is to see what has blown it.
  */
 export function KycReviewPage() {
   const client = useQueryClient();
-  const [kind, setKind] = useState<number | undefined>(undefined);
+  const [kind, setKind] = useState<ApplicantKindName | undefined>(undefined);
   const [state, setState] = useState<number | undefined>(ReviewState.Pending);
   const [overdueOnly, setOverdueOnly] = useState(false);
   const [selected, setSelected] = useState<KycReviewItem | null>(null);
@@ -48,6 +57,10 @@ export function KycReviewPage() {
     queryFn: () =>
       stylemintKycApi.queue({ applicantKind: kind, state, overdueOnly, pageSize: 50 }),
   });
+
+  // The backend filters by applicant kind; this is the second check, so a backend that
+  // ignored the parameter shows a short page rather than vendors under "Customers".
+  const items = (queue.data?.items ?? []).filter((item) => matchesApplicantKind(item, kind));
 
   const refresh = () => client.invalidateQueries({ queryKey: ['stylemint-kyc-queue'] });
 
@@ -63,7 +76,7 @@ export function KycReviewPage() {
             Applications
           </h1>
           <p className="mt-1 text-sm text-text-muted">
-            Creator and vendor applications awaiting review. Every seller passes through here.
+            Creator and vendor applications, and buyer identity checks for EMI, awaiting review.
           </p>
         </div>
         <button
@@ -82,8 +95,9 @@ export function KycReviewPage() {
         <Filter label="Applicant" value={kind} onChange={setKind}
           options={[
             { value: undefined, label: 'Everyone' },
-            { value: ApplicantKind.Creator, label: 'Creators' },
-            { value: ApplicantKind.Vendor, label: 'Vendors' },
+            { value: 'Creator', label: 'Creators' },
+            { value: 'Vendor', label: 'Vendors' },
+            { value: 'Customer', label: 'Customers (EMI)' },
           ]}
         />
         <Filter label="State" value={state} onChange={setState}
@@ -104,7 +118,9 @@ export function KycReviewPage() {
           Past due only
         </label>
         <span className="ml-auto text-xs font-bold text-text-muted">
-          {queue.data ? `${queue.data.totalCount.toLocaleString()} application(s)` : 'Loading…'}
+          {queue.data
+            ? `${(items.length === queue.data.items.length ? queue.data.totalCount : items.length).toLocaleString()} application(s)`
+            : 'Loading…'}
         </span>
       </div>
 
@@ -120,9 +136,16 @@ export function KycReviewPage() {
           <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.6} /> Loading applications…
         </div>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
+        <div
+          className={`grid gap-4 ${
+            // A buyer's check is a face comparison; it needs room for two images abreast.
+            isCustomerKyc(selected?.applicantKind)
+              ? 'lg:grid-cols-[minmax(0,1fr)_520px]'
+              : 'lg:grid-cols-[minmax(0,1fr)_400px]'
+          }`}
+        >
           <div className="overflow-hidden rounded-frame border-thin border-border-subtle bg-bg-card">
-            {(queue.data?.items ?? []).map((item) => (
+            {items.map((item) => (
               <QueueRow
                 key={item.id}
                 item={item}
@@ -130,7 +153,7 @@ export function KycReviewPage() {
                 onClick={() => setSelected(item)}
               />
             ))}
-            {(queue.data?.items.length ?? 0) === 0 && !queue.isError && (
+            {items.length === 0 && !queue.isError && (
               <div className="p-10 text-center">
                 <CheckCircle2 className="mx-auto h-8 w-8 text-emerald-300" strokeWidth={1.6} />
                 <p className="mt-3 text-sm font-bold text-text-primary">Nothing to review</p>
@@ -141,14 +164,23 @@ export function KycReviewPage() {
             )}
           </div>
 
-          <DecisionPanel item={selected} onDecided={refresh} />
+          {/* Keyed so a half-made decision on one applicant never carries over to the next. */}
+          <DecisionPanel
+            key={selected?.id ?? 'none'}
+            item={selected}
+            onDecided={(decided) => {
+              // Show the recorded decision, not the stale row it was made on.
+              setSelected(decided);
+              refresh();
+            }}
+          />
         </div>
       )}
     </div>
   );
 }
 
-function Filter<T extends number | undefined>({
+function Filter<T extends number | string | undefined>({
   label,
   value,
   onChange,
@@ -164,9 +196,15 @@ function Filter<T extends number | undefined>({
       {label}
       <select
         value={value === undefined ? '' : String(value)}
-        onChange={(event) =>
-          onChange((event.target.value === '' ? undefined : Number(event.target.value)) as T)
-        }
+        onChange={(event) => {
+          // Map back through the options rather than parsing, so a filter can be numeric
+          // (state) or named (applicant kind) without the select knowing which.
+          const option = options.find(
+            (candidate) =>
+              (candidate.value === undefined ? '' : String(candidate.value)) === event.target.value,
+          );
+          onChange(option ? option.value : (undefined as T));
+        }}
         className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"
       >
         {options.map((option) => (
@@ -177,6 +215,30 @@ function Filter<T extends number | undefined>({
       </select>
     </label>
   );
+}
+
+const KIND_BADGE_TONE: Record<ApplicantKindName, string> = {
+  Creator: 'border-border-subtle text-text-secondary',
+  Vendor: 'border-border-glow bg-brand-soft text-brand',
+  Customer: 'border-info/25 bg-info-soft text-info',
+};
+
+/** Who is applying, at a glance — a buyer's identity check and a seller's application differ. */
+function ApplicantKindBadge({ kind }: { kind: number | string }) {
+  const name = applicantKindName(kind);
+  return (
+    <span
+      className={`w-[68px] shrink-0 rounded-sm border-thin px-2 py-0.5 text-center text-[10px] font-black ${
+        name ? KIND_BADGE_TONE[name] : 'border-border-subtle text-text-muted'
+      }`}
+    >
+      {name ?? `Kind ${kind}`}
+    </span>
+  );
+}
+
+function applicationTitle(kind: number | string): string {
+  return isCustomerKyc(kind) ? 'Buyer identity check (EMI)' : `${applicantKindLabel(kind)} application`;
 }
 
 /** True when the due date has passed and no decision has been recorded. */
@@ -202,10 +264,9 @@ function QueueRow({
         active ? 'bg-brand-soft' : ''
       }`}
     >
+      <ApplicantKindBadge kind={item.applicantKind} />
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-bold text-text-primary">
-          {APPLICANT_KIND_LABEL[item.applicantKind] ?? 'Applicant'} application
-        </p>
+        <p className="truncate text-sm font-bold text-text-primary">{applicationTitle(item.applicantKind)}</p>
         <p className="mt-0.5 text-[11px] text-text-muted">
           <span className="font-mono">{item.accountId.slice(0, 8)}</span>
           {' · submitted '}
@@ -231,9 +292,9 @@ function DecisionPanel({
   onDecided,
 }: {
   item: KycReviewItem | null;
-  onDecided: () => void;
+  onDecided: (decided: KycReviewItem) => void;
 }) {
-  const [reasonCode, setReasonCode] = useState('');
+  const [reasonCode, setReasonCode] = useState<KycReasonCode | ''>('');
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<KycDecisionValue | null>(null);
@@ -259,12 +320,12 @@ function DecisionPanel({
       }
       return stylemintKycApi.decide(item!.id, decision, reasonCode, note);
     },
-    onSuccess: () => {
+    onSuccess: (decided) => {
       setReasonCode('');
       setNote('');
       setError(null);
       setPending(null);
-      onDecided();
+      onDecided(decided);
     },
     onError: (caught: unknown) => {
       setPending(null);
@@ -284,17 +345,27 @@ function DecisionPanel({
   }
 
   const decided = item.state === ReviewState.Decided;
+  const customer = isCustomerKyc(item.applicantKind);
+  const isRejection = pending !== null && pending !== KycDecision.Approved;
+  const reasonOptions = pending === null ? [] : reasonCodesFor(pending, item.applicantKind);
+
+  const choose = (decision: KycDecisionValue) => {
+    setPending(decision);
+    // A code valid for one kind of rejection is refused with the other.
+    setReasonCode('');
+  };
 
   return (
     <div className="space-y-3 rounded-frame border-thin border-border-subtle bg-bg-card p-4">
       <div>
         <p className="text-sm font-bold text-text-primary">
-          {detail.data?.displayName ??
-            `${APPLICANT_KIND_LABEL[item.applicantKind] ?? 'Applicant'} application`}
+          {(customer ? detail.data?.fullName : null) ??
+            detail.data?.displayName ??
+            applicationTitle(item.applicantKind)}
         </p>
-        <p className="mt-0.5 text-[11px] text-text-muted">
-          {APPLICANT_KIND_LABEL[item.applicantKind] ?? 'Applicant'}
-          {detail.data?.legalName ? ` · ${detail.data.legalName}` : ''}
+        <p className="mt-0.5 flex items-center gap-2 text-[11px] text-text-muted">
+          <ApplicantKindBadge kind={item.applicantKind} />
+          {customer ? 'KYC Tier 2 for EMI' : (detail.data?.legalName ?? '')}
         </p>
         <p className="mt-0.5 font-mono text-[10px] text-text-muted">{item.accountId}</p>
       </div>
@@ -309,7 +380,7 @@ function DecisionPanel({
         <Row label="State" value={REVIEW_STATE_LABEL[item.state] ?? String(item.state)} />
       </dl>
 
-      <ApplicantDetail query={detail} />
+      <ApplicantDetail query={detail} customer={customer} />
 
       {decided ? (
         <div className="rounded-card border-thin border-border-subtle bg-bg-elevated p-3">
@@ -317,7 +388,10 @@ function DecisionPanel({
             {DECISION_LABEL[item.decision ?? 0] ?? 'Decided'}
           </p>
           {item.decisionReasonCode && (
-            <p className="mt-1 font-mono text-[11px] text-text-muted">{item.decisionReasonCode}</p>
+            <p className="mt-1 text-[11px] text-text-muted">
+              {REASON_CODE_LABEL[item.decisionReasonCode as KycReasonCode] ?? ''}{' '}
+              <span className="font-mono">{item.decisionReasonCode}</span>
+            </p>
           )}
           {item.decisionNote && (
             <p className="mt-1 text-xs text-text-secondary">{item.decisionNote}</p>
@@ -329,20 +403,6 @@ function DecisionPanel({
         </div>
       ) : (
         <>
-          <input
-            value={reasonCode}
-            onChange={(event) => setReasonCode(event.target.value)}
-            placeholder="Reason code (optional)"
-            className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 font-mono text-xs text-text-primary outline-none focus:border-border-glow"
-          />
-          <textarea
-            value={note}
-            onChange={(event) => setNote(event.target.value)}
-            rows={3}
-            placeholder="Note for the record (optional)"
-            className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
-          />
-
           {error && (
             <div className="flex items-start gap-2 rounded-card border-thin border-rose-400/25 bg-rose-400/5 p-2.5">
               <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-rose-300" strokeWidth={1.6} />
@@ -357,11 +417,55 @@ function DecisionPanel({
               </p>
               <p className="text-[10px] text-text-muted">
                 This is final. A rejected applicant reapplies rather than being re-decided.
+                {customer && pending === KycDecision.Approved &&
+                  ' Approving raises the buyer to KYC Tier 2, which EMI requires.'}
               </p>
+
+              {isRejection && (
+                // The backend accepts only its own codes, each paired with one kind of
+                // rejection — the free-text box this replaced could only produce a 400.
+                <label className="block space-y-1 text-[11px] font-bold text-text-secondary">
+                  Reason
+                  <select
+                    value={reasonCode}
+                    onChange={(event) => setReasonCode(event.target.value as KycReasonCode | '')}
+                    className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs font-medium text-text-primary outline-none focus:border-border-glow"
+                  >
+                    <option value="">Choose a reason…</option>
+                    {reasonOptions.map((code) => (
+                      <option key={code} value={code}>
+                        {REASON_CODE_LABEL[code]}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
+              <label className="block space-y-1 text-[11px] font-bold text-text-secondary">
+                {customer && isRejection ? 'Message to the buyer (optional)' : 'Note (optional)'}
+                <textarea
+                  value={note}
+                  onChange={(event) => setNote(event.target.value)}
+                  rows={3}
+                  maxLength={1000}
+                  placeholder={
+                    customer && isRejection
+                      ? 'e.g. The photo of the back of your citizenship is blurred — please retake it in good light.'
+                      : 'For the record'
+                  }
+                  className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs font-medium text-text-primary outline-none focus:border-border-glow"
+                />
+              </label>
+              {customer && isRejection && (
+                <p className="text-[10px] text-text-muted">
+                  The buyer sees the reason and this message in the app, so write it to them.
+                </p>
+              )}
+
               <div className="flex gap-2">
                 <button
                   onClick={() => decide.mutate(pending)}
-                  disabled={decide.isPending}
+                  disabled={decide.isPending || (isRejection && !reasonCode)}
                   className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
                 >
                   {decide.isPending ? 'Recording…' : 'Yes, record it'}
@@ -380,19 +484,19 @@ function DecisionPanel({
                 icon={CheckCircle2}
                 label="Approve"
                 tone="border-emerald-400/25 text-emerald-300 hover:bg-emerald-400/10"
-                onClick={() => setPending(KycDecision.Approved)}
+                onClick={() => choose(KycDecision.Approved)}
               />
               <DecisionButton
                 icon={Clock}
                 label="Reject — may reapply"
                 tone="border-amber-400/25 text-amber-300 hover:bg-amber-400/10"
-                onClick={() => setPending(KycDecision.RejectedRetryable)}
+                onClick={() => choose(KycDecision.RejectedRetryable)}
               />
               <DecisionButton
                 icon={XCircle}
                 label="Reject — final"
                 tone="border-rose-400/25 text-rose-300 hover:bg-rose-400/10"
-                onClick={() => setPending(KycDecision.RejectedTerminal)}
+                onClick={() => choose(KycDecision.RejectedTerminal)}
               />
             </div>
           )}
@@ -451,8 +555,10 @@ function DecisionButton({
  */
 function ApplicantDetail({
   query,
+  customer,
 }: {
   query: UseQueryResult<KycApplicationDetail, unknown>;
+  customer: boolean;
 }) {
   if (query.isLoading) {
     return <p className="text-[11px] text-text-muted">Loading the application…</p>;
@@ -468,6 +574,10 @@ function ApplicantDetail({
       </div>
     );
   }
+
+  // A buyer is a person, not a business: no legal entity, no commission band — a name, a date
+  // of birth, an ID and the photographs that prove them.
+  if (customer) return <CustomerKycDetail detail={query.data} />;
 
   const d = query.data;
   const noCommission =

@@ -53,6 +53,9 @@ export type DelinquencyBucketValue = (typeof DelinquencyBucket)[keyof typeof Del
 
 export const PaymentPurpose = { Activation: 1, Instalment: 2, Payoff: 3 } as const;
 
+/** A held payment's state: still held, being refunded, or refunded. */
+export const HeldPaymentState = { Held: 4, RefundRequested: 5, Refunded: 6 } as const;
+
 export type CreditInstalment = {
   number: number;
   /** A calendar date (`YYYY-MM-DD`) in the business time zone; null until the plan starts. */
@@ -161,18 +164,30 @@ export type ReserveSummary = {
   platformGuaranteeEnabled: boolean;
 };
 
-/** A payment that arrived and was held back. What actually arrived is in `reason`. */
+/** A payment that arrived and was held back, and where its refund stands. */
 export type UnappliedPayment = {
   attemptId: string;
   agreementId: string;
   buyerAccountId: string;
   purpose: number;
+  /** `HeldPaymentState`. */
+  state: number;
   amountRequested: number;
   currency: string;
+  /** What actually arrived — and what a refund returns. Null on rows held before it was recorded. */
+  amountReceived: number | null;
+  currencyReceived: string | null;
   paymentIntentId: string | null;
   reason: string;
   initiatedUtc: string;
   heldUtc: string | null;
+  refundRequestedUtc: string | null;
+  refundNote: string | null;
+  refundId: string | null;
+  providerRefundId: string | null;
+  refundedUtc: string | null;
+  /** Why the last refund did not go through, when it did not. */
+  lastRefundError: string | null;
 };
 
 export type AgingRunSummary = {
@@ -303,14 +318,35 @@ export const stylemintCreditApi = {
       'super',
     ),
 
-  unappliedPayments: async (): Promise<UnappliedPayment[]> =>
+  /** Held payments, oldest first — or, with `refunded`, the ones already returned, newest first. */
+  unappliedPayments: async (refunded = false): Promise<UnappliedPayment[]> =>
     unwrap(
       await stylemintOperationsApi.invoke({
         method: 'GET',
         path: `${BASE}/payments/unapplied`,
-        query: `limit=${CREDIT_LIST_LIMIT}`,
+        query: `limit=${CREDIT_LIST_LIMIT}${refunded ? '&refunded=true' : ''}`,
       }),
       'read',
+    ),
+
+  /**
+   * Returns a held payment to the buyer in full — what arrived — through Payments. The key is the
+   * caller's, so a retry after a timeout is the same request; the backend also answers a refund
+   * already under way or done with where it stands rather than refunding again.
+   */
+  refundHeldPayment: async (
+    attemptId: string,
+    note: string,
+    idempotencyKey: string,
+  ): Promise<UnappliedPayment> =>
+    unwrap(
+      await stylemintOperationsApi.invoke({
+        method: 'POST',
+        path: `${BASE}/payments/${encodeURIComponent(attemptId)}/refund`,
+        body: JSON.stringify({ note: note.trim() || null }),
+        idempotencyKey,
+      }),
+      'decide',
     ),
 
   /** Runs the daily aging pass now. Safe to repeat: reminders already sent today are skipped. */

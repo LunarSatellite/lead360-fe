@@ -35,6 +35,7 @@ vi.mock('../api/stylemint-credit.api', async () => {
       reserve: vi.fn(),
       addCapital: vi.fn(),
       unappliedPayments: vi.fn(),
+      refundHeldPayment: vi.fn(),
       runAging: vi.fn(),
     },
   };
@@ -139,12 +140,21 @@ const held: UnappliedPayment = {
   agreementId: referred.id,
   buyerAccountId: referred.buyerAccountId,
   purpose: 1,
+  state: 4,
   amountRequested: 12000,
   currency: 'NPR',
+  amountReceived: 11000,
+  currencyReceived: 'NPR',
   paymentIntentId: '9fc0ae0b-ca4d-4c44-b111-37f1fb02e644',
   reason: 'amount 11000 does not match the 12000 requested',
   initiatedUtc: '2026-03-02T06:00:00+00:00',
   heldUtc: '2026-03-02T06:03:00+00:00',
+  refundRequestedUtc: null,
+  refundNote: null,
+  refundId: null,
+  providerRefundId: null,
+  refundedUtc: null,
+  lastRefundError: null,
 };
 
 function renderAt(search = '') {
@@ -244,13 +254,71 @@ describe('the credit console', () => {
     expect(api.addCapital.mock.calls[0]).toEqual([50000, api.addCapital.mock.calls[1][1]]);
   });
 
-  it('lists held payments with what arrived and the intent to refund', async () => {
+  it('lists held payments with what arrived, what was asked, and the intent', async () => {
     renderAt('?tab=held');
 
     const table = await screen.findByRole('table');
     expect(within(table).getByText(held.reason)).toBeInTheDocument();
     expect(within(table).getByText(held.paymentIntentId!)).toBeInTheDocument();
-    expect(screen.getByText(/There is no refund action in the console yet/)).toBeInTheDocument();
+    expect(within(table).getByText(/11,000/)).toBeInTheDocument();
+    expect(within(table).getByText(/asked .*12,000/)).toBeInTheDocument();
+  });
+
+  it('refunds what arrived after confirming, and shows it returned', async () => {
+    api.refundHeldPayment.mockResolvedValue({ ...held, state: 6 });
+    renderAt('?tab=held');
+
+    fireEvent.click(await screen.findByRole('button', { name: /Refund/ }));
+
+    await waitFor(() => expect(api.refundHeldPayment).toHaveBeenCalledTimes(1));
+    const [attemptId, note, key] = api.refundHeldPayment.mock.calls[0];
+    expect(attemptId).toBe(held.attemptId);
+    expect(note).toBe('');
+    expect(key).toMatch(/[0-9a-f-]{36}/);
+    const { confirmDialog } = await import('@/shared/ui/confirm');
+    expect(vi.mocked(confirmDialog).mock.calls[0][0].message).toContain('11,000');
+  });
+
+  it('a refused refund says why and can be tried again as a new refund', async () => {
+    api.refundHeldPayment
+      .mockRejectedValueOnce(new Error('eSewa rejected the refund.'))
+      .mockResolvedValueOnce({ ...held, state: 6 });
+    renderAt('?tab=held');
+
+    const button = await screen.findByRole('button', { name: /Refund/ });
+    fireEvent.click(button);
+    expect(await screen.findByText('eSewa rejected the refund.')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Refund/ }));
+
+    await waitFor(() => expect(api.refundHeldPayment).toHaveBeenCalledTimes(2));
+    expect(api.refundHeldPayment.mock.calls[0][2]).not.toBe(api.refundHeldPayment.mock.calls[1][2]);
+  });
+
+  it('shows a refund under way and one already returned without offering to refund again', async () => {
+    api.unappliedPayments.mockResolvedValue([
+      { ...held, attemptId: 'a-requested', state: 5, refundRequestedUtc: '2026-03-02T07:00:00+00:00' },
+      {
+        ...held,
+        attemptId: 'a-refunded',
+        state: 6,
+        refundedUtc: '2026-03-02T07:01:00+00:00',
+        providerRefundId: 'PSP-R-1',
+      },
+    ]);
+    renderAt('?tab=held');
+
+    expect(await screen.findByText('Refund under way')).toBeInTheDocument();
+    expect(screen.getByText('PSP-R-1')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^Refund$/ })).not.toBeInTheDocument();
+  });
+
+  it('shows why the last refund failed on a payment held again', async () => {
+    api.unappliedPayments.mockResolvedValue([
+      { ...held, lastRefundError: 'The refund could not be confirmed. Check the payment at the provider.' },
+    ]);
+    renderAt('?tab=held');
+
+    expect(await screen.findByText(/Last refund: The refund could not be confirmed/)).toBeInTheDocument();
   });
 
   it('shows delinquency by guarantor from the database sums', async () => {

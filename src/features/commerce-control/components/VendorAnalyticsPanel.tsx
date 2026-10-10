@@ -174,8 +174,8 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                   <Tooltip
                     formatter={(value) => [`${Number(value).toLocaleString('fr-CD')} CDF`, 'Revenu']}
                     contentStyle={{
-                      background: '#111827',
-                      border: '1px solid rgba(148,163,184,.2)',
+                      background: 'rgb(var(--color-surface-inset))',
+                      border: '1px solid rgb(var(--color-text-muted) / 0.2)',
                       borderRadius: 12,
                     }}
                   />
@@ -221,8 +221,8 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                         'Trafic',
                       ]}
                       contentStyle={{
-                        background: '#111827',
-                        border: '1px solid rgba(148,163,184,.2)',
+                        background: 'rgb(var(--color-surface-inset))',
+                        border: '1px solid rgb(var(--color-text-muted) / 0.2)',
                         borderRadius: 12,
                       }}
                     />
@@ -317,8 +317,8 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                   <Tooltip
                     formatter={(value) => [`${Number(value).toLocaleString('fr-CD')} CDF`, 'Revenu']}
                     contentStyle={{
-                      background: '#111827',
-                      border: '1px solid rgba(148,163,184,.2)',
+                      background: 'rgb(var(--color-surface-inset))',
+                      border: '1px solid rgb(var(--color-text-muted) / 0.2)',
                       borderRadius: 12,
                     }}
                   />

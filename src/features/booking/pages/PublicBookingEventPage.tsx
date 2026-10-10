@@ -11,7 +11,7 @@ import type { PublicBookingPageDto, MeetingSlotDto } from '../api/booking.api';
 import { useCaptchaToken } from '../hooks/useCaptchaToken';
 
 const inputCls =
-  'w-full px-3 py-2 rounded-xl bg-[#0f1117] border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-all';
+  'w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-all';
 
 function PublicBookingEventPage() {
   const { slug, eventTypeId } = useParams<{ slug: string; eventTypeId: string }>();
@@ -82,7 +82,7 @@ function PublicBookingEventPage() {
 
   if (pageLoading) {
     return (
-      <div className="min-h-screen bg-[#0f1117] flex items-center justify-center">
+      <div className="min-h-screen bg-bg flex items-center justify-center">
         <Loader2 className="w-7 h-7 animate-spin text-indigo-400" />
       </div>
     );
@@ -90,7 +90,7 @@ function PublicBookingEventPage() {
 
   if (!page || !eventType) {
     return (
-      <div className="min-h-screen bg-[#0f1117] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-bg flex items-center justify-center p-4">
         <div className="bg-bg-elevated border border-border-subtle rounded-card p-10 max-w-md w-full text-center">
           <Calendar className="w-10 h-10 text-text-muted mx-auto mb-4 opacity-40" />
           <h1 className="text-lg font-bold text-text-primary mb-2">Not found</h1>
@@ -103,7 +103,7 @@ function PublicBookingEventPage() {
   if (confirmed) {
     const slotDate = parseISO(confirmed.confirmedSlot);
     return (
-      <div className="min-h-screen bg-[#0f1117] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-bg flex items-center justify-center p-4">
         <div className="bg-bg-elevated border border-border-subtle rounded-card p-10 max-w-md w-full text-center">
           <div className="w-16 h-16 rounded-full bg-green-400/10 border border-green-400/20 flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-8 h-8 text-green-400" />
@@ -142,7 +142,7 @@ function PublicBookingEventPage() {
   const groupedSlots = groupSlotsByDate(slots ?? []);
 
   return (
-    <div className="min-h-screen bg-[#0f1117] p-4">
+    <div className="min-h-screen bg-bg p-4">
       <div className="max-w-lg mx-auto pt-8 pb-16">
         {/* Back */}
         <button

@@ -739,7 +739,7 @@ export function VendorOperationsPage() {
 
   return (
     <div className="mx-auto max-w-[1500px] space-y-5">
-      <section className="relative overflow-hidden rounded-[26px] border border-brand/20 bg-gradient-to-br from-[#07130e] via-[#0a1511] to-[#11100a] p-6 md:p-8">
+      <section className="relative overflow-hidden rounded-[26px] border border-brand/20 bg-gradient-to-br from-bg via-bg to-[#11100a] p-6 md:p-8">
         <div className="absolute -right-16 -top-24 h-64 w-64 rounded-full bg-brand/15 blur-3xl" />
         <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -791,7 +791,7 @@ export function VendorOperationsPage() {
             <button
               key={resource.key}
               onClick={() => setSelectedKey(resource.key)}
-              className={`group rounded-2xl border p-4 text-left transition-all ${selectedKey === resource.key ? 'border-brand/40 bg-brand-soft shadow-[0_12px_35px_rgba(0,217,138,0.08)]' : 'border-border-subtle bg-bg-card hover:border-border-medium'}`}
+              className={`group rounded-2xl border p-4 text-left transition-all ${selectedKey === resource.key ? 'border-brand/40 bg-brand-soft shadow-[0_12px_35px_rgb(var(--brand-rgb)/0.08)]' : 'border-border-subtle bg-bg-card hover:border-border-medium'}`}
             >
               <div className="flex items-start justify-between">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-bg-elevated">

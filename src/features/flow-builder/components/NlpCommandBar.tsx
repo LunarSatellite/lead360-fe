@@ -103,7 +103,7 @@ export function NlpCommandBar({ onSubmit, onFileUpload, isThinking, thinkingStep
 
         {/* AI Thinking animation */}
         {isThinking && thinkingSteps.length > 0 && (
-          <div className="px-4 pb-4 pt-2 border-t border-t-border-subtle bg-gradient-to-r from-[rgba(5,150,105,0.06)] to-[rgba(16,185,129,0.06)]">
+          <div className="px-4 pb-4 pt-2 border-t border-t-border-subtle bg-gradient-to-r from-[rgba(5,150,105,0.06)] to-success/[0.06]">
             <div className="flex items-center gap-2.5 mb-2.5">
               <span className="text-lg">🧠</span>
               <span className="text-xs font-bold text-brand">AI designing your flow...</span>

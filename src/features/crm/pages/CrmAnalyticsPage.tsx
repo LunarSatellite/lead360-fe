@@ -67,7 +67,7 @@ function AnalyticsTab({ onViewAiActions }: { onViewAiActions: (filter?: AiAction
   return (
     <div className="relative space-y-8">
       <div className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full blur-3xl bg-brand/10" />
-      <div className="pointer-events-none absolute top-40 right-0 w-80 h-80 rounded-full blur-3xl bg-[#00FFAA]/5" />
+      <div className="pointer-events-none absolute top-40 right-0 w-80 h-80 rounded-full blur-3xl bg-brand-beacon/5" />
       <div className="relative space-y-8">
         <DealStatsWidget />
         <RevenueWidget />

@@ -67,8 +67,8 @@ export function SuggestionCard({ suggestion: s }: SuggestionCardProps) {
   return (
     <>
       <div className={`bg-white border rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all ${
-        s.status === SuggestionStatus.Approved ? 'border-[rgba(16,185,129,0.2)]' :
-        s.status === SuggestionStatus.Rejected ? 'border-[rgba(244,63,94,0.15)] opacity-60' : 'border-border-subtle'
+        s.status === SuggestionStatus.Approved ? 'border-success/20' :
+        s.status === SuggestionStatus.Rejected ? 'border-danger/15 opacity-60' : 'border-border-subtle'
       }`}>
         <div className="px-5 py-4 space-y-3">
           {/* Top row */}

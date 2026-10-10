@@ -326,7 +326,7 @@ function BadgePanel() {
           type="checkbox"
           checked={override}
           onChange={(e) => setOverride(e.target.checked)}
-          className="h-3.5 w-3.5 accent-[#00D97E]"
+          className="h-3.5 w-3.5 accent-brand-glow"
         />
         SuperAdmin override — revoke a badge the normal rules protect
       </label>

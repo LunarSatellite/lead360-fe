@@ -135,7 +135,7 @@ export function CopilotPanel() {
 
           {/* Confirmation prompt for a destructive action */}
           {confirm && (
-            <div className="bg-warning-soft border-thin border-[rgba(245,158,11,0.25)] rounded-card p-3 space-y-2">
+            <div className="bg-warning-soft border-thin border-warning/25 rounded-card p-3 space-y-2">
               <div className="flex items-start gap-2 text-xs text-text-primary">
                 <AlertTriangle className="w-4 h-4 text-warning shrink-0 mt-0.5" />
                 <span>{confirm.prompt}</span>

@@ -108,7 +108,7 @@ export function Component() {
             <button
               onClick={chat.resetSession}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-glass-1 border border-border-medium
-                         text-xs font-semibold text-danger hover:bg-danger-soft hover:border-[rgba(244,63,94,0.15)]
+                         text-xs font-semibold text-danger hover:bg-danger-soft hover:border-danger/15
                          transition-all duration-150"
             >
               <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.8} />

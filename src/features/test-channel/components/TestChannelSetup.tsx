@@ -147,7 +147,7 @@ export function TestChannelSetup({ tenantId, onReady }: TestChannelSetupProps) {
           {/* Error state */}
           {setupStatus === 'error' && (
             <div className="space-y-3">
-              <div className="px-4 py-3 rounded-lg bg-danger-soft border border-[rgba(244,63,94,0.15)]">
+              <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15">
                 <div className="flex items-start gap-2">
                   <XCircle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" strokeWidth={1.6} />
                   <p className="text-xs text-danger leading-relaxed">{errorMsg}</p>
@@ -178,11 +178,11 @@ function SetupStep({ label, status }: { label: string; status: StepStatus }) {
     <div
       className={`flex items-center gap-3 px-4 py-2.5 rounded-lg border transition-all duration-200 ${
         status === 'done'
-          ? 'bg-success-soft border-[rgba(16,185,129,0.15)]'
+          ? 'bg-success-soft border-success/15'
           : status === 'loading'
             ? 'bg-brand-soft border-brand'
             : status === 'error'
-              ? 'bg-danger-soft border-[rgba(244,63,94,0.15)]'
+              ? 'bg-danger-soft border-danger/15'
               : 'bg-glass-1 border-border-subtle opacity-40'
       }`}
     >

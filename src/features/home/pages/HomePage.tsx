@@ -416,15 +416,15 @@ function JourneyPath({
     <svg viewBox="0 0 760 210" className="w-full h-auto" style={{ minHeight: 160 }}>
       <defs>
         <filter id="home-glowDone">
-          <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#00D97E" floodOpacity="0.4" />
+          <feDropShadow dx="0" dy="0" stdDeviation="3" style={{ floodColor: 'rgb(var(--color-brand-glow))' }} floodOpacity="0.4" />
         </filter>
         <linearGradient id="home-fadeGreenL" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#00D97E" />
-          <stop offset="100%" stopColor="#1A2B22" />
+          <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} />
+          <stop offset="100%" style={{ stopColor: 'rgb(var(--color-border-subtle))' }} />
         </linearGradient>
         <linearGradient id="home-fadeGreenR" x1="100%" y1="0%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="#00D97E" />
-          <stop offset="100%" stopColor="#1A2B22" />
+          <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} />
+          <stop offset="100%" style={{ stopColor: 'rgb(var(--color-border-subtle))' }} />
         </linearGradient>
       </defs>
 
@@ -433,16 +433,16 @@ function JourneyPath({
         const leftDone = steps[i]?.done;
         const rightDone = steps[i + 1]?.done;
         let stroke: string;
-        if (leftDone && rightDone) stroke = '#00D97E';
+        if (leftDone && rightDone) stroke = 'rgb(var(--color-brand-glow))';
         else if (leftDone && !rightDone) stroke = 'url(#home-fadeGreenL)';
         else if (!leftDone && rightDone) stroke = 'url(#home-fadeGreenR)';
-        else stroke = '#1A2B22';
+        else stroke = 'rgb(var(--color-border-subtle))';
         return (
           <path
             key={i}
             d={seg}
             fill="none"
-            stroke={stroke}
+            style={{ stroke }}
             strokeWidth="2.5"
             strokeLinecap="round"
           />
@@ -471,7 +471,7 @@ function JourneyPath({
                 cy={n.y}
                 r="30"
                 fill="none"
-                stroke="#E6F5ED"
+                className="stroke-text-primary"
                 strokeWidth="1.5"
                 opacity="0.25"
                 strokeDasharray="4 3"
@@ -482,22 +482,23 @@ function JourneyPath({
               cx={n.x}
               cy={n.y}
               r="24"
-              fill={isDone ? 'rgba(0,217,126,0.08)' : '#0B1210'}
-              stroke={isDone ? '#00D97E' : isActive ? '#8FAEA0' : '#1A2B22'}
+              style={{
+                fill: isDone ? 'rgb(var(--color-brand-glow) / 0.08)' : 'rgb(var(--color-surface-app))',
+                stroke: isDone ? 'rgb(var(--color-brand-glow))' : isActive ? 'rgb(var(--color-text-muted))' : 'rgb(var(--color-border-subtle))',
+              }}
               strokeWidth={isSelected || isActive ? 2.5 : 2}
               filter={isDone ? 'url(#home-glowDone)' : undefined}
             />
 
             {isActive && (
               <>
-                <circle cx={n.x + 17} cy={n.y - 17} r="4" fill="#F59E0B" />
+                <circle cx={n.x + 17} cy={n.y - 17} r="4" className="fill-warning" />
                 <circle
                   cx={n.x + 17}
                   cy={n.y - 17}
                   r="4"
-                  fill="#F59E0B"
                   opacity="0.5"
-                  className="setup-beacon"
+                  className="setup-beacon fill-warning"
                 />
               </>
             )}
@@ -508,7 +509,7 @@ function JourneyPath({
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M5 12l5 5L20 7"
-                      stroke="#00D97E"
+                      className="stroke-brand-glow"
                       strokeWidth="3"
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -526,7 +527,7 @@ function JourneyPath({
               textAnchor="middle"
               fontSize="11"
               fontWeight="600"
-              fill={isDone ? '#00D97E' : isSelected || isActive ? '#E8F0EC' : '#8FAEA0'}
+              style={{ fill: isDone ? 'rgb(var(--color-brand-glow))' : isSelected || isActive ? 'rgb(var(--color-text-primary))' : 'rgb(var(--color-text-muted))' }}
             >
               {step.title}
             </text>
@@ -565,7 +566,7 @@ function LiveRow({ name, action, time }: { name: string; action: string; time: s
   const initial = name.charAt(0).toUpperCase();
   return (
     <div className="flex items-center gap-2.5 py-2 border-b border-thin border-border-subtle last:border-b-0">
-      <div className="w-7 h-7 rounded-full bg-[#132A21] flex items-center justify-center text-2xs font-bold text-brand shrink-0">
+      <div className="w-7 h-7 rounded-full bg-glass-1 flex items-center justify-center text-2xs font-bold text-brand shrink-0">
         {initial}
       </div>
       <div className="flex-1 min-w-0">
@@ -587,7 +588,7 @@ function ConversationRow({ session }: { session: SessionDto }) {
       onClick={() => navigate(`${ROUTES.dashboard.conversations}?session=${session.id}`)}
       className="w-full flex items-center gap-2.5 py-2 border-b border-thin border-border-subtle last:border-b-0 text-left hover:bg-glass-2 transition-colors rounded-sm px-1 -mx-1"
     >
-      <div className="w-7 h-7 rounded-full bg-[#132A21] flex items-center justify-center text-2xs font-bold text-brand shrink-0">
+      <div className="w-7 h-7 rounded-full bg-glass-1 flex items-center justify-center text-2xs font-bold text-brand shrink-0">
         {initial}
       </div>
       <div className="flex-1 min-w-0">

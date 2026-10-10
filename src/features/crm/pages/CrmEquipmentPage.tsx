@@ -94,7 +94,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
             {eq.purchasedAt && <div className="flex justify-between"><span className="text-text-muted">Purchased</span><span>{format(parseISO(eq.purchasedAt), 'MMM d, yyyy')}</span></div>}
             {eq.installedAt && <div className="flex justify-between"><span className="text-text-muted">Installed</span><span>{format(parseISO(eq.installedAt), 'MMM d, yyyy')}</span></div>}
             {eq.warrantyEndDate && <div className="flex justify-between"><span className="text-text-muted">Warranty Ends</span><span className="text-text-primary">{format(parseISO(eq.warrantyEndDate), 'MMM d, yyyy')}</span></div>}
-            {eq.nextServiceDue && <div className="flex justify-between"><span className="text-text-muted">Next Service</span><span className="text-[#F59E0B]">{format(parseISO(eq.nextServiceDue), 'MMM d, yyyy')}</span></div>}
+            {eq.nextServiceDue && <div className="flex justify-between"><span className="text-text-muted">Next Service</span><span className="text-warning">{format(parseISO(eq.nextServiceDue), 'MMM d, yyyy')}</span></div>}
             {eq.lastServicedAt && <div className="flex justify-between"><span className="text-text-muted">Last Serviced</span><span>{format(parseISO(eq.lastServicedAt), 'MMM d, yyyy')}</span></div>}
             {eq.purchasePrice != null && <div className="flex justify-between"><span className="text-text-muted">Purchase Price</span><span>{eq.currency} {eq.purchasePrice.toLocaleString()}</span></div>}
             {eq.description && <div><span className="text-text-muted block mb-1">Description</span><p className="text-text-secondary text-xs">{eq.description}</p></div>}
@@ -254,7 +254,7 @@ export function Component() {
                     <td className="px-4 py-3 text-text-secondary text-xs">{eq.siteLabel ?? '—'}</td>
                     <td className="px-4 py-3"><Badge value={eq.status} labels={CRM_EQUIPMENT_STATUS_LABELS} colors={CRM_EQUIPMENT_STATUS_COLORS} /></td>
                     <td className="px-4 py-3 text-text-muted text-xs">{eq.warrantyEndDate ? format(parseISO(eq.warrantyEndDate), 'MMM d, yyyy') : '—'}</td>
-                    <td className="px-4 py-3 text-xs">{eq.nextServiceDue ? <span className="text-[#F59E0B]">{format(parseISO(eq.nextServiceDue), 'MMM d, yyyy')}</span> : '—'}</td>
+                    <td className="px-4 py-3 text-xs">{eq.nextServiceDue ? <span className="text-warning">{format(parseISO(eq.nextServiceDue), 'MMM d, yyyy')}</span> : '—'}</td>
                   </tr>
                 ))}
               </tbody>

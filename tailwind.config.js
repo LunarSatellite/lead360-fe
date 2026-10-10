@@ -19,6 +19,7 @@ export default {
       colors: {
         bg: {
           DEFAULT: 'rgb(var(--color-surface-app) / <alpha-value>)',
+          sunken: 'rgb(var(--color-surface-sunken) / <alpha-value>)',
           shell: 'rgb(var(--color-surface-inset) / <alpha-value>)',
           card: 'rgb(var(--color-surface-card) / <alpha-value>)',
           elevated: 'rgb(var(--color-surface-elevated) / <alpha-value>)',
@@ -32,6 +33,9 @@ export default {
         border: {
           subtle: 'rgb(var(--color-border-subtle) / <alpha-value>)',
           medium: 'rgb(var(--color-border-default) / <alpha-value>)',
+          // Connective chrome — flow-canvas edges, dividers that have to read
+          // against a card rather than disappear into it.
+          strong: 'rgb(var(--color-border-strong) / <alpha-value>)',
           // The tint alpha is itself per-product: see the note on
           // --alpha-brand-glow in globals.css.
           glow: 'rgb(var(--brand-rgb) / var(--alpha-brand-glow))',
@@ -41,12 +45,23 @@ export default {
           primary: 'rgb(var(--color-text-primary) / <alpha-value>)',
           secondary: 'rgb(var(--color-text-secondary) / <alpha-value>)',
           muted: 'rgb(var(--color-text-muted) / <alpha-value>)',
+          // Label on a brand-filled control, and on any light chip.
+          inverted: 'rgb(var(--color-text-inverted) / <alpha-value>)',
         },
         brand: {
           DEFAULT: 'rgb(var(--brand-rgb) / <alpha-value>)',
           light: 'rgb(var(--brand-light-rgb) / <alpha-value>)',
           dark: 'rgb(var(--brand-dark-rgb) / <alpha-value>)',
           soft: 'rgb(var(--brand-rgb) / var(--alpha-brand-soft))',
+          // `brand.glow` is a *hue*, not a tint: the second brand green the
+          // AuroraBI port left behind for glows and drop-shadows — see the
+          // note beside --color-brand-glow in globals.css. Do not confuse it
+          // with `border.glow` below, which is the brand hue at
+          // --alpha-brand-glow. StyleMint collapses the two greens, so there
+          // it is simply the brand colour.
+          glow: 'rgb(var(--color-brand-glow) / <alpha-value>)',
+          'glow-light': 'rgb(var(--color-brand-glow-light) / <alpha-value>)',
+          beacon: 'rgb(var(--color-brand-beacon) / <alpha-value>)',
         },
         success: {
           DEFAULT: 'rgb(var(--color-success) / <alpha-value>)',

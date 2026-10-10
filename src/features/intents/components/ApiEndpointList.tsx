@@ -309,7 +309,7 @@ function EndpointDetail({ endpoint }: { endpoint: ApiEndpointDto }) {
                 return schemes.map((scheme) => (
                   <span
                     key={`${idx}-${scheme}`}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-warning-soft border border-[rgba(245,158,11,0.12)] text-[10px] font-bold text-warning"
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-warning-soft border border-warning/[0.12] text-[10px] font-bold text-warning"
                   >
                     <Shield className="w-3 h-3" strokeWidth={1.8} />
                     {scheme}

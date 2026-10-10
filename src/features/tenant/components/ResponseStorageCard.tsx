@@ -21,8 +21,8 @@ function EnableConfirmDialog({
       <div
         className="relative w-full max-w-sm mx-4"
         style={{
-          background: '#0A0F0D',
-          border: '1px solid #253D32',
+          background: 'rgb(var(--color-surface-sunken))',
+          border: '1px solid rgb(var(--color-border-default))',
           borderRadius: 18,
           boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
         }}
@@ -161,7 +161,7 @@ export function ResponseStorageCard() {
     <>
       <div className="rounded-[14px] border border-border-medium bg-bg-shell p-5 transition-colors hover:border-glass-3">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-[10px] bg-[rgba(0,217,126,0.06)] border border-border-subtle flex items-center justify-center shrink-0 mt-0.5">
+          <div className="w-9 h-9 rounded-[10px] bg-brand-glow/[0.06] border border-border-subtle flex items-center justify-center shrink-0 mt-0.5">
             <Database className="w-4 h-4 text-brand" strokeWidth={1.5} />
           </div>
 
@@ -188,7 +188,7 @@ export function ResponseStorageCard() {
               <Loader2 className="w-3 h-3 text-text-muted animate-spin" strokeWidth={1.8} />
             )}
             {save.isError && !save.isPending && (
-              <span className="text-[10px] text-[#F43F5E]">Failed to save</span>
+              <span className="text-[10px] text-danger">Failed to save</span>
             )}
           </div>
         </div>

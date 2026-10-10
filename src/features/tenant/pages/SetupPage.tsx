@@ -111,16 +111,16 @@ function JourneyPath({
     <svg viewBox="0 0 760 210" className="w-full h-auto" style={{ minHeight: 160 }}>
       <defs>
         <filter id="glowDone">
-          <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#00D97E" floodOpacity="0.35" />
+          <feDropShadow dx="0" dy="0" stdDeviation="3" style={{ floodColor: 'rgb(var(--color-brand-glow))' }} floodOpacity="0.35" />
         </filter>
         {/* Gradient for segments where start=done, end=not done */}
         <linearGradient id="fadeGreenL" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#00D97E" />
-          <stop offset="100%" stopColor="#1A2B22" />
+          <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} />
+          <stop offset="100%" style={{ stopColor: 'rgb(var(--color-border-subtle))' }} />
         </linearGradient>
         <linearGradient id="fadeGreenR" x1="100%" y1="0%" x2="0%" y2="0%">
-          <stop offset="0%" stopColor="#00D97E" />
-          <stop offset="100%" stopColor="#1A2B22" />
+          <stop offset="0%" style={{ stopColor: 'rgb(var(--color-brand-glow))' }} />
+          <stop offset="100%" style={{ stopColor: 'rgb(var(--color-border-subtle))' }} />
         </linearGradient>
       </defs>
 
@@ -131,17 +131,17 @@ function JourneyPath({
 
         let strokeColor: string;
         if (leftDone && rightDone) {
-          strokeColor = '#00D97E';
+          strokeColor = 'rgb(var(--color-brand-glow))';
         } else if (leftDone && !rightDone) {
           strokeColor = `url(#fadeGreenL)`;
         } else if (!leftDone && rightDone) {
           strokeColor = `url(#fadeGreenR)`;
         } else {
-          strokeColor = '#1A2B22';
+          strokeColor = 'rgb(var(--color-border-subtle))';
         }
 
         return (
-          <path key={i} d={seg} fill="none" stroke={strokeColor} strokeWidth="2.5" strokeLinecap="round" />
+          <path key={i} d={seg} fill="none" style={{ stroke: strokeColor }} strokeWidth="2.5" strokeLinecap="round" />
         );
       })}
 
@@ -170,7 +170,7 @@ function JourneyPath({
                 cy={n.y}
                 r="30"
                 fill="none"
-                stroke="#E6F5ED"
+                className="stroke-text-primary"
                 strokeWidth="1.5"
                 opacity="0.2"
                 strokeDasharray="4 3"
@@ -181,22 +181,23 @@ function JourneyPath({
               cx={n.x}
               cy={n.y}
               r="24"
-              fill={isDone ? '#00D97E12' : '#0B1210'}
-              stroke={isDone ? '#00D97E' : isActive ? '#8FAEA0' : '#1A2B22'}
+              style={{
+                fill: isDone ? 'rgb(var(--color-brand-glow) / 0.071)' : 'rgb(var(--color-surface-app))',
+                stroke: isDone ? 'rgb(var(--color-brand-glow))' : isActive ? 'rgb(var(--color-text-muted))' : 'rgb(var(--color-border-subtle))',
+              }}
               strokeWidth={2}
               filter={isDone ? 'url(#glowDone)' : undefined}
             />
             {/* Active: small pulsing dot at top-right corner */}
             {isActive && (
               <>
-                <circle cx={n.x + 17} cy={n.y - 17} r="4" fill="#F59E0B" />
+                <circle cx={n.x + 17} cy={n.y - 17} r="4" className="fill-warning" />
                 <circle
                   cx={n.x + 17}
                   cy={n.y - 17}
                   r="4"
-                  fill="#F59E0B"
                   opacity="0.5"
-                  className="setup-beacon"
+                  className="setup-beacon fill-warning"
                 />
               </>
             )}
@@ -217,7 +218,7 @@ function JourneyPath({
                     height="16"
                     viewBox="0 0 24 24"
                     fill="none"
-                    stroke="#00D97E"
+                    className="stroke-brand-glow"
                     strokeWidth="3"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -236,7 +237,7 @@ function JourneyPath({
               textAnchor="middle"
               fontSize="12"
               fontWeight={isDone ? '700' : '600'}
-              fill={isDone ? '#00D97E' : isActive ? '#E6F5ED' : '#4D6E5F'}
+              style={{ fill: isDone ? 'rgb(var(--color-brand-glow))' : isActive ? 'rgb(var(--color-text-primary))' : 'rgb(var(--color-text-muted) / 0.6)' }}
               fontFamily="Inter, system-ui, sans-serif"
             >
               {n.label}
@@ -247,7 +248,9 @@ function JourneyPath({
               y={n.y + 55}
               textAnchor="middle"
               fontSize="10"
-              fill={isDone ? '#4D6E5F' : isActive ? '#8FAEA0' : '#4D6E5F'}
+              style={{
+                fill: isActive ? 'rgb(var(--color-text-muted))' : 'rgb(var(--color-text-muted) / 0.6)',
+              }}
               fontFamily="Inter, system-ui, sans-serif"
             >
               {step.statusText.length > 18 ? step.statusText.slice(0, 16) + '…' : step.statusText}
@@ -440,21 +443,21 @@ export function Component() {
 
       {/* ═══ ACTIVE STEP HERO (full-width now that sidebar step-list is gone — dedup with SVG journey) ═══ */}
       <div
-        className="bg-bg-card border-2 border-[#8FAEA040] rounded-2xl p-4 sm:p-6 relative overflow-hidden scroll-mt-6"
+        className="bg-bg-card border-2 border-text-muted/[0.251] rounded-2xl p-4 sm:p-6 relative overflow-hidden scroll-mt-6"
         id="setup-hero"
       >
           {steps[selectedStep]?.state === 'active' && (
-            <div className="absolute top-0 right-0 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-bl-xl bg-[#F59E0B18] text-[#F59E0B] text-[10px] sm:text-2xs font-bold tracking-wider">
+            <div className="absolute top-0 right-0 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-bl-xl bg-warning/[0.094] text-warning text-[10px] sm:text-2xs font-bold tracking-wider">
               CURRENT
             </div>
           )}
           {steps[selectedStep]?.state === 'done' && (
-            <div className="absolute top-0 right-0 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-bl-xl bg-[#00D97E18] text-[#00D97E] text-[10px] sm:text-2xs font-bold tracking-wider">
+            <div className="absolute top-0 right-0 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-bl-xl bg-brand-glow/[0.094] text-brand-glow text-[10px] sm:text-2xs font-bold tracking-wider">
               COMPLETED
             </div>
           )}
           {steps[selectedStep]?.state === 'locked' && (
-            <div className="absolute top-0 right-0 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-bl-xl bg-[#4D6E5F18] text-[#4D6E5F] text-[10px] sm:text-2xs font-bold tracking-wider">
+            <div className="absolute top-0 right-0 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-bl-xl bg-text-muted/[0.0564] text-text-muted/60 text-[10px] sm:text-2xs font-bold tracking-wider">
               LOCKED
             </div>
           )}
@@ -464,7 +467,7 @@ export function Component() {
             return (
               <>
                 <div className="flex items-center gap-4 mt-4 mb-5">
-                  <div className="w-14 h-14 rounded-2xl bg-bg-elevated border border-[#8FAEA030] flex items-center justify-center text-2xl shrink-0">
+                  <div className="w-14 h-14 rounded-2xl bg-bg-elevated border border-text-muted/[0.188] flex items-center justify-center text-2xl shrink-0">
                     {HERO_ICONS[idx]}
                   </div>
                   <div className="min-w-0">

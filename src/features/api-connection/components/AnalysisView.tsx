@@ -107,10 +107,10 @@ export function AnalysisView({ specId }: AnalysisViewProps) {
                     width: `${(item.score / item.maxScore) * 100}%`,
                     background:
                       item.score / item.maxScore >= 0.8
-                        ? '#10B981'
+                        ? 'rgb(var(--color-success))'
                         : item.score / item.maxScore >= 0.5
-                          ? '#F59E0B'
-                          : '#F43F5E',
+                          ? 'rgb(var(--color-warning))'
+                          : 'rgb(var(--color-danger))',
                   }}
                 />
               </div>

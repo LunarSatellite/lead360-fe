@@ -373,10 +373,10 @@ function TagListEditor({
   color: string;
 }) {
   const colorMap: Record<string, string> = {
-    danger: 'bg-danger-soft text-danger border-[rgba(244,63,94,0.15)]',
-    warning: 'bg-warning-soft text-warning border-[rgba(245,158,11,0.15)]',
+    danger: 'bg-danger-soft text-danger border-danger/15',
+    warning: 'bg-warning-soft text-warning border-warning/15',
     success: 'bg-success-soft text-success border-[rgba(6,214,160,0.15)]',
-    info: 'bg-info-soft text-info border-[rgba(59,130,246,0.15)]',
+    info: 'bg-info-soft text-info border-info/15',
     brand: 'bg-brand-soft text-brand border-brand',
   };
 

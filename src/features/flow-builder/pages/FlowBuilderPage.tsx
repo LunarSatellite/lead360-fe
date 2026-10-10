@@ -567,7 +567,7 @@ function FlowBuilderInner() {
                   onClick={processNlp}
                   disabled={generateFlow.isPending || !nlpInput.trim()}
                   className="w-10 h-10 rounded-xl border-none text-white text-lg cursor-pointer flex-shrink-0 flex items-center justify-center disabled:opacity-40"
-                  style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+                  style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
                 >
                   {generateFlow.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : '→'}
                 </button>
@@ -577,7 +577,7 @@ function FlowBuilderInner() {
                   className="px-4 pb-3 pt-2 border-t border-border-subtle"
                   style={{
                     background:
-                      'linear-gradient(90deg,rgba(0,217,126,0.04),rgba(167,139,250,0.06),rgba(0,217,126,0.04))',
+                      'linear-gradient(90deg,rgb(var(--color-brand-glow) / 0.04),rgb(var(--color-violet-light) / 0.06),rgb(var(--color-brand-glow) / 0.04))',
                     backgroundSize: '200% 100%',
                     animation: 'shimmer 2s linear infinite',
                   }}
@@ -591,7 +591,7 @@ function FlowBuilderInner() {
                       key={i}
                       className="flex items-center gap-1.5 text-xs mb-px"
                       style={{
-                        color: i < thinkStep ? '#10B981' : i === thinkStep ? '#059669' : '#708A7E',
+                        color: i < thinkStep ? 'rgb(var(--color-success))' : i === thinkStep ? '#059669' : '#708A7E',
                         fontWeight: i === thinkStep ? 600 : 400,
                       }}
                     >
@@ -727,7 +727,7 @@ function FlowBuilderInner() {
                   onClick={saveAiChanges}
                   disabled={saveFlow.isPending}
                   className="px-4 py-2 rounded-xl text-2xs font-bold text-white flex items-center gap-1.5 transition-all disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+                  style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
                 >
                   {saveFlow.isPending ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -866,7 +866,7 @@ function FlowBuilderInner() {
               onClick={() => editor.flowId && activateFlow.mutate(editor.flowId)}
               disabled={!editor.flowId || activateFlow.isPending}
               className="px-3 py-1.5 rounded-lg text-2xs font-bold text-white border-none cursor-pointer disabled:opacity-40 flex items-center gap-1.5 hover:-translate-y-px transition-all"
-              style={{ background: 'linear-gradient(135deg,#059669,#10B981)' }}
+              style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}
             >
               {activateFlow.isPending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -942,7 +942,7 @@ function FlowBuilderInner() {
                       editor.removeNode(sel.id);
                       setSel(null);
                     }}
-                    className="mt-1.5 w-full py-1 rounded-md bg-danger-soft border border-[rgba(244,63,94,.12)] text-2xs font-semibold text-danger cursor-pointer"
+                    className="mt-1.5 w-full py-1 rounded-md bg-danger-soft border border-danger/[0.12] text-2xs font-semibold text-danger cursor-pointer"
                   >
                     Delete
                   </button>
@@ -957,7 +957,7 @@ function FlowBuilderInner() {
                         borderRadius: 10,
                         ...(m.role === 'user'
                           ? {
-                              background: 'linear-gradient(135deg,#059669,#10B981)',
+                              background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))',
                               color: '#fff',
                               borderBottomRightRadius: 3,
                             }
@@ -984,7 +984,7 @@ function FlowBuilderInner() {
                       className="inline-block px-3 py-2 text-2xs rounded-[10px]"
                       style={{
                         background:
-                          'linear-gradient(90deg,rgba(0,217,126,0.04),rgba(167,139,250,0.06),rgba(0,217,126,0.04))',
+                          'linear-gradient(90deg,rgb(var(--color-brand-glow) / 0.04),rgb(var(--color-violet-light) / 0.06),rgb(var(--color-brand-glow) / 0.04))',
                         backgroundSize: '200% 100%',
                         animation: 'shimmer 2s linear infinite',
                       }}

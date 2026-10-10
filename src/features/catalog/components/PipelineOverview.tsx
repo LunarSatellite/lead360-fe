@@ -111,10 +111,10 @@ function ProgressRingSmall({ pct, accent }: { pct: number; accent: string }) {
     warning: '#F59E0B',
     brand: '#059669',
   };
-  const color = colorMap[accent] || '#94A3B8';
+  const color = colorMap[accent] || 'rgb(var(--color-text-muted))';
   return (
     <svg width={44} height={44}>
-      <circle cx={22} cy={22} r={r} fill="none" stroke="#111916" strokeWidth={4} />
+      <circle cx={22} cy={22} r={r} fill="none" className="stroke-bg-shell" strokeWidth={4} />
       <circle
         cx={22}
         cy={22}
@@ -180,9 +180,9 @@ function PipelineFlow({ sync, enrichment, embedding, cache }: PipelineOverviewPr
           <div
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-semibold transition-all ${
               step.done
-                ? 'bg-success-soft border-[rgba(16,185,129,0.15)] text-success'
+                ? 'bg-success-soft border-success/15 text-success'
                 : step.inProgress
-                  ? 'bg-info-soft border-[rgba(59,130,246,0.15)] text-info'
+                  ? 'bg-info-soft border-info/15 text-info'
                   : 'bg-glass-1 border-border-subtle text-text-muted'
             }`}
           >

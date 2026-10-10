@@ -157,8 +157,8 @@ function IntentTreeNode({
             disabled={isDeleting}
             className={`p-2 rounded-lg border text-xs transition-all ${
               confirmDelete
-                ? 'bg-danger-soft border-[rgba(244,63,94,0.2)] text-danger'
-                : 'border-border-subtle bg-glass-1 text-text-muted hover:text-danger hover:bg-danger-soft hover:border-[rgba(244,63,94,0.15)]'
+                ? 'bg-danger-soft border-danger/20 text-danger'
+                : 'border-border-subtle bg-glass-1 text-text-muted hover:text-danger hover:bg-danger-soft hover:border-danger/15'
             } disabled:opacity-40`}
             title={confirmDelete ? 'Click again to confirm' : 'Delete'}
           >

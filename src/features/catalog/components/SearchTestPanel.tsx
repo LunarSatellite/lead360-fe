@@ -118,7 +118,7 @@ function SearchResultCard({ item, rank }: { item: SearchProductDto; rank: number
 
   return (
     <div
-      className={`bg-bg-card border rounded-xl p-4  ${item.isRecommended ? 'border-[rgba(16,185,129,0.2)]' : 'border-border-subtle'}`}
+      className={`bg-bg-card border rounded-xl p-4  ${item.isRecommended ? 'border-success/20' : 'border-border-subtle'}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">

@@ -430,7 +430,7 @@ export function DashboardLayout() {
         title={item.label}
         className={`sidebar-nav-item group relative flex items-center gap-3 rounded-xl transition-all duration-200 ${
           isActive
-            ? 'bg-gradient-to-r from-[rgba(0,217,138,0.18)] via-[rgba(0,217,138,0.06)] to-transparent text-text-primary font-semibold'
+            ? 'bg-gradient-to-r from-brand/[0.18] via-brand/[0.06] to-transparent text-text-primary font-semibold'
             : 'text-text-muted hover:text-text-secondary hover:bg-glass-1'
         }`}
         style={{
@@ -467,7 +467,7 @@ export function DashboardLayout() {
     <div className="flex h-screen bg-bg overflow-hidden">
       {/* ═══ SIDEBAR (desktop only) ═══ */}
       <aside
-        className="sidebar-shell hidden lg:flex flex-col bg-[#060908] border-r border-border-subtle flex-shrink-0"
+        className="sidebar-shell hidden lg:flex flex-col bg-bg-sunken border-r border-border-subtle flex-shrink-0"
         style={{
           width: showExpanded ? 240 : 64,
           transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -486,7 +486,7 @@ export function DashboardLayout() {
             justifyContent: showExpanded ? 'flex-start' : 'center',
           }}
         >
-          <div className="w-9 h-9 rounded-xl bg-[#050808] flex items-center justify-center p-0.5 shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-bg-sunken flex items-center justify-center p-0.5 shrink-0">
             <img
               src={tenantBrand?.logoUrl || FALLBACK_LOGO_SRC}
               alt={tenantBrand?.name || FALLBACK_BRAND_NAME}
@@ -614,7 +614,7 @@ export function DashboardLayout() {
                 justifyContent: showExpanded ? 'flex-start' : 'center',
               }}
             >
-              <div className="w-8 h-8 rounded-lg bg-[#132A21] flex items-center justify-center text-2xs font-extrabold text-[#8FAEA0] shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-glass-1 flex items-center justify-center text-2xs font-extrabold text-text-muted shrink-0">
                 {initials}
               </div>
               {showExpanded && (
@@ -668,10 +668,10 @@ export function DashboardLayout() {
       {/* ═══ MAIN CONTENT ═══ */}
       <main className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Header */}
-        <header className="bg-[#080A09] border-b border-border-subtle px-4 lg:px-6 h-14 flex items-center gap-3 flex-shrink-0">
+        <header className="bg-bg-sunken border-b border-border-subtle px-4 lg:px-6 h-14 flex items-center gap-3 flex-shrink-0">
           {/* Compact logo on mobile only — sidebar is hidden */}
           <div className="lg:hidden flex items-center shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-[#050808] flex items-center justify-center p-0.5">
+            <div className="w-8 h-8 rounded-lg bg-bg-sunken flex items-center justify-center p-0.5">
               <img
                 src={tenantBrand?.logoUrl || FALLBACK_LOGO_SRC}
                 alt={tenantBrand?.name || FALLBACK_BRAND_NAME}
@@ -713,7 +713,7 @@ export function DashboardLayout() {
 
       {/* ═══ MOBILE BOTTOM TAB BAR ═══ */}
       <nav
-        className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-[#080A09] border-t border-border-subtle flex items-stretch h-16"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-40 bg-bg-sunken border-t border-border-subtle flex items-stretch h-16"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         {primaryMobileTabs.map((tab) => {
@@ -769,7 +769,7 @@ export function DashboardLayout() {
           <div className="flex-1 overflow-auto px-4 py-4 space-y-5">
             {/* Profile card at top */}
             <div className="flex items-center gap-3 p-3 rounded-xl bg-bg-elevated border border-border-subtle">
-              <div className="w-10 h-10 rounded-lg bg-[#132A21] flex items-center justify-center text-xs font-extrabold text-[#8FAEA0] shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-glass-1 flex items-center justify-center text-xs font-extrabold text-text-muted shrink-0">
                 {initials}
               </div>
               <div className="flex-1 min-w-0">
@@ -873,7 +873,7 @@ function MoreNavLink({ item }: { item: { label: string; href: string; icon: Luci
           <item.icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-brand' : ''}`} strokeWidth={1.6} />
           <span className="text-sm flex-1">{item.label}</span>
           {item.badge && (
-            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-[rgba(167,139,250,0.1)] text-[#A78BFA]">
+            <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-violet-light/10 text-violet-light">
               {item.badge}
             </span>
           )}

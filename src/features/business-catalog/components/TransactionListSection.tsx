@@ -216,7 +216,7 @@ function TypeBadge({ type }: { type: string }) {
   return (
     <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold border flex-shrink-0
       ${service
-        ? 'bg-info-soft text-info border-[rgba(59,130,246,0.2)]'
+        ? 'bg-info-soft text-info border-info/20'
         : 'bg-success-soft text-success border-[rgba(6,214,160,0.2)]'
       }`}
     >

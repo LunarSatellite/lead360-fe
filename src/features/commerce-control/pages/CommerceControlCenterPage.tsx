@@ -179,7 +179,7 @@ export function CommerceControlCenterPage() {
 
   return (
     <div className="mx-auto max-w-[1500px] space-y-6">
-      <section className="relative overflow-hidden rounded-[28px] border border-emerald-400/20 bg-[#07130e] px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.28)] md:px-9 md:py-9">
+      <section className="relative overflow-hidden rounded-[28px] border border-emerald-400/20 bg-bg px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.28)] md:px-9 md:py-9">
         <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-emerald-400/15 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 left-1/3 h-36 w-80 bg-amber-300/10 blur-3xl" />
         <div className="relative grid gap-8 xl:grid-cols-[1.35fr_.65fr] xl:items-end">
@@ -212,7 +212,7 @@ export function CommerceControlCenterPage() {
                   {readyCount}/{readiness.length}
                 </p>
               </div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-300 text-[#142016]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-300 text-text-inverted">
                 <PackageCheck className="h-5 w-5" />
               </div>
             </div>

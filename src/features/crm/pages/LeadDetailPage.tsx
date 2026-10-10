@@ -28,8 +28,8 @@ import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
 function activityDotColor(activityType: number): string {
   switch (activityType) {
     case 1:  return 'bg-brand';                  // ConversationStarted
-    case 2:  return 'bg-[#A78BFA]';              // IntentDetected (purple)
-    case 3:  return 'bg-[#F59E0B]';              // StageChanged (amber)
+    case 2:  return 'bg-violet-light';              // IntentDetected (purple)
+    case 3:  return 'bg-warning';              // StageChanged (amber)
     case 4:  return 'bg-text-secondary';         // ScoreUpdated
     case 7:  return 'bg-brand';                  // NurtureMessageSent
     case 11: return 'bg-success';                // Converted
@@ -558,8 +558,8 @@ function EnrollModal({ leadId, onClose }: { leadId: string; onClose: () => void 
 function EnrollmentHistoryCard({ enrollments }: { enrollments: NurtureEnrollmentDto[] }) {
   const STATUS_COLORS: Record<number, string> = {
     1: 'text-brand bg-brand/10 border-brand/20',
-    2: 'text-warning bg-warning/10 border-warning/20',
-    3: 'text-success bg-success/10 border-success/20',
+    2: 'text-warning bg-warning-soft border-warning/20',
+    3: 'text-success bg-success-soft border-success/20',
     4: 'text-text-muted bg-bg-elevated border-border-subtle',
   };
   const STATUS_LABELS: Record<number, string> = {
@@ -600,8 +600,8 @@ const ENROLLMENT_STATUS_LABELS: Record<number, string> = {
 
 const ENROLLMENT_STATUS_COLORS: Record<number, string> = {
   1: 'text-brand bg-brand-soft border-border-glow',
-  2: 'text-[#F59E0B] bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.2)]',
-  3: 'text-success bg-success-soft border-[rgba(34,197,94,0.2)]',
+  2: 'text-warning bg-warning-soft border-warning/20',
+  3: 'text-success bg-success-soft border-success/20',
   4: 'text-text-muted bg-bg-elevated border-border-subtle',
 };
 

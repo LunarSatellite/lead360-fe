@@ -238,9 +238,9 @@ export function Component() {
               <p className="text-sm text-text-primary">{aiSummary.headline}</p>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className={`text-2xs px-2 py-0.5 rounded-full font-medium border ${
-                  aiSummary.riskLevel === 'High' ? 'bg-danger-soft text-danger border-[rgba(244,63,94,0.2)]'
-                  : aiSummary.riskLevel === 'Medium' ? 'bg-warning-soft text-warning border-[rgba(245,158,11,0.2)]'
-                  : 'bg-success-soft text-success border-[rgba(16,185,129,0.2)]'
+                  aiSummary.riskLevel === 'High' ? 'bg-danger-soft text-danger border-danger/20'
+                  : aiSummary.riskLevel === 'Medium' ? 'bg-warning-soft text-warning border-warning/20'
+                  : 'bg-success-soft text-success border-success/20'
                 }`}>
                   {aiSummary.riskLevel} Risk
                 </span>
@@ -281,13 +281,13 @@ export function Component() {
         )}
 
         {(deal as any).winReason && (
-          <div className="mt-4 p-3 rounded-xl bg-success-soft border border-[rgba(34,197,94,0.2)]">
+          <div className="mt-4 p-3 rounded-xl bg-success-soft border border-success/20">
             <p className="text-xs text-success font-semibold">Win reason</p>
             <p className="text-sm text-text-secondary mt-0.5">{(deal as any).winReason}</p>
           </div>
         )}
         {deal.lostReason && (
-          <div className="mt-4 p-3 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.2)]">
+          <div className="mt-4 p-3 rounded-xl bg-danger-soft border border-danger/20">
             <p className="text-xs text-danger font-semibold">Lost reason</p>
             <p className="text-sm text-text-secondary mt-0.5">{deal.lostReason}</p>
           </div>

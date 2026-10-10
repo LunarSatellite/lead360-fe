@@ -177,7 +177,7 @@ export function Component() {
         </div>
 
         {pending.length > 0 && (
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-warning-soft text-warning border border-[rgba(245,158,11,0.3)]">
+          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-warning-soft text-warning border border-warning/30">
             {pending.length} pending
           </span>
         )}

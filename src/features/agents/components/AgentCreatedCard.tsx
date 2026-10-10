@@ -74,7 +74,7 @@ export function AgentCreatedCardRenderer({ card }: Props) {
     <div className="bg-glass-1 border border-border-subtle rounded-card overflow-hidden">
       {/* Header strip */}
       <div className="flex items-center gap-3 px-3.5 py-2.5">
-        <div className="w-7 h-7 rounded-lg bg-success-soft border border-[rgba(16,185,129,0.15)] flex items-center justify-center shrink-0">
+        <div className="w-7 h-7 rounded-lg bg-success-soft border border-success/15 flex items-center justify-center shrink-0">
           <Check className="w-4 h-4 text-success" strokeWidth={2.4} />
         </div>
 

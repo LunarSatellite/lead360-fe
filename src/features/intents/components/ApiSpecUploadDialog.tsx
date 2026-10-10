@@ -354,7 +354,7 @@ function Field({
 
 function ErrorBanner({ message }: { message: string }) {
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg bg-danger-soft border border-[rgba(244,63,94,0.15)]">
+    <div className="flex items-start gap-3 p-3 rounded-lg bg-danger-soft border border-danger/15">
       <AlertCircle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" strokeWidth={1.8} />
       <p className="text-xs text-danger font-medium">{message}</p>
     </div>

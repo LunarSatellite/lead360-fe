@@ -116,7 +116,7 @@ export function AdsReportTab() {
     <div className="space-y-5 overflow-y-auto flex-1">
       {/* Combined metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <MetricCard icon={DollarSign} label="Total Spend" value={`$${fmtNum(totalSpend)}`} color="text-[#F59E0B]" bgColor="bg-[rgba(245,158,11,0.08)]" />
+        <MetricCard icon={DollarSign} label="Total Spend" value={`$${fmtNum(totalSpend)}`} color="text-warning" bgColor="bg-warning/[0.08]" />
         <MetricCard icon={Eye} label="Impressions" value={fmtNum(totalImpressions)} color="text-brand" bgColor="bg-brand-soft" />
         <MetricCard icon={MousePointer} label="Clicks" value={fmtNum(totalClicks)} color="text-info" bgColor="bg-info-soft" />
         <MetricCard icon={Users} label="Reach" value={fmtNum(totalReach)} color="text-success" bgColor="bg-success-soft" />
@@ -126,7 +126,7 @@ export function AdsReportTab() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <MetricCard icon={Target} label="Results / Leads" value={fmtNum(totalLeads)} color="text-[#E4405F]" bgColor="bg-[rgba(228,64,95,0.08)]" />
         <MetricCard icon={TrendingUp} label="CTR" value={`${overallCtr.toFixed(2)}%`} color="text-brand" bgColor="bg-brand-soft" />
-        <MetricCard icon={DollarSign} label="Avg CPC" value={`$${overallCpc.toFixed(2)}`} color="text-[#F59E0B]" bgColor="bg-[rgba(245,158,11,0.08)]" />
+        <MetricCard icon={DollarSign} label="Avg CPC" value={`$${overallCpc.toFixed(2)}`} color="text-warning" bgColor="bg-warning/[0.08]" />
         <MetricCard icon={Zap} label="Active / Total" value={`${activeCampaigns} / ${totalCampaigns}`} color="text-success" bgColor="bg-success-soft" />
       </div>
 
@@ -285,8 +285,8 @@ function StatusBadge({ status }: { status: string }) {
   const isPaused = s === 'PAUSED';
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border ${
-      isActive ? 'text-success bg-success-soft border-[rgba(16,185,129,0.15)]'
-      : isPaused ? 'text-[#F59E0B] bg-[rgba(245,158,11,0.08)] border-[rgba(245,158,11,0.15)]'
+      isActive ? 'text-success bg-success-soft border-success/15'
+      : isPaused ? 'text-warning bg-warning/[0.08] border-warning/15'
       : 'text-text-muted bg-bg-elevated border-border-subtle'
     }`}>
       {isActive ? '● Active' : isPaused ? '◆ Paused' : status || 'Unknown'}

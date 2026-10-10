@@ -68,7 +68,7 @@ export function Component() {
             placeholder="you@company.com"
             autoComplete="email"
             inputMode="email"
-            className="w-full px-3.5 sm:px-4 py-3 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgba(0,217,126,0.1)] transition-all"
+            className="w-full px-3.5 sm:px-4 py-3 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all"
           />
           {form.formState.errors.email && (
             <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
@@ -92,7 +92,7 @@ export function Component() {
               type={showPw ? 'text' : 'password'}
               placeholder="••••••••••"
               autoComplete="current-password"
-              className="w-full px-3.5 sm:px-4 py-3 pr-12 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgba(0,217,126,0.1)] transition-all"
+              className="w-full px-3.5 sm:px-4 py-3 pr-12 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all"
             />
             <button
               type="button"
@@ -110,7 +110,7 @@ export function Component() {
 
         {/* Error */}
         {login.isError && (
-          <div className="px-3.5 sm:px-4 py-3 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">
+          <div className="px-3.5 sm:px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger">
             {login.error?.message || 'Login failed.'}
           </div>
         )}

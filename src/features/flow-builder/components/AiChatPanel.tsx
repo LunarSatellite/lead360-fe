@@ -110,7 +110,7 @@ export function AiChatPanel({ flowId, llmConversationJson, onFlowUpdated }: AiCh
                 borderRadius: 10,
                 ...(m.role === 'user'
                   ? {
-                      background: 'linear-gradient(135deg,#059669,#10B981)',
+                      background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))',
                       color: '#fff',
                       borderBottomRightRadius: 3,
                     }

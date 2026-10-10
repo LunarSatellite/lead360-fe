@@ -227,7 +227,7 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
       {/* Delete */}
       <button
         onClick={() => onDelete(node.id)}
-        className="w-full mt-2 py-2 rounded-lg bg-danger-soft border border-[rgba(244,63,94,.12)] text-2xs font-semibold text-danger cursor-pointer hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5"
+        className="w-full mt-2 py-2 rounded-lg bg-danger-soft border border-danger/[0.12] text-2xs font-semibold text-danger cursor-pointer hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5"
       >
         <Trash2 className="w-3 h-3" />
         Delete Node

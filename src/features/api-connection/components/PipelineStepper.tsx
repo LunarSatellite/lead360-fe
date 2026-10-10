@@ -24,7 +24,7 @@ export function PipelineStepper({ currentStep, completedSteps, onStepClick }: Pi
                 isActive
                   ? 'bg-brand-soft text-brand border border-brand'
                   : isDone
-                    ? 'bg-success-soft text-success border border-[rgba(16,185,129,0.15)]'
+                    ? 'bg-success-soft text-success border border-success/15'
                     : isClickable
                       ? 'bg-glass-1 text-text-secondary border border-border-subtle hover:bg-glass-2 cursor-pointer'
                       : 'bg-glass-1 text-text-muted border border-border-subtle opacity-50 cursor-not-allowed'

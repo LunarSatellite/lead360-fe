@@ -145,7 +145,7 @@ function AcceptForm({ invitation, token, email }: { invitation: TeamInvitationDt
         </div>
 
         {accept.isError && (
-          <div className="px-4 py-3 rounded-lg bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">
+          <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger">
             {accept.error?.message || 'Failed to accept invitation.'}
           </div>
         )}

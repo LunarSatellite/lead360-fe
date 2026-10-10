@@ -48,9 +48,9 @@ export default function PortalLayout() {
         <div className="flex items-center gap-2.5 px-5 py-4 border-b border-thin border-border-subtle">
           <div
             className="w-8 h-8 rounded-sm flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+            style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
           >
-            <Zap className="w-4 h-4" strokeWidth={2} style={{ color: '#0A0F0D' }} />
+            <Zap className="w-4 h-4" strokeWidth={2} style={{ color: 'rgb(var(--color-text-inverted))' }} />
           </div>
           <span className="text-sm font-extrabold text-text-primary truncate">Customer Portal</span>
         </div>
@@ -97,9 +97,9 @@ export default function PortalLayout() {
           <div className="flex items-center gap-2">
             <div
               className="w-7 h-7 rounded-sm flex items-center justify-center shrink-0"
-              style={{ background: 'linear-gradient(135deg, #00FFAA 0%, #00B368 100%)' }}
+              style={{ background: 'linear-gradient(135deg, rgb(var(--color-brand-beacon)) 0%, rgb(var(--brand-dark-rgb)) 100%)' }}
             >
-              <Zap className="w-3.5 h-3.5" strokeWidth={2} style={{ color: '#0A0F0D' }} />
+              <Zap className="w-3.5 h-3.5" strokeWidth={2} style={{ color: 'rgb(var(--color-text-inverted))' }} />
             </div>
             <span className="text-sm font-extrabold text-text-primary">Portal</span>
           </div>

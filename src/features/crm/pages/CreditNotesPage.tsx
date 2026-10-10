@@ -114,7 +114,7 @@ function DetailPanel({ note }: { note: CrmCreditNoteDto }) {
             </button>
           )}
           {note.applyMethod === CreditNoteApplyMethod.CashRefund && (
-            <button onClick={() => setShowRefund(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-[rgba(34,197,94,0.2)] hover:opacity-80 transition-all">
+            <button onClick={() => setShowRefund(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 transition-all">
               <Wallet className="w-3.5 h-3.5" /> Record Refund
             </button>
           )}

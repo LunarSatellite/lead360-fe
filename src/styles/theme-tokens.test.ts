@@ -61,6 +61,7 @@ function contrast(a: [number, number, number], b: [number, number, number]) {
 
 const TEXT_TOKENS = ['--color-text-primary', '--color-text-body', '--color-text-secondary', '--color-text-muted'];
 const SURFACE_TOKENS = [
+  '--color-surface-sunken',
   '--color-surface-app',
   '--color-surface-inset',
   '--color-surface-card',

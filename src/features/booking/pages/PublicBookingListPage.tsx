@@ -11,7 +11,7 @@ function PublicBookingListPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0f1117] flex items-center justify-center">
+      <div className="min-h-screen bg-bg flex items-center justify-center">
         <Loader2 className="w-7 h-7 animate-spin text-indigo-400" />
       </div>
     );
@@ -19,7 +19,7 @@ function PublicBookingListPage() {
 
   if (isError || !page) {
     return (
-      <div className="min-h-screen bg-[#0f1117] flex items-center justify-center p-4">
+      <div className="min-h-screen bg-bg flex items-center justify-center p-4">
         <div className="bg-bg-elevated border border-border-subtle rounded-card p-10 max-w-md w-full text-center">
           <Calendar className="w-10 h-10 text-text-muted mx-auto mb-4 opacity-40" />
           <h1 className="text-lg font-bold text-text-primary mb-2">Page not found</h1>
@@ -32,7 +32,7 @@ function PublicBookingListPage() {
   const eventTypes = page.eventTypes ?? [];
 
   return (
-    <div className="min-h-screen bg-[#0f1117] p-4">
+    <div className="min-h-screen bg-bg p-4">
       <div className="max-w-lg mx-auto pt-12 pb-16">
         {/* Header */}
         <div className="text-center mb-10">

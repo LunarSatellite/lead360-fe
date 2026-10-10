@@ -43,7 +43,7 @@ export function Component() {
   };
 
   const inputCls =
-    'w-full px-3.5 sm:px-4 py-3 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgba(0,217,126,0.1)] transition-all';
+    'w-full px-3.5 sm:px-4 py-3 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all';
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -216,7 +216,7 @@ export function Component() {
 
         {/* Error */}
         {register.isError && (
-          <div className="px-3.5 sm:px-4 py-3 rounded-xl bg-danger-soft border border-[rgba(244,63,94,0.15)] text-sm text-danger">
+          <div className="px-3.5 sm:px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger">
             {register.error?.message || 'Registration failed.'}
           </div>
         )}

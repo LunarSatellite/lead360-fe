@@ -28,6 +28,8 @@ export const AgreementState = {
   Declined: 6,
   Cancelled: 7,
   Expired: 8,
+  /** Started, then unwound: its order was cancelled before it shipped, or the item returned. */
+  Reversed: 9,
 } as const;
 export type AgreementStateValue = (typeof AgreementState)[keyof typeof AgreementState];
 
@@ -53,8 +55,12 @@ export type DelinquencyBucketValue = (typeof DelinquencyBucket)[keyof typeof Del
 
 export const PaymentPurpose = { Activation: 1, Instalment: 2, Payoff: 3 } as const;
 
-/** A held payment's state: still held, being refunded, or refunded. */
-export const HeldPaymentState = { Held: 4, RefundRequested: 5, Refunded: 6 } as const;
+/**
+ * Money owed back to a buyer: still held, being refunded, refunded — or applied to a plan that was
+ * since reversed, and owed back for that reason. A reversed plan's refunds start on their own; one
+ * shows here as owed only when its refund did not go through.
+ */
+export const HeldPaymentState = { Held: 4, RefundRequested: 5, Refunded: 6, ReversalRefundDue: 7 } as const;
 
 export type CreditInstalment = {
   number: number;
@@ -100,6 +106,8 @@ export type CreditAgreement = {
   activatedUtc: string | null;
   goodsReleasedUtc: string | null;
   closedUtc: string | null;
+  /** When it was reversed because its order was cancelled or returned. */
+  reversedUtc: string | null;
   needsActivationPayment: boolean;
   /**
    * The order checkout created for it. A plan starts with the order that delivers its item:
@@ -194,6 +202,8 @@ export type UnappliedPayment = {
   refundedUtc: string | null;
   /** Why the last refund did not go through, when it did not. */
   lastRefundError: string | null;
+  /** Set when it was applied and its plan later reversed — the order cancelled or returned. */
+  reversedUtc: string | null;
 };
 
 export type AgingRunSummary = {

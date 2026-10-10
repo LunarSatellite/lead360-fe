@@ -102,6 +102,7 @@ export function CreditAgreementDetail({
         )}
         <Fact label="Applied" value={new Date(a.appliedUtc).toLocaleString()} />
         {a.activatedUtc && <Fact label="Started" value={new Date(a.activatedUtc).toLocaleString()} />}
+        {a.reversedUtc && <Fact label="Reversed" value={new Date(a.reversedUtc).toLocaleString()} />}
       </dl>
 
       {a.stateReasons.length > 0 && (

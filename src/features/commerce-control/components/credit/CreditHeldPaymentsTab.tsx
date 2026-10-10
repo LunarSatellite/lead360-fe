@@ -100,6 +100,11 @@ export function CreditHeldPaymentsTab() {
   );
 }
 
+/** When it became owed back: when it was held, or when its plan was reversed. */
+function owedSince(p: UnappliedPayment): string | null {
+  return p.reversedUtc ?? p.heldUtc;
+}
+
 /** What a refund will return: what arrived, in the currency it arrived in. */
 function arrived(p: UnappliedPayment): string {
   return p.amountReceived !== null
@@ -137,10 +142,15 @@ function HeldPaymentRow({ payment: p }: { payment: UnappliedPayment }) {
   return (
     <tr className="border-t border-border-subtle align-top">
       <td className="px-3 py-2 text-text-secondary">
-        {p.heldUtc ? new Date(p.heldUtc).toLocaleString() : '—'}
+        {owedSince(p) ? new Date(owedSince(p)!).toLocaleString() : '—'}
       </td>
       <td className="px-3 py-2 text-text-primary">
         {PURPOSE_LABEL[p.purpose] ?? 'Payment'}
+        {p.reversedUtc && (
+          <span className="ml-1.5 rounded-xs border-thin border-info/25 bg-info-soft px-1.5 py-0.5 text-[10px] font-bold text-info">
+            plan reversed
+          </span>
+        )}
         <span className="block font-mono text-[11px] text-text-muted">
           agreement {shortId(p.agreementId)} · buyer {shortId(p.buyerAccountId)}
         </span>

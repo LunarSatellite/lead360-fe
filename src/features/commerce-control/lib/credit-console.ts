@@ -38,6 +38,7 @@ export const STATE_LABEL: Record<AgreementStateValue, string> = {
   [AgreementState.Declined]: 'Declined',
   [AgreementState.Cancelled]: 'Cancelled',
   [AgreementState.Expired]: 'Expired',
+  [AgreementState.Reversed]: 'Reversed — refunded',
 };
 
 /** Colour carries meaning: pending is amber, running green, loss red, closed muted. */
@@ -50,6 +51,7 @@ export const STATE_TONE: Record<AgreementStateValue, string> = {
   [AgreementState.Declined]: 'border-danger/25 bg-danger-soft text-danger',
   [AgreementState.Cancelled]: 'border-border-subtle text-text-muted',
   [AgreementState.Expired]: 'border-border-subtle text-text-muted',
+  [AgreementState.Reversed]: 'border-info/25 bg-info-soft text-info',
 };
 
 export const BUCKET_LABEL: Record<DelinquencyBucketValue, string> = {
@@ -92,6 +94,8 @@ const REASON_LABEL: Record<string, string> = {
   amount_below_minimum: 'Amount below the minimum',
   amount_above_maximum: 'Amount above the maximum',
   manual_review_required: "Seller's terms ask to review every request",
+  order_cancelled: 'Its order was cancelled before it shipped; every payment is being refunded',
+  order_returned: 'The item was returned; every payment is being refunded',
   interest_requires_partner: 'Interest needs a licensed partner',
   guarantor_not_allowed_for_kind: 'Guarantor not allowed for this kind',
 };

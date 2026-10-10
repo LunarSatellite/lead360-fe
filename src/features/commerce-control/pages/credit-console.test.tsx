@@ -76,6 +76,7 @@ const referred: CreditAgreement = {
   closedUtc: null,
   needsActivationPayment: false,
   orderId: null,
+  reversedUtc: null,
   instalments: [1, 2, 3].map((number) => ({
     number,
     dueDate: null,
@@ -156,6 +157,7 @@ const held: UnappliedPayment = {
   providerRefundId: null,
   refundedUtc: null,
   lastRefundError: null,
+  reversedUtc: null,
 };
 
 function renderAt(search = '') {
@@ -324,6 +326,39 @@ describe('the credit console', () => {
     expect(await screen.findByText('Refund under way')).toBeInTheDocument();
     expect(screen.getByText('PSP-R-1')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^Refund$/ })).not.toBeInTheDocument();
+  });
+
+  it('marks money owed back from a reversed plan, and when it became owed', async () => {
+    api.unappliedPayments.mockResolvedValue([
+      {
+        ...held,
+        state: 7,
+        amountReceived: 12000,
+        reason: 'The plan was reversed: its order was cancelled.',
+        reversedUtc: '2026-03-20T09:00:00+00:00',
+        lastRefundError: 'eSewa rejected the refund.',
+      },
+    ]);
+    renderAt('?tab=held');
+
+    expect(await screen.findByText('plan reversed')).toBeInTheDocument();
+    expect(screen.getByText('The plan was reversed: its order was cancelled.')).toBeInTheDocument();
+    expect(screen.getByText(/Last refund: eSewa rejected/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Refund/ })).toBeEnabled();
+  });
+
+  it('says a reversed plan was refunded, and why', async () => {
+    api.agreement.mockResolvedValue({
+      ...referred,
+      state: 9,
+      stateReasons: ['order_returned'],
+      reversedUtc: '2026-03-20T09:00:00+00:00',
+    });
+    renderAt(`?agreement=${referred.id}`);
+
+    // The state filter offers the label too, so wait for the panel's own explanation.
+    expect(await screen.findByText(/The item was returned; every payment is being refunded/)).toBeInTheDocument();
+    expect(screen.getAllByText('Reversed — refunded').length).toBeGreaterThan(1);
   });
 
   it('shows why the last refund failed on a payment held again', async () => {

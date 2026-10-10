@@ -2,14 +2,47 @@ import { stylemintOperationsApi } from './stylemint-operations.api';
 
 /**
  * Typed client for the Stylemint KYC review queue — the gate every creator and vendor
- * application passes through before they can sell.
+ * application passes through before they can sell, and (EMI phase 1) the gate a buyer passes
+ * through to reach KYC Tier 2 before they can pay in instalments.
  *
  * Travels over the operator pass-through like the rest of the long tail, with real types here
  * because a screen is built on it.
  */
 
-export const ApplicantKind = { Creator: 1, Vendor: 2 } as const;
-export const APPLICANT_KIND_LABEL: Record<number, string> = { 1: 'Creator', 2: 'Vendor' };
+/**
+ * Admin's `KycApplicantKind`. Serialised as a number today (the enum carries no string
+ * converter), but the EMI contract asks for string enums on anything new, so readers go through
+ * `applicantKindName` in `lib/kyc-review.ts`, which accepts either.
+ *
+ * `Customer` is a buyer's Tier-2 identity check for EMI. Its number is assumed to be the next
+ * free value on the backend enum; the queue filter sends the NAME, which ASP.NET binds whatever
+ * the number turns out to be.
+ */
+export const ApplicantKind = { Creator: 1, Vendor: 2, Customer: 3 } as const;
+export type ApplicantKindName = keyof typeof ApplicantKind;
+
+/**
+ * Admin's `KycDecisionReasonCode` — a closed set. The backend rejects any other string, and
+ * pairs each code with one kind of rejection: retryable codes with "may reapply", terminal codes
+ * with "final". The free-text field this replaced could only ever produce a 400 on a rejection.
+ */
+export const KYC_REASON_CODES = {
+  retryable: ['DOCS_UNCLEAR', 'DOCS_MISMATCH', 'CATEGORY_MISSING', 'POLICY_VIOLATION_RECOVERABLE'],
+  terminal: ['FRAUD_SUSPECTED', 'SANCTIONS_HIT', 'UNDERAGE'],
+} as const;
+export type KycReasonCode =
+  | (typeof KYC_REASON_CODES.retryable)[number]
+  | (typeof KYC_REASON_CODES.terminal)[number];
+
+export const REASON_CODE_LABEL: Record<KycReasonCode, string> = {
+  DOCS_UNCLEAR: 'Documents unclear or unreadable',
+  DOCS_MISMATCH: 'Details do not match the documents',
+  CATEGORY_MISSING: 'Product category missing',
+  POLICY_VIOLATION_RECOVERABLE: 'Policy issue that can be fixed',
+  FRAUD_SUSPECTED: 'Fraud suspected',
+  SANCTIONS_HIT: 'Sanctions list match',
+  UNDERAGE: 'Under 18',
+};
 
 export const ReviewState = { Pending: 1, InReview: 2, Decided: 3 } as const;
 export const REVIEW_STATE_LABEL: Record<number, string> = {
@@ -33,7 +66,8 @@ export const DECISION_LABEL: Record<number, string> = {
 
 export type KycReviewItem = {
   id: string;
-  applicantKind: number;
+  /** A number today; a name if the backend moves the enum to strings. */
+  applicantKind: number | string;
   applicationId: string;
   accountId: string;
   state: number;
@@ -56,6 +90,14 @@ export type KycReviewItem = {
 export type KycApplicationDocument = {
   id: string;
   documentType: string;
+  /**
+   * Customer KYC only, both optional: the buyer upload's own kind from the EMI contract
+   * (`CitizenshipFront`, `PassportBio`, `Selfie`, …) and/or Identity's document side
+   * (`Front`/`Back`, or 1/2). Either is enough to place the image in the comparison view; with
+   * neither, the document is still listed, just not placed beside the selfie.
+   */
+  kind?: string | null;
+  side?: string | number | null;
   status: string;
   originalFilename?: string | null;
   contentType: string;
@@ -70,9 +112,19 @@ export type KycApplicationDocument = {
  * The queue item itself carries only ids, so until this endpoint existed a
  * reviewer was deciding on a GUID.
  */
+/** One earlier, already-decided submission by the same buyer. */
+export type KycPreviousAttempt = {
+  kycItemId?: string | null;
+  submittedUtc: string;
+  decidedUtc?: string | null;
+  decision?: number | string | null;
+  decisionReasonCode?: string | null;
+  decisionNote?: string | null;
+};
+
 export type KycApplicationDetail = {
   kycItemId: string;
-  applicantKind: number;
+  applicantKind: number | string;
   applicationId: string;
   accountId: string;
   displayName: string;
@@ -89,6 +141,29 @@ export type KycApplicationDetail = {
   submittedUtc: string;
   expectedDecisionByUtc?: string | null;
   documents: KycApplicationDocument[];
+
+  // Customer (EMI Tier 2) only. All optional: absent on creator and vendor rows, and a
+  // customer row must still open against a backend that has not filled them in yet.
+
+  /** Legal name as the buyer typed it; `displayName` is the fallback. */
+  fullName?: string | null;
+  /** ISO date, `YYYY-MM-DD`. */
+  dateOfBirth?: string | null;
+  /**
+   * `Citizenship | NationalId | Passport` — the identity the buyer is claiming, as on the
+   * contract's submit body. Not to be confused with each uploaded document's `documentType`.
+   */
+  documentType?: string | null;
+  /**
+   * The ID number. Whichever of these arrives, the console masks it to the last four, so a full
+   * number never reaches the screen even if the backend sends one.
+   */
+  documentNumberMasked?: string | null;
+  documentNumberLast4?: string | null;
+  documentNumber?: string | null;
+  postalCode?: string | null;
+  /** Earlier decided submissions by the same account, newest first. */
+  previousAttempts?: KycPreviousAttempt[] | null;
 };
 
 export type KycQueuePage = {
@@ -120,7 +195,8 @@ function unwrap<T>(response: { status: number; body: unknown }): T {
 
 export const stylemintKycApi = {
   queue: async (params: {
-    applicantKind?: number;
+    /** Sent by name: ASP.NET binds an enum query value from its name as well as its number. */
+    applicantKind?: ApplicantKindName;
     state?: number;
     overdueOnly?: boolean;
     pageNumber?: number;
@@ -154,6 +230,22 @@ export const stylemintKycApi = {
         path: `${BASE}/${encodeURIComponent(kycItemId)}/application`,
       }),
     ),
+
+  /**
+   * Where to fetch one document's file — `{ url }` — so a reviewer can look at it.
+   *
+   * Per document and on demand, like the courier panel's: the URL of someone's ID scan is
+   * disclosed only when a reviewer asks to see it, never alongside the list.
+   */
+  documentLink: async (kycItemId: string, documentId: string): Promise<string> =>
+    unwrap<{ url: string }>(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path:
+          `${BASE}/${encodeURIComponent(kycItemId)}` +
+          `/documents/${encodeURIComponent(documentId)}/link`,
+      }),
+    ).url,
 
   /**
    * Takes the item, moving it Pending → In review. A decision is only legal on an

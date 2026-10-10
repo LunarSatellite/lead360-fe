@@ -101,6 +101,12 @@ export type CreditAgreement = {
   goodsReleasedUtc: string | null;
   closedUtc: string | null;
   needsActivationPayment: boolean;
+  /**
+   * The order checkout created for it. A plan starts with the order that delivers its item:
+   * approved with none, the buyer has not checked out yet; approved with one, it waits for the
+   * first payment. Set from then on.
+   */
+  orderId: string | null;
   instalments: CreditInstalment[];
 };
 

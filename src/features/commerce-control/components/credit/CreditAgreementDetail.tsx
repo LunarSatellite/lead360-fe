@@ -93,6 +93,13 @@ export function CreditAgreementDetail({
         )}
         <Fact label="Buyer" value={a.buyerAccountId} mono />
         <Fact label="Seller" value={a.vendorAccountId} mono />
+        {a.orderId ? (
+          <Fact label="Order" value={a.orderId} mono />
+        ) : (
+          a.state === AgreementState.Approved && (
+            <Fact label="Order" value="Not checked out yet" tone="text-text-secondary" />
+          )
+        )}
         <Fact label="Applied" value={new Date(a.appliedUtc).toLocaleString()} />
         {a.activatedUtc && <Fact label="Started" value={new Date(a.activatedUtc).toLocaleString()} />}
       </dl>

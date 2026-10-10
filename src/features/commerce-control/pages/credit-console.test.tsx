@@ -75,6 +75,7 @@ const referred: CreditAgreement = {
   goodsReleasedUtc: null,
   closedUtc: null,
   needsActivationPayment: false,
+  orderId: null,
   instalments: [1, 2, 3].map((number) => ({
     number,
     dueDate: null,
@@ -201,6 +202,19 @@ describe('the credit console', () => {
     expect(
       screen.getAllByText("Seller's terms ask to review every request").length,
     ).toBeGreaterThan(0);
+  });
+
+  it('says whether an approved plan has been checked out, and names its order', async () => {
+    api.agreement.mockResolvedValue({ ...referred, state: 2, stateReasons: [] });
+    const first = renderAt(`?agreement=${referred.id}`);
+    expect(await screen.findByText('Not checked out yet')).toBeInTheDocument();
+    first.unmount();
+
+    const orderId = '7a1e3f52-9a0b-4c55-8d1e-2b6f0c9e4d11';
+    api.agreement.mockResolvedValue({ ...referred, state: 2, stateReasons: [], orderId });
+    renderAt(`?agreement=${referred.id}`);
+    expect(await screen.findByText(orderId)).toBeInTheDocument();
+    expect(screen.queryByText('Not checked out yet')).not.toBeInTheDocument();
   });
 
   it('warns before deciding a plan the seller carries, and needs a reason to decline', async () => {

@@ -107,6 +107,12 @@ export const stylemintOperationsApi = {
     query?: string;
     /** Raw JSON request body. Ignored for GET. */
     body?: string;
+    /**
+     * Sent as `Idempotency-Key`, which Lead360 forwards upstream. Without it Lead360 generates
+     * one per call — fine for a single click, but a caller retrying after a timeout must send the
+     * same key both times or the operation may run twice.
+     */
+    idempotencyKey?: string;
     signal?: AbortSignal;
   }): Promise<OperationResponse> => {
     const startedAt = performance.now();
@@ -122,7 +128,10 @@ export const stylemintOperationsApi = {
       url,
       method: params.method,
       data: sendsBody && params.body ? params.body : undefined,
-      headers: sendsBody && params.body ? { 'Content-Type': 'application/json' } : undefined,
+      headers: {
+        ...(sendsBody && params.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(params.idempotencyKey ? { 'Idempotency-Key': params.idempotencyKey } : {}),
+      },
       // The body is already a JSON string from the editor; axios must not re-encode it,
       // and a malformed draft should reach the server as-is so its error is the real one.
       transformRequest: [(data) => data],

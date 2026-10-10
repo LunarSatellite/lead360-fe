@@ -53,6 +53,8 @@ export type RefundContext = {
   orderId: string;
   orderNumber: string;
   paymentIntentId?: string | null;
+  /** Set on an order a payment plan pays for: it has no single payment; the plan refunds it. */
+  creditAgreementId?: string | null;
   refundableAmount: number;
   currency: string;
   state: string;

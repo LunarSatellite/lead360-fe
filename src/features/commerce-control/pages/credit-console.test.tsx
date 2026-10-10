@@ -36,6 +36,10 @@ vi.mock('../api/stylemint-credit.api', async () => {
       addCapital: vi.fn(),
       unappliedPayments: vi.fn(),
       refundHeldPayment: vi.fn(),
+      refundQuote: vi.fn(),
+      refunds: vi.fn(),
+      refundPlan: vi.fn(),
+      retryRefundPayment: vi.fn(),
       runAging: vi.fn(),
     },
   };
@@ -77,6 +81,7 @@ const referred: CreditAgreement = {
   needsActivationPayment: false,
   orderId: null,
   reversedUtc: null,
+  priceReduced: 0,
   instalments: [1, 2, 3].map((number) => ({
     number,
     dueDate: null,
@@ -88,6 +93,7 @@ const referred: CreditAgreement = {
     outstanding: 16000,
     state: 1,
     paidUtc: null,
+    credited: 0,
   })),
 };
 
@@ -178,6 +184,7 @@ beforeEach(() => {
   api.agreement.mockResolvedValue(referred);
   api.assessment.mockResolvedValue(assessment);
   api.unappliedPayments.mockResolvedValue([held]);
+  api.refunds.mockResolvedValue([]);
 });
 
 describe('the credit console', () => {
@@ -345,6 +352,47 @@ describe('the credit console', () => {
     expect(screen.getByText('The plan was reversed: its order was cancelled.')).toBeInTheDocument();
     expect(screen.getByText(/Last refund: eSewa rejected/)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Refund/ })).toBeEnabled();
+  });
+
+  it("lists a plan's partial refunds and retries a part the provider refused", async () => {
+    api.agreement.mockResolvedValue({ ...referred, state: 4, stateReasons: [], priceReduced: 5000 });
+    api.refunds.mockResolvedValue([
+      {
+        id: 'r1',
+        agreementId: referred.id,
+        amount: 5000,
+        credited: 0,
+        cash: 5000,
+        vendorClawback: 5000,
+        currency: 'NPR',
+        reason: 'Arrived scratched',
+        requestedById: 'admin',
+        requestedUtc: '2026-03-20T09:00:00+00:00',
+        payments: [
+          {
+            id: 'p1',
+            attemptId: 'a1',
+            paymentIntentId: '9fc0ae0b-ca4d-4c44-b111-37f1fb02e644',
+            amount: 5000,
+            currency: 'NPR',
+            state: 4,
+            requestedUtc: '2026-03-20T09:00:00+00:00',
+            completedUtc: null,
+            providerRefundId: null,
+            lastError: 'eSewa rejected the refund.',
+            supersededUtc: null,
+          },
+        ],
+      },
+    ]);
+    api.retryRefundPayment.mockResolvedValue({} as never);
+    renderAt(`?agreement=${referred.id}`);
+
+    expect(await screen.findByText('Arrived scratched')).toBeInTheDocument();
+    expect(screen.getByText('eSewa rejected the refund.')).toBeInTheDocument();
+    expect(screen.getByText('Did not go through')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: /Try again/ }));
+    await waitFor(() => expect(api.retryRefundPayment).toHaveBeenCalledWith('p1', expect.any(String)));
   });
 
   it('says a reversed plan was refunded, and why', async () => {

@@ -22,6 +22,7 @@ import {
   reasonLabel,
 } from '../../lib/credit-console';
 import { StateBadge } from './CreditBadges';
+import { CreditPlanRefunds } from './CreditPlanRefunds';
 
 /**
  * One agreement, and the decision behind it.
@@ -103,6 +104,7 @@ export function CreditAgreementDetail({
         <Fact label="Applied" value={new Date(a.appliedUtc).toLocaleString()} />
         {a.activatedUtc && <Fact label="Started" value={new Date(a.activatedUtc).toLocaleString()} />}
         {a.reversedUtc && <Fact label="Reversed" value={new Date(a.reversedUtc).toLocaleString()} />}
+        {a.priceReduced > 0 && <Fact label="Refunded off the price" value={npr(a.priceReduced)} />}
       </dl>
 
       {a.stateReasons.length > 0 && (
@@ -121,6 +123,8 @@ export function CreditAgreementDetail({
       {a.state === AgreementState.PendingApproval && (
         <ReviewActions agreement={a} onDecided={onDecided} />
       )}
+
+      <CreditPlanRefunds agreementId={a.id} />
 
       <div className="mt-5">
         <SectionTitle>Schedule</SectionTitle>

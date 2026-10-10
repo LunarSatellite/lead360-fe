@@ -23,6 +23,7 @@ import {
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { buildVendorRejection, canSubmitVerifiedRefund } from '../lib/order-operations';
+import { PlanRefundForm } from '../components/credit/PlanRefundForm';
 
 const STATES: Record<number, string> = {
   1: 'Pending',
@@ -813,6 +814,28 @@ function RefundDialog({
       }),
     onSuccess: onDone,
   });
+  // A payment-plan order has no single payment to refund: the plan collected it, and refunds it.
+  if (context.data?.creditAgreementId) {
+    return (
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <button aria-label="Fermer" className="absolute inset-0 bg-black/70" onClick={onClose} />
+        <div className="relative w-full max-w-md rounded-2xl border border-border-subtle bg-bg-card p-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-black text-text-primary">Refund part of a plan order</h3>
+            <button type="button" onClick={onClose} aria-label="Close">
+              <X className="h-4 w-4 text-text-muted" />
+            </button>
+          </div>
+          <PlanRefundForm
+            agreementId={context.data.creditAgreementId}
+            orderNumber={context.data.orderNumber}
+            onDone={onDone}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <button aria-label="Fermer" className="absolute inset-0 bg-black/70" onClick={onClose} />

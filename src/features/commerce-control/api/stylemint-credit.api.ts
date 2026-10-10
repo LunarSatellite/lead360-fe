@@ -74,6 +74,8 @@ export type CreditInstalment = {
   outstanding: number;
   state: number;
   paidUtc: string | null;
+  /** Principal a partial refund took off this instalment: no longer owed. */
+  credited: number;
 };
 
 export type CreditAgreement = {
@@ -108,6 +110,8 @@ export type CreditAgreement = {
   closedUtc: string | null;
   /** When it was reversed because its order was cancelled or returned. */
   reversedUtc: string | null;
+  /** How much partial refunds have taken off the price while the buyer kept the item. */
+  priceReduced: number;
   needsActivationPayment: boolean;
   /**
    * The order checkout created for it. A plan starts with the order that delivers its item:
@@ -225,6 +229,55 @@ export type AgreementFilter = {
 
 /** The backend's page cap for agreement and held-payment lists. */
 export const CREDIT_LIST_LIMIT = 100;
+
+/** A part of a partial refund: requested, pending with Payments, completed, or failed. */
+export const RefundPaymentState = { Requested: 1, Pending: 2, Completed: 3, Failed: 4 } as const;
+
+/**
+ * What refunding `amount` of a plan order's price would do: `credited` comes off what the buyer
+ * still owes, `cash` goes back against their payments, `vendorClawback` is taken back from the
+ * vendor. `maxAmount` is the most that can be refunded now. Every figure is the server's.
+ */
+export type CreditRefundQuote = {
+  agreementId: string;
+  currency: string;
+  amount: number;
+  maxAmount: number;
+  credited: number;
+  cash: number;
+  vendorClawback: number;
+  priceReduced: number;
+  payments: { attemptId: string; paymentIntentId: string; amount: number; paidUtc: string | null }[];
+};
+
+export type CreditRefundPayment = {
+  id: string;
+  attemptId: string;
+  paymentIntentId: string;
+  amount: number;
+  currency: string;
+  state: number;
+  requestedUtc: string;
+  completedUtc: string | null;
+  providerRefundId: string | null;
+  lastError: string | null;
+  /** A failed part the plan's reversal returned instead; never tried again. */
+  supersededUtc: string | null;
+};
+
+export type CreditRefund = {
+  id: string;
+  agreementId: string;
+  amount: number;
+  credited: number;
+  cash: number;
+  vendorClawback: number;
+  currency: string;
+  reason: string;
+  requestedById: string;
+  requestedUtc: string;
+  payments: CreditRefundPayment[];
+};
 
 const BASE = 'v1/admin/credit';
 
@@ -360,6 +413,58 @@ export const stylemintCreditApi = {
         method: 'POST',
         path: `${BASE}/payments/${encodeURIComponent(attemptId)}/refund`,
         body: JSON.stringify({ note: note.trim() || null }),
+        idempotencyKey,
+      }),
+      'decide',
+    ),
+
+  /** What a partial refund of `amount` would do. `amount = 0` asks only for the most that can be refunded. */
+  refundQuote: async (agreementId: string, amount: number): Promise<CreditRefundQuote> =>
+    unwrap(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: `${BASE}/agreements/${encodeURIComponent(agreementId)}/refunds/quote`,
+        query: `amount=${encodeURIComponent(String(amount))}`,
+      }),
+      'read',
+    ),
+
+  /** The partial refunds made on a plan, newest first, with where each part stands. */
+  refunds: async (agreementId: string): Promise<CreditRefund[]> =>
+    unwrap(
+      await stylemintOperationsApi.invoke({
+        method: 'GET',
+        path: `${BASE}/agreements/${encodeURIComponent(agreementId)}/refunds`,
+      }),
+      'read',
+    ),
+
+  /**
+   * Refunds part of a plan order's price while the buyer keeps the item. The key is the caller's,
+   * so a retry after a timeout is the same refund, not a second one.
+   */
+  refundPlan: async (
+    agreementId: string,
+    amount: number,
+    reason: string,
+    idempotencyKey: string,
+  ): Promise<CreditRefund> =>
+    unwrap(
+      await stylemintOperationsApi.invoke({
+        method: 'POST',
+        path: `${BASE}/agreements/${encodeURIComponent(agreementId)}/refunds`,
+        body: JSON.stringify({ amount, reason: reason.trim() }),
+        idempotencyKey,
+      }),
+      'decide',
+    ),
+
+  /** Tries again a part of a partial refund the provider did not accept. */
+  retryRefundPayment: async (refundPaymentId: string, idempotencyKey: string): Promise<CreditRefundPayment> =>
+    unwrap(
+      await stylemintOperationsApi.invoke({
+        method: 'POST',
+        path: `${BASE}/refund-payments/${encodeURIComponent(refundPaymentId)}/retry`,
         idempotencyKey,
       }),
       'decide',

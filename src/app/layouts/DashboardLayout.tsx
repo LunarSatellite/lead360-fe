@@ -4,6 +4,7 @@ import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   BadgeCheck,
   Banknote,
+  HandCoins,
   BarChart3,
   BookOpen,
   Bot,
@@ -96,6 +97,7 @@ export const primaryNav = [
   { label: 'Returns queue', href: ROUTES.dashboard.returns, icon: PackageOpen },
   { label: 'Counter handover', href: ROUTES.dashboard.counterHandover, icon: Store },
   { label: 'Payouts', href: ROUTES.dashboard.payouts, icon: Banknote },
+  { label: 'Credit & risk', href: ROUTES.dashboard.creditRisk, icon: HandCoins },
   { label: 'Data rights', href: ROUTES.dashboard.privacyRequests, icon: ShieldCheck },
   { label: 'Reel recipes', href: ROUTES.dashboard.recipes, icon: ChefHat },
   { label: 'Delivery ops', href: ROUTES.dashboard.logistics, icon: Route },
@@ -328,6 +330,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/counter-handover')) return 'Counter handover';
     if (path.includes('/stylemint/returns')) return 'Returns queue';
     if (path.includes('/stylemint/payouts')) return 'Payouts';
+    if (path.includes('/stylemint/credit')) return 'Credit & Risk';
     if (path.includes('/stylemint/privacy')) return 'Data-Rights Requests';
     if (path.includes('/stylemint/recipes')) return 'Reel Recipes';
     if (path.includes('/stylemint/logistics')) return 'Delivery Operations';

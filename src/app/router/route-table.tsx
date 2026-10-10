@@ -127,6 +127,7 @@ export const routeObjects: RouteObject[] = [
       { path: 'stylemint/returns', lazy: () => import('@/features/commerce-control/pages/ReturnsPage') },
       { path: 'stylemint/counter-handover', lazy: () => import('@/features/commerce-control/pages/CounterHandoverPage') },
       { path: 'stylemint/payouts', lazy: () => import('@/features/commerce-control/pages/PayoutsPage') },
+      { path: 'stylemint/credit', lazy: () => import('@/features/commerce-control/pages/CreditConsolePage') },
       { path: 'stylemint/privacy', lazy: () => import('@/features/commerce-control/pages/PrivacyRequestsPage') },
       { path: 'stylemint/recipes', lazy: () => import('@/features/commerce-control/pages/RecipesPage') },
       { path: 'stylemint/logistics', lazy: () => import('@/features/commerce-control/pages/LogisticsPage') },

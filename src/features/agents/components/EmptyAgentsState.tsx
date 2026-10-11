@@ -6,6 +6,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 import { Bot, Plus, FilterX } from 'lucide-react';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   /** True when the empty list is the result of a filter — show
@@ -52,14 +53,14 @@ export function EmptyAgentsState({ filtered, canCreate, onCreate, onResetFilters
         emailing the team when a complaint comes in. Create one to get started.
       </p>
       {canCreate ? (
-        <button
+        <Button
           type="button"
           onClick={onCreate}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-light text-bg text-sm font-bold transition-all"
+          variant="primary" size="lg"
         >
           <Plus className="w-4 h-4" strokeWidth={2.4} />
           Create your first agent
-        </button>
+        </Button>
       ) : (
         <p className="text-xs text-text-muted">
           Ask a workspace owner or admin to create one.

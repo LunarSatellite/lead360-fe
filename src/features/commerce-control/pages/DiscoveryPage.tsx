@@ -25,6 +25,7 @@ import {
   type UpsertPopularSearch,
 } from '../api/stylemint-discovery.api';
 import { ReportPanel } from '../components/ReportPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * What the platform promotes before a shopper searches, and the check on whether it promotes
@@ -120,12 +121,12 @@ function SearchesTab() {
           {searches.data?.length ?? 0} suggestion chips
         </p>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => setCreating(true)}
-            className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary" size="sm"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> New chip
-          </button>
+          </Button>
           <button
             onClick={() => searches.refetch()}
             className="flex items-center gap-1.5 text-xs font-bold text-text-secondary hover:text-brand"
@@ -315,10 +316,10 @@ function SearchEditor({ onCancel, onSaved }: { onCancel: () => void; onSaved: ()
       </div>
       {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
       <div className="mt-2 flex items-center gap-2">
-        <button
+        <Button
           disabled={!valid || save.isPending}
           onClick={() => save.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {save.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -326,7 +327,7 @@ function SearchEditor({ onCancel, onSaved }: { onCancel: () => void; onSaved: ()
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Create
-        </button>
+        </Button>
         <button
           onClick={onCancel}
           className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
@@ -423,12 +424,12 @@ function FeaturedRow({
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
-          <button
+          <Button
             onClick={() => { setMode('approve'); setError(null); }}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary" size="sm"
           >
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} /> Approve
-          </button>
+          </Button>
           <button
             onClick={() => { setMode('reject'); setError(null); }}
             className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
@@ -456,14 +457,14 @@ function FeaturedRow({
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={act.isPending || (mode === 'reject' && !note.trim())}
               onClick={() => act.mutate(mode)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
-            </button>
+            </Button>
             <button
               onClick={() => { setMode(null); setNote(''); }}
               className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
@@ -507,10 +508,10 @@ function FairnessTab() {
             same accounts.
           </p>
         </div>
-        <button
+        <Button
           disabled={run.isPending}
           onClick={() => run.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {run.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -518,7 +519,7 @@ function FairnessTab() {
             <Scale className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Run audit
-        </button>
+        </Button>
       </div>
 
       {error && <ErrorBox error={new Error(error)} />}
@@ -592,14 +593,14 @@ function ReachTab() {
             {tick.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
             Decision tick
           </button>
-          <button
+          <Button
             disabled={drain.isPending}
             onClick={() => drain.mutate()}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             {drain.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
             Drain publishes
-          </button>
+          </Button>
         </div>
       </div>
 

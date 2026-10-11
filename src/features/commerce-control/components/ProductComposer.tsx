@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { CheckCircle2, Loader2, PackagePlus, Upload, X } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
+import { Button } from '@/shared/ui/primitives';
 
 type Props = { onClose: () => void; onDone: () => void };
 
@@ -362,9 +363,9 @@ export function ProductComposer({ onClose, onDone }: Props) {
             >
               Cancel
             </button>
-            <button
+            <Button
               disabled={create.isPending || images.length < 5}
-              className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-text-inverted disabled:opacity-40"
+              variant="primary" size="lg"
             >
               {create.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -372,7 +373,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
                 <PackagePlus className="h-4 w-4" />
               )}
               {create.isPending ? 'Creation en cours…' : 'Create product'}
-            </button>
+            </Button>
           </div>
         </footer>
       </form>

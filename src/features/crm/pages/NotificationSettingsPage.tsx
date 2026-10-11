@@ -9,6 +9,7 @@ import {
   NOTIFICATION_DIGEST_LABELS,
   type CrmNotifPreferenceDto,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // Defaults match the backend: absent preference = enabled, in-app+email, instant.
 const DEFAULT: Omit<CrmNotifPreferenceDto, 'notificationType'> = {
@@ -102,14 +103,14 @@ export function Component() {
           </div>
 
           <div className="flex justify-end">
-            <button
+            <Button
               onClick={onSave}
               disabled={save.isPending}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand text-text-inverted px-4 py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-60"
+              variant="primary"
             >
               {save.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save preferences
-            </button>
+            </Button>
           </div>
         </>
       )}

@@ -23,6 +23,7 @@ import {
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { buildVendorRejection, canSubmitVerifiedRefund } from '../lib/order-operations';
+import { Button } from '@/shared/ui/primitives';
 
 const STATES: Record<number, string> = {
   1: 'Pending',
@@ -225,13 +226,13 @@ export function StylemintOrdersPage() {
           <span className="mr-auto text-xs font-extrabold text-brand">
             {selectedIds.length} commande(s) selectionnee(s)
           </span>
-          <button
+          <Button
             disabled={bulkCommand.isPending}
             onClick={() => bulkCommand.mutate('accept')}
-            className="rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-text-inverted disabled:opacity-40"
+            variant="primary"
           >
             Accepter
-          </button>
+          </Button>
           <button
             disabled={bulkCommand.isPending}
             onClick={() => bulkCommand.mutate('ready-to-ship')}
@@ -557,14 +558,14 @@ function OrderPanel({
             Download packing slip
           </button>
           {canOperate && next && (
-            <button
+            <Button
               disabled={busy}
               onClick={() => onCommand(next.command)}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-4 py-3 text-sm font-extrabold text-bg disabled:opacity-50"
+              variant="primary" size="lg" block
             >
               {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Truck className="h-4 w-4" />}
               {next.label}
-            </button>
+            </Button>
           )}
           {canOperate && [4, 5, 13].includes(order.state) && (
             <button
@@ -872,7 +873,7 @@ function RefundDialog({
         {refund.isError && (
           <p className="mt-3 text-xs font-semibold text-danger">{(refund.error as Error).message}</p>
         )}
-        <button
+        <Button
           disabled={refund.isPending || !canSubmitVerifiedRefund({
             paymentIntentId: paymentId,
             amount: Number(amount),
@@ -882,10 +883,10 @@ function RefundDialog({
             loading: context.isLoading,
             failed: context.isError,
           })}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3 text-sm font-extrabold text-bg disabled:opacity-40"
+          variant="primary" size="lg" block className="mt-5"
         >
           {refund.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Confirmer le remboursement
-        </button>
+        </Button>
       </form>
     </div>
   );

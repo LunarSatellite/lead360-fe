@@ -7,6 +7,7 @@ import type {
   CrmTimeEntrySummaryDto, CrmLogTimeRequest, CrmTimeEntryFilter,
 } from '../types/crm.types';
 import { CrmTimeEntityKind, CRM_TIME_ENTITY_LABELS } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 function Badge({ value, labels, colors }: {
   value: number;
@@ -130,19 +131,7 @@ function LogTimeForm({ form, setForm, onSubmit }: {
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-text-secondary mb-1">Minutes Logged *</label>
-          <div className="relative">
-            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input
-              required
-              type="number"
-              min={1}
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              placeholder="e.g. 30"
-              value={form.minutesLogged}
-              onChange={set('minutesLogged')}
-            />
-          </div>
+          <Input icon={Clock} required type="number" min={1} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. 30" value={form.minutesLogged} onChange={set('minutesLogged')} />
         </div>
         <div className="flex flex-col justify-end">
           <label className="block text-xs font-semibold text-text-secondary mb-1">Billable</label>
@@ -205,17 +194,7 @@ function LogTimeForm({ form, setForm, onSubmit }: {
       {/* Entity ID */}
       <div>
         <label className="block text-xs font-semibold text-text-secondary mb-1">Entity ID *</label>
-        <div className="relative">
-          <HashIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <input
-            required
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-            placeholder="e.g. deal-uuid or contact-uuid"
-            value={form.entityId}
-            onChange={set('entityId')}
-          />
-        </div>
+        <Input icon={HashIcon} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. deal-uuid or contact-uuid" value={form.entityId} onChange={set('entityId')} />
       </div>
     </form>
   );
@@ -253,10 +232,10 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Time Tracking</h2>
           <p className="text-xs text-text-muted mt-0.5">Log and review time spent on CRM entities</p>
         </div>
-        <button onClick={() => setShowLog(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setShowLog(true)}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Log Time
-        </button>
+        </Button>
       </div>
 
       <SummaryCard />
@@ -355,15 +334,15 @@ export function Component() {
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
               form="logtime-form"
               disabled={log.isPending || !logForm.entityId.trim()}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {log.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Log Time
-            </button>
+            </Button>
           </div>
         }
       >

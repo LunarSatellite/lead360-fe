@@ -27,6 +27,7 @@ import { useSpecs } from '@/features/api-connection/api/api-connection.queries';
 import { SpecUploadZone } from '@/features/api-connection/components/SpecUploadZone';
 import { ImportDialog } from '@/features/intents/components/import/ImportDialog';
 import type { FlowDto, GoLiveChecklistResponse } from '@/features/flow-builder/types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 /* ═══════════════════════════════════════════════════════════════
    DESIGN: A + C Fusion
@@ -242,13 +243,12 @@ function Step1({ onDone }: { onDone: () => void }) {
         </div>
         <p className="text-sm font-bold text-brand mb-1">{list.length} API spec(s) connected!</p>
         <p className="text-2xs text-text-muted mb-5">Your endpoints have been mapped and are ready</p>
-        <button
+        <Button
           onClick={onDone}
-          className="px-6 py-2.5 rounded-[10px] text-xs font-bold bg-brand-light text-bg
-                     hover:bg-brand transition-all duration-200"
+          variant="primary" size="lg"
         >
           Continue →
-        </button>
+        </Button>
       </div>
     );
 
@@ -287,13 +287,12 @@ function Step2({ onDone }: { onDone: () => void }) {
         </div>
         <p className="text-sm font-bold text-brand mb-1">{intents.length} intents defined!</p>
         <p className="text-2xs text-text-muted mb-5">Your bot now understands customer requests</p>
-        <button
+        <Button
           onClick={onDone}
-          className="px-6 py-2.5 rounded-[10px] text-xs font-bold bg-brand-light text-bg
-                     hover:bg-brand transition-all duration-200"
+          variant="primary" size="lg"
         >
           Continue →
-        </button>
+        </Button>
       </div>
     );
 
@@ -398,13 +397,12 @@ function Step4({ onDone }: { onDone: () => void }) {
           Active: "{active.name}" ({active.nodeCount} nodes)
         </p>
         <p className="text-2xs text-text-muted mb-5">Flow is deployed and ready to handle conversations</p>
-        <button
+        <Button
           onClick={onDone}
-          className="px-6 py-2.5 rounded-[10px] text-xs font-bold bg-brand-light text-bg
-                     hover:bg-brand transition-all duration-200"
+          variant="primary" size="lg"
         >
           Continue →
-        </button>
+        </Button>
       </div>
     );
 
@@ -539,13 +537,12 @@ function Step5({ onDone }: { onDone: () => void }) {
         ))}
       </div>
       <div className="text-center">
-        <button
+        <Button
           onClick={onDone}
-          className="px-6 py-2.5 rounded-[10px] text-xs font-bold bg-brand-light text-bg
-                     hover:bg-brand transition-all duration-200"
+          variant="primary" size="lg"
         >
           Continue →
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -650,18 +647,14 @@ function Step6({ onDone }: { onDone: () => void }) {
       {/* Go live button */}
       {cl.isReady && (
         <div className="text-center">
-          <button
+          <Button
             onClick={() => actAll.mutate(undefined, { onSuccess: onDone })}
             disabled={actAll.isPending}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-[12px] text-sm font-extrabold
-                       bg-brand-light text-bg disabled:opacity-40 transition-all duration-200
-                       hover:bg-brand hover:scale-[1.02]
-                       shadow-[0_0_0_0_rgb(var(--color-brand-beacon)/0.15)]
-                       animate-[pulseGlow_2.5s_ease_infinite]"
+            variant="primary" size="lg" className="shadow-[0_0_0_0_rgb(var(--color-brand-beacon)/0.15)] animate-[pulseGlow_2.5s_ease_infinite]"
           >
             {actAll.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
             Go Live
-          </button>
+          </Button>
         </div>
       )}
     </div>
@@ -689,13 +682,12 @@ function AllComplete() {
           >
             Open Flow Builder
           </button>
-          <button
+          <Button
             onClick={() => nav('/dashboard/analytics')}
-            className="px-5 py-2.5 rounded-[10px] text-xs font-bold bg-brand-light text-bg
-                       hover:bg-brand transition-all duration-200"
+            variant="primary" size="lg"
           >
             View Analytics →
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -803,18 +795,14 @@ export function Component() {
               Skip
             </button>
 
-            <button
+            <Button
               onClick={() => goToStep(Math.min(6, currentStep + 1))}
               disabled={currentStep === 6}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-[10px] text-2xs font-bold
-                         bg-brand-light text-bg
-                         hover:bg-brand hover:-translate-y-px
-                         disabled:opacity-25 disabled:pointer-events-none
-                         transition-all duration-200 ml-auto"
+              variant="primary" size="lg" className="ml-auto"
             >
               Next step
               <ChevronRight className="w-3 h-3" />
-            </button>
+            </Button>
           </div>
         </div>
 

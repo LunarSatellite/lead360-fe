@@ -21,6 +21,7 @@ import {
   type CollectionStateValue,
   type CollectionSummary,
 } from '../api/stylemint-collections.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Platform-curated collections — the editorial rails on the storefront.
@@ -289,13 +290,13 @@ function CollectionEditor({
               : 'Archive this collection? It stops appearing on the storefront.'}
           </p>
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => act.mutate({ kind: confirming })}
               disabled={act.isPending}
-              className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary"
             >
               {act.isPending ? 'Applying…' : 'Confirm'}
-            </button>
+            </Button>
             <button
               onClick={() => setConfirming(null)}
               className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"

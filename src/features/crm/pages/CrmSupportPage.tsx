@@ -19,6 +19,7 @@ import {
   CRM_SUPPORT_PRIORITY_LABELS, CRM_SUPPORT_PRIORITY_COLORS,
 } from '../types/crm.types';
 import { format, parseISO, differenceInMinutes } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -115,13 +116,13 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
             <input type="checkbox" checked={form.isDefault} onChange={e => setForm(f => ({ ...f, isDefault: e.target.checked }))} className="rounded" />
             <span className="text-xs text-text-secondary">Set as default policy</span>
           </label>
-          <button
+          <Button
             disabled={!form.name.trim() || createPolicy.isPending}
             onClick={() => createPolicy.mutate(form, { onSuccess: () => setForm({ name: '', initialResponseSlaHours: 4, resolutionSlaHours: 48, isDefault: false, applicablePriority: undefined }) })}
-            className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+            variant="primary" block
           >
             {createPolicy.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Add Policy'}
-          </button>
+          </Button>
         </div>
       </div>
     </SlideOver>
@@ -253,10 +254,10 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
             <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
-            <button type="submit" disabled={isSaving || !form.subject.trim()} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <Button type="submit" disabled={isSaving || !form.subject.trim()} variant="primary">
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Case
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -301,15 +302,15 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
               <XCircle className="w-3.5 h-3.5" /> Close
             </button>
             {canGenerateKbDraft && (
-              <button
+              <Button
                 onClick={() => generateKbDraft.mutate(caseId)}
                 disabled={generateKbDraft.isPending}
                 title="Propose a Knowledge Base article from this resolved case"
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-soft text-brand text-xs font-semibold border border-border-glow hover:bg-brand hover:text-text-inverted transition-all disabled:opacity-50"
+                variant="primary" size="sm"
               >
                 {generateKbDraft.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                 Generate KB Draft
-              </button>
+              </Button>
             )}
           </div>
           <div className="flex border-b border-border-subtle">
@@ -344,9 +345,9 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
               </div>
               <div className="flex gap-2 pt-2 border-t border-border-subtle">
                 <textarea rows={2} value={msgBody} onChange={e => setMsgBody(e.target.value)} placeholder="Type a message..." className={`${inputCls} flex-1 resize-none`} />
-                <button onClick={handleSend} disabled={!msgBody.trim() || addMsg.isPending} className="px-3 py-2 rounded-xl bg-brand text-bg self-end disabled:opacity-50 hover:bg-brand-light transition-all">
+                <Button onClick={handleSend} disabled={!msgBody.trim() || addMsg.isPending} variant="primary" className="self-end">
                   {addMsg.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -400,9 +401,9 @@ export function Component() {
             <button onClick={() => setShowSla(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary transition-all">
               <Shield className="w-3.5 h-3.5" /> SLA Policies
             </button>
-            <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+            <Button onClick={() => setShowCreate(true)} variant="primary">
               <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Case
-            </button>
+            </Button>
           </div>
         </div>
 

@@ -392,11 +392,11 @@ function PreviewPanel({ onClose }: { onClose: () => void }) {
           className={`${inputCls} resize-none font-mono text-xs ${jsonError ? 'border-danger' : ''}`} />
         {jsonError && <p className="text-xs text-danger mt-1">{jsonError}</p>}
       </div>
-      <button onClick={handlePreview} disabled={preview.isPending}
-        className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-soft text-brand border border-border-glow text-sm font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50">
+      <Button onClick={handlePreview} disabled={preview.isPending}
+        variant="primary">
         {preview.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Users className="w-4 h-4" strokeWidth={1.5} />}
         Preview Recipients
-      </button>
+      </Button>
       {preview.isError && (
         <p className="text-xs text-danger">Failed to preview recipients. Check filter and try again.</p>
       )}
@@ -722,16 +722,16 @@ function ScheduleInline({ campaignId, onDone }: { campaignId: string; onDone: ()
     <div className="flex items-center gap-2 flex-wrap" onClick={(e) => e.stopPropagation()}>
       <input type="datetime-local" value={dt} onChange={(e) => setDt(e.target.value)}
         className="px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
-      <button
+      <Button
         disabled={!dt || schedule.isPending}
         onClick={() => {
           const iso = new Date(dt).toISOString();
           schedule.mutate({ id: campaignId, scheduledAt: iso }, { onSuccess: onDone });
         }}
-        className="px-3 py-1 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50"
+        variant="primary" size="sm"
       >
         {schedule.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Set'}
-      </button>
+      </Button>
       <button onClick={onDone} className="text-xs text-text-muted hover:text-text-primary">×</button>
     </div>
   );
@@ -877,10 +877,10 @@ function B2BCampaignCard({ campaign }: { campaign: CrmCampaignSummaryDto }) {
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all ${panel === 'schedule' ? 'border-brand text-brand bg-brand-soft' : 'border-border-subtle text-text-secondary hover:text-text-primary hover:bg-bg-elevated'}`}>
               <Clock className="w-3.5 h-3.5" strokeWidth={1.5} /> Schedule
             </button>
-            <button onClick={() => launch.mutate(campaign.id)} disabled={launch.isPending}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50">
+            <Button onClick={() => launch.mutate(campaign.id)} disabled={launch.isPending}
+              variant="primary" size="sm">
               {launch.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Send className="w-3.5 h-3.5" strokeWidth={1.5} /> Launch</>}
-            </button>
+            </Button>
           </>
         )}
         {(isScheduled || isRunning) && (

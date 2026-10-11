@@ -4,6 +4,7 @@ import { Send, Pencil, Trash2, CornerDownRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { useComments, useAddComment, useEditComment, useDeleteComment } from '../api/crm.queries';
 import type { CrmCommentDto, CrmCommentableKind } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface CrmCommentsProps {
   kind: CrmCommentableKind;
@@ -66,12 +67,12 @@ function CommentItem({
                 onChange={(e) => setEditBody(e.target.value)}
               />
               <div className="flex gap-2">
-                <button
+                <Button
                   onClick={() => onSaveEdit(comment.id)}
-                  className="text-xs px-3 py-1 rounded-lg bg-brand text-text-inverted font-semibold hover:opacity-90 transition-opacity"
+                  variant="primary" size="sm"
                 >
                   Save
-                </button>
+                </Button>
                 <button
                   onClick={onCancelEdit}
                   className="text-xs px-3 py-1 rounded-lg border border-border-subtle text-text-muted hover:text-text-primary transition-colors"
@@ -117,12 +118,12 @@ function CommentItem({
                 onChange={(e) => setReplyBody(e.target.value)}
               />
               <div className="flex gap-2">
-                <button
+                <Button
                   onClick={() => onSendReply(comment.id)}
-                  className="text-xs px-3 py-1 rounded-lg bg-brand text-text-inverted font-semibold hover:opacity-90 transition-opacity flex items-center gap-1"
+                  variant="primary" size="sm"
                 >
                   <Send className="w-3 h-3" /> Send
-                </button>
+                </Button>
                 <button
                   onClick={onCancelReply}
                   className="text-xs px-3 py-1 rounded-lg border border-border-subtle text-text-muted hover:text-text-primary transition-colors"
@@ -238,13 +239,13 @@ export function CrmComments({ kind, entityId }: CrmCommentsProps) {
           onChange={(e) => setNewBody(e.target.value)}
         />
         <div className="flex justify-end">
-          <button
+          <Button
             onClick={handlePost}
             disabled={!newBody.trim() || addComment.isPending}
-            className="text-sm px-4 py-1.5 rounded-lg bg-brand text-text-inverted font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-1.5"
+            variant="primary"
           >
             <Send className="w-3.5 h-3.5" /> Post
-          </button>
+          </Button>
         </div>
       </div>
     </div>

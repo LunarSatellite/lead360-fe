@@ -23,6 +23,7 @@ import type {
 import { LeadStage, LEAD_STAGE_LABELS, LEAD_STAGE_COLORS, CHANNEL_LABELS, CrmEntityType, CrmActivityEntityKind } from '../types/crm.types';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
 import { RecordAuditTrail } from '../components/RecordAuditTrail';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Activity type color helper ───────────────────────────────────────────────
 
@@ -271,15 +272,15 @@ export function Component() {
 
               {/* Convert to Deal — shown for Hot/Warm/New leads not yet converted */}
               {!isConverted && (
-                <button
+                <Button
                   onClick={() => {
                     setConvertForm({ dealName: lead.intentSummary ? `Deal — ${lead.intentSummary}` : `Deal — ${displayName}` });
                     setShowConvertForm((v) => !v);
                   }}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl border border-border-glow bg-brand-soft text-brand hover:bg-brand hover:text-bg transition-all"
+                  variant="primary"
                 >
                   <Zap className="w-3.5 h-3.5" /> Convert to Deal
-                </button>
+                </Button>
               )}
             </div>
 
@@ -293,13 +294,13 @@ export function Component() {
                   rows={3}
                   className="w-full text-sm bg-bg-elevated border border-border-subtle rounded-xl px-3 py-2 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow resize-none transition-colors"
                 />
-                <button
+                <Button
                   onClick={handleAddNote}
                   disabled={!noteText.trim() || addNote.isPending}
-                  className="px-4 py-2 text-sm font-semibold rounded-xl bg-brand text-bg disabled:opacity-50 hover:opacity-90 transition-opacity"
+                  variant="primary"
                 >
                   {addNote.isPending ? 'Saving…' : 'Save Note'}
-                </button>
+                </Button>
               </div>
             )}
 
@@ -347,13 +348,13 @@ export function Component() {
                     </select>
                   </div>
                 </div>
-                <button disabled={convertLead.isPending}
+                <Button disabled={convertLead.isPending}
                   onClick={() => convertLead.mutate({ id: lead.id, data: convertForm }, {
                     onSuccess: () => { setShowConvertForm(false); qc.invalidateQueries({ queryKey: ['lead', lead.id] }); toast.success('Lead converted!'); },
                   })}
-                  className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+                  variant="primary" block>
                   {convertLead.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Zap className="w-4 h-4" /> Confirm Convert</>}
-                </button>
+                </Button>
               </div>
             )}
 
@@ -546,14 +547,14 @@ function EnrollModal({ leadId, onClose }: { leadId: string; onClose: () => void 
           >
             Cancel
           </button>
-          <button
+          <Button
             onClick={handleEnroll}
             disabled={!selected || enrollMutation.isPending}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-inverted bg-brand hover:bg-brand/90 rounded-xl disabled:opacity-50 transition-colors"
+            variant="primary"
           >
             {enrollMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             Enroll
-          </button>
+          </Button>
         </div>
       </div>
     </div>,
@@ -726,11 +727,11 @@ function TriggerScoreEvent({ leadId }: { leadId: string }) {
         <option value="">— Trigger scoring event —</option>
         {rules.map((r: any) => <option key={r.id} value={r.eventType}>{r.label || r.eventType} (+{r.points})</option>)}
       </select>
-      <button onClick={() => eventType && triggerMut.mutate({ eventType })}
+      <Button onClick={() => eventType && triggerMut.mutate({ eventType })}
         disabled={!eventType || triggerMut.isPending}
-        className="px-3 py-1.5 rounded-lg bg-brand text-text-inverted text-xs font-bold disabled:opacity-50">
+        variant="primary" size="sm">
         {triggerMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Fire'}
-      </button>
+      </Button>
     </div>
   );
 }

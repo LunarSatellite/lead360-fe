@@ -23,6 +23,7 @@ import {
   type UnitMarker,
 } from '../api/stylemint-unit-markers.api';
 import { ReportPanel } from '../components/ReportPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Per-unit markers: the physical tag a seller attaches to one item, and the binding that ties
@@ -117,17 +118,17 @@ export function UnitMarkersPage() {
             placeholder="Variant id"
             className={`${field} font-mono`}
           />
-          <button
+          <Button
             onClick={() =>
               setFilter({
                 productId: productId.trim() || undefined,
                 productVariantId: variantFilter.trim() || undefined,
               })
             }
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary"
           >
             <Search className="h-3.5 w-3.5" strokeWidth={1.6} /> Filter
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -189,10 +190,10 @@ function MintPanel({
           placeholder="How many tags"
           className={field}
         />
-        <button
+        <Button
           disabled={!ready || mint.isPending}
           onClick={() => mint.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary"
         >
           {mint.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -200,7 +201,7 @@ function MintPanel({
             <Tag className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Mint
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -249,9 +250,9 @@ function SecretsPanel({
           </p>
         </div>
         <div className="flex gap-2">
-          <button
+          <Button
             onClick={copy}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary" size="sm"
           >
             {copied ? (
               <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -259,7 +260,7 @@ function SecretsPanel({
               <Copy className="h-3.5 w-3.5" strokeWidth={1.6} />
             )}
             {copied ? 'Copied' : 'Copy all'}
-          </button>
+          </Button>
           <button
             onClick={onDismiss}
             className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
@@ -576,10 +577,10 @@ function BindPanel({
         )}
       </div>
 
-      <button
+      <Button
         disabled={!ready || submit.isPending}
         onClick={() => submit.mutate()}
-        className="mt-3 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-3"
       >
         {submit.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -587,7 +588,7 @@ function BindPanel({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         {mode === 'bind' ? 'Bind the tag' : 'Correct the binding'}
-      </button>
+      </Button>
     </div>
   );
 }

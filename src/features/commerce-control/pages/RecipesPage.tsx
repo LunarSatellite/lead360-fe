@@ -17,6 +17,7 @@ import {
   stylemintRecipesApi,
   type ReelRecipe,
 } from '../api/stylemint-recipes.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Reel recipes drafted by the model and waiting on a human.
@@ -151,10 +152,10 @@ function RecipeRow({ recipe, onChanged }: { recipe: ReelRecipe; onChanged: () =>
         </button>
 
         <div className="flex shrink-0 items-center gap-1.5">
-          <button
+          <Button
             disabled={act.isPending}
             onClick={() => act.mutate('promote')}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             {act.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -162,7 +163,7 @@ function RecipeRow({ recipe, onChanged }: { recipe: ReelRecipe; onChanged: () =>
               <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
             )}
             Promote
-          </button>
+          </Button>
           <button
             onClick={() => {
               setHiding(true);
@@ -248,14 +249,14 @@ function RecipeRow({ recipe, onChanged }: { recipe: ReelRecipe; onChanged: () =>
             />
             {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
             <div className="mt-2 flex items-center gap-2">
-              <button
+              <Button
                 disabled={!reason.trim() || act.isPending}
                 onClick={() => act.mutate('hide')}
-                className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+                variant="primary" size="sm"
               >
                 {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
                 Confirm hide
-              </button>
+              </Button>
               <button
                 onClick={() => {
                   setHiding(false);

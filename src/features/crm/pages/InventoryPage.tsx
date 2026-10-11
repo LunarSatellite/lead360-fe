@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Loader2, Package, Search, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { useInventory, useCheckStock, useAdjustInventory } from '../api/crm.queries';
 import type { InventoryItemDto, StockCheckItem, StockCheckResult } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const [search, setSearch] = useState('');
@@ -43,9 +44,9 @@ export function Component() {
         <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Quick Stock Check</p>
         <div className="flex gap-2">
           <input value={checkInput} onChange={e => setCheckInput(e.target.value)} placeholder='[{"productId":"guid","quantity":10}]' className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm font-mono" />
-          <button onClick={handleCheck} disabled={checkStock.isPending || !checkInput} className="px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">
+          <Button onClick={handleCheck} disabled={checkStock.isPending || !checkInput} variant="primary">
             {checkStock.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Check'}
-          </button>
+          </Button>
         </div>
         {checkResult && (
           <div className="space-y-2">
@@ -108,8 +109,8 @@ export function Component() {
               <input value={adjustNote} onChange={e => setAdjustNote(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" placeholder="Receipt from vendor..." /></div>
             <div className="flex gap-2 justify-end">
               <button onClick={() => setAdjustProduct(null)} className="px-4 py-2 rounded-xl text-sm text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
-              <button onClick={() => { adjust.mutate({ productId: adjustProduct.productId, data: { quantity: adjustQty, notes: adjustNote || undefined } }); setAdjustProduct(null); }} disabled={adjust.isPending || adjustQty === 0}
-                className="px-4 py-2 rounded-xl text-sm font-bold text-text-inverted bg-brand hover:bg-brand-light disabled:opacity-50">{adjust.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}</button>
+              <Button onClick={() => { adjust.mutate({ productId: adjustProduct.productId, data: { quantity: adjustQty, notes: adjustNote || undefined } }); setAdjustProduct(null); }} disabled={adjust.isPending || adjustQty === 0}
+                variant="primary">{adjust.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}</Button>
             </div>
           </div>
         </div>

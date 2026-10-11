@@ -6,6 +6,7 @@ import { crmApi } from '../api/crm.api';
 import { CrmContractStatus, ContractTemplateCategory, CONTRACT_TEMPLATE_CATEGORY_LABELS, type ContractTemplateCategoryValue } from '../types/crm.types';
 import { toast } from 'sonner';
 import { confirmDialog } from '@/shared/ui/confirm';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 
@@ -147,16 +148,16 @@ export function Component() {
           <button onClick={() => setTab('templates')} className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${tab === 'templates' ? 'bg-brand text-white' : 'bg-glass-1 text-text-secondary hover:text-text-primary'}`}>Templates</button>
         </div>
         {tab === 'contracts' && (
-          <button onClick={() => { setForm({ title: '', value: '', currency: 'USD', startDate: '', endDate: '', autoRenew: false, templateId: '' }); setShowForm(true); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light">
+          <Button onClick={() => { setForm({ title: '', value: '', currency: 'USD', startDate: '', endDate: '', autoRenew: false, templateId: '' }); setShowForm(true); }}
+            variant="primary">
             <Plus className="w-3.5 h-3.5" /> New contract
-          </button>
+          </Button>
         )}
         {tab === 'templates' && (
-          <button onClick={() => { setEditTemplateId(null); setTemplateForm({ name: '', description: '', category: 0, subject: '', bodyHtml: '' }); setShowTemplateForm(true); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light">
+          <Button onClick={() => { setEditTemplateId(null); setTemplateForm({ name: '', description: '', category: 0, subject: '', bodyHtml: '' }); setShowTemplateForm(true); }}
+            variant="primary">
             <Plus className="w-3.5 h-3.5" /> New template
-          </button>
+          </Button>
         )}
       </div>
 
@@ -243,8 +244,8 @@ export function Component() {
 
               <div className="flex gap-2 pt-1">
                 {detailData?.status === CrmContractStatus.Draft && (
-                  <button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.PendingSignature })}
-                    className="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-text-inverted hover:brightness-110">Send for signature</button>
+                  <Button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.PendingSignature })}
+                    variant="primary" size="sm" className="flex-1">Send for signature</Button>
                 )}
                 {detailData?.status === CrmContractStatus.PendingSignature && allSigned && (
                   <button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.Active })}
@@ -306,7 +307,7 @@ export function Component() {
               </div>
               <textarea className={`${inputCls} min-h-[160px] font-mono text-xs`} value={templateForm.bodyHtml} onChange={e => setTemplateForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p>" />
             </div>
-            <button type="submit" disabled={createTemplateMut.isPending || !templateForm.name.trim()} className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">{editTemplateId ? 'Update' : 'Create'} Template</button>
+            <Button type="submit" disabled={createTemplateMut.isPending || !templateForm.name.trim()} variant="primary" block>{editTemplateId ? 'Update' : 'Create'} Template</Button>
           </form>
         </div>,
         document.body
@@ -348,17 +349,7 @@ export function Component() {
               {/* Title */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></label>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="Contract title…"
-                    value={form.title}
-                    onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                    required
-                  />
-                </div>
+                <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contract title…" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
               </div>
 
               {/* Template */}
@@ -384,30 +375,11 @@ export function Component() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Value</label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="0"
-                      value={form.value}
-                      onChange={e => setForm(f => ({ ...f, value: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={DollarSign} type="number" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="0" value={form.value} onChange={e => setForm(f => ({ ...f, value: e.target.value }))} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="USD"
-                      value={form.currency}
-                      onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))}
-                    />
-                  </div>
+                  <Input icon={DollarSign} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))} />
                 </div>
               </div>
 
@@ -415,37 +387,11 @@ export function Component() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                    <input
-                      type="date"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{
-                        backgroundColor: 'rgb(var(--color-glass-1))',
-                        colorScheme: 'dark',
-                        backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                      }}
-                      value={form.startDate}
-                      onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">End Date</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                    <input
-                      type="date"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{
-                        backgroundColor: 'rgb(var(--color-glass-1))',
-                        colorScheme: 'dark',
-                        backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                      }}
-                      value={form.endDate}
-                      onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))} />
                 </div>
               </div>
 
@@ -470,14 +416,14 @@ export function Component() {
               >
                 Cancel
               </button>
-              <button
+              <Button
                 type="submit"
                 disabled={createMut.isPending || !form.title.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Contract
-              </button>
+              </Button>
             </div>
           </div>
         </div>,
@@ -491,7 +437,7 @@ export function Component() {
               <button onClick={() => setShowPreview(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
             <div className="flex-1 overflow-y-auto rounded-card border-thin border-border-subtle bg-glass-1 p-4 text-sm text-text-primary" dangerouslySetInnerHTML={{ __html: previewHtml }} />
             <div className="flex gap-3 shrink-0">
-              <button onClick={confirmCreate} className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light">Confirm & Create</button>
+              <Button onClick={confirmCreate} variant="primary" className="flex-1">Confirm & Create</Button>
               <button onClick={() => setShowPreview(false)} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary">Back</button>
             </div>
           </div>

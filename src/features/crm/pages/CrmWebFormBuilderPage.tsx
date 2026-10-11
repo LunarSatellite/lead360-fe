@@ -24,6 +24,7 @@ import {
 import { ROUTES } from "@/app/router/route-paths";
 import { useTenantDomains } from "@/features/tenant/api/tenant-domains.queries";
 import { getActiveTenantDomainOrigin } from "@/features/tenant/types/tenant-domain.types";
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls =
   "w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow";
@@ -352,10 +353,10 @@ export function Component() {
               </button>
             </>
           )}
-          <button onClick={save} disabled={!canSave || createMut.isPending || updateMut.isPending} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all disabled:opacity-50">
+          <Button onClick={save} disabled={!canSave || createMut.isPending || updateMut.isPending} variant="primary">
             {(createMut.isPending || updateMut.isPending) ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
             {isEdit ? "Save" : "Create"}
-          </button>
+          </Button>
         </div>
       </div>
 

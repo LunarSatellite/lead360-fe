@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Link2Off, Loader2, Pin, PinOff } from 'lucide-react';
 import { stylemintReelsAdminApi } from '../api/stylemint-reels-admin.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The operator actions on one reel, attached to the row that already lists it.
@@ -96,14 +97,14 @@ export function ReelOperatorActions({
           {error && <p className="mt-1.5 text-[11px] text-rose-300">{error}</p>}
 
           <div className="mt-1.5 flex items-center gap-1.5">
-            <button
+            <Button
               disabled={act.isPending || (mode !== 'deleted' && !dropPartyId.trim())}
               onClick={() => act.mutate(mode)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
               Confirm
-            </button>
+            </Button>
             <button
               onClick={close}
               className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"

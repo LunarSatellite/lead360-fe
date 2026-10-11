@@ -12,6 +12,7 @@ import type {
   CrmReportFilterDto, CrmReportDto, CrmReportRunResultDto, CrmReportObjectDto,
 } from '../types/crm-reports.types';
 import { REPORT_SCHEDULE_FREQUENCIES, AGGREGATE_FUNCTIONS } from '../types/crm-reports.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 async function downloadReportCsv(reportId: string, fallbackFileName: string) {
   const token = localStorage.getItem('omniflow_token');
@@ -52,12 +53,12 @@ export function Component() {
           <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Reports</h1>
           <p className="text-base text-text-secondary mt-1">Build a custom view over any CRM object — filter, group, chart, and schedule delivery</p>
         </div>
-        <button
+        <Button
           onClick={() => setShowBuilder(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" /> New report
-        </button>
+        </Button>
       </div>
 
       {showBuilder && catalog && createPortal(
@@ -235,16 +236,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
               <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Report Name</span>
               <div className="h-px bg-brand/20" />
             </div>
-            <div className="relative">
-              <FileBarChart className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Open deals by owner"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              />
-            </div>
+            <Input icon={FileBarChart} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Open deals by owner" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-2 mb-1.5">
@@ -583,14 +575,14 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
         >
           Cancel
         </button>
-        <button
+        <Button
           onClick={handleSave}
           disabled={!name.trim() || create.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          variant="primary"
         >
           {create.isPending ? <span className="w-3.5 h-3.5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
           Save report
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -767,13 +759,13 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
         className="flex-1 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
         style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
       />
-      <button
+      <Button
         type="submit"
         disabled={schedule.isPending || !emails.trim()}
-        className="px-4 py-2 rounded-lg text-sm font-bold bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50"
+        variant="primary"
       >
         Save
-      </button>
+      </Button>
     </form>
   );
 }

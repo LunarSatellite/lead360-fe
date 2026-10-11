@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FlowNodeGap } from '../utils/gap-detector';
 import type { NodeGapResolution } from '../types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   gap:           FlowNodeGap;
@@ -103,13 +104,13 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
               placeholder="Error message if call fails (optional)"
               className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
             />
-            <button
+            <Button
               onClick={saveApiUrl}
               disabled={!apiUrl.trim()}
-              className="w-full py-2 rounded-lg text-[11px] font-bold bg-brand text-text-inverted disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              variant="primary" block
             >
               Save
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -143,13 +144,13 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
                   className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand resize-none"
                 />
               )}
-              <button
+              <Button
                 onClick={saveCustomMsg}
                 disabled={!customMsg.trim()}
-                className="w-full py-2 rounded-lg text-[11px] font-bold bg-brand text-text-inverted disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                variant="primary" block
               >
                 Save
-              </button>
+              </Button>
             </div>
           )}
         </div>

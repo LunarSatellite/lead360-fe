@@ -14,6 +14,7 @@ import type {
   ProcessDefinitionDto,
   CreateProcessDefinitionRequest, CreateProcessStepRequest, UpdateProcessDefinitionRequest,
 } from '../types/process-workflow.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Step Row ────────────────────────────────────────────────────────────────
 
@@ -231,13 +232,13 @@ function DefinitionForm({ initial, onDone, onCancel }: DefinitionFormProps) {
         >
           Cancel
         </button>
-        <button
+        <Button
           onClick={handleSubmit}
           disabled={!name.trim() || steps.some(s => !s.name.trim()) || isPending}
-          className="px-4 py-2 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary"
         >
           {isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isEdit ? 'Save' : 'Create'}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -402,14 +403,14 @@ function StartInstanceModal({
             >
               Cancel
             </button>
-            <button
+            <Button
               onClick={handleStart}
               disabled={start.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50"
+              variant="primary"
             >
               {start.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
               Start
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -451,12 +452,12 @@ function ProcessWorkflowDefinitionsPage() {
             <p className="text-sm text-text-muted">Manage process workflow templates</p>
           </div>
         </div>
-        <button
+        <Button
           onClick={() => { setShowCreate(true); setEditingId(null); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Definition
-        </button>
+        </Button>
       </div>
 
       {/* Create form inline */}

@@ -20,6 +20,7 @@ import {
   EXPERIMENT_STATUS_LABELS, EXPERIMENT_STATUS_COLORS,
 } from '@/features/crm/types/crm.types';
 import { formatDistanceToNow, format } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls =
   'w-full px-3.5 py-2 rounded-xl bg-transparent border text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-all';
@@ -177,13 +178,13 @@ function CreateForm({ onSave, onCancel, isSaving }: {
         <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">
           Cancel
         </button>
-        <button
+        <Button
           type="submit"
           disabled={isSaving || !form.name.trim() || !form.controlFlowId.trim() || !form.challengerFlowId.trim()}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          variant="primary"
         >
           {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><FlaskConical className="w-3.5 h-3.5" /> Create Experiment</>}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -223,9 +224,9 @@ function EditForm({ exp, onSave, onCancel, isSaving }: {
         <input type="range" min={10} max={90} value={splitPercent} onChange={(e) => setSplitPercent(Number(e.target.value))} className="w-full accent-brand" />
       </div>
       <div className="flex gap-3">
-        <button type="submit" disabled={isSaving} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all">
+        <Button type="submit" disabled={isSaving} variant="primary">
           {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> Save</>}
-        </button>
+        </Button>
         <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">
           Cancel
         </button>
@@ -468,13 +469,13 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
           {/* Action bar */}
           <div className="flex items-center gap-2 flex-wrap pt-1 border-t border-border-subtle">
             {isDraft && (
-              <button
+              <Button
                 onClick={() => start.mutate(exp.id)}
                 disabled={start.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50"
+                variant="primary" size="sm"
               >
                 {start.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Play className="w-3.5 h-3.5" strokeWidth={2} /> Start</>}
-              </button>
+              </Button>
             )}
             {isRunning && (
               <>
@@ -496,13 +497,13 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
             )}
             {isPaused && (
               <>
-                <button
+                <Button
                   onClick={() => resume.mutate(exp.id)}
                   disabled={resume.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50"
+                  variant="primary" size="sm"
                 >
                   {resume.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><RotateCcw className="w-3.5 h-3.5" strokeWidth={1.5} /> Resume</>}
-                </button>
+                </Button>
                 <button
                   onClick={() => complete.mutate(exp.id)}
                   disabled={complete.isPending}
@@ -522,12 +523,12 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
                   >
                     <Trophy className="w-3 h-3" /> Control
                   </button>
-                  <button
+                  <Button
                     onClick={() => { declareWinner.mutate({ id: exp.id, winner: ExperimentVariantKind.Challenger }); setDeclareOpen(false); }}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all"
+                    variant="primary" size="sm"
                   >
                     <Trophy className="w-3 h-3" /> Challenger
-                  </button>
+                  </Button>
                   <button onClick={() => setDeclareOpen(false)} className="text-xs text-text-muted hover:text-text-primary">×</button>
                 </div>
               ) : (
@@ -576,12 +577,12 @@ export function Component() {
               Split traffic between two flows and measure which drives more conversions.
             </p>
           </div>
-          <button
+          <Button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Experiment
-          </button>
+          </Button>
         </div>
 
         {/* Summary chips */}
@@ -617,12 +618,12 @@ export function Component() {
             <p className="text-xs text-center max-w-xs">
               Create an experiment to split traffic between two flows and measure which drives more conversions.
             </p>
-            <button
+            <Button
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-1.5 mt-1 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+              variant="primary" className="mt-1"
             >
               <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Create First Experiment
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="space-y-4">

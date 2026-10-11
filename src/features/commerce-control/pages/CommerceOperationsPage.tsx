@@ -19,6 +19,7 @@ import {
 } from '../api/stylemint-operations.api';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 const METHOD_STYLES: Record<string, string> = {
   GET: 'bg-sky-400/10 text-sky-300 border-sky-400/25',
@@ -332,10 +333,10 @@ function OperationRow({
                 </button>
               </>
             ) : (
-              <button
+              <Button
                 onClick={() => (mutation ? setConfirming(true) : run())}
                 disabled={running || missing.length > 0}
-                className="flex items-center gap-2 rounded-card bg-brand px-3 py-2 text-xs font-bold text-text-inverted disabled:opacity-40"
+                variant="primary"
               >
                 {running ? (
                   <Loader2 strokeWidth={1.6} className="h-3.5 w-3.5 animate-spin" />
@@ -343,7 +344,7 @@ function OperationRow({
                   <Play strokeWidth={1.6} className="h-3.5 w-3.5" />
                 )}
                 Run
-              </button>
+              </Button>
             )}
 
             {missing.length > 0 && (

@@ -13,6 +13,7 @@ import {
   CRM_TASK_PRIORITY_LABELS, CRM_TASK_PRIORITY_COLORS,
 } from '../types/crm.types';
 import { format, isPast, parseISO } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -162,10 +163,10 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmTaskCreateR
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
             <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
-            <button type="submit" disabled={isSaving || !form.title.trim()} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <Button type="submit" disabled={isSaving || !form.title.trim()} variant="primary">
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Task
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -251,9 +252,9 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
             </div>
             <div><label className="block text-xs font-semibold text-text-muted mb-1">Due Date</label><input type="datetime-local" value={editForm.dueDate} onChange={setEdit('dueDate')} className={inputCls} /></div>
             <div><label className="block text-xs font-semibold text-text-muted mb-1">Completion Notes</label><textarea rows={2} value={editForm.completionNotes} onChange={setEdit('completionNotes')} className={`${inputCls} resize-none`} /></div>
-            <button type="submit" disabled={update.isPending} className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all">
+            <Button type="submit" disabled={update.isPending} variant="primary" block>
               {update.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Save Changes'}
-            </button>
+            </Button>
           </form>
         )}
       </div>
@@ -382,12 +383,12 @@ export function Component() {
             <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Tasks</h1>
             <p className="text-sm text-text-secondary mt-1">Manage and track your team's tasks</p>
           </div>
-          <button
+          <Button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Task
-          </button>
+          </Button>
         </div>
 
         {/* Filter bar */}

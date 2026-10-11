@@ -3,6 +3,7 @@ import { Database, Loader2 } from 'lucide-react';
 import { useResponseStorage, useSetResponseStorage } from '../api/settings.queries';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { useAuth } from '@/shared/hooks/useAuth';
+import { Button } from '@/shared/ui/primitives';
 
 /* ─── Enable confirm dialog ─────────────────────────────────────── */
 
@@ -43,15 +44,15 @@ function EnableConfirmDialog({
           >
             Cancel
           </button>
-          <button
+          <Button
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-xs font-semibold bg-brand text-bg hover:bg-brand-light disabled:opacity-40 transition-all"
+            variant="primary"
           >
             {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             Enable storage
-          </button>
+          </Button>
         </div>
       </div>
     </div>

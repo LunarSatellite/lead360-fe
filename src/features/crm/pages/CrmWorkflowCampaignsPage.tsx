@@ -3,6 +3,7 @@ import { Plus, X, Loader2, Play, Target, ChevronDown } from 'lucide-react';
 import { useWorkflowCampaigns, useCreateWorkflowCampaign, useExecuteWorkflowCampaign, useWorkflows } from '../api/crm.queries';
 import type { CrmWorkflowCampaignDto, CrmWorkflowCampaignCreateRequest, CrmWorkflowSummaryDto } from '../types/crm.types';
 import { CRM_WORKFLOW_TRIGGER_LABELS } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 function SlideOver({ open, onClose, title, children, footer }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
@@ -80,9 +81,9 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Workflow Campaigns</h2>
           <p className="text-xs text-text-muted mt-0.5">{items.length} campaigns</p>
         </div>
-        <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all shrink-0">
+        <Button onClick={() => setShowCreate(true)} variant="primary" className="shrink-0">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Campaign
-        </button>
+        </Button>
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -112,9 +113,9 @@ export function Component() {
                   <td className="px-4 py-3 text-text-muted">{c.totalMatched}</td>
                   <td className="px-4 py-3 text-text-muted text-xs">{c.lastRunAt ? new Date(c.lastRunAt).toLocaleDateString() : '—'}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => executeCampaign.mutate(c.id)} disabled={executeCampaign.isPending} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-brand-soft text-brand text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-60">
+                    <Button onClick={() => executeCampaign.mutate(c.id)} disabled={executeCampaign.isPending} variant="primary" size="sm">
                       {executeCampaign.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" strokeWidth={1.5} />} Run
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
@@ -131,10 +132,10 @@ export function Component() {
         footer={
           <div className="flex items-center justify-end gap-3">
             <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="create-campaign-form" disabled={createCampaign.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="submit" form="create-campaign-form" disabled={createCampaign.isPending}
+              variant="primary">
               {createCampaign.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Target className="w-3.5 h-3.5" />} Create Campaign
-            </button>
+            </Button>
           </div>
         }
       >
@@ -145,12 +146,7 @@ export function Component() {
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
-            <div className="relative">
-              <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-            </div>
+            <Input icon={Target} required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>

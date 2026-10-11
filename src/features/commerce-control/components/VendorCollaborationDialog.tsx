@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Loader2, Users, X } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
+import { Button } from '@/shared/ui/primitives';
 
 type Kind = 'squad' | 'retainer';
 
@@ -101,10 +102,10 @@ export function VendorCollaborationDialog({
           <button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">
             Cancel
           </button>
-          <button disabled={!valid || save.isPending} className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-text-inverted disabled:opacity-40">
+          <Button disabled={!valid || save.isPending} variant="primary" size="lg">
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {kind === 'squad' ? "Create squad" : 'Propose contract'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

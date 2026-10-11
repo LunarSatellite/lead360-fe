@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Loader2, SlidersHorizontal, Save, Megaphone, Sparkles, Bot } from 'lucide-react';
 import { useFeatureSettings, useUpdateFeatureSettings } from '../api/crm.queries';
 import type { TenantFeatureSettings } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 type Key = keyof TenantFeatureSettings;
 
@@ -69,14 +70,14 @@ export function Component() {
             Turn capture channels and AI features on or off for your workspace. Changes take effect within a minute.
           </p>
         </div>
-        <button
+        <Button
           onClick={() => draft && update.mutate(draft)}
           disabled={!dirty || update.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+          variant="primary"
         >
           {update.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" strokeWidth={2.5} />}
           Save changes
-        </button>
+        </Button>
       </div>
 
       {isLoading || !draft ? (

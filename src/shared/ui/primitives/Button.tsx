@@ -23,6 +23,13 @@ import { CONTROL_SIZE, DISABLED, FOCUS_RING, RADIUS, type ControlSize } from './
 
 const VARIANT = {
   primary: 'bg-brand text-text-inverted font-bold hover:bg-brand-light',
+  /**
+   * A brand-tinted action: the same weight of intent as `primary`, but it
+   * does not want to be the loudest thing on the screen. The admin had
+   * twelve of these already — `bg-brand-soft text-brand border-border-glow`
+   * — so it is a variant that existed before it had a name.
+   */
+  soft: 'border border-border-glow bg-brand-soft text-brand font-semibold hover:bg-brand hover:text-text-inverted',
   secondary:
     'border border-border-subtle text-text-secondary font-semibold hover:border-border-medium hover:text-text-primary',
   ghost: 'text-text-muted font-semibold hover:bg-glass-1 hover:text-text-primary',

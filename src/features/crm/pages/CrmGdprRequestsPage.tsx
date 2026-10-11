@@ -25,6 +25,7 @@ import {
   type DataSubjectRequestStatus,
   type DataSubjectRequestType,
 } from '../types/crm-gdpr.types';
+import { Button } from '@/shared/ui/primitives';
 
 const STATUS_CLASS: Record<DataSubjectRequestStatus, string> = {
   Pending: 'text-warning bg-warning-soft border-warning/20',
@@ -183,13 +184,13 @@ export function Component() {
           placeholder="Anything the person said about what they want (optional)"
           className="w-full rounded-xl bg-bg-input border border-border-subtle px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
         />
-        <button
+        <Button
           type="submit"
           disabled={createRequest.isPending || !email.trim()}
-          className="rounded-xl bg-brand text-text-inverted px-4 py-2 text-sm font-bold disabled:opacity-40"
+          variant="primary"
         >
           {createRequest.isPending ? 'Logging…' : 'Log request'}
-        </button>
+        </Button>
       </form>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card px-5 py-4">

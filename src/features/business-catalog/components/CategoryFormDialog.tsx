@@ -12,6 +12,7 @@ import {
   CatalogCategoryType,
 } from '../types/business-catalog.types';
 import type { CatalogCategory, CatalogCategoryTypeValue } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   parentLabel: string;
@@ -340,16 +341,15 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
           >
             Cancel
           </button>
-          <button
+          <Button
             type="button"
             disabled={isPending || !name.trim()}
             onClick={handleSubmit}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold
-                       bg-brand text-text-inverted hover:bg-brand/90 disabled:opacity-50 transition-all"
+            variant="primary"
           >
             {isPending && <Loader2 className="w-3 h-3 animate-spin" />}
             {editing ? 'Save changes' : 'Add'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

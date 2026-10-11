@@ -25,6 +25,7 @@ import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS } from '../types/crm.typ
 import { ROUTES } from '@/app/router/route-paths';
 import { format, formatDistanceToNow, isPast, differenceInDays } from 'date-fns';
 import { toast } from 'sonner';
+import { Button, Input } from '@/shared/ui/primitives';
 
 type View = 'kanban' | 'list';
 const LIST_PAGE_SIZE = 20;
@@ -421,11 +422,11 @@ export function Component() {
             <Filter className="w-3.5 h-3.5" />
             Filter{activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}
           </button>
-          <button
+          <Button
             onClick={() => setShowNewDeal(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+            variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Deal
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -850,16 +851,7 @@ export function Component() {
               {/* Deal Name */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Deal Name *</label>
-                <div className="relative">
-                  <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    value={ndName}
-                    onChange={e => setNdName(e.target.value)}
-                    placeholder="e.g. Acme Corp — Enterprise"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  />
-                </div>
+                <Input icon={Briefcase} value={ndName} onChange={e => setNdName(e.target.value)} placeholder="e.g. Acme Corp — Enterprise" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               </div>
 
               {/* Stage */}
@@ -911,30 +903,11 @@ export function Component() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Amount</label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number"
-                      value={ndAmount}
-                      onChange={e => setNdAmount(e.target.value)}
-                      placeholder="0"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <Input icon={DollarSign} type="number" value={ndAmount} onChange={e => setNdAmount(e.target.value)} placeholder="0" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Expected Close Date</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="date"
-                      value={ndCloseDate}
-                      onChange={e => setNdCloseDate(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <Input icon={Calendar} type="date" value={ndCloseDate} onChange={e => setNdCloseDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                 </div>
               </div>
 
@@ -996,14 +969,14 @@ export function Component() {
               >
                 Cancel
               </button>
-              <button
+              <Button
                 onClick={submitNewDeal}
                 disabled={!ndName.trim() || !ndStageId || createDeal.isPending}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createDeal.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Deal
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -1040,8 +1013,8 @@ export function Component() {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor, defaultProbability: editingProb / 100 } }); setEditingStageId(null); }}
-                          className="flex-1 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold">Save</button>
+                        <Button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor, defaultProbability: editingProb / 100 } }); setEditingStageId(null); }}
+                          variant="primary" size="sm" className="flex-1">Save</Button>
                         <button onClick={() => setEditingStageId(null)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
                       </div>
                     </div>

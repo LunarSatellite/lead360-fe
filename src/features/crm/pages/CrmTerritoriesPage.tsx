@@ -20,6 +20,7 @@ import type {
 } from '../types/crm-rbac.types';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const { data, isLoading } = useTerritories();
@@ -54,12 +55,12 @@ export function Component() {
           <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Sales Territories</h1>
           <p className="text-base text-text-secondary mt-1">Route leads automatically based on rules — round-robin within each territory</p>
         </div>
-        <button
+        <Button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" /> New territory
-        </button>
+        </Button>
       </div>
 
       {showCreate && createPortal(
@@ -108,11 +109,11 @@ export function Component() {
             </form>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
               <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-              <button type="submit" disabled={create.isPending || !name.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              <Button type="submit" disabled={create.isPending || !name.trim()}
+                variant="primary">
                 {create.isPending ? <span className="w-3.5 h-3.5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Territory
-              </button>
+              </Button>
             </div>
           </div>
         </div>,
@@ -276,7 +277,7 @@ function RulesPanel({ territory }: { territory: SalesTerritoryDto }) {
           </div>
           <div className="flex gap-2 justify-end">
             <button type="button" onClick={() => setShowForm(false)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
-            <button type="submit" disabled={!value.trim() || addRule.isPending} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">Add</button>
+            <Button type="submit" disabled={!value.trim() || addRule.isPending} variant="primary" size="sm">Add</Button>
           </div>
         </form>
       )}

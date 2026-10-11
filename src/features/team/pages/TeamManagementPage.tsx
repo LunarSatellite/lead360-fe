@@ -26,6 +26,7 @@ import {
   CrmFeature, CRM_FEATURE_LABEL, CRM_FEATURE_GROUPS,
 } from '@/features/crm/types/crm-rbac.types';
 import type { CrmRoleDto, CrmRolePermissionDto, CrmFeatureValue } from '@/features/crm/types/crm-rbac.types';
+import { Button } from '@/shared/ui/primitives';
 
 type Tab = 'members' | 'contact-cards' | 'roles';
 
@@ -48,12 +49,12 @@ export function Component() {
           <p className="text-base text-text-secondary mt-1">Manage team members, contact cards, roles and permissions</p>
         </div>
         {tab === 'members' && (
-          <button
+          <Button
             onClick={() => setShowInviteForm(!showInviteForm)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Invite member
-          </button>
+          </Button>
         )}
       </div>
 
@@ -243,10 +244,10 @@ function InviteForm({ onClose }: { onClose: () => void }) {
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
               disabled={send.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {send.isPending ? (
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -254,7 +255,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
                 <Plus className="w-3.5 h-3.5" />
               )}
               {send.isPending ? 'Sending...' : 'Send invitation'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

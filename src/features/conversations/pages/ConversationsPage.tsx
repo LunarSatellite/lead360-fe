@@ -6,6 +6,7 @@ import { useActiveSessions, useAwaitingSessions, useMySessions, useMessages, use
 import { useMoveDealStage, useCloseDeal, useDealStages } from '../../crm/api/crm.queries';
 import { SESSION_STATUS_LABEL, SESSION_STATUS_COLOR, CHANNEL_LABEL, ROUTING_PATH_LABEL, MessageDirection } from '../types/conversation.types';
 import type { SessionDto } from '../types/conversation.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   // Deep-link support: /dashboard/conversations?session=<id> (used by the Home
@@ -297,13 +298,13 @@ function MessageViewer({ sessionId }: { sessionId: string }) {
             placeholder="Type a reply to the customer..."
             className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors"
           />
-          <button
+          <Button
             onClick={sendReply}
             disabled={!replyText.trim() || reply.isPending}
-            className="px-3 py-2 rounded-xl bg-brand text-bg font-bold disabled:opacity-50 hover:opacity-90 transition-all flex items-center gap-1.5"
+            variant="primary"
           >
             {reply.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-          </button>
+          </Button>
         </div>
         <p className="text-2xs text-text-muted mt-1.5">Press Enter to send · Green = agent · Blue = bot</p>
       </div>

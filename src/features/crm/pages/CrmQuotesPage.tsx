@@ -16,6 +16,7 @@ import type {
   CrmPriceBookDetailDto,
 } from '../types/crm.types';
 import { CrmQuoteStatus, CRM_QUOTE_STATUS_LABELS, CRM_QUOTE_STATUS_COLORS } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 // Shared input/select class
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors';
@@ -273,9 +274,9 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Quotes</h2>
           <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
         </div>
-        <button onClick={() => setCreateOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setCreateOpen(true)} variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Quote
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-2">
@@ -376,17 +377,17 @@ export function Component() {
                 <button onClick={() => openEdit(selected.id)} disabled={loadingEdit} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-card border border-border-subtle text-text-primary text-sm font-bold hover:bg-bg-elevated disabled:opacity-60 transition-all">
                   {loadingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Pencil className="w-4 h-4" strokeWidth={1.5} />} Edit
                 </button>
-                <button onClick={() => { setSendPreviewQuote(selected); setSelected(null); }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all">
+                <Button onClick={() => { setSendPreviewQuote(selected); setSelected(null); }} variant="primary">
                   <Send className="w-4 h-4" strokeWidth={1.5} /> Send Quote
-                </button>
+                </Button>
               </div>
             )}
             {selected.status === 2 && ( /* Sent — customer can accept/reject */
               <div className="flex items-center gap-2">
-                <button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                <Button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
+                  variant="primary">
                   {reviseQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" strokeWidth={1.5} />} Revise
-                </button>
+                </Button>
                 <button onClick={() => { acceptQuote.mutate(selected.id); setSelected(null); }} disabled={acceptQuote.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   {acceptQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" strokeWidth={1.5} />} Accept
@@ -399,10 +400,10 @@ export function Component() {
             )}
             {selected.status === 3 && ( /* Accepted — ready to create order */
               <div className="flex items-center gap-2">
-                <button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                <Button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
+                  variant="primary">
                   {reviseQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" strokeWidth={1.5} />} Revise
-                </button>
+                </Button>
                 <button onClick={() => { setSelected(null); navigate(`/dashboard/crm/orders?quoteId=${selected.id}`); }}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   <Package className="w-4 h-4" strokeWidth={1.5} /> Create Order
@@ -432,16 +433,16 @@ export function Component() {
             >
               Cancel
             </button>
-            <button
+            <Button
               onClick={handleSubmit}
               disabled={createQuote.isPending || updateQuote.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {createQuote.isPending || updateQuote.isPending
                 ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 : editingId ? <Pencil className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
               {editingId ? 'Save Changes' : 'Create Quote'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -607,31 +608,12 @@ export function Component() {
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                value={currency}
-                onChange={e => setCurrency(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="USD"
-              />
-            </div>
+            <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" />
           </div>
           {!editingId && (
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Validity (days)</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  value={validityDays}
-                  onChange={e => setValidityDays(Number(e.target.value))}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  min={1}
-                />
-              </div>
+              <Input icon={Calendar} type="number" value={validityDays} onChange={e => setValidityDays(Number(e.target.value))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} min={1} />
             </div>
           )}
         </div>

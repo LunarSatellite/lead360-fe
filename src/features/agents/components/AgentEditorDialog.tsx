@@ -57,6 +57,7 @@ import {
   type CreateAgentRequest,
   type UpdateAgentRequest,
 } from '../types/agents.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   open: boolean;
@@ -565,11 +566,11 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
           >
             Cancel
           </button>
-          <button
+          <Button
             type="button"
             onClick={handleSubmit}
             disabled={isPending}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            variant="primary"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={2.4} />
@@ -579,7 +580,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
               <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
             )}
             {isPending ? 'Saving…' : isEdit ? 'Save changes' : 'Create agent'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -25,6 +25,7 @@ import {
   type CourierProfile,
   type CourierStateValue,
 } from '../api/stylemint-couriers.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Courier onboarding and standing.
@@ -393,17 +394,17 @@ function CourierPanel({
           )}
 
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => run.mutate(confirming)}
               disabled={
                 run.isPending ||
                 (needsReason && !reason.trim()) ||
                 (approving && !canApprove)
               }
-              className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary"
             >
               {run.isPending ? 'Applying…' : 'Confirm'}
-            </button>
+            </Button>
             <button
               onClick={() => setConfirming(null)}
               className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"

@@ -6,6 +6,7 @@ import { Loader2, Plus, Check, X, Send, Clock, Calendar, FileText } from 'lucide
 import { toast } from 'sonner';
 import { crmApi } from '../api/crm.api';
 import { CrmTimePeriodStatus, CRM_TIME_PERIOD_STATUS_LABELS } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-lg border border-border-subtle bg-bg-elevated text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -123,12 +124,12 @@ export function Component() {
           <h1 className="text-2xl font-bold text-text-primary">Time Periods</h1>
           <p className="text-xs text-text-muted mt-0.5">Group time entries into reporting periods for review and approval.</p>
         </div>
-        <button
+        <Button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Period
-        </button>
+        </Button>
       </div>
 
       {/* Create form */}
@@ -147,14 +148,14 @@ export function Component() {
               >
                 Cancel
               </button>
-              <button
+              <Button
                 onClick={() => createMutation.mutate({ periodStart, periodEnd, notes: name || undefined })}
                 disabled={!canCreate || createMutation.isPending}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create
-              </button>
+              </Button>
             </div>
           }
         >
@@ -168,53 +169,18 @@ export function Component() {
             {/* Name / Label */}
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Name / Label</label>
-              <div className="relative">
-                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="e.g. June 2026, Q2 Week 3"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                />
-              </div>
+              <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. June 2026, Q2 Week 3" value={name} onChange={e => setName(e.target.value)} />
             </div>
 
             {/* Start Date + End Date */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date *</label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                  <input
-                    type="date"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                    style={{
-                      backgroundColor: 'rgb(var(--color-glass-1))',
-                      colorScheme: 'dark',
-                      backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                    }}
-                    value={periodStart}
-                    onChange={e => setPeriodStart(e.target.value)}
-                  />
-                </div>
+                <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={periodStart} onChange={e => setPeriodStart(e.target.value)} />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">End Date *</label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                  <input
-                    type="date"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                    style={{
-                      backgroundColor: 'rgb(var(--color-glass-1))',
-                      colorScheme: 'dark',
-                      backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                    }}
-                    value={periodEnd}
-                    onChange={e => setPeriodEnd(e.target.value)}
-                  />
-                </div>
+                <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} />
               </div>
             </div>
             {periodStart && periodEnd && periodStart >= periodEnd && (

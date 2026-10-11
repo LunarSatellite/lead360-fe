@@ -3,6 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useDedupPending, useResolveDedup, useScanDedup } from '../api/crm.queries';
 import type { CrmDedupCandidateDto, CrmDedupContactInfo } from '../types/crm.types';
 import { CRM_CONTACT_SOURCE_LABELS } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const NULL_GUID = '00000000-0000-0000-0000-000000000000';
 
@@ -112,20 +113,20 @@ function CandidateCard({
 
       {/* Actions */}
       <div className="flex gap-2 flex-wrap pt-1">
-        <button
+        <Button
           onClick={onKeepA}
           disabled={resolving}
-          className="flex-1 min-w-[120px] py-2 rounded-xl text-xs font-bold border border-brand text-brand hover:bg-brand hover:text-bg disabled:opacity-50 transition-all"
+          variant="primary" className="flex-1 min-w-[120px]"
         >
           {resolving ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : `Keep "${candidate.contactAName}"`}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onKeepB}
           disabled={resolving}
-          className="flex-1 min-w-[120px] py-2 rounded-xl text-xs font-bold border border-brand text-brand hover:bg-brand hover:text-bg disabled:opacity-50 transition-all"
+          variant="primary" className="flex-1 min-w-[120px]"
         >
           {resolving ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : `Keep "${candidate.contactBName}"`}
-        </button>
+        </Button>
         <button
           onClick={onNotDup}
           disabled={resolving}

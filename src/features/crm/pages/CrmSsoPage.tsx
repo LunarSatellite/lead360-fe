@@ -16,6 +16,7 @@ import {
   type CrmSsoConfigurationDto,
   type SsoProvider,
 } from '../types/crm-sso.types';
+import { Button } from '@/shared/ui/primitives';
 
 const field =
   'rounded-xl bg-bg-input border border-border-subtle px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand';
@@ -182,13 +183,13 @@ export function Component() {
           Require for everyone
         </label>
 
-        <button
+        <Button
           type="submit"
           disabled={create.isPending || !name.trim()}
-          className="rounded-xl bg-brand text-text-inverted px-4 py-2 text-sm font-bold disabled:opacity-40"
+          variant="primary"
         >
           {create.isPending ? 'Saving…' : 'Save connection'}
-        </button>
+        </Button>
       </form>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card px-5 py-4">

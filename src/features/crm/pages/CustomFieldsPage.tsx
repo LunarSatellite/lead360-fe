@@ -12,6 +12,7 @@ import {
   CrmEntityType, CRM_ENTITY_TYPE_LABELS,
   CustomFieldType, CUSTOM_FIELD_TYPE_LABELS,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const ENTITY_TABS = [
   { type: CrmEntityType.Contact, label: 'Contacts' },
@@ -90,16 +91,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
               <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Name</span>
               <div className="h-px bg-brand/20" />
             </div>
-            <div className="relative">
-              <SlidersHorizontal className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="e.g. Case Reference"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              />
-            </div>
+            <Input icon={SlidersHorizontal} value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Case Reference" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-2 mb-1.5">
@@ -223,14 +215,14 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
         >
           Cancel
         </button>
-        <button
+        <Button
           onClick={handleSubmit}
           disabled={!name.trim() || create.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          variant="primary"
         >
           {create.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
           Add Field
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -322,12 +314,12 @@ export function Component() {
             <p className="text-sm text-text-muted mt-0.5">Add per-tenant fields to any CRM entity</p>
           </div>
         </div>
-        <button
+        <Button
           onClick={() => setShowAdd(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-4 h-4" /> Add Field
-        </button>
+        </Button>
       </div>
 
       {/* Entity type tabs */}

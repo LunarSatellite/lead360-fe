@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { Lock, AlertTriangle, X, Loader2 } from 'lucide-react';
 import type { ComplianceProfileSummary } from '../types/compliance.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ComplianceProfileSelectorProps {
   profiles: ComplianceProfileSummary[];
@@ -155,18 +156,14 @@ export function ComplianceProfileSelector({
             >
               Cancel
             </button>
-            <button
+            <Button
               onClick={() => selectedId && onSelect(selectedId)}
               disabled={!selectedId || !isChanged || isAssigning}
-              className="px-4 py-2 rounded-[10px] text-2xs font-semibold text-bg
-                         bg-brand hover:bg-brand-light
-                         disabled:opacity-40 disabled:cursor-not-allowed
-                         transition-all duration-150
-                         flex items-center gap-1.5"
+              variant="primary"
             >
               {isAssigning && <Loader2 size={12} strokeWidth={2} className="animate-spin" />}
               Apply Profile
-            </button>
+            </Button>
           </div>
         </div>
       </div>

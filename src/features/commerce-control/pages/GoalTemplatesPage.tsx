@@ -20,6 +20,7 @@ import {
   type CampaignGoalValue,
   type GoalTemplateVersion,
 } from '../api/stylemint-brand-studio.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Goal templates — the prompt the platform uses to draft a campaign brief for each goal a vendor
@@ -68,12 +69,12 @@ export function GoalTemplatesPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => setAuthoring(true)}
-            className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> New version
-          </button>
+          </Button>
           <button
             onClick={() => versions.refetch()}
             className="flex items-center gap-2 rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
@@ -233,14 +234,14 @@ function VersionRow({
           </p>
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={act.isPending}
               onClick={() => act.mutate(confirming)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
-            </button>
+            </Button>
             <button
               onClick={() => setConfirming(null)}
               className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
@@ -320,10 +321,10 @@ function AuthorForm({
       {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
 
       <div className="mt-3 flex items-center gap-2">
-        <button
+        <Button
           disabled={!promptText.trim() || author.isPending}
           onClick={() => author.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {author.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -331,7 +332,7 @@ function AuthorForm({
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Author version
-        </button>
+        </Button>
         <button
           onClick={onCancel}
           className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"

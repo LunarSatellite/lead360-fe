@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Plus, Scissors, Trash2 } from 'lucide-react';
 import { stylemintHotSegmentsApi, type HotSegment } from '../api/stylemint-hot-segments.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The hot segments on one track — the parts creators are pointed at when they cut a reel.
@@ -106,14 +107,14 @@ export function HotSegmentsEditor({ trackId }: { trackId: string }) {
             placeholder={`Label (ordinal ${nextOrdinal})`}
             className={field}
           />
-          <button
+          <Button
             disabled={!label.trim() || add.isPending}
             onClick={() => add.mutate()}
-            className="flex items-center gap-1 rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             {add.isPending && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
             Save
-          </button>
+          </Button>
         </div>
       )}
 

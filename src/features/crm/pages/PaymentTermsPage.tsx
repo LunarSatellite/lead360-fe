@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
 import { ApiError } from '@/shared/lib/api-client';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const PT_KEY = ['crm', 'payment-terms'] as const;
 
@@ -84,10 +85,10 @@ export function Component() {
           <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Payment Terms</h1>
           <p className="text-sm text-text-secondary mt-1">Define payment terms and apply them to accounts. Invoices auto-calculate due dates.</p>
         </div>
-        <button onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setShowCreate(true)}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> New term
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
@@ -159,30 +160,20 @@ export function Component() {
         footer={
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button
+            <Button
               type="submit"
               form="pt-form"
               disabled={createMut.isPending || !form.name.trim()}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              variant="primary" size="lg" className="flex-none">
               {createMut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Term'}
-            </button>
+            </Button>
           </div>
         }
       >
         <form id="pt-form" onSubmit={submit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Name *</label>
-            <div className="relative">
-              <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                required
-                placeholder="e.g. Net 30"
-                value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              />
-            </div>
+            <Input icon={Layers} required placeholder="e.g. Net 30" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
 
           <div>
@@ -203,33 +194,11 @@ export function Component() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Net Days</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  value={form.netDays}
-                  onChange={e => setForm(f => ({ ...f, netDays: Number(e.target.value) }))}
-                  min={0}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                />
-              </div>
+              <Input icon={Calendar} type="number" value={form.netDays} onChange={e => setForm(f => ({ ...f, netDays: Number(e.target.value) }))} min={0} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Deposit %</label>
-              <div className="relative">
-                <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  value={form.depositPercent}
-                  onChange={e => setForm(f => ({ ...f, depositPercent: Number(e.target.value) }))}
-                  min={0}
-                  max={100}
-                  step={0.01}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                />
-              </div>
+              <Input icon={Percent} type="number" value={form.depositPercent} onChange={e => setForm(f => ({ ...f, depositPercent: Number(e.target.value) }))} min={0} max={100} step={0.01} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </div>
           </div>
 

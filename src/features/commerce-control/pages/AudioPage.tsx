@@ -24,6 +24,7 @@ import {
 } from '../api/stylemint-audio.api';
 import { AudioTrendsTab } from '../components/AudioTrendsTab';
 import { HotSegmentsEditor } from '../components/HotSegmentsEditor';
+import { Button } from '@/shared/ui/primitives';
 
 type Tab = 'tracks' | 'broken' | 'citations' | 'trends';
 
@@ -204,13 +205,13 @@ function CitationsTab() {
               placeholder="Music track id to point it at"
               className="min-w-[300px] flex-1 rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 font-mono text-xs text-text-primary outline-none focus:border-border-glow"
             />
-            <button
+            <Button
               onClick={() => act.mutate('canonicalize')}
               disabled={act.isPending || !trackId.trim()}
-              className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary"
             >
               Point at this track
-            </button>
+            </Button>
           </div>
           <div className="flex flex-wrap gap-2">
             <input
@@ -417,13 +418,13 @@ function TrackRow({
             placeholder="Why is this track being hidden? (required)"
             className="min-w-[280px] flex-1 rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
           />
-          <button
+          <Button
             onClick={() => act.mutate('hide')}
             disabled={act.isPending || !reason.trim()}
-            className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary"
           >
             {act.isPending ? 'Hiding…' : 'Hide track'}
-          </button>
+          </Button>
           <button
             onClick={() => setHiding(false)}
             className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"

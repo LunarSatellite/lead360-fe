@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, Send, CheckCircle2 } from 'lucide-react';
 import { usePortalCase, usePortalReplyToCase, usePortalResolveCase } from '../api/portal.queries';
 import type { PortalCaseDetailDto, PortalCaseMessageDto } from '../types/portal.types';
+import { Button } from '@/shared/ui/primitives';
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -121,10 +122,10 @@ function ReplySection({ caseId }: { caseId: string }) {
           onChange={(e) => setBody(e.target.value)}
           className="flex-1 px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm resize-none"
         />
-        <button
+        <Button
           type="submit"
           disabled={reply.isPending || !body.trim()}
-          className="self-end flex items-center gap-1.5 px-4 py-2.5 rounded-sm bg-brand text-bg font-bold hover:bg-brand-light transition-all disabled:opacity-30 text-xs shrink-0"
+          variant="primary" size="lg" className="self-end shrink-0"
         >
           {reply.isPending ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -132,7 +133,7 @@ function ReplySection({ caseId }: { caseId: string }) {
             <Send className="w-3.5 h-3.5" strokeWidth={1.8} />
           )}
           Reply
-        </button>
+        </Button>
       </form>
 
       <button

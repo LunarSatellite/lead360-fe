@@ -11,6 +11,7 @@ import type {
   CrmPipelineSummaryDto, CrmDealStageSummaryDto, CrmStageGateSummaryDto, CustomFieldDefinitionDto,
 } from '../types/crm.types';
 import { StageGateType, STAGE_GATE_TYPE_LABELS, GATE_REQUIRED_FIELDS, CrmEntityType } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const DEAL_TYPE_LABELS: Record<number, string> = { 1: 'Sales', 2: 'Service', 3: 'Support', 4: 'Renewal' };
 const DEAL_TYPE_COLORS: Record<number, string> = { 1: '#3B82F6', 2: '#8B5CF6', 3: '#EF4444', 4: '#10B981' };
@@ -122,13 +123,13 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
         >
           Cancel
         </button>
-        <button
+        <Button
           onClick={handleSubmit}
           disabled={!label.trim() || create.isPending}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50"
+          variant="primary" size="sm"
         >
           {create.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Plus className="w-3 h-3" /> Add</>}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -331,13 +332,13 @@ function EditPipelineModal({ pipeline, onClose }: EditPipelineModalProps) {
           >
             Cancel
           </button>
-          <button
+          <Button
             onClick={handleSave}
             disabled={!editName.trim() || update.isPending}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+            variant="primary"
           >
             {update.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> Save</>}
-          </button>
+          </Button>
         </div>
       </div>
     </div>,
@@ -534,13 +535,13 @@ function CreatePipelineModal({ onCreated, onCancel }: CreateFormProps) {
           >
             Cancel
           </button>
-          <button
+          <Button
             onClick={handleSubmit}
             disabled={!name.trim() || create.isPending}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+            variant="primary"
           >
             {create.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Create</>}
-          </button>
+          </Button>
         </div>
       </div>
     </div>,
@@ -578,12 +579,12 @@ export function Component() {
             Manage pipelines and configure stage exit gates.
           </p>
         </div>
-        <button
+        <Button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Pipeline
-        </button>
+        </Button>
       </div>
 
       {showCreate && (

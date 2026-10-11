@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { crmApi } from '../api/crm.api';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 const ENTITY_TYPES = ['Lead', 'SupportCase', 'WorkOrder', 'Return', 'Onboarding'] as const;
 const ENTITY_LABELS: Record<string, string> = {
@@ -90,13 +91,13 @@ export function Component() {
             <option key={u.id} value={u.id}>{userName(u)}</option>
           ))}
         </select>
-        <button
+        <Button
           onClick={() => selectedUserId && addMutation.mutate(selectedUserId)}
           disabled={!selectedUserId || addMutation.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand text-text-inverted text-sm font-medium disabled:opacity-50"
+          variant="primary"
         >
           {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><UserPlus className="w-4 h-4" /> Add</>}
-        </button>
+        </Button>
       </div>
 
       {/* Pool members */}

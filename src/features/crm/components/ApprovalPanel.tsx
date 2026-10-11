@@ -7,6 +7,7 @@ import type { CrmApprovalSummaryDto, CrmApprovalChainDefinitionDto } from '../ty
 import { ApprovalEntityType } from '../types/crm.types';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 function ReviewModal({ mode, approvalId, onClose }: {
   mode: 'approve' | 'reject'; approvalId: string; onClose: () => void;
@@ -149,10 +150,10 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
             ) : (
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs text-text-muted">Submit via <span className="text-text-secondary font-semibold">{matchingChain.name}</span></p>
-                <button onClick={() => submitChainMut.mutate(matchingChain.id)} disabled={submitChainMut.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50">
+                <Button onClick={() => submitChainMut.mutate(matchingChain.id)} disabled={submitChainMut.isPending}
+                  variant="primary" size="sm">
                   {submitChainMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Send className="w-3.5 h-3.5" /> Submit for Approval</>}
-                </button>
+                </Button>
               </div>
             )}
           </>

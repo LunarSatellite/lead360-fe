@@ -20,6 +20,7 @@ import { useActiveSessions } from '@/features/conversations/api/conversation.que
 import { SESSION_STATUS_LABEL, SESSION_STATUS_COLOR, CHANNEL_LABEL } from '@/features/conversations/types/conversation.types';
 import type { SessionDto } from '@/features/conversations/types/conversation.types';
 import { StatusBadge } from '@/shared/components';
+import { Button } from '@/shared/ui/primitives';
 
 function relAgo(iso?: string): string {
   if (!iso) return '';
@@ -368,15 +369,15 @@ function SetupJourneyCard() {
               </p>
             </div>
             {!selected.done && (
-              <button
+              <Button
                 onClick={() =>
                   navigate(`/dashboard/chat?prefill=${encodeURIComponent(selected.chatPrompt)}`)
                 }
-                className="shrink-0 px-3 py-1.5 rounded-sm bg-brand hover:bg-brand-light text-bg text-xs font-bold transition-colors flex items-center gap-1.5"
+                variant="primary" size="sm" className="shrink-0"
               >
                 <span>Set up</span>
                 <ArrowRight className="w-3 h-3" strokeWidth={2} />
-              </button>
+              </Button>
             )}
           </div>
         </div>

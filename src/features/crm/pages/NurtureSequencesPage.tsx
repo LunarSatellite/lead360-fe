@@ -22,6 +22,7 @@ import {
   NURTURE_SEQUENCE_TYPE_DESCRIPTIONS,
   NurtureTriggerType,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // Format a delay (minutes, with hours fallback for legacy data) into a compact badge with a separator.
 const delayBadge = (mins: number, hoursFallback: number, sep: string) => {
@@ -682,14 +683,14 @@ function SequenceModal({
           >
             Cancel
           </button>
-          <button
+          <Button
             type="submit"
             disabled={isLoading}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            variant="primary"
           >
             {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
             {editing ? 'Save Changes' : 'Create Sequence'}
-          </button>
+          </Button>
         </div>
         </form>
       </div>
@@ -840,14 +841,14 @@ export function Component() {
             Automatically follow up with leads who go silent
           </p>
         </div>
-        <button
+        <Button
           type="button"
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" />
           New Sequence
-        </button>
+        </Button>
       </div>
 
       {/* Loading */}

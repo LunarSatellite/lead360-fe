@@ -20,6 +20,7 @@ import {
   type CampaignReviewGateValue,
 } from '../api/stylemint-campaign-workspaces.api';
 import { ReportPanel } from './ReportPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Campaign workspaces: the brand-studio pipeline from brief to live campaign.
@@ -70,9 +71,9 @@ export function CampaignWorkspacesTab() {
         <p className="text-xs text-text-muted">
           Brief to live campaign: configure, approve, activate, generate, review, measure.
         </p>
-        <button
+        <Button
           onClick={() => setCreating((v) => !v)}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+          variant="primary" size="sm"
         >
           {creating ? (
             <X className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -80,7 +81,7 @@ export function CampaignWorkspacesTab() {
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           {creating ? 'Cancel' : 'New workspace'}
-        </button>
+        </Button>
       </div>
 
       {creating && (
@@ -122,13 +123,13 @@ export function CampaignWorkspacesTab() {
             placeholder="Workspace id from the list above"
             className={`${field} flex-1 font-mono`}
           />
-          <button
+          <Button
             disabled={!workspaceId.trim()}
             onClick={() => setOpen(workspaceId.trim())}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary"
           >
             <Search className="h-3.5 w-3.5" strokeWidth={1.6} /> Open
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -207,10 +208,10 @@ function CreateForm({
           />
         </div>
       </div>
-      <button
+      <Button
         disabled={!ready || create.isPending}
         onClick={() => create.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {create.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -218,7 +219,7 @@ function CreateForm({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Open workspace
-      </button>
+      </Button>
     </div>
   );
 }
@@ -280,29 +281,29 @@ function WorkspaceDetail({
         <span className="mr-1 text-[11px] font-bold uppercase tracking-wide text-text-secondary">
           Pipeline
         </span>
-        <button
+        <Button
           disabled={step.isPending}
           onClick={() => step.mutate('approve')}
-          className="rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           Approve
-        </button>
+        </Button>
         {confirmingActivate ? (
           <>
             <span className="text-[11px] text-amber-300">
               This puts the campaign in front of shoppers and starts spending the budget.
             </span>
-            <button
+            <Button
               disabled={step.isPending}
               onClick={() => {
                 setConfirmingActivate(false);
                 step.mutate('activate');
               }}
-              className="flex items-center gap-1 rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {step.isPending && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
               Yes, activate
-            </button>
+            </Button>
             <button
               onClick={() => setConfirmingActivate(false)}
               className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
@@ -311,13 +312,13 @@ function WorkspaceDetail({
             </button>
           </>
         ) : (
-          <button
+          <Button
             disabled={step.isPending}
             onClick={() => setConfirmingActivate(true)}
-            className="flex items-center gap-1 rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             <Rocket className="h-3 w-3" strokeWidth={1.6} /> Activate
-          </button>
+          </Button>
         )}
         <button
           disabled={step.isPending}
@@ -407,10 +408,10 @@ function ConfigureForm({
         <JsonField label="Channels" value={channels} onChange={setChannels} />
         <JsonField label="Experiment" value={experiment} onChange={setExperiment} />
       </div>
-      <button
+      <Button
         disabled={!valid || configure.isPending}
         onClick={() => configure.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {configure.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -418,7 +419,7 @@ function ConfigureForm({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Save configuration
-      </button>
+      </Button>
     </div>
   );
 }
@@ -494,10 +495,10 @@ function GenerateForm({
           className={field}
         />
       </div>
-      <button
+      <Button
         disabled={!ready || generate.isPending}
         onClick={() => generate.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {generate.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -505,7 +506,7 @@ function GenerateForm({
           <Sparkles className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Generate
-      </button>
+      </Button>
     </div>
   );
 }
@@ -599,10 +600,10 @@ function ReviewForm({
         />
       </div>
 
-      <button
+      <Button
         disabled={!canReview || review.isPending}
         onClick={() => review.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {review.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -610,7 +611,7 @@ function ReviewForm({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Record review
-      </button>
+      </Button>
 
       <div className="mt-3 border-t-thin border-border-subtle pt-3">
         <p className="text-[11px] font-bold uppercase tracking-wide text-text-secondary">

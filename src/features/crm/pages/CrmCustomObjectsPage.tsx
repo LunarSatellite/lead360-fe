@@ -16,6 +16,7 @@ import {
   type CrmCustomObjectDefinitionDto,
   type CustomObjectFieldType,
 } from '../types/crm-custom-object.types';
+import { Button } from '@/shared/ui/primitives';
 
 const field =
   'rounded-xl bg-bg-input border border-border-subtle px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand';
@@ -251,13 +252,13 @@ export function Component() {
             placeholder="Service visits"
             className={`flex-1 min-w-[180px] ${field}`}
           />
-          <button
+          <Button
             type="submit"
             disabled={create.isPending || !toApiName(name)}
-            className="rounded-xl bg-brand text-text-inverted px-4 py-2 text-sm font-bold disabled:opacity-40"
+            variant="primary"
           >
             Create
-          </button>
+          </Button>
         </div>
         {name.trim() && (
           <p className="text-xs text-text-muted">

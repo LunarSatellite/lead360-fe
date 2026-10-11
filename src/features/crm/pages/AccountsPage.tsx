@@ -24,6 +24,7 @@ import {
   CRM_ACCOUNT_TIER_LABELS, CRM_ACCOUNT_CONTACT_ROLE_LABELS,
 } from '../types/crm.types';
 import { formatDistanceToNow, format } from 'date-fns';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 const inputCls =
@@ -165,13 +166,13 @@ function AccountForm({
         <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
       </div>
       <div className="flex gap-3 pt-1">
-        <button
+        <Button
           type="submit"
           disabled={isSaving || !form.name.trim()}
-          className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary" className="flex-1"
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> {submitLabel}</>}
-        </button>
+        </Button>
         <button
           type="button"
           onClick={onCancel}
@@ -252,7 +253,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
                   {linkedIds.has(c.id) ? (
                     <span className="text-xs text-text-muted shrink-0">Linked</span>
                   ) : (
-                    <button
+                    <Button
                       onClick={() =>
                         addContact.mutate({
                           accountId,
@@ -263,10 +264,10 @@ function ContactsPanel({ accountId }: { accountId: string }) {
                         })
                       }
                       disabled={addContact.isPending}
-                      className="px-2.5 py-1 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50 shrink-0"
+                      variant="primary" size="sm" className="shrink-0"
                     >
                       Add
-                    </button>
+                    </Button>
                   )}
                 </div>
               ))}
@@ -594,17 +595,7 @@ function CreateAccountModal({
 
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Account Name *</label>
-            <div className="relative">
-              <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                required
-                value={form.name}
-                onChange={set('name')}
-                placeholder="Acme — Enterprise"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={glowInput}
-              />
-            </div>
+            <Input icon={Building} required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" style={glowInput} />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -696,46 +687,17 @@ function CreateAccountModal({
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Contract Value</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  min={0}
-                  value={form.contractValue}
-                  onChange={set('contractValue')}
-                  placeholder="50000"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                />
-              </div>
+              <Input icon={DollarSign} type="number" min={0} value={form.contractValue} onChange={set('contractValue')} placeholder="50000" style={glowInput} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={form.currency}
-                  onChange={set('currency')}
-                  placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                />
-              </div>
+              <Input icon={DollarSign} value={form.currency} onChange={set('currency')} placeholder="USD" style={glowInput} />
             </div>
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Renewal Date</label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                type="date"
-                value={form.renewalDate}
-                onChange={set('renewalDate')}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                style={glowInput}
-              />
-            </div>
+            <Input icon={Calendar} type="date" value={form.renewalDate} onChange={set('renewalDate')} style={glowInput} />
           </div>
 
           <div>
@@ -835,29 +797,11 @@ function CreateAccountModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Company Name</label>
-              <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="Acme Corp"
-                  value={orgDetails.name}
-                  onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))}
-                />
-              </div>
+              <Input icon={Building2} style={glowInput} placeholder="Acme Corp" value={orgDetails.name} onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
-              <div className="relative">
-                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="acme.com"
-                  value={orgDetails.domain}
-                  onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))}
-                />
-              </div>
+              <Input icon={Layers} style={glowInput} placeholder="acme.com" value={orgDetails.domain} onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))} />
             </div>
           </div>
 
@@ -865,31 +809,11 @@ function CreateAccountModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
-              <div className="relative">
-                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="SaaS, Retail…"
-                  value={orgDetails.industry}
-                  onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))}
-                />
-              </div>
+              <Input icon={Layers} style={glowInput} placeholder="SaaS, Retail…" value={orgDetails.industry} onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
-              <div className="relative">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  min={0}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="250"
-                  value={orgDetails.employeeCount}
-                  onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))}
-                />
-              </div>
+              <Input icon={Users} type="number" min={0} style={glowInput} placeholder="250" value={orgDetails.employeeCount} onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))} />
             </div>
           </div>
 
@@ -897,45 +821,18 @@ function CreateAccountModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="US"
-                  value={orgDetails.country}
-                  onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))}
-                />
-              </div>
+              <Input icon={MapPin} style={glowInput} placeholder="US" value={orgDetails.country} onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="New York"
-                  value={orgDetails.city}
-                  onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))}
-                />
-              </div>
+              <Input icon={MapPin} style={glowInput} placeholder="New York" value={orgDetails.city} onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))} />
             </div>
           </div>
 
           {/* Website */}
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
-            <div className="relative">
-              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={glowInput}
-                placeholder="https://acme.com"
-                value={orgDetails.website}
-                onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))}
-              />
-            </div>
+            <Input icon={Globe} style={glowInput} placeholder="https://acme.com" value={orgDetails.website} onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))} />
           </div>
 
           {customFieldsContent}
@@ -947,14 +844,14 @@ function CreateAccountModal({
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
               disabled={isSaving || !form.name.trim()}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Account
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -1015,12 +912,12 @@ export function Component() {
               {data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}
             </p>
           </div>
-          <button
+          <Button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Account
-          </button>
+          </Button>
         </div>
 
         <form

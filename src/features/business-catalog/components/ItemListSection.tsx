@@ -13,6 +13,7 @@ import {
 } from '../api/business-catalog.queries';
 import { ItemFormDialog } from './ItemFormDialog';
 import type { CatalogCategory, CatalogItem } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   itemLabel: string;
@@ -76,17 +77,16 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
             <p className="text-[11px] text-text-muted">{total} item{total === 1 ? '' : 's'} total</p>
           </div>
         </div>
-        <button
+        <Button
           type="button"
           disabled={categories.length === 0}
           onClick={() => setCreating(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                     bg-brand text-text-inverted hover:bg-brand/90 disabled:opacity-50 transition-all"
+          variant="primary" size="sm"
           title={categories.length === 0 ? 'Add a category first' : undefined}
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
           Add {itemLabel.toLowerCase()}
-        </button>
+        </Button>
       </div>
 
       {/* Filter bar — hide category dropdown when already drilled into a category */}

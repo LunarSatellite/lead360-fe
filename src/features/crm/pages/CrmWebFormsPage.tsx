@@ -14,6 +14,7 @@ import type { CrmWebFormFilter, WebFormDto, WebFormStatus } from "../types/webfo
 import { ROUTES } from "@/app/router/route-paths";
 import { useTenantDomains } from "@/features/tenant/api/tenant-domains.queries";
 import { getActiveTenantDomainOrigin } from "@/features/tenant/types/tenant-domain.types";
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls =
   "w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow";
@@ -61,12 +62,12 @@ export function Component() {
             Public-facing forms embedded on your site. New submissions create contacts and leads automatically.
           </p>
         </div>
-        <button
+        <Button
           onClick={() => navigate(ROUTES.dashboard.crmWebFormNew)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" /> New form
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">

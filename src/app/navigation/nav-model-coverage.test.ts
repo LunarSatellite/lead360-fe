@@ -62,6 +62,32 @@ describe('unified navigation model', () => {
     expect(allNavItems).toHaveLength(130);
   });
 
+  it('lists each page once, under one name', () => {
+    /**
+     * Two entries for one href is how the old admin got into this state: a
+     * page acquires a second name in a second rail, the two names drift, and
+     * an operator cannot tell whether they are one feature or two. It had six
+     * such pairs — Products & catalogue against Business catalogue, Stores
+     * against Organisations, Bot flows against Conversation Map.
+     *
+     * The inverse — one name over two different pages — is the distinct-label
+     * check below. The console had three of those at once, each a commerce
+     * surface and a CRM surface that happened to be about the same noun:
+     * Campaigns, Orders and Returns. Those are real separate capabilities, so
+     * the fix was naming, and both halves of it are held here.
+     */
+    const seen = new Map<string, string[]>();
+    for (const item of allNavItems) {
+      seen.set(item.href, [...(seen.get(item.href) ?? []), item.label]);
+    }
+
+    const twice = [...seen.entries()]
+      .filter(([, labels]) => labels.length > 1)
+      .map(([href, labels]) => `${href} is listed as ${labels.join(' and ')}`);
+
+    expect(twice, 'record the discarded name in navAliases instead').toEqual([]);
+  });
+
   it('points each discarded name at a page that is still listed', () => {
     // The merge kept one name per page. The others have to stay findable by
     // search, which means they have to keep matching something real.

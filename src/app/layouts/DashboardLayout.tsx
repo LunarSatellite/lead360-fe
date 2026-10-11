@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { useTokenAutoRefresh } from '@/features/auth/hooks/useTokenAutoRefresh';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { CounterpartNotice } from '@/app/navigation/CounterpartNotice';
+import { documentTitleFor } from './document-title';
 import {
   BadgeCheck,
   Banknote,
@@ -388,6 +389,19 @@ export function DashboardLayout() {
     );
   })();
 
+  /**
+   * Name the tab, and say out loud that the page changed.
+   *
+   * Both halves matter and neither is optional. Without the title every
+   * tab reads "Lead360"; without the announcement a screen reader user
+   * gets nothing at all on navigation, because a single-page app does
+   * not reload and the title alone is not reliably spoken.
+   */
+  const title = documentTitleFor(breadcrumb);
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
   const getPageIcon = () => {
     const path = location.pathname;
     const named = EXACT_NAV_PAGE.get(path);
@@ -641,6 +655,12 @@ export function DashboardLayout() {
             true today; making the region itself focusable fixes those and
             every future page like them. `main` also gives the admin the
             landmark it has been missing. */}
+        {/* Route changes are silent in a single-page app. This says what
+            was opened, for anyone who cannot see that the page replaced
+            itself. */}
+        <p aria-live="polite" className="sr-only">
+          {breadcrumb[breadcrumb.length - 1]}
+        </p>
         <main tabIndex={0} className="flex-1 overflow-auto p-4 pb-20 md:p-6 lg:pb-6">
           {/* Four page names exist twice in this admin and read different
               backends. Saying so here rather than in the eight pages means

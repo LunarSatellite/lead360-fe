@@ -12,7 +12,7 @@ import {
   CrmEntityType, CRM_ENTITY_TYPE_LABELS,
   CustomFieldType, CUSTOM_FIELD_TYPE_LABELS,
 } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const ENTITY_TABS = [
   { type: CrmEntityType.Contact, label: 'Contacts' },
@@ -301,7 +301,8 @@ export function Component() {
   const [activeEntity, setActiveEntity] = useState<CrmEntityType>(CrmEntityType.Contact);
   const [showAdd, setShowAdd] = useState(false);
 
-  const { data: fields, isLoading } = useCustomFieldDefinitions(activeEntity);
+  const definitionsQuery = useCustomFieldDefinitions(activeEntity);
+  const { data: fields } = definitionsQuery;
   const fieldList = ((fields as any)?.data ?? []) as CustomFieldDefinitionDto[];
 
   return (
@@ -356,21 +357,24 @@ export function Component() {
         document.body,
       )}
 
-      {isLoading ? (
-        <div className="flex justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-text-muted" /></div>
-      ) : fieldList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-3 text-text-muted">
-          <SlidersHorizontal className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-          <p className="text-sm">No custom fields for {CRM_ENTITY_TYPE_LABELS[activeEntity as keyof typeof CRM_ENTITY_TYPE_LABELS]} yet.</p>
-          <button onClick={() => setShowAdd(true)} className="text-xs text-brand hover:underline">Add the first field</button>
-        </div>
-      ) : (
+      <ListState
+        query={definitionsQuery}
+        isEmpty={fieldList.length === 0}
+        noun="custom fields"
+        icon={SlidersHorizontal}
+        emptyTitle={`No custom fields for ${CRM_ENTITY_TYPE_LABELS[activeEntity as keyof typeof CRM_ENTITY_TYPE_LABELS]} yet.`}
+        emptyAction={
+          <button onClick={() => setShowAdd(true)} className="text-xs text-brand hover:underline">
+            Add the first field
+          </button>
+        }
+      >
         <div className="space-y-2">
           {fieldList.map(f => (
             <FieldRow key={f.id} field={f} entityType={activeEntity} />
           ))}
         </div>
-      )}
+      </ListState>
     </div>
   );
 }

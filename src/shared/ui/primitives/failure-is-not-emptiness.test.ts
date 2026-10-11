@@ -34,24 +34,49 @@ const PAGES = import.meta.glob('/src/features/**/*.tsx', {
 /** `const { … } = useSomething(…)` */
 const DESTRUCTURE = /const\s*\{([^}]*)\}\s*=\s*(use[A-Z]\w*)\s*\(/g;
 
-function blindReadsIn(source: string): string[] {
-  const found: string[] = [];
+function readsIn(source: string) {
+  const blind: string[] = [];
+  const stateless: string[] = [];
   for (const match of source.matchAll(DESTRUCTURE)) {
     const fields = match[1];
     // Only reads. A mutation has no emptiness to be confused with.
     if (!/\bdata\b/.test(fields)) continue;
     const handlesLoading = /\bis(Loading|Pending|Fetching)\b/.test(fields);
     const handlesFailure = /\bisError\b|\berror\b/.test(fields);
-    if (handlesLoading && !handlesFailure) found.push(match[2]);
+    if (handlesFailure) continue;
+    if (handlesLoading) blind.push(match[2]);
+    else stateless.push(match[2]);
   }
-  return found;
+  return { blind, stateless };
+}
+
+function blindReadsIn(source: string): string[] {
+  return readsIn(source).blind;
 }
 
 /**
- * 180 when `ListState` was introduced; 163 after the fourteen uniform
- * CRM lists moved onto it. Lower this number; never raise it.
+ * 180 when `ListState` was introduced; 162 after the fourteen uniform
+ * CRM lists and the custom-fields page moved onto it. Lower this
+ * number; never raise it. (Counted over `src/features`, which is why it
+ * differs by one from a count taken over all of `src`.)
  */
-const BUDGET_BLIND_READS = 163;
+const BUDGET_BLIND_READS = 162;
+
+/**
+ * The larger and quieter half.
+ *
+ * These reads take neither a loading flag nor a failure flag, so there
+ * is no state to be in except "whatever `data` currently is" — which
+ * means they render their empty state from the first frame and keep
+ * rendering it after the request has died. The custom-fields page said
+ * "No custom fields for Contact yet." for the entire time it was
+ * failing, and never showed so much as a spinner.
+ *
+ * Budgeted separately rather than folded into the number above, because
+ * the two have different fixes; merging them would let one get worse
+ * while the other improved and still show a falling total.
+ */
+const BUDGET_READS_WITH_NO_STATE = 162;
 
 describe('a failed list is not an empty list', () => {
   it('is reading the pages at all', () => {
@@ -60,9 +85,16 @@ describe('a failed list is not an empty list', () => {
 
   it('has no more reads that handle loading but not failure than the budget', () => {
     const blind = Object.entries(PAGES).flatMap(([path, source]) =>
-      blindReadsIn(source).map((hook) => `${path}: ${hook}`),
+      readsIn(source).blind.map((hook) => `${path}: ${hook}`),
     );
     expect(blind.length).toBeLessThanOrEqual(BUDGET_BLIND_READS);
+  });
+
+  it('has no more reads with no state handling at all than the budget', () => {
+    const stateless = Object.entries(PAGES).flatMap(([path, source]) =>
+      readsIn(source).stateless.map((hook) => `${path}: ${hook}`),
+    );
+    expect(stateless.length).toBeLessThanOrEqual(BUDGET_READS_WITH_NO_STATE);
   });
 
   it('keeps the two pages that were verified against a dead API migrated', () => {

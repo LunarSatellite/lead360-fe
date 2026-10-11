@@ -272,6 +272,7 @@ export const routeObjects: RouteObject[] = [
       { path: 'crm/currencies', lazy: () => import('@/features/crm/pages/CrmCurrenciesPage') },
       { path: 'crm/email-sync', lazy: () => import('@/features/crm/pages/CrmEmailSyncPage') },
       { path: 'crm/custom-objects', lazy: () => import('@/features/crm/pages/CrmCustomObjectsPage') },
+      { path: 'crm/platform', lazy: () => import('@/features/crm/pages/CrmPlatformPage') },
       { path: 'crm/customer-onboarding', lazy: () => import('@/features/crm/pages/CrmCustomerOnboardingPage') },
       { path: 'crm/deals-hub', lazy: () => import('@/features/crm/pages/CrmDealsHubPage') },
       { path: 'crm/deliveries', lazy: () => import('@/features/crm/pages/CrmDeliveriesPage') },

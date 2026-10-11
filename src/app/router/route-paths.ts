@@ -161,6 +161,7 @@ export const ROUTES = {
     crmCurrencies: '/dashboard/crm/currencies',
     crmEmailSync: '/dashboard/crm/email-sync',
     crmCustomObjects: '/dashboard/crm/custom-objects',
+    crmPlatform: '/dashboard/crm/platform',
     crmNotificationSettings: '/dashboard/crm/notification-settings',
     crmReturns: '/dashboard/crm/returns',
     crmWorkOrders: '/dashboard/crm/work-orders',

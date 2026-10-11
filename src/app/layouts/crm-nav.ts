@@ -43,6 +43,7 @@ import {
   ShieldCheck,
   ShoppingCart,
   Shuffle,
+  Sigma,
   SlidersHorizontal,
   Star,
   Target,
@@ -116,6 +117,7 @@ export const crmNav = [
   { label: 'Currencies', href: ROUTES.dashboard.crmCurrencies, icon: Coins },
   { label: 'Email sync', href: ROUTES.dashboard.crmEmailSync, icon: Mail },
   { label: 'Custom objects', href: ROUTES.dashboard.crmCustomObjects, icon: Boxes },
+  { label: 'Platform configuration', href: ROUTES.dashboard.crmPlatform, icon: Sigma },
   { label: 'Notification settings', href: ROUTES.dashboard.crmNotificationSettings, icon: Settings },
   // ── Routed but previously unlinked: reachable only by typing the URL until now.
   // Analytics and Support stay out on purpose — see the note above; they live once

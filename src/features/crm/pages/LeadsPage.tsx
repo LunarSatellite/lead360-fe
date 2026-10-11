@@ -279,7 +279,7 @@ export function Component() {
       {/* Page heading */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Leads</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Leads</h1>
           <p className="text-sm text-text-secondary mt-1">
             Track and manage leads captured from bot conversations, campaigns, and nurture sequences
           </p>

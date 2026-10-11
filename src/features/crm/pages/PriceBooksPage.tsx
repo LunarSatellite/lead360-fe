@@ -41,7 +41,7 @@ export function Component() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Price Books</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Price Books</h1>
           <p className="text-sm text-text-secondary mt-1">Per-currency rate cards. Quotes draw line-item prices from a book so pricing stays consistent.</p>
         </div>
         <Button onClick={() => setShowCreate(true)}

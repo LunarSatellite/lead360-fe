@@ -82,7 +82,7 @@ export function Component() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Payment Terms</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Payment Terms</h1>
           <p className="text-sm text-text-secondary mt-1">Define payment terms and apply them to accounts. Invoices auto-calculate due dates.</p>
         </div>
         <Button onClick={() => setShowCreate(true)}

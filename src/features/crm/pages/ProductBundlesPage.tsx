@@ -85,7 +85,7 @@ export function Component() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Product Bundles</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Product Bundles</h1>
           <p className="text-sm text-text-secondary mt-1">Reusable groups of products. Add a bundle to a quote to drop in all its line items at once.</p>
         </div>
         <Button onClick={() => setShowCreate(true)}

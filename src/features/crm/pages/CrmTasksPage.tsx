@@ -180,7 +180,7 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmTaskCreateR
 </label></div>
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-            <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
+            <Button type="button" onClick={onCancel} variant="secondary">Cancel</Button>
             <Button type="submit" disabled={isSaving || !form.title.trim()} variant="primary">
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Task
@@ -238,9 +238,9 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
               {complete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckSquare className="w-3.5 h-3.5" />} Mark Complete
             </button>
           )}
-          <button onClick={() => setEditing(v => !v)} className="px-3 py-1.5 rounded-lg bg-bg-elevated text-text-secondary text-xs font-semibold border border-border-subtle hover:text-text-primary transition-all">
+          <Button onClick={() => setEditing(v => !v)} variant="secondary" size="sm">
             {editing ? 'Cancel Edit' : 'Edit'}
-          </button>
+          </Button>
           {confirmDelete ? (
             <div className="flex gap-1.5 ml-auto">
               <button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} className="px-2 py-1 rounded-lg bg-danger-soft text-danger-light text-xs font-semibold border border-danger/20 hover:bg-danger hover:text-bg transition-all">
@@ -500,22 +500,22 @@ export function Component() {
               Showing {fromItem}–{toItem} of {totalCount} tasks
             </span>
             <div className="flex gap-2">
-              <button
+              <Button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+                variant="secondary" size="sm"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 Prev
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+                variant="secondary" size="sm"
               >
                 Next
                 <ChevronRight className="w-3.5 h-3.5" />
-              </button>
+              </Button>
             </div>
           </div>
         )}

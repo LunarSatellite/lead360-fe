@@ -49,6 +49,7 @@ import {
   type ProposedBotMenuCard,
 } from '../types/chat.types';
 import { InputCard } from '../components/inline-cards/InputControls';
+import { Button } from '@/shared/ui/primitives';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Chat (primary surface)
@@ -2011,14 +2012,14 @@ function WebsiteIngestionPreviewCard({ card, actions }: { card: InlineCard; acti
         <Stat label="topics" value={topics} />
       </div>
       {draftFlowId && (
-        <button
+        <Button
           type="button"
           onClick={() => actions.onNavigate(`/dashboard/flows/${draftFlowId}`)}
-          className="mt-3 w-full flex items-center justify-center gap-1.5 rounded-sm border-thin border-border-medium hover:bg-glass-2 px-3 py-2 text-xs font-bold text-text-primary transition-colors"
+          variant="secondary" block className="mt-3"
         >
           Open flow canvas
           <ExternalLink className="w-3 h-3" strokeWidth={1.8} />
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -2072,14 +2073,14 @@ function WebsiteIngestionFailedCard({ card, actions }: { card: InlineCard; actio
       </div>
       {url && <div className="text-xs text-text-secondary break-all mb-2">{url}</div>}
       <div className="text-xs text-text-primary leading-relaxed mb-3 whitespace-pre-wrap">{message}</div>
-      <button
+      <Button
         type="button"
         onClick={actions.onPasteManually}
-        className="w-full flex items-center justify-center gap-1.5 rounded-sm border-thin border-border-medium hover:bg-glass-2 px-3 py-2 text-xs font-bold text-text-primary transition-colors"
+        variant="secondary" block
       >
         Add menu manually instead
         <ArrowRight className="w-3 h-3" strokeWidth={1.8} />
-      </button>
+      </Button>
     </div>
   );
 }

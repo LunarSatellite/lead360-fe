@@ -152,12 +152,12 @@ function SecretOnce({
             It is stored only as a hash. Nothing can show it again; re-issue if it is lost.
           </p>
         </div>
-        <button
+        <Button
           onClick={onDismiss}
-          className="shrink-0 rounded-sm border-thin border-border-medium px-2.5 py-1 text-xs font-bold text-text-secondary hover:bg-glass-2"
+          variant="secondary" size="sm" className="shrink-0"
         >
           Dismiss
-        </button>
+        </Button>
       </div>
 
       <div className="mt-2 flex items-center gap-2">
@@ -272,12 +272,12 @@ function IssueForm({
           )}
           Issue
         </Button>
-        <button
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -381,16 +381,16 @@ function CredentialRow({
               {revoke.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm revoke
             </button>
-            <button
+            <Button
               onClick={() => {
                 setRevoking(false);
                 setReason('');
                 setError(null);
               }}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}

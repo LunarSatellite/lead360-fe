@@ -270,7 +270,7 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
 </label></div>
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-            <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
+            <Button type="button" onClick={onCancel} variant="secondary">Cancel</Button>
             <Button type="submit" disabled={isSaving || !form.subject.trim()} variant="primary">
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Case
@@ -415,9 +415,9 @@ export function Component() {
             <p className="text-xs text-text-muted mt-0.5">{data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}</p>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => setShowSla(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary transition-all">
+            <Button onClick={() => setShowSla(true)} variant="secondary">
               <Shield className="w-3.5 h-3.5" /> SLA Policies
-            </button>
+            </Button>
             <Button onClick={() => setShowCreate(true)} variant="primary">
               <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Case
             </Button>
@@ -441,7 +441,7 @@ export function Component() {
             <option value="">All Priorities</option>
             {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button type="submit" className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <Button type="submit" variant="secondary">Search</Button>
         </form>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">

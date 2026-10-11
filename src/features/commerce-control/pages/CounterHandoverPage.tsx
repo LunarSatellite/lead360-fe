@@ -23,6 +23,7 @@ import {
   SUB_ORDER_STATE_LABEL,
   type HandoverOutcome,
 } from '../lib/counter-handover';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Recording a counter handover from the operations console.
@@ -190,13 +191,13 @@ export function CounterHandoverPage() {
           placeholder="Sub-order id" aria-label="Sub-order id"
           className="min-w-[19rem] flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1"
         />
-        <button
+        <Button
           type="submit"
-          className="flex items-center gap-2 rounded-sm border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary"
         >
           <Search className="h-3.5 w-3.5" strokeWidth={1.6} />
           Open
-        </button>
+        </Button>
         <p className="w-full text-xs text-text-muted">
           The queue lists collection orders only. Look one up by id to see what it is — a delivery
           sub-order will say why a counter handover is refused on it.
@@ -417,12 +418,12 @@ export function CounterHandoverPage() {
             </p>
 
             <div className="flex justify-end gap-2">
-              <button
+              <Button
                 onClick={() => setConfirming(false)}
-                className="rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-text-primary"
+                variant="secondary"
               >
                 Cancel
-              </button>
+              </Button>
               <button
                 onClick={() => record.mutate(selected.id)}
                 disabled={record.isPending}

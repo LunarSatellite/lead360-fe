@@ -9,6 +9,7 @@ import {
 } from "../api/webforms.queries";
 import { webformsApi } from "../api/webforms.api";
 import { ROUTES } from "@/app/router/route-paths";
+import { Button } from '@/shared/ui/primitives';
 
 function niceBytes(n: number): string {
   if (n < 1024) return `${n} B`;
@@ -87,22 +88,22 @@ export function Component() {
         <div className="text-xs font-bold text-text-secondary mb-2">Linked records</div>
         <div className="flex flex-wrap items-center gap-3 text-sm">
           {data.createdContactId ? (
-            <button
+            <Button
               onClick={() => navigate(ROUTES.dashboard.crmContactDetail(data.createdContactId!))}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-bg-elevated border-thin border-border-subtle hover:border-border-medium text-text-primary"
+              variant="secondary" size="sm"
             >
               <UserCheck className="w-3.5 h-3.5 text-brand" /> Open contact <span className="text-text-muted text-xs font-mono">{data.createdContactId.slice(0, 8)}…</span>
-            </button>
+            </Button>
           ) : (
             <span className="text-text-muted text-xs">No contact was created</span>
           )}
           {data.createdLeadId ? (
-            <button
+            <Button
               onClick={() => navigate(ROUTES.dashboard.crmLeadDetail(data.createdLeadId!))}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-bg-elevated border-thin border-border-subtle hover:border-border-medium text-text-primary"
+              variant="secondary" size="sm"
             >
               <Briefcase className="w-3.5 h-3.5 text-brand" /> Open lead <span className="text-text-muted text-xs font-mono">{data.createdLeadId.slice(0, 8)}…</span>
-            </button>
+            </Button>
           ) : (
             <span className="text-text-muted text-xs">No lead was created</span>
           )}
@@ -157,13 +158,13 @@ export function Component() {
                     <div className="text-[11px] text-text-muted">{f.contentType} · {niceBytes(f.sizeBytes)} · field <span className="font-mono">{f.fieldKey}</span></div>
                   </div>
                 </div>
-                <button
+                <Button
                   onClick={() => download(f.blobId)}
                   type="button"
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs border border-border-subtle hover:bg-glass-2 shrink-0"
+                  variant="secondary" size="sm" className="shrink-0"
                 >
                   {mintMut.isPending && mintMut.variables === f.blobId ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />} Download
-                </button>
+                </Button>
               </li>
             ))}
           </ul>

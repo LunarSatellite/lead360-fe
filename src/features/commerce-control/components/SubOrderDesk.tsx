@@ -218,18 +218,18 @@ export function SubOrderDesk() {
           </Button>
           {/* A read, so unlike the bulk steps it applies to any selection whatever state the
               rows are in — an operator printing a run of slips does not sort them first. */}
-          <button
+          <Button
             onClick={() => setPrinting([...selected])}
-            className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             <Printer className="h-3 w-3" strokeWidth={1.6} /> Packing slips
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setSelected(new Set())}
-            className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             Clear
-          </button>
+          </Button>
           {!canBulkAccept && !canBulkReadyToShip && (
             <span className="text-[11px] text-text-muted">
               The selected rows are not all in one state, so no bulk step applies to all of them.
@@ -765,12 +765,12 @@ function ExpandedForm({
           {busy && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
           {submitLabel}
         </button>
-        <button
+        <Button
           onClick={onCancel}
-          className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+          variant="secondary" size="sm"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -67,6 +67,7 @@ import { type FlowRuntimeResult, type FlowMenuItemDto } from '../types/flow-runt
 import { detectGaps, getNodeGap, unresolvedCount } from '../utils/gap-detector';
 import type { FlowNodeGap } from '../utils/gap-detector';
 import { GapPrompt } from '../components/GapPrompt';
+import { Button } from '@/shared/ui/primitives';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -518,12 +519,12 @@ function FlowBuilderInner() {
       >
         <div className="flex items-center justify-between px-4 py-2.5 border-b border-border-subtle flex-shrink-0">
           <h3 className="text-sm font-bold text-text-primary">📱 Multi-Channel Live Preview</h3>
-          <button
+          <Button
             onClick={() => setShowPreview(false)}
-            className="px-3 py-1.5 rounded-lg text-2xs font-semibold border border-border-subtle hover:bg-glass-1 transition-colors"
+            variant="secondary" size="sm"
           >
             ← Back to Builder
-          </button>
+          </Button>
         </div>
         <PreviewPanel sessionId={simSession} />
       </div>
@@ -716,13 +717,13 @@ function FlowBuilderInner() {
                 </p>
               </div>
               <div className="flex gap-2 flex-shrink-0">
-                <button
+                <Button
                   onClick={discardAiChanges}
                   disabled={saveFlow.isPending}
-                  className="px-3 py-2 rounded-xl text-2xs font-semibold text-text-muted border border-border-subtle hover:bg-glass-1 transition-colors disabled:opacity-40"
+                  variant="secondary"
                 >
                   ↩ Discard
-                </button>
+                </Button>
                 <button
                   onClick={saveAiChanges}
                   disabled={saveFlow.isPending}

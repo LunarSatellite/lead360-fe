@@ -675,13 +675,12 @@ function AllComplete() {
           Your Lead360 chatbot is deployed and ready for customers.
         </p>
         <div className="flex items-center justify-center gap-3">
-          <button
+          <Button
             onClick={() => nav('/dashboard/flows')}
-            className="px-5 py-2.5 rounded-[10px] text-xs font-semibold text-text-secondary
-                       border border-border-subtle hover:bg-glass-1 transition-all duration-200"
+            variant="secondary" size="lg"
           >
             Open Flow Builder
-          </button>
+          </Button>
           <Button
             onClick={() => nav('/dashboard/analytics')}
             variant="primary" size="lg"
@@ -787,13 +786,12 @@ export function Component() {
               Previous
             </button>
 
-            <button
+            <Button
               onClick={skipStep}
-              className="px-4 py-2 rounded-[10px] text-2xs text-text-muted
-                         hover:text-text-secondary hover:bg-glass-1 transition-all duration-200"
+              variant="ghost"
             >
               Skip
-            </button>
+            </Button>
 
             <Button
               onClick={() => goToStep(Math.min(6, currentStep + 1))}

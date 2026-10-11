@@ -272,17 +272,16 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
 
           {/* Advanced behavior overrides — collapsed by default */}
           <div className="border border-border-subtle rounded-lg overflow-hidden">
-            <button
+            <Button
               type="button"
               onClick={() => setShowAdvanced(v => !v)}
-              className="w-full flex items-center justify-between px-3 py-2
-                         text-[11px] font-bold text-text-secondary hover:bg-glass-2 transition-colors"
+              variant="ghost" block
             >
               <span>Advanced behavior overrides</span>
               <ChevronDown
                 className={`w-3.5 h-3.5 transition-transform ${showAdvanced ? 'rotate-180' : ''}`}
               />
-            </button>
+            </Button>
             {showAdvanced && (
               <div className="px-3 pb-3 space-y-2 border-t border-border-subtle pt-2">
                 <p className="text-[10px] text-text-muted">
@@ -333,14 +332,13 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
         </div>
 
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
-          <button
+          <Button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg text-xs font-bold text-text-secondary
-                       hover:text-text-primary hover:bg-glass-2 transition-colors"
+            variant="ghost" size="sm"
           >
             Cancel
-          </button>
+          </Button>
           <Button
             type="button"
             disabled={isPending || !name.trim()}

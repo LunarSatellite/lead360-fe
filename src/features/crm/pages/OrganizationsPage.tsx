@@ -152,13 +152,13 @@ function OrgForm({
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> {submitLabel}</>}
         </Button>
-        <button
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -229,12 +229,12 @@ function OrgDetailPanel({
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <button
+          <Button
             onClick={() => setIsEditing(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+            variant="secondary" size="sm"
           >
             <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> Edit
-          </button>
+          </Button>
           {confirmDelete ? (
             <div className="flex items-center gap-1.5">
               <button
@@ -352,9 +352,9 @@ export function Component() {
               className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
             />
           </div>
-          <button type="submit" className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+          <Button type="submit" variant="secondary">
             Search
-          </button>
+          </Button>
         </form>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -526,13 +526,13 @@ export function Component() {
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2 border-t border-border-subtle">
-                <button
+                <Button
                   type="button"
                   onClick={() => { setShowCreate(false); setCreateForm(EMPTY_ORG); }}
-                  className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                  variant="secondary"
                 >
                   Cancel
-                </button>
+                </Button>
                 <Button
                   type="submit"
                   disabled={createOrg.isPending || !createForm.name.trim()}

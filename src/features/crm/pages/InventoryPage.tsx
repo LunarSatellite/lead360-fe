@@ -35,7 +35,7 @@ export function Component() {
         </div>
         <div className="flex gap-2">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter((f: any) => ({ ...f, search: search || undefined, page: 1 }))} placeholder="Search products..." aria-label="Search products..." className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm w-48" />
-          <button aria-label="Search" onClick={() => setFilter((f: any) => ({ ...f, search: search || undefined, page: 1 }))} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary"><Search className="w-4 h-4" /></button>
+          <Button aria-label="Search" onClick={() => setFilter((f: any) => ({ ...f, search: search || undefined, page: 1 }))} variant="secondary"><Search className="w-4 h-4" /></Button>
         </div>
       </div>
 
@@ -112,7 +112,7 @@ export function Component() {
   <input value={adjustNote} onChange={e => setAdjustNote(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" placeholder="Receipt from vendor..." />
 </label></div>
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setAdjustProduct(null)} className="px-4 py-2 rounded-xl text-sm text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+              <Button onClick={() => setAdjustProduct(null)} variant="secondary">Cancel</Button>
               <Button onClick={() => { adjust.mutate({ productId: adjustProduct.productId, data: { quantity: adjustQty, notes: adjustNote || undefined } }); setAdjustProduct(null); }} disabled={adjust.isPending || adjustQty === 0}
                 variant="primary">{adjust.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}</Button>
             </div>

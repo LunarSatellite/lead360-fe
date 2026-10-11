@@ -95,13 +95,13 @@ function CompleteModal({
             </label>
           </div>
           <div className="flex gap-3 pt-1">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all"
+              variant="secondary" className="flex-1"
             >
               Cancel
-            </button>
+            </Button>
             <Button
               type="submit"
               disabled={complete.isPending}

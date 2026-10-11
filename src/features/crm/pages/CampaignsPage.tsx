@@ -380,10 +380,10 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
 
       </div>
       <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-        <button type="button" onClick={onCancel}
-          className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">
+        <Button type="button" onClick={onCancel}
+          variant="secondary">
           Cancel
-        </button>
+        </Button>
         <Button type="submit" disabled={isSaving || !form.name.trim() || !form.bodyTemplate.trim() || (isEmailChannel && !form.subject.trim())}
           variant="primary">
           {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
@@ -1165,7 +1165,7 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
+            <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
             <Button type="submit" disabled={createCampaign.isPending} variant="primary">
               {createCampaign.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Campaign
@@ -1219,10 +1219,10 @@ function LeadCampaignCard({ campaign }: { campaign: LeadCampaignDto }) {
             )}
           </>
         )}
-        <button onClick={() => setExpanded((v) => !v)}
-          className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary bg-bg-elevated border border-border-subtle px-3 py-1.5 rounded-xl transition-all ml-auto">
+        <Button onClick={() => setExpanded((v) => !v)}
+          variant="secondary" size="sm" className="ml-auto">
           {expanded ? <><ChevronUp className="w-3.5 h-3.5" /> Hide</> : <><ChevronDown className="w-3.5 h-3.5" /> Details</>}
-        </button>
+        </Button>
       </div>
       {expanded && (
         <div className="pt-2 border-t border-border-subtle">
@@ -1378,11 +1378,11 @@ function FbAdsTab() {
               )}
             </div>
             <div className="flex gap-2">
-              <button onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-bg-elevated border border-border-subtle text-text-secondary hover:text-text-primary transition-all disabled:opacity-50">
+              <Button onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending}
+                variant="secondary" size="sm">
                 {syncMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                 Sync Campaigns
-              </button>
+              </Button>
               <button onClick={() => disconnectMutation.mutate()} disabled={disconnectMutation.isPending}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-bg-elevated border border-border-subtle text-text-muted hover:text-danger-light transition-all disabled:opacity-50">
                 <Unplug className="w-3.5 h-3.5" /> Disconnect
@@ -1476,10 +1476,10 @@ function FbAdsTab() {
           <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted rounded-2xl border border-border-subtle bg-bg-card">
             <BarChart2 className="w-8 h-8 opacity-25" strokeWidth={1.2} />
             <p className="text-sm font-semibold">No campaigns synced yet</p>
-            <button onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-bg-elevated border border-border-subtle text-text-secondary hover:text-text-primary transition-all">
+            <Button onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending}
+              variant="secondary" size="sm">
               <RefreshCw className="w-3.5 h-3.5" /> Sync Now
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="grid gap-4 lg:grid-cols-2">

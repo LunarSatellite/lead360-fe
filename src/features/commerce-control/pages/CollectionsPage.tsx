@@ -297,12 +297,12 @@ function CollectionEditor({
             >
               {act.isPending ? 'Applying…' : 'Confirm'}
             </Button>
-            <button
+            <Button
               onClick={() => setConfirming(null)}
-              className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       ) : (
@@ -316,12 +316,12 @@ function CollectionEditor({
             </button>
           )}
           {collection.state !== CollectionState.Archived && (
-            <button
+            <Button
               onClick={() => setConfirming('archive')}
-              className="flex items-center gap-1.5 rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-bg-elevated"
+              variant="secondary"
             >
               <Archive className="h-3.5 w-3.5" strokeWidth={1.6} /> Archive
-            </button>
+            </Button>
           )}
         </div>
       )}

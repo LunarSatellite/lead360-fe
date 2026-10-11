@@ -147,15 +147,12 @@ export function ComplianceProfileSelector({
           </div>
 
           <div className="flex items-center justify-end gap-2">
-            <button
+            <Button
               onClick={onClose}
-              className="px-4 py-2 rounded-[10px] bg-bg-elevated border border-border-subtle
-                         text-2xs font-semibold text-text-secondary
-                         hover:bg-glass-2 hover:border-border-medium
-                         transition-all duration-150"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
             <Button
               onClick={() => selectedId && onSelect(selectedId)}
               disabled={!selectedId || !isChanged || isAssigning}

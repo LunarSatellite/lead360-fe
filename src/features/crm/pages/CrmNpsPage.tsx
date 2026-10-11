@@ -331,7 +331,7 @@ export function Component() {
         subtitle="Send a Net Promoter Score survey to a contact"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowSend(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowSend(false)} variant="secondary">Cancel</Button>
             <Button type="submit" form="nps-form"
               variant="primary" size="lg" className="flex-none">
               <Send className="w-4 h-4" /> Send Survey

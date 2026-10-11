@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ChevronRight, Search, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { cn } from '@/shared/ui/primitives';
+import { Button, cn } from '@/shared/ui/primitives';
 import { vendorSectionGroups, type VendorSection } from '../vendor-sections';
 
 /**
@@ -93,12 +93,12 @@ export function VendorSideMenu({ current, hrefFor, counts }: VendorSideMenuProps
         const open = isOpen(group.id);
         return (
           <div key={group.id}>
-            <button
+            <Button
               type="button"
               onClick={() => setOpenedByHand(open ? '' : group.id)}
               aria-expanded={open}
               aria-controls={`vendor-group-${group.id}`}
-              className="flex w-full items-center gap-2 rounded-xl px-2.5 py-1.5 text-text-secondary transition-colors hover:bg-glass-1"
+              variant="ghost" size="sm" block
             >
               <span className="flex-1 text-left text-[9px] font-bold uppercase tracking-[1.5px]">
                 {group.label}
@@ -110,7 +110,7 @@ export function VendorSideMenu({ current, hrefFor, counts }: VendorSideMenuProps
                 )}
                 strokeWidth={2}
               />
-            </button>
+            </Button>
 
             {open && (
               <div id={`vendor-group-${group.id}`} className="mb-1 mt-0.5 flex flex-col gap-0.5">

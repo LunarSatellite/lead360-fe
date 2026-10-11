@@ -356,13 +356,13 @@ export function ProductComposer({ onClose, onDone }: Props) {
             CDF · stock suivi · livraison standard
           </p>
           <div className="ml-auto flex gap-2">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary"
+              variant="secondary" size="lg"
             >
               Cancel
-            </button>
+            </Button>
             <Button
               disabled={create.isPending || images.length < 5}
               variant="primary" size="lg"

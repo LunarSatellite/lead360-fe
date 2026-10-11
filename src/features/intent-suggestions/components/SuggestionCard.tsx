@@ -10,6 +10,7 @@ import {
   approveSchema, rejectSchema,
   type SuggestionDto, type SuggestionStatusValue, type ApproveFormData, type RejectFormData,
 } from '../types/intent-suggestion.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ═══ Batch Stats ═══
 
@@ -204,7 +205,7 @@ function ApproveDialog({ suggestion, onClose }: { suggestion: SuggestionDto; onC
             </label>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all">Cancel</button>
+            <Button type="button" onClick={onClose} variant="ghost">Cancel</Button>
             <button type="submit" disabled={approve.isPending} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-success text-sm font-bold text-white hover:brightness-110 transition-all disabled:opacity-50">
               <Check className="w-3.5 h-3.5" strokeWidth={2} /> Approve with Changes
             </button>
@@ -238,7 +239,7 @@ function RejectDialog({ suggestionId, onClose }: { suggestionId: string; onClose
             </label>
           </div>
           <div className="flex justify-end gap-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all">Cancel</button>
+            <Button type="button" onClick={onClose} variant="ghost">Cancel</Button>
             <button type="submit" disabled={reject.isPending} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger text-sm font-bold text-white hover:brightness-110 transition-all disabled:opacity-50">
               <X className="w-3.5 h-3.5" strokeWidth={2} /> Reject
             </button>

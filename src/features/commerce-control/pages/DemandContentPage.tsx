@@ -215,13 +215,13 @@ function UnitRow({ unit, onChanged }: { unit: DemandContentUnit; onChanged: () =
 
         <div className="flex shrink-0 flex-wrap items-center gap-1.5">
           {unit.outstandingGates.map((g) => (
-            <button
+            <Button
               key={g}
               onClick={() => { setGate(g); setMode(null); setError(null); }}
-              className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-2.5 py-1.5 text-[11px] font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               <ShieldCheck className="h-3 w-3" strokeWidth={1.6} /> Clear {g}
-            </button>
+            </Button>
           ))}
           {publishable && (
             <Button
@@ -234,29 +234,29 @@ function UnitRow({ unit, onChanged }: { unit: DemandContentUnit; onChanged: () =
           )}
           {unit.state === DemandContentState.Published && (
             <>
-              <button
+              <Button
                 disabled={act.isPending}
                 onClick={() => act.mutate('inspect')}
-                className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary" size="sm"
               >
                 Inspect
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => { setMode('withdraw'); setGate(null); setError(null); }}
-                className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary" size="sm"
               >
                 <Undo2 className="h-3.5 w-3.5" strokeWidth={1.6} /> Withdraw
-              </button>
+              </Button>
             </>
           )}
           {unit.state !== DemandContentState.Published &&
             unit.state !== DemandContentState.Rejected && (
-              <button
+              <Button
                 onClick={() => { setMode('reject'); setGate(null); setError(null); }}
-                className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary" size="sm"
               >
                 <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Reject
-              </button>
+              </Button>
             )}
         </div>
       </div>
@@ -298,12 +298,12 @@ function UnitRow({ unit, onChanged }: { unit: DemandContentUnit; onChanged: () =
                 )}
                 Confirm
               </Button>
-              <button
+              <Button
                 onClick={reset}
-                className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary" size="sm"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         </div>

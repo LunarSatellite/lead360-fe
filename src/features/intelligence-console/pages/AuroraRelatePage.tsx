@@ -22,6 +22,7 @@ import {
 } from '../components/ReportPrimitives';
 import { ConsistentWithList } from '../components/ConsistentWith';
 import { DecisionOwnerBadge, RoutingBlock } from '../components/DecisionOwner';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Aurora relate: modules that fail on the same concrete records.
@@ -66,17 +67,17 @@ function AuroraRelatePage() {
                 <option value={90}>Last 90 days</option>
               </select>
             </label>
-            <button
+            <Button
               type="button"
               onClick={() => {
                 void signals.refetch();
                 void owners.refetch();
               }}
-              className="inline-flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary"
             >
               <RefreshCcw size={13} strokeWidth={1.6} />
               Refresh
-            </button>
+            </Button>
           </>
         }
       />

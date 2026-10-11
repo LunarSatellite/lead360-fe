@@ -161,13 +161,13 @@ function AgentEmergencyStopPage() {
               />
             </label>
             <div className="flex items-center justify-end gap-2">
-              <button
+              <Button
                 type="button"
                 onClick={() => setClearing(null)}
-                className="rounded-sm border-thin border-border-medium px-3.5 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary"
               >
                 Cancel
-              </button>
+              </Button>
               <Button
                 type="button"
                 data-testid="clear-confirm"

@@ -99,9 +99,9 @@ export function VendorCollaborationDialog({
         </div>
         {error && <p className="mt-4 rounded-xl border border-danger/20 bg-danger/5 p-3 text-xs font-semibold text-danger-light">{error}</p>}
         <div className="mt-6 flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">
+          <Button type="button" onClick={onClose} variant="secondary" size="lg">
             Cancel
-          </button>
+          </Button>
           <Button disabled={!valid || save.isPending} variant="primary" size="lg">
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {kind === 'squad' ? "Create squad" : 'Propose contract'}

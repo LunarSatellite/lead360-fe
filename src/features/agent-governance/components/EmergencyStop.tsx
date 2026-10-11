@@ -18,6 +18,7 @@ import {
   type AgentHaltView,
   type HaltScopeValue,
 } from '../types/governance.types';
+import { Button } from '@/shared/ui/primitives';
 
 const formatUtc = (value: string | null) =>
   value ? new Date(value).toLocaleString(undefined, { timeZoneName: 'short' }) : '—';
@@ -64,14 +65,14 @@ export function HaltRow({
           )}
         </div>
         {halt.isEngaged && canClear && (
-          <button
+          <Button
             type="button"
             data-testid="halt-clear"
             onClick={() => onClear(halt)}
-            className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             Clear this stop
-          </button>
+          </Button>
         )}
       </div>
 
@@ -259,13 +260,13 @@ export function EngageHaltDialog({
         {error != null && <GovernanceRefusalNotice error={error} />}
 
         <div className="flex items-center justify-end gap-2">
-          <button
+          <Button
             type="button"
             onClick={onCancel}
-            className="rounded-sm border-thin border-border-medium px-3.5 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
           <button
             type="button"
             data-testid="halt-confirm"

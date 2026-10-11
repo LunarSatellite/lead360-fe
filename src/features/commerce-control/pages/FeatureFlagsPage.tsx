@@ -157,12 +157,12 @@ function NewFlagCard({ onDone }: { onDone: () => void }) {
         >
           {create.isPending ? 'Saving…' : 'Create flag'}
         </Button>
-        <button
+        <Button
           onClick={onDone}
-          className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+          variant="secondary"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -238,12 +238,12 @@ function FlagCard({ flag, onChanged }: { flag: FeatureFlag; onChanged: () => voi
             >
               {toggleDefault.isPending ? 'Applying…' : 'Yes, change it'}
             </Button>
-            <button
+            <Button
               onClick={() => setConfirmToggle(false)}
-              className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -313,12 +313,12 @@ function FlagCard({ flag, onChanged }: { flag: FeatureFlag; onChanged: () => voi
             onCancel={() => setAdding(false)}
           />
         ) : (
-          <button
+          <Button
             onClick={() => setAdding(true)}
-            className="mt-2 flex items-center gap-1.5 rounded-card border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:text-text-primary"
+            variant="secondary" size="sm" className="mt-2"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> Add override
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -406,12 +406,12 @@ function AddOverride({
         >
           {save.isPending ? 'Saving…' : 'Save override'}
         </Button>
-        <button
+        <Button
           onClick={onCancel}
-          className="rounded-card border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary"
+          variant="secondary" size="sm"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

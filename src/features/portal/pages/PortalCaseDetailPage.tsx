@@ -136,10 +136,10 @@ function ReplySection({ caseId }: { caseId: string }) {
         </Button>
       </form>
 
-      <button
+      <Button
         onClick={() => resolve.mutate(undefined)}
         disabled={resolve.isPending}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm border-thin border-border-medium text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all text-xs"
+        variant="secondary" size="sm"
       >
         {resolve.isPending ? (
           <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -147,7 +147,7 @@ function ReplySection({ caseId }: { caseId: string }) {
           <CheckCircle2 className="w-3.5 h-3.5" strokeWidth={1.6} />
         )}
         Mark as resolved
-      </button>
+      </Button>
     </div>
   );
 }

@@ -471,12 +471,12 @@ function DecisionPanel({
                 >
                   {decide.isPending ? 'Recording…' : 'Yes, record it'}
                 </Button>
-                <button
+                <Button
                   onClick={() => setPending(null)}
-                  className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+                  variant="secondary"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           ) : (

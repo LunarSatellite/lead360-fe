@@ -424,7 +424,7 @@ function PublishQueue({ jobs, canOperate, cancelling, onCancel, onInspect }: { j
           const cancellable = !/cancel|complete|publish|fail/i.test(status);
           return <div key={id || index} className="flex items-center justify-between gap-4 px-5 py-3">
             <div><p className="text-xs font-extrabold text-text-primary">{String(job.baseCaption ?? job.caption ?? `Diffusion ${index + 1}`).slice(0, 90)}</p><p className="mt-1 text-[10px] uppercase tracking-wider text-text-muted">{status} · {String(job.scheduledUtc ?? job.createdUtc ?? '')}</p></div>
-            <div className="flex shrink-0 gap-2">{id && <button onClick={() => onInspect(id)} className="rounded-lg border border-border-subtle px-3 py-2 text-[10px] font-bold text-text-secondary">Details</button>}{canOperate && id && cancellable && <button onClick={() => onCancel(id)} disabled={cancelling} className="flex items-center gap-1.5 rounded-lg border border-danger/25 px-3 py-2 text-[10px] font-bold text-danger-light disabled:opacity-40"><XCircle className="h-3 w-3" /> Cancel</button>}</div>
+            <div className="flex shrink-0 gap-2">{id && <Button onClick={() => onInspect(id)} variant="secondary">Details</Button>}{canOperate && id && cancellable && <button onClick={() => onCancel(id)} disabled={cancelling} className="flex items-center gap-1.5 rounded-lg border border-danger/25 px-3 py-2 text-[10px] font-bold text-danger-light disabled:opacity-40"><XCircle className="h-3 w-3" /> Cancel</button>}</div>
           </div>;
         })}
       </div>
@@ -482,20 +482,20 @@ function ManagedReelCard({
             >
               {state === 3 ? 'Depublier' : 'Publish'}
             </Button>
-            <button
+            <Button
               disabled={busy}
               onClick={() => onAction('caption')}
-              className="rounded-lg border border-border-subtle px-3 py-2 text-[10px] font-bold text-text-secondary"
+              variant="secondary"
             >
               Legende
-            </button>
-            <button
+            </Button>
+            <Button
               disabled={busy}
               onClick={onSchedule}
-              className="rounded-lg border border-border-subtle px-3 py-2 text-[10px] font-bold text-text-secondary"
+              variant="secondary"
             >
               Schedule
-            </button>
+            </Button>
           </div>
         )}
       </div>

@@ -259,13 +259,13 @@ function AwaitingRow({
             )}
             Replan
           </Button>
-          <button
+          <Button
             onClick={() => setPicking((v) => !v)}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             <UserCheck className="h-3.5 w-3.5" strokeWidth={1.6} />
             {picking ? 'Hide couriers' : 'Choose courier'}
-          </button>
+          </Button>
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
@@ -443,12 +443,12 @@ function CourierPicker({
               )}
               Send offer
             </Button>
-            <button
+            <Button
               onClick={() => setChosen(null)}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -590,12 +590,12 @@ function StuckRow({ offer, onReplanned }: { offer: HopOffer; onReplanned: () => 
                 )}
                 Confirm replan
               </Button>
-              <button
+              <Button
                 onClick={() => setOpen(false)}
-                className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary" size="sm"
               >
                 Close
-              </button>
+              </Button>
             </div>
           </div>
 

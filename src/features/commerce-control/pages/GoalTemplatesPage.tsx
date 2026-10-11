@@ -206,12 +206,12 @@ function VersionRow({
 
         {isActive && (
           <div className="flex shrink-0 items-center gap-1.5">
-            <button
+            <Button
               onClick={() => { setConfirming('supersede'); setError(null); }}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Supersede
-            </button>
+            </Button>
             <button
               onClick={() => { setConfirming('retire'); setError(null); }}
               className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-rose-300"
@@ -242,12 +242,12 @@ function VersionRow({
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
             </Button>
-            <button
+            <Button
               onClick={() => setConfirming(null)}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -333,12 +333,12 @@ function AuthorForm({
           )}
           Author version
         </Button>
-        <button
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

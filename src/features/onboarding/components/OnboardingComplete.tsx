@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/shared/ui/primitives';
 
 export function OnboardingComplete() {
   const navigate = useNavigate();
@@ -12,12 +13,12 @@ export function OnboardingComplete() {
         Monitor performance in the Analytics dashboard.
       </p>
       <div className="flex items-center justify-center gap-3">
-        <button
+        <Button
           onClick={() => navigate('/dashboard/flows')}
-          className="px-5 py-2.5 rounded-lg text-sm font-semibold border border-border-subtle hover:bg-glass-1 transition-colors"
+          variant="secondary" size="lg"
         >
           Open Flow Builder
-        </button>
+        </Button>
         <button
           onClick={() => navigate('/dashboard/analytics')}
           className="px-5 py-2.5 rounded-lg text-sm font-bold text-white"

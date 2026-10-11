@@ -41,7 +41,7 @@ export function RecipeEditDialog({ id, onClose, onSaved }: Props) {
       <label className="space-y-1.5 md:col-span-2"><span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Advanced recipe contract</span><textarea rows={14} value={advanced} onChange={(event) => { setAdvanced(event.target.value); setJsonError(''); }} className={`${control} resize-y font-mono text-xs`} spellCheck={false} /></label>
       {(jsonError || (!payload && advanced)) && <p className="md:col-span-2 text-xs font-semibold text-danger-light">{jsonError || 'Advanced recipe JSON is invalid.'}</p>}
     </div>}
-    <footer className="flex justify-end gap-2 border-t border-border-subtle px-5 py-4"><button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">Cancel</button><Button disabled={save.isPending || !valid} variant="primary" size="lg"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save recipe'}</Button></footer>
+    <footer className="flex justify-end gap-2 border-t border-border-subtle px-5 py-4"><Button type="button" onClick={onClose} variant="secondary" size="lg">Cancel</Button><Button disabled={save.isPending || !valid} variant="primary" size="lg"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save recipe'}</Button></footer>
   </form></div>;
 }
 const control = 'w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50';

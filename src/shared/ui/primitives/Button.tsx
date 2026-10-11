@@ -87,6 +87,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       type={type}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
+      // So the browser suite can tell a real primitive from a hand-rolled
+      // button that happens to share a class. Detecting it by className
+      // matched `border border-transparent hover:border-brand` written by
+      // hand, and reported the design system as rendering at eight heights
+      // when it renders at three.
+      data-ui="button"
       className={cn(
         // `border border-transparent` on every variant, including the ones
         // that draw no border. Without it a bordered variant is 2px taller

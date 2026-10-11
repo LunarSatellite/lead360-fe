@@ -127,13 +127,13 @@ function CandidateCard({
         >
           {resolving ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : `Keep "${candidate.contactBName}"`}
         </Button>
-        <button
+        <Button
           onClick={onNotDup}
           disabled={resolving}
-          className="px-4 py-2 rounded-xl text-xs font-semibold border border-border-subtle text-text-muted hover:text-text-primary hover:border-border-medium disabled:opacity-50 transition-all"
+          variant="secondary"
         >
           <X className="w-3.5 h-3.5 inline mr-1" />Not a duplicate
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -163,16 +163,16 @@ export function Component() {
             {isLoading ? 'Loading…' : `${pending.length} pair${pending.length !== 1 ? 's' : ''} pending review`}
           </p>
         </div>
-        <button
+        <Button
           onClick={() => scan.mutate()}
           disabled={scan.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all"
+          variant="secondary"
         >
           {scan.isPending
             ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
             : <RefreshCw className="w-3.5 h-3.5" />}
           Scan for duplicates
-        </button>
+        </Button>
       </div>
 
       {/* List */}

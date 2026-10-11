@@ -223,7 +223,7 @@ export function Component() {
             <option value="">All Status</option>
             {Object.entries(CRM_EQUIPMENT_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <Button onClick={applyFilter} variant="secondary">Search</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -267,8 +267,8 @@ export function Component() {
           <div className="flex items-center justify-between text-sm text-text-muted">
             <span>{total} total</span>
             <div className="flex gap-2">
-              <button disabled={filter.page === 1} onClick={() => setFilter(f => ({ ...f, page: f.page! - 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Prev</button>
-              <button disabled={filter.page! * filter.pageSize! >= total} onClick={() => setFilter(f => ({ ...f, page: f.page! + 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Next</button>
+              <Button disabled={filter.page === 1} onClick={() => setFilter(f => ({ ...f, page: f.page! - 1 }))} variant="secondary" size="sm">Prev</Button>
+              <Button disabled={filter.page! * filter.pageSize! >= total} onClick={() => setFilter(f => ({ ...f, page: f.page! + 1 }))} variant="secondary" size="sm">Next</Button>
             </div>
           </div>
         )}
@@ -291,7 +291,7 @@ export function Component() {
             <Button type="submit" disabled={createEq.isPending} variant="primary" className="flex-1">
               {createEq.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Register'}
             </Button>
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>

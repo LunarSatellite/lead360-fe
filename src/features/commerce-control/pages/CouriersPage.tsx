@@ -405,12 +405,12 @@ function CourierPanel({
             >
               {run.isPending ? 'Applying…' : 'Confirm'}
             </Button>
-            <button
+            <Button
               onClick={() => setConfirming(null)}
-              className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       ) : (

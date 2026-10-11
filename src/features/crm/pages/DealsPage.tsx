@@ -398,10 +398,10 @@ export function Component() {
               <List className="w-3.5 h-3.5" strokeWidth={1.5} /> List
             </button>
           </div>
-          <button onClick={() => setShowPipeline(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary transition-all">
+          <Button onClick={() => setShowPipeline(true)}
+            variant="secondary">
             <Settings className="w-3.5 h-3.5" /> Pipeline
-          </button>
+          </Button>
           <CsvDealsToolbar />
           <button
             onClick={() => {
@@ -415,13 +415,13 @@ export function Component() {
             <User className="w-3.5 h-3.5" />
             My Deals
           </button>
-          <button
+          <Button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-bg-elevated border-border-subtle text-text-secondary hover:text-text-primary"
+            variant="secondary"
           >
             <Filter className="w-3.5 h-3.5" />
             Filter{activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}
-          </button>
+          </Button>
           <Button
             onClick={() => setShowNewDeal(true)}
             variant="primary">
@@ -641,10 +641,10 @@ export function Component() {
                 <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
               ))}
             </select>
-            <button type="submit"
-              className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+            <Button type="submit"
+              variant="secondary">
               Search
-            </button>
+            </Button>
           </form>
 
           <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -799,12 +799,12 @@ export function Component() {
                 {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                 Delete
               </button>
-              <button
+              <Button
                 onClick={clearSelection}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+                variant="ghost" size="sm"
               >
                 <X className="w-3.5 h-3.5" /> Clear
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -860,10 +860,10 @@ export function Component() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Stage *</label>
                 <div className="relative" ref={ndStageRef}>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setNdStageOpen(o => !o)}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                    variant="ghost" block
                     style={{
                       backgroundColor: 'rgb(var(--color-glass-1))',
                       backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
@@ -878,7 +878,7 @@ export function Component() {
                       {ndStageId ? (stages.find(s => s.id === ndStageId)?.name ?? 'Select stage') : 'Select stage'}
                     </span>
                     <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${ndStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-                  </button>
+                  </Button>
                   {ndStageOpen && (
                     <div
                       className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
@@ -973,12 +973,12 @@ export function Component() {
 
             {/* Footer */}
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle shrink-0">
-              <button
+              <Button
                 onClick={() => { setShowNewDeal(false); resetNewDeal(); }}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
+              </Button>
               <Button
                 onClick={submitNewDeal}
                 disabled={!ndName.trim() || !ndStageId || createDeal.isPending}
@@ -1025,7 +1025,7 @@ export function Component() {
                       <div className="flex gap-2">
                         <Button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor, defaultProbability: editingProb / 100 } }); setEditingStageId(null); }}
                           variant="primary" size="sm" className="flex-1">Save</Button>
-                        <button onClick={() => setEditingStageId(null)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
+                        <Button onClick={() => setEditingStageId(null)} variant="secondary" size="sm">Cancel</Button>
                       </div>
                     </div>
                   ) : (
@@ -1081,7 +1081,7 @@ export function Component() {
               className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary resize-none focus:outline-none focus:border-border-glow"
             />
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setWinDealId(null)} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+              <Button onClick={() => setWinDealId(null)} variant="secondary">Cancel</Button>
               <button onClick={() => { closeDeal.mutate({ id: winDealId, data: { isWon: true, winReason: winReason.trim() || undefined } }); setWinDealId(null); }}
                 disabled={closeDeal.isPending}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-success hover:opacity-90 disabled:opacity-50">
@@ -1123,10 +1123,10 @@ function ContactDropdown({
 
   return (
     <div className="relative" ref={ref}>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+        variant="ghost" block
         style={{
           backgroundColor: 'rgb(var(--color-glass-1))',
           backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
@@ -1141,7 +1141,7 @@ function ContactDropdown({
           {selected ? selected.fullName : 'Select a contact…'}
         </span>
         <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-      </button>
+      </Button>
       {open && (
         <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
           style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)', maxHeight: 240, overflowY: 'auto' }}

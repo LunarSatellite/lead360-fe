@@ -261,12 +261,12 @@ function SecretsPanel({
             )}
             {copied ? 'Copied' : 'Copy all'}
           </Button>
-          <button
+          <Button
             onClick={onDismiss}
-            className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             I have them
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -420,18 +420,18 @@ function MarkerRow({
         </div>
 
         <div className="flex shrink-0 flex-wrap items-center gap-1.5">
-          <button
+          <Button
             onClick={() => setOpen(open === 'bindings' ? null : 'bindings')}
-            className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             <Link2 className="h-3 w-3" strokeWidth={1.6} /> Bindings
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setOpen(open === 'scans' ? null : 'scans')}
-            className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             <ScanLine className="h-3 w-3" strokeWidth={1.6} /> Scans
-          </button>
+          </Button>
           {!revoked &&
             (confirming ? (
               <>
@@ -445,12 +445,12 @@ function MarkerRow({
                 >
                   Yes, revoke
                 </button>
-                <button
+                <Button
                   onClick={() => setConfirming(false)}
-                  className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+                  variant="secondary" size="sm"
                 >
                   Cancel
-                </button>
+                </Button>
               </>
             ) : (
               <button

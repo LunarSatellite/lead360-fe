@@ -336,12 +336,12 @@ function OperationRow({
                 >
                   Yes, run {operation.method}
                 </button>
-                <button
+                <Button
                   onClick={() => setConfirming(false)}
-                  className="rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary"
+                  variant="secondary"
                 >
                   Cancel
-                </button>
+                </Button>
               </>
             ) : (
               <Button

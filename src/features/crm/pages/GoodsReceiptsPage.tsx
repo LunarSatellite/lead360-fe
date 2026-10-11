@@ -135,7 +135,7 @@ export function Component() {
             <option value="">All Status</option>
             {Object.entries(GR_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={() => setFilter(f => ({ ...f, purchaseOrderId: poFilter.trim() || undefined, status: statusF ? Number(statusF) as GoodsReceiptStatus : undefined, page: 1 }))} className="px-4 py-2 rounded-xl border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Filter</button>
+          <Button onClick={() => setFilter(f => ({ ...f, purchaseOrderId: poFilter.trim() || undefined, status: statusF ? Number(statusF) as GoodsReceiptStatus : undefined, page: 1 }))} variant="secondary">Filter</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -186,7 +186,7 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Goods Receipt" subtitle="Record incoming inventory from a purchase order"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
             <Button type="submit" form="gr-form" disabled={createGR.isPending}
               variant="primary" size="lg" className="flex-none">
               {createGR.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Receipt'}
@@ -218,7 +218,7 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
+              <Button type="button" onClick={addLine} variant="secondary" size="sm"><PlusCircle className="w-3 h-3" /> Add Row</Button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (

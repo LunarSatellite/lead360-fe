@@ -105,12 +105,12 @@ export function ReelOperatorActions({
               {act.isPending && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
               Confirm
             </Button>
-            <button
+            <Button
               onClick={close}
-              className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -126,11 +126,11 @@ function ActionButton({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <Button
       onClick={onClick}
-      className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+      variant="secondary" size="sm"
     >
       {children}
-    </button>
+    </Button>
   );
 }

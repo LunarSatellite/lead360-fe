@@ -131,7 +131,7 @@ export function Component() {
         title="New Workflow Campaign"
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
             <Button type="submit" form="create-campaign-form" disabled={createCampaign.isPending}
               variant="primary">
               {createCampaign.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Target className="w-3.5 h-3.5" />} Create Campaign
@@ -165,8 +165,8 @@ export function Component() {
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Target Entity</label>
             <div className="relative">
-              <button type="button" onClick={() => setEntityOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              <Button type="button" onClick={() => setEntityOpen(o => !o)}
+                variant="ghost" block
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${entityOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -176,7 +176,7 @@ export function Component() {
                 }}>
                 <span className="flex-1 text-left font-medium text-text-secondary capitalize">{form.targetEntityType}</span>
                 <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${entityOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-              </button>
+              </Button>
               {entityOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                   style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -195,8 +195,8 @@ export function Component() {
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Linked Workflow</label>
             <div className="relative">
-              <button type="button" onClick={() => setWorkflowOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              <Button type="button" onClick={() => setWorkflowOpen(o => !o)}
+                variant="ghost" block
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${workflowOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -206,7 +206,7 @@ export function Component() {
                 }}>
                 <span className="flex-1 text-left font-medium text-text-secondary">{form.workflowId ? workflowsList.find(w => w.id === form.workflowId)?.name ?? 'Select workflow' : 'Select a workflow'}</span>
                 <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${workflowOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-              </button>
+              </Button>
               {workflowOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden max-h-48 overflow-y-auto"
                   style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -240,8 +240,8 @@ export function Component() {
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Schedule</label>
             <div className="relative">
-              <button type="button" onClick={() => setScheduleOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              <Button type="button" onClick={() => setScheduleOpen(o => !o)}
+                variant="ghost" block
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${scheduleOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -251,7 +251,7 @@ export function Component() {
                 }}>
                 <span className="flex-1 text-left font-medium text-text-secondary">{form.scheduleType ? (form.scheduleType.charAt(0).toUpperCase() + form.scheduleType.slice(1)) : 'Manual only'}</span>
                 <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${scheduleOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-              </button>
+              </Button>
               {scheduleOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                   style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>

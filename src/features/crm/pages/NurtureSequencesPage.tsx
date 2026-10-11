@@ -182,10 +182,10 @@ function StepCard({
       <div>
         <label className="block text-xs font-medium text-text-secondary mb-1">Action</label>
         <div className="relative">
-          <button
+          <Button
             type="button"
             onClick={() => setActionOpen(o => !o)}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+            variant="ghost" block
             style={{
               backgroundColor: 'rgb(var(--color-surface-elevated))',
               border: `1px solid ${actionOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -198,7 +198,7 @@ function StepCard({
               {NURTURE_ACTION_LABELS[step.actionType]}
             </span>
             <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${actionOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-          </button>
+          </Button>
           {actionOpen && (
             <div
               className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
@@ -247,10 +247,10 @@ function StepCard({
         <div>
           <label className="block text-xs font-medium text-text-secondary mb-1">New Stage</label>
           <div className="relative">
-            <button
+            <Button
               type="button"
               onClick={() => setNewStageOpen(o => !o)}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              variant="ghost" block
               style={{
                 backgroundColor: 'rgb(var(--color-surface-elevated))',
                 border: `1px solid ${newStageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -263,7 +263,7 @@ function StepCard({
                 {step.newStage === '' ? 'Select stage…' : LEAD_STAGE_LABELS[step.newStage as LeadStage]}
               </span>
               <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${newStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-            </button>
+            </Button>
             {newStageOpen && (
               <div
                 className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
@@ -505,10 +505,10 @@ function SequenceModal({
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-1">Trigger Stage</label>
                 <div className="relative">
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setTriggerStageOpen(o => !o)}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                    variant="ghost" block
                     style={{
                       backgroundColor: 'rgb(var(--color-surface-elevated))',
                       border: `1px solid ${triggerStageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -521,7 +521,7 @@ function SequenceModal({
                       {LEAD_STAGE_LABELS[form.triggerStage]}
                     </span>
                     <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${triggerStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-                  </button>
+                  </Button>
                   {triggerStageOpen && (
                     <div
                       className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
@@ -684,13 +684,13 @@ function SequenceModal({
 
         </div>
         <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-          <button
+          <Button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
           <Button
             type="submit"
             disabled={isLoading}
@@ -790,13 +790,13 @@ function SequenceCard({
       {confirmDelete ? (
         <div className="flex items-center gap-2 pt-0.5 border-t border-thin border-border-subtle">
           <span className="text-[10px] text-danger-light flex-1">Delete?</span>
-          <button
+          <Button
             type="button"
             onClick={() => setConfirmDelete(false)}
-            className="text-[10px] font-medium text-text-secondary hover:text-text-primary px-2 py-1 rounded-xs bg-bg-elevated border-thin border-border-subtle transition-colors"
+            variant="secondary" size="sm"
           >
             Cancel
-          </button>
+          </Button>
           <button
             type="button"
             disabled={deleteMutation.isPending}

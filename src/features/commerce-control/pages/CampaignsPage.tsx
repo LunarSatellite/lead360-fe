@@ -281,12 +281,12 @@ function CampaignRow({
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5">
-          <button
+          <Button
             onClick={onEdit}
-            className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             Edit
-          </button>
+          </Button>
           {campaign.state === CampaignState.Draft && (
             <Button
               onClick={() => { setConfirming('publish'); setError(null); }}
@@ -296,12 +296,12 @@ function CampaignRow({
             </Button>
           )}
           {campaign.state !== CampaignState.Archived && (
-            <button
+            <Button
               onClick={() => { setConfirming('archive'); setError(null); }}
-              className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               <Archive className="h-3.5 w-3.5" strokeWidth={1.6} /> Archive
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -326,12 +326,12 @@ function CampaignRow({
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
             </Button>
-            <button
+            <Button
               onClick={() => setConfirming(null)}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -506,12 +506,12 @@ function CampaignEditor({
           )}
           Save
         </Button>
-        <button
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

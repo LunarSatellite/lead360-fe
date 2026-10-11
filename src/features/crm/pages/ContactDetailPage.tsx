@@ -144,13 +144,13 @@ function EditForm({
             ? <Loader2 className="w-4 h-4 animate-spin" />
             : <><Check className="w-3.5 h-3.5" /> Save</>}
         </Button>
-        <button
+        <Button
           type="button"
           onClick={onCancel}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           <X className="w-3.5 h-3.5" /> Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -544,12 +544,12 @@ export function Component() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <button
+                        <Button
                           onClick={() => setIsEditing(true)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+                          variant="secondary" size="sm"
                         >
                           <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> Edit
-                        </button>
+                        </Button>
                         {confirmDelete ? (
                           <div className="flex items-center gap-1.5">
                             <button

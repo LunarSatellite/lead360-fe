@@ -64,13 +64,13 @@ function CopyButton({ value, label = 'Copy' }: { value: string; label?: string }
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <button
+    <Button
       onClick={handleCopy}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated hover:text-text-primary transition-all"
+      variant="secondary" size="sm"
     >
       {copied ? <Check className="w-3.5 h-3.5 text-brand" /> : <Copy className="w-3.5 h-3.5" />}
       {copied ? 'Copied!' : label}
-    </button>
+    </Button>
   );
 }
 
@@ -91,9 +91,9 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
             Any website using the old snippet will stop tracking until updated.
           </p>
           <div className="flex gap-3">
-            <button onClick={onClose} className="flex-1 px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
+            <Button onClick={onClose} variant="secondary" className="flex-1">
               Cancel
-            </button>
+            </Button>
             <button
               onClick={onConfirm}
               disabled={loading}
@@ -205,14 +205,14 @@ function EventsList() {
             </span>
           )}
         </h2>
-        <button
+        <Button
           onClick={() => refetch()}
           disabled={isFetching}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated hover:text-text-primary transition-all disabled:opacity-50"
+          variant="secondary" size="sm"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
           Refresh
-        </button>
+        </Button>
       </div>
 
       {isLoading ? (
@@ -235,21 +235,21 @@ function EventsList() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <button
+          <Button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary disabled:opacity-40 hover:bg-bg-elevated transition-all"
+            variant="secondary" size="sm"
           >
             Previous
-          </button>
+          </Button>
           <span className="text-xs text-text-muted">Page {page} of {totalPages}</span>
-          <button
+          <Button
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary disabled:opacity-40 hover:bg-bg-elevated transition-all"
+            variant="secondary" size="sm"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </div>
@@ -356,13 +356,13 @@ ${embedTag}`
             Tracking Key
           </h2>
           {hasKey && (
-            <button
+            <Button
               onClick={() => setShowConfirm(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated hover:text-text-primary transition-all"
+              variant="secondary" size="sm"
             >
               <RefreshCw className="w-3 h-3" />
               Regenerate
-            </button>
+            </Button>
           )}
         </div>
 

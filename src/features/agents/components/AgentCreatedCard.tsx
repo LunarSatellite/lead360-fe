@@ -28,6 +28,7 @@ import {
   AGENT_TARGET_KIND_FROM_NAME,
   type AgentCreatedCard,
 } from '../types/agents.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   card: AgentCreatedCard;
@@ -100,13 +101,13 @@ export function AgentCreatedCardRenderer({ card }: Props) {
 
         {/* Actions — desktop only, kept compact */}
         <div className="hidden sm:flex items-center gap-1 shrink-0">
-          <button
+          <Button
             type="button"
             onClick={handleEdit}
-            className="px-2.5 py-1 rounded-sm text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-colors"
+            variant="ghost" size="sm"
           >
             Edit
-          </button>
+          </Button>
           <button
             type="button"
             onClick={handleDisable}

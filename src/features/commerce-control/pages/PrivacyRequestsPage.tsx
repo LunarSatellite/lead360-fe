@@ -148,20 +148,20 @@ export function PrivacyRequestsPage() {
             ))}
           </div>
           <div className="flex items-center justify-center gap-2">
-            <button
+            <Button
               disabled={skip === 0 || page.isFetching}
               onClick={() => setSkip(Math.max(0, skip - PAGE_SIZE))}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.6} /> Previous
-            </button>
-            <button
+            </Button>
+            <Button
               disabled={skip + PAGE_SIZE >= data.totalCount || page.isFetching}
               onClick={() => setSkip(skip + PAGE_SIZE)}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               Next <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} />
-            </button>
+            </Button>
           </div>
         </>
       )}
@@ -342,12 +342,12 @@ function RequestRow({
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
             </Button>
-            <button
+            <Button
               onClick={done}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}

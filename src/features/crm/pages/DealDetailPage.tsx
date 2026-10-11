@@ -412,7 +412,7 @@ export function Component() {
             <div className="flex gap-2">
               <Button onClick={() => handleLog(logOpen)} disabled={logActivity.isPending || !logText.trim()}
                 variant="primary" size="sm">{logActivity.isPending ? 'Saving...' : 'Save'}</Button>
-              <button onClick={() => { setLogOpen(null); setLogText(''); }} className="px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-muted">Cancel</button>
+              <Button onClick={() => { setLogOpen(null); setLogText(''); }} variant="secondary" size="sm">Cancel</Button>
             </div>
           </div>
         )}
@@ -530,10 +530,10 @@ export function Component() {
                 variant="primary" className="flex-1">
                 {updateDeal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save
               </Button>
-              <button onClick={() => setShowEdit(false)}
-                className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+              <Button onClick={() => setShowEdit(false)}
+                variant="secondary">
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         </div>

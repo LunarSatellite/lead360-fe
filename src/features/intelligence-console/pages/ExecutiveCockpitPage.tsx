@@ -22,6 +22,7 @@ import {
   WindowNote,
   formatUtc,
 } from '../components/ReportPrimitives';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The executive cockpit: signal → decision → settled money, and the size of
@@ -57,17 +58,17 @@ function ExecutiveCockpitPage() {
         actions={
           <>
             <WindowPicker days={days} onChange={setDays} />
-            <button
+            <Button
               type="button"
               onClick={() => {
                 void chain.refetch();
                 void decisions.refetch();
               }}
-              className="inline-flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary"
             >
               <RefreshCcw size={13} strokeWidth={1.6} />
               Refresh
-            </button>
+            </Button>
           </>
         }
       />

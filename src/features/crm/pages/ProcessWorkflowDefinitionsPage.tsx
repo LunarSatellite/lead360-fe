@@ -228,12 +228,12 @@ function DefinitionForm({ initial, onDone, onCancel }: DefinitionFormProps) {
       </div>
 
       <div className="flex gap-2 justify-end pt-2">
-        <button
+        <Button
           onClick={onCancel}
-          className="px-4 py-2 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
+        </Button>
         <Button
           onClick={handleSubmit}
           disabled={!name.trim() || steps.some(s => !s.name.trim()) || isPending}
@@ -399,12 +399,12 @@ function StartInstanceModal({
           />
 
           <div className="flex gap-2 justify-end pt-2">
-            <button
+            <Button
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
             <Button
               onClick={handleStart}
               disabled={start.isPending}

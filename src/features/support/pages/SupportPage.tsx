@@ -328,13 +328,13 @@ function TicketDetail({
           )}
           Reply
         </Button>
-        <button
+        <Button
           onClick={() => act.mutate('waiting')}
           disabled={act.isPending}
-          className="flex items-center gap-1.5 rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:text-text-primary disabled:opacity-40"
+          variant="secondary"
         >
           <Clock className="h-3.5 w-3.5" strokeWidth={1.6} /> Waiting on customer
-        </button>
+        </Button>
         <button
           onClick={() => act.mutate('resolve')}
           disabled={act.isPending}

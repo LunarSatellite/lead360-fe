@@ -15,6 +15,7 @@ import { portalApi } from '@/features/portal/api/portal.api';
 import { usePortalTokenRefresh } from '@/features/portal/hooks/usePortalTokenRefresh';
 import { clearPortalTokens, getPortalToken } from '@/features/portal/hooks/usePortalAuth';
 import { QUERY_KEYS } from '@/shared/config/query-keys';
+import { Button } from '@/shared/ui/primitives';
 
 const NAV_ITEMS = [
   { to: '/portal/cases', label: 'My Cases', icon: MessageSquare },
@@ -80,13 +81,13 @@ export default function PortalLayout() {
           <div className="px-3 py-1.5 text-xs text-text-muted truncate font-medium">
             {me ? String((me as unknown as Record<string, unknown>).fullName ?? (me as unknown as Record<string, unknown>).FullName ?? '') : 'Loading...'}
           </div>
-          <button
+          <Button
             onClick={handleLogout}
-            className="flex items-center gap-2 w-full px-3 py-2 rounded-sm text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+            variant="ghost" block
           >
             <LogOut className="w-3.5 h-3.5" strokeWidth={1.6} />
             Sign out
-          </button>
+          </Button>
         </div>
       </aside>
 

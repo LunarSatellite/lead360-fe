@@ -142,7 +142,7 @@ export function CopilotPanel() {
                 <span>{confirm.prompt}</span>
               </div>
               <div className="flex gap-2 justify-end">
-                <button onClick={() => setConfirm(null)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:text-text-primary transition-all">Cancel</button>
+                <Button onClick={() => setConfirm(null)} variant="secondary" size="sm">Cancel</Button>
                 <Button onClick={() => run('Confirmed.', true)} variant="primary" size="sm">Confirm</Button>
               </div>
             </div>

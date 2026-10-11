@@ -59,16 +59,15 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
         <div className="flex items-center gap-2">
           {/* Back button — shown only when drilled in from a category */}
           {selectedCategory && onBack && (
-            <button
+            <Button
               type="button"
               onClick={onBack}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold
-                         text-text-muted hover:text-text-primary hover:bg-glass-2 transition-colors"
+              variant="ghost" size="sm"
               title="Back to categories"
             >
               <ArrowLeft className="w-3.5 h-3.5" strokeWidth={2} />
               Back
-            </button>
+            </Button>
           )}
           <div>
             <h3 className="text-sm font-extrabold text-text-primary tracking-tight">

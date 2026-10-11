@@ -88,13 +88,15 @@ export function AvailableChannelCard({ channelType, onConnect }: AvailableChanne
       <p className="text-2xs text-text-muted leading-relaxed">{description}</p>
 
       {/* Connect button */}
+      {/* The tint and border carry the channel's colour; the label does not.
+          Setting the label to the brand hue over a 3%-alpha wash of the same
+          hue measured 4.0:1 for the darker channels — the colour that makes
+          the card recognisable is the wrong one to read text in. */}
       <button
-        className="mt-auto w-full py-[6px] rounded-[8px] text-2xs font-medium transition-all
-                   border"
+        className="mt-auto w-full rounded-[8px] border py-[6px] text-2xs font-medium text-text-primary transition-all"
         style={{
           background: `${color}08`,
           borderColor: `${color}15`,
-          color,
         }}
         onClick={(e) => {
           e.stopPropagation();

@@ -67,7 +67,7 @@ export function Component() {
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <button aria-label="Edit" onClick={() => openEdit(c)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                      <button aria-label="Delete" onClick={() => deleteMut.mutate(c.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button aria-label="Delete" onClick={() => deleteMut.mutate(c.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>
@@ -99,7 +99,7 @@ export function Component() {
                     </div>
                     <div className="flex items-center gap-3 text-[10px] text-text-muted">
                       <span>Revenue won: <span className="text-success font-semibold">${(a.revenueWon || 0).toLocaleString()}</span></span>
-                      <span>Lost: <span className="text-danger font-semibold">${(a.revenueLost || 0).toLocaleString()}</span></span>
+                      <span>Lost: <span className="text-danger-light font-semibold">${(a.revenueLost || 0).toLocaleString()}</span></span>
                     </div>
                   </button>
                   {detailId === competitors.find((c: any) => c.name === a.name)?.id && detail && (
@@ -166,7 +166,7 @@ export function Component() {
 
               <div>
                 <label className="block">
-                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></span>
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger-light">*</span></span>
                   <div className="relative">
                     <input
                       className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"

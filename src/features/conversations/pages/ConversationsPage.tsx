@@ -30,7 +30,7 @@ export function Component() {
       <div className="grid grid-cols-3 gap-4">
         {[
           { key: 'active' as const, label: 'Active', count: active?.length ?? 0, icon: MessageSquare, color: 'text-success' },
-          { key: 'awaiting' as const, label: 'Awaiting Agent', count: (awaiting as any)?.length ?? 0, icon: Users, color: ((awaiting as any)?.length ?? 0) > 0 ? 'text-danger' : 'text-warning' },
+          { key: 'awaiting' as const, label: 'Awaiting Agent', count: (awaiting as any)?.length ?? 0, icon: Users, color: ((awaiting as any)?.length ?? 0) > 0 ? 'text-danger-light' : 'text-warning' },
           { key: 'mine' as const, label: 'My Sessions', count: mine?.length ?? 0, icon: UserCheck, color: 'text-info' },
         ].map(c => (
           <button key={c.key} onClick={() => setTab(c.key)} className={`text-left ${tab === c.key ? 'ring-2 ring-brand rounded-2xl' : ''}`}>
@@ -63,7 +63,7 @@ export function Component() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-danger" />
                     </span>
-                    <span className="text-2xs font-bold text-danger uppercase tracking-wide">Needs Agent</span>
+                    <span className="text-2xs font-bold text-danger-light uppercase tracking-wide">Needs Agent</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between mb-1">
@@ -174,7 +174,7 @@ function DealSidebar({ sessionId }: { sessionId: string }) {
                 Won ✓
               </button>
               <button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: false } })}
-                className="flex-1 py-1.5 rounded-lg bg-danger-soft text-danger text-xs font-bold border border-danger/20 hover:bg-danger hover:text-white transition-all">
+                className="flex-1 py-1.5 rounded-lg bg-danger-soft text-danger-light text-xs font-bold border border-danger/20 hover:bg-danger hover:text-white transition-all">
                 Lost ✗
               </button>
             </div>
@@ -237,7 +237,7 @@ function MessageViewer({ sessionId }: { sessionId: string }) {
           <button onClick={() => returnBot.mutate(sessionId)} className="flex items-center gap-1 px-2 py-1 rounded text-2xs font-bold text-info bg-info-soft hover:brightness-110">
             <ArrowLeftRight className="w-3 h-3" /> Return to Bot
           </button>
-          <button onClick={() => close.mutate(sessionId)} className="flex items-center gap-1 px-2 py-1 rounded text-2xs font-bold text-danger bg-danger-soft hover:brightness-110">
+          <button onClick={() => close.mutate(sessionId)} className="flex items-center gap-1 px-2 py-1 rounded text-2xs font-bold text-danger-light bg-danger-soft hover:brightness-110">
             <XIcon className="w-3 h-3" /> Close
           </button>
         </div>
@@ -263,7 +263,7 @@ function MessageViewer({ sessionId }: { sessionId: string }) {
                       : 'bg-brand text-white rounded-br-none'    // bot message = brand
                 }`}>
                   {m.direction !== MessageDirection.Inbound && m.createdBy && m.createdBy !== '00000000-0000-0000-0000-000000000000' && (
-                    <p className="text-2xs text-white/70 mb-0.5 font-semibold">Agent</p>
+                    <p className="text-2xs text-text-muted mb-0.5 font-semibold">Agent</p>
                   )}
                   {m.content}
                   <div className="text-2xs mt-1 opacity-70">

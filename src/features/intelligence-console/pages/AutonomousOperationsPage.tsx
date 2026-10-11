@@ -306,7 +306,7 @@ const COMPARISON_WORDING: Record<
 > = {
   Unspecified: {
     headline: 'The server sent no comparison state for this expectation.',
-    tone: 'border-danger/40 bg-danger-soft text-danger',
+    tone: 'border-danger/40 bg-danger-soft text-danger-light',
   },
   NotYetObservable: {
     headline: 'The observation window has not closed yet, so there is nothing to compare.',

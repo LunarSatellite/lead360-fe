@@ -26,7 +26,7 @@ export function CampaignConfigDialog({ id, onClose, onSaved }: Props) {
         <JsonField label="Creative variants" hint='Example: [{"name":"Fresh family dinner","reelId":"..."}]' value={form.creativeVariantsJson} onChange={(v) => setForm((f) => ({ ...f, creativeVariantsJson: v }))} />
         <JsonField label="Publishing channels" hint='Example: ["Instagram","Facebook","TikTok","YouTube"]' value={form.channelsJson} onChange={(v) => setForm((f) => ({ ...f, channelsJson: v }))} />
         <div className="lg:col-span-2"><JsonField label="Experiment" hint='Example: {"objective":"conversion","audiences":["families"],"successMetric":"orders"}' value={form.experimentJson} onChange={(v) => setForm((f) => ({ ...f, experimentJson: v }))} /></div>
-        {!isValid && <p className="text-xs font-semibold text-danger lg:col-span-2">Every configuration block must contain valid JSON.</p>}
+        {!isValid && <p className="text-xs font-semibold text-danger-light lg:col-span-2">Every configuration block must contain valid JSON.</p>}
       </div>}
       <footer className="sticky bottom-0 flex justify-end gap-2 border-t border-border-subtle bg-bg-card/95 px-5 py-4 backdrop-blur-xl"><button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">Cancel</button><Button disabled={save.isPending || !isValid} variant="primary" size="lg"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save configuration'}</Button></footer>
     </form>

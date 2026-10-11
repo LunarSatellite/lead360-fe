@@ -102,7 +102,7 @@ function StateRegion({
         className="flex flex-col items-center justify-center gap-2 text-center"
         style={{ minHeight: minBodyHeight }}
       >
-        <AlertCircle className="w-5 h-5 text-danger" strokeWidth={1.6} />
+        <AlertCircle className="w-5 h-5 text-danger-light" strokeWidth={1.6} />
         <p className="text-xs text-text-secondary">{error?.message || 'Failed to load.'}</p>
         {onRetry && (
           <button

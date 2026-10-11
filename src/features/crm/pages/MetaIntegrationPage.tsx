@@ -168,7 +168,7 @@ const STAGE_LABELS: Record<number, string> = { 1:'New', 2:'Warm', 3:'Hot', 4:'Nu
 const STAGE_COLORS: Record<number, string> = {
   1:'text-text-secondary bg-bg-elevated border-border-subtle',
   2:'text-warning bg-warning-soft border-warning/20',
-  3:'text-danger bg-danger-soft border-danger/20',
+  3:'text-danger-light bg-danger-soft border-danger/20',
   4:'text-brand bg-brand-soft border-border-glow',
   5:'text-success bg-success-soft border-success/20',
   6:'text-text-muted bg-bg-card border-border-subtle',
@@ -210,7 +210,7 @@ function Metric({ label, value, sub, accent }: { label: string; value: string | 
 
 function CheckIcon({ status }: { status: string }) {
   if (status === 'ok')   return <CheckCircle className="w-4 h-4 text-success shrink-0" />;
-  if (status === 'fail') return <XCircle className="w-4 h-4 text-danger shrink-0" />;
+  if (status === 'fail') return <XCircle className="w-4 h-4 text-danger-light shrink-0" />;
   if (status === 'warn') return <AlertTriangle className="w-4 h-4 text-warning shrink-0" />;
   return <Circle className="w-4 h-4 text-text-muted shrink-0" />;
 }
@@ -334,6 +334,7 @@ function CampaignList({
           <Plus className="w-3.5 h-3.5" /> New Campaign
         </Button>
         <button onClick={onSyncClick} disabled={isSyncing}
+          aria-label={isSyncing ? 'Syncing Meta campaigns' : 'Sync Meta campaigns'}
           className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
           {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
         </button>
@@ -772,7 +773,7 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
           </div>
           <div>
             <label className="block">
-              <span className="block text-xs font-semibold text-text-secondary mb-1">Ad Account ID <span className="text-danger">*</span></span>
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Ad Account ID <span className="text-danger-light">*</span></span>
               <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
               placeholder="act_123456789"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
@@ -780,7 +781,7 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Access Token <span className="text-danger">*</span></label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Access Token <span className="text-danger-light">*</span></label>
             <div className="relative">
               <input type={showToken ? 'text' : 'password'} value={form.accessToken}
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
@@ -1139,7 +1140,7 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
           <div>
             <label className={labelCls}>
               {platform === 'tiktok' ? 'Video URL' : 'Image URL'}
-              {meta.requiresImage && <span className="text-danger font-semibold"> *</span>}
+              {meta.requiresImage && <span className="text-danger-light font-semibold"> *</span>}
               {!meta.requiresImage && <span className="text-text-muted font-normal"> (optional)</span>}
             </label>
             <input aria-label="Image URL"
@@ -1865,7 +1866,7 @@ function OAuthPlatformTab({
             })}
 
             <button onClick={() => disconnectMut.mutate()} disabled={disconnectMut.isPending}
-              className="text-[10px] text-text-muted hover:text-danger transition-all text-center py-1">
+              className="text-[10px] text-text-muted hover:text-danger-light transition-all text-center py-1">
               Disconnect {platformName}
             </button>
           </>

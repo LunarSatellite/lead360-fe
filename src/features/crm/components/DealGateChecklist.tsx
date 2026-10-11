@@ -27,7 +27,7 @@ function GateRow({ gate, dealId }: { gate: CrmDealGateStatusDto; dealId: string 
         {gate.isSatisfied ? (
           <CheckCircle2 className="w-4.5 h-4.5 text-success" strokeWidth={1.5} />
         ) : gate.isRequired ? (
-          <Lock className="w-4 h-4 text-danger" strokeWidth={1.5} />
+          <Lock className="w-4 h-4 text-danger-light" strokeWidth={1.5} />
         ) : (
           <Circle className="w-4 h-4 text-text-muted" strokeWidth={1.5} />
         )}
@@ -67,12 +67,12 @@ export function DealGateChecklist({ dealId }: Props) {
         {allClear ? (
           <ShieldCheck className="w-4 h-4 text-success shrink-0" strokeWidth={1.5} />
         ) : (
-          <AlertTriangle className="w-4 h-4 text-danger shrink-0" strokeWidth={1.5} />
+          <AlertTriangle className="w-4 h-4 text-danger-light shrink-0" strokeWidth={1.5} />
         )}
         <span className="text-sm font-bold text-text-primary">
           Stage Exit Checklist
         </span>
-        <span className={`ml-auto text-xs font-semibold ${allClear ? 'text-success' : 'text-danger'}`}>
+        <span className={`ml-auto text-xs font-semibold ${allClear ? 'text-success' : 'text-danger-light'}`}>
           {allClear ? 'Ready to advance' : `${blocking.length} gate${blocking.length > 1 ? 's' : ''} blocking`}
         </span>
       </div>

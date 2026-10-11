@@ -69,7 +69,7 @@ export function ImportDialog({ open, onClose }: Props) {
           {rows.length === 0 ? <>
             <FileUploadZone onFileContent={handleFile} disabled={parseMut.isPending} />
             {parseMut.isPending && <div className="flex items-center justify-center gap-2 mt-4"><Loader2 className="w-4 h-4 animate-spin text-brand" /><span className="text-xs text-text-muted">Parsing...</span></div>}
-            {parseMut.isError && <div className="mt-3 p-3 rounded-lg bg-danger-soft text-danger text-xs">Failed to parse. Check format.</div>}
+            {parseMut.isError && <div className="mt-3 p-3 rounded-lg bg-danger-soft text-danger-light text-xs">Failed to parse. Check format.</div>}
           </> : <>
             <div className="flex items-center gap-3 mb-4">
               <span className="text-xs text-text-secondary">{rows.length} total</span>

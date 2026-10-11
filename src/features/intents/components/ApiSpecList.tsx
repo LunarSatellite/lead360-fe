@@ -210,7 +210,7 @@ function RowMenu({
         <div className="border-t border-border-subtle" />
         <button
           onClick={onDelete}
-          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger-soft transition-all"
+          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger-light hover:bg-danger-soft transition-all"
         >
           <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
           Delete
@@ -237,7 +237,7 @@ function ConfirmDeleteDialog({
       <div className="relative w-full max-w-sm mx-4 bg-bg-card rounded-2xl border border-border-subtle shadow-lg p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-danger-soft flex items-center justify-center flex-shrink-0">
-            <AlertCircle className="w-5 h-5 text-danger" strokeWidth={1.8} />
+            <AlertCircle className="w-5 h-5 text-danger-light" strokeWidth={1.8} />
           </div>
           <div>
             <h3 className="text-sm font-bold text-text-primary">Delete API Spec?</h3>

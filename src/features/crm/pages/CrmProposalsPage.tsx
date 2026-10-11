@@ -402,7 +402,7 @@ export function Component() {
 
         {/* Deal */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal <span className="text-danger">*</span></label>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal <span className="text-danger-light">*</span></label>
           <div className="relative" ref={genDealDropRef}>
             <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
             <input
@@ -601,7 +601,7 @@ export function Component() {
                   </select>
                   <input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section heading (optional)" aria-label="Section heading (optional)" className={inputCls + ' flex-1'} />
                   <button aria-label="Close" onClick={() => setMSections(ss => ss.filter((_, idx) => idx !== i))} disabled={mSections.length === 1}
-                    className="p-1.5 rounded-lg text-danger hover:bg-danger-soft disabled:opacity-40 transition-colors">
+                    className="p-1.5 rounded-lg text-danger-light hover:bg-danger-soft disabled:opacity-40 transition-colors">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>

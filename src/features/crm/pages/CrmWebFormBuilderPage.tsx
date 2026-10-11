@@ -498,7 +498,7 @@ function FieldsTab(props: FieldsTabProps) {
                   </div>
                   <div className="flex flex-col items-center justify-center px-2 gap-1 border-l border-border-subtle">
                     <button onClick={() => duplicateField(idx)} className="p-1.5 text-text-muted hover:text-text-primary" title="Duplicate"><Copy className="w-3.5 h-3.5" /></button>
-                    <button onClick={() => removeField(idx)} className="p-1.5 text-text-muted hover:text-danger" title="Delete"><Trash2 className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => removeField(idx)} className="p-1.5 text-text-muted hover:text-danger-light" title="Delete"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
               </div>

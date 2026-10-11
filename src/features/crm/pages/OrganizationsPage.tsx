@@ -249,7 +249,7 @@ function OrgDetailPanel({
           ) : (
             <button aria-label="Delete"
               onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
             >
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>

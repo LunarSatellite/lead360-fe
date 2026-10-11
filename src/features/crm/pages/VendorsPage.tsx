@@ -242,7 +242,7 @@ export function Component() {
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
                         <IconButton icon={Pencil} label={`Edit ${v.name}`} variant="ghost" size="sm" onClick={() => openEdit(v)} />
-                        <IconButton icon={Trash2} label={`Delete ${v.name}`} variant="ghost" size="sm" className="hover:bg-danger-soft hover:text-danger" onClick={() => handleDelete(v)} disabled={deleteVendor.isPending} />
+                        <IconButton icon={Trash2} label={`Delete ${v.name}`} variant="ghost" size="sm" className="hover:bg-danger-soft hover:text-danger-light" onClick={() => handleDelete(v)} disabled={deleteVendor.isPending} />
                       </div>
                     </td>
                   </tr>

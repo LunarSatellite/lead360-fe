@@ -40,7 +40,7 @@ function ErrorState({ message }: { message: string }) {
   return (
     <div className="space-y-6 text-center">
       <div className="w-16 h-16 rounded-full bg-danger-soft flex items-center justify-center mx-auto">
-        <XCircle className="w-8 h-8 text-danger" />
+        <XCircle className="w-8 h-8 text-danger-light" />
       </div>
       <h1 className="text-2xl font-extrabold text-text-primary">Invitation invalid</h1>
       <p className="text-base text-text-secondary">{message}</p>
@@ -114,14 +114,14 @@ function AcceptForm({ invitation, token, email }: { invitation: TeamInvitationDt
               <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">First name</span>
               <input {...form.register('firstName')} placeholder="John" className={input} />
             </label>
-            {form.formState.errors.firstName && <p className="text-xs text-danger mt-1.5">{form.formState.errors.firstName.message}</p>}
+            {form.formState.errors.firstName && <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.firstName.message}</p>}
           </div>
           <div>
             <label className="block">
               <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Last name</span>
               <input {...form.register('lastName')} placeholder="Doe" className={input} />
             </label>
-            {form.formState.errors.lastName && <p className="text-xs text-danger mt-1.5">{form.formState.errors.lastName.message}</p>}
+            {form.formState.errors.lastName && <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.lastName.message}</p>}
           </div>
         </div>
 
@@ -153,7 +153,7 @@ function AcceptForm({ invitation, token, email }: { invitation: TeamInvitationDt
         </div>
 
         {accept.isError && (
-          <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger">
+          <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger-light">
             {accept.error?.message || 'Failed to accept invitation.'}
           </div>
         )}

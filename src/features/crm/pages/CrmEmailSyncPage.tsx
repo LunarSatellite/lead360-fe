@@ -15,7 +15,7 @@ import {
 const STATUS_CLASS: Record<EmailIntegrationStatus, string> = {
   [EmailIntegrationStatus.Active]: 'text-success bg-success-soft border-success/20',
   [EmailIntegrationStatus.Paused]: 'text-warning bg-warning-soft border-warning/20',
-  [EmailIntegrationStatus.Error]: 'text-danger bg-danger-soft border-danger/20',
+  [EmailIntegrationStatus.Error]: 'text-danger-light bg-danger-soft border-danger/20',
   [EmailIntegrationStatus.Disconnected]:
     'text-text-muted bg-bg-elevated border-border-subtle',
 };
@@ -102,7 +102,7 @@ export function Component() {
                 </div>
 
                 {r.status === EmailIntegrationStatus.Error && (
-                  <AlertTriangle className="w-4 h-4 text-danger" />
+                  <AlertTriangle className="w-4 h-4 text-danger-light" />
                 )}
                 <span
                   className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${STATUS_CLASS[r.status]}`}
@@ -123,7 +123,7 @@ export function Component() {
                   aria-label={`Disconnect ${r.email}`}
                   onClick={() => disconnect.mutate(r.id)}
                   disabled={disconnect.isPending}
-                  className="rounded-xl border border-border-medium p-1.5 text-text-muted hover:text-danger hover:border-danger/20 disabled:opacity-40"
+                  className="rounded-xl border border-border-medium p-1.5 text-text-muted hover:text-danger-light hover:border-danger/20 disabled:opacity-40"
                 >
                   <Unplug className="w-3.5 h-3.5" />
                 </button>

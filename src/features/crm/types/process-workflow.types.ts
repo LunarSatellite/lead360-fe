@@ -142,6 +142,6 @@ export const PROCESS_TASK_STATUS_COLORS: Record<ProcessTaskStatus, string> = {
   [ProcessTaskStatus.Pending]: 'text-text-muted border-border-subtle bg-bg-elevated',
   [ProcessTaskStatus.InProgress]: 'text-info-DEFAULT border-info-DEFAULT/30 bg-info-DEFAULT/10',
   [ProcessTaskStatus.Completed]: 'text-success-DEFAULT border-success-DEFAULT/30 bg-success-DEFAULT/10',
-  [ProcessTaskStatus.Escalated]: 'text-danger-DEFAULT border-danger-DEFAULT/30 bg-danger-DEFAULT/10',
+  [ProcessTaskStatus.Escalated]: 'text-danger-light border-danger/30 bg-danger/10',
   [ProcessTaskStatus.Skipped]: 'text-text-muted border-border-subtle bg-bg-elevated',
 };

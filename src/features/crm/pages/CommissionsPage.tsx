@@ -37,7 +37,7 @@ function PayoutModal({ payout, onClose }: { payout: CrmCommissionPayoutDto; onCl
         <h3 className="text-sm font-bold text-text-primary">Payout — {payout.label || payout.periodCode}</h3>
         <div className="space-y-2 text-sm">
           <p className="flex justify-between"><span className="text-text-muted">Gross</span><span className="font-semibold">{payout.currency} {payout.totalCommissionAmount.toLocaleString()}</span></p>
-          <p className="flex justify-between"><span className="text-text-muted">Deductions</span><span className="font-semibold text-danger">{payout.deductions ? `-${payout.currency} ${payout.deductions.toLocaleString()}` : '—'}</span></p>
+          <p className="flex justify-between"><span className="text-text-muted">Deductions</span><span className="font-semibold text-danger-light">{payout.deductions ? `-${payout.currency} ${payout.deductions.toLocaleString()}` : '—'}</span></p>
           <p className="flex justify-between border-t border-border-subtle pt-2"><span className="text-text-muted">Net</span><span className="font-bold text-lg">{payout.currency} {payout.netPayAmount.toLocaleString()}</span></p>
         </div>
 
@@ -177,7 +177,7 @@ export function Component() {
                     <td className="px-4 py-3 font-semibold text-text-primary">{p.periodCode}</td>
                     <td className="px-4 py-3 text-text-secondary">{p.label || '—'}</td>
                     <td className="px-4 py-3 text-text-primary">{p.currency} {p.totalCommissionAmount.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-danger">{p.deductions ? `${p.currency} ${p.deductions.toLocaleString()}` : '—'}</td>
+                    <td className="px-4 py-3 text-danger-light">{p.deductions ? `${p.currency} ${p.deductions.toLocaleString()}` : '—'}</td>
                     <td className="px-4 py-3 font-semibold text-text-primary">{p.currency} {p.netPayAmount.toLocaleString()}</td>
                     <td className="px-4 py-3"><span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border ${CRM_COMMISSION_STATUS_COLORS[p.status]}`}>
                       {p.status === 1 && <Clock className="w-3 h-3" />}

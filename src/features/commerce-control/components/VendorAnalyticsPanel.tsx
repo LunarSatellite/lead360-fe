@@ -120,7 +120,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                 </span>
               </div>
               <p
-                className={`relative mt-3 flex items-center gap-1 text-[11px] font-bold ${delta == null ? 'text-text-muted' : positive ? 'text-success' : 'text-danger'}`}
+                className={`relative mt-3 flex items-center gap-1 text-[11px] font-bold ${delta == null ? 'text-text-muted' : positive ? 'text-success' : 'text-danger-light'}`}
               >
                 {delta == null ? (
                   'No comparable period'

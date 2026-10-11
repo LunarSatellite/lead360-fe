@@ -13,3 +13,9 @@ test-results
 
 # Agent worktrees are separate git repos; they must never be committed here.
 .claude/worktrees/
+
+# Playwright
+/test-results/
+/playwright-report/
+/pw-report.json
+/pw-cat.json

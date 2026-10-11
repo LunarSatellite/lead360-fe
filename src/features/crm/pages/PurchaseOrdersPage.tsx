@@ -194,7 +194,7 @@ export function Component() {
                         {po.status === PurchaseOrderStatus.PendingApproval && (
                           <>
                             <button onClick={() => approvePO.mutate(po.id)} disabled={approvePO.isPending} title="Approve" className="p-1.5 rounded-lg text-text-muted hover:text-success hover:bg-success-soft transition-all disabled:opacity-50"><CheckCircle className="w-3.5 h-3.5" /></button>
-                            <button onClick={() => { setSelected(po); setShowReject(true); }} title="Reject" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => { setSelected(po); setShowReject(true); }} title="Reject" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
                           </>
                         )}
                         {po.status === PurchaseOrderStatus.Approved && (
@@ -204,7 +204,7 @@ export function Component() {
                           <button onClick={() => closePO.mutate(po.id)} disabled={closePO.isPending} title="Close PO" className="p-1.5 rounded-lg text-text-muted hover:text-text-secondary hover:bg-bg-surface transition-all disabled:opacity-50"><Lock className="w-3.5 h-3.5" /></button>
                         )}
                         {po.status <= PurchaseOrderStatus.Approved && (
-                          <button onClick={() => { setSelected(po); setShowCancel(true); }} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => { setSelected(po); setShowCancel(true); }} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
                         )}
                       </div>
                     </td>
@@ -336,7 +336,7 @@ export function Component() {
                   <input aria-label="Unit cost" type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00"
                     className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <button aria-label="Close" type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30"><X className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Close" type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger-light disabled:opacity-30"><X className="w-3.5 h-3.5" /></button>
                 </div>
               ))}
             </div>
@@ -380,7 +380,7 @@ export function Component() {
             {selected.expectedDeliveryDate && <div className="text-sm text-text-secondary">Expected: {format(parseISO(selected.expectedDeliveryDate), 'MMM d, yyyy')}</div>}
             {selected.approvedAt && <div className="text-sm text-success">Approved: {format(parseISO(selected.approvedAt), 'MMM d, yyyy')} by {selected.approvedByName}</div>}
             {selected.sentToVendorAt && <div className="text-sm text-brand">Sent to vendor: {format(parseISO(selected.sentToVendorAt), 'MMM d, yyyy')}</div>}
-            {selected.cancellationReason && <div className="text-sm text-danger bg-danger-soft rounded-xl p-3">Cancelled: {selected.cancellationReason}</div>}
+            {selected.cancellationReason && <div className="text-sm text-danger-light bg-danger-soft rounded-xl p-3">Cancelled: {selected.cancellationReason}</div>}
 
             {selected.lineItems?.length > 0 && (
               <div>
@@ -416,7 +416,7 @@ export function Component() {
                   <button onClick={() => { approvePO.mutate(selected.id); setSelected(null); }} disabled={approvePO.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
                     <CheckCircle className="w-3.5 h-3.5" /> Approve
                   </button>
-                  <button onClick={() => setShowReject(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger bg-danger-soft border border-danger/20 hover:opacity-80">
+                  <button onClick={() => setShowReject(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger-light bg-danger-soft border border-danger/20 hover:opacity-80">
                     <XCircle className="w-3.5 h-3.5" /> Reject
                   </button>
                 </>
@@ -432,7 +432,7 @@ export function Component() {
                 </button>
               )}
               {selected.status <= PurchaseOrderStatus.Approved && (
-                <button onClick={() => setShowCancel(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80">
+                <button onClick={() => setShowCancel(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80">
                   <XCircle className="w-3.5 h-3.5" /> Cancel
                 </button>
               )}

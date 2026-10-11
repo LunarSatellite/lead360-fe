@@ -78,7 +78,7 @@ export function Component() {
             <span>{format(new Date(data.createdAt), "PP p")}</span>
             {data.submitterIp && <span className="font-mono">{data.submitterIp}</span>}
             {data.submitterUserAgent && <span className="hidden sm:inline truncate max-w-[420px]" title={data.submitterUserAgent}>{data.submitterUserAgent}</span>}
-            {data.isSpam && <span className="text-danger">marked as spam</span>}
+            {data.isSpam && <span className="text-danger-light">marked as spam</span>}
           </div>
         </div>
       </div>

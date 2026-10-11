@@ -80,7 +80,7 @@ export function CustomFieldsPanel({ recordId, entityType }: Props) {
         {fields.map(f => (
           <div key={f.definitionId}>
             <p className="text-xs text-text-muted mb-1">
-              {f.name}{f.isRequired && <span className="text-danger ml-0.5">*</span>}
+              {f.name}{f.isRequired && <span className="text-danger-light ml-0.5">*</span>}
             </p>
             {!editing ? (
               <p className="text-sm text-text-primary">

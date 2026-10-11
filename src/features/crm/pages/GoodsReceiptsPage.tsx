@@ -170,7 +170,7 @@ export function Component() {
                           <button onClick={() => confirmGR.mutate(gr.id)} disabled={confirmGR.isPending} title="Confirm Receipt" className="p-1.5 rounded-lg text-text-muted hover:text-success hover:bg-success-soft transition-all disabled:opacity-50"><CheckCircle className="w-3.5 h-3.5" /></button>
                         )}
                         {gr.status === GoodsReceiptStatus.Confirmed && (
-                          <button onClick={() => { if (confirm('Void this receipt? Stock will be reversed.')) voidGR.mutate(gr.id); }} disabled={voidGR.isPending} title="Void Receipt" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50"><XCircle className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => { if (confirm('Void this receipt? Stock will be reversed.')) voidGR.mutate(gr.id); }} disabled={voidGR.isPending} title="Void Receipt" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all disabled:opacity-50"><XCircle className="w-3.5 h-3.5" /></button>
                         )}
                       </div>
                     </td>
@@ -258,7 +258,7 @@ export function Component() {
                         <span className={`flex-1 font-medium ${
                           Number(l.condition) === GoodsCondition.Good ? 'text-success' :
                           Number(l.condition) === GoodsCondition.Damaged ? 'text-warning' :
-                          Number(l.condition) === GoodsCondition.Rejected ? 'text-danger' : 'text-text-secondary'
+                          Number(l.condition) === GoodsCondition.Rejected ? 'text-danger-light' : 'text-text-secondary'
                         }`}>
                           {GOODS_CONDITION_LABELS[Number(l.condition) as GoodsCondition]}
                         </span>
@@ -271,7 +271,7 @@ export function Component() {
                           {([
                             { value: GoodsCondition.Good, label: GOODS_CONDITION_LABELS[GoodsCondition.Good], dot: '#10B981', text: 'text-success', hover: 'hover:bg-success/[0.08]' },
                             { value: GoodsCondition.Damaged, label: GOODS_CONDITION_LABELS[GoodsCondition.Damaged], dot: '#F59E0B', text: 'text-warning', hover: 'hover:bg-warning-soft' },
-                            { value: GoodsCondition.Rejected, label: GOODS_CONDITION_LABELS[GoodsCondition.Rejected], dot: '#F43F5E', text: 'text-danger', hover: 'hover:bg-danger-soft' },
+                            { value: GoodsCondition.Rejected, label: GOODS_CONDITION_LABELS[GoodsCondition.Rejected], dot: '#F43F5E', text: 'text-danger-light', hover: 'hover:bg-danger-soft' },
                           ] as const).map(opt => (
                             <button
                               key={opt.value}
@@ -305,7 +305,7 @@ export function Component() {
                     </div>
                   )}
                   {lines.length > 1 && (
-                    <button type="button" onClick={() => removeLine(i)} className="flex items-center gap-1 text-xs text-danger hover:underline"><X className="w-3 h-3" /> Remove row</button>
+                    <button type="button" onClick={() => removeLine(i)} className="flex items-center gap-1 text-xs text-danger-light hover:underline"><X className="w-3 h-3" /> Remove row</button>
                   )}
                 </div>
               ))}
@@ -350,9 +350,9 @@ export function Component() {
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="text-text-primary font-medium">Qty: {li.quantityReceived}</span>
-                          {li.rejectedQty ? <span className="text-danger text-xs ml-2">Rejected: {li.rejectedQty}</span> : null}
+                          {li.rejectedQty ? <span className="text-danger-light text-xs ml-2">Rejected: {li.rejectedQty}</span> : null}
                         </div>
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${li.condition === GoodsCondition.Good ? 'text-success bg-success-soft' : li.condition === GoodsCondition.Damaged ? 'text-warning bg-warning-soft' : 'text-danger bg-danger-soft'}`}>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${li.condition === GoodsCondition.Good ? 'text-success bg-success-soft' : li.condition === GoodsCondition.Damaged ? 'text-warning bg-warning-soft' : 'text-danger-light bg-danger-soft'}`}>
                           {GOODS_CONDITION_LABELS[li.condition]}
                         </span>
                       </div>
@@ -372,7 +372,7 @@ export function Component() {
                 </button>
               )}
               {selected.status === GoodsReceiptStatus.Confirmed && (
-                <button onClick={() => { if (confirm('Void this receipt? Stock adjustments will be reversed.')) { voidGR.mutate(selected.id); setSelected(null); } }} disabled={voidGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 disabled:opacity-50">
+                <button onClick={() => { if (confirm('Void this receipt? Stock adjustments will be reversed.')) { voidGR.mutate(selected.id); setSelected(null); } }} disabled={voidGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80 disabled:opacity-50">
                   <XCircle className="w-3.5 h-3.5" /> Void
                 </button>
               )}

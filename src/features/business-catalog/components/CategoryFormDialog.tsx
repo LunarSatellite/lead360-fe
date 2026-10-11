@@ -306,7 +306,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
                           className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all
                             ${value === opt
                               ? opt === 'true' ? 'bg-success-soft border-success text-success'
-                              : opt === 'false' ? 'bg-danger-soft border-danger text-danger'
+                              : opt === 'false' ? 'bg-danger-soft border-danger text-danger-light'
                               : 'bg-brand-soft border-brand text-brand'
                               : 'bg-glass-2 border-border-subtle text-text-muted hover:border-border-medium'
                             }`}

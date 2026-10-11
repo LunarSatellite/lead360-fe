@@ -164,7 +164,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
             />
             </label>
             {form.formState.errors.email && (
-              <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
+              <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.email.message}</p>
             )}
           </div>
 
@@ -232,7 +232,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
           </div>
 
           {send.isError && (
-            <div className="px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger">
+            <div className="px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger-light">
               {send.error?.message || 'Failed.'}
             </div>
           )}
@@ -288,7 +288,7 @@ function MembersSection() {
   const statusBadge: Record<number, string> = {
     [UserStatus.Active]: 'bg-success-soft text-success',
     [UserStatus.Deactivated]: 'bg-glass-2 text-text-muted',
-    [UserStatus.Suspended]: 'bg-danger-soft text-danger',
+    [UserStatus.Suspended]: 'bg-danger-soft text-danger-light',
     [UserStatus.Pending]: 'bg-warning-soft text-warning',
   };
 
@@ -381,7 +381,7 @@ function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrm
               </button>
               <button
                 onClick={() => confirmDialog({ message: `Deactivate ${user.firstName}?`, confirmText: 'Deactivate', danger: true }).then((ok) => { if (ok) adminUpdate.mutate({ userId: user.id, data: { status: UserStatus.Deactivated } }); })}
-                className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+                className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
                 title="Deactivate"
               >
                 <UserMinus className="w-4 h-4" />
@@ -411,7 +411,7 @@ function InvitationsSection() {
     [InvitationStatus.Pending]: 'bg-warning-soft text-warning',
     [InvitationStatus.Accepted]: 'bg-success-soft text-success',
     [InvitationStatus.Cancelled]: 'bg-glass-2 text-text-muted',
-    [InvitationStatus.Expired]: 'bg-danger-soft text-danger',
+    [InvitationStatus.Expired]: 'bg-danger-soft text-danger-light',
   };
   if (isLoading || invitations.length === 0) return null;
   return (
@@ -444,7 +444,7 @@ function InvitationsSection() {
                     <RefreshCw className="w-4 h-4" />
                   </button>
                   {isPending && !inv.isExpired && (
-                    <button onClick={() => cancel.mutate(inv.id)} disabled={cancel.isPending} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all" title="Cancel">
+                    <button onClick={() => cancel.mutate(inv.id)} disabled={cancel.isPending} className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all" title="Cancel">
                       <XCircle className="w-4 h-4" />
                     </button>
                   )}
@@ -537,7 +537,7 @@ function RoleListItem({ role, isSelected, onClick }: { role: CrmRoleDto; isSelec
               (ok) => { if (ok) deleteRole.mutate(role.id); },
             );
           }}
-          className="p-1 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all flex-shrink-0"
+          className="p-1 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all flex-shrink-0"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -706,7 +706,7 @@ function PermissionMatrix({ role }: { role: CrmRoleDto }) {
           {!role.isSystem && (
             <>
               <button onClick={allowAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success hover:brightness-110 transition-all">Allow All</button>
-              <button onClick={denyAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-danger-soft text-danger hover:brightness-110 transition-all">Deny All</button>
+              <button onClick={denyAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-danger-soft text-danger-light hover:brightness-110 transition-all">Deny All</button>
             </>
           )}
           {!role.isSystem && dirty && (

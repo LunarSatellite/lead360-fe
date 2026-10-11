@@ -149,8 +149,8 @@ export function TestChannelSetup({ tenantId, onReady }: TestChannelSetupProps) {
             <div className="space-y-3">
               <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15">
                 <div className="flex items-start gap-2">
-                  <XCircle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" strokeWidth={1.6} />
-                  <p className="text-xs text-danger leading-relaxed">{errorMsg}</p>
+                  <XCircle className="w-4 h-4 text-danger-light flex-shrink-0 mt-0.5" strokeWidth={1.6} />
+                  <p className="text-xs text-danger-light leading-relaxed">{errorMsg}</p>
                 </div>
               </div>
               <button
@@ -189,7 +189,7 @@ function SetupStep({ label, status }: { label: string; status: StepStatus }) {
       <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
         {status === 'loading' && <Loader2 className="w-4 h-4 text-brand animate-spin" />}
         {status === 'done' && <CheckCircle className="w-4 h-4 text-success" strokeWidth={2} />}
-        {status === 'error' && <XCircle className="w-4 h-4 text-danger" strokeWidth={2} />}
+        {status === 'error' && <XCircle className="w-4 h-4 text-danger-light" strokeWidth={2} />}
         {status === 'pending' && <Wifi className="w-4 h-4 text-text-muted" strokeWidth={1.6} />}
       </div>
       <span
@@ -199,7 +199,7 @@ function SetupStep({ label, status }: { label: string; status: StepStatus }) {
             : status === 'loading'
               ? 'text-brand'
               : status === 'error'
-                ? 'text-danger'
+                ? 'text-danger-light'
                 : 'text-text-muted'
         }`}
       >

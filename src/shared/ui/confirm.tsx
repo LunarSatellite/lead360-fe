@@ -76,7 +76,7 @@ export function ConfirmHost() {
             <AlertTriangle
               size={18}
               strokeWidth={1.8}
-              className={danger ? 'text-danger' : 'text-warning'}
+              className={danger ? 'text-danger-light' : 'text-warning'}
             />
           </div>
           <div className="min-w-0 flex-1">

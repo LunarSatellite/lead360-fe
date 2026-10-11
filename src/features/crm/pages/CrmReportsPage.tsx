@@ -378,7 +378,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       />
                     )}
-                    <button aria-label="Delete" onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+                    <button aria-label="Delete" onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -703,7 +703,7 @@ function ReportRow({ report }: { report: CrmReportDto }) {
         <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Delete report "${report.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) del.mutate(report.id); })}
-          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
         >
           <Trash2 className="w-4 h-4" />
         </button>

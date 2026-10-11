@@ -164,7 +164,7 @@ export function Component() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-60" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-danger" />
                   </span>
-                  <Flame className="w-3.5 h-3.5 text-danger" />
+                  <Flame className="w-3.5 h-3.5 text-danger-light" />
                 </span>
               )}
             </div>
@@ -766,7 +766,7 @@ function ScoreHistory({ leadId }: { leadId: string }) {
             <div key={e.id} className="px-4 py-2 text-xs space-y-0.5">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-brand font-semibold">{e.eventType}</span>
-                <span className={`font-bold ${e.points > 0 ? 'text-success' : 'text-danger'}`}>{e.points > 0 ? '+' : ''}{e.points}</span>
+                <span className={`font-bold ${e.points > 0 ? 'text-success' : 'text-danger-light'}`}>{e.points > 0 ? '+' : ''}{e.points}</span>
               </div>
               <div className="text-text-muted">{e.reason || ''}</div>
               <div className="text-text-muted text-[10px]">{e.scoreBefore} → {e.scoreAfter} · {e.eventAt ? new Date(e.eventAt).toLocaleString() : ''}</div>

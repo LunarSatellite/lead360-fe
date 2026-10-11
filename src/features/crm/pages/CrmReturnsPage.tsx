@@ -157,7 +157,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
         {rma.resolvedAt && <div className="flex justify-between text-xs"><span className="text-text-muted">Resolved</span><span className="text-success">{format(parseISO(rma.resolvedAt), 'MMM d, yyyy')}</span></div>}
         {rma.customerNotes && <div><span className="text-text-muted block text-xs mb-1">Customer Notes</span><p className="text-text-secondary text-xs">{rma.customerNotes}</p></div>}
         {rma.staffNotes && <div><span className="text-text-muted block text-xs mb-1">Staff Notes</span><p className="text-text-secondary text-xs">{rma.staffNotes}</p></div>}
-        {rma.rejectionReason && <div><span className="text-danger block text-xs mb-1">Rejection Reason</span><p className="text-danger text-xs">{rma.rejectionReason}</p></div>}
+        {rma.rejectionReason && <div><span className="text-danger-light block text-xs mb-1">Rejection Reason</span><p className="text-danger-light text-xs">{rma.rejectionReason}</p></div>}
       </div>
 
       {rma.lineItems.length > 0 && (
@@ -199,7 +199,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
             <button onClick={() => approve.mutate(rma.id)} disabled={approve.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50 transition-all">
               <CheckCircle className="w-3.5 h-3.5" /> Approve
             </button>
-            <button onClick={() => setShowReject(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger bg-danger-soft border border-danger/20 hover:opacity-80 transition-all">
+            <button onClick={() => setShowReject(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger-light bg-danger-soft border border-danger/20 hover:opacity-80 transition-all">
               <XCircle className="w-3.5 h-3.5" /> Reject
             </button>
           </>
@@ -220,7 +220,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
           </button>
         )}
         {rma.status < CrmReturnStatus.Resolved && rma.status !== CrmReturnStatus.Cancelled && (
-          <button onClick={() => cancel.mutate(rma.id)} disabled={cancel.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-muted hover:text-danger transition-all disabled:opacity-50">
+          <button onClick={() => cancel.mutate(rma.id)} disabled={cancel.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-muted hover:text-danger-light transition-all disabled:opacity-50">
             Cancel
           </button>
         )}

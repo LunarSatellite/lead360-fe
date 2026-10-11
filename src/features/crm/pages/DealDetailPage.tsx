@@ -240,7 +240,7 @@ export function Component() {
               <p className="text-sm text-text-primary">{aiSummary.headline}</p>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className={`text-2xs px-2 py-0.5 rounded-full font-medium border ${
-                  aiSummary.riskLevel === 'High' ? 'bg-danger-soft text-danger border-danger/20'
+                  aiSummary.riskLevel === 'High' ? 'bg-danger-soft text-danger-light border-danger/20'
                   : aiSummary.riskLevel === 'Medium' ? 'bg-warning-soft text-warning border-warning/20'
                   : 'bg-success-soft text-success border-success/20'
                 }`}>
@@ -290,7 +290,7 @@ export function Component() {
         )}
         {deal.lostReason && (
           <div className="mt-4 p-3 rounded-xl bg-danger-soft border border-danger/20">
-            <p className="text-xs text-danger font-semibold">Lost reason</p>
+            <p className="text-xs text-danger-light font-semibold">Lost reason</p>
             <p className="text-sm text-text-secondary mt-0.5">{deal.lostReason}</p>
           </div>
         )}
@@ -607,7 +607,7 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
               <div className="text-xs text-text-muted mt-0.5">
                 {dc.ourStrengths && <span className="text-success">Us: {dc.ourStrengths}</span>}
                 {dc.ourStrengths && dc.theirStrengths && <span> · </span>}
-                {dc.theirStrengths && <span className="text-danger">Them: {dc.theirStrengths}</span>}
+                {dc.theirStrengths && <span className="text-danger-light">Them: {dc.theirStrengths}</span>}
               </div>
             )}
           </div>
@@ -616,7 +616,7 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
               className="px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs text-text-primary">
               {Object.entries(DEAL_COMPETITOR_OUTCOME_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
-            <button aria-label="Delete" onClick={() => removeMut.mutate(dc.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3 h-3" /></button>
+            <button aria-label="Delete" onClick={() => removeMut.mutate(dc.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3 h-3" /></button>
           </div>
         </div>
       ))}
@@ -679,7 +679,7 @@ function DealContactsSection({ dealId }: { dealId: string }) {
                   <span className="text-xs px-1.5 py-0.5 rounded bg-brand-soft border border-border-glow text-brand font-medium">{dc.role || 'User'}</span>
                 </div>
               </div>
-              <button aria-label="Delete" onClick={() => removeMut.mutate(dc.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+              <button aria-label="Delete" onClick={() => removeMut.mutate(dc.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
             </div>
           ))}
         </div>

@@ -90,7 +90,7 @@ const CALL_STATUS_COLORS: Record<number, string> = {
   1: 'text-warning bg-warning-soft border-warning/20',
   2: 'text-brand bg-brand-soft border-border-glow',
   3: 'text-success bg-success-soft border-success/20',
-  4: 'text-danger bg-danger-soft border-danger/20',
+  4: 'text-danger-light bg-danger-soft border-danger/20',
 };
 
 // ─── Meetings Tab ─────────────────────────────────────────────────────────────
@@ -752,7 +752,7 @@ function MeetingsTab() {
                 </div>
               </div>
               {detail.status !== CrmMeetingStatus.Cancelled && detail.status !== CrmMeetingStatus.Completed && (
-                <button onClick={() => { cancelMeeting.mutate(detail.id, { onSuccess: () => setSelectedId(null) }); }} disabled={cancelMeeting.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger text-sm font-bold hover:bg-danger hover:text-bg transition-all disabled:opacity-60">
+                <button onClick={() => { cancelMeeting.mutate(detail.id, { onSuccess: () => setSelectedId(null) }); }} disabled={cancelMeeting.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger-light text-sm font-bold hover:bg-danger hover:text-bg transition-all disabled:opacity-60">
                   {cancelMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" strokeWidth={1.5} />} Cancel
                 </button>
               )}
@@ -871,7 +871,7 @@ function CallSummariesTab() {
           {/* Signal ID — required */}
           <div>
             <label className="block">
-              <span className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger">*</span></span>
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger-light">*</span></span>
               <Input icon={PhoneCall} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Signal ID from recorded call (required)" value={reqForm.signalId} onChange={setR('signalId')} />
             </label>
           </div>

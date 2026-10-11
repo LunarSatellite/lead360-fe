@@ -42,7 +42,7 @@ export function EnrichmentCard({ status, isLoading }: EnrichmentCardProps) {
         {status.failedCount > 0 && (
           <div>
             <span className="text-text-muted">Failed</span>
-            <p className="font-bold text-danger">{status.failedCount}</p>
+            <p className="font-bold text-danger-light">{status.failedCount}</p>
           </div>
         )}
         <div>

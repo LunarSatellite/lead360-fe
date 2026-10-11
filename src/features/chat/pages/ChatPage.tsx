@@ -463,7 +463,7 @@ export function Component() {
                     >
                       {thread.uploadFlash.kind === 'error' ? (
                         <AlertCircle
-                          className="w-3.5 h-3.5 mt-0.5 shrink-0 text-danger"
+                          className="w-3.5 h-3.5 mt-0.5 shrink-0 text-danger-light"
                           strokeWidth={1.8}
                         />
                       ) : (
@@ -1386,7 +1386,7 @@ function NewChatButton({
               setConfirming(false);
               onNewChat();
             }}
-            className="flex-1 h-7 rounded-xs border-thin border-danger/35 text-[10.5px] font-bold text-danger hover:bg-danger-soft transition-colors"
+            className="flex-1 h-7 rounded-xs border-thin border-danger/35 text-[10.5px] font-bold text-danger-light hover:bg-danger-soft transition-colors"
           >
             Restart anyway
           </button>

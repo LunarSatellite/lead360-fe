@@ -84,7 +84,7 @@ export function FlowListDialog({ open, onClose, onSelect }: FlowListDialogProps)
                       className="p-1.5 rounded-md hover:bg-danger-soft disabled:opacity-30"
                       title={f.isActive ? 'Cannot delete active flow' : 'Delete'}
                     >
-                      <Trash2 className="w-3 h-3 text-danger" />
+                      <Trash2 className="w-3 h-3 text-danger-light" />
                     </button>
                   </div>
                 </div>

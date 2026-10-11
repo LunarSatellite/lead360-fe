@@ -42,7 +42,7 @@ export function DataView<T>({ query, children, empty, isEmpty = defaultIsEmpty, 
     const { message } = getApiError(query.error, 'Failed to load.');
     return (
       <div className="flex flex-col items-center justify-center gap-3 rounded-card border-thin border-border-subtle bg-glass-1 p-8 text-center">
-        <AlertCircle size={18} strokeWidth={1.6} className="text-danger" />
+        <AlertCircle size={18} strokeWidth={1.6} className="text-danger-light" />
         <p className="max-w-md text-xs text-text-muted">{message}</p>
         {query.refetch && (
           <button

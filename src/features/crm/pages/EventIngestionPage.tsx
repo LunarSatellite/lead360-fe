@@ -87,7 +87,7 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
         </div>
         <div className="px-6 py-5 space-y-4">
           <p className="text-sm text-text-secondary">
-            This will <span className="font-semibold text-danger-DEFAULT">invalidate your current key immediately</span>.
+            This will <span className="font-semibold text-danger-light">invalidate your current key immediately</span>.
             Any website using the old snippet will stop tracking until updated.
           </p>
           <div className="flex gap-3">
@@ -97,7 +97,7 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
             <button
               onClick={onConfirm}
               disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-danger-DEFAULT/10 border border-danger-DEFAULT/30 text-danger-DEFAULT text-sm font-semibold hover:bg-danger-DEFAULT/20 transition-all disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-danger/10 border border-danger/30 text-danger-light text-sm font-semibold hover:bg-danger/20 transition-all disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               Regenerate

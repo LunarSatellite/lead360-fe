@@ -189,7 +189,7 @@ export function Component() {
               {selected.shippedAt && <div className="flex justify-between"><span className="text-text-muted">Shipped</span><span className="text-text-primary">{format(parseISO(selected.shippedAt), 'MMM d, yyyy')}</span></div>}
               {selected.outForDeliveryAt && <div className="flex justify-between"><span className="text-text-muted">Out for Delivery</span><span className="text-text-primary">{format(parseISO(selected.outForDeliveryAt), 'MMM d, yyyy')}</span></div>}
               {selected.deliveredAt && <div className="flex justify-between"><span className="text-text-muted">Delivered</span><span className="text-success font-medium">{format(parseISO(selected.deliveredAt), 'MMM d, yyyy HH:mm')}</span></div>}
-              {selected.failureReason && <div className="flex justify-between"><span className="text-text-muted">Failure Reason</span><span className="text-danger">{selected.failureReason}</span></div>}
+              {selected.failureReason && <div className="flex justify-between"><span className="text-text-muted">Failure Reason</span><span className="text-danger-light">{selected.failureReason}</span></div>}
               {selected.notes && <div className="flex justify-between"><span className="text-text-muted">Notes</span><span className="text-text-secondary">{selected.notes}</span></div>}
               <div className="flex justify-between text-xs text-text-muted pt-1 border-t border-border-subtle"><span>Created</span><span>{format(parseISO(selected.createdAt), 'MMM d, yyyy')}</span></div>
             </div>
@@ -199,7 +199,7 @@ export function Component() {
                 {(NEXT_STATUS[selected.status] ?? []).map(ns => (
                   <button key={ns.status} onClick={() => advance(selected, ns.status)}
                     disabled={updateStatus.isPending}
-                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-all disabled:opacity-50 ${ns.status === 5 ? 'text-success bg-success-soft border-success/20 hover:opacity-80' : ns.status === 6 ? 'text-danger bg-danger-soft border-danger/20 hover:opacity-80' : 'text-text-secondary border-border-subtle hover:text-brand hover:bg-brand-soft'}`}>
+                    className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-all disabled:opacity-50 ${ns.status === 5 ? 'text-success bg-success-soft border-success/20 hover:opacity-80' : ns.status === 6 ? 'text-danger-light bg-danger-soft border-danger/20 hover:opacity-80' : 'text-text-secondary border-border-subtle hover:text-brand hover:bg-brand-soft'}`}>
                     {ns.status === 5 ? <CheckCircle className="w-3.5 h-3.5" /> : ns.status === 6 ? <XCircle className="w-3.5 h-3.5" /> : <Truck className="w-3.5 h-3.5" />}
                     {ns.label}
                   </button>

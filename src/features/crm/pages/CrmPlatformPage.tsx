@@ -91,7 +91,7 @@ function RowShell({
         aria-label={deleteLabel}
         onClick={onDelete}
         disabled={pending}
-        className="rounded-xl border border-border-medium p-1.5 text-text-muted hover:text-danger hover:border-danger/20 disabled:opacity-40"
+        className="rounded-xl border border-border-medium p-1.5 text-text-muted hover:text-danger-light hover:border-danger/20 disabled:opacity-40"
       >
         <Trash2 className="w-3.5 h-3.5" />
       </button>
@@ -249,7 +249,7 @@ function ValidationRulesTab() {
                   <span
                     className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${
                       r.severity === 'Error'
-                        ? 'text-danger bg-danger-soft border-danger/20'
+                        ? 'text-danger-light bg-danger-soft border-danger/20'
                         : 'text-warning bg-warning-soft border-warning/20'
                     }`}
                   >

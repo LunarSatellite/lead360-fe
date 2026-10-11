@@ -53,7 +53,7 @@ function DealCard({
     const d = new Date(deal.closeDate);
     const daysLeft = differenceInDays(d, new Date());
     if (isPast(d)) {
-      closeDateColor = 'text-danger';
+      closeDateColor = 'text-danger-light';
       closeDateLabel = `${format(d, 'MMM d')} (overdue)`;
     } else if (daysLeft <= 7) {
       closeDateColor = 'text-warning';
@@ -113,7 +113,7 @@ function DealCard({
               </button>
               <button
                 onClick={onCloseLost}
-                className="p-1 rounded-md bg-danger-soft text-danger hover:bg-danger hover:text-bg transition-all"
+                className="p-1 rounded-md bg-danger-soft text-danger-light hover:bg-danger hover:text-bg transition-all"
                 title="Lost"
               >
                 <XCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -468,7 +468,7 @@ export function Component() {
           {activeFiltersCount > 0 && (
             <button
               onClick={() => { setFilterOwnerId(''); setFilterCloseDateFrom(''); setFilterCloseDateTo(''); setFilterInactive(false); setListFilter((f) => ({ ...f, ownedByUserId: undefined, closeDateFrom: undefined, closeDateTo: undefined, inactiveSinceDays: undefined, page: 1 })); }}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-danger border border-danger/30 hover:bg-danger-soft transition-all self-end"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-danger-light border border-danger/30 hover:bg-danger-soft transition-all self-end"
             >
               Clear filters
             </button>
@@ -548,7 +548,7 @@ export function Component() {
                           <Trophy className="w-3.5 h-3.5 text-success shrink-0" strokeWidth={1.5} />
                         )}
                         {stage.isClosed && !stage.isWon && (
-                          <XCircle className="w-3.5 h-3.5 text-danger shrink-0" strokeWidth={1.5} />
+                          <XCircle className="w-3.5 h-3.5 text-danger-light shrink-0" strokeWidth={1.5} />
                         )}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -794,7 +794,7 @@ export function Component() {
               <button
                 onClick={runBulkDelete}
                 disabled={bulkDelete.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger-light border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
               >
                 {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                 Delete
@@ -1041,7 +1041,7 @@ export function Component() {
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
                         <button aria-label="Settings" onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
                           className="p-1 text-text-muted hover:text-text-primary"><Settings className="w-3.5 h-3.5" /></button>
-                        <button aria-label="Delete" onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button aria-label="Delete" onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </div>
                   )}

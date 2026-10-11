@@ -72,7 +72,7 @@ export function Component() {
             />
           </label>
           {form.formState.errors.email && (
-            <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
+            <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.email.message}</p>
           )}
         </div>
 
@@ -105,13 +105,13 @@ export function Component() {
             </button>
           </div>
           {form.formState.errors.password && (
-            <p className="text-xs text-danger mt-1.5">{form.formState.errors.password.message}</p>
+            <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.password.message}</p>
           )}
         </div>
 
         {/* Error */}
         {login.isError && (
-          <div className="px-3.5 sm:px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger">
+          <div className="px-3.5 sm:px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger-light">
             {login.error?.message || 'Login failed.'}
           </div>
         )}

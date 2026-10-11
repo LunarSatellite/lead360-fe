@@ -179,7 +179,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
                   ))}
               </select>
               {categories.isError && (
-                <span className="block text-[10px] font-semibold text-danger">
+                <span className="block text-[10px] font-semibold text-danger-light">
                   Categories are unavailable. Check the Stylemint connection.
                 </span>
               )}</span>
@@ -345,7 +345,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
         </div>
 
         {(create.isError || uploadImages.isError) && (
-          <div className="mx-5 mb-4 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-xs font-semibold text-danger">
+          <div className="mx-5 mb-4 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-xs font-semibold text-danger-light">
             {((create.error || uploadImages.error) as Error).message}
             {createdId ? ` Brouillon conserve: ${createdId}` : ''}
           </div>

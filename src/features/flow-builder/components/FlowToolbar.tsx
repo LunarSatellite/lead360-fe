@@ -77,7 +77,7 @@ export function FlowToolbar({
       </button>
 
       {/* Clear */}
-      <button onClick={onClear} className="toolbar-btn text-danger" title="Clear canvas">
+      <button onClick={onClear} className="toolbar-btn text-danger-light" title="Clear canvas">
         <Trash2 className="w-3.5 h-3.5" />
       </button>
 

@@ -222,7 +222,7 @@ function MenuItem({
       disabled={disabled}
       className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold transition-colors disabled:opacity-50 ${
         destructive
-          ? 'text-danger hover:bg-danger-soft'
+          ? 'text-danger-light hover:bg-danger-soft'
           : 'text-text-secondary hover:text-text-primary hover:bg-glass-2'
       }`}
     >

@@ -253,7 +253,7 @@ function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; enti
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-text-primary">{field.name}</span>
-          {field.isRequired && <span className="text-2xs text-danger font-bold">REQUIRED</span>}
+          {field.isRequired && <span className="text-2xs text-danger-light font-bold">REQUIRED</span>}
           {!field.isActive && <span className="text-2xs text-text-muted font-bold">INACTIVE</span>}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
@@ -276,13 +276,13 @@ function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; enti
         {!deleting ? (
           <button aria-label="Delete"
             onClick={() => setDeleting(true)}
-            className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+            className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         ) : (
           <div className="flex items-center gap-1">
-            <button onClick={handleDelete} disabled={deleteField.isPending} className="text-xs text-danger font-semibold px-2 py-1 rounded-lg hover:bg-danger-soft transition-all">
+            <button onClick={handleDelete} disabled={deleteField.isPending} className="text-xs text-danger-light font-semibold px-2 py-1 rounded-lg hover:bg-danger-soft transition-all">
               {deleteField.isPending ? '…' : 'Delete'}
             </button>
             <button aria-label="Close" onClick={() => setDeleting(false)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-card transition-all">

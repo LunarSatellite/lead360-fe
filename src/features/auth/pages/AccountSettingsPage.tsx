@@ -244,7 +244,7 @@ export function Component() {
                         onClick={() => handleNav(section.id)}
                         className="w-full flex items-center gap-[10px] px-[10px] py-[10px] rounded-[10px]
                                    text-left text-text-muted text-xs font-medium
-                                   transition-all duration-150 hover:text-danger hover:bg-danger/[0.02]"
+                                   transition-all duration-150 hover:text-danger-light hover:bg-danger/[0.02]"
                       >
                         <LogOut className="w-[15px] h-[15px]" strokeWidth={1.5} />
                         <span>Log out</span>
@@ -668,7 +668,7 @@ function PasswordSection() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 max-w-md">
           <div>
             <label className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Current password <span className="text-danger">*</span>
+              Current password <span className="text-danger-light">*</span>
             </label>
             <div className="relative">
               <input
@@ -686,7 +686,7 @@ function PasswordSection() {
                 {showCurrent ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
               {form.formState.errors.currentPassword && (
-                <span className="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 text-2xs text-danger whitespace-nowrap">
+                <span className="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 text-2xs text-danger-light whitespace-nowrap">
                   {form.formState.errors.currentPassword.message}
                 </span>
               )}
@@ -695,7 +695,7 @@ function PasswordSection() {
 
           <div>
             <label className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              New password <span className="text-danger">*</span>
+              New password <span className="text-danger-light">*</span>
             </label>
             <div className="relative">
               <input
@@ -713,7 +713,7 @@ function PasswordSection() {
                 {showNew ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
               {form.formState.errors.newPassword && (
-                <span className="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 text-2xs text-danger whitespace-nowrap">
+                <span className="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 text-2xs text-danger-light whitespace-nowrap">
                   {form.formState.errors.newPassword.message}
                 </span>
               )}
@@ -738,7 +738,7 @@ function PasswordSection() {
 
           <div>
             <label className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Confirm new password <span className="text-danger">*</span>
+              Confirm new password <span className="text-danger-light">*</span>
             </label>
             <div className="relative">
               <input
@@ -756,7 +756,7 @@ function PasswordSection() {
                 {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
               {form.formState.errors.confirmPassword && (
-                <span className="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 text-2xs text-danger whitespace-nowrap">
+                <span className="absolute left-[calc(100%+12px)] top-1/2 -translate-y-1/2 text-2xs text-danger-light whitespace-nowrap">
                   {form.formState.errors.confirmPassword.message}
                 </span>
               )}
@@ -764,7 +764,7 @@ function PasswordSection() {
           </div>
 
           {changePw.isError && (
-            <div className="px-4 py-3 rounded-card bg-danger-soft border border-danger/15 text-xs text-danger">
+            <div className="px-4 py-3 rounded-card bg-danger-soft border border-danger/15 text-xs text-danger-light">
               {changePw.error?.message || 'Failed to change password.'}
             </div>
           )}
@@ -831,7 +831,7 @@ function DangerSection() {
             onClick={() => logout.mutate()}
             disabled={logout.isPending}
             className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-xs font-semibold
-                       bg-danger-soft border border-danger/[0.12] text-danger
+                       bg-danger-soft border border-danger/[0.12] text-danger-light
                        hover:bg-danger/[0.12] disabled:opacity-40 transition-all"
           >
             <LogOut className="w-3.5 h-3.5" />

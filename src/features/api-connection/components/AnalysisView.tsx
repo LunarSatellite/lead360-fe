@@ -162,7 +162,7 @@ export function AnalysisView({ specId }: AnalysisViewProps) {
 // ─── GapCard ───
 
 const SEVERITY_STYLES: Record<string, { badge: string; border: string }> = {
-  critical: { badge: 'bg-danger-soft text-danger', border: 'border-l-danger' },
+  critical: { badge: 'bg-danger-soft text-danger-light', border: 'border-l-danger' },
   important: { badge: 'bg-warning-soft text-warning', border: 'border-l-warning' },
   minor: { badge: 'bg-info-soft text-info', border: 'border-l-info' },
 };

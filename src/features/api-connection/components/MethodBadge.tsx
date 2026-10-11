@@ -3,8 +3,8 @@ const STYLES: Record<string, string> = {
   POST: 'bg-success-soft text-success',
   PUT: 'bg-warning-soft text-warning',
   PATCH: 'bg-brand-soft text-brand',
-  DELETE: 'bg-danger-soft text-danger',
-  DEL: 'bg-danger-soft text-danger',
+  DELETE: 'bg-danger-soft text-danger-light',
+  DEL: 'bg-danger-soft text-danger-light',
 };
 
 interface MethodBadgeProps {

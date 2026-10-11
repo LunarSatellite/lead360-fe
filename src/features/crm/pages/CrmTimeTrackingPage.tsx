@@ -315,7 +315,7 @@ export function Component() {
                         </div>
                       ) : (
                         <button aria-label="Delete" onClick={() => setConfirmDelete(row.id)}
-                          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
+                          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
                           <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       )}

@@ -261,7 +261,7 @@ export function ComplianceProfileForm({
       >
         <div className="space-y-4">
           <div>
-            <div className="text-xs font-bold text-danger mb-1.5">Never collect</div>
+            <div className="text-xs font-bold text-danger-light mb-1.5">Never collect</div>
             <TagListEditor
               items={dhProhibited}
               setItems={setDhProhibited}
@@ -335,7 +335,7 @@ function RuleSection({
   children: React.ReactNode;
 }) {
   const colorMap: Record<string, string> = {
-    danger: 'text-danger',
+    danger: 'text-danger-light',
     warning: 'text-warning',
     info: 'text-info',
     brand: 'text-brand',
@@ -373,7 +373,7 @@ function TagListEditor({
   color: string;
 }) {
   const colorMap: Record<string, string> = {
-    danger: 'bg-danger-soft text-danger border-danger/15',
+    danger: 'bg-danger-soft text-danger-light border-danger/15',
     warning: 'bg-warning-soft text-warning border-warning/15',
     success: 'bg-success-soft text-success border-[rgba(6,214,160,0.15)]',
     info: 'bg-info-soft text-info border-info/15',
@@ -462,7 +462,7 @@ function DisclaimerEditor({
               </div>
               <button aria-label="Close"
                 onClick={() => setItems(items.filter((_, j) => j !== i))}
-                className="text-text-muted hover:text-danger shrink-0"
+                className="text-text-muted hover:text-danger-light shrink-0"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -540,7 +540,7 @@ function MandatoryRefEditor({
               </div>
               <button aria-label="Close"
                 onClick={() => setItems(items.filter((_, j) => j !== i))}
-                className="text-text-muted hover:text-danger shrink-0"
+                className="text-text-muted hover:text-danger-light shrink-0"
               >
                 <X className="w-3.5 h-3.5" />
               </button>

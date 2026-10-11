@@ -244,7 +244,7 @@ export function Component() {
                   aria-label={`Remove ${s.name}`}
                   onClick={() => remove.mutate(s.id)}
                   disabled={remove.isPending}
-                  className="rounded-xl border border-border-medium p-1.5 text-text-muted hover:text-danger hover:border-danger/20 disabled:opacity-40"
+                  className="rounded-xl border border-border-medium p-1.5 text-text-muted hover:text-danger-light hover:border-danger/20 disabled:opacity-40"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

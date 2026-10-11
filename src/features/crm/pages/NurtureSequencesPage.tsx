@@ -157,7 +157,7 @@ function StepCard({
         <button aria-label="Close"
           type="button"
           onClick={onRemove}
-          className="text-text-muted hover:text-danger transition-colors p-1 rounded-lg hover:bg-danger-soft"
+          className="text-text-muted hover:text-danger-light transition-colors p-1 rounded-lg hover:bg-danger-soft"
         >
           <X className="w-4 h-4" />
         </button>
@@ -411,7 +411,7 @@ function SequenceModal({
           {/* Name */}
           <div>
             <label className="block">
-              <span className="block text-sm font-medium text-text-secondary mb-1">Name <span className="text-danger">*</span></span>
+              <span className="block text-sm font-medium text-text-secondary mb-1">Name <span className="text-danger-light">*</span></span>
               <input
               type="text"
               required
@@ -789,7 +789,7 @@ function SequenceCard({
       {/* Actions */}
       {confirmDelete ? (
         <div className="flex items-center gap-2 pt-0.5 border-t border-thin border-border-subtle">
-          <span className="text-[10px] text-danger flex-1">Delete?</span>
+          <span className="text-[10px] text-danger-light flex-1">Delete?</span>
           <button
             type="button"
             onClick={() => setConfirmDelete(false)}
@@ -820,7 +820,7 @@ function SequenceCard({
           <button
             type="button"
             onClick={() => setConfirmDelete(true)}
-            className="flex items-center gap-1 text-[10px] font-medium text-danger/70 hover:text-danger transition-colors"
+            className="flex items-center gap-1 text-[10px] font-medium text-danger-light/70 hover:text-danger-light transition-colors"
           >
             <Trash2 className="w-3 h-3" />
             Delete

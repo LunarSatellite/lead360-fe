@@ -404,7 +404,7 @@ function StateBadge({ state }: { state: number }) {
   const stopped = [8, 9].includes(state);
   return (
     <span
-      className={`rounded-full border px-2.5 py-1 text-[10px] font-extrabold ${done ? 'border-success/25 bg-success-soft text-success' : stopped ? 'border-danger/25 bg-danger-soft text-danger' : 'border-amber-400/25 bg-amber-400/10 text-amber-400'}`}
+      className={`rounded-full border px-2.5 py-1 text-[10px] font-extrabold ${done ? 'border-success/25 bg-success-soft text-success' : stopped ? 'border-danger/25 bg-danger-soft text-danger-light' : 'border-amber-400/25 bg-amber-400/10 text-amber-400'}`}
     >
       {STATES[state] ?? `Etat ${state}`}
     </span>
@@ -598,7 +598,7 @@ function OrderPanel({
             <button
               disabled={busy}
               onClick={() => onOperation('reject')}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-sm font-bold text-danger disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-sm font-bold text-danger-light disabled:opacity-50"
             >
               <XCircle className="h-4 w-4" /> Rejeter / annuler cette sous-commande
             </button>
@@ -666,7 +666,7 @@ function PackageSealDialog({
           <Input aria-label="Seal ID" label="Seal identifier" value={sealId} onChange={setSealId} />
           <Input aria-label="Seal photo URL" label="Seal photo (HTTPS URL)" value={sealPhotoUrl} onChange={setSealPhotoUrl} />
         </div>
-        {error && <p className="mt-3 text-xs font-semibold text-danger">{error}</p>}
+        {error && <p className="mt-3 text-xs font-semibold text-danger-light">{error}</p>}
         <button
           disabled={busy || !valid}
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-300 py-3 text-sm font-extrabold text-black disabled:opacity-40"
@@ -848,12 +848,12 @@ function RefundDialog({
           </p>
         )}
         {context.isError && (
-          <p className="mt-3 text-xs font-semibold text-danger">
+          <p className="mt-3 text-xs font-semibold text-danger-light">
             Impossible de verifier le paiement ou droits PayoutsOps absents.
           </p>
         )}
         {context.data && !context.data.paymentIntentId && (
-          <p className="mt-3 text-xs font-semibold text-danger">
+          <p className="mt-3 text-xs font-semibold text-danger-light">
             Cette commande ne possede aucun paiement remboursable.
           </p>
         )}
@@ -871,7 +871,7 @@ function RefundDialog({
           </label>
         )}
         {refund.isError && (
-          <p className="mt-3 text-xs font-semibold text-danger">{(refund.error as Error).message}</p>
+          <p className="mt-3 text-xs font-semibold text-danger-light">{(refund.error as Error).message}</p>
         )}
         <Button
           disabled={refund.isPending || !canSubmitVerifiedRefund({

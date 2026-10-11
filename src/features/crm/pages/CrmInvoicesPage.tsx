@@ -402,7 +402,7 @@ export function Component() {
                     <td className="px-4 py-3 text-text-secondary">{inv.currency}</td>
                     <td className="px-4 py-3">
                       {overdue
-                        ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger border-danger">Overdue</span>
+                        ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger-light border-danger">Overdue</span>
                         : <Badge value={inv.status} labels={CRM_INVOICE_STATUS_LABELS} colors={CRM_INVOICE_STATUS_COLORS} />
                       }
                     </td>
@@ -423,7 +423,7 @@ export function Component() {
             <div className="grid grid-cols-2 gap-4">
               <Field label="Status">
                 {isOverdue(selected)
-                  ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger border-danger">Overdue</span>
+                  ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger-light border-danger">Overdue</span>
                   : <Badge value={selected.status} labels={CRM_INVOICE_STATUS_LABELS} colors={CRM_INVOICE_STATUS_COLORS} />
                 }
               </Field>

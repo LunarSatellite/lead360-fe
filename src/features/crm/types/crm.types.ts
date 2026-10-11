@@ -24,7 +24,7 @@ export const LEAD_STAGE_COLORS: Record<LeadStage, string> = {
 
   2: 'text-warning bg-warning-soft border-warning/20',
 
-  3: 'text-danger bg-danger-soft border-danger/20',
+  3: 'text-danger-light bg-danger-soft border-danger/20',
 
   4: 'text-brand bg-brand-soft border-border-glow',
 
@@ -994,7 +994,7 @@ export const CRM_DEAL_STATUS_COLORS: Record<CrmDealStatus, string> = {
 
   2: 'text-success bg-success-soft border-success/20',
 
-  3: 'text-danger bg-danger-soft border-danger/20',
+  3: 'text-danger-light bg-danger-soft border-danger/20',
 
 };
 
@@ -1154,7 +1154,7 @@ export const APPROVAL_STATUS_COLORS: Record<ApprovalStatus, string> = {
 
   2: 'text-success bg-success-soft border-success/20',
 
-  3: 'text-danger bg-danger-soft border-danger/20',
+  3: 'text-danger-light bg-danger-soft border-danger/20',
 
   4: 'text-text-muted bg-bg-elevated border-border-subtle',
 
@@ -3547,7 +3547,7 @@ export const CRM_SUPPORT_STATUS_COLORS: Record<CrmSupportCaseStatus, string> = {
 
   3: 'text-warning bg-warning-soft border-warning/20',
 
-  4: 'text-danger bg-danger-soft border-danger/20',
+  4: 'text-danger-light bg-danger-soft border-danger/20',
 
   5: 'text-brand bg-brand-soft border-border-glow',
 
@@ -3629,9 +3629,9 @@ export const CRM_SUPPORT_PRIORITY_COLORS: Record<CrmSupportCasePriority, string>
 
   2: 'text-warning bg-warning-soft border-warning/20',
 
-  3: 'text-danger bg-danger-soft border-danger/20',
+  3: 'text-danger-light bg-danger-soft border-danger/20',
 
-  4: 'text-danger bg-danger/20 border-danger/40',
+  4: 'text-danger-light bg-danger/20 border-danger/40',
 
 };
 
@@ -3761,7 +3761,7 @@ export const CRM_TASK_PRIORITY_COLORS: Record<CrmTaskPriority, string> = {
 
   2: 'text-warning bg-warning-soft border-warning/20',
 
-  3: 'text-danger bg-danger-soft border-danger/20',
+  3: 'text-danger-light bg-danger-soft border-danger/20',
 
 };
 
@@ -3825,7 +3825,7 @@ export const CRM_QUOTE_STATUS_COLORS: Record<CrmQuoteStatus, string> = {
 
   3: 'text-success bg-success-soft border-success/20',
 
-  4: 'text-danger bg-danger-soft border-danger/20',
+  4: 'text-danger-light bg-danger-soft border-danger/20',
 
   5: 'text-text-muted bg-bg-card border-border-subtle',
 
@@ -3899,7 +3899,7 @@ export const CRM_PROPOSAL_STATUS_COLORS: Record<CrmProposalStatus, string> = {
 
   5: 'text-success bg-success-soft border-success/20',
 
-  6: 'text-danger bg-danger-soft border-danger/20',
+  6: 'text-danger-light bg-danger-soft border-danger/20',
 
   7: 'text-text-muted bg-bg-card border-border-subtle',
 
@@ -4027,7 +4027,7 @@ export const CRM_INVOICE_STATUS_COLORS: Record<CrmInvoiceStatus, string> = {
 
   3: 'text-success bg-success-soft border-success/20',
 
-  4: 'text-danger bg-danger-soft border-danger/20',
+  4: 'text-danger-light bg-danger-soft border-danger/20',
 
   5: 'text-warning bg-warning-soft border-warning/20',
 
@@ -4209,7 +4209,7 @@ export const CRM_SUBSCRIPTION_STATUS_COLORS: Record<CrmSubscriptionStatus, strin
 
   1: 'text-success bg-success-soft border-success/20',
 
-  2: 'text-danger bg-danger-soft border-danger/20',
+  2: 'text-danger-light bg-danger-soft border-danger/20',
 
   3: 'text-warning bg-warning-soft border-warning/20',
 
@@ -4735,7 +4735,7 @@ export const CRM_MEETING_STATUS_COLORS: Record<CrmMeetingStatus, string> = {
 
   3: 'text-success bg-success-soft border-success/20',
 
-  4: 'text-danger bg-danger-soft border-danger/20',
+  4: 'text-danger-light bg-danger-soft border-danger/20',
 
   5: 'text-warning bg-warning-soft border-warning/20',
 
@@ -4745,7 +4745,7 @@ export const CRM_MEETING_STATUS_COLORS: Record<CrmMeetingStatus, string> = {
 
   8: 'text-success bg-success-soft border-success/20',
 
-  9: 'text-danger bg-danger-soft border-danger/20',
+  9: 'text-danger-light bg-danger-soft border-danger/20',
 
 };
 
@@ -4951,7 +4951,7 @@ export const CRM_NPS_CLASSIFICATION_LABELS: Record<CrmNpsClassification, string>
 
 export const CRM_NPS_CLASSIFICATION_COLORS: Record<CrmNpsClassification, string> = {
 
-  1: 'text-danger bg-danger-soft border-danger/20',
+  1: 'text-danger-light bg-danger-soft border-danger/20',
 
   2: 'text-warning bg-warning-soft border-warning/20',
 
@@ -5335,7 +5335,7 @@ export const CRM_AI_ACTION_STATUS_COLORS: Record<CrmAiActionStatus, string> = {
 
   4: 'text-brand bg-brand-soft border-border-glow',
 
-  5: 'text-danger bg-danger-soft border-danger/20',
+  5: 'text-danger-light bg-danger-soft border-danger/20',
 
   6: 'text-violet-light bg-violet-light/10 border-violet-light/20',
 
@@ -6360,7 +6360,7 @@ export const CRM_DELIVERY_STATUS_COLORS: Record<CrmDeliveryStatus, string> = {
 
   5: 'text-success bg-success-soft border-success/20',
 
-  6: 'text-danger bg-danger-soft border-danger/20',
+  6: 'text-danger-light bg-danger-soft border-danger/20',
 
   7: 'text-text-muted bg-bg-card border-border-subtle',
 
@@ -6609,7 +6609,7 @@ export const CRM_RETURN_STATUS_COLORS: Record<CrmReturnStatus, string> = {
 
   2: 'text-brand bg-brand-soft border-border-glow',
 
-  3: 'text-danger bg-danger-soft border-danger/20',
+  3: 'text-danger-light bg-danger-soft border-danger/20',
 
   4: 'text-violet-light bg-violet-light/10 border-violet-light/20',
 
@@ -6845,7 +6845,7 @@ export const CRM_WORK_ORDER_PRIORITY_COLORS: Record<CrmWorkOrderPriority, string
 
   3: 'text-warning bg-warning-soft border-warning/20',
 
-  4: 'text-danger bg-danger-soft border-danger/20',
+  4: 'text-danger-light bg-danger-soft border-danger/20',
 
 };
 
@@ -6993,7 +6993,7 @@ export const CRM_ONBOARDING_STATUS_COLORS: Record<CrmOnboardingStatus, string> =
 
   3: 'text-success bg-success-soft border-success/20',
 
-  4: 'text-danger bg-danger-soft border-danger/20',
+  4: 'text-danger-light bg-danger-soft border-danger/20',
 
 };
 
@@ -7381,7 +7381,7 @@ export const PO_STATUS_COLORS: Record<number, string> = {
 
   6: 'text-success bg-success-soft border-success/20',
 
-  7: 'text-danger bg-danger-soft border-danger/20',
+  7: 'text-danger-light bg-danger-soft border-danger/20',
 
   8: 'text-text-muted bg-bg-card border-border-subtle',
 
@@ -7395,7 +7395,7 @@ export const GR_STATUS_COLORS: Record<number, string> = {
 
   2: 'text-success bg-success-soft border-success/20',
 
-  3: 'text-danger bg-danger-soft border-danger/20',
+  3: 'text-danger-light bg-danger-soft border-danger/20',
 
 };
 
@@ -7419,7 +7419,7 @@ export const SI_STATUS_COLORS: Record<number, string> = {
 
   5: 'text-success bg-success-soft border-success/20',
 
-  6: 'text-danger bg-danger-soft border-danger/20',
+  6: 'text-danger-light bg-danger-soft border-danger/20',
 
   7: 'text-warning bg-warning-soft border-warning/20',
 

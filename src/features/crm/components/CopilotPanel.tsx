@@ -119,7 +119,7 @@ export function CopilotPanel() {
           {streaming && progress.map((p, i) => (
             <div key={`p${i}`} className="flex items-center gap-2 text-[11px] text-text-muted">
               {p.kind === 'tool_call' ? <Wrench className="w-3 h-3 text-brand" />
-                : p.kind === 'tool_result' ? <Check className={`w-3 h-3 ${p.success === false ? 'text-danger' : 'text-success'}`} />
+                : p.kind === 'tool_result' ? <Check className={`w-3 h-3 ${p.success === false ? 'text-danger-light' : 'text-success'}`} />
                 : <Loader2 className="w-3 h-3 animate-spin" />}
               <span className="truncate">
                 {p.kind === 'tool_call' ? `Calling ${p.toolName}…`

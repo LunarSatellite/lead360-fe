@@ -820,7 +820,7 @@ function FlowBuilderInner() {
             </button>
             <button
               onClick={editor.clear}
-              className="p-1.5 rounded-md hover:bg-glass-1 text-danger"
+              className="p-1.5 rounded-md hover:bg-glass-1 text-danger-light"
               title="Clear"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -942,7 +942,7 @@ function FlowBuilderInner() {
                       editor.removeNode(sel.id);
                       setSel(null);
                     }}
-                    className="mt-1.5 w-full py-1 rounded-md bg-danger-soft border border-danger/[0.12] text-2xs font-semibold text-danger cursor-pointer"
+                    className="mt-1.5 w-full py-1 rounded-md bg-danger-soft border border-danger/[0.12] text-2xs font-semibold text-danger-light cursor-pointer"
                   >
                     Delete
                   </button>
@@ -1224,7 +1224,7 @@ function FlowBuilderInner() {
                       editor.removeNode(sel.id);
                       setSel(null);
                     }}
-                    className="w-full py-2 rounded-lg bg-danger-soft text-2xs font-semibold text-danger flex items-center justify-center gap-1.5"
+                    className="w-full py-2 rounded-lg bg-danger-soft text-2xs font-semibold text-danger-light flex items-center justify-center gap-1.5"
                   >
                     <Trash2 className="w-3 h-3" /> Delete Node
                   </button>
@@ -1369,7 +1369,7 @@ function FlowListOverlay({
                       disabled={f.isActive}
                       className="p-1.5 rounded-md hover:bg-danger-soft disabled:opacity-30"
                     >
-                      <Trash2 className="w-3 h-3 text-danger" />
+                      <Trash2 className="w-3 h-3 text-danger-light" />
                     </button>
                   </div>
                 </div>

@@ -32,7 +32,7 @@ const FULFILLMENT_COLORS: Record<number, string> = {
   5: 'text-brand bg-brand-soft border-border-glow',
   6: 'text-violet-light bg-violet-light/10 border-violet-light/20',
   7: 'text-success bg-success-soft border-success/20',
-  8: 'text-danger bg-danger-soft border-danger/20',
+  8: 'text-danger-light bg-danger-soft border-danger/20',
   9: 'text-text-muted bg-bg-card border-border-subtle',
 };
 
@@ -342,7 +342,7 @@ export function Component() {
                             <button onClick={() => { setSelectedOrder(o); setShowPayment(true); setPaymentAmount(String(o.totalAmount)); }} title="Record Payment" className="p-1.5 rounded-lg text-text-muted hover:text-success hover:bg-success-soft transition-all">
                               <DollarSign className="w-4 h-4" />
                             </button>
-                            <button onClick={() => cancelOrder.mutate(o.id)} disabled={cancelOrder.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50">
+                            <button onClick={() => cancelOrder.mutate(o.id)} disabled={cancelOrder.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all disabled:opacity-50">
                               <XCircle className="w-4 h-4" />
                             </button>
                           </>
@@ -437,7 +437,7 @@ export function Component() {
                   <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" aria-label="Product name" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <input aria-label="Quantity" type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <input aria-label="Unit price" type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <button aria-label="Close" type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
+                  <button aria-label="Close" type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger-light disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -568,7 +568,7 @@ export function Component() {
                       {d.trackingNumber && <div className="flex justify-between text-xs"><span className="text-text-muted">Tracking</span><span className="font-mono text-text-primary">{d.trackingNumber}</span></div>}
                       {d.shippedAt && <div className="text-xs text-text-muted">Shipped: {format(parseISO(d.shippedAt), 'MMM d, yyyy')}</div>}
                       {d.deliveredAt && <div className="text-xs text-success">Delivered: {format(parseISO(d.deliveredAt), 'MMM d, yyyy')}</div>}
-                      {d.failureReason && <div className="text-xs text-danger">Failed: {d.failureReason}</div>}
+                      {d.failureReason && <div className="text-xs text-danger-light">Failed: {d.failureReason}</div>}
                       {d.status >= 1 && d.status <= 4 && (
                         <div className="flex gap-1 mt-1.5">
                           {d.status === 1 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 2 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">Pick Up</button>}
@@ -577,7 +577,7 @@ export function Component() {
                           {d.status === 4 && (
                             <>
                               <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} className="text-[10px] px-2 py-1 rounded bg-success-soft text-success border border-success/20 hover:bg-success/20">Delivered</button>
-                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} className="text-[10px] px-2 py-1 rounded bg-danger-soft text-danger border border-danger/20 hover:bg-danger/20">Failed</button>
+                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} className="text-[10px] px-2 py-1 rounded bg-danger-soft text-danger-light border border-danger/20 hover:bg-danger/20">Failed</button>
                             </>
                           )}
                         </div>
@@ -719,7 +719,7 @@ export function Component() {
             </Field>
             {selectedOrder.acknowledgmentSentAt && <Field label="Acknowledgment Sent"><span className="text-sm text-text-muted">{format(new Date(selectedOrder.acknowledgmentSentAt), 'MMM d, yyyy HH:mm')}</span></Field>}
             {selectedOrder.notes && <div><label className="text-xs font-semibold text-text-muted mb-1">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selectedOrder.notes}</p></div>}
-            {selectedOrder.cancellationReason && <div><label className="text-xs font-semibold text-danger mb-1">Cancellation Reason</label><p className="text-sm text-danger bg-danger-soft rounded-xl p-3">{selectedOrder.cancellationReason}</p></div>}
+            {selectedOrder.cancellationReason && <div><label className="text-xs font-semibold text-danger-light mb-1">Cancellation Reason</label><p className="text-sm text-danger-light bg-danger-soft rounded-xl p-3">{selectedOrder.cancellationReason}</p></div>}
 
             {/* Actions */}
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
@@ -779,7 +779,7 @@ export function Component() {
                   <button onClick={() => { setShowPayment(true); setPaymentAmount(String(selectedOrder.totalAmount)); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success transition-all">
                     <DollarSign className="w-3.5 h-3.5" /> Record Payment
                   </button>
-                  <button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
+                  <button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
                     <XCircle className="w-3.5 h-3.5" /> Cancel
                   </button>
                 </>
@@ -797,10 +797,10 @@ export function Component() {
               <ShieldCheck className="w-4 h-4" /> Credit Check — {creditResult.riskLevel === 1 ? 'Green' : creditResult.riskLevel === 2 ? 'Amber' : 'Red'}
             </h3>
             <div className="space-y-2 text-sm">
-              <p className="flex justify-between"><span className="text-text-muted">Overdue</span><span className={creditResult.overdueBalance > 0 ? 'text-danger font-semibold' : ''}>${creditResult.overdueBalance?.toLocaleString() ?? '0'} ({creditResult.overdueInvoiceCount} invoice{creditResult.overdueInvoiceCount !== 1 ? 's' : ''})</span></p>
+              <p className="flex justify-between"><span className="text-text-muted">Overdue</span><span className={creditResult.overdueBalance > 0 ? 'text-danger-light font-semibold' : ''}>${creditResult.overdueBalance?.toLocaleString() ?? '0'} ({creditResult.overdueInvoiceCount} invoice{creditResult.overdueInvoiceCount !== 1 ? 's' : ''})</span></p>
               <p className="flex justify-between"><span className="text-text-muted">Credit Limit</span><span>{creditResult.creditLimit ? `$${creditResult.creditLimit.toLocaleString()}` : '—'}</span></p>
               <p className="flex justify-between"><span className="text-text-muted">Utilized</span><span>${creditResult.utilizedCredit?.toLocaleString() ?? '0'}</span></p>
-              <p className="flex justify-between"><span className="text-text-muted">Available</span><span className={creditResult.availableCredit < 0 ? 'text-danger font-semibold' : 'text-success font-semibold'}>${Math.max(0, creditResult.availableCredit ?? 0).toLocaleString()}</span></p>
+              <p className="flex justify-between"><span className="text-text-muted">Available</span><span className={creditResult.availableCredit < 0 ? 'text-danger-light font-semibold' : 'text-success font-semibold'}>${Math.max(0, creditResult.availableCredit ?? 0).toLocaleString()}</span></p>
             </div>
 
             {confirmOverrideNote === PO_WARNING && (
@@ -816,7 +816,7 @@ export function Component() {
                   <p className="text-xs text-warning bg-warning-soft px-3 py-2 rounded-xl">Account has ${creditResult.overdueBalance?.toLocaleString()} overdue. Proceed with caution.</p>
                 )}
                 {creditResult.riskLevel === 3 && (
-                  <p className="text-xs text-danger bg-danger-soft px-3 py-2 rounded-xl">Account over credit limit. Order blocked — manager override required.</p>
+                  <p className="text-xs text-danger-light bg-danger-soft px-3 py-2 rounded-xl">Account over credit limit. Order blocked — manager override required.</p>
                 )}
                 {(creditResult.riskLevel >= 2 || confirmOverrideNote === PO_WARNING) && (
                   <input value={confirmOverrideNote} onChange={e => setConfirmOverrideNote(e.target.value)} placeholder="Add a note explaining why..." aria-label="Add a note explaining why..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" />

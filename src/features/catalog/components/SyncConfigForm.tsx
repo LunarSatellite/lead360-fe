@@ -52,11 +52,11 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
           {health && (
             <div className="flex items-center gap-2">
               <Wifi
-                className={`w-3.5 h-3.5 ${health.status === 'healthy' ? 'text-success' : 'text-danger'}`}
+                className={`w-3.5 h-3.5 ${health.status === 'healthy' ? 'text-success' : 'text-danger-light'}`}
                 strokeWidth={1.8}
               />
               <span
-                className={`text-[11px] font-bold ${health.status === 'healthy' ? 'text-success' : 'text-danger'}`}
+                className={`text-[11px] font-bold ${health.status === 'healthy' ? 'text-success' : 'text-danger-light'}`}
               >
                 {health.status}
               </span>
@@ -70,7 +70,7 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block">
-              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Product Endpoint Path <span className="text-danger">*</span></span>
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Product Endpoint Path <span className="text-danger-light">*</span></span>
               <input
               {...form.register('productEndpointPath')}
               placeholder="/api/products"
@@ -78,7 +78,7 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
             />
             </label>
             {form.formState.errors.productEndpointPath && (
-              <p className="text-xs text-danger mt-1">{form.formState.errors.productEndpointPath.message}</p>
+              <p className="text-xs text-danger-light mt-1">{form.formState.errors.productEndpointPath.message}</p>
             )}
           </div>
           <div>
@@ -212,7 +212,7 @@ function SyncHistoryTable() {
           <span className="text-text-muted">{log.durationMs}ms</span>
           <span className="font-bold text-success">{log.newProducts > 0 ? `+${log.newProducts}` : '0'}</span>
           <span className="font-bold text-info">{log.updatedProducts > 0 ? log.updatedProducts : '0'}</span>
-          <span className="font-bold text-danger">
+          <span className="font-bold text-danger-light">
             {log.removedProducts > 0 ? `-${log.removedProducts}` : '0'}
           </span>
           <StatusBadge

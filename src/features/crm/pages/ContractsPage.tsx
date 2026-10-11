@@ -23,7 +23,7 @@ const STATUS_STYLE: Record<number, string> = {
   [CrmContractStatus.PendingSignature]: 'text-warning border-warning/30 bg-warning-soft',
   [CrmContractStatus.Active]: 'text-success border-success/30 bg-success-soft',
   [CrmContractStatus.Expired]: 'text-text-muted border-border-medium bg-glass-2',
-  [CrmContractStatus.Terminated]: 'text-danger border-danger/30 bg-danger-soft',
+  [CrmContractStatus.Terminated]: 'text-danger-light border-danger/30 bg-danger-soft',
   [CrmContractStatus.Renewed]: 'text-brand border-border-glow bg-brand-soft',
 };
 
@@ -190,7 +190,7 @@ export function Component() {
                       <td className="px-4 py-3 text-xs text-text-muted">{c.signedCount != null ? `${c.signedCount}/${c.signatoryCount}` : '—'}</td>
                       <td className="px-4 py-3 text-xs text-text-muted tabular-nums">{c.startDate ? new Date(c.startDate).toLocaleDateString() : '—'}</td>
                       <td className="px-4 py-3 text-xs text-text-muted tabular-nums">{c.endDate ? new Date(c.endDate).toLocaleDateString() : '—'}</td>
-                      <td className="px-4 py-3"><button aria-label="Delete" onClick={(e) => { e.stopPropagation(); confirmDialog({ message: 'Delete?', confirmText: 'Delete', danger: true }).then(ok => { if (ok) deleteMut.mutate(c.id); }); }} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button></td>
+                      <td className="px-4 py-3"><button aria-label="Delete" onClick={(e) => { e.stopPropagation(); confirmDialog({ message: 'Delete?', confirmText: 'Delete', danger: true }).then(ok => { if (ok) deleteMut.mutate(c.id); }); }} className="text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -234,7 +234,7 @@ export function Component() {
                       ) : detailData?.status === CrmContractStatus.PendingSignature ? (
                         <button onClick={() => recordSigMut.mutate(s.id)} className="text-[10px] font-semibold text-brand hover:underline">Record signature</button>
                       ) : detailData?.status === CrmContractStatus.Draft ? (
-                        <button onClick={() => removeSigMut.mutate(s.id)} className="text-[10px] text-danger hover:underline">Remove</button>
+                        <button onClick={() => removeSigMut.mutate(s.id)} className="text-[10px] text-danger-light hover:underline">Remove</button>
                       ) : null}
                     </div>
                   </div>
@@ -271,7 +271,7 @@ export function Component() {
                   <span className="text-sm font-bold text-text-primary">{t.name}</span>
                   <div className="flex gap-1">
                     <button aria-label="Edit" onClick={() => { setEditTemplateId(t.id); setTemplateForm({ name: t.name, description: t.description || '', category: t.category, subject: t.subject || '', bodyHtml: t.bodyHtml }); setShowTemplateForm(true); }} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                    <button aria-label="Delete" onClick={() => deleteTemplateMut.mutate(t.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Delete" onClick={() => deleteTemplateMut.mutate(t.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
                 <div className="text-[11px] text-text-muted">{CONTRACT_TEMPLATE_CATEGORY_LABELS[t.category as ContractTemplateCategoryValue] ?? 'General'}{t.subject ? ` · ${t.subject}` : ''}</div>
@@ -349,7 +349,7 @@ export function Component() {
               {/* Title */}
               <div>
                 <label className="block">
-                  <span className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></span>
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger-light">*</span></span>
                   <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contract title…" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
                 </label>
               </div>

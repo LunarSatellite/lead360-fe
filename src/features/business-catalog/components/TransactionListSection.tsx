@@ -231,7 +231,7 @@ function StatusBadge({ status }: { status: TransactionStatusValue }) {
     status === TransactionStatus.Confirmed
       ? 'bg-success-soft text-success'
       : status === TransactionStatus.Cancelled
-        ? 'bg-danger-soft text-danger'
+        ? 'bg-danger-soft text-danger-light'
         : status === TransactionStatus.Preparing
           ? 'bg-info-soft text-info'
           : status === TransactionStatus.ReadyForPickup

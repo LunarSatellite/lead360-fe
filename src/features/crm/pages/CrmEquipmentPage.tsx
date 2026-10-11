@@ -117,7 +117,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
           <div className="pt-2 border-t border-border-subtle">
             <button onClick={() => { deleteEq.mutate(id); onClose(); }}
               disabled={deleteEq.isPending}
-              className="flex items-center gap-1.5 text-xs text-danger hover:opacity-80 disabled:opacity-50">
+              className="flex items-center gap-1.5 text-xs text-danger-light hover:opacity-80 disabled:opacity-50">
               <AlertTriangle className="w-3.5 h-3.5" /> Remove Equipment
             </button>
           </div>

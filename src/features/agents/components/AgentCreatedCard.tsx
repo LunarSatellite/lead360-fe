@@ -111,7 +111,7 @@ export function AgentCreatedCardRenderer({ card }: Props) {
             type="button"
             onClick={handleDisable}
             disabled={!card.enabled || toggle.isPending}
-            className="px-2.5 py-1 rounded-sm text-xs font-bold text-text-secondary hover:text-danger hover:bg-danger-soft transition-colors disabled:opacity-40 disabled:hover:text-text-secondary disabled:hover:bg-transparent inline-flex items-center gap-1.5"
+            className="px-2.5 py-1 rounded-sm text-xs font-bold text-text-secondary hover:text-danger-light hover:bg-danger-soft transition-colors disabled:opacity-40 disabled:hover:text-text-secondary disabled:hover:bg-transparent inline-flex items-center gap-1.5"
             title={card.enabled ? 'Disable this agent' : 'Already disabled'}
           >
             <PowerOff className="w-3 h-3" strokeWidth={2.2} />

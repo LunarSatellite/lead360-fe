@@ -295,7 +295,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
   const inputCls =
     'w-full px-3.5 py-2 rounded-xl bg-transparent border text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-all';
   const labelCls = 'text-xs font-semibold text-text-secondary mb-1';
-  const errCls = 'text-xs text-danger mt-1';
+  const errCls = 'text-xs text-danger-light mt-1';
   const sectionCls = 'pt-5 border-t border-border-subtle first:pt-0 first:border-t-0';
 
   return (
@@ -548,7 +548,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
 
           {/* Submit error banner */}
           {errors.submit && (
-            <div className="px-3.5 py-3 rounded-xl border border-brand/20 flex gap-2.5 text-sm text-danger"
+            <div className="px-3.5 py-3 rounded-xl border border-brand/20 flex gap-2.5 text-sm text-danger-light"
               style={{ background: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
               <Info className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={2} />
               <span>{errors.submit}</span>

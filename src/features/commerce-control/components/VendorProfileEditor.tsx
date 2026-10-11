@@ -192,7 +192,7 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
         </Section>
       </div>
       {(save.isError || upload.isError) && (
-        <p className="mt-4 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-xs font-semibold text-danger">
+        <p className="mt-4 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-xs font-semibold text-danger-light">
           {((save.error || upload.error) as Error).message}
         </p>
       )}

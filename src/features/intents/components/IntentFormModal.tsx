@@ -132,7 +132,7 @@ export function IntentFormModal({
   const input =
     'w-full px-4 py-2.5 rounded-lg bg-glass-2 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
   const label = 'text-2xs font-bold uppercase tracking-[2px] text-text-muted block mb-2';
-  const errorText = 'text-2xs text-danger mt-1';
+  const errorText = 'text-2xs text-danger-light mt-1';
 
   // Filter parent options: only intents with level < 4 (max 5 levels: 0-4)
   const availableParents = parentOptions.filter((p) => {
@@ -397,7 +397,7 @@ export function IntentFormModal({
 
           {/* Error */}
           {(createMutation.isError || updateMutation.isError) && (
-            <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger">
+            <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger-light">
               {createMutation.error?.message || updateMutation.error?.message || 'Operation failed.'}
             </div>
           )}

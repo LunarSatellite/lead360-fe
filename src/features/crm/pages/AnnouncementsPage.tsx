@@ -70,13 +70,13 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
         </div>
         <div>
           <label className="block">
-            <span className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></span>
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger-light">*</span></span>
             <Input icon={Newspaper} value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </label>
         </div>
         <div>
           <label className="block">
-            <span className="block text-xs font-semibold text-text-secondary mb-1">Content <span className="text-danger">*</span></span>
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Content <span className="text-danger-light">*</span></span>
             <textarea value={form.content} rows={4} onChange={e => set('content', e.target.value)} placeholder="Write your announcement…"
             className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />

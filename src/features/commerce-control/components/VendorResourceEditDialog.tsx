@@ -473,7 +473,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
           </div>
         )}
         {(save.isError || uploadImages.isError) && (
-          <p className="mx-5 mb-4 rounded-xl bg-danger-soft px-4 py-3 text-xs font-semibold text-danger">
+          <p className="mx-5 mb-4 rounded-xl bg-danger-soft px-4 py-3 text-xs font-semibold text-danger-light">
             {((save.error || uploadImages.error) as Error).message}
           </p>
         )}

@@ -185,7 +185,7 @@ function DetailPanel({ id }: { id: string }) {
             {(TRANSITIONS[wo.status] ?? []).map(t => (
               <button key={t.status} onClick={() => handleStatusChange(t.status)}
                 disabled={updateStatus.isPending || (t.status === CrmWorkOrderStatus.Completed && !resolutionNotes.trim())}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-all disabled:opacity-50 ${t.status === CrmWorkOrderStatus.Completed ? 'text-success bg-success-soft border-success/20 hover:opacity-80' : t.status === CrmWorkOrderStatus.Cancelled ? 'text-danger bg-danger-soft border-danger/20 hover:opacity-80' : 'text-text-secondary border-border-subtle hover:text-brand hover:bg-brand-soft'}`}>
+                className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-all disabled:opacity-50 ${t.status === CrmWorkOrderStatus.Completed ? 'text-success bg-success-soft border-success/20 hover:opacity-80' : t.status === CrmWorkOrderStatus.Cancelled ? 'text-danger-light bg-danger-soft border-danger/20 hover:opacity-80' : 'text-text-secondary border-border-subtle hover:text-brand hover:bg-brand-soft'}`}>
                 {t.status === CrmWorkOrderStatus.Completed ? <CheckCircle className="w-3.5 h-3.5" /> : t.status === CrmWorkOrderStatus.Cancelled ? <XCircle className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
                 {t.label}
               </button>
@@ -194,7 +194,7 @@ function DetailPanel({ id }: { id: string }) {
 
           {wo.status === CrmWorkOrderStatus.Draft && (
             <div className="pt-2 border-t border-border-subtle">
-              <button onClick={() => deleteWo.mutate(id)} disabled={deleteWo.isPending} className="text-xs text-danger hover:opacity-80 disabled:opacity-50">Delete work order</button>
+              <button onClick={() => deleteWo.mutate(id)} disabled={deleteWo.isPending} className="text-xs text-danger-light hover:opacity-80 disabled:opacity-50">Delete work order</button>
             </div>
           )}
         </div>
@@ -431,7 +431,7 @@ export function Component() {
                 >
                   <Star className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
                   <span className={`flex-1 text-left font-medium ${
-                    priority === 4 ? 'text-danger' :
+                    priority === 4 ? 'text-danger-light' :
                     priority === 3 ? 'text-warning' :
                     priority === 2 ? 'text-brand' : 'text-text-secondary'
                   }`}>
@@ -449,7 +449,7 @@ export function Component() {
                         type="button"
                         onClick={() => { setPriority(Number(k)); setPriorityOpen(false); }}
                         className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium transition-colors hover:bg-brand-soft ${priority === Number(k) ? 'bg-brand-soft' : ''} ${
-                          Number(k) === 4 ? 'text-danger' :
+                          Number(k) === 4 ? 'text-danger-light' :
                           Number(k) === 3 ? 'text-warning' :
                           Number(k) === 2 ? 'text-brand' : 'text-text-secondary'
                         }`}

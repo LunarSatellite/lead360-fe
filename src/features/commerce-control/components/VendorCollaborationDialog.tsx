@@ -97,7 +97,7 @@ export function VendorCollaborationDialog({
             </>
           )}
         </div>
-        {error && <p className="mt-4 rounded-xl border border-danger/20 bg-danger/5 p-3 text-xs font-semibold text-danger">{error}</p>}
+        {error && <p className="mt-4 rounded-xl border border-danger/20 bg-danger/5 p-3 text-xs font-semibold text-danger-light">{error}</p>}
         <div className="mt-6 flex justify-end gap-2">
           <button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">
             Cancel

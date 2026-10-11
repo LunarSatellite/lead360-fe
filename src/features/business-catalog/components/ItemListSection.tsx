@@ -187,7 +187,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-text-primary truncate">{i.name}</span>
                   {!i.isAvailable && (
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-danger-soft text-danger">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-danger-soft text-danger-light">
                       Unavailable
                     </span>
                   )}
@@ -214,7 +214,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
                   {i.isAvailable ? (
                     <PackageCheck className="w-3.5 h-3.5 text-success" strokeWidth={1.8} />
                   ) : (
-                    <PackageX className="w-3.5 h-3.5 text-danger" strokeWidth={1.8} />
+                    <PackageX className="w-3.5 h-3.5 text-danger-light" strokeWidth={1.8} />
                   )}
                 </button>
                 <button
@@ -233,7 +233,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
                              hover:bg-danger-soft transition-colors"
                   title="Delete"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-text-secondary hover:text-danger" strokeWidth={1.6} />
+                  <Trash2 className="w-3.5 h-3.5 text-text-secondary hover:text-danger-light" strokeWidth={1.6} />
                 </button>
               </div>
             </div>

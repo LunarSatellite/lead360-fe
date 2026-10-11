@@ -5,10 +5,10 @@ const SC: Record<ImportRowStatusValue, { icon: React.ReactNode; label: string; c
   [ImportRowStatus.Ready]:            { icon: <Check className="w-3 h-3" />,          label: 'Ready',    cls: 'text-brand bg-brand-soft' },
   [ImportRowStatus.NeedsEnrichment]:  { icon: <AlertTriangle className="w-3 h-3" />,  label: 'Needs AI', cls: 'text-warning bg-warning-soft' },
   [ImportRowStatus.Duplicate]:        { icon: <RefreshCw className="w-3 h-3" />,      label: 'Duplicate', cls: 'text-info bg-info-soft' },
-  [ImportRowStatus.Invalid]:          { icon: <Ban className="w-3 h-3" />,            label: 'Invalid',  cls: 'text-danger bg-danger-soft' },
+  [ImportRowStatus.Invalid]:          { icon: <Ban className="w-3 h-3" />,            label: 'Invalid',  cls: 'text-danger-light bg-danger-soft' },
   [ImportRowStatus.Enriched]:         { icon: <Sparkles className="w-3 h-3" />,       label: 'Enriched', cls: 'text-purple-600 bg-purple-50' },
   [ImportRowStatus.Approved]:         { icon: <Check className="w-3 h-3" />,          label: 'Approved', cls: 'text-brand bg-brand-soft' },
-  [ImportRowStatus.Rejected]:         { icon: <X className="w-3 h-3" />,              label: 'Rejected', cls: 'text-danger bg-danger-soft' },
+  [ImportRowStatus.Rejected]:         { icon: <X className="w-3 h-3" />,              label: 'Rejected', cls: 'text-danger-light bg-danger-soft' },
 };
 
 interface Props { rows: ImportRow[]; onToggle: (n: number) => void; onEdit: (r: ImportRow) => void; }
@@ -32,7 +32,7 @@ export function ImportPreviewTable({ rows, onToggle, onEdit }: Props) {
               <td className="px-3 py-2 text-2xs text-text-secondary">{r.operationType || '—'}</td>
               <td className="px-3 py-2"><span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${s.cls}`}>{s.icon} {s.label}</span></td>
               <td className="px-3 py-2"><div className="flex items-center gap-1">
-                <button onClick={() => onToggle(r.rowNumber)} className={`p-1 rounded-md ${app ? 'bg-danger-soft text-danger' : 'bg-brand-soft text-brand'}`}>{app ? <X className="w-3 h-3" /> : <Check className="w-3 h-3" />}</button>
+                <button onClick={() => onToggle(r.rowNumber)} className={`p-1 rounded-md ${app ? 'bg-danger-soft text-danger-light' : 'bg-brand-soft text-brand'}`}>{app ? <X className="w-3 h-3" /> : <Check className="w-3 h-3" />}</button>
                 <button onClick={() => onEdit(r)} className="p-1 rounded-md bg-glass-1 text-text-muted hover:bg-glass-2 text-[10px] font-medium">Edit</button>
               </div></td>
             </tr>

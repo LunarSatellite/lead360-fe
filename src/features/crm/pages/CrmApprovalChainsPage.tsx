@@ -144,7 +144,7 @@ export function Component() {
                   ))}
                 </select>
                 {steps.length > 1 && (
-                  <button aria-label="Delete" onClick={() => removeStep(i)} className="p-1 text-danger hover:bg-danger/10 rounded shrink-0">
+                  <button aria-label="Delete" onClick={() => removeStep(i)} className="p-1 text-danger-light hover:bg-danger/10 rounded shrink-0">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 )}
@@ -196,7 +196,7 @@ export function Component() {
                     <button aria-label="Edit" onClick={() => handleEdit(chain)} className="p-1.5 rounded-lg hover:bg-bg-subtle text-text-muted hover:text-text-primary">
                       <Pencil className="w-4 h-4" />
                     </button>
-                    <button aria-label="Delete" onClick={() => { if (confirm('Delete this chain?')) deleteMutation.mutate(chain.id); }} className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger">
+                    <button aria-label="Delete" onClick={() => { if (confirm('Delete this chain?')) deleteMutation.mutate(chain.id); }} className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger-light">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>

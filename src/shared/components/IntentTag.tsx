@@ -5,7 +5,7 @@ const colorStyles: Record<IntentColor, string> = {
   success: 'bg-success-soft text-success border-[rgba(6,214,160,0.15)]',
   info: 'bg-info-soft text-info border-[rgba(59,130,246,0.12)]',
   warning: 'bg-warning-soft text-warning border-[rgba(245,158,11,0.1)]',
-  danger: 'bg-danger-soft text-danger border-[rgba(244,63,94,0.1)]',
+  danger: 'bg-danger-soft text-danger-light border-[rgba(244,63,94,0.1)]',
   muted: 'bg-glass-1 text-text-secondary border-border-subtle',
 };
 

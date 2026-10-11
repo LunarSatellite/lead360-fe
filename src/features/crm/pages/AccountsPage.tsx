@@ -327,7 +327,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
               <button
                 onClick={() => removeContact.mutate({ accountId, linkId: l.contactId })}
                 disabled={removeContact.isPending}
-                className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all disabled:opacity-50 shrink-0"
+                className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all disabled:opacity-50 shrink-0"
                 title="Remove"
               >
                 <UserMinus className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -429,7 +429,7 @@ function AccountDetailPanel({
           ) : (
             <button aria-label="Delete"
               onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
             >
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
@@ -519,7 +519,7 @@ const ACCOUNT_STATUS_OPTS = [
   { value: '1', label: 'Prospect', dot: '#60A5FA', text: 'text-[#60A5FA]',  hover: 'hover:bg-[rgba(96,165,250,0.08)]'   },
   { value: '2', label: 'Customer', dot: '#00D97E', text: 'text-brand',       hover: 'hover:bg-brand-soft'                },
   { value: '3', label: 'Partner',  dot: '#A78BFA', text: 'text-violet-light',  hover: 'hover:bg-violet-light/[0.08]' },
-  { value: '4', label: 'Churned',  dot: '#F43F5E', text: 'text-danger',      hover: 'hover:bg-danger/[0.08]'   },
+  { value: '4', label: 'Churned',  dot: '#F43F5E', text: 'text-danger-light',      hover: 'hover:bg-danger/[0.08]'   },
 ] as const;
 
 const ACCOUNT_TIER_OPTS = [

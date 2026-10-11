@@ -50,14 +50,14 @@ export function Component() {
         </div>
         {checkResult && (
           <div className="space-y-2">
-            <p className={`text-xs font-semibold flex items-center gap-1 ${checkResult.allAvailable ? 'text-success' : 'text-danger'}`}>
+            <p className={`text-xs font-semibold flex items-center gap-1 ${checkResult.allAvailable ? 'text-success' : 'text-danger-light'}`}>
               {checkResult.allAvailable ? <CheckCircle2 className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
               {checkResult.allAvailable ? 'All items available' : 'Some items insufficient'}
             </p>
             {checkResult.lines.map((l, i) => (
               <div key={i} className="flex items-center justify-between text-xs bg-bg-elevated rounded-xl px-3 py-2">
                 <span className="text-text-primary">{l.productName || l.productId}</span>
-                <span className={l.isAvailable ? 'text-success' : 'text-danger'}>{l.quantityAvailable} available, {l.quantityRequested} needed</span>
+                <span className={l.isAvailable ? 'text-success' : 'text-danger-light'}>{l.quantityAvailable} available, {l.quantityRequested} needed</span>
               </div>
             ))}
           </div>
@@ -85,7 +85,7 @@ export function Component() {
                   <td className="px-4 py-3 text-text-primary">{item.quantityOnHand}</td>
                   <td className="px-4 py-3 text-text-muted">{item.quantityReserved}</td>
                   <td className="px-4 py-3 font-semibold">{item.quantityAvailable}</td>
-                  <td className="px-4 py-3">{item.belowReorderPoint ? <span className="text-danger text-xs font-semibold">{item.reorderPoint}</span> : item.reorderPoint}</td>
+                  <td className="px-4 py-3">{item.belowReorderPoint ? <span className="text-danger-light text-xs font-semibold">{item.reorderPoint}</span> : item.reorderPoint}</td>
                   <td className="px-4 py-3 text-xs text-text-muted">{item.warehouseLocation || '—'}</td>
                   <td className="px-4 py-3">
                     <button onClick={() => { setAdjustProduct(item); setAdjustQty(0); setAdjustNote(''); }} className="text-xs text-brand hover:underline font-medium">Adjust</button>

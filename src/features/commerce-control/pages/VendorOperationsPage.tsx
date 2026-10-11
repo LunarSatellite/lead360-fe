@@ -581,7 +581,7 @@ export function VendorOperationsPage() {
             <h1 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">
               Kin Marche Vendor Operations
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-text-muted">
               Products, stores, campaigns, returns, warranties and performance without exposing creator tools
               reserved for the mobile app.
             </p>
@@ -589,7 +589,7 @@ export function VendorOperationsPage() {
           <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
             <Building2 className="h-5 w-5 text-amber-300" />
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">Workspace</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-text-muted">Workspace</p>
               <p className="text-sm font-extrabold text-white">Kin Marche · RDC</p>
             </div>
           </div>
@@ -1466,7 +1466,7 @@ function CollectionItemsDialog({
             <button
               disabled={busy || !productId.trim()}
               onClick={() => onAction('remove', productId.trim())}
-              className="rounded-xl border border-danger/25 px-4 py-2 text-xs font-bold text-danger disabled:opacity-40"
+              className="rounded-xl border border-danger/25 px-4 py-2 text-xs font-bold text-danger-light disabled:opacity-40"
             >
               Remove
             </button>

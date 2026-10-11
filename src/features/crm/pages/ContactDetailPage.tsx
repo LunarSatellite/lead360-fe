@@ -369,7 +369,7 @@ function CsatScoreBar({ score }: { score: number }) {
 const NPS_BADGE_CLASS: Record<number, string> = {
   1: 'text-success bg-success-soft border-success/20',
   2: 'text-text-muted bg-bg-elevated border-border-subtle',
-  3: 'text-danger bg-danger-soft border-[rgba(239,68,68,0.2)]',
+  3: 'text-danger-light bg-danger-soft border-[rgba(239,68,68,0.2)]',
 };
 
 function CsatRecordRow({ record }: { record: CrmCsatRecordDto }) {
@@ -569,7 +569,7 @@ export function Component() {
                         ) : (
                           <button
                             onClick={() => setConfirmDelete(true)}
-                            className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:border-danger/30 hover:bg-danger-soft transition-all"
+                            className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger-light hover:border-danger/30 hover:bg-danger-soft transition-all"
                             title="Delete contact"
                           >
                             <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -665,7 +665,7 @@ export function Component() {
                   <button
                     onClick={() => cancelEnrollments.mutate(contact.id)}
                     disabled={cancelEnrollments.isPending}
-                    className="text-xs text-danger font-semibold opacity-70 hover:opacity-100 transition-opacity disabled:opacity-40"
+                    className="text-xs text-danger-light font-semibold opacity-70 hover:opacity-100 transition-opacity disabled:opacity-40"
                   >
                     Cancel all
                   </button>

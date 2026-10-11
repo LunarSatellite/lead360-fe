@@ -14,7 +14,7 @@ const STATUS_COLORS: Record<number, string> = {
   [CrmTimePeriodStatus.Draft]:     'bg-bg-subtle text-text-muted',
   [CrmTimePeriodStatus.Submitted]: 'bg-warning-soft text-warning',
   [CrmTimePeriodStatus.Approved]:  'bg-success-soft text-success',
-  [CrmTimePeriodStatus.Rejected]:  'bg-danger-soft text-danger',
+  [CrmTimePeriodStatus.Rejected]:  'bg-danger-soft text-danger-light',
 };
 
 function SlideOver({ open, onClose, title, subtitle, children, footer }: {
@@ -190,7 +190,7 @@ export function Component() {
               </div>
             </div>
             {periodStart && periodEnd && periodStart >= periodEnd && (
-              <p className="text-xs text-danger">End date must be after start date.</p>
+              <p className="text-xs text-danger-light">End date must be after start date.</p>
             )}
           </form>
         </SlideOver>
@@ -238,7 +238,7 @@ export function Component() {
                 </div>
 
                 {p.rejectionReason && (
-                  <p className="text-xs text-danger bg-danger-soft rounded-lg px-3 py-2">
+                  <p className="text-xs text-danger-light bg-danger-soft rounded-lg px-3 py-2">
                     Rejected: {p.rejectionReason}
                   </p>
                 )}
@@ -265,7 +265,7 @@ export function Component() {
                       </button>
                       <button
                         onClick={() => { setRejectId(p.id); setRejectReason(''); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-danger-soft text-danger text-xs font-semibold border border-[rgba(239,68,68,0.2)] hover:bg-danger hover:text-white transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-danger-soft text-danger-light text-xs font-semibold border border-[rgba(239,68,68,0.2)] hover:bg-danger hover:text-white transition-colors"
                       >
                         <X className="w-3.5 h-3.5" /> Reject
                       </button>

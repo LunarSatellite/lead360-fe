@@ -105,7 +105,7 @@ function FreeTextControl({ card, onSubmit, consumed }: ControlProps<FreeTextCard
 
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          {error && <p className="text-[11px] text-danger">{error}</p>}
+          {error && <p className="text-[11px] text-danger-light">{error}</p>}
           {card.maxLength && (
             <p className="text-[11px] text-text-muted">
               {value.length}/{card.maxLength}
@@ -686,7 +686,7 @@ function buttonRowClass(style: string): string {
     case 'ghost':
       return 'border-thin border-border-medium text-text-secondary hover:text-text-primary hover:bg-glass-2';
     case 'danger':
-      return 'bg-danger/[0.06] text-danger hover:bg-danger/15';
+      return 'bg-danger/[0.06] text-danger-light hover:bg-danger/15';
     default:
       return 'bg-glass-2 border-thin border-border-medium text-text-primary hover:bg-glass-3';
   }

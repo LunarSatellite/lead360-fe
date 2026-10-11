@@ -23,7 +23,7 @@ const INSTANCE_STATUS_CONFIG: Record<ProcessInstanceStatus, { label: string; col
   [ProcessInstanceStatus.Active]:    { label: 'Active',    color: 'text-info-DEFAULT',    icon: Play },
   [ProcessInstanceStatus.Completed]: { label: 'Completed', color: 'text-success-DEFAULT', icon: CheckCircle2 },
   [ProcessInstanceStatus.Cancelled]: { label: 'Cancelled', color: 'text-text-muted',     icon: XCircle },
-  [ProcessInstanceStatus.Failed]:    { label: 'Failed',    color: 'text-danger-DEFAULT',  icon: AlertTriangle },
+  [ProcessInstanceStatus.Failed]:    { label: 'Failed',    color: 'text-danger-light',  icon: AlertTriangle },
 };
 
 // ─── Instance Detail Slide-Over ─────────────────────────────────────────────
@@ -32,7 +32,7 @@ function TaskItem({ task }: { task: ProcessTaskDto }) {
   const statusIcon = () => {
     if (task.status === ProcessTaskStatus.Completed) return <CheckCircle2 className="w-3.5 h-3.5 text-success-DEFAULT" />;
     if (task.status === ProcessTaskStatus.InProgress) return <Play className="w-3.5 h-3.5 text-info-DEFAULT" />;
-    if (task.status === ProcessTaskStatus.Escalated) return <AlertTriangle className="w-3.5 h-3.5 text-danger-DEFAULT" />;
+    if (task.status === ProcessTaskStatus.Escalated) return <AlertTriangle className="w-3.5 h-3.5 text-danger-light" />;
     if (task.status === ProcessTaskStatus.Skipped) return <Ban className="w-3.5 h-3.5 text-text-muted" />;
     return <Circle className="w-3.5 h-3.5 text-text-muted" />;
   };
@@ -123,7 +123,7 @@ function InstanceDetail({ instanceId, onClose }: { instanceId: string; onClose: 
             <button
               onClick={() => confirmDialog({ message: 'Cancel this process instance? Pending tasks will be skipped.', confirmText: 'Cancel instance', danger: true }).then((ok) => { if (ok) cancel.mutate(instance.id, { onSuccess: onClose }); })}
               disabled={cancel.isPending}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-danger/30 text-danger text-sm font-semibold hover:bg-danger/10 transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-danger/30 text-danger-light text-sm font-semibold hover:bg-danger/10 transition-all disabled:opacity-50"
             >
               {cancel.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Ban className="w-4 h-4" />}
               Cancel Instance

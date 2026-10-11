@@ -26,7 +26,7 @@ function relativeTime(iso: string): string {
 const HEALTH_STYLES: Record<string, string> = {
   Healthy: 'text-success bg-success-soft border border-success/25',
   Degraded: 'text-warning bg-warning-soft border border-warning/25',
-  Unhealthy: 'text-danger bg-danger-soft border border-danger/25',
+  Unhealthy: 'text-danger-light bg-danger-soft border border-danger/25',
   Unknown: 'text-text-muted bg-glass-1 border border-border-subtle',
 };
 
@@ -115,7 +115,7 @@ function SecretInput({
           {show ? <EyeOff className="w-4 h-4" strokeWidth={1.5} /> : <Eye className="w-4 h-4" strokeWidth={1.5} />}
         </button>
       </div>
-      {error && <p className="text-[10px] text-danger mt-1">{error}</p>}
+      {error && <p className="text-[10px] text-danger-light mt-1">{error}</p>}
     </div>
   );
 }
@@ -191,7 +191,7 @@ function CredentialFields({
             autoComplete="off"
             {...register('username')}
           />
-          {errors.username && <p className="text-[10px] text-danger mt-1">{errors.username.message}</p>}
+          {errors.username && <p className="text-[10px] text-danger-light mt-1">{errors.username.message}</p>}
         </div>
         <div>
           <label htmlFor="f-password" className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
@@ -342,7 +342,7 @@ function CredentialsModal({
         <form onSubmit={form.handleSubmit(onSubmit)} className="overflow-y-auto flex-1">
           <div className="px-6 py-5 space-y-5">
             {form.formState.errors.root && (
-              <div className="px-3.5 py-2.5 rounded-[10px] bg-danger/[0.08] border border-danger/25 text-[11px] text-danger">
+              <div className="px-3.5 py-2.5 rounded-[10px] bg-danger/[0.08] border border-danger/25 text-[11px] text-danger-light">
                 {form.formState.errors.root.message}
               </div>
             )}
@@ -361,7 +361,7 @@ function CredentialsModal({
                 {...form.register('baseUrl')}
               />
               {form.formState.errors.baseUrl && (
-                <p className="text-[10px] text-danger mt-1">{form.formState.errors.baseUrl.message}</p>
+                <p className="text-[10px] text-danger-light mt-1">{form.formState.errors.baseUrl.message}</p>
               )}
             </div>
 
@@ -640,7 +640,7 @@ export function ApiCredentialsCard() {
                       <button
                         type="button"
                         onClick={() => { setMenuOpen(false); setDisconnectOpen(true); }}
-                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-danger hover:bg-danger/[0.06] transition-colors"
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-danger-light hover:bg-danger/[0.06] transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         Disconnect

@@ -124,7 +124,7 @@ function DashboardCard({ dashboard, onOpen }: { dashboard: CrmDashboardDto; onOp
           confirmDialog({ message: `Delete dashboard "${dashboard.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) del.mutate(dashboard.id); });
         }}
-        className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all flex-shrink-0"
+        className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all flex-shrink-0"
       >
         <Trash2 className="w-4 h-4" />
       </button>
@@ -336,7 +336,7 @@ function WidgetCard({ widget, dashboardId }: { widget: CrmDashboardWidgetDto; da
         <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Remove widget "${widget.title}"?`, confirmText: 'Remove', danger: true })
             .then((ok) => { if (ok) removeWidget.mutate(widget.id); })}
-          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
         >
           <Trash2 className="w-4 h-4" />
         </button>

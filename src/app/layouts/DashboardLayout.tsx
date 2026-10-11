@@ -68,6 +68,7 @@ import { stylemintCommerceApi } from '@/features/commerce-control/api/stylemint-
 import { applyTenantAccent } from '@/shared/lib/tenant-theme';
 import { isStyleMintConsole } from '@/shared/config/env';
 import { SidebarNav } from '@/app/navigation/SidebarNav';
+import { CommandPalette } from '@/shared/ui/CommandPalette';
 import { allNavItems, navGroups, navSections } from '@/app/navigation/nav-model';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -681,6 +682,13 @@ export function DashboardLayout() {
           </div>
         </div>
       )}
+
+      {/* The palette was written to be "mounted once in the dashboard shell",
+          as its own comment says, and then never was. Nothing imported it, so
+          Cmd+K did nothing at all — it was 219 lines of dead code carrying a
+          ninth copy of the navigation. Mounted here, and now reading the same
+          model as the rail. */}
+      <CommandPalette />
     </div>
   );
 }

@@ -36,7 +36,7 @@ describe('the primitives meet WCAG 2.1 AA', () => {
     expect(
       await violationsIn(
         <main>
-          {(['primary', 'soft', 'secondary', 'ghost', 'danger'] as const).map((variant) => (
+          {(['primary', 'soft', 'subtle', 'secondary', 'ghost', 'success', 'danger'] as const).map((variant) => (
             <div key={variant}>
               <Button variant={variant}>Save</Button>
               <Button variant={variant} icon={Plus}>

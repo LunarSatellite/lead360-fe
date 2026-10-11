@@ -12,6 +12,7 @@ import {
 import { ReportResultView } from './CrmReportsPage';
 import type { CrmDashboardDto, CrmDashboardWidgetDto, CrmDashboardMetricDto } from '../types/crm-reports.types';
 import { WIDGET_TYPES } from '../types/crm-reports.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
 const selectCls = inputCls;
@@ -94,7 +95,7 @@ function CreateDashboardForm({ onDone, onCancel }: { onDone: () => void; onCance
           </label>
         </div>
         <div className="flex justify-end gap-3">
-          <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary">Cancel</button>
+          <Button type="button" onClick={onCancel} variant="subtle">Cancel</Button>
           <button type="submit" disabled={create.isPending || !name.trim()} className="px-5 py-2 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 disabled:opacity-50">
             Create dashboard
           </button>
@@ -305,7 +306,7 @@ function AddWidgetForm({ dashboardId, existingWidgets, onDone, onCancel }: {
             </div>
           )}
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary">Cancel</button>
+            <Button type="button" onClick={onCancel} variant="subtle">Cancel</Button>
             <button type="submit" disabled={addWidget.isPending || !isValid} className="px-5 py-2 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 disabled:opacity-50">
               Add widget
             </button>

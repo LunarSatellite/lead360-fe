@@ -367,14 +367,14 @@ export function Component() {
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.status === GoodsReceiptStatus.Draft && (
-                <button onClick={() => { confirmGR.mutate(selected.id); setSelected(null); }} disabled={confirmGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
+                <Button onClick={() => { confirmGR.mutate(selected.id); setSelected(null); }} disabled={confirmGR.isPending} variant="success">
                   <CheckCircle className="w-3.5 h-3.5" /> Confirm Receipt
-                </button>
+                </Button>
               )}
               {selected.status === GoodsReceiptStatus.Confirmed && (
-                <button onClick={() => { if (confirm('Void this receipt? Stock adjustments will be reversed.')) { voidGR.mutate(selected.id); setSelected(null); } }} disabled={voidGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80 disabled:opacity-50">
+                <Button onClick={() => { if (confirm('Void this receipt? Stock adjustments will be reversed.')) { voidGR.mutate(selected.id); setSelected(null); } }} disabled={voidGR.isPending} variant="danger">
                   <XCircle className="w-3.5 h-3.5" /> Void
-                </button>
+                </Button>
               )}
             </div>
           </div>

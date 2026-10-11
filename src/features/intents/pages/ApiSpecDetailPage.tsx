@@ -3,6 +3,7 @@ import { ChevronRight, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
 import { useApiSpecDetail } from '../api/api-specs.queries';
 import { ApiSpecDetailPanel } from '../components/ApiSpecDetailPanel';
 import type { ApiSpecificationDetailDto } from '../types/api-specs.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const { id } = useParams<{ id: string }>();
@@ -28,13 +29,13 @@ export function Component() {
         <p className="text-sm text-text-muted mt-1">
           The API specification you're looking for doesn't exist or has been deleted.
         </p>
-        <button
+        <Button
           onClick={() => navigate('/dashboard/api-specs')}
-          className="flex items-center gap-2 mt-4 px-4 py-2.5 rounded-lg bg-glass-2 border border-border-medium text-sm font-semibold text-text-secondary hover:text-text-primary transition-all"
+          variant="subtle" size="lg" className="mt-4"
         >
           <ArrowLeft className="w-4 h-4" strokeWidth={1.6} />
           Back to API Specs
-        </button>
+        </Button>
       </div>
     );
   }

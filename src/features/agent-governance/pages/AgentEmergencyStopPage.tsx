@@ -64,15 +64,15 @@ function AgentEmergencyStopPage() {
           </p>
           <HaltAuthorityNote authority={authority} />
         </div>
-        <button
+        <Button
           type="button"
           data-testid="engage-halt"
           onClick={() => setEngaging(true)}
-          className="inline-flex items-center gap-1.5 rounded-sm border-thin border-danger/40 bg-danger-soft px-3.5 py-2 text-xs font-black text-danger-light hover:bg-danger/20"
+          variant="danger"
         >
           <OctagonX size={14} strokeWidth={1.6} />
           Engage a stop…
-        </button>
+        </Button>
       </header>
 
       {halts.isError && (

@@ -9,6 +9,7 @@ import {
   IntentOperationType, OPERATION_TYPE_LABEL,
 } from '../types/intents.types';
 import type { IntentDto, IntentOperationTypeValue, IntentTrackValue } from '../types/intents.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface IntentFormModalProps {
   open: boolean;
@@ -404,13 +405,13 @@ export function IntentFormModal({
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-2">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-lg bg-glass-2 border border-border-medium text-sm font-semibold text-text-secondary hover:text-text-primary transition-all"
+              variant="subtle" size="lg"
             >
               Cancel
-            </button>
+            </Button>
             <button
               type="submit"
               disabled={isPending}

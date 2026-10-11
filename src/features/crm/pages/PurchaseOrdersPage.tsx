@@ -413,12 +413,12 @@ export function Component() {
               )}
               {selected.status === PurchaseOrderStatus.PendingApproval && (
                 <>
-                  <button onClick={() => { approvePO.mutate(selected.id); setSelected(null); }} disabled={approvePO.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
+                  <Button onClick={() => { approvePO.mutate(selected.id); setSelected(null); }} disabled={approvePO.isPending} variant="success">
                     <CheckCircle className="w-3.5 h-3.5" /> Approve
-                  </button>
-                  <button onClick={() => setShowReject(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger-light bg-danger-soft border border-danger/20 hover:opacity-80">
+                  </Button>
+                  <Button onClick={() => setShowReject(true)} variant="danger">
                     <XCircle className="w-3.5 h-3.5" /> Reject
-                  </button>
+                  </Button>
                 </>
               )}
               {selected.status === PurchaseOrderStatus.Approved && (
@@ -432,9 +432,9 @@ export function Component() {
                 </Button>
               )}
               {selected.status <= PurchaseOrderStatus.Approved && (
-                <button onClick={() => setShowCancel(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80">
+                <Button onClick={() => setShowCancel(true)} variant="danger">
                   <XCircle className="w-3.5 h-3.5" /> Cancel
-                </button>
+                </Button>
               )}
             </div>
           </div>

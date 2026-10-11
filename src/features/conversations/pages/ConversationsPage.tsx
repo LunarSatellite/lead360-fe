@@ -169,14 +169,14 @@ function DealSidebar({ sessionId }: { sessionId: string }) {
               ))}
             </select>
             <div className="flex gap-2">
-              <button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: true } })}
-                className="flex-1 py-1.5 rounded-lg bg-success-soft text-success text-xs font-bold border border-success/20 hover:bg-success hover:text-white transition-all">
+              <Button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: true } })}
+                variant="success" size="sm" className="flex-1">
                 Won ✓
-              </button>
-              <button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: false } })}
-                className="flex-1 py-1.5 rounded-lg bg-danger-soft text-danger-light text-xs font-bold border border-danger/20 hover:bg-danger hover:text-white transition-all">
+              </Button>
+              <Button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: false } })}
+                variant="danger" size="sm" className="flex-1">
                 Lost ✗
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -237,9 +237,9 @@ function MessageViewer({ sessionId }: { sessionId: string }) {
           <button onClick={() => returnBot.mutate(sessionId)} className="flex items-center gap-1 px-2 py-1 rounded text-2xs font-bold text-info bg-info-soft hover:brightness-110">
             <ArrowLeftRight className="w-3 h-3" /> Return to Bot
           </button>
-          <button onClick={() => close.mutate(sessionId)} className="flex items-center gap-1 px-2 py-1 rounded text-2xs font-bold text-danger-light bg-danger-soft hover:brightness-110">
+          <Button onClick={() => close.mutate(sessionId)} variant="danger" size="sm">
             <XIcon className="w-3 h-3" /> Close
-          </button>
+          </Button>
         </div>
       </div>
 

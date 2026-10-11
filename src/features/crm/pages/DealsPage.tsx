@@ -1055,11 +1055,11 @@ export function Component() {
                   <input aria-label="New stage color" type="color" value={newStageColor} onChange={e => setNewStageColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
                   <span className="text-xs text-text-muted">Color</span>
                 </div>
-                <button disabled={!newStageName.trim() || createStage.isPending}
+                <Button disabled={!newStageName.trim() || createStage.isPending}
                   onClick={() => createStage.mutate({ name: newStageName.trim(), order: stages.length + 1, color: newStageColor, pipelineId: activePipelineId ?? undefined } as CrmDealStageCreateRequest, { onSuccess: () => setNewStageName('') })}
-                  className="w-full py-2 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold disabled:opacity-50 flex items-center justify-center gap-1.5">
+                  variant="soft" block>
                   {createStage.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />} Add Stage
-                </button>
+                </Button>
               </div>
             </div>
           </div>

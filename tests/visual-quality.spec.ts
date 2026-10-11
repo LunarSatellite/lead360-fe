@@ -147,6 +147,8 @@ test.describe('the admin has one visual vocabulary, not one per page', () => {
     expect(heights.size, ['', ...report, ''].join('\n')).toBeLessThanOrEqual(3);
   });
 
+  test.slow();
+
   test('a third of the visible buttons come from the design system', async ({ page }) => {
     /**
      * Second: adoption. This is the number that says whether there is one
@@ -160,11 +162,21 @@ test.describe('the admin has one visual vocabulary, not one per page', () => {
     // ordinary variation between runs does not fail the build, and it is
     // raised when a migration lands — the same ratchet as the source-level
     // budgets, on the thing an operator actually sees.
-    const FLOOR = 0.42;
+    // 46% today: 417 of 898 visible buttons across all 131 pages. It was 0
+    // before this work.
+    //
+    // Measured over every route, not a sample. An 18-page sample reported
+    // 43% both before and after 97 tonal buttons were migrated, because
+    // none of the 53 files involved happened to be in it — a number that
+    // cannot move is not a measurement.
+    //
+    // The floor sits just under the figure so ordinary variation does not
+    // fail a build, and it only ever goes up.
+    const FLOOR = 0.45;
     let total = 0;
     let fromSystem = 0;
 
-    for (const href of SAMPLE) {
+    for (const href of ROUTES) {
       await page.goto(href, { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(400);
 
@@ -185,7 +197,7 @@ test.describe('the admin has one visual vocabulary, not one per page', () => {
     expect(
       share,
       `
-${fromSystem} of ${total} visible buttons across ${SAMPLE.length} pages (${(share * 100).toFixed(0)}%)
+${fromSystem} of ${total} visible buttons across ${ROUTES.length} pages (${(share * 100).toFixed(0)}%)
 `,
     ).toBeGreaterThanOrEqual(FLOOR);
   });

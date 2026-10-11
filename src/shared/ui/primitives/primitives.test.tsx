@@ -79,7 +79,15 @@ describe('Button', () => {
      * height: every variant declares a border width, and only the colour
      * differs.
      */
-    for (const variant of ['primary', 'soft', 'secondary', 'ghost', 'danger'] as const) {
+    for (const variant of [
+      'primary',
+      'soft',
+      'subtle',
+      'secondary',
+      'ghost',
+      'success',
+      'danger',
+    ] as const) {
       const { unmount } = render(<Button variant={variant}>{variant}</Button>);
       const classes = screen.getByRole('button', { name: variant }).className.split(/\s+/);
 

@@ -43,6 +43,22 @@ const VARIANT = {
   ghost: 'text-text-muted font-semibold hover:bg-glass-1 hover:text-text-primary',
   danger:
     'bg-danger-soft text-danger-light font-bold hover:bg-danger hover:text-text-inverted',
+  /**
+   * Confirms, approvals, "mark as paid". The mirror of `danger`, and it
+   * existed before this as 22 hand-rolled `bg-success-soft text-success`
+   * buttons. Unlike danger, the plain token is already readable here —
+   * #10B981 on a card is 6.36:1 — but it uses the light one anyway so the
+   * two tonal variants are built the same way.
+   */
+  success:
+    'bg-success-soft text-success-light font-bold hover:bg-success hover:text-text-inverted',
+  /**
+   * A control that needs to sit on a surface rather than float on it: a
+   * segmented control, a filter that is currently on. 46 buttons were
+   * `bg-glass-1` or `bg-glass-2` with muted text, which is this.
+   */
+  subtle:
+    'bg-glass-1 text-text-secondary font-semibold hover:bg-glass-2 hover:text-text-primary',
 } as const;
 
 export type ButtonVariant = keyof typeof VARIANT;

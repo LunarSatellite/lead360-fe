@@ -241,10 +241,10 @@ export function StylemintCustomersPage() {
               <Row label="Created" value={new Date(selected.createdUtc).toLocaleDateString('fr-CD')} />
             </div>
             {selected.status === 1 ? (
-              <button
+              <Button
                 disabled={stateAction.isPending}
                 onClick={() => stateAction.mutate({ customer: selected, action: 'suspend' })}
-                className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl border border-danger/25 bg-danger-soft py-3 text-sm font-bold text-danger-light disabled:opacity-50"
+                variant="danger" size="lg" block className="mt-7"
               >
                 {stateAction.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -252,7 +252,7 @@ export function StylemintCustomersPage() {
                   <Ban className="h-4 w-4" />
                 )}{' '}
                 Suspendre le compte
-              </button>
+              </Button>
             ) : selected.status === 2 ? (
               <Button
                 disabled={stateAction.isPending}

@@ -83,30 +83,30 @@ export function ApiSpecDetailPanel({ spec, onDeleted }: ApiSpecDetailPanelProps)
             </StatusBadge>
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => reparseSpec.mutate(spec.id)}
               disabled={reparseSpec.isPending}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all disabled:opacity-50"
+              variant="subtle"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${reparseSpec.isPending ? 'animate-spin' : ''}`} strokeWidth={1.6} />
               Re-parse
-            </button>
+            </Button>
             {spec.rawSpecContent && (
-              <button
+              <Button
                 onClick={handleDownloadRaw}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+                variant="subtle"
               >
                 <Download className="w-3.5 h-3.5" strokeWidth={1.6} />
                 Download
-              </button>
+              </Button>
             )}
-            <button
+            <Button
               onClick={() => setConfirmDelete(true)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-danger-soft border border-danger/[0.12] text-xs font-semibold text-danger-light hover:brightness-110 transition-all"
+              variant="danger"
             >
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
               Delete
-            </button>
+            </Button>
           </div>
         </div>
 

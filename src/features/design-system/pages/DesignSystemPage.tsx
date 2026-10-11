@@ -29,7 +29,15 @@ import { navGroups, navSections } from '@/app/navigation/nav-model';
  * looking at the UI rather than at the data.
  */
 
-const VARIANTS: ButtonVariant[] = ['primary', 'soft', 'secondary', 'ghost', 'danger'];
+const VARIANTS: ButtonVariant[] = [
+  'primary',
+  'soft',
+  'subtle',
+  'secondary',
+  'ghost',
+  'success',
+  'danger',
+];
 const SIZES: ControlSize[] = ['sm', 'md', 'lg'];
 
 function Section({ title, note, children }: { title: string; note?: string; children: React.ReactNode }) {

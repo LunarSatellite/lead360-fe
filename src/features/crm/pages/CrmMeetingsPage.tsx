@@ -651,7 +651,7 @@ function MeetingsTab() {
                   className={inputCls + ' min-h-[80px]'}
                 />
                 <div className="flex gap-2">
-                  <button
+                  <Button
                     disabled={updateMeeting.isPending || logActivity.isPending}
                     onClick={() => {
                       updateMeeting.mutate({ id: detail.id, data: { status: CrmMeetingStatus.Completed } }, {
@@ -669,10 +669,10 @@ function MeetingsTab() {
                         },
                       });
                     }}
-                    className="px-4 py-2 rounded-xl bg-success-soft text-success text-sm font-bold hover:bg-success hover:text-bg disabled:opacity-60 transition-all"
+                    variant="success"
                   >
                     {updateMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Complete & Log'}
-                  </button>
+                  </Button>
                   <Button onClick={() => { setShowCompleteSummary(false); setCompleteSummaryText(''); }} variant="secondary">
                     Cancel
                   </Button>
@@ -723,12 +723,12 @@ function MeetingsTab() {
                 </Button>
               )}
               {detail.status === CrmMeetingStatus.Booked && !showCompleteSummary && (
-                <button
+                <Button
                   onClick={() => { setShowCompleteSummary(true); setCompleteSummaryText(''); }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success-soft text-success text-sm font-bold hover:bg-success hover:text-bg transition-all"
+                  variant="success"
                 >
                   <CalendarCheck className="w-4 h-4" strokeWidth={1.5} /> Mark Completed
-                </button>
+                </Button>
               )}
               <div className="space-y-2">
                 <div className="flex gap-2 items-center">
@@ -752,9 +752,9 @@ function MeetingsTab() {
                 </div>
               </div>
               {detail.status !== CrmMeetingStatus.Cancelled && detail.status !== CrmMeetingStatus.Completed && (
-                <button onClick={() => { cancelMeeting.mutate(detail.id, { onSuccess: () => setSelectedId(null) }); }} disabled={cancelMeeting.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger-light text-sm font-bold hover:bg-danger hover:text-bg transition-all disabled:opacity-60">
+                <Button onClick={() => { cancelMeeting.mutate(detail.id, { onSuccess: () => setSelectedId(null) }); }} disabled={cancelMeeting.isPending} variant="danger">
                   {cancelMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" strokeWidth={1.5} />} Cancel
-                </button>
+                </Button>
               )}
             </div>
           </div>

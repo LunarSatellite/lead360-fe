@@ -551,16 +551,16 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
 
         {/* Preview */}
         <div className="flex items-center gap-3">
-          <button
+          <Button
             onClick={runPreview}
             disabled={preview.isPending || columns.length === 0}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3 disabled:opacity-50 transition-all"
+            variant="subtle"
           >
             {preview.isPending
               ? <span className="w-4 h-4 border-2 border-text-muted/30 border-t-text-muted rounded-full animate-spin" />
               : <Play className="w-4 h-4" />}
             Preview
-          </button>
+          </Button>
           <span className="text-xs text-text-muted">{columns.length} column(s) selected</span>
         </div>
 
@@ -688,18 +688,18 @@ function ReportRow({ report }: { report: CrmReportDto }) {
           <div className="text-sm font-bold text-text-primary">{report.name}</div>
           <div className="text-xs text-text-muted mt-0.5">{report.objectType} · {report.reportType}</div>
         </div>
-        <button onClick={handleRun} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3">
+        <Button onClick={handleRun} variant="subtle" size="sm">
           <Play className="w-3.5 h-3.5" /> Run
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => downloadReportCsv(report.id, `${report.name}.csv`)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3"
+          variant="subtle" size="sm"
         >
           <Download className="w-3.5 h-3.5" /> Download
-        </button>
-        <button onClick={() => setShowSchedule((s) => !s)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3">
+        </Button>
+        <Button onClick={() => setShowSchedule((s) => !s)} variant="subtle" size="sm">
           <Calendar className="w-3.5 h-3.5" /> Schedule
-        </button>
+        </Button>
         <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Delete report "${report.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) del.mutate(report.id); })}

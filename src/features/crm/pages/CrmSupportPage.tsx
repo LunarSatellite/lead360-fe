@@ -312,9 +312,9 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
             <button onClick={() => escalate.mutate(caseId)} disabled={escalate.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-warning-soft text-warning text-xs font-semibold border border-warning/20 hover:bg-warning/20 transition-all disabled:opacity-50">
               <AlertTriangle className="w-3.5 h-3.5" /> Escalate
             </button>
-            <button onClick={() => resolve.mutate(caseId)} disabled={resolve.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-bg transition-all disabled:opacity-50">
+            <Button onClick={() => resolve.mutate(caseId)} disabled={resolve.isPending} variant="success" size="sm">
               <CheckCircle className="w-3.5 h-3.5" /> Resolve
-            </button>
+            </Button>
             <button onClick={() => close.mutate(caseId)} disabled={close.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-bg-elevated text-text-secondary text-xs font-semibold border border-border-subtle hover:bg-bg-card transition-all disabled:opacity-50">
               <XCircle className="w-3.5 h-3.5" /> Close
             </button>

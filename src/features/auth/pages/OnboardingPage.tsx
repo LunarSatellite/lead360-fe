@@ -16,6 +16,7 @@ import {
   Sparkles,
   FileSpreadsheet,
 } from 'lucide-react';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Types ───
 type StepId = 1 | 2 | 3 | 4 | 5;
@@ -244,9 +245,9 @@ function Step1ConnectApi() {
           </div>
           <p className="text-sm font-semibold text-text-primary mb-1">Drop your OpenAPI spec here</p>
           <p className="text-xs text-text-muted">Supports .json or .yaml — Swagger 2.0 and OpenAPI 3.x</p>
-          <button className="mt-4 px-4 py-2 rounded-sm text-xs font-bold bg-glass-2 border-thin border-border-medium text-text-secondary hover:text-text-primary transition-all duration-150">
+          <Button variant="subtle" className="mt-4">
             Browse files
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="space-y-3">
@@ -413,9 +414,9 @@ function Step2DefineIntents() {
           </div>
           <p className="text-sm font-semibold text-text-primary mb-1">Import intents from file</p>
           <p className="text-xs text-text-muted mb-4">CSV or JSON with columns: name, keywords, description, category</p>
-          <button className="px-4 py-2 rounded-sm text-xs font-bold bg-glass-2 border-thin border-border-medium text-text-secondary hover:text-text-primary transition-all">
+          <Button variant="subtle">
             Upload file
-          </button>
+          </Button>
         </div>
       )}
     </div>

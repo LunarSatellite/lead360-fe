@@ -388,12 +388,12 @@ function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrm
               </button>
             </>
           ) : (
-            <button
+            <Button
               onClick={() => confirmDialog({ message: `Reactivate ${user.firstName}?`, confirmText: 'Reactivate' }).then((ok) => { if (ok) adminUpdate.mutate({ userId: user.id, data: { status: UserStatus.Active } }); })}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success hover:brightness-110 transition-all"
+              variant="success" size="sm"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Reactivate
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -474,12 +474,12 @@ function RolesSection() {
       <div className="col-span-1 bg-glass-1 border border-border-subtle rounded-2xl overflow-hidden">
         <div className="px-4 py-3 border-b border-border-subtle flex items-center justify-between">
           <span className="text-sm font-bold text-text-primary">Roles</span>
-          <button
+          <Button
             onClick={() => setShowCreateForm(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary transition-all"
+            variant="subtle" size="sm"
           >
             <Plus className="w-3.5 h-3.5" /> New
-          </button>
+          </Button>
         </div>
         <div className="divide-y divide-border-subtle">
           {roles.map((role) => (
@@ -705,8 +705,8 @@ function PermissionMatrix({ role }: { role: CrmRoleDto }) {
         <div className="flex items-center gap-2">
           {!role.isSystem && (
             <>
-              <button onClick={allowAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success hover:brightness-110 transition-all">Allow All</button>
-              <button onClick={denyAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-danger-soft text-danger-light hover:brightness-110 transition-all">Deny All</button>
+              <Button onClick={allowAll} variant="success" size="sm">Allow All</Button>
+              <Button onClick={denyAll} variant="danger" size="sm">Deny All</Button>
             </>
           )}
           {!role.isSystem && dirty && (

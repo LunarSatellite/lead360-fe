@@ -521,12 +521,12 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
               declareOpen ? (
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs text-text-muted">Winner:</span>
-                  <button
+                  <Button
                     onClick={() => { declareWinner.mutate({ id: exp.id, winner: ExperimentVariantKind.Control }); setDeclareOpen(false); }}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-success-soft text-success border border-success/20 text-xs font-semibold hover:bg-success hover:text-bg transition-all"
+                    variant="success" size="sm"
                   >
                     <Trophy className="w-3 h-3" /> Control
-                  </button>
+                  </Button>
                   <Button
                     onClick={() => { declareWinner.mutate({ id: exp.id, winner: ExperimentVariantKind.Challenger }); setDeclareOpen(false); }}
                     variant="primary" size="sm"

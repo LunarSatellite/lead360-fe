@@ -2426,9 +2426,9 @@ function YouTubeTab({ youtubeApi }: { youtubeApi: typeof youtubeApiShape }) {
           </p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending} className="px-3 py-1.5 rounded-sm bg-glass-2 border-thin border-border-subtle text-xs font-semibold text-text-primary hover:border-brand transition-colors flex items-center gap-1.5">
+          <Button onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending} variant="subtle" size="sm">
             <RefreshCw className={`w-3 h-3 ${syncMutation.isPending ? 'animate-spin' : ''}`} /> Sync
-          </button>
+          </Button>
           <button onClick={() => { if (confirm('Disconnect YouTube?')) disconnectMutation.mutate(); }} className="px-3 py-1.5 rounded-sm bg-glass-2 border-thin border-border-subtle text-xs font-semibold text-red-400 hover:border-red-400 transition-colors">
             Disconnect
           </button>

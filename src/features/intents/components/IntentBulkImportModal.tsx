@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { X, Upload, FileJson, Loader2, AlertTriangle } from 'lucide-react';
 import { useBulkImportIntents } from '../api/intents.queries';
 import type { IntentCreateRequest } from '../types/intents.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface IntentBulkImportModalProps {
   open: boolean;
@@ -145,14 +146,14 @@ export function IntentBulkImportModal({ open, onClose, tenantId }: IntentBulkImp
               onChange={handleFileUpload}
               className="hidden"
             />
-            <button
+            <Button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-glass-2 border border-border-medium text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-3 transition-all"
+              variant="subtle" size="lg"
             >
               <Upload className="w-4 h-4" strokeWidth={1.8} />
               Upload JSON or CSV file
-            </button>
+            </Button>
           </div>
 
           {/* Textarea */}
@@ -196,13 +197,13 @@ export function IntentBulkImportModal({ open, onClose, tenantId }: IntentBulkImp
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-2">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-lg bg-glass-2 border border-border-medium text-sm font-semibold text-text-secondary hover:text-text-primary transition-all"
+              variant="subtle" size="lg"
             >
               Cancel
-            </button>
+            </Button>
             <button
               onClick={handleImport}
               disabled={previewCount === 0 || !!parseError || bulkImport.isPending}

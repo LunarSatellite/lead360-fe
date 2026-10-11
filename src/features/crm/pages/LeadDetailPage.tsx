@@ -756,10 +756,10 @@ function ScoreHistory({ leadId }: { leadId: string }) {
   if (events.length === 0) return null;
   return (
     <div className="border border-border-subtle rounded-xl overflow-hidden">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-4 py-2.5 bg-glass-2 text-xs font-semibold text-text-muted hover:text-text-primary transition-all">
+      <Button onClick={() => setOpen(!open)} variant="subtle" size="lg" block>
         <span>Score History ({events.length} events)</span>
         <span className={`transition-transform ${open ? 'rotate-180' : ''}`}>▼</span>
-      </button>
+      </Button>
       {open && (
         <div className="divide-y divide-border-subtle max-h-48 overflow-y-auto">
           {events.map((e: any) => (

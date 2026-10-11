@@ -10,6 +10,7 @@ import {
 import { SuggestionCard, BatchStats } from '../components/SuggestionCard';
 import { SuggestionStatus } from '../types/intent-suggestion.types';
 import type { SuggestionBatchDto, SuggestionDto } from '../types/intent-suggestion.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const navigate = useNavigate();
@@ -80,14 +81,14 @@ export function Component() {
             </button>
           ) : (
             <>
-              <button
+              <Button
                 onClick={() => regenerate.mutate(activeSpecId)}
                 disabled={regenerate.isPending}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-text-secondary hover:bg-glass-2 transition-all disabled:opacity-50"
+                variant="subtle"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${regenerate.isPending ? 'animate-spin' : ''}`} strokeWidth={1.6} />
                 Regenerate
-              </button>
+              </Button>
               {pendingCount > 0 && (
                 <button
                   onClick={() => approveAll.mutate(activeSpecId)}

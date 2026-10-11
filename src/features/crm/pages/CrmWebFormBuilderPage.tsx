@@ -342,15 +342,15 @@ export function Component() {
         <div className="flex items-center gap-2 flex-wrap">
           {isEdit && (
             <>
-              <button onClick={copyEmbed} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-text-primary border-thin border-border-subtle bg-glass-1 hover:bg-glass-2 transition-all" title="Copy embed code">
+              <Button onClick={copyEmbed} variant="subtle" title="Copy embed code">
                 <Code2 className="w-3.5 h-3.5" /> Embed
-              </button>
-              <button onClick={copyHostedUrl} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-text-primary border-thin border-border-subtle bg-glass-1 hover:bg-glass-2 transition-all" title="Copy hosted URL">
+              </Button>
+              <Button onClick={copyHostedUrl} variant="subtle" title="Copy hosted URL">
                 <Globe className="w-3.5 h-3.5" /> Hosted URL
-              </button>
-              <button onClick={publish} disabled={publishMut.isPending} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-text-primary border-thin border-border-subtle bg-glass-1 hover:bg-glass-2 transition-all disabled:opacity-50">
+              </Button>
+              <Button onClick={publish} disabled={publishMut.isPending} variant="subtle">
                 {publishMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />} Publish
-              </button>
+              </Button>
             </>
           )}
           <Button onClick={save} disabled={!canSave || createMut.isPending || updateMut.isPending} variant="primary">
@@ -449,9 +449,9 @@ function FieldsTab(props: FieldsTabProps) {
 
       <div className="flex items-center gap-2 flex-wrap">
         {FIELD_TYPES.map((t) => (
-          <button key={t.value} onClick={() => addField(t.value)} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-[11px] font-bold text-text-primary border-thin border-border-subtle bg-glass-2 hover:bg-glass-1 hover:border-border-glow transition-all" title={"Add " + t.label + " field"}>
+          <Button key={t.value} onClick={() => addField(t.value)} variant="subtle" size="sm" title={"Add " + t.label + " field"}>
             <span className="text-text-muted">{t.icon}</span> {t.label}
-          </button>
+          </Button>
         ))}
       </div>
 

@@ -12,6 +12,7 @@ import type {
   SuggestionBatchDto,
   SuggestionDto,
 } from '@/features/intent-suggestions/types/intent-suggestion.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   specId: string;
@@ -67,17 +68,17 @@ export function SuggestionsView({ specId }: Props) {
             </button>
           ) : (
             <>
-              <button
+              <Button
                 onClick={() => regenerate.mutate(specId)}
                 disabled={regenerate.isPending}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-text-secondary hover:bg-glass-2 transition-all disabled:opacity-50"
+                variant="subtle"
               >
                 <RefreshCw
                   className={`w-3.5 h-3.5 ${regenerate.isPending ? 'animate-spin' : ''}`}
                   strokeWidth={1.6}
                 />
                 Regenerate
-              </button>
+              </Button>
               {pendingCount > 0 && (
                 <button
                   onClick={() => approveAll.mutate(specId)}

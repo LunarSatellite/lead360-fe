@@ -139,9 +139,9 @@ export function Component() {
             <input aria-label="New phrase" value={newPhrase} onChange={e => setNewPhrase(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addPhrase()}
               placeholder="e.g. speak to manager" className={`${inputCls} flex-1`} />
-            <button onClick={addPhrase} className="px-3 py-2 rounded-xl bg-brand-soft text-brand border border-border-glow text-sm font-semibold">
+            <Button onClick={addPhrase} variant="soft">
               Add
-            </button>
+            </Button>
           </div>
           <div className="flex flex-wrap gap-2">
             {settings.handoffPhrases?.map((p, i) => (
@@ -161,10 +161,10 @@ export function Component() {
             <h2 className="text-sm font-bold text-text-primary">Negotiation Playbooks</h2>
             <p className="text-xs text-text-muted mt-0.5">Bot follows these step-by-step before handing off</p>
           </div>
-          <button onClick={addPlaybook}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold">
+          <Button onClick={addPlaybook}
+            variant="soft" size="sm">
             <Plus className="w-3 h-3" /> Add Playbook
-          </button>
+          </Button>
         </div>
 
         {settings.negotiationPlaybooks?.length === 0 && (

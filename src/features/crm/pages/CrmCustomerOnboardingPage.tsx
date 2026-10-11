@@ -127,9 +127,9 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
               ) : (
                 <>
                   <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." aria-label="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
-                  <button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-danger-soft border border-danger/20 text-danger-light hover:opacity-80">
+                  <Button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} variant="danger" size="sm">
                     Set Blocked
-                  </button>
+                  </Button>
                 </>
               )}
             </div>

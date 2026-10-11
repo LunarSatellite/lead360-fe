@@ -655,14 +655,14 @@ function SequenceModal({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-text-primary">Steps</h3>
-              <button
+              <Button
                 type="button"
                 onClick={addStep}
-                className="flex items-center gap-1.5 text-xs font-medium text-brand hover:text-brand/80 bg-brand-soft px-3 py-1.5 rounded-xl transition-colors"
+                variant="soft" size="sm"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add Step
-              </button>
+              </Button>
             </div>
 
             {form.steps.length === 0 && (

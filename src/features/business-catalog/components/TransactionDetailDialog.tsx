@@ -257,17 +257,14 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
 
             {tx.status === TransactionStatus.Confirmed && (
               <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
-                <button
+                <Button
                   type="button"
                   disabled={notifyMutation.isPending}
                   onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                             border border-border-medium text-text-secondary
-                             hover:bg-glass-2 hover:text-text-primary
-                             disabled:opacity-50 transition-all"
+                  variant="secondary" size="sm"
                 >
                   <Send className="w-3.5 h-3.5" strokeWidth={2} /> Resend confirmation
-                </button>
+                </Button>
                 <button
                   type="button"
                   disabled={statusMutation.isPending}
@@ -287,17 +284,14 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
 
             {tx.status === TransactionStatus.Preparing && (
               <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
-                <button
+                <Button
                   type="button"
                   disabled={notifyMutation.isPending}
                   onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                             border border-border-medium text-text-secondary
-                             hover:bg-glass-2 hover:text-text-primary
-                             disabled:opacity-50 transition-all"
+                  variant="secondary" size="sm"
                 >
                   <Send className="w-3.5 h-3.5" strokeWidth={2} /> Resend "preparing" update
-                </button>
+                </Button>
                 <Button
                   type="button"
                   disabled={statusMutation.isPending}
@@ -319,14 +313,11 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                 <span className="flex items-center gap-1.5 text-xs font-bold text-brand">
                   <PackageCheck className="w-3.5 h-3.5" strokeWidth={2} /> Ready — awaiting pickup
                 </span>
-                <button
+                <Button
                   type="button"
                   disabled={notifyMutation.isPending}
                   onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                             border border-border-medium text-text-secondary
-                             hover:bg-glass-2 hover:text-text-primary
-                             disabled:opacity-50 transition-all"
+                  variant="secondary" size="sm"
                 >
                   {notifyMutation.isPending ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -334,7 +325,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                     <Send className="w-3.5 h-3.5" strokeWidth={2} />
                   )}
                   Resend "ready for pickup"
-                </button>
+                </Button>
               </div>
             )}
           </>

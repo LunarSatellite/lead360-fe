@@ -265,13 +265,13 @@ export function CreateCampaignDrawer({ onClose }: Props) {
 
         {/* Footer */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-border-subtle">
-          <button
+          <Button
             onClick={() => setStep(s => s - 1)}
             disabled={step === 0}
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+            variant="secondary"
           >
             <ChevronLeft className="w-4 h-4" /> Back
-          </button>
+          </Button>
 
           {step < 3 ? (
             <Button

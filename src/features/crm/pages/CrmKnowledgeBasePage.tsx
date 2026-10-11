@@ -165,7 +165,7 @@ function ArticleDetail({ id, onBack }: { id: string; onBack: () => void }) {
               className={`${inputCls} resize-none font-mono`}
             />
             <div className="flex justify-end gap-2">
-              <button onClick={() => setEditing(false)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
+              <Button onClick={() => setEditing(false)} variant="ghost" size="sm">Cancel</Button>
               <Button onClick={save} disabled={update.isPending} variant="primary">
                 Save
               </Button>
@@ -252,7 +252,7 @@ function DraftCard({ draft }: { draft: CrmKbDraftDto }) {
           <button onClick={reject} disabled={!reason.trim() || review.isPending} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-danger text-white hover:brightness-110 disabled:opacity-50">
             Confirm reject
           </button>
-          <button onClick={() => setShowReject(false)} className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
+          <Button onClick={() => setShowReject(false)} variant="ghost" size="sm">Cancel</Button>
         </div>
       ) : (
         <div className="flex gap-2 pt-2 border-t border-border-subtle">

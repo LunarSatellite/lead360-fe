@@ -20,6 +20,7 @@ import {
   missingSlots,
   type ComparisonSlot,
 } from '../lib/kyc-review';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * A buyer's Tier-2 identity check (EMI phase 1): who they say they are, and the photographs
@@ -143,13 +144,13 @@ function DocumentComparison({
           Identity documents ({documents.length})
         </p>
         {placed.length > 0 && !shown && (
-          <button
+          <Button
             onClick={() => setShown(true)}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-2 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             <Images className="h-3.5 w-3.5" strokeWidth={1.6} />
             Show side by side
-          </button>
+          </Button>
         )}
       </div>
 

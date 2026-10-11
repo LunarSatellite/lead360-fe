@@ -141,13 +141,13 @@ export function Component() {
           subtitle="Create a time period for tracking and approval"
           footer={
             <div className="flex items-center justify-end gap-3">
-              <button
+              <Button
                 type="button"
                 onClick={() => { setShowCreate(false); setName(''); setPeriodStart(''); setPeriodEnd(''); }}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
+              </Button>
               <Button
                 onClick={() => createMutation.mutate({ periodStart, periodEnd, notes: name || undefined })}
                 disabled={!canCreate || createMutation.isPending}
@@ -290,9 +290,9 @@ export function Component() {
                     >
                       {rejectMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Confirm'}
                     </button>
-                    <button onClick={() => setRejectId(null)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary shrink-0">
+                    <Button onClick={() => setRejectId(null)} variant="secondary" size="sm" className="shrink-0">
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>

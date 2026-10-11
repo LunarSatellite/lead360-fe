@@ -164,15 +164,15 @@ function RecipeRow({ recipe, onChanged }: { recipe: ReelRecipe; onChanged: () =>
             )}
             Promote
           </Button>
-          <button
+          <Button
             onClick={() => {
               setHiding(true);
               setError(null);
             }}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             <EyeOff className="h-3.5 w-3.5" strokeWidth={1.6} /> Hide
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -257,16 +257,16 @@ function RecipeRow({ recipe, onChanged }: { recipe: ReelRecipe; onChanged: () =>
                 {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
                 Confirm hide
               </Button>
-              <button
+              <Button
                 onClick={() => {
                   setHiding(false);
                   setReason('');
                   setError(null);
                 }}
-                className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary" size="sm"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         </div>

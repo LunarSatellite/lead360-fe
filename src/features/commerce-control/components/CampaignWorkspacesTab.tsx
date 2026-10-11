@@ -304,12 +304,12 @@ function WorkspaceDetail({
               {step.isPending && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
               Yes, activate
             </Button>
-            <button
+            <Button
               onClick={() => setConfirmingActivate(false)}
-              className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </>
         ) : (
           <Button
@@ -320,13 +320,13 @@ function WorkspaceDetail({
             <Rocket className="h-3 w-3" strokeWidth={1.6} /> Activate
           </Button>
         )}
-        <button
+        <Button
           disabled={step.isPending}
           onClick={() => step.mutate('refreshOutcome')}
-          className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2 disabled:opacity-40"
+          variant="secondary" size="sm"
         >
           Re-read outcome
-        </button>
+        </Button>
       </div>
 
       <ConfigureForm

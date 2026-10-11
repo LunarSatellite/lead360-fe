@@ -220,19 +220,19 @@ function CitationsTab() {
               placeholder="…or a reason to dismiss it" aria-label="…or a reason to dismiss it"
               className="min-w-[300px] flex-1 rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
             />
-            <button
+            <Button
               onClick={() => act.mutate('dismiss')}
               disabled={act.isPending || !reason.trim()}
-              className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary disabled:opacity-40"
+              variant="secondary"
             >
               Dismiss
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setActing(null)}
-              className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -396,12 +396,12 @@ function TrackRow({
               <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.6} /> Restore
             </button>
           ) : (
-            <button
+            <Button
               onClick={() => setHiding(true)}
-              className="flex shrink-0 items-center gap-1.5 rounded-card border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-bg-elevated"
+              variant="secondary" size="sm" className="shrink-0"
             >
               <EyeOff className="h-3.5 w-3.5" strokeWidth={1.6} /> Hide
-            </button>
+            </Button>
           )
         )}
       </div>
@@ -425,12 +425,12 @@ function TrackRow({
           >
             {act.isPending ? 'Hiding…' : 'Hide track'}
           </Button>
-          <button
+          <Button
             onClick={() => setHiding(false)}
-            className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
         </div>
       )}
 

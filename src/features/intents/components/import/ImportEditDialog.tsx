@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { X } from 'lucide-react';
 import type { ImportRow } from '@/features/flow-builder/types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ImportEditDialogProps {
   row: ImportRow | null;
@@ -81,9 +82,9 @@ export function ImportEditDialog({ row, onSave, onClose }: ImportEditDialogProps
         </div>
 
         <div className="flex justify-end gap-2 px-5 py-4 border-t border-border-subtle">
-          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-glass-1 transition-colors">
+          <Button onClick={onClose} variant="ghost">
             Cancel
-          </button>
+          </Button>
           <button
             onClick={() => {
               onSave({

@@ -221,7 +221,7 @@ function NewSupplierInvoiceSlideOver({
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
             <Button type="submit" form="si-form" disabled={isPending}
               variant="primary" size="lg" className="flex-none">
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Invoice'}
@@ -455,7 +455,7 @@ export function Component() {
             <button type="submit" disabled={paySI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {paySI.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><DollarSign className="w-4 h-4" /> Mark Paid</>}
             </button>
-            <button type="button" onClick={() => setShowPay(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowPay(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>
@@ -469,7 +469,7 @@ export function Component() {
             <button type="submit" disabled={disputeSI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-warning text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {disputeSI.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Dispute'}
             </button>
-            <button type="button" onClick={() => setShowDispute(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowDispute(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>
@@ -525,7 +525,7 @@ export function Component() {
             )}
 
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setMatchResult(null)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Close</button>
+              <Button onClick={() => setMatchResult(null)} variant="secondary">Close</Button>
             </div>
           </div>
         </div>

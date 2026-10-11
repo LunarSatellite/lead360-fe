@@ -253,12 +253,12 @@ function MeetingsTab() {
         subtitle="Schedule a new meeting with a contact"
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button
+            <Button
               onClick={() => setShowInitiate(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
             <Button
               type="submit"
               disabled={initiateMeeting.isPending}
@@ -673,9 +673,9 @@ function MeetingsTab() {
                   >
                     {updateMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Complete & Log'}
                   </button>
-                  <button onClick={() => { setShowCompleteSummary(false); setCompleteSummaryText(''); }} className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-xs text-text-muted transition-all">
+                  <Button onClick={() => { setShowCompleteSummary(false); setCompleteSummaryText(''); }} variant="secondary">
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -690,7 +690,7 @@ function MeetingsTab() {
                   }} disabled={requestSummary.isPending} variant="primary" size="sm">
                     {requestSummary.isPending ? 'Requesting...' : 'Request Summary'}
                   </Button>
-                  <button onClick={() => setShowRequestSummary(false)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
+                  <Button onClick={() => setShowRequestSummary(false)} variant="secondary" size="sm">Cancel</Button>
                 </div>
               </div>
             ) : (
@@ -842,12 +842,12 @@ function CallSummariesTab() {
         subtitle="Generate an AI summary from a recorded call"
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button
+            <Button
               onClick={() => setShowRequest(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
             <Button
               type="button"
               disabled={requestSummary.isPending}

@@ -181,12 +181,12 @@ function ConfigRow({ entry, onEdit }: { entry: PlatformConfigEntry; onEdit: () =
             Updated {new Date(entry.updatedUtc).toLocaleString()}
           </p>
         </div>
-        <button
+        <Button
           onClick={onEdit}
-          className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           Edit
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -304,12 +304,12 @@ function ConfigEditor({
           )}
           Save
         </Button>
-        <button
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

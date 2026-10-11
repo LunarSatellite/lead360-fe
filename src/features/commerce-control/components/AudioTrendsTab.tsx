@@ -6,6 +6,7 @@ import {
   stylemintAudioApi,
   type AudioTrend,
 } from '../api/stylemint-audio.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * External audio trends, and the unmatched half of them.
@@ -50,17 +51,17 @@ export function AudioTrendsTab() {
             All trends
           </Toggle>
         </div>
-        <button
+        <Button
           disabled={refresh.isPending}
           onClick={() => refresh.mutate()}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-40"
+          variant="secondary" size="sm"
         >
           <RefreshCw
             className={`h-3.5 w-3.5 ${refresh.isPending ? 'animate-spin' : ''}`}
             strokeWidth={1.6}
           />
           Refresh from providers
-        </button>
+        </Button>
       </div>
 
       {message && (

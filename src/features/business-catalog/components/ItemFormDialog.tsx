@@ -213,14 +213,13 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
         </div>
 
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
-          <button
+          <Button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg text-xs font-bold text-text-secondary
-                       hover:text-text-primary hover:bg-glass-2 transition-colors"
+            variant="ghost" size="sm"
           >
             Cancel
-          </button>
+          </Button>
           <Button
             type="button"
             disabled={isPending || !name.trim() || !categoryId}

@@ -8,6 +8,7 @@ import {
   type ImportRow,
   type ImportRowStatusValue,
 } from '@/features/flow-builder/types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props { open: boolean; onClose: () => void; }
 
@@ -85,7 +86,7 @@ export function ImportDialog({ open, onClose }: Props) {
         </div>
 
         {rows.length > 0 && <div className="flex items-center justify-between px-6 py-4 border-t border-border-subtle">
-          <button onClick={() => { setRows([]); setFileName(''); }} className="px-3 py-2 rounded-lg text-xs text-text-muted hover:bg-glass-1">Upload Different File</button>
+          <Button onClick={() => { setRows([]); setFileName(''); }} variant="ghost">Upload Different File</Button>
           <button onClick={handleConfirm} disabled={!approved || confirmMut.isPending} className="px-4 py-2 rounded-lg text-xs font-bold text-white disabled:opacity-40 flex items-center gap-1.5" style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}>
             {confirmMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}Import {approved} Selected
           </button>
@@ -126,7 +127,7 @@ function EditRowForm({ row, onSave, onClose }: { row: ImportRow; onSave: (r: Imp
 </label></div>
       </div>
       <div className="flex items-center justify-end gap-2 mt-5">
-        <button onClick={onClose} className="px-3 py-2 rounded-lg text-xs text-text-muted hover:bg-glass-1">Cancel</button>
+        <Button onClick={onClose} variant="ghost">Cancel</Button>
         <button onClick={() => onSave({ ...row, name, keywords: kw || null, description: desc, operationType: op || null, status: ImportRowStatus.Approved })} className="px-4 py-2 rounded-lg text-xs font-bold text-white" style={{ background: 'linear-gradient(135deg,#059669,rgb(var(--color-success)))' }}>Save</button>
       </div>
     </div>

@@ -335,13 +335,13 @@ export function Component() {
         subtitle="Log time spent on a CRM entity"
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button
+            <Button
               type="button"
               onClick={() => setShowLog(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
             <Button
               type="submit"
               form="logtime-form"

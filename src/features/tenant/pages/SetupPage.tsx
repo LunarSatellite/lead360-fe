@@ -518,12 +518,12 @@ export function Component() {
                   >
                     {HERO_CTAS[idx]}
                   </Button>
-                  <button
+                  <Button
                     onClick={() => navigate(HERO_ROUTES[idx])}
-                    className="px-5 py-2.5 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:border-border-medium hover:bg-bg-elevated transition-all"
+                    variant="secondary" size="lg"
                   >
                     {HERO_CTA_ALT[idx]}
-                  </button>
+                  </Button>
                 </div>
               </>
             );

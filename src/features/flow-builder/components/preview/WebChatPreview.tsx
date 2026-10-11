@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { Mic, Smile, Paperclip, Send } from 'lucide-react';
+import { Button } from '@/shared/ui/primitives';
 
 interface Message {
   role: 'user' | 'bot';
@@ -76,10 +77,10 @@ export function WebChatPreview({ messages, onButtonClick, botName = 'Lead360 Sup
                 {m.buttons && m.buttons.length > 0 && (
                   <div className="mt-1.5 flex flex-wrap gap-1">
                     {m.buttons.map((b, j) => (
-                      <button
+                      <Button
                         key={j}
                         onClick={() => onButtonClick(b.value, b.label)}
-                        className="px-2.5 py-1 text-[10px] font-medium transition-colors truncate"
+                        variant="ghost" size="sm" className="truncate"
                         style={{
                           background: '#fff',
                           color: '#6C63FF',
@@ -91,7 +92,7 @@ export function WebChatPreview({ messages, onButtonClick, botName = 'Lead360 Sup
                         onMouseLeave={e => { (e.currentTarget.style.background = '#fff'); (e.currentTarget.style.color = '#6C63FF'); }}
                       >
                         {b.label}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 )}

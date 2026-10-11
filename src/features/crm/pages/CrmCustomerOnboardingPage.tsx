@@ -121,9 +121,9 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
           {expanded && !isComplete && (
             <div className="mt-2 flex gap-2">
               {isBlocked ? (
-                <button onClick={() => { toggle(CrmOnboardingStatus.InProgress); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-bg-elevated border border-border-subtle text-text-secondary hover:text-text-primary">
+                <Button onClick={() => { toggle(CrmOnboardingStatus.InProgress); setExpanded(false); }} variant="secondary" size="sm">
                   Unblock
-                </button>
+                </Button>
               ) : (
                 <>
                   <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." aria-label="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
@@ -269,7 +269,7 @@ export function Component() {
             <option value="">All Status</option>
             {Object.entries(CRM_ONBOARDING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-xl border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Apply</button>
+          <Button onClick={applyFilter} variant="secondary">Apply</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -318,8 +318,8 @@ export function Component() {
           <div className="flex items-center justify-between text-sm text-text-muted">
             <span>{total} total</span>
             <div className="flex gap-2">
-              <button disabled={(filter.page ?? 1) === 1} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) - 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Prev</button>
-              <button disabled={(filter.page ?? 1) * (filter.pageSize ?? 20) >= total} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) + 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Next</button>
+              <Button disabled={(filter.page ?? 1) === 1} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) - 1 }))} variant="secondary" size="sm">Prev</Button>
+              <Button disabled={(filter.page ?? 1) * (filter.pageSize ?? 20) >= total} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) + 1 }))} variant="secondary" size="sm">Next</Button>
             </div>
           </div>
         )}
@@ -332,7 +332,7 @@ export function Component() {
         subtitle="Launch a new customer onboarding journey"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
             <Button type="submit" form="ob-form" disabled={start.isPending}
               variant="primary" size="lg" className="flex-none">
               {start.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Start Onboarding'}
@@ -369,10 +369,10 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Steps</label>
-              <button type="button" onClick={() => setMilestones(ms => [...ms, emptyMilestone(ms.length)])}
-                className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated transition-all">
+              <Button type="button" onClick={() => setMilestones(ms => [...ms, emptyMilestone(ms.length)])}
+                variant="secondary" size="sm">
                 <Plus className="w-3 h-3" /> Add
-              </button>
+              </Button>
             </div>
             <div className="space-y-2">
               {milestones.map((m, i) => (

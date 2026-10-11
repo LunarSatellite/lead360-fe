@@ -13,6 +13,7 @@ import {
   parseJsonField,
 } from '../types/api-specs.types';
 import type { ApiSpecificationDetailDto, ApiSpecStatusValue } from '../types/api-specs.types';
+import { Button } from '@/shared/ui/primitives';
 
 type TabId = 'endpoints' | 'raw';
 
@@ -218,13 +219,13 @@ export function ApiSpecDetailPanel({ spec, onDeleted }: ApiSpecDetailPanelProps)
               </div>
             </div>
             <div className="flex items-center justify-end gap-2">
-              <button
+              <Button
                 onClick={() => setConfirmDelete(false)}
                 disabled={deleteSpec.isPending}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all"
+                variant="ghost"
               >
                 Cancel
-              </button>
+              </Button>
               <button
                 onClick={handleDelete}
                 disabled={deleteSpec.isPending}

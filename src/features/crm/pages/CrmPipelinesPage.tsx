@@ -123,12 +123,12 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
       )}
 
       <div className="flex gap-2 justify-end">
-        <button
+        <Button
           onClick={onDone}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated"
+          variant="secondary" size="sm"
         >
           Cancel
-        </button>
+        </Button>
         <Button
           onClick={handleSubmit}
           disabled={!label.trim() || create.isPending}
@@ -336,12 +336,12 @@ function EditPipelineModal({ pipeline, onClose }: EditPipelineModalProps) {
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border-subtle">
-          <button
+          <Button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated transition-all"
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
           <Button
             onClick={handleSave}
             disabled={!editName.trim() || update.isPending}
@@ -543,12 +543,12 @@ function CreatePipelineModal({ onCreated, onCancel }: CreateFormProps) {
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border-subtle">
-          <button
+          <Button
             onClick={onCancel}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated transition-all"
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
           <Button
             onClick={handleSubmit}
             disabled={!name.trim() || create.isPending}

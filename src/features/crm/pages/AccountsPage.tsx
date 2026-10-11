@@ -193,13 +193,13 @@ function AccountForm({
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> {submitLabel}</>}
         </Button>
-        <button
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -231,13 +231,13 @@ function ContactsPanel({ accountId }: { accountId: string }) {
         <p className="text-xs font-bold text-text-muted uppercase tracking-wider">
           Contacts ({links?.length ?? 0})
         </p>
-        <button
+        <Button
           onClick={() => setShowAdd((v) => !v)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary" size="sm"
         >
           <UserPlus className="w-3.5 h-3.5" strokeWidth={1.5} />
           {showAdd ? 'Cancel' : 'Add Contact'}
-        </button>
+        </Button>
       </div>
 
       {showAdd && (
@@ -409,12 +409,12 @@ function AccountDetailPanel({
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <button
+          <Button
             onClick={() => { setIsEditing(true); setTab('details'); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+            variant="secondary" size="sm"
           >
             <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> Edit
-          </button>
+          </Button>
           {confirmDelete ? (
             <div className="flex items-center gap-1.5">
               <button
@@ -624,10 +624,10 @@ function CreateAccountModal({
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Status</label>
               <div className="relative" ref={statusRef}>
-                <button
+                <Button
                   type="button"
                   onClick={() => setStatusOpen(o => !o)}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                  variant="ghost" block
                   style={{
                     ...glowInput,
                     border: `1px solid ${statusOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -644,7 +644,7 @@ function CreateAccountModal({
                     </>
                   ) : <span className="flex-1 text-left text-text-muted">Select status</span>; })()}
                   <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${statusOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-                </button>
+                </Button>
                 {statusOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                     style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -664,10 +664,10 @@ function CreateAccountModal({
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Tier</label>
               <div className="relative" ref={tierRef}>
-                <button
+                <Button
                   type="button"
                   onClick={() => setTierOpen(o => !o)}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                  variant="ghost" block
                   style={{
                     ...glowInput,
                     border: `1px solid ${tierOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -684,7 +684,7 @@ function CreateAccountModal({
                     </>
                   ) : <span className="flex-1 text-left text-text-muted">— None —</span>; })()}
                   <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${tierOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-                </button>
+                </Button>
                 {tierOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                     style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -881,13 +881,13 @@ function CreateAccountModal({
 
           {customFieldsContent}
           <div className="flex items-center justify-end gap-3 pt-2 border-t border-border-subtle">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
             <Button
               type="submit"
               disabled={isSaving || !form.name.trim()}
@@ -995,9 +995,9 @@ export function Component() {
               <option key={k} value={k}>{label}</option>
             ))}
           </select>
-          <button type="submit" className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+          <Button type="submit" variant="secondary">
             Search
-          </button>
+          </Button>
         </form>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">

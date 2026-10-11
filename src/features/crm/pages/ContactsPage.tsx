@@ -337,13 +337,13 @@ function ContactCreateForm({
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : hasDupes ? 'Review duplicates above' : 'Create Contact'}
         </Button>
-        <button
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -558,12 +558,12 @@ export function Component() {
               <option key={k} value={k}>{label}</option>
             ))}
           </select>
-          <button
+          <Button
             type="submit"
-            className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all"
+            variant="secondary"
           >
             Search
-          </button>
+          </Button>
         </form>
 
         {/* Card grid */}
@@ -656,12 +656,12 @@ export function Component() {
               {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
               Delete
             </button>
-            <button
+            <Button
               onClick={clearSelection}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+              variant="ghost" size="sm"
             >
               <X className="w-3.5 h-3.5" /> Clear
-            </button>
+            </Button>
           </div>
         )}
 

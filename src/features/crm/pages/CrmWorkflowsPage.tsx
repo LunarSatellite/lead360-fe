@@ -2002,12 +2002,12 @@ function WorkflowBuilder({ workflow, onBack }: { workflow: CrmWorkflowSummaryDto
           </button>
 
           {/* Active toggle */}
-          <button onClick={() => setIsActive((v) => !v)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-2xs font-semibold transition-all shrink-0"
+          <Button onClick={() => setIsActive((v) => !v)}
+            variant="ghost" size="sm" className="shrink-0"
             style={{ background: isActive ? 'rgb(var(--brand-rgb) / 0.08)' : 'transparent', border: `1px solid ${isActive ? 'rgb(var(--brand-rgb) / 0.25)' : 'rgb(var(--color-border-subtle))'}`, color: isActive ? 'rgb(var(--brand-rgb))' : 'rgb(var(--color-text-muted))' }}>
             {isActive ? <ToggleRight className="w-3.5 h-3.5" strokeWidth={1.8} /> : <ToggleLeft className="w-3.5 h-3.5" strokeWidth={1.8} />}
             {isActive ? 'Active' : 'Paused'}
-          </button>
+          </Button>
 
           {/* Save */}
           <button onClick={handleSave} disabled={isSaving || !name.trim()}

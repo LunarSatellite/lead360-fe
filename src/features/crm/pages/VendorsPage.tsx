@@ -256,7 +256,7 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Vendor" subtitle="Add a new vendor to your directory"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
             <Button type="submit" form="vendor-form" disabled={createVendor.isPending}
               variant="primary" size="lg" className="flex-none">
               {createVendor.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Vendor'}
@@ -270,7 +270,7 @@ export function Component() {
       <SlideOver open={!!editing} onClose={() => setEditing(null)} title={`Edit — ${editing?.name}`} subtitle="Update vendor details"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setEditing(null)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setEditing(null)} variant="secondary">Cancel</Button>
             <Button type="submit" form="vendor-form" disabled={updateVendor.isPending}
               variant="primary" size="lg" className="flex-none">
               {updateVendor.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}

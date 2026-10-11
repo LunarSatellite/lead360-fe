@@ -191,8 +191,8 @@ export function Component() {
           <div className="flex items-center justify-between text-sm text-text-muted">
             <span>{total} total</span>
             <div className="flex gap-2">
-              <button disabled={filter.page === 1} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) - 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Prev</button>
-              <button disabled={(filter.page ?? 1) * (filter.pageSize ?? 20) >= total} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) + 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Next</button>
+              <Button disabled={filter.page === 1} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) - 1 }))} variant="secondary" size="sm">Prev</Button>
+              <Button disabled={(filter.page ?? 1) * (filter.pageSize ?? 20) >= total} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) + 1 }))} variant="secondary" size="sm">Next</Button>
             </div>
           </div>
         )}

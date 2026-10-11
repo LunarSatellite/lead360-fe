@@ -683,12 +683,12 @@ export function Component() {
               <CustomFieldsInline entityType={CrmEntityType.Lead} onValuesChange={setLeadCustomFields} />
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-              <button
+              <Button
                 onClick={() => setShowCreate(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
+              </Button>
               <Button
                 disabled={createLead.isPending || (!form.customerName && !form.customerPhone && !form.customerEmail)}
                 onClick={() => createLead.mutate({
@@ -918,12 +918,12 @@ export function Component() {
             {bulkAction.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
             Delete
           </button>
-          <button
+          <Button
             onClick={clearSelection}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+            variant="ghost" size="sm"
           >
             <X className="w-3.5 h-3.5" /> Clear
-          </button>
+          </Button>
         </div>
       )}
 
@@ -934,22 +934,22 @@ export function Component() {
             Showing {fromItem}–{toItem} of {totalCount} leads
           </span>
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+              variant="secondary" size="sm"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               Prev
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+              variant="secondary" size="sm"
             >
               Next
               <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+            </Button>
           </div>
         </div>
       )}

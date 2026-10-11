@@ -17,6 +17,7 @@ import {
   type AuditEntry,
   type AuditFilters,
 } from '../api/stylemint-audit.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The commerce admin audit trail — who did what, to which record, when, and from where.
@@ -173,20 +174,20 @@ export function AuditPage() {
           </div>
 
           <div className="flex items-center justify-center gap-2">
-            <button
+            <Button
               disabled={!data.hasPrevious || page.isFetching}
               onClick={() => set({ pageNumber: data.pageNumber - 1 })}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.6} /> Previous
-            </button>
-            <button
+            </Button>
+            <Button
               disabled={!data.hasNext || page.isFetching}
               onClick={() => set({ pageNumber: data.pageNumber + 1 })}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               Next <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} />
-            </button>
+            </Button>
           </div>
         </>
       )}

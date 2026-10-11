@@ -163,7 +163,7 @@ export function Component() {
             >
               {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : editingId ? 'Update Chain' : 'Create Chain'}
             </Button>
-            <button onClick={resetForm} className="px-3 py-1.5 rounded-lg border border-border-subtle text-sm text-text-secondary">Cancel</button>
+            <Button onClick={resetForm} variant="secondary" size="sm">Cancel</Button>
           </div>
         </div>
       )}

@@ -5,6 +5,7 @@ import { FlowRuntimeStatus, type FlowRuntimeResult, type FlowMenuItemDto } from 
 import { VoiceButton } from '@/features/voice/components/VoiceButton';
 import { AudioMessage } from '@/features/voice/components/AudioMessage';
 import { useTranscribeAudio } from '@/features/voice/api/voice.queries';
+import { Button } from '@/shared/ui/primitives';
 
 interface SimMsg {
   role: 'user' | 'bot';
@@ -266,13 +267,13 @@ export function FlowSimulator() {
 
       {/* ── Debug — collapsible, capped height ── */}
       <div className="border-t border-border-subtle flex-shrink-0">
-        <button
+        <Button
           onClick={() => setShowDebug(d => !d)}
-          className="w-full px-2.5 py-1.5 flex items-center justify-between text-2xs hover:bg-glass-1 transition-colors"
+          variant="ghost" size="sm" block
         >
           <span className="text-brand font-bold">🔍 Debug</span>
           <span className="text-text-muted text-[9px]">{showDebug ? '▾' : '▸'}</span>
-        </button>
+        </Button>
         {showDebug && (
           <div className="px-2.5 pb-2 space-y-0.5 text-2xs max-h-[120px] overflow-y-auto">
             <Row label="Status" value={lastDebug ? statusLabel(lastDebug.status) : '-'} />

@@ -231,11 +231,11 @@ function GenInvoiceSlideOver({
 
           <div className="grid grid-cols-2 gap-3">
             {(['deal', 'order'] as const).map(src => (
-              <button
+              <Button
                 key={src}
                 type="button"
                 onClick={() => setGenSource(src)}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all"
+                variant="ghost"
                 style={{
                   backgroundColor: genSource === src ? 'rgb(var(--color-surface-elevated))' : 'rgb(var(--color-glass-1))',
                   border: `1px solid ${genSource === src ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -245,7 +245,7 @@ function GenInvoiceSlideOver({
               >
                 <ShoppingCart className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
                 {src === 'deal' ? 'From Deal' : 'From Order'}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -267,7 +267,7 @@ function GenInvoiceSlideOver({
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
             <Button
               type="button"
               onClick={onGenerate}

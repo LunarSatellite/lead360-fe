@@ -500,15 +500,15 @@ export function DashboardLayout() {
                   <div className="text-xs text-text-muted mt-0.5">{displayEmail}</div>
                 </div>
                 <div className="py-1">
-                  <button
+                  <Button
                     onClick={() => {
                       setMenuOpen(false);
                       navigate('/dashboard/settings');
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+                    variant="ghost" size="lg" block
                   >
                     <User className="w-4 h-4" strokeWidth={1.6} /> Account settings
-                  </button>
+                  </Button>
                 </div>
                 <div className="border-t border-border-subtle py-1">
                   <button

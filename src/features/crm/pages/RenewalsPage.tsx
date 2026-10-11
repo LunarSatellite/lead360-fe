@@ -121,13 +121,13 @@ export function Component() {
                       <td className="px-4 py-3 text-xs text-text-secondary">{RENEWAL_STATUS_LABELS[r.status]}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <button
+                          <Button
                             onClick={() => outreach.mutate(r.id)}
                             disabled={terminal || outreach.isPending}
-                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border border-border-medium text-text-secondary hover:text-text-primary hover:bg-glass-2 disabled:opacity-40 transition-all"
+                            variant="secondary" size="sm"
                           >
                             <Send className="w-3 h-3" /> Outreach
-                          </button>
+                          </Button>
                           <select
                             disabled={terminal || outcome.isPending}
                             defaultValue=""

@@ -32,7 +32,7 @@ function ReviewModal({ mode, approvalId, onClose }: {
           </label>
         </div>
         <div className="flex gap-2 justify-end">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+          <Button onClick={onClose} variant="secondary">Cancel</Button>
           <button onClick={() => mutation.mutate({ id: approvalId, data: { comment: comment.trim() || undefined } }, { onSuccess: onClose })}
             disabled={mutation.isPending || (mode === 'reject' && !comment.trim())}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white disabled:opacity-50 ${mode === 'approve' ? 'bg-success hover:bg-success/80' : 'bg-danger hover:bg-danger/80'}`}>
@@ -182,10 +182,10 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
                 </>
               )}
               {user?.id === approval.requestedByUserId && (
-                <button onClick={() => cancelMut.mutate(approval.id)} disabled={cancelMut.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated disabled:opacity-50 ml-auto">
+                <Button onClick={() => cancelMut.mutate(approval.id)} disabled={cancelMut.isPending}
+                  variant="secondary" size="sm" className="ml-auto">
                   Cancel Request
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -201,10 +201,10 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
               <p className="text-xs text-text-muted">Waiting for next step in chain...</p>
             )}
             {approval.status === 3 && (
-              <button onClick={() => submitChainMut.mutate(matchingChain!.id)} disabled={submitChainMut.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated disabled:opacity-50">
+              <Button onClick={() => submitChainMut.mutate(matchingChain!.id)} disabled={submitChainMut.isPending}
+                variant="secondary" size="sm">
                 <Send className="w-3.5 h-3.5" /> Resubmit
-              </button>
+              </Button>
             )}
           </div>
         )}

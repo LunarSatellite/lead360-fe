@@ -295,7 +295,7 @@ export function Component() {
             <option value="">All Status</option>
             {Object.entries(CRM_ORDER_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <Button onClick={applyFilter} variant="secondary">Search</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -361,7 +361,7 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Order"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
             <Button type="submit" form="create-order-form" disabled={createOrder.isPending}
               variant="primary" size="lg" className="flex-none">
               {createOrder.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Order'}
@@ -375,8 +375,8 @@ export function Component() {
           <Field label="Customer PO #"><input aria-label="Customer po number" value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <Field label="Account">
             <div className="relative">
-              <button type="button" onClick={() => setAccountOpen(!accountOpen)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              <Button type="button" onClick={() => setAccountOpen(!accountOpen)}
+                variant="ghost" block
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${accountOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -389,7 +389,7 @@ export function Component() {
                   {orderAccountId ? accountsList.find((a: any) => a.id === orderAccountId)?.name ?? 'Select account' : '— Select account (optional) —'}
                 </span>
                 <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${accountOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-              </button>
+              </Button>
               {accountOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                   style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -427,9 +427,9 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Line Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded-md border border-border-subtle text-xs text-text-secondary hover:text-text-primary hover:bg-glass-1 transition-all">
+              <Button type="button" onClick={addLine} variant="secondary" size="sm">
                 <Plus className="w-3 h-3" /> Add Row
-              </button>
+              </Button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
@@ -480,7 +480,7 @@ export function Component() {
                 <button type="submit" disabled={recordPayment.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
                   {recordPayment.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Record Payment'}
                 </button>
-                <button type="button" onClick={() => setShowPayment(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+                <Button type="button" onClick={() => setShowPayment(false)} variant="secondary">Cancel</Button>
               </div>
             </>
           )}
@@ -497,7 +497,7 @@ export function Component() {
             <Button type="submit" disabled={createDelivery.isPending} variant="primary" className="flex-1">
               {createDelivery.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Shipment'}
             </Button>
-            <button type="button" onClick={() => setShowNewShipment(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowNewShipment(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>
@@ -571,9 +571,9 @@ export function Component() {
                       {d.failureReason && <div className="text-xs text-danger-light">Failed: {d.failureReason}</div>}
                       {d.status >= 1 && d.status <= 4 && (
                         <div className="flex gap-1 mt-1.5">
-                          {d.status === 1 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 2 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">Pick Up</button>}
-                          {d.status === 2 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 3 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">In Transit</button>}
-                          {d.status === 3 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 4 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">Out for Delivery</button>}
+                          {d.status === 1 && <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 2 } })} variant="secondary" size="sm">Pick Up</Button>}
+                          {d.status === 2 && <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 3 } })} variant="secondary" size="sm">In Transit</Button>}
+                          {d.status === 3 && <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 4 } })} variant="secondary" size="sm">Out for Delivery</Button>}
                           {d.status === 4 && (
                             <>
                               <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} className="text-[10px] px-2 py-1 rounded bg-success-soft text-success border border-success/20 hover:bg-success/20">Delivered</button>
@@ -825,7 +825,7 @@ export function Component() {
             ) : null}
 
             <div className="flex gap-2 justify-end">
-              <button onClick={() => { setCreditResult(null); setConfirmOverrideNote(''); }} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+              <Button onClick={() => { setCreditResult(null); setConfirmOverrideNote(''); }} variant="secondary">Cancel</Button>
               {(creditResult.riskLevel === 1 || creditResult.riskLevel === 2) && (
                 <button onClick={() => { confirmOrder.mutate(selectedOrder!.id); setCreditResult(null); setConfirmOverrideNote(''); }} disabled={confirmOrder.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-success hover:opacity-90 disabled:opacity-50">

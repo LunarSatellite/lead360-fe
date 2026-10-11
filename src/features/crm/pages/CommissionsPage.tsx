@@ -63,7 +63,7 @@ function PayoutModal({ payout, onClose }: { payout: CrmCommissionPayoutDto; onCl
           </Button>
         )}
 
-        <button onClick={onClose} className="w-full py-2 rounded-xl text-sm text-text-secondary border border-border-subtle hover:bg-bg-elevated">Close</button>
+        <Button onClick={onClose} variant="secondary" block>Close</Button>
       </div>
     </div>
   );

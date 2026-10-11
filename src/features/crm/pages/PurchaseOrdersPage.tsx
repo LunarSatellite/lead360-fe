@@ -157,7 +157,7 @@ export function Component() {
             <option value="">All Status</option>
             {Object.entries(PO_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={() => setFilter(f => ({ ...f, search: search || undefined, status: statusF ? Number(statusF) as PurchaseOrderStatus : undefined, page: 1 }))} className="px-4 py-2 rounded-xl border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <Button onClick={() => setFilter(f => ({ ...f, search: search || undefined, status: statusF ? Number(statusF) as PurchaseOrderStatus : undefined, page: 1 }))} variant="secondary">Search</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -220,7 +220,7 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Purchase Order" subtitle="Create a new purchase order for a vendor" wide
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
             <Button type="submit" form="po-form" disabled={createPO.isPending}
               variant="primary" size="lg" className="flex-none">
               {createPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Purchase Order'}
@@ -313,7 +313,7 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
+              <Button type="button" onClick={addLine} variant="secondary" size="sm"><PlusCircle className="w-3 h-3" /> Add Row</Button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
@@ -427,9 +427,9 @@ export function Component() {
                 </button>
               )}
               {selected.status === PurchaseOrderStatus.FullyReceived && (
-                <button onClick={() => { closePO.mutate(selected.id); setSelected(null); }} disabled={closePO.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary transition-all disabled:opacity-50">
+                <Button onClick={() => { closePO.mutate(selected.id); setSelected(null); }} disabled={closePO.isPending} variant="secondary">
                   <Lock className="w-3.5 h-3.5" /> Close PO
-                </button>
+                </Button>
               )}
               {selected.status <= PurchaseOrderStatus.Approved && (
                 <button onClick={() => setShowCancel(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80">
@@ -450,7 +450,7 @@ export function Component() {
             <button type="submit" disabled={rejectPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {rejectPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Reject'}
             </button>
-            <button type="button" onClick={() => setShowReject(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowReject(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>
@@ -464,7 +464,7 @@ export function Component() {
             <button type="submit" disabled={cancelPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {cancelPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancel Order'}
             </button>
-            <button type="button" onClick={() => setShowCancel(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Back</button>
+            <Button type="button" onClick={() => setShowCancel(false)} variant="secondary">Back</Button>
           </div>
         </form>
       </SlideOver>

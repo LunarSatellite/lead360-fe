@@ -110,10 +110,10 @@ export function CatalogImportDialog({ onClose }: Props) {
               <div className="text-xs font-bold text-text-primary">Start with the supported format</div>
               <div className="text-[11px] text-text-muted">Download the template, fill it, then upload it below.</div>
             </div>
-            <button type="button" onClick={downloadTemplate} disabled={isDownloading} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-bold text-text-secondary hover:bg-glass-2 disabled:opacity-50">
+            <Button type="button" onClick={downloadTemplate} disabled={isDownloading} variant="secondary" size="sm">
               {isDownloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
               Download template
-            </button>
+            </Button>
           </div>
 
           <div className="grid gap-4 md:grid-cols-[1fr_220px]">
@@ -150,7 +150,7 @@ export function CatalogImportDialog({ onClose }: Props) {
         </div>
 
         <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border-subtle">
-          <button type="button" onClick={onClose} disabled={isImporting} className="px-4 py-2 rounded-lg text-xs font-bold text-text-secondary hover:bg-glass-2">Cancel</button>
+          <Button type="button" onClick={onClose} disabled={isImporting} variant="ghost">Cancel</Button>
           <Button type="button" onClick={handleImport} disabled={!preview || preview.invalidRows > 0 || isImporting} variant="primary">
             {isImporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
             Import catalog

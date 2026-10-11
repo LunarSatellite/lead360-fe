@@ -11,6 +11,7 @@ import {
   type ApiSpecUploadFormData,
   type ApiSpecFileUploadFormData,
 } from '../types/api-specs.schemas';
+import { Button } from '@/shared/ui/primitives';
 
 type TabId = 'paste' | 'file';
 
@@ -281,14 +282,14 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle bg-glass-1">
-          <button
+          <Button
             type="button"
             onClick={handleClose}
             disabled={isPending}
-            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+            variant="ghost" size="lg"
           >
             Cancel
-          </button>
+          </Button>
           <button
             type="submit"
             form={tab === 'paste' ? 'paste-form' : 'file-form'}

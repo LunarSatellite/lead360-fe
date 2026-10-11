@@ -475,16 +475,16 @@ function DisconnectDialog({ onClose, onConfirm, isPending }: { onClose: () => vo
           >
             Cancel
           </button>
-          <button
+          <Button
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-xs font-semibold transition-all disabled:opacity-40"
+            variant="ghost"
             style={{ background: 'rgb(var(--color-danger) / 0.15)', color: 'rgb(var(--color-danger))', border: '1px solid rgb(var(--color-danger) / 0.3)' }}
           >
             {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             Disconnect
-          </button>
+          </Button>
         </div>
       </div>
     </div>

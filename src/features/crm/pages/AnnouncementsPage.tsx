@@ -89,8 +89,8 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
         <div>
           <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
           <div className="relative">
-            <button type="button" onClick={() => setTypeOpen(!typeOpen)}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+            <Button type="button" onClick={() => setTypeOpen(!typeOpen)}
+              variant="ghost" block
               style={{
                 backgroundColor: 'rgb(var(--color-glass-1))',
                 border: `1px solid ${typeOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -101,7 +101,7 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
               <Tag className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
               <span className="flex-1 text-left font-medium text-text-secondary">{ANNOUNCEMENT_TYPE_LABELS[form.type]}</span>
               <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${typeOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-            </button>
+            </Button>
             {typeOpen && (
               <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                 style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -436,11 +436,11 @@ export function Component() {
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-text-muted">Choose what happens after creating:</p>
             <div className="flex gap-3">
-              <button onClick={() => setCreating(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-              <button onClick={() => handleCreate('draft')}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">
+              <Button onClick={() => setCreating(false)} variant="secondary">Cancel</Button>
+              <Button onClick={() => handleCreate('draft')}
+                variant="secondary">
                 <Clock className="w-3.5 h-3.5" /> Save as Draft
-              </button>
+              </Button>
               {!form.scheduledAt && (
                 <Button onClick={() => handleCreate('publish')}
                   variant="primary">

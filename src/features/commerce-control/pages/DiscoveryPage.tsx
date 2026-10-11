@@ -245,12 +245,12 @@ function SearchRow({ search, onChanged }: { search: PopularSearch; onChanged: ()
             >
               Delete
             </button>
-            <button
+            <Button
               onClick={() => setConfirmDelete(false)}
-              className="rounded-sm border-thin border-border-medium px-3 py-1 text-xs font-bold text-text-secondary hover:bg-glass-2"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -328,12 +328,12 @@ function SearchEditor({ onCancel, onSaved }: { onCancel: () => void; onSaved: ()
           )}
           Create
         </Button>
-        <button
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -430,12 +430,12 @@ function FeaturedRow({
           >
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} /> Approve
           </Button>
-          <button
+          <Button
             onClick={() => { setMode('reject'); setError(null); }}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Reject
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -465,12 +465,12 @@ function FeaturedRow({
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
             </Button>
-            <button
+            <Button
               onClick={() => { setMode(null); setNote(''); }}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -585,14 +585,14 @@ function ReachTab() {
           </p>
         </div>
         <div className="flex items-center gap-1.5">
-          <button
+          <Button
             disabled={tick.isPending}
             onClick={() => tick.mutate()}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-40"
+            variant="secondary" size="sm"
           >
             {tick.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
             Decision tick
-          </button>
+          </Button>
           <Button
             disabled={drain.isPending}
             onClick={() => drain.mutate()}

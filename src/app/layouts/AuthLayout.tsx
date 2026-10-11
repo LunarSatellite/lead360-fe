@@ -6,6 +6,7 @@ import {
   Utensils, Headphones, PackageCheck, Wallet, Store, Users,
 } from 'lucide-react';
 import { consoleBrand } from '@/shared/config/console-brand';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Chatbot preview types ───
 type ProductCard = { name: string; price: string; was: string; bg: string };
@@ -310,17 +311,17 @@ function IndustryShowcase() {
           const DIcon = d.Icon;
           const isActive = active === i;
           return (
-            <button
+            <Button
               key={d.id}
               onClick={() => { setActive(i); setResetKey((k) => k + 1); }}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-xs font-semibold transition-all"
+              variant="ghost" size="sm"
               style={isActive
                 ? { background: d.botColor + '18', border: `0.5px solid ${d.botColor}55`, color: d.botColor }
                 : { background: 'transparent', border: '0.5px solid rgb(var(--color-border-default))', color: '#665C1A' }}
             >
               <DIcon className="w-3.5 h-3.5" strokeWidth={1.6} />
               {d.label}
-            </button>
+            </Button>
           );
         })}
       </div>

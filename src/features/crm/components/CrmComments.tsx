@@ -73,12 +73,12 @@ function CommentItem({
                 >
                   Save
                 </Button>
-                <button
+                <Button
                   onClick={onCancelEdit}
-                  className="text-xs px-3 py-1 rounded-lg border border-border-subtle text-text-muted hover:text-text-primary transition-colors"
+                  variant="secondary" size="sm"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
@@ -124,12 +124,12 @@ function CommentItem({
                 >
                   <Send className="w-3 h-3" /> Send
                 </Button>
-                <button
+                <Button
                   onClick={onCancelReply}
-                  className="text-xs px-3 py-1 rounded-lg border border-border-subtle text-text-muted hover:text-text-primary transition-colors"
+                  variant="secondary" size="sm"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           )}

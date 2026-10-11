@@ -41,7 +41,7 @@ export function BriefEditDialog({ id, onClose, onSaved }: Props) {
       <Input aria-label="Boost budget amount" label="Boost budget" type="number" value={form.boostBudgetAmount} onChange={(v) => set('boostBudgetAmount', v)} />
       <label className="space-y-1.5"><span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Currency</span><select value={form.boostBudgetCurrency} onChange={(e) => set('boostBudgetCurrency', e.target.value)} className={control}><option value="CDF">CDF</option><option value="USD">USD</option></select></label>
     </div>}
-    <footer className="flex justify-end gap-2 border-t border-border-subtle px-5 py-4"><button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">Cancel</button><Button disabled={save.isPending || !valid} variant="primary" size="lg"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save brief'}</Button></footer>
+    <footer className="flex justify-end gap-2 border-t border-border-subtle px-5 py-4"><Button type="button" onClick={onClose} variant="secondary" size="lg">Cancel</Button><Button disabled={save.isPending || !valid} variant="primary" size="lg"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save brief'}</Button></footer>
   </form></div>;
 }
 const control = 'w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50';

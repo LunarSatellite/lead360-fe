@@ -51,7 +51,7 @@ export function CollectionEditDialog({ id, initial, onClose, onSaved }: Props) {
           <div className="grid grid-cols-2 gap-3"><Input aria-label="Starts UTC" label="Starts" type="datetime-local" value={form.startsUtc} onChange={(v) => set('startsUtc', v)} /><Input aria-label="Ends UTC" label="Ends" type="datetime-local" value={form.endsUtc} onChange={(v) => set('endsUtc', v)} /></div>
           <label className="space-y-1.5 md:col-span-2"><span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Description</span><textarea rows={5} value={form.description} onChange={(e) => set('description', e.target.value)} className="w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50" /></label>
         </div>}
-      <footer className="flex items-center justify-end gap-2 border-t border-border-subtle px-5 py-4"><button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">Cancel</button><Button disabled={save.isPending || !form.title.trim() || !form.slug.trim()} variant="primary" size="lg"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save collection'}</Button></footer>
+      <footer className="flex items-center justify-end gap-2 border-t border-border-subtle px-5 py-4"><Button type="button" onClick={onClose} variant="secondary" size="lg">Cancel</Button><Button disabled={save.isPending || !form.title.trim() || !form.slug.trim()} variant="primary" size="lg"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save collection'}</Button></footer>
     </form>
   </div>;
 }

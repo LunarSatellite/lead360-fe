@@ -7,6 +7,7 @@ import {
   ApprovalStatus, APPROVAL_STATUS_LABELS, APPROVAL_STATUS_COLORS,
   APPROVAL_ENTITY_TYPE_LABELS,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Review Modal ──────────────────────────────────────────────────────────────
 
@@ -56,9 +57,9 @@ function ReviewModal({
         </div>
 
         <div className="flex gap-2 justify-end">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">
+          <Button onClick={onClose} variant="secondary">
             Cancel
-          </button>
+          </Button>
           <button
             onClick={handleSubmit}
             disabled={mutation.isPending || (mode === 'reject' && !comment.trim())}

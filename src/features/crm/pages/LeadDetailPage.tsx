@@ -241,33 +241,33 @@ export function Component() {
                       ))}
                     </select>
                   ) : (
-                    <button
+                    <Button
                       onClick={() => setStageEdit(true)}
-                      className="px-4 py-2 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium transition-all"
+                      variant="secondary"
                     >
                       Change Stage
-                    </button>
+                    </Button>
                   )}
                 </div>
               )}
 
               {/* Add Note */}
-              <button
+              <Button
                 onClick={() => setShowNoteBox((v) => !v)}
-                className="px-4 py-2 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 {showNoteBox ? 'Cancel Note' : 'Add Note'}
-              </button>
+              </Button>
 
               {/* Enroll in Sequence */}
               {!isConverted && (
-                <button
+                <Button
                   onClick={() => setShowEnrollModal(true)}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium transition-all"
+                  variant="secondary"
                 >
                   <GitMerge className="w-3.5 h-3.5" />
                   Enroll in Sequence
-                </button>
+                </Button>
               )}
 
               {/* Convert to Deal — shown for Hot/Warm/New leads not yet converted */}
@@ -551,12 +551,12 @@ function EnrollModal({ leadId, onClose }: { leadId: string; onClose: () => void 
         )}
 
         <div className="flex justify-end gap-3 pt-1">
-          <button
+          <Button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-text-secondary bg-bg-elevated border border-border-subtle rounded-xl hover:border-border-medium transition-colors"
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
           <Button
             onClick={handleEnroll}
             disabled={!selected || enrollMutation.isPending}

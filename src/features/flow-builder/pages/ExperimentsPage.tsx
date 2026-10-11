@@ -175,9 +175,9 @@ function CreateForm({ onSave, onCancel, isSaving }: {
       </div>
 
       <div className="flex items-center justify-end gap-3 pt-1">
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">
+        <Button type="button" onClick={onCancel} variant="secondary">
           Cancel
-        </button>
+        </Button>
         <Button
           type="submit"
           disabled={isSaving || !form.name.trim() || !form.controlFlowId.trim() || !form.challengerFlowId.trim()}
@@ -231,9 +231,9 @@ function EditForm({ exp, onSave, onCancel, isSaving }: {
         <Button type="submit" disabled={isSaving} variant="primary">
           {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> Save</>}
         </Button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">
+        <Button type="button" onClick={onCancel} variant="secondary">
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -483,20 +483,20 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
             )}
             {isRunning && (
               <>
-                <button
+                <Button
                   onClick={() => pause.mutate(exp.id)}
                   disabled={pause.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all disabled:opacity-50"
+                  variant="secondary" size="sm"
                 >
                   {pause.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Pause className="w-3.5 h-3.5" strokeWidth={1.5} /> Pause</>}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => complete.mutate(exp.id)}
                   disabled={complete.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all disabled:opacity-50"
+                  variant="secondary" size="sm"
                 >
                   {complete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><CheckCircle className="w-3.5 h-3.5" strokeWidth={1.5} /> Complete</>}
-                </button>
+                </Button>
               </>
             )}
             {isPaused && (
@@ -508,13 +508,13 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
                 >
                   {resume.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><RotateCcw className="w-3.5 h-3.5" strokeWidth={1.5} /> Resume</>}
                 </Button>
-                <button
+                <Button
                   onClick={() => complete.mutate(exp.id)}
                   disabled={complete.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all disabled:opacity-50"
+                  variant="secondary" size="sm"
                 >
                   {complete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><CheckCircle className="w-3.5 h-3.5" strokeWidth={1.5} /> Complete</>}
-                </button>
+                </Button>
               </>
             )}
             {isCompleted && !exp.winner && (
@@ -536,22 +536,22 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
                   <button onClick={() => setDeclareOpen(false)} className="text-xs text-text-muted hover:text-text-primary">×</button>
                 </div>
               ) : (
-                <button
+                <Button
                   onClick={() => setDeclareOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+                  variant="secondary" size="sm"
                 >
                   <Trophy className="w-3.5 h-3.5" strokeWidth={1.5} /> Declare Winner
-                </button>
+                </Button>
               )
             )}
 
             {/* Stats toggle — always available */}
-            <button
+            <Button
               onClick={() => setShowStats((v) => !v)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all ml-auto"
+              variant="secondary" size="sm" className="ml-auto"
             >
               {showStats ? <><ChevronUp className="w-3.5 h-3.5" strokeWidth={1.5} /> Hide Stats</> : <><ChevronDown className="w-3.5 h-3.5" strokeWidth={1.5} /> View Stats</>}
-            </button>
+            </Button>
           </div>
 
           {/* Stats panel */}

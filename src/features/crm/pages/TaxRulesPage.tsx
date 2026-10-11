@@ -163,7 +163,7 @@ export function Component() {
         subtitle="Set up tax rates by jurisdiction"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
             <Button
               type="submit"
               form="tr-form"

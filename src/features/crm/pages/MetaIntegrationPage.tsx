@@ -333,11 +333,11 @@ function CampaignList({
           variant="primary" className="flex-1">
           <Plus className="w-3.5 h-3.5" /> New Campaign
         </Button>
-        <button onClick={onSyncClick} disabled={isSyncing}
+        <Button onClick={onSyncClick} disabled={isSyncing}
           aria-label={isSyncing ? 'Syncing Meta campaigns' : 'Sync Meta campaigns'}
-          className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
+          variant="secondary">
           {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-        </button>
+        </Button>
       </div>
 
       {loading && (
@@ -820,9 +820,9 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             {mut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Facebook className="w-4 h-4" />}
             Connect & Save
           </button>
-          <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:border-border-medium transition-all">
+          <Button onClick={onClose} variant="secondary" size="lg">
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -999,9 +999,9 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
             {mut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />}
             Save Configuration
           </button>
-          <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
+          <Button onClick={onClose} variant="secondary" size="lg">
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -1172,10 +1172,10 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-border-subtle flex gap-3">
-          <button onClick={onClose}
-            className="flex-1 py-2.5 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
+          <Button onClick={onClose}
+            variant="secondary" size="lg" className="flex-1">
             Cancel
-          </button>
+          </Button>
           <Button onClick={() => mut.mutate()} disabled={!canSubmit}
             variant="primary" size="lg" className="flex-1">
             {mut.isPending
@@ -1391,9 +1391,9 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
             {mut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" strokeWidth={1.6} />}
             Connect
           </Button>
-          <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
+          <Button onClick={onClose} variant="secondary" size="lg">
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -1453,16 +1453,16 @@ function TikTokAdsTab({ onNewPost }: { onNewPost?: () => void }) {
                 variant="primary" className="flex-1">
                 <Plus className="w-3.5 h-3.5" /> New
               </Button>
-              <button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
-                className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
+              <Button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
+                variant="secondary">
                 {syncMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-              </button>
+              </Button>
             </div>
             {onNewPost && (
-              <button onClick={onNewPost}
-                className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
+              <Button onClick={onNewPost}
+                variant="secondary" block>
                 <Pencil className="w-3.5 h-3.5" /> New TikTok Post
-              </button>
+              </Button>
             )}
 
             {campaignsLoading && (
@@ -1815,16 +1815,16 @@ function OAuthPlatformTab({
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl text-white hover:opacity-90 transition-all disabled:opacity-60">
                 <Plus className="w-3.5 h-3.5" /> New Campaign
               </button>
-              <button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
-                className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
+              <Button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
+                variant="secondary">
                 {syncMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-              </button>
+              </Button>
             </div>
             {onNewPost && (
-              <button onClick={onNewPost}
-                className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
+              <Button onClick={onNewPost}
+                variant="secondary" block>
                 <Pencil className="w-3.5 h-3.5" /> New {platformName} Post
-              </button>
+              </Button>
             )}
 
             {campaignsLoading && (

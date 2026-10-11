@@ -203,21 +203,21 @@ export function Component() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-end gap-2 text-sm">
-          <button
+          <Button
             disabled={(filter.page ?? 1) <= 1}
             onClick={() => setFilter((f) => ({ ...f, page: Math.max(1, (f.page ?? 1) - 1) }))}
-            className="px-3 py-1 rounded-md border border-border-subtle text-text-muted hover:text-text-primary disabled:opacity-40"
+            variant="secondary" size="sm"
           >
             Prev
-          </button>
+          </Button>
           <span className="text-text-muted">Page {filter.page ?? 1} of {totalPages}</span>
-          <button
+          <Button
             disabled={(filter.page ?? 1) >= totalPages}
             onClick={() => setFilter((f) => ({ ...f, page: Math.min(totalPages, (f.page ?? 1) + 1) }))}
-            className="px-3 py-1 rounded-md border border-border-subtle text-text-muted hover:text-text-primary disabled:opacity-40"
+            variant="secondary" size="sm"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </div>

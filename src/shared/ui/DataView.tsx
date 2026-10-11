@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Loader2, Inbox, AlertCircle, RotateCw } from 'lucide-react';
 import { getApiError } from '@/shared/lib/get-api-error';
+import { Button } from '@/shared/ui/primitives';
 
 /** Minimal shape compatible with a TanStack Query result. */
 interface QueryLike<T> {
@@ -45,13 +46,13 @@ export function DataView<T>({ query, children, empty, isEmpty = defaultIsEmpty, 
         <AlertCircle size={18} strokeWidth={1.6} className="text-danger-light" />
         <p className="max-w-md text-xs text-text-muted">{message}</p>
         {query.refetch && (
-          <button
+          <Button
             onClick={() => query.refetch?.()}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-600 text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             <RotateCw size={13} strokeWidth={1.6} />
             Retry
-          </button>
+          </Button>
         )}
       </div>
     );

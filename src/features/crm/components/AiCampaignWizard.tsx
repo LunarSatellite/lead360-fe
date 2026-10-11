@@ -224,10 +224,10 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
           {/* Quick ideas */}
           <div className="flex flex-wrap gap-1.5">
             {['New product launch', 'Get more leads', 'Drive website traffic', 'Brand awareness'].map(s => (
-              <button key={s} onClick={() => setPrompt(s)}
-                className="px-2.5 py-1 rounded-full border border-border-subtle text-[10px] font-semibold text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
+              <Button key={s} onClick={() => setPrompt(s)}
+                variant="secondary" size="sm">
                 {s}
-              </button>
+              </Button>
             ))}
           </div>
 

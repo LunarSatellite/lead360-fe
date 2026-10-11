@@ -170,9 +170,9 @@ function CertificateForm({ domain, onClose }: { domain: TenantDomainDto; onClose
         className="w-full resize-y rounded-xl border border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
       />
       <div className="flex justify-end gap-2">
-        <button onClick={onClose} className="rounded-xl border border-border-subtle px-3 py-2 text-xs text-text-muted hover:text-text-primary">
+        <Button onClick={onClose} variant="secondary">
           Cancel
-        </button>
+        </Button>
         <Button
           onClick={submit}
           disabled={upload.isPending}
@@ -238,13 +238,13 @@ function DomainCard({ domain }: { domain: TenantDomainDto }) {
             </Button>
           )}
           {isActive && (
-            <button
+            <Button
               onClick={() => setStatus.mutate({ domainId: domain.id, status: TENANT_DOMAIN_STATUS.Disabled })}
               disabled={statusPending}
-              className="rounded-xl border border-border-subtle px-3 py-2 text-xs text-text-secondary hover:text-text-primary disabled:opacity-50"
+              variant="secondary"
             >
               Disable
-            </button>
+            </Button>
           )}
           <button
             onClick={() => setShowCertificate((value) => !value)}
@@ -345,13 +345,13 @@ function CustomDomainsPage() {
             </div>
           </div>
         </div>
-        <button
+        <Button
           onClick={() => void domains.refetch()}
           disabled={domains.isFetching}
-          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-border-subtle px-3 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary disabled:opacity-50"
+          variant="secondary"
         >
           <RefreshCw className={`h-3.5 w-3.5 ${domains.isFetching ? 'animate-spin' : ''}`} /> Refresh verification
-        </button>
+        </Button>
       </header>
 
       <form onSubmit={submit} className="rounded-2xl border border-border-subtle bg-bg-elevated p-5">

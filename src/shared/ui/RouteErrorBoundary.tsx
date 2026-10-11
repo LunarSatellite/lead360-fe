@@ -1,6 +1,7 @@
 import { useRouteError, useNavigate, isRouteErrorResponse } from 'react-router-dom';
 import { AlertTriangle, RotateCw, Home } from 'lucide-react';
 import { getApiError } from '@/shared/lib/get-api-error';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Route-level error element. React Router renders this when a route's loader/lazy import
@@ -35,13 +36,13 @@ export function RouteErrorBoundary() {
           <RotateCw size={13} strokeWidth={1.6} />
           Reload
         </button>
-        <button
+        <Button
           onClick={() => navigate('/dashboard/home')}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3.5 py-2 text-xs font-600 text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary"
         >
           <Home size={13} strokeWidth={1.6} />
           Home
-        </button>
+        </Button>
       </div>
     </div>
   );

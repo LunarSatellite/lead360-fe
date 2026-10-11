@@ -56,7 +56,7 @@ export function Component() {
             <Radio className="w-4 h-4 text-brand" strokeWidth={1.6} />
           </div>
           <div>
-            <h1 className="text-lg font-extrabold text-text-primary tracking-tight leading-none">Channels</h1>
+            <h1 className="text-xl font-extrabold text-text-primary tracking-tight leading-none">Channels</h1>
             <div className="flex items-center gap-1.5 mt-1">
               {activeCount > 0 && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xs bg-glass-1 border-thin border-border-subtle text-2xs font-semibold text-success">

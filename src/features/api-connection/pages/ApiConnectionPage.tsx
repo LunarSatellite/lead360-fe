@@ -114,7 +114,7 @@ export function Component() {
         }}
       >
         <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10 }}>
-          <h1 style={{ fontSize: 18, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>API Connection</h1>
+          <h1 className="text-xl font-extrabold tracking-tight text-text-primary">API Connection</h1>
           <div style={{ height: 16, width: 1, background: 'rgb(var(--color-glass-1))' }} />
           {activeSpec ? (
             <div

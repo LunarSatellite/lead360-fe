@@ -364,7 +364,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
             </button>
             <button
               disabled={create.isPending || images.length < 5}
-              className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+              className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-text-inverted disabled:opacity-40"
             >
               {create.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

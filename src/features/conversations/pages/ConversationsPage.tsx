@@ -161,7 +161,7 @@ function DealSidebar({ sessionId }: { sessionId: string }) {
             <select
               value={deal.stageId ?? ''}
               onChange={e => moveStage.mutate({ id: deal.id, data: { stageId: e.target.value } })}
-              className="w-full px-2 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary focus:outline-none"
+              className="w-full px-2 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
             >
               {stages.filter(s => !s.isClosed).map(s => (
                 <option key={s.id} value={s.id}>{s.name}</option>

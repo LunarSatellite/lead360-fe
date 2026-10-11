@@ -225,7 +225,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
             disabled={isPending || !name.trim() || !categoryId}
             onClick={handleSubmit}
             className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold
-                       bg-brand text-white hover:bg-brand/90 disabled:opacity-50 transition-all"
+                       bg-brand text-text-inverted hover:bg-brand/90 disabled:opacity-50 transition-all"
           >
             {isPending && <Loader2 className="w-3 h-3 animate-spin" />}
             {editing ? 'Save changes' : 'Add'}

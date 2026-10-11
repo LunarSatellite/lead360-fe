@@ -55,7 +55,7 @@ export function FlowListDialog({ open, onClose, onSelect }: FlowListDialogProps)
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-text-primary truncate">{f.name}</span>
                       {f.isActive && (
-                        <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold text-white bg-brand">
+                        <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold text-text-inverted bg-brand">
                           <Check className="w-2.5 h-2.5" /> Live
                         </span>
                       )}

@@ -125,7 +125,7 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
                 </button>
               ) : (
                 <>
-                  <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none" />
+                  <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
                   <button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-danger-soft border border-danger/20 text-danger hover:opacity-80">
                     Set Blocked
                   </button>
@@ -264,7 +264,7 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none">
+          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(CRM_ONBOARDING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>

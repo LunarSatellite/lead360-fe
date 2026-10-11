@@ -359,7 +359,7 @@ export function CommerceControlCenterPage() {
               <button
                 onClick={() => saveTenant.mutate({ preferences, branding })}
                 disabled={saveTenant.isPending || !branding.name.trim()}
-                className="rounded-xl bg-brand px-4 py-3 text-xs font-extrabold text-black disabled:opacity-40"
+                className="rounded-xl bg-brand px-4 py-3 text-xs font-extrabold text-text-inverted disabled:opacity-40"
               >
                 {saveTenant.isPending ? 'Saving…' : 'Save'}
               </button>

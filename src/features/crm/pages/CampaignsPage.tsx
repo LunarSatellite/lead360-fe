@@ -37,6 +37,7 @@ import {
   LeadStage, LEAD_STAGE_LABELS,
 } from '../types/crm.types';
 import { formatDistanceToNow, format } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 type MainTab = 'b2b' | 'leads' | 'fb-ads';
 
@@ -355,11 +356,11 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">
           Cancel
         </button>
-        <button type="submit" disabled={isSaving || !form.name.trim() || !form.bodyTemplate.trim() || (isEmailChannel && !form.subject.trim())}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+        <Button type="submit" disabled={isSaving || !form.name.trim() || !form.bodyTemplate.trim() || (isEmailChannel && !form.subject.trim())}
+          variant="primary">
           {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
           Create Campaign
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -608,10 +609,10 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
           <input value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
             placeholder="Notes (optional)" className={inputCls} />
           <div className="flex gap-2">
-            <button type="submit" disabled={addAttribution.isPending}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+            <Button type="submit" disabled={addAttribution.isPending}
+              variant="primary" size="sm">
               {addAttribution.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Save'}
-            </button>
+            </Button>
             <button type="button" onClick={() => setShowForm(false)} className="text-xs text-text-muted hover:text-text-primary">Cancel</button>
           </div>
         </form>
@@ -667,10 +668,10 @@ function BudgetPanel({ campaign, onDone }: { campaign: CrmCampaignSummaryDto; on
           placeholder="0.05" className={inputCls} />
       </div>
       <div className="flex gap-2">
-        <button type="submit" disabled={updateBudget.isPending}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+        <Button type="submit" disabled={updateBudget.isPending}
+          variant="primary" size="sm">
           {updateBudget.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Update'}
-        </button>
+        </Button>
         <button type="button" onClick={onDone} className="text-xs text-text-muted hover:text-text-primary">Cancel</button>
       </div>
     </form>
@@ -720,7 +721,7 @@ function ScheduleInline({ campaignId, onDone }: { campaignId: string; onDone: ()
   return (
     <div className="flex items-center gap-2 flex-wrap" onClick={(e) => e.stopPropagation()}>
       <input type="datetime-local" value={dt} onChange={(e) => setDt(e.target.value)}
-        className="px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary focus:outline-none" />
+        className="px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
       <button
         disabled={!dt || schedule.isPending}
         onClick={() => {
@@ -977,10 +978,10 @@ function B2BCampaignsTab() {
           <p className="text-xs text-text-muted">
             {campaigns.length} campaign{campaigns.length !== 1 ? 's' : ''}
           </p>
-          <button onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+          <Button onClick={() => setShowCreate(true)}
+            variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Campaign
-          </button>
+          </Button>
         </div>
         {isLoading ? (
           <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
@@ -1115,10 +1116,10 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
-            <button type="submit" disabled={createCampaign.isPending} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <Button type="submit" disabled={createCampaign.isPending} variant="primary">
               {createCampaign.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Campaign
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -1154,10 +1155,10 @@ function LeadCampaignCard({ campaign }: { campaign: LeadCampaignDto }) {
           <>
             {confirmExecute ? (
               <div className="flex items-center gap-2">
-                <button onClick={() => executeCampaign.mutate(campaign.id, { onSuccess: () => setConfirmExecute(false) })} disabled={executeCampaign.isPending}
-                  className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+                <Button onClick={() => executeCampaign.mutate(campaign.id, { onSuccess: () => setConfirmExecute(false) })} disabled={executeCampaign.isPending}
+                  variant="primary" size="sm">
                   {executeCampaign.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Zap className="w-3 h-3" /> Confirm</>}
-                </button>
+                </Button>
                 <button onClick={() => setConfirmExecute(false)} className="text-xs text-text-muted hover:text-text-primary">×</button>
               </div>
             ) : (
@@ -1205,10 +1206,10 @@ function LeadOutreachTab() {
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4">
           <p className="text-xs text-text-muted">{campaigns.length} campaign{campaigns.length !== 1 ? 's' : ''}</p>
-          <button onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+          <Button onClick={() => setShowCreate(true)}
+            variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Campaign
-          </button>
+          </Button>
         </div>
         {isLoading ? (
           <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
@@ -1344,10 +1345,10 @@ function FbAdsTab() {
               <p className="font-bold text-text-primary">Connect Facebook Ad Account</p>
               <p className="text-xs text-text-muted mt-1">Sync campaigns from Meta Marketing API to view performance analytics</p>
             </div>
-            <button onClick={() => setShowConnect(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+            <Button onClick={() => setShowConnect(true)}
+              variant="primary">
               <Link2 className="w-3.5 h-3.5" /> Connect Ad Account
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -1386,11 +1387,11 @@ function FbAdsTab() {
               </div>
             </div>
             <div className="shrink-0 flex items-center justify-end px-6 py-4 border-t border-border-subtle">
-              <button type="submit" disabled={connectMutation.isPending}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-colors disabled:opacity-50">
+              <Button type="submit" disabled={connectMutation.isPending}
+                variant="primary">
                 {connectMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Link2 className="w-3.5 h-3.5" />}
                 Connect
-              </button>
+              </Button>
             </div>
           </form>
         </SlideOver>

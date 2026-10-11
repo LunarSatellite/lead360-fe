@@ -335,7 +335,7 @@ function OperationRow({
               <button
                 onClick={() => (mutation ? setConfirming(true) : run())}
                 disabled={running || missing.length > 0}
-                className="flex items-center gap-2 rounded-card bg-brand px-3 py-2 text-xs font-bold text-white disabled:opacity-40"
+                className="flex items-center gap-2 rounded-card bg-brand px-3 py-2 text-xs font-bold text-text-inverted disabled:opacity-40"
               >
                 {running ? (
                   <Loader2 strokeWidth={1.6} className="h-3.5 w-3.5 animate-spin" />

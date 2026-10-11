@@ -302,7 +302,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                   disabled={statusMutation.isPending}
                   onClick={() => setStatus(TransactionStatus.ReadyForPickup)}
                   className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold
-                             bg-brand text-white hover:bg-brand/90 disabled:opacity-50 transition-all"
+                             bg-brand text-text-inverted hover:bg-brand/90 disabled:opacity-50 transition-all"
                 >
                   {statusMutation.isPending ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />

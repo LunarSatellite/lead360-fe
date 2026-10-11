@@ -68,7 +68,7 @@ function CommentItem({
               <div className="flex gap-2">
                 <button
                   onClick={() => onSaveEdit(comment.id)}
-                  className="text-xs px-3 py-1 rounded-lg bg-brand text-white font-semibold hover:opacity-90 transition-opacity"
+                  className="text-xs px-3 py-1 rounded-lg bg-brand text-text-inverted font-semibold hover:opacity-90 transition-opacity"
                 >
                   Save
                 </button>
@@ -119,7 +119,7 @@ function CommentItem({
               <div className="flex gap-2">
                 <button
                   onClick={() => onSendReply(comment.id)}
-                  className="text-xs px-3 py-1 rounded-lg bg-brand text-white font-semibold hover:opacity-90 transition-opacity flex items-center gap-1"
+                  className="text-xs px-3 py-1 rounded-lg bg-brand text-text-inverted font-semibold hover:opacity-90 transition-opacity flex items-center gap-1"
                 >
                   <Send className="w-3 h-3" /> Send
                 </button>
@@ -241,7 +241,7 @@ export function CrmComments({ kind, entityId }: CrmCommentsProps) {
           <button
             onClick={handlePost}
             disabled={!newBody.trim() || addComment.isPending}
-            className="text-sm px-4 py-1.5 rounded-lg bg-brand text-white font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-1.5"
+            className="text-sm px-4 py-1.5 rounded-lg bg-brand text-text-inverted font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-1.5"
           >
             <Send className="w-3.5 h-3.5" /> Post
           </button>

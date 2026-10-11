@@ -40,7 +40,7 @@ export function BriefEditDialog({ id, onClose, onSaved }: Props) {
       <Input label="Boost budget" type="number" value={form.boostBudgetAmount} onChange={(v) => set('boostBudgetAmount', v)} />
       <label className="space-y-1.5"><span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Currency</span><select value={form.boostBudgetCurrency} onChange={(e) => set('boostBudgetCurrency', e.target.value)} className={control}><option value="CDF">CDF</option><option value="USD">USD</option></select></label>
     </div>}
-    <footer className="flex justify-end gap-2 border-t border-border-subtle px-5 py-4"><button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">Cancel</button><button disabled={save.isPending || !valid} className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save brief'}</button></footer>
+    <footer className="flex justify-end gap-2 border-t border-border-subtle px-5 py-4"><button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">Cancel</button><button disabled={save.isPending || !valid} className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-text-inverted disabled:opacity-40"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save brief'}</button></footer>
   </form></div>;
 }
 const control = 'w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50';

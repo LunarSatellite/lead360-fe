@@ -6,7 +6,6 @@ import {
   Banknote,
   BarChart3,
   BookOpen,
-  Bot,
   Boxes,
   Briefcase,
   Building,
@@ -61,7 +60,6 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
-import { crmNav } from './crm-nav';
 import { useLogout, useProfile } from '@/features/auth/api/auth.queries';
 import { NotificationBell } from '@/features/crm/components/NotificationBell';
 import { useLeadAlerts } from '@/features/crm/hooks/useLeadAlerts';
@@ -69,6 +67,9 @@ import { useQuery } from '@tanstack/react-query';
 import { stylemintCommerceApi } from '@/features/commerce-control/api/stylemint-commerce.api';
 import { applyTenantAccent } from '@/shared/lib/tenant-theme';
 import { isStyleMintConsole } from '@/shared/config/env';
+import { SidebarNav } from '@/app/navigation/SidebarNav';
+import { CommandPalette } from '@/shared/ui/CommandPalette';
+import { allNavItems, navGroups, navSections } from '@/app/navigation/nav-model';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CHAT-FIRST NAVIGATION (new — primary rail shown to all users)
@@ -134,35 +135,6 @@ export const primaryNav = [
   { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: BarChart3 },
 ];
 
-const botNav = [
-  { label: 'Chat', href: '/dashboard/chat', icon: MessageSquare },
-  { label: 'Overview', href: '/dashboard/home', icon: LayoutGrid },
-  { label: 'Bot flows', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'AI' },
-  // Bot Settings is not listed here because Settings already lists it, as its
-  // own section; /dashboard/bot-settings stays routed for bookmarks.
-  { label: 'Experiments', href: ROUTES.dashboard.flowExperiments, icon: FlaskConical },
-  { label: 'Agents', href: ROUTES.dashboard.agents, icon: Bot },
-  { label: 'Test preview', href: ROUTES.dashboard.testChannel, icon: Terminal },
-  { label: 'Channels', href: ROUTES.dashboard.channels, icon: Phone },
-  { label: 'Business catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
-];
-
-const settingsNav = [
-  { label: 'Team', href: ROUTES.dashboard.team, icon: Users },
-  { label: 'Settings', href: '/dashboard/settings', icon: Settings },
-];
-
-// Stylemint client workspaces expose the commerce operating system only.
-// Legacy CRM and bot-builder routes remain available for platform engineers,
-// but are intentionally absent from the customer-facing shell.
-//
-// One switch for the whole shell: the sidebar sections, their collapsed-rail
-// dividers and the mobile "More" sheet all read this, so the bot/CRM surfaces
-// appear or disappear together rather than in eleven independent decisions.
-// The routes stay registered either way — this hides doors, it does not remove
-// rooms, and a bookmarked /dashboard/crm/... still resolves.
-const SHOW_LEGACY_PLATFORM_TOOLS = !isStyleMintConsole;
-
 /**
  * The name and mark the shell falls back to before `tenantBrand` loads, and
  * for a tenant that never set either.
@@ -174,7 +146,6 @@ const SHOW_LEGACY_PLATFORM_TOOLS = !isStyleMintConsole;
  */
 const FALLBACK_BRAND_NAME = isStyleMintConsole ? 'StyleMint' : 'Lead360';
 const FALLBACK_LOGO_SRC = '/Lead360logo/1.png';
-
 
 // ─── Mobile bottom tabs — 4 primary + More for the rest ───
 export const primaryMobileTabs = [
@@ -197,13 +168,29 @@ export const primaryMobileTabs = [
  * ("Delivery ops" in the rail, "Delivery Operations" as the header), and this changes none of
  * them — it only speaks when the chain has nothing to say.
  */
-const NAV_TITLES: readonly (readonly [string, string])[] = [
-  ...primaryNav,
-  ...botNav,
-  ...settingsNav,
-  ...crmNav,
-  ...primaryMobileTabs,
-].map((item) => [item.href, item.label] as const);
+const NAV_TITLES: readonly (readonly [string, string])[] = [...allNavItems, ...primaryMobileTabs].map(
+  (item) => [item.href, item.label] as const,
+);
+
+/**
+ * A page the nav names exactly is named by the nav.
+ *
+ * The two resolver chains below match on substrings and the first match wins,
+ * so a generic rule swallows every page whose path extends it. That is what
+ * happened to Custom domains, Video conferencing, Calendar and Booking page
+ * the moment they got nav entries: all four sit under `/settings`, and all
+ * four rendered under the header "Settings".
+ *
+ * Four more branches would have fixed those four and left the next one to be
+ * found by a user. An exact match consulted first fixes the class, and costs
+ * no second hand-written copy of the name — which is the drift NAV_TITLES
+ * exists to avoid.
+ *
+ * Exact only: a detail route like `/crm/deals/abc` still falls through to the
+ * chain, where the deliberate "a detail page is titled after its list"
+ * behaviour lives.
+ */
+const EXACT_NAV_PAGE = new Map(allNavItems.map((item) => [item.href, item]));
 
 /**
  * Longest match wins, so `/dashboard/crm/deals-hub` beats `/dashboard/crm/deals` rather than
@@ -222,26 +209,6 @@ function navTitleFor(path: string): string | null {
   }
   return best;
 }
-
-// ─── Mobile "More" sheet — reaches every legacy page so nothing is lost ───
-// Setup and the Setup Wizard are absent because chat-first replaced them and
-// their routes are commented out in route-table.tsx. Their pages are intact on
-// disk; uncomment the routes first if you put the entries back.
-const moreNav_build = [
-  { label: 'Conversation Map', href: ROUTES.dashboard.flows, icon: GitBranch, badge: 'IA' },
-  { label: 'Test Channel', href: ROUTES.dashboard.testChannel, icon: Terminal },
-];
-
-const moreNav_configure = [
-  { label: 'Intentions', href: ROUTES.dashboard.intents, icon: Target },
-  { label: 'Agents', href: ROUTES.dashboard.agents, icon: Bot },
-  { label: 'API Connection', href: ROUTES.dashboard.apiConnection, icon: Plug },
-  { label: 'Catalogue', href: ROUTES.dashboard.catalog, icon: Package },
-  { label: 'Business catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
-  { label: 'Channels', href: ROUTES.dashboard.channels, icon: Phone },
-  { label: 'Conversations', href: ROUTES.dashboard.conversations, icon: MessageSquare },
-  { label: 'Analytics', href: ROUTES.dashboard.analytics, icon: BarChart3 },
-];
 
 const PRIMARY_HREFS: Set<string> = new Set(primaryMobileTabs.map((t) => t.href));
 
@@ -288,13 +255,15 @@ export function DashboardLayout() {
     }
   }, [moreSheetOpen]);
 
-  const profileData = profile as unknown as {
-    firstName?: string | null;
-    lastName?: string | null;
-    email?: string | null;
-    role?: number;
-    avatarUrl?: string | null;
-  } | undefined;
+  const profileData = profile as unknown as
+    | {
+        firstName?: string | null;
+        lastName?: string | null;
+        email?: string | null;
+        role?: number;
+        avatarUrl?: string | null;
+      }
+    | undefined;
   const initials = profileData
     ? `${(profileData.firstName?.[0] || '').toUpperCase()}${(profileData.lastName?.[0] || '').toUpperCase()}`
     : 'U';
@@ -306,6 +275,8 @@ export function DashboardLayout() {
 
   const getPageTitle = () => {
     const path = location.pathname;
+    const named = EXACT_NAV_PAGE.get(path);
+    if (named) return named.label;
     if (path.includes('/commerce-control')) return 'Stylemint Control Center';
     if (path.includes('/stylemint/orders')) return 'Orders & Fulfilment';
     // Before the broader /stylemint/vendor test, which would otherwise swallow it.
@@ -384,6 +355,8 @@ export function DashboardLayout() {
 
   const getPageIcon = () => {
     const path = location.pathname;
+    const named = EXACT_NAV_PAGE.get(path);
+    if (named) return named.icon;
     if (path.includes('/commerce-control')) return LayoutGrid;
     if (path.includes('/stylemint/orders')) return ShoppingBag;
     if (path.includes('/stylemint/vendor-desk')) return Store;
@@ -419,49 +392,11 @@ export function DashboardLayout() {
 
   const PageIcon = getPageIcon();
 
-  const renderNavItem = (item: { label: string; href: string; icon: LucideIcon; badge?: string; end?: boolean }) => {
-    const isActive = item.end
-      ? location.pathname === item.href
-      : location.pathname === item.href || location.pathname.startsWith(item.href + '/');
-    return (
-      <NavLink
-        key={item.href}
-        to={item.href}
-        title={item.label}
-        className={`sidebar-nav-item group relative flex items-center gap-3 rounded-xl transition-all duration-200 ${
-          isActive
-            ? 'bg-gradient-to-r from-brand/[0.18] via-brand/[0.06] to-transparent text-text-primary font-semibold'
-            : 'text-text-muted hover:text-text-secondary hover:bg-glass-1'
-        }`}
-        style={{
-          padding: showExpanded ? '8px 12px' : '8px',
-          justifyContent: showExpanded ? 'flex-start' : 'center',
-        }}
-      >
-        {/* Active accent bar — gradient top-to-bottom for depth */}
-        {isActive && (
-          <div className="absolute left-0 top-1 bottom-1 w-[2.5px] rounded-r-full bg-gradient-to-b from-brand-light to-brand" />
-        )}
-        <item.icon
-          className={`w-[18px] h-[18px] shrink-0 transition-colors ${isActive ? 'text-brand' : ''}`}
-          strokeWidth={1.5}
-        />
-        {showExpanded && (
-          <>
-            <span className="text-xs whitespace-nowrap overflow-hidden">{item.label}</span>
-            {item.badge && (
-              <span className="ml-auto px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-violet-soft text-violet-light">
-                {item.badge}
-              </span>
-            )}
-          </>
-        )}
-      </NavLink>
-    );
-  };
-
   // On desktop, expansion follows hover. Mobile hides the sidebar entirely.
-  const showExpanded = sidebarExpanded;
+  // The filter inside the rail holds it open: hovering away mid-search would
+  // otherwise collapse the sidebar and discard what was typed.
+  const [navHoldsOpen, setNavHoldsOpen] = useState(false);
+  const showExpanded = sidebarExpanded || navHoldsOpen;
 
   return (
     <div className="flex h-screen bg-bg overflow-hidden">
@@ -474,6 +409,7 @@ export function DashboardLayout() {
         }}
         onMouseEnter={() => setSidebarExpanded(true)}
         onMouseLeave={() => {
+          if (navHoldsOpen) return;
           setSidebarExpanded(false);
           setMenuOpen(false);
         }}
@@ -522,82 +458,8 @@ export function DashboardLayout() {
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav
-          className="flex-1 overflow-y-auto overflow-x-hidden py-2"
-          style={{ padding: showExpanded ? '8px 8px' : '8px 6px' }}
-        >
-          {/* ── Primary (chat-first rail) ── */}
-          {showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-1">
-              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
-              </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
-                Commerce
-              </span>
-            </div>
-          )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />}
-          <div className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</div>
-
-          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
-              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
-              </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
-                Bot & IA
-              </span>
-            </div>
-          )}
-          {SHOW_LEGACY_PLATFORM_TOOLS && !showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          {SHOW_LEGACY_PLATFORM_TOOLS && <div className="flex flex-col gap-0.5">{botNav.map(renderNavItem)}</div>}
-
-          {/* ── OLD: Build / Configure sections (commented for now) ─────────
-          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
-            <div className="text-[9px] font-bold text-text-muted uppercase tracking-[1.5px] px-3 pt-2 pb-1.5">
-              Build
-            </div>
-          )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />}
-          <div className="flex flex-col gap-0.5">{buildNav.map(renderNavItem)}</div>
-
-          {showExpanded && (
-            <div className="text-[9px] font-bold text-text-muted uppercase tracking-[1.5px] px-3 pt-4 pb-1.5">
-              Configure
-            </div>
-          )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          <div className="flex flex-col gap-0.5">{configureNav.map(renderNavItem)}</div>
-          ─────────────────────────────────────────────────────────────── */}
-
-          {/* ── CRM ── */}
-          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
-              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <Users className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
-              </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">CRM</span>
-            </div>
-          )}
-          {SHOW_LEGACY_PLATFORM_TOOLS && !showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          {SHOW_LEGACY_PLATFORM_TOOLS && <div className="flex flex-col gap-0.5">{crmNav.map(renderNavItem)}</div>}
-
-          {/* ── System / Settings ── */}
-          {showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
-              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <Settings className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
-              </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
-                Commerce settings
-              </span>
-            </div>
-          )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          <div className="flex flex-col gap-0.5">{settingsNav.map(renderNavItem)}</div>
-        </nav>
+        {/* Navigation — one grouped rail for the whole admin. */}
+        <SidebarNav expanded={showExpanded} onHoldOpen={setNavHoldsOpen} />
 
         {/* User */}
         <div
@@ -778,55 +640,33 @@ export function DashboardLayout() {
               </div>
             </div>
 
-            {/* Commerce — the same rail the desktop sidebar renders.
-                Without this section the sheet named "Commerce tools" listed
-                none of them, and every commerce surface except the four in the
-                bottom bar was unreachable on a phone. */}
-            <MoreSection title="Commerce">
-              {primaryNav
-                .filter((i) => !PRIMARY_HREFS.has(i.href))
-                .map((item) => (
-                  <MoreNavLink key={item.href} item={item} />
-                ))}
-            </MoreSection>
-
-            {/* Build section — items not already in bottom bar */}
-            {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="Build">
-              {moreNav_build
-                .filter((i) => !PRIMARY_HREFS.has(i.href))
-                .map((item) => (
-                  <MoreNavLink key={item.href} item={item} />
-                ))}
-            </MoreSection>}
-
-            {/* Configure section — items not already in bottom bar */}
-            {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="Configure">
-              {moreNav_configure
-                .filter((i) => !PRIMARY_HREFS.has(i.href))
-                .map((item) => (
-                  <MoreNavLink key={item.href} item={item} />
-                ))}
-            </MoreSection>}
-
-            {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="Bot & AI">
-              {botNav.map((item) => (
-                <MoreNavLink key={item.href} item={item} />
-              ))}
-            </MoreSection>}
-
-            {/* CRM */}
-            {SHOW_LEGACY_PLATFORM_TOOLS && <MoreSection title="CRM">
-              {crmNav.map((item) => (
-                <MoreNavLink key={item.href} item={item} />
-              ))}
-            </MoreSection>}
-
-            {/* System */}
-            <MoreSection title="Workspace">
-              {settingsNav.map((item) => (
-                <MoreNavLink key={item.href} item={item} />
-              ))}
-            </MoreSection>
+            {/* One sheet, the same model as the desktop rail.
+                This used to be three hand-kept arrays gated on the build
+                flag, and they had drifted: moreNav_configure was the only
+                route to four pages, which therefore could not be reached on a
+                desktop at all. Rendering navGroups means the phone and the
+                desktop can no longer disagree about what exists. */}
+            {navSections.map((section) => (
+              <div key={section.id} className="space-y-5">
+                <div className="flex items-center gap-2 pt-1">
+                  <span className="text-[9px] font-bold uppercase tracking-[2px] text-text-muted">
+                    {section.label}
+                  </span>
+                  <div className="h-px flex-1 bg-border-subtle" />
+                </div>
+                {navGroups
+                  .filter((g) => g.section === section.id)
+                  .map((group) => (
+                    <MoreSection key={group.id} title={group.label}>
+                      {group.items
+                        .filter((i) => !PRIMARY_HREFS.has(i.href))
+                        .map((item) => (
+                          <MoreNavLink key={item.href} item={item} />
+                        ))}
+                    </MoreSection>
+                  ))}
+              </div>
+            ))}
 
             {/* Logout */}
             <button
@@ -842,6 +682,13 @@ export function DashboardLayout() {
           </div>
         </div>
       )}
+
+      {/* The palette was written to be "mounted once in the dashboard shell",
+          as its own comment says, and then never was. Nothing imported it, so
+          Cmd+K did nothing at all — it was 219 lines of dead code carrying a
+          ninth copy of the navigation. Mounted here, and now reading the same
+          model as the rail. */}
+      <CommandPalette />
     </div>
   );
 }

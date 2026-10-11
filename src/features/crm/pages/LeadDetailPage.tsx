@@ -233,7 +233,7 @@ export function Component() {
                       disabled={updateStage.isPending}
                       autoFocus
                       onBlur={() => setStageEdit(false)}
-                      className="text-sm bg-bg-elevated border border-border-glow rounded-xl px-3 py-2 text-text-primary focus:outline-none transition-colors"
+                      className="text-sm bg-bg-elevated border border-border-glow rounded-xl px-3 py-2 text-text-primary focus:outline-none transition-colors focus-visible:ring-2 focus-visible:ring-brand/60"
                     >
                       {(Object.entries(LEAD_STAGE_LABELS) as [string, string][]).map(([val, label]) => (
                         <option key={val} value={val}>{label}</option>
@@ -549,7 +549,7 @@ function EnrollModal({ leadId, onClose }: { leadId: string; onClose: () => void 
           <button
             onClick={handleEnroll}
             disabled={!selected || enrollMutation.isPending}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand hover:bg-brand/90 rounded-xl disabled:opacity-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text-inverted bg-brand hover:bg-brand/90 rounded-xl disabled:opacity-50 transition-colors"
           >
             {enrollMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             Enroll
@@ -728,7 +728,7 @@ function TriggerScoreEvent({ leadId }: { leadId: string }) {
       </select>
       <button onClick={() => eventType && triggerMut.mutate({ eventType })}
         disabled={!eventType || triggerMut.isPending}
-        className="px-3 py-1.5 rounded-lg bg-brand text-white text-xs font-bold disabled:opacity-50">
+        className="px-3 py-1.5 rounded-lg bg-brand text-text-inverted text-xs font-bold disabled:opacity-50">
         {triggerMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Fire'}
       </button>
     </div>

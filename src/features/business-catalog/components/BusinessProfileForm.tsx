@@ -241,7 +241,7 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
           disabled={upsert.isPending}
           onClick={handleSubmit}
           className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold
-                     bg-brand text-white hover:bg-brand/90 disabled:opacity-50
+                     bg-brand text-text-inverted hover:bg-brand/90 disabled:opacity-50
                      transition-all"
         >
           {upsert.isPending ? (

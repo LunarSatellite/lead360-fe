@@ -143,7 +143,7 @@ function DetailPanel({ id }: { id: string }) {
         <div className="space-y-4">
           <form onSubmit={handleAddNote} className="space-y-2">
             <div className="flex gap-2">
-              <select value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none">
+              <select value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
                 {Object.entries(CRM_WORK_ORDER_NOTE_KIND_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
               </select>
               <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." className={`${inputCls} flex-1`} />

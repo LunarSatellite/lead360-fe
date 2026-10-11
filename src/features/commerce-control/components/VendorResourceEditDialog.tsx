@@ -479,7 +479,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
         <footer className="sticky bottom-0 border-t border-border-subtle bg-bg-card/95 px-5 py-4 backdrop-blur-xl">
           <button
             disabled={save.isPending || details.isLoading || !valid}
-            className="ml-auto flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-extrabold text-black disabled:opacity-40"
+            className="ml-auto flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-extrabold text-text-inverted disabled:opacity-40"
           >
             {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save and synchronize

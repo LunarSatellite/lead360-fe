@@ -38,6 +38,7 @@ import { VendorInsightDialog } from '../components/VendorInsightDialog';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { buildVendorRecipePayload } from '../lib/vendor-recipe';
+import { Button } from '@/shared/ui/primitives';
 
 const VendorAnalyticsPanel = lazy(() =>
   import('../components/VendorAnalyticsPanel').then((module) => ({
@@ -833,7 +834,7 @@ export function VendorOperationsPage() {
           </div>
           <div className="flex gap-2">
             {canOperate && selectedKey === 'store/digital-twin' && (
-              <button
+              <Button
                 onClick={async () => {
                   const name = window.prompt('Scenario name', 'Peak demand resilience')?.trim();
                   if (!name) return;
@@ -842,46 +843,46 @@ export function VendorOperationsPage() {
                     setInsightDialog({ title: 'Digital-twin scenario', subtitle: 'Simulated demand, stock and fulfilment resilience.', data: result });
                   } catch { setActionMessage('The scenario could not be completed. Check the simulation values.'); }
                 }}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Activity className="h-3.5 w-3.5" /> Run scenario
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'products' && (
-              <button
+              <Button
                 onClick={() => setShowProductComposer(true)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New product
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'collections' && (
-              <button
+              <Button
                 onClick={() => setShowCollectionForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New collection
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'briefs' && (
-              <button
+              <Button
                 onClick={() => setShowBriefForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New brief
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'campaigns' && (
-              <button
+              <Button
                 onClick={() => setShowCampaignForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New campaign
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'partnerships' && (
               <>
@@ -908,78 +909,78 @@ export function VendorOperationsPage() {
                   <ShieldCheck className="h-3.5 w-3.5" />
                   Publier les conditions
                 </button>
-                <button
+                <Button
                   onClick={() => setShowPartnershipForm((value) => !value)}
-                  className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                  variant="primary" size="sm"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   Inviter un partenaire
-                </button>
+                </Button>
               </>
             )}
             {canOperate && selectedKey === 'squads' && (
-              <button
+              <Button
                 onClick={() => setCollaborationDialog('squad')}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" /> New squad
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'retainers' && (
-              <button
+              <Button
                 onClick={() => setCollaborationDialog('retainer')}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" /> New contract
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'recipes' && (
-              <button
+              <Button
                 onClick={() => setShowRecipeForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New recipe
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'stores' && (
-              <button
+              <Button
                 onClick={() => setShowStoreForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New store
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'team' && (
-              <button
+              <Button
                 onClick={() => setShowTeamForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Inviter
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'codes' && (
-              <button
+              <Button
                 onClick={() => setShowCodeForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New code
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'warranties/claims' && (
-              <button
+              <Button
                 onClick={() => setShowWarrantyPolicyForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Politique de garantie
-              </button>
+              </Button>
             )}
             {canOperate && selectedKey === 'pricing/flash-sales' && (
-              <button
+              <Button
                 onClick={async () => {
                   const productId = window.prompt('Product ID');
                   const salePrice = Number(window.prompt('Prix promotionnel CDF') || '0');
@@ -993,10 +994,10 @@ export function VendorOperationsPage() {
                     await selectedQuery.refetch();
                   } catch { setActionMessage('Could not create. Check the product, the dates and the price.'); }
                 }}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                variant="primary" size="sm"
               >
                 <Plus className="h-3.5 w-3.5" /> New flash sale
-              </button>
+              </Button>
             )}
             <button
               onClick={() => selectedQuery.refetch()}
@@ -1045,12 +1046,12 @@ export function VendorOperationsPage() {
               </select>
             </label>
             <div className="flex justify-end md:col-span-2 xl:col-span-4">
-              <button
+              <Button
                 disabled={createCampaign.isPending || !campaignForm.brandBriefId.trim() || !campaignForm.name.trim() || Number(campaignForm.budgetAmount) <= 0}
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+                variant="primary"
               >
                 {createCampaign.isPending ? 'Creating…' : 'Create campaign workspace'}
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -1091,12 +1092,12 @@ export function VendorOperationsPage() {
               required
             />
             <div className="md:col-span-3 flex justify-end">
-              <button
+              <Button
                 disabled={createBrief.isPending || !briefForm.title.trim() || !briefForm.productVariantIds.trim()}
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+                variant="primary"
               >
                 {createBrief.isPending ? 'Creation…' : 'Creer en CDF'}
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -1155,12 +1156,12 @@ export function VendorOperationsPage() {
               onChange={(value) => setPartnershipForm((form) => ({ ...form, brandBriefId: value }))}
             />
             <div className="md:col-span-2 xl:col-span-5 flex justify-end">
-              <button
+              <Button
                 disabled={invitePartnership.isPending || !partnershipForm.creatorProfileId.trim()}
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+                variant="primary"
               >
                 {invitePartnership.isPending ? 'Envoi…' : 'Envoyer l’invitation'}
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -1185,12 +1186,12 @@ export function VendorOperationsPage() {
               Lead360 genere automatiquement trois scenes narratives, trois legendes, les adaptations Instagram, TikTok, YouTube Shorts et Facebook, ainsi que les signaux de raisonnement necessaires au verrouillage.
             </div>
             <div className="md:col-span-2 xl:col-span-3 flex justify-end">
-              <button
+              <Button
                 disabled={createRecipe.isPending || !recipeForm.title.trim() || !recipeForm.musicTrackRefId.trim() || !recipeForm.productVariantIds.trim() || !recipeForm.brandStoryAnchor.trim() || !recipeForm.songTitle.trim() || !recipeForm.artist.trim() || !recipeForm.caption.trim()}
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+                variant="primary"
               >
                 {createRecipe.isPending ? 'Creation…' : 'Generate the full recipe'}
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -1238,17 +1239,17 @@ export function VendorOperationsPage() {
               type="number"
             />
             <div className="md:col-span-2 xl:col-span-3 flex justify-end">
-              <button
+              <Button
                 disabled={
                   createStore.isPending ||
                   !storeForm.name.trim() ||
                   !storeForm.addressLine.trim() ||
                   !storeForm.city.trim()
                 }
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+                variant="primary"
               >
                 {createStore.isPending ? 'Creation…' : 'Create store'}
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -1305,14 +1306,14 @@ export function VendorOperationsPage() {
               onChange={(value) => setCollectionForm((form) => ({ ...form, sortOrder: value }))}
             />
             <div className="md:col-span-2 xl:col-span-3 flex justify-end">
-              <button
+              <Button
                 disabled={
                   createCollection.isPending || !collectionForm.title.trim() || !collectionForm.slug.trim()
                 }
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+                variant="primary"
               >
                 {createCollection.isPending ? 'Creation…' : 'Create collection'}
-              </button>
+              </Button>
             </div>
           </form>
         )}
@@ -1343,12 +1344,12 @@ export function VendorOperationsPage() {
                 <option value="2">Administrateur</option>
               </select>
             </label>
-            <button
+            <Button
               disabled={inviteTeamMember.isPending || !teamForm.memberAccountId.trim()}
-              className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+              variant="primary"
             >
               {inviteTeamMember.isPending ? 'Invitation…' : 'Envoyer invitation'}
-            </button>
+            </Button>
           </form>
         )}
         {selectedKey === 'codes' && showCodeForm && (
@@ -1393,16 +1394,16 @@ export function VendorOperationsPage() {
               value={codeForm.label}
               onChange={(value) => setCodeForm((form) => ({ ...form, label: value }))}
             />
-            <button
+            <Button
               disabled={
                 createCode.isPending ||
                 !codeForm.storeId.trim() ||
                 (codeForm.kind === 'ProductTag' && !codeForm.productId.trim())
               }
-              className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+              variant="primary"
             >
               {createCode.isPending ? 'Creation…' : 'Create code'}
-            </button>
+            </Button>
           </form>
         )}
         {selectedKey === 'warranties/claims' && showWarrantyPolicyForm && (
@@ -1432,17 +1433,17 @@ export function VendorOperationsPage() {
               onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, terms: value }))}
               required
             />
-            <button
+            <Button
               disabled={
                 saveWarrantyPolicy.isPending ||
                 !warrantyPolicyForm.variantId.trim() ||
                 Number(warrantyPolicyForm.coverageDays) < 1 ||
                 !warrantyPolicyForm.terms.trim()
               }
-              className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+              variant="primary"
             >
               {saveWarrantyPolicy.isPending ? 'Saving…' : 'Save'}
-            </button>
+            </Button>
           </form>
         )}
         {actionMessage && (
@@ -1653,13 +1654,13 @@ function CollectionItemsDialog({
               placeholder="Product ID"
               className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
             />
-            <button
+            <Button
               disabled={busy || !productId.trim()}
               onClick={() => onAction('add', productId.trim())}
-              className="rounded-xl bg-brand px-4 py-2 text-xs font-extrabold text-black disabled:opacity-40"
+              variant="primary"
             >
               Add
-            </button>
+            </Button>
             <button
               disabled={busy || !productId.trim()}
               onClick={() => onAction('remove', productId.trim())}
@@ -1680,13 +1681,13 @@ function CollectionItemsDialog({
             onChange={(event) => setOrderedIds(event.target.value)}
             className="mt-3 w-full resize-y rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 font-mono text-xs text-text-primary outline-none focus:border-brand/50"
           />
-          <button
+          <Button
             disabled={busy || order.length === 0}
             onClick={() => onAction('reorder', undefined, order)}
-            className="mt-3 w-full rounded-xl bg-brand px-4 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+            variant="primary" block className="mt-3"
           >
             Save new order
-          </button>
+          </Button>
         </section>
       </div>
     </div>

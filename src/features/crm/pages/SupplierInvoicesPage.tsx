@@ -330,7 +330,7 @@ export function Component() {
         </div>
 
         <div className="flex gap-2">
-          <select value={statusF} onChange={e => { setStatusF(e.target.value); setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as SupplierInvoiceStatus : undefined, page: 1 })); }} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none w-48">
+          <select value={statusF} onChange={e => { setStatusF(e.target.value); setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as SupplierInvoiceStatus : undefined, page: 1 })); }} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none w-48 focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Statuses</option>
             {Object.entries(SI_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>

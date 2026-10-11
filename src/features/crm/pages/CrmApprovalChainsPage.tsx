@@ -86,7 +86,7 @@ export function Component() {
             Define multi-step approval templates. When a Quote, Deal, or other entity is submitted for approval, the matching chain determines who reviews it and in what order.
           </p>
         </div>
-        <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-white text-sm font-medium">
+        <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-text-inverted text-sm font-medium">
           <Plus className="w-4 h-4" /> New Chain
         </button>
       </div>
@@ -152,7 +152,7 @@ export function Component() {
             <button
               onClick={() => saveMutation.mutate({ name, description: desc || undefined, entityType, steps: steps.map(s => ({ ...s, approverUserId: s.approverUserId || undefined, requiredApprovals: 1 })) })}
               disabled={!canSave || saveMutation.isPending}
-              className="px-4 py-1.5 rounded-lg bg-brand text-white text-sm font-medium disabled:opacity-50"
+              className="px-4 py-1.5 rounded-lg bg-brand text-text-inverted text-sm font-medium disabled:opacity-50"
             >
               {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : editingId ? 'Update Chain' : 'Create Chain'}
             </button>

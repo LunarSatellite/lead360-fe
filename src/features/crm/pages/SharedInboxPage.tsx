@@ -53,7 +53,7 @@ function ItemRow({ item, onClaim, claiming }: {
       <button
         onClick={() => onClaim(item)}
         disabled={claiming}
-        className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-white text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all"
+        className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-text-inverted text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all"
       >
         {claiming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Hand className="w-4 h-4" />}
         Claim

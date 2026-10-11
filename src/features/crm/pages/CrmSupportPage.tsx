@@ -305,7 +305,7 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
                 onClick={() => generateKbDraft.mutate(caseId)}
                 disabled={generateKbDraft.isPending}
                 title="Propose a Knowledge Base article from this resolved case"
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-soft text-brand text-xs font-semibold border border-border-glow hover:bg-brand hover:text-white transition-all disabled:opacity-50"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-soft text-brand text-xs font-semibold border border-border-glow hover:bg-brand hover:text-text-inverted transition-all disabled:opacity-50"
               >
                 {generateKbDraft.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                 Generate KB Draft

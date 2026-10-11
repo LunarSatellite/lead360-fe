@@ -266,7 +266,7 @@ export function Component() {
         <select
           value={filter.entityKind ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, entityKind: e.target.value ? Number(e.target.value) as CrmTimeEntityKind : undefined }))}
-          className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none"
+          className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
         >
           <option value="">All Entity Types</option>
           {(Object.entries(CRM_TIME_ENTITY_LABELS) as [string, string][]).map(([v, l]) => (

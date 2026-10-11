@@ -241,7 +241,7 @@ function QuestionCard({
         <button
           onClick={handleSubmit}
           disabled={submit.isPending || !answer.trim()}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-brand text-xs font-bold text-white hover:brightness-110 transition-all disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-brand text-xs font-bold text-text-inverted hover:brightness-110 transition-all disabled:opacity-50"
         >
           {submit.isPending ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />

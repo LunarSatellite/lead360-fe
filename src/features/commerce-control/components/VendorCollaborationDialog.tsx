@@ -101,7 +101,7 @@ export function VendorCollaborationDialog({
           <button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">
             Cancel
           </button>
-          <button disabled={!valid || save.isPending} className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40">
+          <button disabled={!valid || save.isPending} className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-text-inverted disabled:opacity-40">
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {kind === 'squad' ? "Create squad" : 'Propose contract'}
           </button>

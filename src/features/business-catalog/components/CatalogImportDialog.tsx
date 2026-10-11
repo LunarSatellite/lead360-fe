@@ -140,7 +140,7 @@ export function CatalogImportDialog({ onClose }: Props) {
             </div>
           </div>
 
-          <button type="button" onClick={handlePreview} disabled={!file || isPreviewing || isImporting} className="flex items-center justify-center gap-1.5 w-full px-4 py-2 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 disabled:opacity-50">
+          <button type="button" onClick={handlePreview} disabled={!file || isPreviewing || isImporting} className="flex items-center justify-center gap-1.5 w-full px-4 py-2 rounded-lg bg-brand text-text-inverted text-xs font-bold hover:bg-brand/90 disabled:opacity-50">
             {isPreviewing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileSpreadsheet className="w-3.5 h-3.5" />}
             Preview import
           </button>
@@ -150,7 +150,7 @@ export function CatalogImportDialog({ onClose }: Props) {
 
         <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border-subtle">
           <button type="button" onClick={onClose} disabled={isImporting} className="px-4 py-2 rounded-lg text-xs font-bold text-text-secondary hover:bg-glass-2">Cancel</button>
-          <button type="button" onClick={handleImport} disabled={!preview || preview.invalidRows > 0 || isImporting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 disabled:opacity-50">
+          <button type="button" onClick={handleImport} disabled={!preview || preview.invalidRows > 0 || isImporting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand text-text-inverted text-xs font-bold hover:bg-brand/90 disabled:opacity-50">
             {isImporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
             Import catalog
           </button>

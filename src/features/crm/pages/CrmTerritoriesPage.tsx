@@ -276,7 +276,7 @@ function RulesPanel({ territory }: { territory: SalesTerritoryDto }) {
           </div>
           <div className="flex gap-2 justify-end">
             <button type="button" onClick={() => setShowForm(false)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
-            <button type="submit" disabled={!value.trim() || addRule.isPending} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-white hover:brightness-110 disabled:opacity-50">Add</button>
+            <button type="submit" disabled={!value.trim() || addRule.isPending} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">Add</button>
           </div>
         </form>
       )}
@@ -354,7 +354,7 @@ function MembersPanel({ territory }: { territory: SalesTerritoryDto }) {
           <button
             onClick={handleAdd}
             disabled={!selectedUserId || addMember.isPending}
-            className="p-2 rounded-lg bg-brand text-white hover:brightness-110 disabled:opacity-50"
+            className="p-2 rounded-lg bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50"
           >
             <UserPlus className="w-4 h-4" />
           </button>

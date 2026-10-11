@@ -228,7 +228,7 @@ export function StylemintOrdersPage() {
           <button
             disabled={bulkCommand.isPending}
             onClick={() => bulkCommand.mutate('accept')}
-            className="rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black disabled:opacity-40"
+            className="rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-text-inverted disabled:opacity-40"
           >
             Accepter
           </button>

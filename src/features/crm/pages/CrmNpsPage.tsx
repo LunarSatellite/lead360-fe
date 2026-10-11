@@ -274,7 +274,7 @@ export function Component() {
         <select
           value={filter.classification ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, classification: e.target.value ? Number(e.target.value) as CrmNpsClassification : undefined }))}
-          className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none"
+          className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
         >
           <option value="">All Classifications</option>
           {(Object.entries(CRM_NPS_CLASSIFICATION_LABELS) as [string, string][]).map(([v, l]) => (

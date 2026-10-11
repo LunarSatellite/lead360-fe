@@ -74,6 +74,55 @@
 
 ---
 
+## Tier A-adjacent — Stored but never applied (the settings lie)
+
+A distinct and more dangerous failure than "no UI": the API is complete,
+the rows save, the page can look finished, and **nothing in the backend
+ever reads them**. An admin configures the setting, gets a success toast,
+and reasonably believes the system now behaves differently. It does not.
+
+Verified 2026-10-11 by grepping every reader of each type. In each case
+the only non-generated references are the entity, the enum declaration,
+and that type's own CRUD service.
+
+| Surface | Endpoint | What an admin would wrongly believe |
+| --- | --- | --- |
+| Validation rules | `/v1/crm/validation-rules` | Bad saves are rejected |
+| Formula fields | `/v1/crm/formula-fields` | The expression is computed onto records |
+| Rollup summaries | `/v1/crm/rollups` | Child totals appear on the parent |
+| **Field-level security** | `/v1/crm/field-security/rules` | **Restricted fields are hidden from reps** |
+| **Permission sets** | `/v1/crm/field-security/permission-sets` | **Assigning a set grants/limits access** |
+| Login policy | (see note below) | Session timeout / IP / hours are enforced |
+
+**Built 2026-10-11:** the first three now have a console at
+`/dashboard/crm/platform` (three tabs), whose first element is a notice
+that the definitions are recorded and not yet applied. The notice is the
+reason the page is shippable at all — a form that implies a stored rule
+blocks a save would leave the workspace worse off than no form.
+
+**Deliberately NOT built:** field-level security and permission sets.
+Same CRUD-only shape, but the false belief is a *confidentiality* one.
+A page letting someone mark a salary or margin field "hidden from reps",
+which then does not hide it, is an attractive nuisance no banner makes
+safe — the honest version of that page is its absence. `FieldAccessLevel`
+has no reader outside the CRUD service, and `CrmPermissionSetAssignment`
+has **zero** readers anywhere, so assigning a permission set to a user is
+a no-op today. These need the enforcement layer first, in the query
+pipeline and the DTO projections; the UI is the easy half.
+
+**Login policy** was investigated earlier and belongs in this class: no
+MFA mechanism exists anywhere in the codebase, access-token lifetime
+comes from `JwtSettings.AccessTokenExpirationMinutes` (so both
+`Tenant.SessionTimeoutMinutes` and `CrmLoginPolicy.SessionTimeoutMinutes`
+are inert), and the IP/hours JSON has no parser.
+
+**Recommendation:** treat an inert setting as a bug of the same severity
+as the feature being absent, and higher when it concerns access control.
+Before building a page against an unfamiliar settings endpoint, grep for
+a reader of the stored value first — on this backend the pattern recurs.
+
+---
+
 ## Tier E — Undocumented backend scaffolding (unclear if planned or abandoned)
 
 ~24 more backend modules exist with entities/services/controllers but **no frontend API-client wrapper at all** — genuinely unreachable, and never mentioned in `CRM-FULL-TEST-FLOW.md` either. Unlike Tiers A–D, I can't say these are "needed" with confidence — they may be intentional future roadmap or dead generated code. Re-spot-checked 2026-07-09: still all orphaned, no new frontend wiring on any of them:

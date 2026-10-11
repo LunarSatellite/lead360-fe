@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Search, Users, UserSquare2, Briefcase, CornerDownLeft, type LucideIcon } from 'lucide-react';
 import { ROUTES } from '@/app/router/route-paths';
-import { navAliases, navGroups, navSections } from '@/app/navigation/nav-model';
+import { counterpartOf, navAliases, navGroups, navSections } from '@/app/navigation/nav-model';
 import { useDebounce } from '@/shared/hooks/useDebounce';
 import { crmApi } from '@/features/crm/api/crm.api';
 
@@ -18,6 +18,8 @@ export function openCommandPalette() {
 interface NavCommand {
   label: string;
   to: string;
+  /** The same idea in the other product, when there is one. */
+  counterpart?: { label: string; href: string };
   /** The group and section this page sits in, plus any name it used to have. */
   context: string;
   keywords: string;
@@ -43,6 +45,11 @@ const NAV_COMMANDS: NavCommand[] = navGroups.flatMap((group) => {
       label: item.label,
       to: item.href,
       context: `${section?.label} · ${group.label}`,
+      // Four pages exist once per product — orders, returns, deliveries,
+      // vendors — against different backends. Saying so here is the whole
+      // remedy available short of merging the backends: someone searching
+      // "orders" sees both, and sees that each knows about the other.
+      counterpart: counterpartOf(item.href),
       // The group and section are searchable, so "crm invoices" and
       // "procurement" both find something sensible. So are the names the
       // other product used, so nobody is stranded by the merge.
@@ -190,8 +197,15 @@ export function CommandPalette() {
                     icon={<c.icon className="w-3.5 h-3.5" strokeWidth={1.8} />}
                     label={c.label}
                     // Two products name some things alike, so the group and
-                    // section say which Orders or which Vendors this is.
-                    sub={c.context}
+                    // section say which Orders or which Vendors this is —
+                    // and where the other product has its own version of
+                    // the same idea, this says so rather than letting
+                    // someone find out next week.
+                    sub={
+                      c.counterpart
+                        ? `${c.context} · also in ${c.counterpart.label}`
+                        : c.context
+                    }
                     onClick={() => go(c.to)}
                   />
                 ))}

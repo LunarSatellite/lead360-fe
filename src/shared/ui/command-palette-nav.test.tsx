@@ -99,6 +99,18 @@ describe('the command palette offers the whole admin', () => {
     expect(rowLabels().some((t) => t.startsWith('Payouts'))).toBe(true);
   });
 
+  it('tells you the other product has its own version of this page', () => {
+    // Four ideas exist once per product against different backends. Short
+    // of merging those backends, saying so is the remedy: someone looking
+    // at CRM orders learns commerce has its own, here, rather than a week
+    // later.
+    openPalette();
+    setQuery('orders');
+
+    const labels = rowLabels();
+    expect(labels.some((t) => t.includes('also in'))).toBe(true);
+  });
+
   it('says which product a page belongs to, for the names both use', () => {
     openPalette();
     setQuery('orders');

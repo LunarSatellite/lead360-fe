@@ -157,8 +157,8 @@ export function ProductComposer({ onClose, onDone }: Props) {
 
         <div className="grid gap-5 p-5 lg:grid-cols-2">
           <Section title="1. Identite produit">
-            <label className="block space-y-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
+            <label className="block">
+              <span className="block space-y-1.5"><span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                 Category
               </span>
               <select
@@ -182,9 +182,9 @@ export function ProductComposer({ onClose, onDone }: Props) {
                 <span className="block text-[10px] font-semibold text-danger">
                   Categories are unavailable. Check the Stylemint connection.
                 </span>
-              )}
+              )}</span>
+              <Input label="Nom" value={form.name} onChange={(value) => set('name', value)} required />
             </label>
-            <Input label="Nom" value={form.name} onChange={(value) => set('name', value)} required />
             <Input
               label="Description courte"
               value={form.shortDescription}

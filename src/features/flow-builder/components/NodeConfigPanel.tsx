@@ -83,22 +83,26 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
 
       {/* Name */}
       <div>
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Name</label>
-        <input
+        <label className="block">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Name</span>
+          <input
           value={data.label}
           onChange={(e) => onUpdate(node.id, { label: e.target.value })}
           className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white"
         />
+        </label>
       </div>
 
       {/* Type (read-only) */}
       <div>
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Type</label>
-        <input
+        <label className="block">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Type</span>
+          <input
           value={meta?.label || data.nodeType}
           disabled
           className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs bg-glass-1 text-text-muted"
         />
+        </label>
       </div>
 
       {/* Catalog node: friendly Action + Category controls (avoids hand-editing raw JSON) */}

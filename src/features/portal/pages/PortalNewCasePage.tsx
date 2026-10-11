@@ -33,10 +33,9 @@ export function Component() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Subject <span className="text-danger-400">*</span>
-            </label>
-            <input
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Subject <span className="text-danger-400">*</span></span>
+              <input
               type="text"
               required
               minLength={3}
@@ -47,19 +46,20 @@ export function Component() {
               className="w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm"
               autoFocus
             />
+            </label>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Description
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Description</span>
+              <textarea
               rows={4}
               placeholder="Describe your issue in detail (optional)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm resize-none"
             />
+            </label>
           </div>
 
           <Button

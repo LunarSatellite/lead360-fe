@@ -145,23 +145,31 @@ function NewSupplierInvoiceSlideOver({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Invoice Number *</label>
-              <Input icon={Hash} required value={form.invNumber} onChange={e => setInvNumber(e.target.value)} placeholder="INV-2024-001" style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Invoice Number *</span>
+                <Input icon={Hash} required value={form.invNumber} onChange={e => setInvNumber(e.target.value)} placeholder="INV-2024-001" style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">PO ID (optional)</label>
-              <Input icon={Hash} value={form.poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">PO ID (optional)</span>
+                <Input icon={Hash} value={form.poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" style={inputStyle} />
+              </label>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Issued Date *</label>
-              <Input icon={Calendar} required type="date" value={form.issuedDate} onChange={e => setIssuedDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Issued Date *</span>
+                <Input icon={Calendar} required type="date" value={form.issuedDate} onChange={e => setIssuedDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Due Date *</label>
-              <Input icon={Calendar} required type="date" value={form.dueDate} onChange={e => setDueDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Due Date *</span>
+                <Input icon={Calendar} required type="date" value={form.dueDate} onChange={e => setDueDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
           </div>
 
@@ -173,16 +181,22 @@ function NewSupplierInvoiceSlideOver({
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Subtotal *</label>
-              <Input icon={DollarSign} required type="number" min="0" step="0.01" value={form.subTotal} onChange={e => setSubTotal(e.target.value)} placeholder="0.00" style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Subtotal *</span>
+                <Input icon={DollarSign} required type="number" min="0" step="0.01" value={form.subTotal} onChange={e => setSubTotal(e.target.value)} placeholder="0.00" style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Tax Amount</label>
-              <Input icon={DollarSign} type="number" min="0" step="0.01" value={form.taxAmount} onChange={e => setTaxAmount(e.target.value)} placeholder="0.00" style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Tax Amount</span>
+                <Input icon={DollarSign} type="number" min="0" step="0.01" value={form.taxAmount} onChange={e => setTaxAmount(e.target.value)} placeholder="0.00" style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-              <Input icon={DollarSign} value={form.currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+                <Input icon={DollarSign} value={form.currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" style={inputStyle} />
+              </label>
             </div>
           </div>
 

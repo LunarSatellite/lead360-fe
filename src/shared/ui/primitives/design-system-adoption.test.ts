@@ -102,6 +102,53 @@ describe('defects that must not come back', () => {
     expect(offenders, 'use text-text-inverted on a brand background').toEqual([]);
   });
 
+  it('adds no new label that names nothing', () => {
+    /**
+     * A `<label>` that neither wraps its control nor carries `htmlFor` names
+     * nothing: a screen reader announces the input unnamed, and clicking the
+     * label does not focus the field. Every styled form label in this admin
+     * was one — 503 at the start.
+     *
+     * 206 are fixed, by nesting the control inside the label, which
+     * associates them implicitly and needs no ids. `htmlFor`/`id` would have
+     * to invent ids, and a static one collides the moment a component
+     * renders twice on a page.
+     *
+     * The rest are not a codemod. They are labels with an inline or absent
+     * className, where nesting the control changes the flow, or labels
+     * separated from their control by a wrapper whose contents vary. Each
+     * needs someone to look at the layout, so this is a budget rather than
+     * an absolute check — unlike the contrast and focus rules above, which
+     * are absolute because their fixes were unambiguous.
+     *
+     * Lower it when you fix some. It may not go up.
+     */
+    const BUDGET_ORPHAN_LABELS = 297;
+    const orphans: string[] = [];
+
+    for (const [file, source] of Object.entries(TSX)) {
+      for (let at = source.indexOf('<label'); at !== -1; at = source.indexOf('<label', at + 1)) {
+        const tag = openingTag(source, at);
+        if (/\bhtmlFor\b/.test(tag)) continue;
+
+        const close = source.indexOf('</label>', at);
+        if (close === -1) continue;
+
+        const body = source.slice(at, close);
+        if (!/<(input|select|textarea|Input|SearchInput)\b/.test(body)) {
+          orphans.push(`${file.replace('/src/', '')}: ${body.replace(/\s+/g, ' ').slice(0, 70)}…`);
+        }
+      }
+    }
+
+    expect(
+      orphans.length,
+      orphans.length > BUDGET_ORPHAN_LABELS
+        ? 'a new label names nothing — wrap the control in it, or use Field from @/shared/ui/primitives'
+        : `${BUDGET_ORPHAN_LABELS - orphans.length} fewer than the budget — lower BUDGET_ORPHAN_LABELS to ${orphans.length}`,
+    ).toBe(BUDGET_ORPHAN_LABELS);
+  });
+
   it('never removes the focus outline without putting one back', () => {
     // A control with `focus:outline-none` and no ring of its own cannot be
     // used from a keyboard: the cursor is invisible. The primitives carry

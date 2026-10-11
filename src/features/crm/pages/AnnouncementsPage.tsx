@@ -69,14 +69,18 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
           <div className="h-px bg-brand/20" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></label>
-          <Input icon={Newspaper} value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></span>
+            <Input icon={Newspaper} value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Content <span className="text-danger">*</span></label>
-          <textarea value={form.content} rows={4} onChange={e => set('content', e.target.value)} placeholder="Write your announcement…"
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Content <span className="text-danger">*</span></span>
+            <textarea value={form.content} rows={4} onChange={e => set('content', e.target.value)} placeholder="Write your announcement…"
             className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </label>
         </div>
         <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
           <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Settings</span>
@@ -114,8 +118,10 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
           </div>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Schedule for <span className="text-text-muted font-normal">(optional)</span></label>
-          <Input icon={Calendar} type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Schedule for <span className="text-text-muted font-normal">(optional)</span></span>
+            <Input icon={Calendar} type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} />
+          </label>
         </div>
       </div>
     </>

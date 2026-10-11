@@ -89,15 +89,15 @@ export function SpecUploadZone({ onSuccess }: SpecUploadZoneProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-            Name <span className="text-danger">*</span>
-          </label>
-          <input
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1.5">Name <span className="text-danger">*</span></span>
+            <input
             {...form.register('name')}
             placeholder="e.g. Petstore API v3"
             className="form-input"
             disabled={upload.isPending}
           />
+          </label>
           {form.formState.errors.name && (
             <p className="text-xs text-danger mt-1">{form.formState.errors.name.message}</p>
           )}
@@ -162,16 +162,16 @@ export function SpecUploadZone({ onSuccess }: SpecUploadZoneProps) {
         ) : (
           /* Paste area */
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Spec Content <span className="text-danger">*</span>
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Spec Content <span className="text-danger">*</span></span>
+              <textarea
               {...form.register('specContent')}
               placeholder="Paste your OpenAPI / Swagger JSON or YAML here..."
               rows={12}
               className="form-input resize-none font-mono text-[11px] leading-relaxed"
               disabled={upload.isPending}
             />
+            </label>
             {form.formState.errors.specContent && (
               <p className="text-xs text-danger mt-1">{form.formState.errors.specContent.message}</p>
             )}

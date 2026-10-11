@@ -203,12 +203,16 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
       {/* Core */}
       <SectionLabel label="Campaign" />
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Campaign Name *</label>
-        <input required value={form.name} onChange={set('name')} placeholder="May B2B Outreach" className={inputCls} style={inputStyle} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Campaign Name *</span>
+          <input required value={form.name} onChange={set('name')} placeholder="May B2B Outreach" className={inputCls} style={inputStyle} />
+        </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
-        <input value={form.description} onChange={set('description')} placeholder="What is this campaign for?" className={inputCls} style={inputStyle} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+          <input value={form.description} onChange={set('description')} placeholder="What is this campaign for?" className={inputCls} style={inputStyle} />
+        </label>
       </div>
 
       {/* Channel */}
@@ -234,18 +238,22 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
 
       {isEmailChannel && (
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Subject Line *</label>
-          <input required value={form.subject} onChange={set('subject')} placeholder="Exclusive offer for {{FullName}}" className={inputCls} style={inputStyle} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Subject Line *</span>
+            <input required value={form.subject} onChange={set('subject')} placeholder="Exclusive offer for {{FullName}}" className={inputCls} style={inputStyle} />
+          </label>
         </div>
       )}
 
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Message Body *</label>
-        <textarea required rows={4} value={form.bodyTemplate} onChange={set('bodyTemplate')}
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Message Body *</span>
+          <textarea required rows={4} value={form.bodyTemplate} onChange={set('bodyTemplate')}
           placeholder={isEmailChannel
             ? `Hi {{FullName}},\n\nWe wanted to reach out…`
             : `Hi {{FirstName}}! We have something special for you. Reply to learn more.`}
           className={`${inputCls} resize-none`} style={inputStyle} />
+        </label>
         <p className="text-xs text-text-muted mt-1">
           Tokens: <code className="text-brand">{'{{FullName}}'}</code>{' '}
           <code className="text-brand">{'{{Email}}'}</code>
@@ -253,20 +261,20 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">
-          Target Filter JSON <span className="text-text-muted font-normal">(leave blank for all contacts)</span>
-        </label>
-        <textarea rows={2} value={form.targetFilterJson}
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Target Filter JSON <span className="text-text-muted font-normal">(leave blank for all contacts)</span></span>
+          <textarea rows={2} value={form.targetFilterJson}
           onChange={(e) => { set('targetFilterJson')(e); setFilterJsonError(''); }}
           placeholder={'{"hasOpenDeals": true}'} className={`${inputCls} resize-none font-mono text-xs ${filterJsonError ? 'border-danger' : ''}`} style={inputStyle} />
+        </label>
         {filterJsonError && <p className="text-xs text-danger mt-1">{filterJsonError}</p>}
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">
-          Schedule At <span className="text-text-muted font-normal">(leave blank to save as draft)</span>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Schedule At <span className="text-text-muted font-normal">(leave blank to save as draft)</span></span>
+          <input type="datetime-local" value={form.scheduledAt} onChange={set('scheduledAt')} className={inputCls} style={inputStyle} />
         </label>
-        <input type="datetime-local" value={form.scheduledAt} onChange={set('scheduledAt')} className={inputCls} style={inputStyle} />
       </div>
 
       {/* Advanced toggle */}
@@ -285,17 +293,23 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           <SectionLabel label="Budget" />
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2">
-              <label className="block text-xs text-text-muted mb-1">Budget Amount</label>
-              <input type="number" min="0" step="0.01" value={form.budgetAmount} onChange={set('budgetAmount')} placeholder="5000" className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs text-text-muted mb-1">Budget Amount</span>
+                <input type="number" min="0" step="0.01" value={form.budgetAmount} onChange={set('budgetAmount')} placeholder="5000" className={inputCls} style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs text-text-muted mb-1">Currency</label>
-              <input value={form.budgetCurrency} onChange={set('budgetCurrency')} placeholder="USD" maxLength={3} className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs text-text-muted mb-1">Currency</span>
+                <input value={form.budgetCurrency} onChange={set('budgetCurrency')} placeholder="USD" maxLength={3} className={inputCls} style={inputStyle} />
+              </label>
             </div>
           </div>
           <div>
-            <label className="block text-xs text-text-muted mb-1">Cost Per Send</label>
-            <input type="number" min="0" step="0.0001" value={form.costPerSend} onChange={set('costPerSend')} placeholder="0.05" className={inputCls} style={inputStyle} />
+            <label className="block">
+              <span className="block text-xs text-text-muted mb-1">Cost Per Send</span>
+              <input type="number" min="0" step="0.0001" value={form.costPerSend} onChange={set('costPerSend')} placeholder="0.05" className={inputCls} style={inputStyle} />
+            </label>
           </div>
 
           {/* Goal */}
@@ -311,8 +325,10 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
               </select>
             </div>
             <div>
-              <label className="block text-xs text-text-muted mb-1">Target</label>
-              <input type="number" min="0" step="1" value={form.goalTarget} onChange={set('goalTarget')} placeholder="100" className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs text-text-muted mb-1">Target</span>
+                <input type="number" min="0" step="1" value={form.goalTarget} onChange={set('goalTarget')} placeholder="100" className={inputCls} style={inputStyle} />
+              </label>
             </div>
           </div>
 
@@ -331,20 +347,28 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           <SectionLabel label="UTM Tracking" />
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-text-muted mb-1">Source</label>
-              <input value={form.utmSource} onChange={set('utmSource')} placeholder="email" className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs text-text-muted mb-1">Source</span>
+                <input value={form.utmSource} onChange={set('utmSource')} placeholder="email" className={inputCls} style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs text-text-muted mb-1">Medium</label>
-              <input value={form.utmMedium} onChange={set('utmMedium')} placeholder="newsletter" className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs text-text-muted mb-1">Medium</span>
+                <input value={form.utmMedium} onChange={set('utmMedium')} placeholder="newsletter" className={inputCls} style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs text-text-muted mb-1">Campaign</label>
-              <input value={form.utmCampaign} onChange={set('utmCampaign')} placeholder="q2_launch" className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs text-text-muted mb-1">Campaign</span>
+                <input value={form.utmCampaign} onChange={set('utmCampaign')} placeholder="q2_launch" className={inputCls} style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs text-text-muted mb-1">Content</label>
-              <input value={form.utmContent} onChange={set('utmContent')} placeholder="subject_a" className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs text-text-muted mb-1">Content</span>
+                <input value={form.utmContent} onChange={set('utmContent')} placeholder="subject_a" className={inputCls} style={inputStyle} />
+              </label>
             </div>
           </div>
         </div>
@@ -387,9 +411,11 @@ function PreviewPanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Target Filter JSON</label>
-        <textarea rows={3} value={filterJson} onChange={(e) => { setFilterJson(e.target.value); setJsonError(''); }}
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Target Filter JSON</span>
+          <textarea rows={3} value={filterJson} onChange={(e) => { setFilterJson(e.target.value); setJsonError(''); }}
           className={`${inputCls} resize-none font-mono text-xs ${jsonError ? 'border-danger' : ''}`} />
+        </label>
         {jsonError && <p className="text-xs text-danger mt-1">{jsonError}</p>}
       </div>
       <Button onClick={handlePreview} disabled={preview.isPending}
@@ -595,8 +621,10 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <label className="block text-[10px] text-text-muted mb-1">Revenue ($)</label>
-              <input type="number" min="0" step="0.01" value={form.revenue} onChange={(e) => setForm((f) => ({ ...f, revenue: e.target.value }))} className={inputCls} />
+              <label className="block">
+                <span className="block text-[10px] text-text-muted mb-1">Revenue ($)</span>
+                <input type="number" min="0" step="0.01" value={form.revenue} onChange={(e) => setForm((f) => ({ ...f, revenue: e.target.value }))} className={inputCls} />
+              </label>
             </div>
             <div>
               <label className="block text-[10px] text-text-muted mb-1">Attribution Model</label>
@@ -650,22 +678,28 @@ function BudgetPanel({ campaign, onDone }: { campaign: CrmCampaignSummaryDto; on
     <form onSubmit={handleSubmit} className="space-y-3" onClick={(e) => e.stopPropagation()}>
       <div className="grid grid-cols-3 gap-2">
         <div className="col-span-2">
-          <label className="block text-[10px] text-text-muted mb-1">Budget Amount</label>
-          <input type="number" min="0" step="0.01" value={form.budgetAmount}
+          <label className="block">
+            <span className="block text-[10px] text-text-muted mb-1">Budget Amount</span>
+            <input type="number" min="0" step="0.01" value={form.budgetAmount}
             onChange={(e) => setForm((f) => ({ ...f, budgetAmount: e.target.value }))}
             placeholder="5000" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-[10px] text-text-muted mb-1">Currency</label>
-          <input value={form.budgetCurrency} maxLength={3}
+          <label className="block">
+            <span className="block text-[10px] text-text-muted mb-1">Currency</span>
+            <input value={form.budgetCurrency} maxLength={3}
             onChange={(e) => setForm((f) => ({ ...f, budgetCurrency: e.target.value }))} className={inputCls} />
+          </label>
         </div>
       </div>
       <div>
-        <label className="block text-[10px] text-text-muted mb-1">Cost Per Send</label>
-        <input type="number" min="0" step="0.0001" value={form.costPerSend}
+        <label className="block">
+          <span className="block text-[10px] text-text-muted mb-1">Cost Per Send</span>
+          <input type="number" min="0" step="0.0001" value={form.costPerSend}
           onChange={(e) => setForm((f) => ({ ...f, costPerSend: e.target.value }))}
           placeholder="0.05" className={inputCls} />
+        </label>
       </div>
       <div className="flex gap-2">
         <Button type="submit" disabled={updateBudget.isPending}
@@ -1074,17 +1108,23 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
         <form onSubmit={(e) => { e.preventDefault(); createCampaign.mutate(formToLeadRequest(form), { onSuccess: onClose }); }} className="flex-1 flex flex-col min-h-0">
           <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1.5">Name *</label>
-              <input required value={form.name} onChange={(e) => setField('name', e.target.value)} placeholder="May Warm Lead Outreach" className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-muted mb-1.5">Name *</span>
+                <input required value={form.name} onChange={(e) => setField('name', e.target.value)} placeholder="May Warm Lead Outreach" className={inputCls} style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
-              <input value={form.description} onChange={(e) => setField('description', e.target.value)} className={inputCls} style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+                <input value={form.description} onChange={(e) => setField('description', e.target.value)} className={inputCls} style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1.5">Message Template *</label>
-              <textarea rows={4} required value={form.messageTemplate} onChange={(e) => setField('messageTemplate', e.target.value)}
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-muted mb-1.5">Message Template *</span>
+                <textarea rows={4} required value={form.messageTemplate} onChange={(e) => setField('messageTemplate', e.target.value)}
                 placeholder="Hi {{CustomerName}}, we have a special offer for you…" className={`${inputCls} resize-none`} style={inputStyle} />
+              </label>
             </div>
             <div className="bg-bg-elevated border border-border-subtle rounded-xl p-4 space-y-4">
               <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Segment Filter</p>
@@ -1094,12 +1134,16 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-text-muted mb-1">Min Score (0–100)</label>
-                  <input type="number" min={0} max={100} value={form.minScore} onChange={(e) => setField('minScore', Number(e.target.value))} className={inputCls} style={inputStyle} />
+                  <label className="block">
+                    <span className="block text-xs text-text-muted mb-1">Min Score (0–100)</span>
+                    <input type="number" min={0} max={100} value={form.minScore} onChange={(e) => setField('minScore', Number(e.target.value))} className={inputCls} style={inputStyle} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs text-text-muted mb-1">Active in last (days)</label>
-                  <input type="number" min={1} value={form.lastActiveDays} onChange={(e) => setField('lastActiveDays', Number(e.target.value))} className={inputCls} style={inputStyle} />
+                  <label className="block">
+                    <span className="block text-xs text-text-muted mb-1">Active in last (days)</span>
+                    <input type="number" min={1} value={form.lastActiveDays} onChange={(e) => setField('lastActiveDays', Number(e.target.value))} className={inputCls} style={inputStyle} />
+                  </label>
                 </div>
               </div>
               <div className="flex items-center gap-3 flex-wrap">

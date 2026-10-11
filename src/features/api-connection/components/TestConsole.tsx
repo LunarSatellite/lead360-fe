@@ -109,15 +109,15 @@ export function TestConsole({ endpoints }: TestConsoleProps) {
                   </p>
                   {paramFields.map((f) => (
                     <div key={f.name}>
-                      <label className="block text-xs font-semibold text-text-secondary mb-1">
-                        {f.name} <span className="text-[11px] text-text-muted font-normal">({f.source})</span>
-                      </label>
-                      <input
+                      <label className="block">
+                        <span className="block text-xs font-semibold text-text-secondary mb-1">{f.name} <span className="text-[11px] text-text-muted font-normal">({f.source})</span></span>
+                        <input
                         value={params[f.name] || ''}
                         onChange={(e) => setParams((prev) => ({ ...prev, [f.name]: e.target.value }))}
                         placeholder={`Enter ${f.name}...`}
                         className="form-input"
                       />
+                      </label>
                     </div>
                   ))}
                 </div>

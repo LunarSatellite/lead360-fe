@@ -459,9 +459,11 @@ export function Component() {
             </div>
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Deal Name</label>
-                <input value={editForm.name ?? ''} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Deal Name</span>
+                  <input value={editForm.name ?? ''} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                </label>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-text-muted mb-1.5">Account</label>
@@ -473,10 +475,12 @@ export function Component() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Amount</label>
-                  <input type="number" min={0} value={editForm.amount ?? ''} onChange={e => setEditForm(f => ({ ...f, amount: e.target.value ? Number(e.target.value) : undefined }))}
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-muted mb-1.5">Amount</span>
+                    <input type="number" min={0} value={editForm.amount ?? ''} onChange={e => setEditForm(f => ({ ...f, amount: e.target.value ? Number(e.target.value) : undefined }))}
                     placeholder="0"
                     className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                  </label>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-muted mb-1.5">Currency</label>
@@ -487,20 +491,26 @@ export function Component() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Close Date</label>
-                <input type="date" value={editForm.closeDate ?? ''} onChange={e => setEditForm(f => ({ ...f, closeDate: e.target.value }))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Close Date</span>
+                  <input type="date" value={editForm.closeDate ?? ''} onChange={e => setEditForm(f => ({ ...f, closeDate: e.target.value }))}
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Source</label>
-                <input value={editForm.source ?? ''} onChange={e => setEditForm(f => ({ ...f, source: e.target.value }))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Source</span>
+                  <input value={editForm.source ?? ''} onChange={e => setEditForm(f => ({ ...f, source: e.target.value }))}
                   placeholder="e.g. Referral, Inbound, Campaign"
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Notes</label>
-                <textarea rows={3} value={editForm.notes ?? ''} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Notes</span>
+                  <textarea rows={3} value={editForm.notes ?? ''} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow resize-none" />
+                </label>
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border-subtle shrink-0 flex gap-3">

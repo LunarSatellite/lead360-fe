@@ -28,32 +28,38 @@ export function ImportEditDialog({ row, onSave, onClose }: ImportEditDialogProps
 
         <div className="p-5 space-y-3">
           <div>
-            <label className="block text-2xs font-semibold text-text-secondary mb-1">Name *</label>
-            <input
+            <label className="block">
+              <span className="block text-2xs font-semibold text-text-secondary mb-1">Name *</span>
+              <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="form-input"
               placeholder="e.g., Track Order"
             />
+            </label>
           </div>
           <div>
-            <label className="block text-2xs font-semibold text-text-secondary mb-1">Keywords</label>
-            <input
+            <label className="block">
+              <span className="block text-2xs font-semibold text-text-secondary mb-1">Keywords</span>
+              <input
               value={keywords}
               onChange={(e) => setKeywords(e.target.value)}
               className="form-input"
               placeholder="track,order,status (comma-separated)"
             />
+            </label>
           </div>
           <div>
-            <label className="block text-2xs font-semibold text-text-secondary mb-1">Description</label>
-            <textarea
+            <label className="block">
+              <span className="block text-2xs font-semibold text-text-secondary mb-1">Description</span>
+              <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="form-input"
               rows={2}
               placeholder="What does this intent do?"
             />
+            </label>
           </div>
           <div>
             <label className="block text-2xs font-semibold text-text-secondary mb-1">Operation Type</label>

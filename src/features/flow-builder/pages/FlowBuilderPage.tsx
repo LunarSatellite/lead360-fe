@@ -1157,16 +1157,19 @@ function FlowBuilderInner() {
 
                   {/* Standard fields */}
                   <div>
-                    <label className="block text-2xs font-semibold mb-1 text-text-secondary">Name</label>
-                    <input
+                    <label className="block">
+                      <span className="block text-2xs font-semibold mb-1 text-text-secondary">Name</span>
+                      <input
                       value={(sel.data as FlowNodeData).label}
                       onChange={(e) => updateNodeData(sel.id, { label: e.target.value })}
                       className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-bg-shell text-text-muted"
                     />
+                    </label>
                   </div>
                   <div>
-                    <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                    <input
+                    <label className="block">
+                      <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                      <input
                       value={
                         NODE_TYPE_META[(sel.data as FlowNodeData).nodeType]?.label ||
                         (sel.data as FlowNodeData).nodeType
@@ -1174,6 +1177,7 @@ function FlowBuilderInner() {
                       disabled
                       className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs bg-glass-1 text-text-muted"
                     />
+                    </label>
                   </div>
                   {/* ✨ AI fix this specific node — scoped to known issues */}
                   {editor.flowId && (

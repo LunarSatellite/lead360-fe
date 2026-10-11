@@ -208,10 +208,9 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
               {/* Status note input */}
               {tx.status === TransactionStatus.Pending && (
                 <div>
-                  <label className="block text-[11px] font-bold text-text-secondary mb-1">
-                    Internal note (optional)
-                  </label>
-                  <textarea
+                  <label className="block">
+                    <span className="block text-[11px] font-bold text-text-secondary mb-1">Internal note (optional)</span>
+                    <textarea
                     value={note}
                     rows={2}
                     placeholder="e.g. 'Called customer, confirmed for Friday.'"
@@ -220,6 +219,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                                text-text-primary placeholder:text-text-muted
                                focus:outline-none focus:border-brand transition-colors resize-none"
                   />
+                  </label>
                 </div>
               )}
             </div>

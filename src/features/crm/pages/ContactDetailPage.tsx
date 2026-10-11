@@ -98,29 +98,41 @@ function EditForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Full Name *</label>
-          <input required value={form.fullName} onChange={set('fullName')} className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Full Name *</span>
+            <input required value={form.fullName} onChange={set('fullName')} className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Job Title</label>
-          <input value={form.jobTitle} onChange={set('jobTitle')} placeholder="VP of Sales" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Job Title</span>
+            <input value={form.jobTitle} onChange={set('jobTitle')} placeholder="VP of Sales" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Email</label>
-          <input type="email" value={form.email} onChange={set('email')} className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Email</span>
+            <input type="email" value={form.email} onChange={set('email')} className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Phone</label>
-          <input value={form.phone} onChange={set('phone')} className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Phone</span>
+            <input value={form.phone} onChange={set('phone')} className={inputCls} />
+          </label>
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">LinkedIn URL</label>
-        <input value={form.linkedIn} onChange={set('linkedIn')} placeholder="https://linkedin.com/in/..." className={inputCls} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">LinkedIn URL</span>
+          <input value={form.linkedIn} onChange={set('linkedIn')} placeholder="https://linkedin.com/in/..." className={inputCls} />
+        </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Notes</label>
-        <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Notes</span>
+          <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
+        </label>
       </div>
       <div className="flex gap-3 pt-1">
         <Button

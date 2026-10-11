@@ -252,13 +252,17 @@ function GenInvoiceSlideOver({
 
           {genSource === 'deal' ? (
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID *</label>
-              <Input icon={Hash} value={genDealId} onChange={e => setGenDealId(e.target.value)} placeholder="Enter Deal ID" style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Deal ID *</span>
+                <Input icon={Hash} value={genDealId} onChange={e => setGenDealId(e.target.value)} placeholder="Enter Deal ID" style={inputStyle} />
+              </label>
             </div>
           ) : (
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Order Number *</label>
-              <Input icon={Hash} value={genOrderId} onChange={e => setGenOrderId(e.target.value)} placeholder="e.g. ORD-20260701-XXXX" style={inputStyle} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Order Number *</span>
+                <Input icon={Hash} value={genOrderId} onChange={e => setGenOrderId(e.target.value)} placeholder="e.g. ORD-20260701-XXXX" style={inputStyle} />
+              </label>
             </div>
           )}
         </div>

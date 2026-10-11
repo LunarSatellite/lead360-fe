@@ -165,10 +165,9 @@ function StepCard({
 
       {/* Delay */}
       <div>
-        <label className="block text-xs font-medium text-text-secondary mb-1">
-          Delay (minutes after previous step)
-        </label>
-        <input
+        <label className="block">
+          <span className="block text-xs font-medium text-text-secondary mb-1">Delay (minutes after previous step)</span>
+          <input
           type="number"
           min={0}
           value={step.delayMinutes}
@@ -176,6 +175,7 @@ function StepCard({
           className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
           style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
         />
+        </label>
       </div>
 
       {/* Action type */}
@@ -223,8 +223,9 @@ function StepCard({
       {/* Conditional extra fields */}
       {step.actionType === NurtureStepAction.SendMessage && (
         <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1">Message Template</label>
-          <textarea
+          <label className="block">
+            <span className="block text-xs font-medium text-text-secondary mb-1">Message Template</span>
+            <textarea
             rows={3}
             value={step.messageTemplate}
             onChange={(e) => set('messageTemplate', e.target.value)}
@@ -232,6 +233,7 @@ function StepCard({
             className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
+          </label>
           <p className="text-xs text-text-muted mt-1">
             Available tokens:{' '}
             <code className="text-brand">{'{{CustomerName}}'}</code>{' '}
@@ -293,8 +295,9 @@ function StepCard({
 
       {step.actionType === NurtureStepAction.AddTag && (
         <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1">Tag</label>
-          <input
+          <label className="block">
+            <span className="block text-xs font-medium text-text-secondary mb-1">Tag</span>
+            <input
             type="text"
             value={step.tagToAdd}
             onChange={(e) => set('tagToAdd', e.target.value)}
@@ -302,6 +305,7 @@ function StepCard({
             className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
+          </label>
         </div>
       )}
     </div>
@@ -406,10 +410,9 @@ function SequenceModal({
         <div className="overflow-y-auto px-6 py-5 flex-1 min-h-0 space-y-4">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Name <span className="text-danger">*</span>
-            </label>
-            <input
+            <label className="block">
+              <span className="block text-sm font-medium text-text-secondary mb-1">Name <span className="text-danger">*</span></span>
+              <input
               type="text"
               required
               value={form.name}
@@ -418,6 +421,7 @@ function SequenceModal({
               className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
+            </label>
           </div>
 
           {/* Sequence Type */}
@@ -452,10 +456,9 @@ function SequenceModal({
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Description <span className="text-text-muted">(optional)</span>
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-sm font-medium text-text-secondary mb-1">Description <span className="text-text-muted">(optional)</span></span>
+              <textarea
               rows={2}
               value={form.description}
               onChange={(e) => setField('description', e.target.value)}
@@ -463,6 +466,7 @@ function SequenceModal({
               className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
+            </label>
           </div>
 
           {/* Trigger Type */}
@@ -539,8 +543,9 @@ function SequenceModal({
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</label>
-                <input
+                <label className="block">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</span>
+                  <input
                   type="number"
                   min={0}
                   value={form.triggerDelayMinutes}
@@ -548,6 +553,7 @@ function SequenceModal({
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
+                </label>
               </div>
             </div>
           )}
@@ -556,10 +562,9 @@ function SequenceModal({
           {(form.triggerType === NurtureTriggerType.ScoreDropped || form.triggerType === NurtureTriggerType.ScoreRaised) && (
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
-                  {form.triggerType === NurtureTriggerType.ScoreDropped ? 'Score drops to or below' : 'Score rises to or above'}
-                </label>
-                <input
+                <label className="block">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">{form.triggerType === NurtureTriggerType.ScoreDropped ? 'Score drops to or below' : 'Score rises to or above'}</span>
+                  <input
                   type="number"
                   min={0}
                   max={100}
@@ -571,10 +576,12 @@ function SequenceModal({
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
+                </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</label>
-                <input
+                <label className="block">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</span>
+                  <input
                   type="number"
                   min={0}
                   value={form.triggerDelayMinutes}
@@ -582,6 +589,7 @@ function SequenceModal({
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
+                </label>
               </div>
             </div>
           )}

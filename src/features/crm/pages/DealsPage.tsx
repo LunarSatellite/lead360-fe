@@ -850,8 +850,10 @@ export function Component() {
             <div className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
               {/* Deal Name */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Deal Name *</label>
-                <Input icon={Briefcase} value={ndName} onChange={e => setNdName(e.target.value)} placeholder="e.g. Acme Corp — Enterprise" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Deal Name *</span>
+                  <Input icon={Briefcase} value={ndName} onChange={e => setNdName(e.target.value)} placeholder="e.g. Acme Corp — Enterprise" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                </label>
               </div>
 
               {/* Stage */}
@@ -902,12 +904,16 @@ export function Component() {
               {/* Amount + Close Date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Amount</label>
-                  <Input icon={DollarSign} type="number" value={ndAmount} onChange={e => setNdAmount(e.target.value)} placeholder="0" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Amount</span>
+                    <Input icon={DollarSign} type="number" value={ndAmount} onChange={e => setNdAmount(e.target.value)} placeholder="0" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Expected Close Date</label>
-                  <Input icon={Calendar} type="date" value={ndCloseDate} onChange={e => setNdCloseDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Expected Close Date</span>
+                    <Input icon={Calendar} type="date" value={ndCloseDate} onChange={e => setNdCloseDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
               </div>
 

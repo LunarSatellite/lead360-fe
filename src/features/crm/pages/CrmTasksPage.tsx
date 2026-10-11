@@ -120,8 +120,14 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmTaskCreateR
         </div>
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
           <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Title *</label><input required value={form.title} onChange={set('title')} placeholder="Task title..." className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label><textarea rows={3} value={form.description} onChange={set('description')} placeholder="Optional details..." className={`${formInputCls} resize-none`} style={formInputStyle} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Title *</span>
+  <input required value={form.title} onChange={set('title')} placeholder="Task title..." className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+  <textarea rows={3} value={form.description} onChange={set('description')} placeholder="Optional details..." className={`${formInputCls} resize-none`} style={formInputStyle} />
+</label></div>
 
             {/* Priority custom dropdown */}
             <div>
@@ -156,10 +162,22 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmTaskCreateR
               </div>
             </div>
 
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Due Date</label><input type="datetime-local" value={form.dueDate} onChange={set('dueDate')} className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Deal ID (optional)</label><input value={form.dealId} onChange={set('dealId')} placeholder="UUID" className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Assign To (User ID)</label><input value={form.assignedToUserId} onChange={set('assignedToUserId')} placeholder="UUID" className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Reminder (minutes before)</label><input type="number" min={0} value={form.reminderMinutesBefore} onChange={set('reminderMinutesBefore')} placeholder="e.g. 30" className={formInputCls} style={formInputStyle} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Due Date</span>
+  <input type="datetime-local" value={form.dueDate} onChange={set('dueDate')} className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Deal ID (optional)</span>
+  <input value={form.dealId} onChange={set('dealId')} placeholder="UUID" className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Assign To (User ID)</span>
+  <input value={form.assignedToUserId} onChange={set('assignedToUserId')} placeholder="UUID" className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Reminder (minutes before)</span>
+  <input type="number" min={0} value={form.reminderMinutesBefore} onChange={set('reminderMinutesBefore')} placeholder="e.g. 30" className={formInputCls} style={formInputStyle} />
+</label></div>
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
             <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
@@ -242,16 +260,28 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
             e.preventDefault();
             update.mutate({ id: task.id, data: { title: editForm.title || undefined, description: editForm.description || undefined, priority: editForm.priority ? Number(editForm.priority) as CrmTaskPriority : undefined, dueDate: editForm.dueDate || undefined, completionNotes: editForm.completionNotes || undefined } }, { onSuccess: () => setEditing(false) });
           }} className="space-y-3 pt-3 border-t border-border-subtle">
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Title</label><input value={editForm.title} onChange={setEdit('title')} className={inputCls} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Description</label><textarea rows={2} value={editForm.description} onChange={setEdit('description')} className={`${inputCls} resize-none`} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Title</span>
+  <input value={editForm.title} onChange={setEdit('title')} className={inputCls} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Description</span>
+  <textarea rows={2} value={editForm.description} onChange={setEdit('description')} className={`${inputCls} resize-none`} />
+</label></div>
             <div>
               <label className="block text-xs font-semibold text-text-muted mb-1">Priority</label>
               <select value={editForm.priority} onChange={setEdit('priority')} className={`${selectCls} w-full`}>
                 {Object.entries(CRM_TASK_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
               </select>
             </div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Due Date</label><input type="datetime-local" value={editForm.dueDate} onChange={setEdit('dueDate')} className={inputCls} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Completion Notes</label><textarea rows={2} value={editForm.completionNotes} onChange={setEdit('completionNotes')} className={`${inputCls} resize-none`} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Due Date</span>
+  <input type="datetime-local" value={editForm.dueDate} onChange={setEdit('dueDate')} className={inputCls} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Completion Notes</span>
+  <textarea rows={2} value={editForm.completionNotes} onChange={setEdit('completionNotes')} className={`${inputCls} resize-none`} />
+</label></div>
             <Button type="submit" disabled={update.isPending} variant="primary" block>
               {update.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Save Changes'}
             </Button>

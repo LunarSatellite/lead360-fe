@@ -42,7 +42,7 @@ export function Field({ label, hint, error, required, className, children }: Fie
       <label htmlFor={id} className="mb-1 block text-xs font-semibold text-text-secondary">
         {label}
         {required && (
-          <span className="ml-1 text-danger" aria-hidden>
+          <span className="ml-1 text-danger-light" aria-hidden>
             *
           </span>
         )}
@@ -56,7 +56,7 @@ export function Field({ label, hint, error, required, className, children }: Fie
           // Announced when it is an error, because a field that goes red
           // without saying why is the same as a field that silently fails.
           role={error ? 'alert' : undefined}
-          className={cn('mt-1 text-xs', error ? 'text-danger' : 'text-text-muted')}
+          className={cn('mt-1 text-xs', error ? 'text-danger-light' : 'text-text-muted')}
         >
           {note}
         </p>

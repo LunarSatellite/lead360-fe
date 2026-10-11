@@ -56,7 +56,7 @@ const TONE = {
   brand: 'bg-brand-soft text-brand',
   success: 'bg-success-soft text-success-light',
   warning: 'bg-warning-soft text-warning',
-  danger: 'bg-danger-soft text-danger',
+  danger: 'bg-danger-soft text-danger-light',
 } as const;
 
 export function Badge({

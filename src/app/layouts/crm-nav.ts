@@ -34,6 +34,7 @@ import {
   RefreshCw,
   RotateCw,
   ScrollText,
+  ShieldAlert,
   Settings,
   ShieldCheck,
   ShoppingCart,
@@ -106,6 +107,7 @@ export const crmNav = [
   { label: 'Assignment rotation', href: ROUTES.dashboard.crmAssignmentRotation, icon: Shuffle },
   { label: 'Activity feed', href: ROUTES.dashboard.crmActivity, icon: Globe },
   { label: 'Audit log', href: ROUTES.dashboard.crmAudit, icon: ScrollText },
+  { label: 'Data requests', href: ROUTES.dashboard.crmGdpr, icon: ShieldAlert },
   { label: 'Notification settings', href: ROUTES.dashboard.crmNotificationSettings, icon: Settings },
   // ── Routed but previously unlinked: reachable only by typing the URL until now.
   // Analytics and Support stay out on purpose — see the note above; they live once

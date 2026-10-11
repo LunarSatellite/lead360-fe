@@ -156,6 +156,7 @@ export const ROUTES = {
     crmInbox: '/dashboard/crm/inbox',
     crmActivity: '/dashboard/crm/activity',
     crmAudit: '/dashboard/crm/audit',
+    crmGdpr: '/dashboard/crm/gdpr',
     crmNotificationSettings: '/dashboard/crm/notification-settings',
     crmReturns: '/dashboard/crm/returns',
     crmWorkOrders: '/dashboard/crm/work-orders',

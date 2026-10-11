@@ -561,13 +561,13 @@ function SchedulePublishDialog({
           </button>
         </div>
         <label className="mt-5 block text-[10px] font-bold uppercase text-text-muted">
-          Date et heure Kinshasa
+          Kinshasa date and time
           <input
             required
             type="datetime-local"
             value={when}
             onChange={(event) => setWhen(event.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary"
+            className="mt-1.5 w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary font-normal"
           />
         </label>
         <label className="mt-3 block text-[10px] font-bold uppercase text-text-muted">
@@ -577,7 +577,7 @@ function SchedulePublishDialog({
             rows={4}
             value={caption}
             onChange={(event) => setCaption(event.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary"
+            className="mt-1.5 w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary font-normal"
           />
         </label>
         <div className="mt-3 grid grid-cols-2 gap-2">

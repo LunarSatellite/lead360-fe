@@ -172,7 +172,7 @@ function Select<T extends number | undefined>({
         onChange={(event) =>
           onChange((event.target.value === '' ? undefined : Number(event.target.value)) as T)
         }
-        className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"
+        className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow font-normal"
       >
         {options.map((option) => (
           <option key={option.label} value={option.value === undefined ? '' : String(option.value)}>

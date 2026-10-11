@@ -121,28 +121,23 @@ describe('defects that must not come back', () => {
      * an absolute check — unlike the contrast and focus rules above, which
      * are absolute because their fixes were unambiguous.
      *
-     * Sixty of them look unambiguous and are not, which is worth writing
-     * down because the trap is invisible in a diff. They are exactly
+     * Sixty of them are one control immediately after the label with
+     * nothing in between, and nesting those does need one extra step,
+     * measured rather than assumed. Given
      *
-     *     <label className="... uppercase tracking-wider font-semibold">
-     *       Title *
-     *     </label>
-     *     <input className={inputCls} … />
+     *     <label className="text-xs font-semibold uppercase tracking-wider">
+     *     <input className="… text-sm …">
      *
-     * — one native control, immediately after, nothing in between. Nesting
-     * that input compiles, passes every test here, passes axe, and renders
-     * what the user types in uppercase. Tailwind's preflight sets
-     * `letter-spacing` and `font-weight` to `inherit` on form elements, and
-     * `text-transform` inherits on its own, so the control picks up the
-     * label's styling; the shared input classes set a font size and none of
-     * the other three, so nothing overrides it. 57 sites were converted and
-     * reverted on finding this.
+     * nesting gives the control `font-weight: 600` and
+     * `letter-spacing: 0.6px`, because Tailwind's preflight sets both to
+     * `inherit` on form elements and the shared input classes set only a
+     * font size. `text-transform` does *not* follow: the browser's own
+     * stylesheet sets `text-transform: none` on form controls, so the
+     * uppercase stays on the label where it belongs.
      *
-     * The fix that does work is to move the text into a `<span>` and leave
-     * the `<label>` carrying only layout classes — but the spacing then has
-     * to be reproduced per site, because it currently comes from whatever
-     * wrapper the pair sits in. That is the per-site look this budget is
-     * about.
+     * So the control needs `font-normal tracking-normal` when the label
+     * carries either, and the check below this one enforces that nobody
+     * forgets.
      *
      * Lower it when you fix some. It may not go up.
      */

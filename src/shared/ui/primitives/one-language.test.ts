@@ -59,6 +59,7 @@ const FRENCH = [
   'remise', 'inspirant', 'authentique', 'adaptee', 'adaptée', 'commerciale',
   'tableau', 'artiste', 'duree', 'durée', 'sujet', 'frais', 'utile',
   'precedente', 'précédente', 'reparation', 'réparation', 'conseil',
+  'heure', 'heures',
   'selectionnee', 'sélectionnée', 'absente', 'envoi', 'ville', 'mensuel',
   'produit', 'prix', 'suivi', 'automatiquement',
 ];

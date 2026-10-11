@@ -544,11 +544,11 @@ export function Component() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, email or phone..."
+              placeholder="Search by name, email or phone..." aria-label="Search by name, email or phone..."
               className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
             />
           </div>
-          <select
+          <select aria-label="Filter by source"
             value={sourceFilter}
             onChange={(e) => setSourceFilter(e.target.value)}
             className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium"

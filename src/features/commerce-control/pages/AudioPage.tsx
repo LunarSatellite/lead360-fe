@@ -202,7 +202,7 @@ function CitationsTab() {
             <input
               value={trackId}
               onChange={(event) => setTrackId(event.target.value)}
-              placeholder="Music track id to point it at"
+              placeholder="Music track id to point it at" aria-label="Music track id to point it at"
               className="min-w-[300px] flex-1 rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 font-mono text-xs text-text-primary outline-none focus:border-border-glow"
             />
             <Button
@@ -217,7 +217,7 @@ function CitationsTab() {
             <input
               value={reason}
               onChange={(event) => setReason(event.target.value)}
-              placeholder="…or a reason to dismiss it"
+              placeholder="…or a reason to dismiss it" aria-label="…or a reason to dismiss it"
               className="min-w-[300px] flex-1 rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
             />
             <button
@@ -415,7 +415,7 @@ function TrackRow({
           <input
             value={reason}
             onChange={(event) => setReason(event.target.value)}
-            placeholder="Why is this track being hidden? (required)"
+            placeholder="Why is this track being hidden? (required)" aria-label="Why is this track being hidden? (required)"
             className="min-w-[280px] flex-1 rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
           />
           <Button

@@ -291,8 +291,8 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search orders..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search orders..." aria-label="Search orders..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Status</option>
             {Object.entries(CRM_ORDER_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -371,8 +371,8 @@ export function Component() {
         }
       >
         <form id="create-order-form" onSubmit={handleCreate} className="space-y-4">
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" aria-label="USD" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <Field label="Customer PO #"><input value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <Field label="Account">
             <div className="relative">
@@ -435,7 +435,7 @@ export function Component() {
             <div className="space-y-2">
               {lines.map((l, i) => (
                 <div key={i} className="grid grid-cols-[1fr_60px_80px_28px] gap-1.5 items-center">
-                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" aria-label="Product name" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <input type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
@@ -475,7 +475,7 @@ export function Component() {
                 </select>
               </Field>
               <Field label="Reference">
-                <input value={paymentRef} onChange={e => setPaymentRef(e.target.value)} placeholder="transaction-id" className={inputCls} />
+                <input value={paymentRef} onChange={e => setPaymentRef(e.target.value)} placeholder="transaction-id" aria-label="transaction-id" className={inputCls} />
               </Field>
               <div className="flex gap-3 pt-2">
                 <button type="submit" disabled={recordPayment.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
@@ -492,8 +492,8 @@ export function Component() {
       <SlideOver open={showNewShipment} onClose={() => setShowNewShipment(false)} title="New Shipment">
         <form onSubmit={handleCreateShipment} className="space-y-4">
           <p className="text-sm text-text-muted">Order <span className="font-mono text-text-primary">{selectedOrder?.orderNumber}</span></p>
-          <Field label="Carrier"><input value={shipCarrier} onChange={e => setShipCarrier(e.target.value)} placeholder="DHL, FedEx, etc." className={inputCls} /></Field>
-          <Field label="Tracking Number"><input value={shipTracking} onChange={e => setShipTracking(e.target.value)} placeholder="tracking-number" className={inputCls} /></Field>
+          <Field label="Carrier"><input value={shipCarrier} onChange={e => setShipCarrier(e.target.value)} placeholder="DHL, FedEx, etc." aria-label="DHL, FedEx, etc." className={inputCls} /></Field>
+          <Field label="Tracking Number"><input value={shipTracking} onChange={e => setShipTracking(e.target.value)} placeholder="tracking-number" aria-label="tracking-number" className={inputCls} /></Field>
           <div className="flex gap-3 pt-2">
             <Button type="submit" disabled={createDelivery.isPending} variant="primary" className="flex-1">
               {createDelivery.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Shipment'}
@@ -656,7 +656,7 @@ export function Component() {
                             </td>
                             <td className="py-1.5">
                               {pickList.status <= 2 ? (
-                                <input placeholder="Serials (comma)" defaultValue={pi.serialNumbers || ''}
+                                <input placeholder="Serials (comma)" aria-label="Serials (comma)" defaultValue={pi.serialNumbers || ''}
                                   onBlur={(e) => {
                                     const val = e.target.value;
                                     if (val !== (pi.serialNumbers || '')) {
@@ -820,7 +820,7 @@ export function Component() {
                   <p className="text-xs text-danger bg-danger-soft px-3 py-2 rounded-xl">Account over credit limit. Order blocked — manager override required.</p>
                 )}
                 {(creditResult.riskLevel >= 2 || confirmOverrideNote === PO_WARNING) && (
-                  <input value={confirmOverrideNote} onChange={e => setConfirmOverrideNote(e.target.value)} placeholder="Add a note explaining why..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" />
+                  <input value={confirmOverrideNote} onChange={e => setConfirmOverrideNote(e.target.value)} placeholder="Add a note explaining why..." aria-label="Add a note explaining why..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" />
                 )}
               </div>
             ) : null}

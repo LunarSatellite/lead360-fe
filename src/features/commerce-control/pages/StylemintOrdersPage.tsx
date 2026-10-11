@@ -201,7 +201,7 @@ export function StylemintOrdersPage() {
             className="w-full bg-transparent py-2.5 text-sm text-text-primary outline-none placeholder:text-text-muted"
           />
         </label>
-        <select
+        <select aria-label="Filter by status"
           value={state}
           onChange={(event) => setState(event.target.value)}
           className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm font-semibold text-text-secondary outline-none"

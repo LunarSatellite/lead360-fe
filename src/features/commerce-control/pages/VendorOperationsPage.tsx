@@ -31,7 +31,7 @@ import { VendorInsightDialog } from '../components/VendorInsightDialog';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { buildVendorRecipePayload } from '../lib/vendor-recipe';
-import { Button } from '@/shared/ui/primitives';
+import { Button, IconButton } from '@/shared/ui/primitives';
 
 const VendorAnalyticsPanel = lazy(() =>
   import('../components/VendorAnalyticsPanel').then((module) => ({
@@ -798,12 +798,13 @@ export function VendorOperationsPage() {
                   <Plus className="h-3.5 w-3.5" /> New flash sale
                 </Button>
               )}
-              <button
+              <IconButton
+                icon={RefreshCw}
+                label={`Refresh ${selectedSection.label.toLowerCase()}`}
+                variant="secondary"
                 onClick={() => selectedQuery.refetch()}
-                className="rounded-lg border border-border-subtle p-2 text-text-muted hover:text-brand"
-              >
-                <RefreshCw className={`h-4 w-4 ${selectedQuery.isFetching ? 'animate-spin' : ''}`} />
-              </button>
+                className={selectedQuery.isFetching ? '[&_svg]:animate-spin' : undefined}
+              />
             </div>
           </div>
           {selectedKey === 'campaigns' && showCampaignForm && (
@@ -1452,7 +1453,7 @@ function CollectionItemsDialog({
             <input
               value={productId}
               onChange={(event) => setProductId(event.target.value)}
-              placeholder="Product ID"
+              placeholder="Product ID" aria-label="Product ID"
               className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
             />
             <Button

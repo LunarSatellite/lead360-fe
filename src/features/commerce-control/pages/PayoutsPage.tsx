@@ -329,7 +329,7 @@ function PayoutRow({ payout, onChanged }: { payout: Payout; onChanged: () => voi
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason"
+            placeholder="Reason" aria-label="Reason"
             className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}

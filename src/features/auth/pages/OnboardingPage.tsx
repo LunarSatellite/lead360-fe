@@ -267,11 +267,11 @@ function Step1ConnectApi() {
               <option>DELETE</option>
             </select>
             <input
-              placeholder="/api/v1/products"
+              placeholder="/api/v1/products" aria-label="/api/v1/products"
               className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted font-mono focus:outline-none focus:border-brand"
             />
             <input
-              placeholder="List all products"
+              placeholder="List all products" aria-label="List all products"
               className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
             />
           </div>
@@ -550,24 +550,24 @@ function Step4SelectChannels() {
             <div className="space-y-2 mb-3">
               <div className="text-xs font-bold text-success">WhatsApp Business</div>
               <div className="grid grid-cols-2 gap-2">
-                <input placeholder="Phone number ID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
-                <input placeholder="Business Account ID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <input placeholder="Phone number ID" aria-label="Phone number ID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <input placeholder="Business Account ID" aria-label="Business Account ID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
               </div>
-              <input type="password" placeholder="Permanent access token" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+              <input type="password" placeholder="Permanent access token" aria-label="Permanent access token" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
             </div>
           )}
           {selected.has('web') && (
             <div className="space-y-2 mb-3">
               <div className="text-xs font-bold text-info">Web chat widget</div>
-              <input placeholder="Website URL (for CORS)" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+              <input placeholder="Website URL (for CORS)" aria-label="Website URL (for CORS)" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
             </div>
           )}
           {selected.has('sms') && (
             <div className="space-y-2">
               <div className="text-xs font-bold text-brand">SMS (Twilio)</div>
               <div className="grid grid-cols-2 gap-2">
-                <input placeholder="Twilio Account SID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
-                <input type="password" placeholder="Auth Token" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <input placeholder="Twilio Account SID" aria-label="Twilio Account SID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <input type="password" placeholder="Auth Token" aria-label="Auth Token" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
               </div>
             </div>
           )}

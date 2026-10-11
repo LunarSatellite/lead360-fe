@@ -281,8 +281,8 @@ export function Component() {
 
       <div className="flex gap-2">
         <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-          placeholder="Search quotes..." className={inputCls + ' flex-1'} />
-        <select className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
+          placeholder="Search quotes..." aria-label="Search quotes..." className={inputCls + ' flex-1'} />
+        <select aria-label="Filter by status" className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
           <option value="">All Statuses</option>
           {Object.entries(CRM_QUOTE_STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
@@ -462,7 +462,7 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Search existing deals…"
+                  placeholder="Search existing deals…" aria-label="Search existing deals…"
                   autoComplete="off"
                   value={dealSearch}
                   onChange={e => { setDealSearch(e.target.value); setShowDealDrop(true); }}
@@ -510,7 +510,7 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Search existing contacts…"
+                  placeholder="Search existing contacts…" aria-label="Search existing contacts…"
                   autoComplete="off"
                   value={contactSearch}
                   onChange={e => { setContactSearch(e.target.value); setShowContactDrop(true); }}
@@ -561,7 +561,7 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Select a price book…"
+                  placeholder="Select a price book…" aria-label="Select a price book…"
                   autoComplete="off"
                   value={pbSearch}
                   onChange={e => { setPbSearch(e.target.value); setShowPbDrop(true); }}
@@ -681,7 +681,7 @@ export function Component() {
                   <input
                     value={l.description}
                     onChange={e => updateLine(i, 'description', e.target.value)}
-                    placeholder="Description"
+                    placeholder="Description" aria-label="Description"
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
@@ -689,7 +689,7 @@ export function Component() {
                     type="number"
                     value={l.quantity}
                     onChange={e => updateLine(i, 'quantity', Number(e.target.value))}
-                    placeholder="Qty"
+                    placeholder="Qty" aria-label="Qty"
                     min={1}
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
@@ -698,7 +698,7 @@ export function Component() {
                     type="number"
                     value={l.unitPrice}
                     onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))}
-                    placeholder="Price"
+                    placeholder="Price" aria-label="Price"
                     min={0}
                     step={0.01}
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"

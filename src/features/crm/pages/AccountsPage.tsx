@@ -246,7 +246,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
             <input
               value={addSearch}
               onChange={(e) => setAddSearch(e.target.value)}
-              placeholder="Search contact by name..."
+              placeholder="Search contact by name..." aria-label="Search contact by name..."
               className={inputCls}
             />
             <select
@@ -757,7 +757,7 @@ function CreateAccountModal({
             <input
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={glowInput}
-              placeholder="Search existing organizations…"
+              placeholder="Search existing organizations…" aria-label="Search existing organizations…"
               autoComplete="off"
               value={orgSearch}
               onChange={e => { setOrgSearch(e.target.value); setShowOrgDrop(true); }}
@@ -981,11 +981,11 @@ export function Component() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search accounts..."
+              placeholder="Search accounts..." aria-label="Search accounts..."
               className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
             />
           </div>
-          <select
+          <select aria-label="Filter by statu"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium"

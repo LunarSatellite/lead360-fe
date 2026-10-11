@@ -291,26 +291,26 @@ function SearchEditor({ onCancel, onSaved }: { onCancel: () => void; onSaved: ()
         <input
           value={form.label}
           onChange={(e) => setForm({ ...form, label: e.target.value })}
-          placeholder="Label shown"
+          placeholder="Label shown" aria-label="Label shown"
           className={inputClass}
         />
         <input
           value={form.query}
           onChange={(e) => setForm({ ...form, query: e.target.value })}
-          placeholder="Search it runs"
+          placeholder="Search it runs" aria-label="Search it runs"
           className={inputClass}
         />
         <input
           type="number"
           value={form.displayOrder}
           onChange={(e) => setForm({ ...form, displayOrder: Number(e.target.value) })}
-          placeholder="Order"
+          placeholder="Order" aria-label="Order"
           className={inputClass}
         />
         <input
           value={form.regionCode ?? ''}
           onChange={(e) => setForm({ ...form, regionCode: e.target.value })}
-          placeholder="Region (optional)"
+          placeholder="Region (optional)" aria-label="Region (optional)"
           className={inputClass}
         />
       </div>

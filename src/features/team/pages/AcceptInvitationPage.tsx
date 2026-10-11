@@ -128,7 +128,7 @@ function AcceptForm({ invitation, token, email }: { invitation: TeamInvitationDt
         <div>
           <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Password</label>
           <div className="relative">
-            <input {...form.register('password')} type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" className={`${input} pr-12`} />
+            <input {...form.register('password')} type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" aria-label="Min 8 characters" className={`${input} pr-12`} />
             <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary">
               {showPw ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>

@@ -159,7 +159,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
           <input
             value={description}
             onChange={e => setDescription(e.target.value)}
-            placeholder="Optional hint for users"
+            placeholder="Optional hint for users" aria-label="Optional hint for users"
             className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
@@ -175,7 +175,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
             <input
               value={options}
               onChange={e => setOptions(e.target.value)}
-              placeholder="Option A, Option B, Option C"
+              placeholder="Option A, Option B, Option C" aria-label="Option A, Option B, Option C"
               className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />

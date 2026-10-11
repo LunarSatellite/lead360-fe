@@ -62,8 +62,8 @@ function InspectionForm({ rmaId, onDone }: { rmaId: string; onDone: () => void }
       <select value={result} onChange={e => setResult(Number(e.target.value))} className={inputCls}>
         {Object.entries(CRM_RETURN_INSPECTION_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
       </select>
-      <input value={findings} onChange={e => setFindings(e.target.value)} placeholder="Findings (optional)" className={inputCls} />
-      <input value={disposition} onChange={e => setDisposition(e.target.value)} placeholder="Disposition (optional)" className={inputCls} />
+      <input value={findings} onChange={e => setFindings(e.target.value)} placeholder="Findings (optional)" aria-label="Findings (optional)" className={inputCls} />
+      <input value={disposition} onChange={e => setDisposition(e.target.value)} placeholder="Disposition (optional)" aria-label="Disposition (optional)" className={inputCls} />
       <Button type="submit" disabled={record.isPending} variant="primary" block>
         {record.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Save Inspection'}
       </Button>
@@ -228,7 +228,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
 
       {showReject && (
         <form onSubmit={handleReject} className="space-y-2 bg-bg-surface rounded-xl p-4 mt-1">
-          <input required value={rejectReason} onChange={e => setRejectReason(e.target.value)} placeholder="Reason for rejection..." className={inputCls} />
+          <input required value={rejectReason} onChange={e => setRejectReason(e.target.value)} placeholder="Reason for rejection..." aria-label="Reason for rejection..." className={inputCls} />
           <button type="submit" disabled={reject.isPending} className="w-full py-2 rounded-lg bg-danger text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
             {reject.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Confirm Reject'}
           </button>
@@ -269,8 +269,8 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search RMA #..." className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search RMA #..." aria-label="Search RMA #..." className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Status</option>
             {Object.entries(CRM_RETURN_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>

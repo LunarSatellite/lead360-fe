@@ -147,7 +147,7 @@ function DetailPanel({ id }: { id: string }) {
               <select value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
                 {Object.entries(CRM_WORK_ORDER_NOTE_KIND_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
               </select>
-              <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." className={`${inputCls} flex-1`} />
+              <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." aria-label="Add a note..." className={`${inputCls} flex-1`} />
               <Button type="submit" disabled={!noteText.trim() || addNote.isPending} variant="primary">
                 {addNote.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Add'}
               </Button>
@@ -295,12 +295,12 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search work orders..." className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search work orders..." aria-label="Search work orders..." className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
+          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Status</option>
             {Object.entries(CRM_WORK_ORDER_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <select value={priorityF} onChange={e => setPriorityF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
+          <select aria-label="Filter by priority" value={priorityF} onChange={e => setPriorityF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Priority</option>
             {Object.entries(CRM_WORK_ORDER_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -467,8 +467,8 @@ export function Component() {
               </div>
             </div>
           </div>
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Equipment ID (optional)"><input value={equipmentId} onChange={e => setEquipmentId(e.target.value)} placeholder="equipment-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Equipment ID (optional)"><input value={equipmentId} onChange={e => setEquipmentId(e.target.value)} placeholder="equipment-uuid" aria-label="equipment-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block">

@@ -290,7 +290,7 @@ export function Component() {
                 <textarea
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
-                  placeholder="Write a note..."
+                  placeholder="Write a note..." aria-label="Write a note..."
                   rows={3}
                   className="w-full text-sm bg-bg-elevated border border-border-subtle rounded-xl px-3 py-2 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow resize-none transition-colors"
                 />

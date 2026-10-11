@@ -120,7 +120,7 @@ export function CampaignWorkspacesTab() {
           <input
             value={workspaceId}
             onChange={(e) => setWorkspaceId(e.target.value)}
-            placeholder="Workspace id from the list above"
+            placeholder="Workspace id from the list above" aria-label="Workspace id from the list above"
             className={`${field} flex-1 font-mono`}
           />
           <Button
@@ -182,13 +182,13 @@ function CreateForm({
         <input
           value={brandBriefId}
           onChange={(e) => setBrandBriefId(e.target.value)}
-          placeholder="Brand brief id"
+          placeholder="Brand brief id" aria-label="Brand brief id"
           className={`${field} font-mono sm:col-span-2`}
         />
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Name"
+          placeholder="Name" aria-label="Name"
           className={field}
         />
         <div className="flex gap-1.5">
@@ -198,7 +198,7 @@ function CreateForm({
             step="any"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
-            placeholder="Budget"
+            placeholder="Budget" aria-label="Budget"
             className={field}
           />
           <input
@@ -477,13 +477,13 @@ function GenerateForm({
         <input
           value={channel}
           onChange={(e) => setChannel(e.target.value)}
-          placeholder="Channel"
+          placeholder="Channel" aria-label="Channel"
           className={field}
         />
         <input
           value={locale}
           onChange={(e) => setLocale(e.target.value)}
-          placeholder="Locale"
+          placeholder="Locale" aria-label="Locale"
           className={field}
         />
         <input
@@ -491,7 +491,7 @@ function GenerateForm({
           min={1}
           value={count}
           onChange={(e) => setCount(e.target.value)}
-          placeholder="How many"
+          placeholder="How many" aria-label="How many"
           className={field}
         />
       </div>
@@ -569,7 +569,7 @@ function ReviewForm({
         <input
           value={draftId}
           onChange={(e) => setDraftId(e.target.value)}
-          placeholder="Draft id"
+          placeholder="Draft id" aria-label="Draft id"
           className={`${field} font-mono sm:col-span-2`}
         />
         <select
@@ -595,7 +595,7 @@ function ReviewForm({
         <input
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="What you checked and what you found"
+          placeholder="What you checked and what you found" aria-label="What you checked and what you found"
           className={`${field} sm:col-span-4`}
         />
       </div>
@@ -621,7 +621,7 @@ function ReviewForm({
           <input
             value={retireReason}
             onChange={(e) => setRetireReason(e.target.value)}
-            placeholder="Why it is being retired"
+            placeholder="Why it is being retired" aria-label="Why it is being retired"
             className={`${field} flex-1`}
           />
           <button

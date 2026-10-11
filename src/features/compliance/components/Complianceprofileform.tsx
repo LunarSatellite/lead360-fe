@@ -474,14 +474,14 @@ function DisclaimerEditor({
         <input
           value={trigger}
           onChange={(e) => setTrigger(e.target.value)}
-          placeholder="Trigger"
+          placeholder="Trigger" aria-label="Trigger"
           className={smallInput}
         />
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
-          placeholder="Disclaimer text..."
+          placeholder="Disclaimer text..." aria-label="Disclaimer text..."
           className={smallInput}
         />
         <button
@@ -553,7 +553,7 @@ function MandatoryRefEditor({
           <input
             value={trigger}
             onChange={(e) => setTrigger(e.target.value)}
-            placeholder="Trigger"
+            placeholder="Trigger" aria-label="Trigger"
             className={smallInput}
           />
         </div>
@@ -562,7 +562,7 @@ function MandatoryRefEditor({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
-            placeholder="Reference message..."
+            placeholder="Reference message..." aria-label="Reference message..."
             className={smallInput}
           />
         </div>

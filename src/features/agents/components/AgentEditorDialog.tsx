@@ -377,7 +377,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                 id="agent-description"
                 value={form.description}
                 onChange={(e) => setField('description', e.target.value)}
-                placeholder="What does this agent do?"
+                placeholder="What does this agent do?" aria-label="What does this agent do?"
                 rows={2}
                 maxLength={500}
                 className={`${inputCls} resize-none`}
@@ -1028,7 +1028,7 @@ function TargetPayload({
           type="email"
           value={form.targetEmail}
           onChange={(e) => setField('targetEmail', e.target.value)}
-          placeholder="manager@company.com"
+          placeholder="manager@company.com" aria-label="manager@company.com"
           className={inputCls}
           style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
         />

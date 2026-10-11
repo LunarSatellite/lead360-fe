@@ -152,8 +152,8 @@ export function Component() {
 
         <div className="flex gap-2 flex-wrap">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-            placeholder="Search POs..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+            placeholder="Search POs..." aria-label="Search POs..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(PO_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -286,7 +286,7 @@ export function Component() {
               <Input icon={Calendar} type="date" value={expectedDelivery} onChange={e => setExpectedDelivery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
             <Field label="Currency">
-              <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" aria-label="USD" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
           </div>
 
@@ -297,7 +297,7 @@ export function Component() {
                 value={shippingAddress}
                 onChange={e => setShippingAddress(e.target.value)}
                 rows={2}
-                placeholder="123 Industrial Ave, Suite 400, New York, NY 10001"
+                placeholder="123 Industrial Ave, Suite 400, New York, NY 10001" aria-label="123 Industrial Ave, Suite 400, New York, NY 10001"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
@@ -320,13 +320,13 @@ export function Component() {
                 <div key={i} className="grid grid-cols-[1fr_70px_70px_80px_28px] gap-1.5 items-center">
                   <div className="relative">
                     <ShoppingBag className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name"
+                    <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" aria-label="Product name"
                       className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                       style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
                   <div className="relative">
                     <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input value={l.sku} onChange={e => setLine(i, 'sku', e.target.value)} placeholder="SKU"
+                    <input value={l.sku} onChange={e => setLine(i, 'sku', e.target.value)} placeholder="SKU" aria-label="SKU"
                       className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                       style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
@@ -352,7 +352,7 @@ export function Component() {
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 rows={2}
-                placeholder="Special instructions, delivery requirements…"
+                placeholder="Special instructions, delivery requirements…" aria-label="Special instructions, delivery requirements…"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
@@ -459,7 +459,7 @@ export function Component() {
       <SlideOver open={showCancel} onClose={() => setShowCancel(false)} title="Cancel Purchase Order">
         <form onSubmit={handleCancel} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." /></Field>
+          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." aria-label="Optional cancellation reason..." /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={cancelPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {cancelPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancel Order'}

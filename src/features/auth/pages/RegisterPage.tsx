@@ -148,7 +148,7 @@ export function Component() {
             <input
               {...form.register('password')}
               type={showPw ? 'text' : 'password'}
-              placeholder="Min 8 characters"
+              placeholder="Min 8 characters" aria-label="Min 8 characters"
               autoComplete="new-password"
               className={`${inputCls} pr-12`}
             />
@@ -189,7 +189,7 @@ export function Component() {
             <input
               {...form.register('confirmPassword')}
               type={showConfirmPw ? 'text' : 'password'}
-              placeholder="Re-enter your password"
+              placeholder="Re-enter your password" aria-label="Re-enter your password"
               autoComplete="new-password"
               className={`${inputCls} pr-12`}
             />

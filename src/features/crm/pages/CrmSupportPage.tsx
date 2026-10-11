@@ -361,7 +361,7 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
                 ))}
               </div>
               <div className="flex gap-2 pt-2 border-t border-border-subtle">
-                <textarea rows={2} value={msgBody} onChange={e => setMsgBody(e.target.value)} placeholder="Type a message..." className={`${inputCls} flex-1 resize-none`} />
+                <textarea rows={2} value={msgBody} onChange={e => setMsgBody(e.target.value)} placeholder="Type a message..." aria-label="Type a message..." className={`${inputCls} flex-1 resize-none`} />
                 <Button onClick={handleSend} disabled={!msgBody.trim() || addMsg.isPending} variant="primary" className="self-end">
                   {addMsg.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 </Button>
@@ -427,9 +427,9 @@ export function Component() {
         <form onSubmit={applyFilters} className="flex gap-2 flex-wrap">
           <div className="relative flex-1 min-w-48">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" strokeWidth={1.5} />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search cases..." className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium" />
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search cases..." aria-label="Search cases..." className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium" />
           </div>
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className={selectCls}>
+          <select aria-label="Filter by status" value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className={selectCls}>
             <option value="">All Statuses</option>
             <option value="1">Open</option>
             <option value="5">In Progress</option>
@@ -437,7 +437,7 @@ export function Component() {
             <option value="6">Resolved</option>
             <option value="7">Closed</option>
           </select>
-          <select value={priorityFilter} onChange={e => setPriorityFilter(e.target.value)} className={selectCls}>
+          <select aria-label="Filter by priority" value={priorityFilter} onChange={e => setPriorityFilter(e.target.value)} className={selectCls}>
             <option value="">All Priorities</option>
             {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>

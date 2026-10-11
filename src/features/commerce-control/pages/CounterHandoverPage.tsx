@@ -187,7 +187,7 @@ export function CounterHandoverPage() {
           id="counter-handover-lookup"
           value={lookupDraft}
           onChange={(event) => setLookupDraft(event.target.value)}
-          placeholder="Sub-order id"
+          placeholder="Sub-order id" aria-label="Sub-order id"
           className="min-w-[19rem] flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1"
         />
         <button

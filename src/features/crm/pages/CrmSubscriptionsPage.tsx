@@ -225,12 +225,12 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => { setStatusF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search..." aria-label="Search..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by statu" value={statusF} onChange={e => { setStatusF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Status</option>
             {Object.entries(CRM_SUBSCRIPTION_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <select value={tierF} onChange={e => { setTierF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <select aria-label="Filter by tier" value={tierF} onChange={e => { setTierF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Tiers</option>
             {Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -317,21 +317,21 @@ export function Component() {
 
           <div>
             <Field label="Contact ID *">
-              <Input icon={User} required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid" style={inputStyle} />
+              <Input icon={User} required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid" aria-label="contact-uuid" style={inputStyle} />
             </Field>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Account ID">
-              <Input icon={Hash} value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid" style={inputStyle} />
+              <Input icon={Hash} value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid" aria-label="account-uuid" style={inputStyle} />
             </Field>
             <Field label="Deal ID">
-              <Input icon={Hash} value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid" style={inputStyle} />
+              <Input icon={Hash} value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid" aria-label="deal-uuid" style={inputStyle} />
             </Field>
           </div>
 
           <Field label="Plan Name">
-            <Input icon={Layers} required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly" style={inputStyle} />
+            <Input icon={Layers} required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly" aria-label="Pro Monthly" style={inputStyle} />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
@@ -348,7 +348,7 @@ export function Component() {
               <Input icon={DollarSign} required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00" style={inputStyle} />
             </Field>
             <Field label="Currency">
-              <Input icon={DollarSign} value={createForm.currency} onChange={setC('currency')} placeholder="USD" style={inputStyle} />
+              <Input icon={DollarSign} value={createForm.currency} onChange={setC('currency')} placeholder="USD" aria-label="USD" style={inputStyle} />
             </Field>
           </div>
 

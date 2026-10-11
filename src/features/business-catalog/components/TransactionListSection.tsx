@@ -66,7 +66,7 @@ export function TransactionListSection({ transactionLabel }: Props) {
               setSearch(e.target.value);
               setPage(1);
             }}
-            placeholder="Search ID, customer name or phone…"
+            placeholder="Search ID, customer name or phone…" aria-label="Search ID, customer name or phone…"
             className="bg-transparent text-xs text-text-primary placeholder:text-text-muted
                        focus:outline-none flex-1 min-w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />

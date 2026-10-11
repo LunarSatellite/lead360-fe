@@ -265,7 +265,7 @@ function DecisionPanel({
             value={note}
             onChange={(event) => setNote(event.target.value)}
             rows={3}
-            placeholder="Note for the record (optional)"
+            placeholder="Note for the record (optional)" aria-label="Note for the record (optional)"
             className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
           />
 

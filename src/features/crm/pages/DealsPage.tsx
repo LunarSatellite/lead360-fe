@@ -435,7 +435,7 @@ export function Component() {
         <div className="flex flex-wrap items-end gap-3 p-3 rounded-xl bg-bg-elevated border border-border-subtle shrink-0">
           <div className="flex flex-col gap-1 min-w-[180px]">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Owner / Rep</label>
-            <select
+            <select aria-label="Filter by rep"
               value={filterOwnerId}
               onChange={e => setFilterOwnerId(e.target.value)}
               className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
@@ -631,10 +631,10 @@ export function Component() {
           >
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" strokeWidth={1.5} />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals..."
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals..." aria-label="Search deals..."
                 className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium" />
             </div>
-            <select value={filterOwnerId} onChange={e => setFilterOwnerId(e.target.value)}
+            <select aria-label="Filter by rep" value={filterOwnerId} onChange={e => setFilterOwnerId(e.target.value)}
               className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium">
               <option value="">All reps</option>
               {teamMembers.map(u => (
@@ -1049,7 +1049,7 @@ export function Component() {
               ))}
               <div className="border border-dashed border-border-subtle rounded-xl p-3 space-y-2">
                 <p className="text-xs font-semibold text-text-muted">Add Stage</p>
-                <input value={newStageName} onChange={e => setNewStageName(e.target.value)} placeholder="Stage name"
+                <input value={newStageName} onChange={e => setNewStageName(e.target.value)} placeholder="Stage name" aria-label="Stage name"
                   className="w-full px-3 py-2 rounded-lg bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                 <div className="flex items-center gap-2">
                   <input type="color" value={newStageColor} onChange={e => setNewStageColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
@@ -1151,7 +1151,7 @@ function ContactDropdown({
               autoFocus
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search contacts…"
+              placeholder="Search contacts…" aria-label="Search contacts…"
               className="w-full px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow"
             />
           </div>

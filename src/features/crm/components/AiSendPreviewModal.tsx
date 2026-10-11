@@ -59,7 +59,7 @@ export function AiSendPreviewModal({
                 value={draftText}
                 onChange={(e) => onIntroChange(e.target.value)}
                 rows={4}
-                placeholder="No intro drafted — sending without one."
+                placeholder="No intro drafted — sending without one." aria-label="No intro drafted — sending without one."
                 className="w-full px-3 py-2 rounded-xl bg-bg-subtle border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow resize-none"
               />
             )}

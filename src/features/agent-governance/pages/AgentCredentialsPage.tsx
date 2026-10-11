@@ -368,7 +368,7 @@ function CredentialRow({
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason"
+            placeholder="Reason" aria-label="Reason"
             className={`mt-2 ${inputClass}`}
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}

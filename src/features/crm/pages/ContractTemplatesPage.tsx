@@ -94,14 +94,14 @@ export function Component() {
             <form onSubmit={submit} className="space-y-4">
               <div className="flex items-center justify-between"><h2 className="text-sm font-bold text-text-primary">{editingId ? 'Edit' : 'New'} Template</h2>
                 <button type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
-              <input className={inputCls} placeholder="Template name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
+              <input className={inputCls} placeholder="Template name" aria-label="Template name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
               <div className="grid grid-cols-2 gap-3">
                 <select className={inputCls} value={form.category} onChange={e => setForm(f => ({ ...f, category: Number(e.target.value) as ContractTemplateCategoryValue }))}>
                   {Object.entries(ContractTemplateCategory).filter(([k]) => isNaN(Number(k))).map(([k, v]) => (<option key={v} value={v}>{k}</option>))}
                 </select>
-                <input className={inputCls} placeholder="Subject line (optional)" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} />
+                <input className={inputCls} placeholder="Subject line (optional)" aria-label="Subject line (optional)" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} />
               </div>
-              <input className={inputCls} placeholder="Description (optional)" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+              <input className={inputCls} placeholder="Description (optional)" aria-label="Description (optional)" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs text-text-muted">Body (HTML)</label>
@@ -109,7 +109,7 @@ export function Component() {
                     {VARIABLE_HINTS.map(v => <button key={v} type="button" onClick={() => insertVar(v)} className="px-1.5 py-0.5 rounded text-[10px] bg-glass-2 border border-border-subtle text-text-muted hover:text-brand hover:border-brand/40 transition-all">{v}</button>)}
                   </div>
                 </div>
-                <textarea className={`${inputCls} min-h-[180px] font-mono text-xs`} value={form.bodyHtml} onChange={e => setForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p><p>Your {{ContractTitle}} is ready...</p>" />
+                <textarea className={`${inputCls} min-h-[180px] font-mono text-xs`} value={form.bodyHtml} onChange={e => setForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p><p>Your {{ContractTitle}} is ready...</p>" aria-label="<p>Hi {{ContactFirstName}},</p><p>Your {{ContractTitle}} is ready...</p>" />
               </div>
               <Button type="submit" disabled={createMut.isPending || updateMut.isPending || !form.name.trim()}
                 variant="primary" block>

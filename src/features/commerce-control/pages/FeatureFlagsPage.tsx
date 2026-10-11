@@ -127,13 +127,13 @@ function NewFlagCard({ onDone }: { onDone: () => void }) {
         <input
           value={key}
           onChange={(event) => setKey(event.target.value)}
-          placeholder="flag.key"
+          placeholder="flag.key" aria-label="flag.key"
           className="rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 font-mono text-xs text-text-primary outline-none focus:border-border-glow"
         />
         <input
           value={description}
           onChange={(event) => setDescription(event.target.value)}
-          placeholder="What does this switch do?"
+          placeholder="What does this switch do?" aria-label="What does this switch do?"
           className="rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
         />
       </div>
@@ -380,7 +380,7 @@ function AddOverride({
           <input
             value={accountId}
             onChange={(event) => setAccountId(event.target.value)}
-            placeholder="Account id"
+            placeholder="Account id" aria-label="Account id"
             className="min-w-[280px] flex-1 rounded-card border-thin border-border-subtle bg-bg-card px-2 py-1.5 font-mono text-xs text-text-primary outline-none focus:border-border-glow"
           />
         )}

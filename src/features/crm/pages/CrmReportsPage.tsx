@@ -373,7 +373,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         value={f.value ?? ''}
                         onChange={(e) => updateFilter(i, { value: e.target.value })}
                         disabled={f.operator === 'exists'}
-                        placeholder="Value..."
+                        placeholder="Value..." aria-label="Value..."
                         className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors disabled:opacity-40"
                         style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       />
@@ -755,7 +755,7 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
       <input
         value={emails}
         onChange={(e) => setEmails(e.target.value)}
-        placeholder="recipient@company.com, another@company.com"
+        placeholder="recipient@company.com, another@company.com" aria-label="recipient@company.com, another@company.com"
         className="flex-1 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
         style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
       />

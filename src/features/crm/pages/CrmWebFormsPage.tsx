@@ -75,7 +75,7 @@ export function Component() {
           <Search className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by name…"
+            placeholder="Search by name…" aria-label="Search by name…"
             className={inputCls + " pl-9"}
             value={filter.search ?? ""}
             onChange={(e) => setFilter((f) => ({ ...f, search: e.target.value, page: 1 }))}
@@ -83,7 +83,7 @@ export function Component() {
         </div>
         <div className="relative w-full sm:w-52">
           <Filter className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
-          <select
+          <select aria-label="Filter by status"
             className={inputCls + " pl-9 appearance-none"}
             value={filter.status ?? "All"}
             onChange={(e) =>

@@ -117,7 +117,7 @@ function ReplySection({ caseId }: { caseId: string }) {
       <form onSubmit={handleReply} className="flex gap-2">
         <textarea
           rows={2}
-          placeholder="Type your reply..."
+          placeholder="Type your reply..." aria-label="Type your reply..."
           value={body}
           onChange={(e) => setBody(e.target.value)}
           className="flex-1 px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm resize-none"

@@ -89,7 +89,7 @@ export function ReelOperatorActions({
             <input
               value={dropPartyId}
               onChange={(e) => setDropPartyId(e.target.value)}
-              placeholder="Drop party id"
+              placeholder="Drop party id" aria-label="Drop party id"
               className="mt-1.5 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-2.5 py-1.5 font-mono text-[11px] text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
             />
           )}

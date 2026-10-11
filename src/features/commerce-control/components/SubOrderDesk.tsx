@@ -661,19 +661,19 @@ function HandoverForm({
       <input
         value={carrier}
         onChange={(e) => setCarrier(e.target.value)}
-        placeholder="Carrier"
+        placeholder="Carrier" aria-label="Carrier"
         className={field}
       />
       <input
         value={tracking}
         onChange={(e) => setTracking(e.target.value)}
-        placeholder="Tracking number"
+        placeholder="Tracking number" aria-label="Tracking number"
         className={field}
       />
       <input
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        placeholder="Handover note"
+        placeholder="Handover note" aria-label="Handover note"
         className={field}
       />
     </ExpandedForm>
@@ -713,13 +713,13 @@ function TrackingForm({
       <input
         value={carrier}
         onChange={(e) => setCarrier(e.target.value)}
-        placeholder="Carrier"
+        placeholder="Carrier" aria-label="Carrier"
         className={field}
       />
       <input
         value={tracking}
         onChange={(e) => setTracking(e.target.value)}
-        placeholder="Tracking number"
+        placeholder="Tracking number" aria-label="Tracking number"
         className={field}
       />
     </ExpandedForm>

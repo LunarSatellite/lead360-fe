@@ -101,7 +101,7 @@ function EventTypeModal({
           <div className="space-y-1">
             <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Description</label>
             <textarea
-              placeholder="What is this meeting for?"
+              placeholder="What is this meeting for?" aria-label="What is this meeting for?"
               value={description ?? ''}
               onChange={(e) => setDescription(e.target.value)}
               rows={2}

@@ -341,7 +341,7 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Search existing contacts…"
+                  placeholder="Search existing contacts…" aria-label="Search existing contacts…"
                   autoComplete="off"
                   value={contactSearch}
                   onChange={e => { setContactSearch(e.target.value); setShowContactDrop(true); }}
@@ -450,7 +450,7 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Search existing organizations…"
+                  placeholder="Search existing organizations…" aria-label="Search existing organizations…"
                   autoComplete="off"
                   value={orgSearch}
                   onChange={e => { setOrgSearch(e.target.value); setShowOrgDrop(true); }}
@@ -779,7 +779,7 @@ export function Component() {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search name, phone, intent..."
+            placeholder="Search name, phone, intent..." aria-label="Search name, phone, intent..."
             className="w-full pl-9 pr-4 py-2 text-sm bg-bg-elevated border border-border-subtle rounded-xl text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors"
           />
         </div>

@@ -505,7 +505,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               value={countryQ}
               onChange={e => { setCountryQ(e.target.value); setShowCountrySearch(true); }}
               onFocus={() => setShowCountrySearch(true)}
-              placeholder="Search country…"
+              placeholder="Search country…" aria-label="Search country…"
             />
           </div>
           {/* Dropdown */}
@@ -563,7 +563,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               value={interestQ}
               onChange={e => { setInterestQ(e.target.value); setShowInterestSearch(true); }}
               onFocus={() => setShowInterestSearch(true)}
-              placeholder="Search interests (e.g. fitness, travel, cooking)…"
+              placeholder="Search interests (e.g. fitness, travel, cooking)…" aria-label="Search interests (e.g. fitness, travel, cooking)…"
             />
             {searchingInterests && (
               <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted animate-spin" />

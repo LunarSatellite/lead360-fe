@@ -590,8 +590,8 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
             <option value="">Select competitor</option>
             {allComps.filter((c: any) => !usedIds.has(c.id)).map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          <input value={ourS} onChange={e => setOurS(e.target.value)} placeholder="Our strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
-          <input value={theirS} onChange={e => setTheirS(e.target.value)} placeholder="Their strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
+          <input value={ourS} onChange={e => setOurS(e.target.value)} placeholder="Our strengths" aria-label="Our strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
+          <input value={theirS} onChange={e => setTheirS(e.target.value)} placeholder="Their strengths" aria-label="Their strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
           <Button onClick={() => compId && addMut.mutate()} disabled={addMut.isPending || !compId} variant="primary" block>
             {addMut.isPending ? 'Adding...' : 'Add to deal'}
           </Button>
@@ -657,7 +657,7 @@ function DealContactsSection({ dealId }: { dealId: string }) {
 
       {showAdd && (
         <div className="flex gap-2">
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." aria-label="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
           <select value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             {DEAL_CONTACT_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
           </select>

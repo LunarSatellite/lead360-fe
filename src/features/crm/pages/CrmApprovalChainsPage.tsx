@@ -130,7 +130,7 @@ export function Component() {
                 <input
                   value={s.stepName}
                   onChange={e => updateStep(i, 'stepName', e.target.value)}
-                  placeholder="Step name (e.g. Sales Manager Review)"
+                  placeholder="Step name (e.g. Sales Manager Review)" aria-label="Step name (e.g. Sales Manager Review)"
                   className="flex-1 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm"
                 />
                 <select

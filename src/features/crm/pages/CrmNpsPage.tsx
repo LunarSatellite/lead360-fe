@@ -262,10 +262,10 @@ export function Component() {
         <input
           value={filter.search ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, search: e.target.value || undefined }))}
-          placeholder="Search contacts…"
+          placeholder="Search contacts…" aria-label="Search contacts…"
           className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium w-56"
         />
-        <select
+        <select aria-label="Filter by classification"
           value={filter.classification ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, classification: e.target.value ? Number(e.target.value) as CrmNpsClassification : undefined }))}
           className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"

@@ -159,14 +159,14 @@ function CertificateForm({ domain, onClose }: { domain: TenantDomainDto; onClose
         value={certificatePem}
         onChange={(event) => setCertificatePem(event.target.value)}
         rows={5}
-        placeholder="-----BEGIN CERTIFICATE-----"
+        placeholder="-----BEGIN CERTIFICATE-----" aria-label="-----BEGIN CERTIFICATE-----"
         className="w-full resize-y rounded-xl border border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
       />
       <textarea
         value={privateKeyPem}
         onChange={(event) => setPrivateKeyPem(event.target.value)}
         rows={5}
-        placeholder="-----BEGIN PRIVATE KEY-----"
+        placeholder="-----BEGIN PRIVATE KEY-----" aria-label="-----BEGIN PRIVATE KEY-----"
         className="w-full resize-y rounded-xl border border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
       />
       <div className="flex justify-end gap-2">
@@ -364,7 +364,7 @@ function CustomDomainsPage() {
               id="custom-domain"
               value={domain}
               onChange={(event) => setDomain(event.target.value.toLowerCase())}
-              placeholder="book.example.com"
+              placeholder="book.example.com" aria-label="book.example.com"
               className="w-full rounded-xl border border-border-subtle bg-bg-input py-2.5 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
             />
           </div>

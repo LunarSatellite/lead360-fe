@@ -113,7 +113,7 @@ function CommentItem({
               <textarea
                 className="w-full rounded-lg border border-border-subtle bg-bg-elevated text-text-primary text-sm px-3 py-2 resize-none focus:outline-none focus:border-brand"
                 rows={2}
-                placeholder="Write a reply..."
+                placeholder="Write a reply..." aria-label="Write a reply..."
                 value={replyBody}
                 onChange={(e) => setReplyBody(e.target.value)}
               />
@@ -234,7 +234,7 @@ export function CrmComments({ kind, entityId }: CrmCommentsProps) {
         <textarea
           className="w-full rounded-lg border border-border-subtle bg-bg-elevated text-text-primary text-sm px-3 py-2 resize-none focus:outline-none focus:border-brand placeholder:text-text-muted"
           rows={3}
-          placeholder="Write a comment..."
+          placeholder="Write a comment..." aria-label="Write a comment..."
           value={newBody}
           onChange={(e) => setNewBody(e.target.value)}
         />

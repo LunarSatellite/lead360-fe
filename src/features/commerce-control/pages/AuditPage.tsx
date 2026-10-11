@@ -87,7 +87,7 @@ export function AuditPage() {
 
       <div className="grid gap-2 rounded-frame border-thin border-border-subtle bg-bg-card p-3.5 sm:grid-cols-2 lg:grid-cols-4">
         <Field label="Action">
-          <select
+          <select aria-label="Filter by action"
             value={filters.action ?? ''}
             onChange={(e) => set({ action: e.target.value || undefined })}
             className="w-full rounded-sm border-thin border-border-subtle bg-bg-input px-2.5 py-1.5 text-xs text-text-primary focus:border-border-glow focus:outline-none"
@@ -101,7 +101,7 @@ export function AuditPage() {
           </select>
         </Field>
         <Field label="Target kind">
-          <select
+          <select aria-label="Filter by target"
             value={filters.targetKind ?? ''}
             onChange={(e) => set({ targetKind: e.target.value || undefined })}
             className="w-full rounded-sm border-thin border-border-subtle bg-bg-input px-2.5 py-1.5 text-xs text-text-primary focus:border-border-glow focus:outline-none"

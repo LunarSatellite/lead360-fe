@@ -131,7 +131,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
               <select value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
                 {Object.entries(CRM_EQUIPMENT_NOTE_KIND_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
               </select>
-              <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." className={`${inputCls} flex-1`} />
+              <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." aria-label="Add a note..." className={`${inputCls} flex-1`} />
               <Button type="submit" disabled={!noteText.trim() || addNote.isPending} variant="primary">
                 {addNote.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Add'}
               </Button>
@@ -218,8 +218,8 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search serial #, model, brand..." className="flex-1 min-w-48 rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search serial #, model, brand..." aria-label="Search serial #, model, brand..." className="flex-1 min-w-48 rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(CRM_EQUIPMENT_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -276,13 +276,13 @@ export function Component() {
 
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="Register Equipment">
         <form onSubmit={handleCreate} className="space-y-4">
-          <Field label="Serial Number *"><input required value={serial} onChange={e => setSerial(e.target.value)} placeholder="SN-001234" className={inputCls} /></Field>
-          <Field label="Model *"><input required value={model} onChange={e => setModel(e.target.value)} placeholder="Machine model name" className={inputCls} /></Field>
+          <Field label="Serial Number *"><input required value={serial} onChange={e => setSerial(e.target.value)} placeholder="SN-001234" aria-label="SN-001234" className={inputCls} /></Field>
+          <Field label="Model *"><input required value={model} onChange={e => setModel(e.target.value)} placeholder="Machine model name" aria-label="Machine model name" className={inputCls} /></Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Brand"><input value={brand} onChange={e => setBrand(e.target.value)} placeholder="Brand name" className={inputCls} /></Field>
+            <Field label="Brand"><input value={brand} onChange={e => setBrand(e.target.value)} placeholder="Brand name" aria-label="Brand name" className={inputCls} /></Field>
             <Field label="Category"><input value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Espresso Machine" className={inputCls} /></Field>
           </div>
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} /></Field>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" className={inputCls} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Warranty End"><input type="date" value={warrantyEnd} onChange={e => setWarrantyEnd(e.target.value)} className={inputCls} /></Field>
             <Field label="Next Service"><input type="date" value={nextService} onChange={e => setNextService(e.target.value)} className={inputCls} /></Field>

@@ -123,7 +123,7 @@ function LoginForm({ tenantId }: { tenantId: string }) {
         <input
           type="email"
           required
-          placeholder="you@company.com"
+          placeholder="you@company.com" aria-label="you@company.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm"

@@ -58,14 +58,14 @@ function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
       <input
         value={step.name}
         onChange={e => onChange(index, { ...step, name: e.target.value })}
-        placeholder="Step name"
+        placeholder="Step name" aria-label="Step name"
         className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
       />
 
       <input
         value={step.description ?? ''}
         onChange={e => onChange(index, { ...step, description: e.target.value || undefined })}
-        placeholder="Description (optional)"
+        placeholder="Description (optional)" aria-label="Description (optional)"
         className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
       />
 
@@ -182,14 +182,14 @@ function DefinitionForm({ initial, onDone, onCancel }: DefinitionFormProps) {
         autoFocus
         value={name}
         onChange={e => setName(e.target.value)}
-        placeholder="Definition name"
+        placeholder="Definition name" aria-label="Definition name"
         className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
       />
 
       <input
         value={description}
         onChange={e => setDescription(e.target.value)}
-        placeholder="Description (optional)"
+        placeholder="Description (optional)" aria-label="Description (optional)"
         className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
       />
 
@@ -394,7 +394,7 @@ function StartInstanceModal({
           <input
             value={triggerRefKind}
             onChange={e => setTriggerRefKind(e.target.value)}
-            placeholder="Reference kind (e.g. deal, case)"
+            placeholder="Reference kind (e.g. deal, case)" aria-label="Reference kind (e.g. deal, case)"
             className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
           />
 

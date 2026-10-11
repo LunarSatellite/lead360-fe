@@ -559,7 +559,7 @@ function FlowBuilderInner() {
                   value={nlpInput}
                   onChange={(e) => setNlpInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && processNlp()}
-                  placeholder="Describe your bot..."
+                  placeholder="Describe your bot..." aria-label="Describe your bot..."
                   disabled={generateFlow.isPending}
                   className="flex-1 bg-transparent border-none outline-none text-sm py-2.5 px-2 text-text-primary placeholder:text-text-muted"
                 />

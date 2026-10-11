@@ -269,7 +269,7 @@ function AwaitingRow({
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Note (optional)"
+            placeholder="Note (optional)" aria-label="Note (optional)"
             className="w-44 rounded-sm border-thin border-border-subtle bg-bg-input px-2 py-1 text-[11px] text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
         </div>
@@ -428,7 +428,7 @@ function CourierPicker({
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Why this courier (optional) — recorded on the routing decision"
+            placeholder="Why this courier (optional) — recorded on the routing decision" aria-label="Why this courier (optional) — recorded on the routing decision"
             className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
@@ -575,7 +575,7 @@ function StuckRow({ offer, onReplanned }: { offer: HopOffer; onReplanned: () => 
             <input
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Note (optional)"
+              placeholder="Note (optional)" aria-label="Note (optional)"
               className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
             />
             {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}

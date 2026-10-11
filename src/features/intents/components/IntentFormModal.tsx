@@ -171,7 +171,7 @@ export function IntentFormModal({
             <label className={label}>Description</label>
             <textarea
               {...form.register('description')}
-              placeholder="What does this intent do?"
+              placeholder="What does this intent do?" aria-label="What does this intent do?"
               rows={2}
               className={`${input} resize-none`}
             />
@@ -257,7 +257,7 @@ export function IntentFormModal({
             <label className={label}>Keywords <span className="opacity-40">(comma-separated)</span></label>
             <textarea
               {...form.register('keywords')}
-              placeholder="track, order, delivery, shipping, status"
+              placeholder="track, order, delivery, shipping, status" aria-label="track, order, delivery, shipping, status"
               rows={2}
               className={`${input} resize-none`}
             />
@@ -299,7 +299,7 @@ export function IntentFormModal({
                     <label className={label}>API Endpoint</label>
                     <input
                       {...form.register('apiEndpoint')}
-                      placeholder="GET /orders/{order_id}/status"
+                      placeholder="GET /orders/{order_id}/status" aria-label="GET /orders/{order_id}/status"
                       className={input}
                     />
                   </div>
@@ -332,7 +332,7 @@ export function IntentFormModal({
                 <label className={label}>Response text</label>
                 <textarea
                   {...form.register('staticResponseText')}
-                  placeholder="The response your chatbot will send..."
+                  placeholder="The response your chatbot will send..." aria-label="The response your chatbot will send..."
                   rows={4}
                   className={`${input} resize-none`}
                 />

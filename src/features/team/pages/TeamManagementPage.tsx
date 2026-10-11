@@ -560,7 +560,7 @@ function CreateRoleForm({ onDone, onCancel }: { onDone: (id: string) => void; on
         autoFocus
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Role name..."
+        placeholder="Role name..." aria-label="Role name..."
         className="flex-1 px-3 py-2 rounded-lg bg-bg border border-border-medium text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
       />
       <button type="submit" disabled={create.isPending || !name.trim()} className="p-2 rounded-lg bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">

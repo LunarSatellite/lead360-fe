@@ -241,7 +241,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
               <input
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
-                placeholder="#3498DB"
+                placeholder="#3498DB" aria-label="#3498DB"
                 maxLength={7}
                 className="w-full rounded-lg px-3 py-2 text-xs bg-glass-2 border border-border-subtle
                            text-text-primary placeholder:text-text-muted

@@ -674,7 +674,7 @@ function PasswordSection() {
               <input
                 {...form.register('currentPassword')}
                 type={showCurrent ? 'text' : 'password'}
-                placeholder="Enter current password"
+                placeholder="Enter current password" aria-label="Enter current password"
                 autoComplete="current-password"
                 className="form-input !pr-12 w-full"
               />
@@ -701,7 +701,7 @@ function PasswordSection() {
               <input
                 {...form.register('newPassword')}
                 type={showNew ? 'text' : 'password'}
-                placeholder="Min 8 characters"
+                placeholder="Min 8 characters" aria-label="Min 8 characters"
                 autoComplete="new-password"
                 className="form-input !pr-12 w-full"
               />
@@ -744,7 +744,7 @@ function PasswordSection() {
               <input
                 {...form.register('confirmPassword')}
                 type={showConfirm ? 'text' : 'password'}
-                placeholder="Re-enter new password"
+                placeholder="Re-enter new password" aria-label="Re-enter new password"
                 autoComplete="new-password"
                 className="form-input !pr-12 w-full"
               />

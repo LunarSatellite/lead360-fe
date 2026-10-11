@@ -169,7 +169,7 @@ export function CommandPalette() {
               autoFocus
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search leads, contacts, deals — or jump to a page…"
+              placeholder="Search leads, contacts, deals — or jump to a page…" aria-label="Search leads, contacts, deals — or jump to a page…"
               className="flex-1 min-w-0 h-full bg-transparent text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:shadow-none"
             />
             <kbd className="shrink-0 text-[10px] text-text-muted border-thin border-border-medium rounded px-1.5 py-0.5">

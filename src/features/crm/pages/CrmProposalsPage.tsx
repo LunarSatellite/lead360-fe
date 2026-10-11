@@ -273,8 +273,8 @@ export function Component() {
 
       <div className="flex gap-2">
         <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-          placeholder="Search proposals..." className={inputCls + ' flex-1'} />
-        <select className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
+          placeholder="Search proposals..." aria-label="Search proposals..." className={inputCls + ' flex-1'} />
+        <select aria-label="Filter by status" className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
           <option value="">All Statuses</option>
           {Object.entries(CRM_PROPOSAL_STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
@@ -409,7 +409,7 @@ export function Component() {
             <input
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              placeholder="Search existing deals…"
+              placeholder="Search existing deals…" aria-label="Search existing deals…"
               autoComplete="off"
               value={genDealSearch}
               onChange={e => { setGenDealSearch(e.target.value); setShowGenDealDrop(true); }}
@@ -457,7 +457,7 @@ export function Component() {
             <input
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              placeholder="Search existing contacts…"
+              placeholder="Search existing contacts…" aria-label="Search existing contacts…"
               autoComplete="off"
               value={genContactSearch}
               onChange={e => { setGenContactSearch(e.target.value); setShowGenContactDrop(true); }}
@@ -508,7 +508,7 @@ export function Component() {
             <input
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              placeholder="Select a template…"
+              placeholder="Select a template…" aria-label="Select a template…"
               autoComplete="off"
               value={genTemplateSearch}
               onChange={e => { setGenTemplateSearch(e.target.value); setShowGenTemplateDrop(true); }}
@@ -600,13 +600,13 @@ export function Component() {
                   <select value={s.kind} onChange={e => updateSection(i, 'kind', Number(e.target.value))} className={selectCls + ' w-48'}>
                     {Object.entries(PROPOSAL_SECTION_KINDS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
-                  <input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section heading (optional)" className={inputCls + ' flex-1'} />
+                  <input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section heading (optional)" aria-label="Section heading (optional)" className={inputCls + ' flex-1'} />
                   <button onClick={() => setMSections(ss => ss.filter((_, idx) => idx !== i))} disabled={mSections.length === 1}
                     className="p-1.5 rounded-lg text-danger hover:bg-danger-soft disabled:opacity-40 transition-colors">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <textarea value={s.content} onChange={e => updateSection(i, 'content', e.target.value)} rows={3} className={inputCls} placeholder="Section content..." />
+                <textarea value={s.content} onChange={e => updateSection(i, 'content', e.target.value)} rows={3} className={inputCls} placeholder="Section content..." aria-label="Section content..." />
               </div>
             ))}
           </div>

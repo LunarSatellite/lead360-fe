@@ -461,7 +461,7 @@ function TeamTasksTab({ onSelectTask }: { onSelectTask: (task: ProcessTaskDto) =
             value={teamLabel}
             onChange={e => setTeamLabel(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
-            placeholder="Search team label (e.g. Sales, Support)"
+            placeholder="Search team label (e.g. Sales, Support)" aria-label="Search team label (e.g. Sales, Support)"
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/40"
           />
         </div>

@@ -172,7 +172,7 @@ export function Component() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or description…"
+            placeholder="Search by name or description…" aria-label="Search by name or description…"
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-card border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all"
           />
         </div>

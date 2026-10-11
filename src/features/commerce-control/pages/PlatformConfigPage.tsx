@@ -98,7 +98,7 @@ export function PlatformConfigPage() {
         <input
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          placeholder="Filter by key or description"
+          placeholder="Filter by key or description" aria-label="Filter by key or description"
           className="w-full rounded-card border-thin border-border-subtle bg-bg-input py-2 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 focus:outline-none"
         />
       </div>

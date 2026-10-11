@@ -91,7 +91,7 @@ export function Component() {
             <input
               {...form.register('password')}
               type={showPw ? 'text' : 'password'}
-              placeholder="••••••••••"
+              placeholder="••••••••••" aria-label="••••••••••"
               autoComplete="current-password"
               className="w-full px-3.5 sm:px-4 py-3 pr-12 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all"
             />

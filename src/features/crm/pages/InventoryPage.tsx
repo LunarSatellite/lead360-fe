@@ -34,7 +34,7 @@ export function Component() {
           <p className="text-xs text-text-muted mt-0.5">Check stock levels, adjust inventory, and view availability.</p>
         </div>
         <div className="flex gap-2">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter((f: any) => ({ ...f, search: search || undefined, page: 1 }))} placeholder="Search products..." className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm w-48" />
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter((f: any) => ({ ...f, search: search || undefined, page: 1 }))} placeholder="Search products..." aria-label="Search products..." className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm w-48" />
           <button onClick={() => setFilter((f: any) => ({ ...f, search: search || undefined, page: 1 }))} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary"><Search className="w-4 h-4" /></button>
         </div>
       </div>

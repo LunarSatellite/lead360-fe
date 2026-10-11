@@ -621,7 +621,7 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
               {Object.entries(ATTRIBUTED_ENTITY_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
             <input required value={form.entityId} onChange={(e) => setForm((f) => ({ ...f, entityId: e.target.value }))}
-              placeholder="Entity ID (GUID)" className={inputCls} />
+              placeholder="Entity ID (GUID)" aria-label="Entity ID (GUID)" className={inputCls} />
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
@@ -641,7 +641,7 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
             </div>
           </div>
           <input value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-            placeholder="Notes (optional)" className={inputCls} />
+            placeholder="Notes (optional)" aria-label="Notes (optional)" className={inputCls} />
           <div className="flex gap-2">
             <Button type="submit" disabled={addAttribution.isPending}
               variant="primary" size="sm">
@@ -1418,22 +1418,22 @@ function FbAdsTab() {
               <div>
                 <label className="text-xs text-text-muted">Ad Account ID *</label>
                 <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
-                  placeholder="act_123456789 or 123456789" className={`mt-1 ${inputCls}`} style={inputStyle} required />
+                  placeholder="act_123456789 or 123456789" aria-label="act_123456789 or 123456789" className={`mt-1 ${inputCls}`} style={inputStyle} required />
               </div>
               <div>
                 <label className="text-xs text-text-muted">Access Token *</label>
                 <input type="password" value={form.accessToken} onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
-                  placeholder="EAAxxxx..." className={`mt-1 ${inputCls}`} style={inputStyle} required />
+                  placeholder="EAAxxxx..." aria-label="EAAxxxx..." className={`mt-1 ${inputCls}`} style={inputStyle} required />
               </div>
               <div>
                 <label className="text-xs text-text-muted">Business Name</label>
                 <input value={form.businessName ?? ''} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-                  placeholder="My Business" className={`mt-1 ${inputCls}`} style={inputStyle} />
+                  placeholder="My Business" aria-label="My Business" className={`mt-1 ${inputCls}`} style={inputStyle} />
               </div>
               <div>
                 <label className="text-xs text-text-muted">Currency</label>
                 <input value={form.currency ?? 'USD'} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
-                  placeholder="USD" className={`mt-1 ${inputCls}`} style={inputStyle} maxLength={10} />
+                  placeholder="USD" aria-label="USD" className={`mt-1 ${inputCls}`} style={inputStyle} maxLength={10} />
               </div>
             </div>
             <div className="shrink-0 flex items-center justify-end px-6 py-4 border-t border-border-subtle">

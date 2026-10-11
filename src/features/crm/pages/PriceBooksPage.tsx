@@ -295,13 +295,13 @@ function EntryEditor({ bookId, currency, entries }: { bookId: string; currency: 
               ))}
             </select>
           ) : (
-            <input className={inputCls} placeholder="Product name" value={form.productName}
+            <input className={inputCls} placeholder="Product name" aria-label="Product name" value={form.productName}
               onChange={(e) => setForm((f) => ({ ...f, productName: e.target.value }))} />
           )}
         </div>
-        <input className={`${inputCls} w-28`} placeholder="SKU" value={form.sku}
+        <input className={`${inputCls} w-28`} placeholder="SKU" aria-label="SKU" value={form.sku}
           onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))} />
-        <input className={`${inputCls} w-32`} type="number" min="0" step="0.01" placeholder="Price" value={form.unitPrice}
+        <input className={`${inputCls} w-32`} type="number" min="0" step="0.01" placeholder="Price" aria-label="Price" value={form.unitPrice}
           onChange={(e) => setForm((f) => ({ ...f, unitPrice: e.target.value }))} />
         <Button type="submit" disabled={addEntry.isPending}
           variant="primary">

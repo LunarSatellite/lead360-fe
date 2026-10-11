@@ -193,12 +193,41 @@ export const navSections: ReadonlyArray<{ id: NavSectionId; label: string }> = [
  * filter as hidden search terms rather than being deleted.
  */
 export const navAliases: ReadonlyArray<{ label: string; alsoKnownAs: string }> = [
-  { label: 'Products & catalogue', alsoKnownAs: 'Business catalogue' },
-  { label: 'Stores', alsoKnownAs: 'Organisations' },
+  // /dashboard/business-catalog. "Products" is what an operator calls these,
+  // and "& catalogue" was doing real harm: it sat directly above a separate
+  // page called "Catalogue", so the group read as two catalogues.
+  { label: 'Products', alsoKnownAs: 'Products & catalogue' },
+  { label: 'Products', alsoKnownAs: 'Business catalogue' },
+
+  // /dashboard/catalog is the ingestion pipeline — a sync config and a run
+  // history, not a list of products. Naming it for what it does is the other
+  // half of the fix above.
+  { label: 'Catalogue sync', alsoKnownAs: 'Catalogue' },
+
+  // /dashboard/crm/organizations lists companies. "Stores" is the StyleMint
+  // word and it collides twice over: with retail locations, and with the
+  // vendor stores that exist elsewhere in this admin. In the CRM section
+  // "Organisations" is unambiguous and is the term the CRM already uses.
+  { label: 'Organisations', alsoKnownAs: 'Stores' },
+
+  // "Conversation Map" is a metaphor; "Bot flows" is the thing.
   { label: 'Bot flows', alsoKnownAs: 'Conversation Map' },
-  { label: 'Test preview', alsoKnownAs: 'Test Channel' },
+
+  // The route is /test-channel and the thing is a channel you test in.
+  { label: 'Test channel', alsoKnownAs: 'Test preview' },
+  { label: 'Test channel', alsoKnownAs: 'Test Channel' },
+
+  // "Home" says nothing about what is there.
   { label: 'Control center', alsoKnownAs: 'Home' },
-  { label: 'Products & catalogue', alsoKnownAs: 'Products' },
+
+  // Four more renamed for the same reason, though no second name was ever
+  // attached to them: two pages called "Platform config" and "Platform
+  // configuration" read as one page listed twice, however far apart they
+  // sit in the rail.
+  { label: 'Commerce platform', alsoKnownAs: 'Platform config' },
+  { label: 'CRM platform', alsoKnownAs: 'Platform configuration' },
+  { label: 'Data subject requests', alsoKnownAs: 'Data requests' },
+  { label: 'CRM feature toggles', alsoKnownAs: 'Feature settings' },
 ];
 
 export const navGroups: NavGroup[] = [
@@ -219,8 +248,8 @@ export const navGroups: NavGroup[] = [
     label: 'Catalogue',
     icon: Package,
     items: [
-      { label: 'Products & catalogue', href: '/dashboard/business-catalog', icon: Boxes },
-      { label: 'Catalogue', href: '/dashboard/catalog', icon: Package },
+      { label: 'Products', href: '/dashboard/business-catalog', icon: Boxes },
+      { label: 'Catalogue sync', href: '/dashboard/catalog', icon: Package },
       { label: 'Content & media', href: '/dashboard/stylemint/content', icon: Images },
       { label: 'Audio', href: '/dashboard/stylemint/audio', icon: Music },
       { label: 'Reel recipes', href: '/dashboard/stylemint/recipes', icon: ChefHat },
@@ -305,7 +334,7 @@ export const navGroups: NavGroup[] = [
       { label: 'Overview', href: '/dashboard/home', icon: LayoutGrid },
       { label: 'Conversations', href: '/dashboard/conversations', icon: MessageSquare },
       { label: 'Channels', href: '/dashboard/channels', icon: Phone },
-      { label: 'Test preview', href: '/dashboard/test-channel', icon: Terminal },
+      { label: 'Test channel', href: '/dashboard/test-channel', icon: Terminal },
     ],
   },
   {
@@ -328,7 +357,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { label: 'Leads', href: '/dashboard/crm/leads', icon: Users },
       { label: 'Contacts', href: '/dashboard/crm/contacts', icon: UserCheck },
-      { label: 'Stores', href: '/dashboard/crm/organizations', icon: Store },
+      { label: 'Organisations', href: '/dashboard/crm/organizations', icon: Store },
       { label: 'Accounts', href: '/dashboard/crm/accounts', icon: Building },
       { label: 'Duplicates', href: '/dashboard/crm/dedup', icon: GitMerge },
       { label: 'Customer onboarding', href: '/dashboard/crm/customer-onboarding', icon: UserPlus },
@@ -425,8 +454,8 @@ export const navGroups: NavGroup[] = [
     label: 'CRM settings',
     icon: SlidersHorizontal,
     items: [
-      { label: 'Platform configuration', href: '/dashboard/crm/platform', icon: Sigma },
-      { label: 'Feature settings', href: '/dashboard/crm/feature-settings', icon: SlidersHorizontal },
+      { label: 'CRM platform', href: '/dashboard/crm/platform', icon: Sigma },
+      { label: 'CRM feature toggles', href: '/dashboard/crm/feature-settings', icon: SlidersHorizontal },
       { label: 'Custom Fields', href: '/dashboard/crm/custom-fields', icon: SlidersHorizontal },
       { label: 'Custom objects', href: '/dashboard/crm/custom-objects', icon: Boxes },
       { label: 'Currencies', href: '/dashboard/crm/currencies', icon: Coins },
@@ -436,7 +465,7 @@ export const navGroups: NavGroup[] = [
       { label: 'Notification settings', href: '/dashboard/crm/notification-settings', icon: Settings },
       { label: 'Single sign-on', href: '/dashboard/crm/sso', icon: KeyRound },
       { label: 'Audit log', href: '/dashboard/crm/audit', icon: ScrollText },
-      { label: 'Data requests', href: '/dashboard/crm/gdpr', icon: ShieldAlert },
+      { label: 'Data subject requests', href: '/dashboard/crm/gdpr', icon: ShieldAlert },
       { label: 'Knowledge base', href: '/dashboard/crm/knowledge-base', icon: BookOpen },
     ],
   },
@@ -459,7 +488,7 @@ export const navGroups: NavGroup[] = [
       { label: 'Team', href: '/dashboard/team', icon: Users },
       { label: 'Settings', href: '/dashboard/settings', icon: Settings },
       { label: 'Bot settings', href: '/dashboard/bot-settings', icon: Bot },
-      { label: 'Platform config', href: '/dashboard/stylemint/platform-config', icon: Settings2 },
+      { label: 'Commerce platform', href: '/dashboard/stylemint/platform-config', icon: Settings2 },
       { label: 'Feature flags', href: '/dashboard/stylemint/feature-flags', icon: Flag },
       { label: 'Custom domains', href: '/dashboard/settings/custom-domains', icon: Globe },
       { label: 'Video conferencing', href: '/dashboard/settings/video-conferencing', icon: Video },

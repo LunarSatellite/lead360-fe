@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { SidebarNav } from './SidebarNav';
-import { allNavItems, navGroups, navSections } from './nav-model';
+import { allNavItems, navAliases, navGroups, navSections } from './nav-model';
 
 /**
  * What the grouped rail has to do that the flat one did not.
@@ -150,14 +150,26 @@ describe('filtering the rail', () => {
     expect(closed).toEqual([]);
   });
 
-  it('finds a page by the name the other product used for it', () => {
-    // The merge had to pick one name per page. Someone who learned the other
-    // one has not learned a wrong thing, and should not be left searching.
+  it('finds a page by every name it has ever had', () => {
+    /**
+     * The merge had to pick one name per page. Someone who learned another
+     * one has not learned a wrong thing and should not be left searching.
+     *
+     * Driven from navAliases rather than naming a pair here: an earlier
+     * version asserted that searching "organisations" surfaced the page
+     * labelled "Stores", and when that call was made the other way round
+     * the test failed for being out of date rather than for being wrong.
+     */
     renderNav('/dashboard');
-    fireEvent.change(filter(), { target: { value: 'organisations' } });
 
-    expect(hrefs()).toEqual(['/dashboard/crm/organizations']);
-    expect(screen.getByText('Stores')).toBeInTheDocument();
+    for (const alias of navAliases) {
+      fireEvent.change(filter(), { target: { value: alias.alsoKnownAs } });
+
+      const labels = screen.queryAllByRole('link').map((a) => a.getAttribute('title'));
+      expect(labels, `searching "${alias.alsoKnownAs}" should surface ${alias.label}`).toContain(
+        alias.label,
+      );
+    }
   });
 
   it('says so when nothing matches, rather than showing an empty rail', () => {

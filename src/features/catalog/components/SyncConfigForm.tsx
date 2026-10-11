@@ -82,16 +82,18 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
             )}
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Pagination Type</label>
-            <select
-              {...form.register('paginationType')}
-              className="form-input appearance-none cursor-pointer"
-            >
-              <option value="page">Page</option>
-              <option value="offset">Offset</option>
-              <option value="cursor">Cursor</option>
-              <option value="none">None</option>
-            </select>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Pagination Type</span>
+              <select
+                {...form.register('paginationType')}
+                className="form-input appearance-none cursor-pointer"
+              >
+                <option value="page">Page</option>
+                <option value="offset">Offset</option>
+                <option value="cursor">Cursor</option>
+                <option value="none">None</option>
+              </select>
+            </label>
           </div>
           <div>
             <label className="block">
@@ -121,17 +123,19 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
             </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Sync Interval</label>
-            <select
-              {...form.register('syncIntervalMinutes', { valueAsNumber: true })}
-              className="form-input appearance-none cursor-pointer"
-            >
-              <option value={60}>Every 1 hour</option>
-              <option value={180}>Every 3 hours</option>
-              <option value={360}>Every 6 hours</option>
-              <option value={720}>Every 12 hours</option>
-              <option value={1440}>Every 24 hours</option>
-            </select>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Sync Interval</span>
+              <select
+                {...form.register('syncIntervalMinutes', { valueAsNumber: true })}
+                className="form-input appearance-none cursor-pointer"
+              >
+                <option value={60}>Every 1 hour</option>
+                <option value={180}>Every 3 hours</option>
+                <option value={360}>Every 6 hours</option>
+                <option value={720}>Every 12 hours</option>
+                <option value={1440}>Every 24 hours</option>
+              </select>
+            </label>
           </div>
           <div className="flex items-center gap-3 pt-5">
             <label className="flex items-center gap-2 cursor-pointer">

@@ -52,7 +52,7 @@ export function InsuranceClaimsPanel() {
           <input
             value={partnershipDraft}
             onChange={(e) => setPartnershipDraft(e.target.value)}
-            placeholder="Partnership id"
+            placeholder="Partnership id" aria-label="Partnership id"
             className={`${field} flex-1 font-mono`}
           />
           <Button
@@ -119,7 +119,7 @@ function ReviewForm() {
         <input
           value={claimId}
           onChange={(e) => setClaimId(e.target.value)}
-          placeholder="Claim id from the claims above"
+          placeholder="Claim id from the claims above" aria-label="Claim id from the claims above"
           className={`${field} font-mono sm:col-span-2`}
         />
         <input
@@ -128,7 +128,7 @@ function ReviewForm() {
           min={0}
           value={settlement}
           onChange={(e) => setSettlement(e.target.value)}
-          placeholder="Settlement (optional)"
+          placeholder="Settlement (optional)" aria-label="Settlement (optional)"
           className={field}
         />
         <div className="flex gap-1.5 sm:col-span-3">

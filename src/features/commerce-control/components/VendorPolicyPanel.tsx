@@ -98,7 +98,7 @@ export function VendorPolicyPanel() {
         <input
           value={vendorId}
           onChange={(e) => setVendorId(e.target.value)}
-          placeholder="Vendor profile id"
+          placeholder="Vendor profile id" aria-label="Vendor profile id"
           className="flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
         />
         <Button

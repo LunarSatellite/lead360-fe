@@ -79,7 +79,7 @@ export function NlpMagicBar({ onFlowGenerated }: NlpMagicBarProps) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
-            placeholder="Describe your bot flow..."
+            placeholder="Describe your bot flow..." aria-label="Describe your bot flow..."
             disabled={isThinking}
             className="flex-1 bg-transparent border-none outline-none text-sm py-2.5 px-2 text-text-primary placeholder:text-text-muted"
           />

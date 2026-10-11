@@ -27,9 +27,11 @@ export function Component() {
       ) : (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Email address</label>
-            <input {...form.register('email')} type="email" placeholder="you@company.com" autoComplete="email"
-              className="w-full px-4 py-3 rounded-lg bg-glass-2 border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all" />
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Email address</span>
+              <input {...form.register('email')} type="email" placeholder="you@company.com" autoComplete="email"
+                className="w-full px-4 py-3 rounded-lg bg-glass-2 border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all" />
+            </label>
             {form.formState.errors.email && <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>}
           </div>
           <button type="submit" disabled={forgot.isPending}

@@ -478,7 +478,7 @@ function FloatingPalette() {
         <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-bg border border-border-subtle">
           <Search className="w-2.5 h-2.5 text-text-muted shrink-0" strokeWidth={2} />
           <input
-            value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…"
+            value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…" aria-label="Search…"
             className="bg-transparent text-[10px] text-text-primary placeholder:text-text-muted focus:outline-none flex-1 min-w-0 w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />
           {q && (
@@ -558,11 +558,11 @@ function GenericConditionEditor({ value, onChange }: { value: string; onChange: 
       )}
       {conditions.map((c, i) => (
         <div key={i} className="flex items-center gap-1">
-          <input className={INPUT + ' flex-1'} placeholder="properties.amount" value={String(c.field ?? '')} onChange={(e) => update(i, { field: e.target.value })} />
+          <input className={INPUT + ' flex-1'} placeholder="properties.amount" aria-label="properties.amount" value={String(c.field ?? '')} onChange={(e) => update(i, { field: e.target.value })} />
           <select className={INPUT + ' w-28'} value={String(c.operator ?? 'gte')} onChange={(e) => update(i, { operator: e.target.value })}>
             {OPERATORS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
-          <input className={INPUT + ' w-20'} placeholder="value" value={c.value == null ? '' : String(c.value)} onChange={(e) => update(i, { value: coerce(e.target.value) })} />
+          <input className={INPUT + ' w-20'} placeholder="value" aria-label="value" value={c.value == null ? '' : String(c.value)} onChange={(e) => update(i, { value: coerce(e.target.value) })} />
           <button type="button" className="nodrag text-text-muted hover:text-danger-DEFAULT px-1 text-xs" onClick={() => remove(i)}>✕</button>
         </div>
       ))}
@@ -610,7 +610,7 @@ function TriggerConditionEditor({ triggerType, value, onChange }: {
   if (triggerType === 'funnel.stage_changed') {
     const funnelStages = ['Identified', 'Inquiring', 'Qualified', 'Negotiating', 'Closing', 'Customer', 'Repeat', 'Advocate', 'Dormant'];
     return (
-      <select value={String(parsed.toStage ?? 'Qualified')} onChange={(e) => set('toStage', e.target.value)} className={INPUT}>
+      <select aria-label="Filter by stage change" value={String(parsed.toStage ?? 'Qualified')} onChange={(e) => set('toStage', e.target.value)} className={INPUT}>
         <option value="">Any stage change</option>
         {funnelStages.map(s => <option key={s} value={s}>{s}</option>)}
       </select>
@@ -619,7 +619,7 @@ function TriggerConditionEditor({ triggerType, value, onChange }: {
 
   if (triggerType === 'deal.stage_changed') {
     return (
-      <select value={String(parsed.toStage ?? '')} onChange={(e) => set('toStage', e.target.value)} className={INPUT}>
+      <select aria-label="Filter by stage change" value={String(parsed.toStage ?? '')} onChange={(e) => set('toStage', e.target.value)} className={INPUT}>
         <option value="">Any stage change</option>
         {stages.map(s => <option key={s.id} value={s.name}>{s.name}{s.isClosed ? (s.isWon ? ' ✓' : ' ✗') : ''}</option>)}
       </select>
@@ -660,7 +660,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
         </select>
       </div>
       <div><label className={L}>Description (optional)</label>
-        <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" value={String(parsed.description ?? '')} onChange={(e) => set('description', e.target.value)} />
+        <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" aria-label="Additional details…" value={String(parsed.description ?? '')} onChange={(e) => set('description', e.target.value)} />
       </div>
     </div>
   );
@@ -671,10 +671,10 @@ function ActionConfigEditor({ actionType, value, onChange }: {
         <input className={F} placeholder="e.g. Hot lead alert" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
       </div>
       <div><label className={L}>Body (optional)</label>
-        <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" value={String(parsed.body ?? '')} onChange={(e) => set('body', e.target.value)} />
+        <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" aria-label="Additional details…" value={String(parsed.body ?? '')} onChange={(e) => set('body', e.target.value)} />
       </div>
       <div><label className={L}>Notify user (optional)</label>
-        <select className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
+        <select aria-label="Filter by user" className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
           <option value="">All users</option>
           {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
         </select>
@@ -735,7 +735,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
           <input className={F} placeholder="e.g. Thanks for your order!" value={String(parsed.subject ?? '')} onChange={(e) => setMany({ subject: e.target.value })} />
         </div>
         <div><label className={L}>Message *</label>
-          <textarea rows={3} className={F + ' resize-none'} placeholder="Your email message…" value={String(parsed.body ?? '')} onChange={(e) => setMany({ body: e.target.value })} />
+          <textarea rows={3} className={F + ' resize-none'} placeholder="Your email message…" aria-label="Your email message…" value={String(parsed.body ?? '')} onChange={(e) => setMany({ body: e.target.value })} />
         </div>
       </div>
     );
@@ -772,10 +772,10 @@ function ActionConfigEditor({ actionType, value, onChange }: {
         </select>
       </div>
       <div><label className={L}>Deal name (optional)</label>
-        <input className={F} placeholder="Auto-generated if empty" value={String(parsed.deal_name ?? '')} onChange={(e) => set('deal_name', e.target.value)} />
+        <input className={F} placeholder="Auto-generated if empty" aria-label="Auto-generated if empty" value={String(parsed.deal_name ?? '')} onChange={(e) => set('deal_name', e.target.value)} />
       </div>
       <div><label className={L}>Amount (optional)</label>
-        <input type="number" min={0} className={F} placeholder="Leave blank if unknown" value={parsed.amount != null ? String(parsed.amount) : ''} onChange={(e) => set('amount', e.target.value ? Number(e.target.value) : undefined)} />
+        <input type="number" min={0} className={F} placeholder="Leave blank if unknown" aria-label="Leave blank if unknown" value={parsed.amount != null ? String(parsed.amount) : ''} onChange={(e) => set('amount', e.target.value ? Number(e.target.value) : undefined)} />
       </div>
     </div>
   );
@@ -837,12 +837,14 @@ function CreateWorkflowForm({ onGenerate }: {
 
         {/* Trigger Type */}
         <div>
-          <label className="block text-2xs font-semibold mb-1 text-text-secondary">Trigger</label>
-          <select value={triggerType} onChange={(e) => { setTriggerType(e.target.value); setTriggerConditionsJson('{}'); }}
-            className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary outline-none focus:border-brand">
-            {(triggerDefs ?? Object.entries(CRM_WORKFLOW_TRIGGER_LABELS).map(([k, l]) => ({ triggerType: k, displayName: l })))
-              .map((d) => <option key={d.triggerType} value={d.triggerType}>{d.displayName}</option>)}
-          </select>
+          <label className="block">
+            <span className="block text-2xs font-semibold mb-1 text-text-secondary">Trigger</span>
+            <select value={triggerType} onChange={(e) => { setTriggerType(e.target.value); setTriggerConditionsJson('{}'); }}
+              className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary outline-none focus:border-brand">
+              {(triggerDefs ?? Object.entries(CRM_WORKFLOW_TRIGGER_LABELS).map(([k, l]) => ({ triggerType: k, displayName: l })))
+                .map((d) => <option key={d.triggerType} value={d.triggerType}>{d.displayName}</option>)}
+            </select>
+          </label>
         </div>
 
         {/* Trigger Conditions */}
@@ -956,13 +958,15 @@ function CS({ label, value, onChange, options, hint }: {
 }) {
   return (
     <div>
-      <label className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</label>
-      <select
-        value={value} onChange={(e) => onChange(e.target.value)}
-        className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
-      >
-        {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>
+      <label className="block">
+        <span className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</span>
+        <select
+          value={value} onChange={(e) => onChange(e.target.value)}
+          className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
+        >
+          {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      </label>
       {hint && <p className="text-[10px] text-text-muted mt-1 leading-snug">{hint}</p>}
     </div>
   );
@@ -1274,15 +1278,17 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                   const defs = processDefsQ.data ?? [];
                   return (
                     <div>
-                      <label className="block text-2xs font-semibold mb-1 text-text-secondary">Process Definition *</label>
-                      <select
-                        value={cfg.definition_id ?? ''}
-                        onChange={(e) => sf('definition_id', e.target.value)}
-                        className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
-                      >
-                        <option value="">Select a process…</option>
-                        {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                      </select>
+                      <label className="block">
+                        <span className="block text-2xs font-semibold mb-1 text-text-secondary">Process Definition *</span>
+                        <select
+                          value={cfg.definition_id ?? ''}
+                          onChange={(e) => sf('definition_id', e.target.value)}
+                          className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
+                        >
+                          <option value="">Select a process…</option>
+                          {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                        </select>
+                      </label>
                       {defs.length === 0 && processDefsQ.isSuccess && (
                         <p className="text-[10px] text-amber-400 mt-1">No process definitions found — create one in Process Flows first.</p>
                       )}
@@ -1969,7 +1975,7 @@ function WorkflowBuilder({ workflow, onBack }: { workflow: CrmWorkflowSummaryDto
             <span className="text-2xs font-bold text-text-muted uppercase tracking-wider hidden sm:block">Workflow Builder</span>
           </div>
 
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Workflow name…"
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Workflow name…" aria-label="Workflow name…"
             className="flex-1 min-w-0 px-3 py-1.5 rounded-lg text-sm font-semibold text-text-primary placeholder:text-text-muted focus:outline-none bg-transparent border border-border-subtle focus:border-brand"
           />
 

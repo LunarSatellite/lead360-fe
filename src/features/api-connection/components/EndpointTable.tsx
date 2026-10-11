@@ -57,7 +57,7 @@ export function EndpointTable({ endpoints, isLoading }: EndpointTableProps) {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search path, summary..."
+            placeholder="Search path, summary..." aria-label="Search path, summary..."
             className="w-full pl-9 pr-4 py-2 rounded-lg bg-glass-1 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all"
           />
           {search && (

@@ -43,8 +43,14 @@ function PayoutModal({ payout, onClose }: { payout: CrmCommissionPayoutDto; onCl
 
         {payout.status === CrmCommissionRunStatus.Draft && (
           <div className="space-y-3">
-            <div><label className="text-xs text-text-muted block mb-1">Deductions</label><input type="number" value={deductions} onChange={e => setDeductions(e.target.value)} placeholder="0.00" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Notes</label><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Optional notes..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm resize-none" /></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Deductions</span>
+  <input type="number" value={deductions} onChange={e => setDeductions(e.target.value)} placeholder="0.00" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Notes</span>
+  <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Optional notes..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm resize-none" />
+</label></div>
             <button onClick={handleApprove} disabled={finalize.isPending} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {finalize.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Approve & Finalize
             </button>

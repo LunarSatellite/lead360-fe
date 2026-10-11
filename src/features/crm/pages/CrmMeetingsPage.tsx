@@ -202,8 +202,8 @@ function MeetingsTab() {
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4 shrink-0">
           <div className="flex gap-2 flex-1">
-            <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search meetings..." className={inputCls + ' flex-1'} />
-            <select value={statusF} onChange={e => setStatusF(e.target.value)} className={selectCls + ' w-44'}>
+            <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search meetings..." aria-label="Search meetings..." className={inputCls + ' flex-1'} />
+            <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className={selectCls + ' w-44'}>
               <option value="">All Statuses</option>
               {Object.entries(CRM_MEETING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
             </select>
@@ -339,18 +339,20 @@ function MeetingsTab() {
 
           {/* Agenda */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Agenda</label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea
-                rows={3}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="Meeting agenda..."
-                value={initForm.agendaText}
-                onChange={setI('agendaText')}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Agenda</span>
+              <div className="relative">
+                <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <textarea
+                  rows={3}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Meeting agenda..."
+                  value={initForm.agendaText}
+                  onChange={setI('agendaText')}
+                />
+              </div>
+            </label>
           </div>
 
           {/* ── Participants ── */}
@@ -602,7 +604,7 @@ function MeetingsTab() {
             )}
 
             <Field label="Notes">
-              <textarea value={notes || detail.notes || ''} onChange={e => setNotes(e.target.value)} placeholder="Meeting notes..." rows={4} className={inputCls + ' min-h-[80px]'} />
+              <textarea value={notes || detail.notes || ''} onChange={e => setNotes(e.target.value)} placeholder="Meeting notes..." aria-label="Meeting notes..." rows={4} className={inputCls + ' min-h-[80px]'} />
               {notes !== (detail.notes ?? '') && (
                 <button onClick={() => updateMeeting.mutate({ id: detail.id, data: { notes } })} disabled={updateMeeting.isPending} className="mt-1 text-xs text-brand hover:underline">
                   {updateMeeting.isPending ? 'Saving...' : 'Save notes'}
@@ -645,7 +647,7 @@ function MeetingsTab() {
                   autoFocus
                   value={completeSummaryText}
                   onChange={e => setCompleteSummaryText(e.target.value)}
-                  placeholder="What was discussed? Key outcomes, decisions, next steps..."
+                  placeholder="What was discussed? Key outcomes, decisions, next steps..." aria-label="What was discussed? Key outcomes, decisions, next steps..."
                   rows={4}
                   className={inputCls + ' min-h-[80px]'}
                 />
@@ -682,7 +684,7 @@ function MeetingsTab() {
             {showRequestSummary ? (
               <div className="rounded-xl border border-border-subtle bg-bg-elevated p-4 space-y-3">
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Request AI Call Summary</p>
-                <input value={reqSummaryText} onChange={e => setReqSummaryText(e.target.value)} placeholder="What happened in this call / meeting?" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                <input value={reqSummaryText} onChange={e => setReqSummaryText(e.target.value)} placeholder="What happened in this call / meeting?" aria-label="What happened in this call / meeting?" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                 <div className="flex gap-2">
                   <Button onClick={() => {
                     requestSummary.mutate({ contactId: detail.contactId, meetingId: detail.id, trigger: 1 }, { onSuccess: () => { setShowRequestSummary(false); setReqSummaryText(''); toast.success('Summary requested.'); } });
@@ -731,7 +733,7 @@ function MeetingsTab() {
               )}
               <div className="space-y-2">
                 <div className="flex gap-2 items-center">
-                  <input value={taskTitle} onChange={e => setTaskTitle(e.target.value)} placeholder="Task description..."
+                  <input value={taskTitle} onChange={e => setTaskTitle(e.target.value)} placeholder="Task description..." aria-label="Task description..."
                     className="flex-1 px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                   <Button onClick={() => taskTitle.trim() && createTask.mutate({ id: detail.id, title: taskTitle.trim(), assignedToUserId: taskAssigneeId || undefined })}
                     disabled={createTask.isPending || !taskTitle.trim()}

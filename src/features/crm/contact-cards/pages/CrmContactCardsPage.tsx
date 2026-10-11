@@ -717,7 +717,7 @@ function SettingsSection({ card }: { card: CrmContactCardDto }) {
             className={inputCls + " mt-1 min-h-[64px]"}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="(only visible to your team)"
+            placeholder="(only visible to your team)" aria-label="(only visible to your team)"
           />
           <div className="flex items-center justify-end gap-2 mt-2">
             <button

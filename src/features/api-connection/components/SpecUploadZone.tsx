@@ -105,15 +105,17 @@ export function SpecUploadZone({ onSuccess }: SpecUploadZoneProps) {
 
         {/* Format */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1.5">Format</label>
-          <select
-            {...form.register('fileFormat')}
-            className="form-input appearance-none cursor-pointer"
-            disabled={upload.isPending}
-          >
-            <option value="json">JSON</option>
-            <option value="yaml">YAML</option>
-          </select>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1.5">Format</span>
+            <select
+              {...form.register('fileFormat')}
+              className="form-input appearance-none cursor-pointer"
+              disabled={upload.isPending}
+            >
+              <option value="json">JSON</option>
+              <option value="yaml">YAML</option>
+            </select>
+          </label>
         </div>
 
         {mode === 'drop' ? (

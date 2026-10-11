@@ -128,40 +128,40 @@ export function ComplianceProfileForm({
         <div className="text-xs font-bold uppercase tracking-[2px] text-brand">Basic info</div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">
-              Profile name *
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">Profile name *</span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. My Healthcare Custom"
+                className={input}
+              />
             </label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. My Healthcare Custom"
-              className={input}
-            />
           </div>
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">
-              Industry *
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">Industry *</span>
+              <input
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                placeholder="e.g. Healthcare"
+                disabled={isEdit}
+                className={`${input} ${isEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
+              />
             </label>
-            <input
-              value={industry}
-              onChange={(e) => setIndustry(e.target.value)}
-              placeholder="e.g. Healthcare"
-              disabled={isEdit}
-              className={`${input} ${isEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
-            />
           </div>
         </div>
         <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">
-            Description
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">Description</span>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe what this compliance profile is for..."
+              rows={2}
+              className={`${input} resize-none`}
+            />
           </label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe what this compliance profile is for..."
-            rows={2}
-            className={`${input} resize-none`}
-          />
         </div>
         <div className="flex items-center gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
@@ -474,14 +474,14 @@ function DisclaimerEditor({
         <input
           value={trigger}
           onChange={(e) => setTrigger(e.target.value)}
-          placeholder="Trigger"
+          placeholder="Trigger" aria-label="Trigger"
           className={smallInput}
         />
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
-          placeholder="Disclaimer text..."
+          placeholder="Disclaimer text..." aria-label="Disclaimer text..."
           className={smallInput}
         />
         <button
@@ -553,7 +553,7 @@ function MandatoryRefEditor({
           <input
             value={trigger}
             onChange={(e) => setTrigger(e.target.value)}
-            placeholder="Trigger"
+            placeholder="Trigger" aria-label="Trigger"
             className={smallInput}
           />
         </div>
@@ -562,7 +562,7 @@ function MandatoryRefEditor({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
-            placeholder="Reference message..."
+            placeholder="Reference message..." aria-label="Reference message..."
             className={smallInput}
           />
         </div>

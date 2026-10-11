@@ -280,7 +280,7 @@ export function Component() {
                       autoFocus
                       value={rejectReason}
                       onChange={e => setRejectReason(e.target.value)}
-                      placeholder="Reason for rejection..."
+                      placeholder="Reason for rejection..." aria-label="Reason for rejection..."
                       className={inputCls}
                     />
                     <button

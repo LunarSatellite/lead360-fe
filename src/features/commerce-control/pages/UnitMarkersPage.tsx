@@ -109,13 +109,13 @@ export function UnitMarkersPage() {
           <input
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
-            placeholder="Product id"
+            placeholder="Product id" aria-label="Product id"
             className={`${field} font-mono`}
           />
           <input
             value={variantFilter}
             onChange={(e) => setVariantFilter(e.target.value)}
-            placeholder="Variant id"
+            placeholder="Variant id" aria-label="Variant id"
             className={`${field} font-mono`}
           />
           <Button
@@ -178,7 +178,7 @@ function MintPanel({
         <input
           value={variantId}
           onChange={(e) => setVariantId(e.target.value)}
-          placeholder="Product variant id"
+          placeholder="Product variant id" aria-label="Product variant id"
           className={`${field} font-mono`}
         />
         <input
@@ -187,7 +187,7 @@ function MintPanel({
           step={1}
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
-          placeholder="How many tags"
+          placeholder="How many tags" aria-label="How many tags"
           className={field}
         />
         <Button
@@ -547,13 +547,13 @@ function BindPanel({
         <input
           value={marker}
           onChange={(e) => setMarker(e.target.value)}
-          placeholder="Marker secret from the tag"
+          placeholder="Marker secret from the tag" aria-label="Marker secret from the tag"
           className={`${field} font-mono`}
         />
         <input
           value={lineId}
           onChange={(e) => setLineId(e.target.value)}
-          placeholder="Sub-order line id"
+          placeholder="Sub-order line id" aria-label="Sub-order line id"
           className={`${field} font-mono`}
         />
         <select
@@ -571,7 +571,7 @@ function BindPanel({
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Why the binding is being changed (required)"
+            placeholder="Why the binding is being changed (required)" aria-label="Why the binding is being changed (required)"
             className={`${field} sm:col-span-3`}
           />
         )}

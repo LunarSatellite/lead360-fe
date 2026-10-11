@@ -60,7 +60,7 @@ function ArticlesTab() {
         <input
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          placeholder="Filter by category…"
+          placeholder="Filter by category…" aria-label="Filter by category…"
           className={`${inputCls} pl-9`}
         />
       </div>
@@ -246,7 +246,7 @@ function DraftCard({ draft }: { draft: CrmKbDraftDto }) {
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason for rejecting…"
+            placeholder="Reason for rejecting…" aria-label="Reason for rejecting…"
             className={`${inputCls} flex-1`}
           />
           <button onClick={reject} disabled={!reason.trim() || review.isPending} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-danger text-white hover:brightness-110 disabled:opacity-50">

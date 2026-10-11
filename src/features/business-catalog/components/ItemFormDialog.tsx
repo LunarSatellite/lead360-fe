@@ -152,7 +152,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
               <input
                 value={unit}
                 onChange={(e) => setUnit(e.target.value)}
-                placeholder="piece / night / hour"
+                placeholder="piece / night / hour" aria-label="piece / night / hour"
                 className={inputCls}
               />
             </Field>
@@ -171,7 +171,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
             <input
               value={tags}
               onChange={(e) => setTags(e.target.value)}
-              placeholder="organic, gluten-free"
+              placeholder="organic, gluten-free" aria-label="organic, gluten-free"
               className={inputCls}
             />
           </Field>

@@ -168,7 +168,7 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Currency">
-              <Input icon={DollarSign} value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))} maxLength={10} placeholder="USD" style={inputStyle} />
+              <Input icon={DollarSign} value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))} maxLength={10} placeholder="USD" aria-label="USD" style={inputStyle} />
             </Field>
           </div>
 
@@ -177,7 +177,7 @@ export function Component() {
               <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <textarea
                 rows={3}
-                placeholder="Optional description…"
+                placeholder="Optional description…" aria-label="Optional description…"
                 value={form.description}
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
@@ -236,13 +236,13 @@ function ItemEditor({ bundleId, currency, items }: { bundleId: string; currency:
       </div>
 
       <form onSubmit={add} className="flex flex-wrap gap-2 items-center">
-        <input className="flex-1 min-w-[150px] pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="Product name" value={form.productName}
+        <input className="flex-1 min-w-[150px] pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="Product name" aria-label="Product name" value={form.productName}
           onChange={(e) => setForm((f) => ({ ...f, productName: e.target.value }))} />
-        <input className="w-24 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="SKU" value={form.sku}
+        <input className="w-24 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="SKU" aria-label="SKU" value={form.sku}
           onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))} />
-        <input className="w-20 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="1" step="1" placeholder="Qty" value={form.quantity}
+        <input className="w-20 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="1" step="1" placeholder="Qty" aria-label="Qty" value={form.quantity}
           onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))} />
-        <input className="w-28 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="0" step="0.01" placeholder="Price" value={form.unitPrice}
+        <input className="w-28 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="0" step="0.01" placeholder="Price" aria-label="Price" value={form.unitPrice}
           onChange={(e) => setForm((f) => ({ ...f, unitPrice: e.target.value }))} />
         <Button type="submit" disabled={addItem.isPending}
           variant="primary">

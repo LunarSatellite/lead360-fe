@@ -43,7 +43,7 @@ function ApplyForm({ note, onDone }: { note: CrmCreditNoteDto; onDone: () => voi
   return (
     <div className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
       <p className="text-xs font-semibold text-text-muted">Apply to Invoice</p>
-      <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search invoice number..." className={inputCls} />
+      <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search invoice number..." aria-label="Search invoice number..." className={inputCls} />
       {results.length > 0 && (
         <div className="rounded-lg border border-border-subtle divide-y divide-border-subtle max-h-40 overflow-y-auto">
           {results.map((inv: any) => (
@@ -68,7 +68,7 @@ function RefundForm({ note, onDone }: { note: CrmCreditNoteDto; onDone: () => vo
   return (
     <div className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
       <p className="text-xs font-semibold text-text-muted">Record Refund</p>
-      <input value={reference} onChange={e => setReference(e.target.value)} placeholder="Payment reference (optional)" className={inputCls} />
+      <input value={reference} onChange={e => setReference(e.target.value)} placeholder="Payment reference (optional)" aria-label="Payment reference (optional)" className={inputCls} />
       <button onClick={() => refund.mutate({ id: note.id, data: { refundReference: reference.trim() || undefined } }, { onSuccess: onDone })}
         disabled={refund.isPending} className="w-full py-2 rounded-lg bg-success text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
         {refund.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Mark Refunded'}
@@ -148,7 +148,7 @@ export function Component() {
         </div>
 
         <div className="flex gap-2">
-          <select value={statusF} onChange={e => { setStatusF(e.target.value); setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as CreditNoteStatus : undefined, page: 1 })); }} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none w-48 focus-visible:ring-2 focus-visible:ring-brand/60">
+          <select aria-label="Filter by status" value={statusF} onChange={e => { setStatusF(e.target.value); setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as CreditNoteStatus : undefined, page: 1 })); }} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none w-48 focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Statuses</option>
             {Object.entries(CREDIT_NOTE_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>

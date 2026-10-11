@@ -267,11 +267,11 @@ function Step1ConnectApi() {
               <option>DELETE</option>
             </select>
             <input
-              placeholder="/api/v1/products"
+              placeholder="/api/v1/products" aria-label="/api/v1/products"
               className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted font-mono focus:outline-none focus:border-brand"
             />
             <input
-              placeholder="List all products"
+              placeholder="List all products" aria-label="List all products"
               className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
             />
           </div>
@@ -288,25 +288,25 @@ function Step1ConnectApi() {
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">
-              Auth type
+            <label className="block">
+              <span className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Auth type</span>
+              <select className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand">
+                <option>Bearer Token</option>
+                <option>API Key</option>
+                <option>Basic Auth</option>
+                <option>OAuth 2.0</option>
+              </select>
             </label>
-            <select className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand">
-              <option>Bearer Token</option>
-              <option>API Key</option>
-              <option>Basic Auth</option>
-              <option>OAuth 2.0</option>
-            </select>
           </div>
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">
-              Token / Key
+            <label className="block">
+              <span className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Token / Key</span>
+              <input
+                type="password"
+                placeholder="sk-..."
+                className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
+              />
             </label>
-            <input
-              type="password"
-              placeholder="sk-..."
-              className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
-            />
           </div>
         </div>
       </div>
@@ -353,28 +353,36 @@ function Step2DefineIntents() {
           <div className="bg-glass-1 border-thin border-border-subtle rounded-card p-4 space-y-3">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Intent name</label>
-                <input placeholder="e.g. Track Order" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <label className="block">
+                  <span className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Intent name</span>
+                  <input placeholder="e.g. Track Order" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                </label>
               </div>
               <div>
-                <label className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Category</label>
-                <select className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand">
-                  <option>Customer service</option><option>Product</option><option>Booking</option><option>Other</option>
-                </select>
+                <label className="block">
+                  <span className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Category</span>
+                  <select className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand">
+                    <option>Customer service</option><option>Product</option><option>Booking</option><option>Other</option>
+                  </select>
+                </label>
               </div>
             </div>
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Keywords (comma separated)</label>
-              <input placeholder="where is my order, track delivery, order status" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+              <label className="block">
+                <span className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Keywords (comma separated)</span>
+                <input placeholder="where is my order, track delivery, order status" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+              </label>
             </div>
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Maps to API endpoint</label>
-              <select className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand">
-                <option>GET /api/v1/orders/{'{id}'}/track</option>
-                <option>GET /api/v1/products</option>
-                <option>POST /api/v1/orders</option>
-                <option>None (static response)</option>
-              </select>
+              <label className="block">
+                <span className="text-[11px] font-bold uppercase tracking-[1px] text-text-muted block mb-1.5">Maps to API endpoint</span>
+                <select className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand">
+                  <option>GET /api/v1/orders/{'{id}'}/track</option>
+                  <option>GET /api/v1/products</option>
+                  <option>POST /api/v1/orders</option>
+                  <option>None (static response)</option>
+                </select>
+              </label>
             </div>
             <button className="flex items-center gap-1.5 px-4 py-2 rounded-sm text-xs font-bold bg-gradient-to-br from-brand to-brand-dark text-white">
               <Plus className="w-3 h-3" /> Add intent
@@ -425,12 +433,14 @@ function Step3DesignFlows() {
       </p>
 
       <div>
-        <label className="text-[11px] font-bold uppercase tracking-[1.2px] text-text-muted block mb-2">Describe your flow</label>
-        <textarea
-          rows={4}
-          placeholder="e.g. Main menu with: Browse Products, Track My Order, Book Appointment, and Talk to Support. When someone picks Track Order, ask for order number then call the tracking API."
-          className="w-full bg-glass-2 border-thin border-border-subtle rounded-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand resize-none leading-relaxed"
-        />
+        <label className="block">
+          <span className="text-[11px] font-bold uppercase tracking-[1.2px] text-text-muted block mb-2">Describe your flow</span>
+          <textarea
+            rows={4}
+            placeholder="e.g. Main menu with: Browse Products, Track My Order, Book Appointment, and Talk to Support. When someone picks Track Order, ask for order number then call the tracking API."
+            className="w-full bg-glass-2 border-thin border-border-subtle rounded-card px-4 py-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand resize-none leading-relaxed"
+          />
+        </label>
       </div>
 
       <button className="flex items-center gap-1.5 px-5 py-2 rounded-sm text-xs font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 transition-all">
@@ -540,24 +550,24 @@ function Step4SelectChannels() {
             <div className="space-y-2 mb-3">
               <div className="text-xs font-bold text-success">WhatsApp Business</div>
               <div className="grid grid-cols-2 gap-2">
-                <input placeholder="Phone number ID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
-                <input placeholder="Business Account ID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <input placeholder="Phone number ID" aria-label="Phone number ID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <input placeholder="Business Account ID" aria-label="Business Account ID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
               </div>
-              <input type="password" placeholder="Permanent access token" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+              <input type="password" placeholder="Permanent access token" aria-label="Permanent access token" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
             </div>
           )}
           {selected.has('web') && (
             <div className="space-y-2 mb-3">
               <div className="text-xs font-bold text-info">Web chat widget</div>
-              <input placeholder="Website URL (for CORS)" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+              <input placeholder="Website URL (for CORS)" aria-label="Website URL (for CORS)" className="w-full bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
             </div>
           )}
           {selected.has('sms') && (
             <div className="space-y-2">
               <div className="text-xs font-bold text-brand">SMS (Twilio)</div>
               <div className="grid grid-cols-2 gap-2">
-                <input placeholder="Twilio Account SID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
-                <input type="password" placeholder="Auth Token" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <input placeholder="Twilio Account SID" aria-label="Twilio Account SID" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
+                <input type="password" placeholder="Auth Token" aria-label="Auth Token" className="bg-glass-2 border-thin border-border-subtle rounded-xs px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
               </div>
             </div>
           )}

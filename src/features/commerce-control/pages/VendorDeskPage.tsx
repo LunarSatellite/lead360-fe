@@ -365,19 +365,19 @@ function ClientBookTab() {
           <input
             value={associate}
             onChange={(e) => setAssociate(e.target.value)}
-            placeholder="Associate account id"
+            placeholder="Associate account id" aria-label="Associate account id"
             className={`${field} font-mono`}
           />
           <input
             value={customer}
             onChange={(e) => setCustomer(e.target.value)}
-            placeholder="Customer account id"
+            placeholder="Customer account id" aria-label="Customer account id"
             className={`${field} font-mono`}
           />
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Note (optional)"
+            placeholder="Note (optional)" aria-label="Note (optional)"
             className={field}
           />
         </div>

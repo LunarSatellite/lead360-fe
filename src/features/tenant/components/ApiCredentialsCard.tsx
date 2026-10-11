@@ -168,7 +168,7 @@ function CredentialFields({
           <input
             id="f-headerName"
             className="form-input"
-            placeholder="X-API-Key"
+            placeholder="X-API-Key" aria-label="X-API-Key"
             autoComplete="off"
             {...register('headerName')}
           />
@@ -187,7 +187,7 @@ function CredentialFields({
           <input
             id="f-username"
             className={`form-input ${errors.username ? '!border-danger/60' : ''}`}
-            placeholder="username"
+            placeholder="username" aria-label="username"
             autoComplete="off"
             {...register('username')}
           />

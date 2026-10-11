@@ -304,7 +304,7 @@ function TicketDetail({
         value={reply}
         onChange={(event) => setReply(event.target.value)}
         rows={4}
-        placeholder="Write a reply to the customer…"
+        placeholder="Write a reply to the customer…" aria-label="Write a reply to the customer…"
         className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
       />
 

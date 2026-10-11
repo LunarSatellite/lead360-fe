@@ -130,7 +130,7 @@ function SimulationTab() {
           <input
             value={runId}
             onChange={(e) => setRunId(e.target.value)}
-            placeholder="Run id"
+            placeholder="Run id" aria-label="Run id"
             className="flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
           <Button

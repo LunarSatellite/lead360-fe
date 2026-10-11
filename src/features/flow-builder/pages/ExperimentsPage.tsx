@@ -112,12 +112,12 @@ function CreateForm({ onSave, onCancel, isSaving }: {
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
         <label className={labelCls}>Experiment Name *</label>
-        <input required value={form.name} onChange={set('name')} placeholder="Onboarding Flow Test" className={inputCls}
+        <input required value={form.name} onChange={set('name')} placeholder="Onboarding Flow Test" aria-label="Onboarding Flow Test" className={inputCls}
           style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
       </div>
       <div>
         <label className={labelCls}>Description</label>
-        <textarea rows={2} value={form.description} onChange={set('description')} placeholder="What are you testing and why?" className={`${inputCls} resize-none`}
+        <textarea rows={2} value={form.description} onChange={set('description')} placeholder="What are you testing and why?" aria-label="What are you testing and why?" className={`${inputCls} resize-none`}
           style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
       </div>
 
@@ -131,13 +131,13 @@ function CreateForm({ onSave, onCancel, isSaving }: {
         style={{ background: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
         <div>
           <label className={labelCls}>Control Flow ID *</label>
-          <input required value={form.controlFlowId} onChange={set('controlFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
+          <input required value={form.controlFlowId} onChange={set('controlFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" aria-label="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
           <p className="text-xs text-text-muted mt-1">The existing baseline flow</p>
         </div>
         <div>
           <label className={labelCls}>Challenger Flow ID *</label>
-          <input required value={form.challengerFlowId} onChange={set('challengerFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
+          <input required value={form.challengerFlowId} onChange={set('challengerFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" aria-label="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
           <p className="text-xs text-text-muted mt-1">The new variant to test</p>
         </div>

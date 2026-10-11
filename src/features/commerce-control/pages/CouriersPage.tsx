@@ -348,7 +348,7 @@ function CourierPanel({
               value={reason}
               onChange={(event) => setReason(event.target.value)}
               rows={2}
-              placeholder="Reason (required)"
+              placeholder="Reason (required)" aria-label="Reason (required)"
               className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
             />
           )}

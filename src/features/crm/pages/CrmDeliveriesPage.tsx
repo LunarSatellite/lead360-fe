@@ -105,10 +105,10 @@ export function Component() {
           <input
             value={search} onChange={e => setSearch(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && applyFilter()}
-            placeholder="Search shipment #, tracking #, carrier..."
+            placeholder="Search shipment #, tracking #, carrier..." aria-label="Search shipment #, tracking #, carrier..."
             className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow"
           />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
+          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Status</option>
             {Object.entries(CRM_DELIVERY_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -220,7 +220,7 @@ export function Component() {
                   </div>
                 ) : selected.status === 4 && (
                   <div className="space-y-2">
-                    <input value={podName} onChange={e => setPodName(e.target.value)} placeholder="Signed by name" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm" />
+                    <input value={podName} onChange={e => setPodName(e.target.value)} placeholder="Signed by name" aria-label="Signed by name" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm" />
                     <input type="file" accept="image/*" onChange={e => { if (e.target.files?.[0]) setPodSigFile(e.target.files[0]); }} className="text-xs text-text-muted" />
                     <input type="file" accept="image/*" onChange={e => { if (e.target.files?.[0]) setPodPhotoFile(e.target.files[0]); }} className="text-xs text-text-muted" />
                     <button onClick={handleRecordPOD} disabled={recordPOD.isPending || !podName.trim()}

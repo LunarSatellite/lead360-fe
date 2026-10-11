@@ -115,28 +115,28 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
             <Input
               value={form.transactionLabel}
               onChange={(v) => setForm({ ...form, transactionLabel: v })}
-              placeholder="Order / Appointment / Booking"
+              placeholder="Order / Appointment / Booking" aria-label="Order / Appointment / Booking"
             />
           </Field>
           <Field label="Internal type code">
             <Input
               value={form.transactionType}
               onChange={(v) => setForm({ ...form, transactionType: v.toLowerCase() })}
-              placeholder="order / appointment / booking"
+              placeholder="order / appointment / booking" aria-label="order / appointment / booking"
             />
           </Field>
           <Field label="What you call your catalog">
             <Input
               value={form.catalogLabel}
               onChange={(v) => setForm({ ...form, catalogLabel: v })}
-              placeholder="Products / Doctors / Rooms"
+              placeholder="Products / Doctors / Rooms" aria-label="Products / Doctors / Rooms"
             />
           </Field>
           <Field label="What you call one item">
             <Input
               value={form.itemLabel}
               onChange={(v) => setForm({ ...form, itemLabel: v })}
-              placeholder="Product / Doctor / Room"
+              placeholder="Product / Doctor / Room" aria-label="Product / Doctor / Room"
             />
           </Field>
         </div>
@@ -222,7 +222,7 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
             <Input
               value={form.notifyEmail ?? ''}
               onChange={(v) => setForm({ ...form, notifyEmail: v.trim() === '' ? null : v })}
-              placeholder="orders@yourbusiness.com"
+              placeholder="orders@yourbusiness.com" aria-label="orders@yourbusiness.com"
             />
           </Field>
           <Field label="Notify phone (optional)">

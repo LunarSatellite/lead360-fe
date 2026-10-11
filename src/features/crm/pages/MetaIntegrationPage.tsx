@@ -784,7 +784,7 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             <div className="relative">
               <input type={showToken ? 'text' : 'password'} value={form.accessToken}
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
-                placeholder="EAABsbCS..."
+                placeholder="EAABsbCS..." aria-label="EAABsbCS..."
                 className="w-full pl-3 pr-10 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               <button type="button" onClick={() => setShowToken(v => !v)}
@@ -1370,7 +1370,7 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
             <div className="relative">
               <input type={showToken ? 'text' : 'password'} value={form.accessToken}
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
-                placeholder="Enter your TikTok access token" className={inputCls + ' pr-10'} />
+                placeholder="Enter your TikTok access token" aria-label="Enter your TikTok access token" className={inputCls + ' pr-10'} />
               <button type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
@@ -1380,7 +1380,7 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
           <div>
             <label className={labelCls}>Business Name</label>
             <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-              placeholder="Your Business" className={inputCls} />
+              placeholder="Your Business" aria-label="Your Business" className={inputCls} />
           </div>
         </div>
         <div className="px-6 py-4 border-t border-border-subtle flex gap-3">

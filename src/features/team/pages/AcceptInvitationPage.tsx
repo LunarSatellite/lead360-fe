@@ -102,19 +102,25 @@ function AcceptForm({ invitation, token, email }: { invitation: TeamInvitationDt
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Email</label>
-          <input value={email} disabled className="w-full px-4 py-3 rounded-lg bg-glass-1 border border-border-subtle text-base text-text-muted cursor-not-allowed" />
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Email</span>
+            <input value={email} disabled className="w-full px-4 py-3 rounded-lg bg-glass-1 border border-border-subtle text-base text-text-muted cursor-not-allowed" />
+          </label>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">First name</label>
-            <input {...form.register('firstName')} placeholder="John" className={input} />
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">First name</span>
+              <input {...form.register('firstName')} placeholder="John" className={input} />
+            </label>
             {form.formState.errors.firstName && <p className="text-xs text-danger mt-1.5">{form.formState.errors.firstName.message}</p>}
           </div>
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Last name</label>
-            <input {...form.register('lastName')} placeholder="Doe" className={input} />
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Last name</span>
+              <input {...form.register('lastName')} placeholder="Doe" className={input} />
+            </label>
             {form.formState.errors.lastName && <p className="text-xs text-danger mt-1.5">{form.formState.errors.lastName.message}</p>}
           </div>
         </div>
@@ -122,7 +128,7 @@ function AcceptForm({ invitation, token, email }: { invitation: TeamInvitationDt
         <div>
           <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Password</label>
           <div className="relative">
-            <input {...form.register('password')} type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" className={`${input} pr-12`} />
+            <input {...form.register('password')} type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" aria-label="Min 8 characters" className={`${input} pr-12`} />
             <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary">
               {showPw ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
@@ -140,8 +146,10 @@ function AcceptForm({ invitation, token, email }: { invitation: TeamInvitationDt
         </div>
 
         <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Phone <span className="opacity-40">(optional)</span></label>
-          <input {...form.register('phone')} type="tel" placeholder="+254 712 345 678" className={input} />
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Phone <span className="opacity-40">(optional)</span></span>
+            <input {...form.register('phone')} type="tel" placeholder="+254 712 345 678" className={input} />
+          </label>
         </div>
 
         {accept.isError && (

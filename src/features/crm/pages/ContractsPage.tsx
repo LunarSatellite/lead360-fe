@@ -219,8 +219,8 @@ export function Component() {
                 </div>
                 {detailData?.status === CrmContractStatus.Draft && (
                   <div className="flex gap-1 mb-2">
-                    <input className="flex-1 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Name" value={sigForm.name} onChange={e => setSigForm(f => ({ ...f, name: e.target.value }))} />
-                    <input className="w-24 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Email" value={sigForm.email} onChange={e => setSigForm(f => ({ ...f, email: e.target.value }))} />
+                    <input className="flex-1 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Name" aria-label="Name" value={sigForm.name} onChange={e => setSigForm(f => ({ ...f, name: e.target.value }))} />
+                    <input className="w-24 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Email" aria-label="Email" value={sigForm.email} onChange={e => setSigForm(f => ({ ...f, email: e.target.value }))} />
                   </div>
                 )}
                 {sigs.length === 0 ? (
@@ -290,14 +290,14 @@ export function Component() {
           <form onSubmit={(e) => { e.preventDefault(); createTemplateMut.mutate({ ...templateForm, description: templateForm.description || undefined, subject: templateForm.subject || undefined }); }} className="w-full max-w-lg bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between"><h2 className="text-sm font-bold text-text-primary">{editTemplateId ? 'Edit' : 'New'} Template</h2>
               <button type="button" onClick={() => { setShowTemplateForm(false); setEditTemplateId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
-            <input className={inputCls} placeholder="Template name" value={templateForm.name} onChange={e => setTemplateForm(f => ({ ...f, name: e.target.value }))} required />
+            <input className={inputCls} placeholder="Template name" aria-label="Template name" value={templateForm.name} onChange={e => setTemplateForm(f => ({ ...f, name: e.target.value }))} required />
             <div className="grid grid-cols-2 gap-3">
               <select className={inputCls} value={templateForm.category} onChange={e => setTemplateForm(f => ({ ...f, category: Number(e.target.value) }))}>
                 {Object.entries(ContractTemplateCategory).filter(([k]) => isNaN(Number(k))).map(([k, v]) => (<option key={v} value={v}>{k}</option>))}
               </select>
-              <input className={inputCls} placeholder="Subject" value={templateForm.subject} onChange={e => setTemplateForm(f => ({ ...f, subject: e.target.value }))} />
+              <input className={inputCls} placeholder="Subject" aria-label="Subject" value={templateForm.subject} onChange={e => setTemplateForm(f => ({ ...f, subject: e.target.value }))} />
             </div>
-            <input className={inputCls} placeholder="Description" value={templateForm.description} onChange={e => setTemplateForm(f => ({ ...f, description: e.target.value }))} />
+            <input className={inputCls} placeholder="Description" aria-label="Description" value={templateForm.description} onChange={e => setTemplateForm(f => ({ ...f, description: e.target.value }))} />
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-text-muted">Body</span>
@@ -305,7 +305,7 @@ export function Component() {
                   {VARIABLE_HINTS.map(v => <button key={v} type="button" onClick={() => setTemplateForm(f => ({ ...f, bodyHtml: f.bodyHtml + v }))} className="px-1.5 py-0.5 rounded text-[10px] bg-glass-2 border border-border-subtle text-text-muted hover:text-brand">{v}</button>)}
                 </div>
               </div>
-              <textarea className={`${inputCls} min-h-[160px] font-mono text-xs`} value={templateForm.bodyHtml} onChange={e => setTemplateForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p>" />
+              <textarea className={`${inputCls} min-h-[160px] font-mono text-xs`} value={templateForm.bodyHtml} onChange={e => setTemplateForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p>" aria-label="<p>Hi {{ContactFirstName}},</p>" />
             </div>
             <Button type="submit" disabled={createTemplateMut.isPending || !templateForm.name.trim()} variant="primary" block>{editTemplateId ? 'Update' : 'Create'} Template</Button>
           </form>
@@ -357,19 +357,21 @@ export function Component() {
               {/* Template */}
               {templates.length > 0 && (
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Template</label>
-                  <div className="relative">
-                    <FileSignature className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <select
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      value={form.templateId}
-                      onChange={e => setForm(f => ({ ...f, templateId: e.target.value }))}
-                    >
-                      <option value="">No template</option>
-                      {templates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
-                    </select>
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Template</span>
+                    <div className="relative">
+                      <FileSignature className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                      <select
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                        value={form.templateId}
+                        onChange={e => setForm(f => ({ ...f, templateId: e.target.value }))}
+                      >
+                        <option value="">No template</option>
+                        {templates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                      </select>
+                    </div>
+                  </label>
                 </div>
               )}
 

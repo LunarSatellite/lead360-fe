@@ -423,54 +423,54 @@ function ProfileSection({ profile }: { profile: UserProfileDto }) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              First name
+            <label className="block">
+              <span className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">First name</span>
+              <input {...form.register('firstName')} placeholder="John" className="form-input" />
             </label>
-            <input {...form.register('firstName')} placeholder="John" className="form-input" />
           </div>
           <div>
-            <label className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-              Last name
+            <label className="block">
+              <span className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">Last name</span>
+              <input {...form.register('lastName')} placeholder="Doe" className="form-input" />
             </label>
-            <input {...form.register('lastName')} placeholder="Doe" className="form-input" />
           </div>
         </div>
 
         <div>
-          <label className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-            Email address
+          <label className="block">
+            <span className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">Email address</span>
+            <input
+              value={profile.email || ''}
+              disabled
+              className="form-input !border-border-subtle !text-text-muted !cursor-not-allowed"
+            />
           </label>
-          <input
-            value={profile.email || ''}
-            disabled
-            className="form-input !border-border-subtle !text-text-muted !cursor-not-allowed"
-          />
           <p className="text-[10px] text-text-secondary mt-1.5">
             Email cannot be changed. Contact support if needed.
           </p>
         </div>
 
         <div>
-          <label className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-            Phone number
+          <label className="block">
+            <span className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">Phone number</span>
+            <input
+              {...form.register('phone')}
+              type="tel"
+              placeholder="+254 712 345 678"
+              className="form-input"
+            />
           </label>
-          <input
-            {...form.register('phone')}
-            type="tel"
-            placeholder="+254 712 345 678"
-            className="form-input"
-          />
         </div>
 
         <div>
-          <label className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
-            Tenant
+          <label className="block">
+            <span className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">Tenant</span>
+            <input
+              value={profile.tenantName || ''}
+              disabled
+              className="form-input !border-border-subtle !text-text-muted !cursor-not-allowed"
+            />
           </label>
-          <input
-            value={profile.tenantName || ''}
-            disabled
-            className="form-input !border-border-subtle !text-text-muted !cursor-not-allowed"
-          />
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
@@ -674,7 +674,7 @@ function PasswordSection() {
               <input
                 {...form.register('currentPassword')}
                 type={showCurrent ? 'text' : 'password'}
-                placeholder="Enter current password"
+                placeholder="Enter current password" aria-label="Enter current password"
                 autoComplete="current-password"
                 className="form-input !pr-12 w-full"
               />
@@ -701,7 +701,7 @@ function PasswordSection() {
               <input
                 {...form.register('newPassword')}
                 type={showNew ? 'text' : 'password'}
-                placeholder="Min 8 characters"
+                placeholder="Min 8 characters" aria-label="Min 8 characters"
                 autoComplete="new-password"
                 className="form-input !pr-12 w-full"
               />
@@ -744,7 +744,7 @@ function PasswordSection() {
               <input
                 {...form.register('confirmPassword')}
                 type={showConfirm ? 'text' : 'password'}
-                placeholder="Re-enter new password"
+                placeholder="Re-enter new password" aria-label="Re-enter new password"
                 autoComplete="new-password"
                 className="form-input !pr-12 w-full"
               />

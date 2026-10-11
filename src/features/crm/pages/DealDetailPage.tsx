@@ -361,18 +361,26 @@ export function Component() {
         </div>
         {stratEdit ? (
           <div className="space-y-3">
-            <div><label className="text-xs text-text-muted block mb-1">Champion</label>
-              <input value={stratForm.champion ?? ''} onChange={e => setStratForm({ ...stratForm, champion: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who is our champion?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Competition</label>
-              <input value={stratForm.competition ?? ''} onChange={e => setStratForm({ ...stratForm, competition: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who are we competing against?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Win Plan</label>
-              <textarea value={stratForm.winPlan ?? ''} onChange={e => setStratForm({ ...stratForm, winPlan: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="How will we win?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Next Steps</label>
-              <textarea value={stratForm.nextSteps ?? ''} onChange={e => setStratForm({ ...stratForm, nextSteps: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="What are the next actions?" /></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Champion</span>
+  <input value={stratForm.champion ?? ''} onChange={e => setStratForm({ ...stratForm, champion: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who is our champion?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Competition</span>
+  <input value={stratForm.competition ?? ''} onChange={e => setStratForm({ ...stratForm, competition: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who are we competing against?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Win Plan</span>
+  <textarea value={stratForm.winPlan ?? ''} onChange={e => setStratForm({ ...stratForm, winPlan: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="How will we win?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Next Steps</span>
+  <textarea value={stratForm.nextSteps ?? ''} onChange={e => setStratForm({ ...stratForm, nextSteps: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="What are the next actions?" />
+</label></div>
           </div>
         ) : (
           <div className="space-y-2 text-sm">
@@ -466,12 +474,14 @@ export function Component() {
                 </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Account</label>
-                <select value={editForm.accountId ?? ''} onChange={e => setEditForm(f => ({ ...f, accountId: e.target.value || undefined }))}
-                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                  <option value="">— No account —</option>
-                  {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                </select>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Account</span>
+                  <select value={editForm.accountId ?? ''} onChange={e => setEditForm(f => ({ ...f, accountId: e.target.value || undefined }))}
+                    className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                    <option value="">— No account —</option>
+                    {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                  </select>
+                </label>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -483,11 +493,13 @@ export function Component() {
                   </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Currency</label>
-                  <select value={editForm.currency ?? 'USD'} onChange={e => setEditForm(f => ({ ...f, currency: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                    {['USD', 'EUR', 'GBP', 'INR', 'AUD', 'CAD'].map(c => <option key={c}>{c}</option>)}
-                  </select>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-muted mb-1.5">Currency</span>
+                    <select value={editForm.currency ?? 'USD'} onChange={e => setEditForm(f => ({ ...f, currency: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                      {['USD', 'EUR', 'GBP', 'INR', 'AUD', 'CAD'].map(c => <option key={c}>{c}</option>)}
+                    </select>
+                  </label>
                 </div>
               </div>
               <div>
@@ -578,8 +590,8 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
             <option value="">Select competitor</option>
             {allComps.filter((c: any) => !usedIds.has(c.id)).map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          <input value={ourS} onChange={e => setOurS(e.target.value)} placeholder="Our strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
-          <input value={theirS} onChange={e => setTheirS(e.target.value)} placeholder="Their strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
+          <input value={ourS} onChange={e => setOurS(e.target.value)} placeholder="Our strengths" aria-label="Our strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
+          <input value={theirS} onChange={e => setTheirS(e.target.value)} placeholder="Their strengths" aria-label="Their strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
           <Button onClick={() => compId && addMut.mutate()} disabled={addMut.isPending || !compId} variant="primary" block>
             {addMut.isPending ? 'Adding...' : 'Add to deal'}
           </Button>
@@ -645,7 +657,7 @@ function DealContactsSection({ dealId }: { dealId: string }) {
 
       {showAdd && (
         <div className="flex gap-2">
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." aria-label="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
           <select value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             {DEAL_CONTACT_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
           </select>

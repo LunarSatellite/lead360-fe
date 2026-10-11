@@ -98,7 +98,7 @@ export function HotSegmentsEditor({ trackId }: { trackId: string }) {
             min={0}
             value={start}
             onChange={(e) => setStart(Number(e.target.value))}
-            placeholder="Start s"
+            placeholder="Start s" aria-label="Start s"
             className={field}
           />
           <input

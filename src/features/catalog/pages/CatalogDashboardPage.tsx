@@ -817,7 +817,7 @@ function SyncDtl({
               <FF l="Product Endpoint Path" r>
                 <input
                   {...f.register('productEndpointPath')}
-                  placeholder="/api/products"
+                  placeholder="/api/products" aria-label="/api/products"
                   className="cfi font-mono"
                 />
               </FF>
@@ -845,7 +845,7 @@ function SyncDtl({
                 </select>
               </FF>
               <FF l="Data Array Path">
-                <input {...f.register('dataArrayPath')} placeholder="data" className="cfi font-mono" />
+                <input {...f.register('dataArrayPath')} placeholder="data" aria-label="data" className="cfi font-mono" />
               </FF>
               <div className="flex items-end pb-1">
                 <label className="flex items-center gap-2 cursor-pointer">

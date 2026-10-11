@@ -265,10 +265,10 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
               ) : (
                 <div className="rounded-xl border border-border-subtle bg-bg-elevated p-3 space-y-2">
                   <input value={ttId} onChange={e => setTtId(e.target.value)}
-                    placeholder="Advertiser ID"
+                    placeholder="Advertiser ID" aria-label="Advertiser ID"
                     className="w-full px-3 py-2 rounded-lg bg-bg-card border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
                   <input value={ttToken} onChange={e => setTtToken(e.target.value)}
-                    placeholder="Access Token" type="password"
+                    placeholder="Access Token" aria-label="Access Token" type="password"
                     className="w-full px-3 py-2 rounded-lg bg-bg-card border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
                   <Button onClick={() => ttConnect.mutate()}
                     disabled={ttConnect.isPending || !ttId || !ttToken}

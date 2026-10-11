@@ -279,7 +279,7 @@ function RulesPanel({ territory }: { territory: SalesTerritoryDto }) {
                 <option key={v} value={v} className="bg-bg">{TERRITORY_RULE_OPERATOR_LABEL[v as TerritoryRuleOperatorValue]}</option>
               ))}
             </select>
-            <input value={value} onChange={(e) => setValue(e.target.value)} placeholder="Value..." className={`${select} placeholder:text-text-muted`} />
+            <input value={value} onChange={(e) => setValue(e.target.value)} placeholder="Value..." aria-label="Value..." className={`${select} placeholder:text-text-muted`} />
           </div>
           <div className="flex gap-2 justify-end">
             <button type="button" onClick={() => setShowForm(false)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>

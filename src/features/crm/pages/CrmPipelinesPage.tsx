@@ -60,15 +60,17 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
 
       <div className="flex gap-2">
         <div className="flex-1">
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Type</label>
-          <select
-            value={gateType}
-            onChange={(e) => setGateType(Number(e.target.value) as StageGateType)}
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          >
-            <option value={StageGateType.ManualCheck}>{STAGE_GATE_TYPE_LABELS[StageGateType.ManualCheck]}</option>
-            <option value={StageGateType.RequiredField}>{STAGE_GATE_TYPE_LABELS[StageGateType.RequiredField]}</option>
-          </select>
+          <label className="block">
+            <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Type</span>
+            <select
+              value={gateType}
+              onChange={(e) => setGateType(Number(e.target.value) as StageGateType)}
+              className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              <option value={StageGateType.ManualCheck}>{STAGE_GATE_TYPE_LABELS[StageGateType.ManualCheck]}</option>
+              <option value={StageGateType.RequiredField}>{STAGE_GATE_TYPE_LABELS[StageGateType.RequiredField]}</option>
+            </select>
+          </label>
         </div>
         <label className="flex items-center gap-1.5 mt-5 cursor-pointer select-none">
           <input
@@ -83,27 +85,31 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
 
       {gateType === StageGateType.RequiredField ? (
         <div>
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Field</label>
-          <select
-            value={fieldName}
-            onChange={(e) => setFieldName(e.target.value)}
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          >
-            {allRequiredFields.map((f) => (
-              <option key={f.value} value={f.value}>{f.label}</option>
-            ))}
-          </select>
+          <label className="block">
+            <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Field</span>
+            <select
+              value={fieldName}
+              onChange={(e) => setFieldName(e.target.value)}
+              className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              {allRequiredFields.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </select>
+          </label>
         </div>
       ) : (
         <div>
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Label</label>
-          <input
-            autoFocus
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            placeholder="e.g. Contract signed"
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          />
+          <label className="block">
+            <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Label</span>
+            <input
+              autoFocus
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="e.g. Contract signed"
+              className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+          </label>
         </div>
       )}
 
@@ -291,23 +297,27 @@ function EditPipelineModal({ pipeline, onClose }: EditPipelineModalProps) {
         {/* Body */}
         <div className="px-6 py-5 space-y-4">
           <div>
-            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</label>
-            <input
-              autoFocus
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
-            />
+            <label className="block">
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</span>
+              <input
+                autoFocus
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+                className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+              />
+            </label>
           </div>
           <div>
-            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></label>
-            <input
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-              placeholder="Short description…"
-              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
-            />
+            <label className="block">
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></span>
+              <input
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Short description…"
+                className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+              />
+            </label>
           </div>
           <div>
             <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-2">Color</label>
@@ -493,24 +503,28 @@ function CreatePipelineModal({ onCreated, onCancel }: CreateFormProps) {
         {/* Body */}
         <div className="px-6 py-5 space-y-4">
           <div>
-            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</label>
-            <input
-              autoFocus
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-              placeholder="e.g. Sales Pipeline"
-              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
-            />
+            <label className="block">
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</span>
+              <input
+                autoFocus
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                placeholder="e.g. Sales Pipeline"
+                className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+              />
+            </label>
           </div>
           <div>
-            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></label>
-            <input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Short description…"
-              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
-            />
+            <label className="block">
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></span>
+              <input
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Short description…"
+                className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+              />
+            </label>
           </div>
           <div>
             <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-2">Color</label>

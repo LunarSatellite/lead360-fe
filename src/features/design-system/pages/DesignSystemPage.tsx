@@ -126,7 +126,7 @@ export function Component() {
                 aria-describedby={describedBy}
                 invalid={invalid}
                 icon={Building2}
-                placeholder="Acme Supplies Ltd."
+                placeholder="Acme Supplies Ltd." aria-label="Acme Supplies Ltd."
               />
             )}
           </Field>
@@ -148,7 +148,7 @@ export function Component() {
                 id={id}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Find a vendor"
+                placeholder="Find a vendor" aria-label="Find a vendor"
               />
             )}
           </Field>

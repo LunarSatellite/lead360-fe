@@ -235,7 +235,7 @@ function QuestionCard({
         <input
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
-          placeholder="Type your answer..."
+          placeholder="Type your answer..." aria-label="Type your answer..."
           className="form-input flex-1"
           disabled={submit.isPending}
         />

@@ -157,18 +157,18 @@ export function IntentBulkImportModal({ open, onClose, tenantId }: IntentBulkImp
 
           {/* Textarea */}
           <div>
-            <label className="text-2xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">
-              Or paste JSON array
+            <label className="block">
+              <span className="text-2xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Or paste JSON array</span>
+              <textarea
+                value={jsonData}
+                onChange={(e) => validateAndPreview(e.target.value)}
+                placeholder={
+                  '[\n  {\n    "name": "Track Order",\n    "operationType": 1,\n    "keywords": "track,order,delivery"\n  }\n]'
+                }
+                rows={8}
+                className="w-full px-4 py-3 rounded-lg bg-glass-2 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all resize-none font-mono text-2xs"
+              />
             </label>
-            <textarea
-              value={jsonData}
-              onChange={(e) => validateAndPreview(e.target.value)}
-              placeholder={
-                '[\n  {\n    "name": "Track Order",\n    "operationType": 1,\n    "keywords": "track,order,delivery"\n  }\n]'
-              }
-              rows={8}
-              className="w-full px-4 py-3 rounded-lg bg-glass-2 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all resize-none font-mono text-2xs"
-            />
           </div>
 
           {/* Preview / Error */}

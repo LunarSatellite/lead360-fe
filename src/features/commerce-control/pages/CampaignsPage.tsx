@@ -400,7 +400,7 @@ function CampaignEditor({
           <input
             value={form.slug}
             onChange={(e) => set('slug', e.target.value)}
-            placeholder="spring-drop"
+            placeholder="spring-drop" aria-label="spring-drop"
             className={inputClass}
           />
         </Field>
@@ -421,7 +421,7 @@ function CampaignEditor({
           <input
             value={form.eyebrow ?? ''}
             onChange={(e) => set('eyebrow', e.target.value)}
-            placeholder="Now in public beta"
+            placeholder="Now in public beta" aria-label="Now in public beta"
             className={inputClass}
           />
         </Field>
@@ -459,7 +459,7 @@ function CampaignEditor({
           <input
             value={form.collectionId ?? ''}
             onChange={(e) => set('collectionId', e.target.value || null)}
-            placeholder="GUID"
+            placeholder="GUID" aria-label="GUID"
             className={inputClass}
           />
         </Field>

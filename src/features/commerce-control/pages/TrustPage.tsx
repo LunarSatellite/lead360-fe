@@ -180,7 +180,7 @@ function VerificationPanel() {
       <input
         value={accountId}
         onChange={(e) => setAccountId(e.target.value)}
-        placeholder="Account id"
+        placeholder="Account id" aria-label="Account id"
         className={`mt-2 ${input}`}
       />
       <div className="mt-2 flex items-center gap-1.5">
@@ -241,7 +241,7 @@ function ReputationPanel() {
       <input
         value={accountId}
         onChange={(e) => setAccountId(e.target.value)}
-        placeholder="Account id"
+        placeholder="Account id" aria-label="Account id"
         className={input}
       />
       <select
@@ -312,13 +312,13 @@ function BadgePanel() {
       <input
         value={awardId}
         onChange={(e) => setAwardId(e.target.value)}
-        placeholder="Award id"
+        placeholder="Award id" aria-label="Award id"
         className={input}
       />
       <input
         value={reason}
         onChange={(e) => setReason(e.target.value)}
-        placeholder="Reason for revoking"
+        placeholder="Reason for revoking" aria-label="Reason for revoking"
         className={`mt-2 ${plain}`}
       />
       <label className="mt-2 flex items-center gap-2 text-[11px] text-text-muted">
@@ -394,7 +394,7 @@ function PassportPanel() {
       <input
         value={recordId}
         onChange={(e) => setRecordId(e.target.value)}
-        placeholder="Passport record id"
+        placeholder="Passport record id" aria-label="Passport record id"
         className={input}
       />
       <select
@@ -411,7 +411,7 @@ function PassportPanel() {
       <input
         value={method}
         onChange={(e) => setMethod(e.target.value)}
-        placeholder="How the check was carried out (required)"
+        placeholder="How the check was carried out (required)" aria-label="How the check was carried out (required)"
         className={`mt-2 ${plain}`}
       />
       <input

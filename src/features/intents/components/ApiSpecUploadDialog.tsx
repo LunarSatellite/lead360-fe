@@ -173,7 +173,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               <Field label="Description" error={pasteForm.formState.errors.description?.message}>
                 <textarea
                   {...pasteForm.register('description')}
-                  placeholder="Optional description..."
+                  placeholder="Optional description..." aria-label="Optional description..."
                   rows={2}
                   className="form-input resize-none"
                   disabled={isPending}
@@ -220,7 +220,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               <Field label="Description" error={fileForm.formState.errors.description?.message}>
                 <textarea
                   {...fileForm.register('description')}
-                  placeholder="Optional description..."
+                  placeholder="Optional description..." aria-label="Optional description..."
                   rows={2}
                   className="form-input resize-none"
                   disabled={isPending}

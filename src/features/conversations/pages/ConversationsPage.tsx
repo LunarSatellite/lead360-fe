@@ -295,7 +295,7 @@ function MessageViewer({ sessionId }: { sessionId: string }) {
             value={replyText}
             onChange={e => setReplyText(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendReply()}
-            placeholder="Type a reply to the customer..."
+            placeholder="Type a reply to the customer..." aria-label="Type a reply to the customer..."
             className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors"
           />
           <Button

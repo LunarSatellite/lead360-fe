@@ -92,17 +92,21 @@ export function Component() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-text-muted mb-1 block">Max Discount Bot Can Offer (%)</label>
-            <input type="number" min={0} max={100} value={settings.maxDiscountPercent ?? ''}
-              onChange={e => setSettings(s => ({ ...s, maxDiscountPercent: e.target.value ? Number(e.target.value) : null }))}
-              placeholder="e.g. 5" className={inputCls} />
+            <label className="block">
+              <span className="text-xs text-text-muted mb-1 block">Max Discount Bot Can Offer (%)</span>
+              <input type="number" min={0} max={100} value={settings.maxDiscountPercent ?? ''}
+                onChange={e => setSettings(s => ({ ...s, maxDiscountPercent: e.target.value ? Number(e.target.value) : null }))}
+                placeholder="e.g. 5" className={inputCls} />
+            </label>
             <p className="text-2xs text-text-muted mt-1">Requests above this → handoff</p>
           </div>
           <div>
-            <label className="text-xs text-text-muted mb-1 block">Max Order Amount Bot Can Handle</label>
-            <input type="number" min={0} value={settings.maxOrderAmount ?? ''}
-              onChange={e => setSettings(s => ({ ...s, maxOrderAmount: e.target.value ? Number(e.target.value) : null }))}
-              placeholder="e.g. 500000" className={inputCls} />
+            <label className="block">
+              <span className="text-xs text-text-muted mb-1 block">Max Order Amount Bot Can Handle</span>
+              <input type="number" min={0} value={settings.maxOrderAmount ?? ''}
+                onChange={e => setSettings(s => ({ ...s, maxOrderAmount: e.target.value ? Number(e.target.value) : null }))}
+                placeholder="e.g. 500000" className={inputCls} />
+            </label>
             <p className="text-2xs text-text-muted mt-1">Orders above this → handoff</p>
           </div>
         </div>
@@ -117,11 +121,13 @@ export function Component() {
         </div>
 
         <div>
-          <label className="text-xs text-text-muted mb-1 block">Custom Handoff Message</label>
-          <input value={settings.handoffMessage ?? ''}
-            onChange={e => setSettings(s => ({ ...s, handoffMessage: e.target.value || null }))}
-            placeholder="Let me connect you with our team..."
-            className={inputCls} />
+          <label className="block">
+            <span className="text-xs text-text-muted mb-1 block">Custom Handoff Message</span>
+            <input value={settings.handoffMessage ?? ''}
+              onChange={e => setSettings(s => ({ ...s, handoffMessage: e.target.value || null }))}
+              placeholder="Let me connect you with our team..."
+              className={inputCls} />
+          </label>
         </div>
 
         <div>
@@ -181,11 +187,13 @@ export function Component() {
             {expandedPlaybook === pi && (
               <div className="p-4 space-y-3 border-t border-border-subtle">
                 <div>
-                  <label className="text-xs text-text-muted mb-1 block">Trigger (when does this playbook fire?)</label>
-                  <input value={pb.trigger}
-                    onChange={e => updatePlaybook(pi, { trigger: e.target.value })}
-                    placeholder="e.g. customer asks for discount or lower price"
-                    className={inputCls} />
+                  <label className="block">
+                    <span className="text-xs text-text-muted mb-1 block">Trigger (when does this playbook fire?)</span>
+                    <input value={pb.trigger}
+                      onChange={e => updatePlaybook(pi, { trigger: e.target.value })}
+                      placeholder="e.g. customer asks for discount or lower price"
+                      className={inputCls} />
+                  </label>
                 </div>
 
                 <div>

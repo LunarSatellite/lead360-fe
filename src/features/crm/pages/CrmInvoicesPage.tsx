@@ -118,7 +118,7 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
           <select value={pauseReason} onChange={e => setPauseReason(Number(e.target.value) as DunningPauseReason)} className={selectCls}>
             {Object.entries(DUNNING_PAUSE_REASON_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <input type="date" value={pauseUntil} onChange={e => setPauseUntil(e.target.value)} className={inputCls} placeholder="Paused until (optional)" />
+          <input type="date" value={pauseUntil} onChange={e => setPauseUntil(e.target.value)} className={inputCls} placeholder="Paused until (optional)" aria-label="Paused until (optional)" />
           <button onClick={() => pause.mutate({ id: invoiceId, data: { reason: pauseReason, until: pauseUntil || undefined } }, { onSuccess: () => setShowPause(false) })}
             disabled={pause.isPending} className="w-full py-1.5 rounded-lg bg-warning text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
             {pause.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : 'Confirm Pause'}
@@ -365,8 +365,8 @@ export function Component() {
 
       <div className="flex gap-2">
         <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-          placeholder="Search invoices..." className={inputCls + ' flex-1'} />
-        <select className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
+          placeholder="Search invoices..." aria-label="Search invoices..." className={inputCls + ' flex-1'} />
+        <select aria-label="Filter by status" className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
           <option value="">All Statuses</option>
           {Object.entries(CRM_INVOICE_STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
@@ -465,7 +465,7 @@ export function Component() {
                 <input type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} />
               </Field>
               <Field label="Notes">
-                <textarea value={payNotes} onChange={e => setPayNotes(e.target.value)} rows={2} className={inputCls} placeholder="Optional notes..." />
+                <textarea value={payNotes} onChange={e => setPayNotes(e.target.value)} rows={2} className={inputCls} placeholder="Optional notes..." aria-label="Optional notes..." />
               </Field>
               <button onClick={handleRecordPayment} disabled={recordPayment.isPending || !payAmount}
                 className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-success-soft text-success text-sm font-bold hover:bg-success hover:text-bg disabled:opacity-60 transition-all border border-success">
@@ -536,7 +536,7 @@ export function Component() {
                   </select>
                 </Field>
                 <Field label="Reason">
-                  <textarea value={cnReason} onChange={e => setCnReason(e.target.value)} rows={2} className={inputCls} placeholder="Why is this credit note being issued?" />
+                  <textarea value={cnReason} onChange={e => setCnReason(e.target.value)} rows={2} className={inputCls} placeholder="Why is this credit note being issued?" aria-label="Why is this credit note being issued?" />
                 </Field>
                 <Button onClick={handleIssueCreditNote} disabled={issueCreditNote.isPending || !cnAmount || !cnReason.trim()}
                   variant="primary" block>

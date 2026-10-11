@@ -130,8 +130,8 @@ export function Component() {
 
         <div className="flex gap-2 flex-wrap">
           <input value={poFilter} onChange={e => setPoFilter(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, purchaseOrderId: poFilter.trim() || undefined, page: 1 }))}
-            placeholder="Filter by PO ID..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+            placeholder="Filter by PO ID..." aria-label="Filter by PO ID..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(GR_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -202,11 +202,11 @@ export function Component() {
           </div>
 
           <Field label="Purchase Order ID *">
-            <Input icon={Hash} required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" style={inputStyle} />
+            <Input icon={Hash} required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" aria-label="po-uuid" style={inputStyle} />
           </Field>
 
           <Field label="Warehouse Location">
-            <Input icon={MapPin} value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..." style={inputStyle} />
+            <Input icon={MapPin} value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..." aria-label="Warehouse A, Bay 3..." style={inputStyle} />
           </Field>
 
           {/* ── Received Items ── */}
@@ -226,13 +226,13 @@ export function Component() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="relative">
                       <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                      <input value={l.poLineItemId} onChange={e => setLine(i, 'poLineItemId', e.target.value)} placeholder="PO Line Item ID"
+                      <input value={l.poLineItemId} onChange={e => setLine(i, 'poLineItemId', e.target.value)} placeholder="PO Line Item ID" aria-label="PO Line Item ID"
                         className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
                     <div className="relative">
                       <Package className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                      <input type="number" min="0" value={l.quantityReceived} onChange={e => setLine(i, 'quantityReceived', e.target.value)} placeholder="Qty received"
+                      <input type="number" min="0" value={l.quantityReceived} onChange={e => setLine(i, 'quantityReceived', e.target.value)} placeholder="Qty received" aria-label="Qty received"
                         className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
@@ -290,7 +290,7 @@ export function Component() {
                     {Number(l.condition) === GoodsCondition.Rejected && (
                       <div className="relative">
                         <XCircle className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                        <input type="number" min="0" value={l.rejectedQty} onChange={e => setLine(i, 'rejectedQty', e.target.value)} placeholder="Rejected qty"
+                        <input type="number" min="0" value={l.rejectedQty} onChange={e => setLine(i, 'rejectedQty', e.target.value)} placeholder="Rejected qty" aria-label="Rejected qty"
                           className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                           style={inputStyle} />
                       </div>
@@ -299,7 +299,7 @@ export function Component() {
                   {Number(l.condition) !== GoodsCondition.Good && (
                     <div className="relative">
                       <FileText className="absolute left-2.5 top-3 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                      <input value={l.rejectionReason} onChange={e => setLine(i, 'rejectionReason', e.target.value)} placeholder="Rejection/damage reason"
+                      <input value={l.rejectionReason} onChange={e => setLine(i, 'rejectionReason', e.target.value)} placeholder="Rejection/damage reason" aria-label="Rejection/damage reason"
                         className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
@@ -315,7 +315,7 @@ export function Component() {
           <Field label="Notes">
             <div className="relative">
               <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Delivery notes, carrier info, exceptions…"
+              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Delivery notes, carrier info, exceptions…" aria-label="Delivery notes, carrier info, exceptions…"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={inputStyle} />
             </div>

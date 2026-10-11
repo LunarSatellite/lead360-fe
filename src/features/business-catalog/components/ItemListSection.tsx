@@ -100,14 +100,14 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
               setSearch(e.target.value);
               setPage(1);
             }}
-            placeholder="Search name, description, tags…"
+            placeholder="Search name, description, tags…" aria-label="Search name, description, tags…"
             className="bg-transparent text-xs text-text-primary placeholder:text-text-muted
                        focus:outline-none flex-1 min-w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />
         </div>
         {/* Only show the category dropdown when NOT drilled in from a specific category */}
         {!selectedCategory && (
-          <select
+          <select aria-label="Filter by category"
             value={categoryFilter}
             onChange={(e) => {
               setCategoryFilter(e.target.value);
@@ -124,7 +124,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
             ))}
           </select>
         )}
-        <select
+        <select aria-label="Filter by status"
           value={availableOnly === null ? '' : availableOnly ? 'yes' : 'no'}
           onChange={(e) => {
             const v = e.target.value;

@@ -164,7 +164,7 @@ function PublicSchedulePage() {
             </div>
             <input
               required
-              placeholder="Your full name"
+              placeholder="Your full name" aria-label="Your full name"
               value={name}
               onChange={e => setName(e.target.value)}
               className={inputCls}
@@ -172,7 +172,7 @@ function PublicSchedulePage() {
             <input
               required
               type="email"
-              placeholder="Your email address"
+              placeholder="Your email address" aria-label="Your email address"
               value={email}
               onChange={e => setEmail(e.target.value)}
               className={inputCls}

@@ -207,13 +207,15 @@ function NewSupplierInvoiceSlideOver({
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea value={form.notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Invoice notes, payment terms reminder…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={inputStyle} />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
+              <div className="relative">
+                <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <textarea value={form.notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Invoice notes, payment terms reminder…"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                  style={inputStyle} />
+              </div>
+            </label>
           </div>
           </form>
         </div>
@@ -310,7 +312,7 @@ export function Component() {
         </div>
 
         <div className="flex gap-2">
-          <select value={statusF} onChange={e => { setStatusF(e.target.value); setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as SupplierInvoiceStatus : undefined, page: 1 })); }} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none w-48 focus-visible:ring-2 focus-visible:ring-brand/60">
+          <select aria-label="Filter by status" value={statusF} onChange={e => { setStatusF(e.target.value); setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as SupplierInvoiceStatus : undefined, page: 1 })); }} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none w-48 focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Statuses</option>
             {Object.entries(SI_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -447,7 +449,7 @@ export function Component() {
       <SlideOver open={showPay} onClose={() => setShowPay(false)} title="Record Payment">
         <form onSubmit={handlePay} className="space-y-4">
           {selected && <p className="text-sm text-text-muted">Invoice <span className="font-semibold text-text-primary">{selected.invoiceNumber}</span> — {selected.currency} {selected.totalAmount.toLocaleString()}</p>}
-          <Field label="Payment Reference"><input value={payRef} onChange={e => setPayRef(e.target.value)} placeholder="Bank ref, cheque no..." className={inputCls} /></Field>
+          <Field label="Payment Reference"><input value={payRef} onChange={e => setPayRef(e.target.value)} placeholder="Bank ref, cheque no..." aria-label="Bank ref, cheque no..." className={inputCls} /></Field>
           <Field label="Paid At"><input type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} /></Field>
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={paySI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
@@ -462,7 +464,7 @@ export function Component() {
       <SlideOver open={showDispute} onClose={() => setShowDispute(false)} title="Dispute Invoice">
         <form onSubmit={handleDispute} className="space-y-4">
           {selected && <p className="text-sm text-text-muted">Invoice <span className="font-semibold text-text-primary">{selected.invoiceNumber}</span></p>}
-          <Field label="Dispute Reason *"><textarea required value={disputeReason} onChange={e => setDisputeReason(e.target.value)} rows={4} className={`${inputCls} resize-none`} placeholder="Describe the dispute..." /></Field>
+          <Field label="Dispute Reason *"><textarea required value={disputeReason} onChange={e => setDisputeReason(e.target.value)} rows={4} className={`${inputCls} resize-none`} placeholder="Describe the dispute..." aria-label="Describe the dispute..." /></Field>
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={disputeSI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-warning text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {disputeSI.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Dispute'}

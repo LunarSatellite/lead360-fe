@@ -109,7 +109,7 @@ describe('defects that must not come back', () => {
      * label does not focus the field. Every styled form label in this admin
      * was one — 503 at the start.
      *
-     * 206 are fixed, by nesting the control inside the label, which
+     * 318 are fixed, by nesting the control inside the label, which
      * associates them implicitly and needs no ids. `htmlFor`/`id` would have
      * to invent ids, and a static one collides the moment a component
      * renders twice on a page.
@@ -123,7 +123,7 @@ describe('defects that must not come back', () => {
      *
      * Lower it when you fix some. It may not go up.
      */
-    const BUDGET_ORPHAN_LABELS = 297;
+    const BUDGET_ORPHAN_LABELS = 185;
     const orphans: string[] = [];
 
     for (const [file, source] of Object.entries(TSX)) {
@@ -147,6 +147,44 @@ describe('defects that must not come back', () => {
         ? 'a new label names nothing — wrap the control in it, or use Field from @/shared/ui/primitives'
         : `${BUDGET_ORPHAN_LABELS - orphans.length} fewer than the budget — lower BUDGET_ORPHAN_LABELS to ${orphans.length}`,
     ).toBe(BUDGET_ORPHAN_LABELS);
+  });
+
+  it('adds no new control that nothing names', () => {
+    /**
+     * A control outside any label, with no `aria-label` and nothing else to
+     * name it, is announced as just "textbox". There were 775; 329 of them
+     * had a placeholder that reads as a prompt rather than a sample value,
+     * and `aria-label` from that is the right fix for a toolbar search box
+     * or a filter, which has no visible label by design.
+     *
+     * A budget again: 400 are left, and they are the ones with no
+     * placeholder to take a name from. Each needs someone to decide what the
+     * control is for, which is not something a script can read off the page.
+     */
+    const BUDGET_UNNAMED_CONTROLS = 400;
+    const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
+    let unnamed = 0;
+
+    for (const source of Object.values(TSX)) {
+      const spans: [number, number][] = [];
+      for (let at = source.indexOf('<label'); at !== -1; at = source.indexOf('<label', at + 1)) {
+        const close = source.indexOf('</label>', at);
+        if (close !== -1) spans.push([at, close]);
+      }
+
+      for (const m of source.matchAll(CONTROL)) {
+        const at = m.index ?? 0;
+        if (spans.some(([a, b]) => a < at && at < b)) continue;
+        if (!/\baria-label(?:ledby)?\b/.test(openingTag(source, at))) unnamed += 1;
+      }
+    }
+
+    expect(
+      unnamed,
+      unnamed > BUDGET_UNNAMED_CONTROLS
+        ? 'a new control has nothing to name it — give it a label, or an aria-label'
+        : `${BUDGET_UNNAMED_CONTROLS - unnamed} fewer — lower BUDGET_UNNAMED_CONTROLS to ${unnamed}`,
+    ).toBe(BUDGET_UNNAMED_CONTROLS);
   });
 
   it('never removes the focus outline without putting one back', () => {

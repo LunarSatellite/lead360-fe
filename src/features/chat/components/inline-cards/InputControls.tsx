@@ -241,7 +241,7 @@ function RadioControl({ card, onSubmit, consumed }: ControlProps<RadioCard>) {
                     setOtherText(e.target.value);
                     setError(null);
                   }}
-                  placeholder="Describe your answer…"
+                  placeholder="Describe your answer…" aria-label="Describe your answer…"
                   autoFocus
                   className="w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm"
                 />
@@ -342,7 +342,7 @@ function DropdownControl({ card, onSubmit, consumed }: ControlProps<DropdownCard
               setOtherText(e.target.value);
               setError(null);
             }}
-            placeholder="Describe your answer…"
+            placeholder="Describe your answer…" aria-label="Describe your answer…"
             autoFocus
             className="mt-2 w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm"
           />
@@ -498,7 +498,7 @@ function MultiSelectControl({ card, onSubmit, consumed }: ControlProps<MultiSele
                   type="text"
                   value={otherText}
                   onChange={(e) => { setOtherText(e.target.value); setError(null); }}
-                  placeholder="Describe your answer…"
+                  placeholder="Describe your answer…" aria-label="Describe your answer…"
                   autoFocus
                   className="w-full px-3.5 py-2.5 rounded-sm bg-glass-1 border border-border-medium text-text-primary placeholder:text-text-muted focus:border-border-glow outline-none transition-all text-sm"
                 />

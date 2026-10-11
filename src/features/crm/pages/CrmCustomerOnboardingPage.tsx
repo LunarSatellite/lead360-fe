@@ -126,7 +126,7 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
                 </button>
               ) : (
                 <>
-                  <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
+                  <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." aria-label="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
                   <button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-danger-soft border border-danger/20 text-danger hover:opacity-80">
                     Set Blocked
                   </button>
@@ -265,7 +265,7 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(CRM_ONBOARDING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -353,10 +353,10 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Deal ID *">
-              <Input icon={Hash} required value={dealId} onChange={e => setDealId(e.target.value)} placeholder="deal-uuid" style={inputStyle} />
+              <Input icon={Hash} required value={dealId} onChange={e => setDealId(e.target.value)} placeholder="deal-uuid" aria-label="deal-uuid" style={inputStyle} />
             </Field>
             <Field label="Contact ID *">
-              <Input icon={User} required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" style={inputStyle} />
+              <Input icon={User} required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" style={inputStyle} />
             </Field>
           </div>
 
@@ -377,7 +377,7 @@ export function Component() {
             <div className="space-y-2">
               {milestones.map((m, i) => (
                 <div key={i} className="grid grid-cols-[1fr_1fr_28px] gap-1.5 items-center">
-                  <input value={m.title} onChange={e => setMs(i, 'title', e.target.value)} placeholder="Milestone title"
+                  <input value={m.title} onChange={e => setMs(i, 'title', e.target.value)} placeholder="Milestone title" aria-label="Milestone title"
                     className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={inputStyle} />
                   <input type="date" value={m.dueDate} onChange={e => setMs(i, 'dueDate', e.target.value)}

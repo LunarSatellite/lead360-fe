@@ -156,7 +156,7 @@ export function CopilotPanel() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
-              placeholder="Ask the copilot…"
+              placeholder="Ask the copilot…" aria-label="Ask the copilot…"
               rows={1}
               disabled={streaming}
               className="flex-1 resize-none px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors disabled:opacity-50 max-h-32"

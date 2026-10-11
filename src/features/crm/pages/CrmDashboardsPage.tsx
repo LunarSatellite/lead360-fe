@@ -82,12 +82,16 @@ function CreateDashboardForm({ onDone, onCancel }: { onDone: () => void; onCance
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Name</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sales Overview" className={inputCls} />
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Name</span>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sales Overview" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Description <span className="opacity-40">(optional)</span></label>
-          <input value={description} onChange={(e) => setDescription(e.target.value)} className={inputCls} />
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Description <span className="opacity-40">(optional)</span></span>
+            <input value={description} onChange={(e) => setDescription(e.target.value)} className={inputCls} />
+          </label>
         </div>
         <div className="flex justify-end gap-3">
           <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary">Cancel</button>
@@ -265,31 +269,39 @@ function AddWidgetForm({ dashboardId, existingWidgets, onDone, onCancel }: {
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">
-              <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Title</label>
-              <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Open deals" className={inputCls} />
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Title</span>
+                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Open deals" className={inputCls} />
+              </label>
             </div>
             <div>
-              <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Widget type</label>
-              <select value={widgetType} onChange={(e) => setWidgetType(e.target.value)} className={selectCls}>
-                {WIDGET_TYPES.map((t) => <option key={t} value={t} className="bg-bg">{t}</option>)}
-              </select>
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Widget type</span>
+                <select value={widgetType} onChange={(e) => setWidgetType(e.target.value)} className={selectCls}>
+                  {WIDGET_TYPES.map((t) => <option key={t} value={t} className="bg-bg">{t}</option>)}
+                </select>
+              </label>
             </div>
           </div>
           {source === 'report' ? (
             <div>
-              <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Report</label>
-              <select value={reportId} onChange={(e) => setReportId(e.target.value)} className={selectCls}>
-                <option value="" className="bg-bg">Select a saved report...</option>
-                {reports.map((r) => <option key={r.id} value={r.id} className="bg-bg">{r.name}</option>)}
-              </select>
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Report</span>
+                <select value={reportId} onChange={(e) => setReportId(e.target.value)} className={selectCls}>
+                  <option value="" className="bg-bg">Select a saved report...</option>
+                  {reports.map((r) => <option key={r.id} value={r.id} className="bg-bg">{r.name}</option>)}
+                </select>
+              </label>
             </div>
           ) : (
             <div>
-              <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Metric</label>
-              <select value={metricKey} onChange={(e) => setMetricKey(e.target.value)} className={selectCls}>
-                <option value="" className="bg-bg">Select a built-in metric...</option>
-                {metrics.map((m) => <option key={m.key} value={m.key} className="bg-bg">{m.label}</option>)}
-              </select>
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Metric</span>
+                <select value={metricKey} onChange={(e) => setMetricKey(e.target.value)} className={selectCls}>
+                  <option value="" className="bg-bg">Select a built-in metric...</option>
+                  {metrics.map((m) => <option key={m.key} value={m.key} className="bg-bg">{m.label}</option>)}
+                </select>
+              </label>
             </div>
           )}
           <div className="flex justify-end gap-3">

@@ -96,25 +96,29 @@ export function Component() {
         {/* First + Last name — stacks on mobile */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">First name</label>
-            <input
-              {...form.register('firstName')}
-              placeholder="John"
-              autoComplete="given-name"
-              className={inputCls}
-            />
+            <label className="block">
+              <span className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">First name</span>
+              <input
+                {...form.register('firstName')}
+                placeholder="John"
+                autoComplete="given-name"
+                className={inputCls}
+              />
+            </label>
             {form.formState.errors.firstName && (
               <p className="text-xs text-danger mt-1.5">{form.formState.errors.firstName.message}</p>
             )}
           </div>
           <div>
-            <label className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">Last name</label>
-            <input
-              {...form.register('lastName')}
-              placeholder="Doe"
-              autoComplete="family-name"
-              className={inputCls}
-            />
+            <label className="block">
+              <span className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">Last name</span>
+              <input
+                {...form.register('lastName')}
+                placeholder="Doe"
+                autoComplete="family-name"
+                className={inputCls}
+              />
+            </label>
             {form.formState.errors.lastName && (
               <p className="text-xs text-danger mt-1.5">{form.formState.errors.lastName.message}</p>
             )}
@@ -122,15 +126,17 @@ export function Component() {
         </div>
 
         <div>
-          <label className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">Email</label>
-          <input
-            {...form.register('email')}
-            type="email"
-            placeholder="you@company.com"
-            autoComplete="email"
-            inputMode="email"
-            className={inputCls}
-          />
+          <label className="block">
+            <span className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">Email</span>
+            <input
+              {...form.register('email')}
+              type="email"
+              placeholder="you@company.com"
+              autoComplete="email"
+              inputMode="email"
+              className={inputCls}
+            />
+          </label>
           {form.formState.errors.email && (
             <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
           )}
@@ -142,7 +148,7 @@ export function Component() {
             <input
               {...form.register('password')}
               type={showPw ? 'text' : 'password'}
-              placeholder="Min 8 characters"
+              placeholder="Min 8 characters" aria-label="Min 8 characters"
               autoComplete="new-password"
               className={`${inputCls} pr-12`}
             />
@@ -183,7 +189,7 @@ export function Component() {
             <input
               {...form.register('confirmPassword')}
               type={showConfirmPw ? 'text' : 'password'}
-              placeholder="Re-enter your password"
+              placeholder="Re-enter your password" aria-label="Re-enter your password"
               autoComplete="new-password"
               className={`${inputCls} pr-12`}
             />
@@ -202,17 +208,17 @@ export function Component() {
         </div>
 
         <div>
-          <label className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">
-            Phone <span className="text-text-muted font-normal">(optional)</span>
+          <label className="block">
+            <span className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">Phone <span className="text-text-muted font-normal">(optional)</span></span>
+            <input
+              {...form.register('phone')}
+              type="tel"
+              placeholder="+254 712 345 678"
+              autoComplete="tel"
+              inputMode="tel"
+              className={inputCls}
+            />
           </label>
-          <input
-            {...form.register('phone')}
-            type="tel"
-            placeholder="+254 712 345 678"
-            autoComplete="tel"
-            inputMode="tel"
-            className={inputCls}
-          />
         </div>
 
         {/* Error */}

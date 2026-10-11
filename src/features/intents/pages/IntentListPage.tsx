@@ -111,7 +111,7 @@ export function Component() {
         <div className="relative" style={{ width: 200 }}>
           <Search className="absolute left-3 top-1/2 -translate-y-1/2" style={{ width: 14, height: 14, color: 'rgb(var(--color-text-muted))' }} strokeWidth={1.5} />
           <input value={searchFilter} onChange={e => setSearchFilter(e.target.value)}
-            placeholder="Search intents..."
+            placeholder="Search intents..." aria-label="Search intents..."
             className="w-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
             style={{ padding: '8px 12px 8px 32px', borderRadius: 10, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-glass-2))' }} />
           {searchFilter && <button onClick={() => setSearchFilter('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X style={{ width: 12, height: 12, color: 'rgb(var(--color-text-muted))' }} strokeWidth={2} /></button>}

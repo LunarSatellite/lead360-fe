@@ -280,7 +280,7 @@ export function Component() {
               id="approval-note"
               {...form.register('note')}
               rows={3}
-              placeholder="Anything the team should know about this decision…"
+              placeholder="Anything the team should know about this decision…" aria-label="Anything the team should know about this decision…"
               className="w-full px-3.5 py-2.5 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all resize-none"
             />
             {form.formState.errors.note && (

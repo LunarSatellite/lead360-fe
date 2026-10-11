@@ -33,7 +33,7 @@ export function SearchTestPanel() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Type a customer message to test search..."
+              placeholder="Type a customer message to test search..." aria-label="Type a customer message to test search..."
               className="w-full pl-10 pr-4 py-2.5 rounded-lg bg-glass-1 border border-border-subtle text-[14px] text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all"
             />
           </div>

@@ -194,12 +194,14 @@ function ApproveDialog({ suggestion, onClose }: { suggestion: SuggestionDto; onC
             </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Operation Type</label>
-            <select {...form.register('operationType')} className="form-input appearance-none cursor-pointer">
-              {['ApiCall','ProductSearch','CategoryBrowse','StaticResponse','AgentHandoff','MenuNavigation','OutboundAction','DomainConversation'].map(t => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Operation Type</span>
+              <select {...form.register('operationType')} className="form-input appearance-none cursor-pointer">
+                {['ApiCall','ProductSearch','CategoryBrowse','StaticResponse','AgentHandoff','MenuNavigation','OutboundAction','DomainConversation'].map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all">Cancel</button>

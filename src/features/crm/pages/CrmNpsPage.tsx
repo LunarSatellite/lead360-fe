@@ -208,13 +208,15 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Custom Message</label>
-        <div className="relative">
-          <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <textarea rows={3} value={form.customMessage ?? ''} onChange={set('customMessage')} placeholder="How was your experience?"
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-            style={inputStyle} />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Custom Message</span>
+          <div className="relative">
+            <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <textarea rows={3} value={form.customMessage ?? ''} onChange={set('customMessage')} placeholder="How was your experience?"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+              style={inputStyle} />
+          </div>
+        </label>
       </div>
     </form>
   );
@@ -260,10 +262,10 @@ export function Component() {
         <input
           value={filter.search ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, search: e.target.value || undefined }))}
-          placeholder="Search contacts…"
+          placeholder="Search contacts…" aria-label="Search contacts…"
           className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium w-56"
         />
-        <select
+        <select aria-label="Filter by classification"
           value={filter.classification ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, classification: e.target.value ? Number(e.target.value) as CrmNpsClassification : undefined }))}
           className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"

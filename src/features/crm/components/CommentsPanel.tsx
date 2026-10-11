@@ -107,7 +107,7 @@ export function CommentsPanel({ kind, entityId }: { kind: number; entityId: stri
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Write a comment…"
+          placeholder="Write a comment…" aria-label="Write a comment…"
           rows={2}
           className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium resize-none"
         />

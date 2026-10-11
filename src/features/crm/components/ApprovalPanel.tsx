@@ -24,12 +24,12 @@ function ReviewModal({ mode, approvalId, onClose }: {
           <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated"><X className="w-4 h-4" /></button>
         </div>
         <div>
-          <label className="text-xs text-text-muted font-semibold uppercase tracking-wide block mb-1.5">
-            Comment {mode === 'reject' ? '(required)' : '(optional)'}
+          <label className="block">
+            <span className="text-xs text-text-muted font-semibold uppercase tracking-wide block mb-1.5">Comment {mode === 'reject' ? '(required)' : '(optional)'}</span>
+            <textarea autoFocus value={comment} onChange={e => setComment(e.target.value)} rows={3}
+              placeholder={mode === 'approve' ? 'Add a note…' : 'Reason for rejection…'}
+              className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-input text-text-primary focus:outline-none focus:ring-1 focus:ring-brand resize-none" />
           </label>
-          <textarea autoFocus value={comment} onChange={e => setComment(e.target.value)} rows={3}
-            placeholder={mode === 'approve' ? 'Add a note…' : 'Reason for rejection…'}
-            className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-input text-text-primary focus:outline-none focus:ring-1 focus:ring-brand resize-none" />
         </div>
         <div className="flex gap-2 justify-end">
           <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>

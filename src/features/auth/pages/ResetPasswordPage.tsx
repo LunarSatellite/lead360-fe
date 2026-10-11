@@ -51,7 +51,7 @@ export function Component() {
         <div>
           <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">New password</label>
           <div className="relative">
-            <input {...form.register('newPassword')} type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" autoComplete="new-password"
+            <input {...form.register('newPassword')} type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" aria-label="Min 8 characters" autoComplete="new-password"
               className="w-full px-4 py-3 pr-12 rounded-lg bg-glass-2 border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all" />
             <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary">
               {showPw ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}

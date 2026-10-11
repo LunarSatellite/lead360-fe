@@ -63,6 +63,7 @@ import {
   RefreshCw,
   RotateCw,
   Route,
+  Palette,
   ScrollText,
   Send,
   Settings,
@@ -464,6 +465,7 @@ export const navGroups: NavGroup[] = [
       { label: 'Video conferencing', href: '/dashboard/settings/video-conferencing', icon: Video },
       { label: 'Calendar', href: '/dashboard/settings/calendar', icon: CalendarDays },
       { label: 'Booking page', href: '/dashboard/settings/booking-page', icon: CalendarCheck },
+      { label: 'Design system', href: '/dashboard/design-system', icon: Palette },
     ],
   },
   {

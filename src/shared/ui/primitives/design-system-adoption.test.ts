@@ -184,10 +184,7 @@ describe('migration to the shared primitives', () => {
      * regex stopped at the `>` inside `onClick={() => …}` and never reached
      * className — a very convincing way to look finished.
      */
-    const usages = Object.values(TSX).reduce(
-      (n, source) => n + (source.match(/<Button\b/g) ?? []).length,
-      0,
-    );
+    const usages = Object.values(TSX).reduce((n, source) => n + (source.match(/<Button\b/g) ?? []).length, 0);
     expect(usages).toBeGreaterThan(300);
   });
 });

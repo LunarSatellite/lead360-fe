@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Search } from 'lucide-react';
-import { Button } from './Button';
+import { Search, Trash2 } from 'lucide-react';
+import { Button, IconButton } from './Button';
 import { Field, Input, SearchInput } from './Field';
 import { Badge, Card, EmptyState, PageHeader } from './Surface';
 
@@ -69,6 +69,29 @@ describe('Button', () => {
     expect(screen.getByRole('button', { name: 'Wide' }).className).toContain('w-64');
   });
 
+  it('reserves the same box on every variant, bordered or not', () => {
+    /**
+     * A bordered variant beside an unbordered one is 2px taller, and a
+     * toolbar mixing them does not line up. Measured in a browser before the
+     * fix: a `md` primary was 34px and a `md` secondary 35.33px.
+     *
+     * jsdom computes no layout, so this asserts the cause rather than the
+     * height: every variant declares a border width, and only the colour
+     * differs.
+     */
+    for (const variant of ['primary', 'soft', 'secondary', 'ghost', 'danger'] as const) {
+      const { unmount } = render(<Button variant={variant}>{variant}</Button>);
+      const classes = screen.getByRole('button', { name: variant }).className.split(/\s+/);
+
+      expect(classes, `${variant} has no border to size the box`).toContain('border');
+      expect(
+        classes.filter((c) => /^border-\d/.test(c)),
+        `${variant} sets a second border width`,
+      ).toEqual([]);
+      unmount();
+    }
+  });
+
   it('carries a visible focus ring on every variant', () => {
     // Most hand-rolled buttons set focus:outline-none and nothing else, which
     // leaves a keyboard user with no cursor.
@@ -77,6 +100,38 @@ describe('Button', () => {
       expect(screen.getByRole('button', { name: variant }).className).toContain('focus-visible:ring-2');
       unmount();
     }
+  });
+});
+
+describe('IconButton', () => {
+  it('always has an accessible name', () => {
+    // One list page carried twelve icon-only buttons, none of them named. A
+    // screen reader announced "button" twelve times in a row.
+    render(<IconButton icon={Trash2} label="Delete Acme Supplies" variant="ghost" />);
+    expect(screen.getByRole('button', { name: 'Delete Acme Supplies' })).toBeInTheDocument();
+  });
+
+  it('is square, not a short pill', () => {
+    /**
+     * `p-2` passed through className would not have worked: Tailwind emits
+     * `p-*` before `px-*`, so the longhand the size scale sets wins whatever
+     * order the class string is written in. The component has to not emit
+     * the padding it does not want.
+     */
+    render(<IconButton icon={Trash2} label="Delete" />);
+    const classes = screen.getByRole('button', { name: 'Delete' }).className.split(/\s+/);
+
+    expect(classes).toContain('h-9');
+    expect(classes).toContain('w-9');
+    expect(classes.filter((c) => /^px-/.test(c))).toEqual([]);
+  });
+
+  it('shows the same text on hover as it gives assistive tech', () => {
+    render(<IconButton icon={Trash2} label="Delete Acme Supplies" />);
+    expect(screen.getByRole('button', { name: 'Delete Acme Supplies' })).toHaveAttribute(
+      'title',
+      'Delete Acme Supplies',
+    );
   });
 });
 

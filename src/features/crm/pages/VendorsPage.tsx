@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Plus, X, Loader2, Building2, Pencil, Trash2, User, Mail, Phone, Globe, CreditCard, MapPin, FileText, DollarSign } from 'lucide-react';
 import { useVendors, useCreateVendor, useUpdateVendor, useDeleteVendor } from '../api/crm.queries';
 import type { VendorDto, VendorCreateRequest, VendorUpdateRequest, VendorFilter } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, IconButton, Input } from '@/shared/ui/primitives';
 
 function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
@@ -241,8 +241,8 @@ export function Component() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
-                        <button onClick={() => openEdit(v)} className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all"><Pencil className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => handleDelete(v)} disabled={deleteVendor.isPending} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <IconButton icon={Pencil} label={`Edit ${v.name}`} variant="ghost" size="sm" onClick={() => openEdit(v)} />
+                        <IconButton icon={Trash2} label={`Delete ${v.name}`} variant="ghost" size="sm" className="hover:bg-danger-soft hover:text-danger" onClick={() => handleDelete(v)} disabled={deleteVendor.isPending} />
                       </div>
                     </td>
                   </tr>

@@ -21,7 +21,7 @@ import {
   DunningEventKind, DunningPauseReason as PauseReasonEnum,
   DUNNING_STAGE_LABELS, DUNNING_EVENT_KIND_LABELS, DUNNING_PAUSE_REASON_LABELS,
 } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 function balanceDue(inv: CrmInvoiceSummaryDto): number {
   return inv.totalAmount - (inv.amountPaid ?? 0) - (inv.creditAppliedAmount ?? 0);
@@ -71,7 +71,8 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
   const [pauseReason, setPauseReason] = useState<DunningPauseReason>(PauseReasonEnum.ManualHold);
   const [pauseUntil, setPauseUntil] = useState('');
 
-  const { data: history, isLoading } = useDunningHistory(invoiceId);
+  const historyQuery = useDunningHistory(invoiceId);
+  const { data: history } = historyQuery;
   const events = (history as any) ?? [];
   const pause = usePauseDunning();
   const resume = useResumeDunning();
@@ -125,11 +126,12 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
         </div>
       )}
 
-      {isLoading ? (
-        <div className="flex items-center justify-center py-3 text-text-muted"><Loader2 className="w-4 h-4 animate-spin" /></div>
-      ) : !events.length ? (
-        <p className="text-xs text-text-muted">No reminders sent yet.</p>
-      ) : (
+      <ListState
+        query={historyQuery}
+        isEmpty={!events.length}
+        noun="the reminder history"
+        emptyTitle="No reminders sent yet."
+      >
         <div className="space-y-1.5 max-h-48 overflow-y-auto">
           {events.map((e: any) => (
             <div key={e.id} className="flex items-center justify-between text-xs px-2 py-1.5 rounded-lg bg-bg-elevated">
@@ -144,7 +146,7 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
             </div>
           ))}
         </div>
-      )}
+      </ListState>
     </div>
   );
 }
@@ -308,7 +310,8 @@ export function Component() {
   const [cnReason, setCnReason] = useState('');
   const [cnApplyMethod, setCnApplyMethod] = useState<CreditNoteApplyMethod>(CNApplyMethod.AccountBalance);
 
-  const { data: raw, isLoading } = useInvoices(filter);
+  const invoicesQuery = useInvoices(filter);
+  const { data: raw } = invoicesQuery;
   const items: CrmInvoiceSummaryDto[] = (raw as any)?.items ?? [];
 
   const generateFromDeal = useGenerateInvoiceFromDeal();
@@ -355,7 +358,9 @@ export function Component() {
       <div className="flex items-center justify-between gap-4 shrink-0">
         <div>
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Invoices</h2>
-          <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+          <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={invoicesQuery} total={(raw as any)?.totalCount} />
+          </p>
         </div>
         <Button onClick={() => setGenOpen(true)} variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Invoice
@@ -372,14 +377,13 @@ export function Component() {
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-        ) : !items.length ? (
-          <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-            <Receipt className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No invoices found</p>
-          </div>
-        ) : (
+        <ListState
+          query={invoicesQuery}
+          isEmpty={!items.length}
+          noun="invoices"
+          icon={Receipt}
+          emptyTitle="No invoices found"
+        >
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
@@ -413,7 +417,7 @@ export function Component() {
               })}
             </tbody>
           </table>
-        )}
+        </ListState>
       </div>
 
       {/* Detail SlideOver */}

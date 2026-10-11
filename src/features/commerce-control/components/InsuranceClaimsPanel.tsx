@@ -153,7 +153,7 @@ function ReviewForm() {
             Refuse
           </button>
         </div>
-        <input
+        <input aria-label="Notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder={approved ? 'Notes (optional)' : 'Why it is refused (required)'}

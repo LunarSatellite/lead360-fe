@@ -76,7 +76,7 @@ export function Component() {
                     On
                   </label>
 
-                  <select
+                  <select aria-label="Delivery channel"
                     value={p.deliveryChannel}
                     disabled={!p.enabled}
                     onChange={(e) => update(t.value, { deliveryChannel: Number(e.target.value) as NotificationDeliveryChannel })}
@@ -87,7 +87,7 @@ export function Component() {
                     ))}
                   </select>
 
-                  <select
+                  <select aria-label="Digest mode"
                     value={p.digestMode}
                     disabled={!p.enabled}
                     onChange={(e) => update(t.value, { digestMode: Number(e.target.value) as NotificationDigestMode })}

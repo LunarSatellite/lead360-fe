@@ -39,7 +39,7 @@ function SlideOver({
       <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -71,7 +71,7 @@ function CompleteModal({
       <div className="relative w-full max-w-sm bg-bg shadow-2xl rounded-2xl border border-border-subtle">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <h3 className="font-bold text-text-primary">Complete Task</h3>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >

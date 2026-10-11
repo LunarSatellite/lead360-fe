@@ -82,14 +82,14 @@ function EventTypeModal({
           <h2 className="text-base font-bold text-text-primary">
             {initial ? 'Edit meeting type' : 'New meeting type'}
           </h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
             <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Title *</label>
-            <input
+            <input aria-label="Title"
               type="text"
               placeholder="e.g. 30 min intro call"
               value={title}
@@ -110,7 +110,7 @@ function EventTypeModal({
           </div>
           <div className="space-y-1">
             <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Duration</label>
-            <select
+            <select aria-label="Duration"
               value={duration}
               onChange={(e) => setDuration(Number(e.target.value))}
               className={inputCls}
@@ -264,7 +264,7 @@ function BookingPageSettingsPage() {
               <span className="px-3 text-xs text-text-muted whitespace-nowrap">
                 {publicOrigin}/book/
               </span>
-              <input
+              <input aria-label="Slug"
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
@@ -371,13 +371,13 @@ function BookingPageSettingsPage() {
                       : <Copy className="w-3.5 h-3.5" />
                     }
                   </button>
-                  <button
+                  <button aria-label="Edit"
                     onClick={() => setEditingEventType(et)}
                     className="p-1.5 rounded-lg text-text-muted hover:text-indigo-400 hover:bg-indigo-400/10 transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5" />
                   </button>
-                  <button
+                  <button aria-label="Delete"
                     onClick={() => confirmDialog({ message: `Delete "${et.title}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteEventType.mutate(et.id); })}
                     className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
                   >

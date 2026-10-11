@@ -66,8 +66,8 @@ export function Component() {
                   <td className="px-4 py-3 text-xs text-text-muted">{c.website || '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <button onClick={() => openEdit(c)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => deleteMut.mutate(c.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button aria-label="Edit" onClick={() => openEdit(c)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
+                      <button aria-label="Delete" onClick={() => deleteMut.mutate(c.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>
@@ -152,7 +152,7 @@ export function Component() {
                 >{editId ? 'Edit' : 'Add'} Competitor</h2>
                 <p className="text-xs text-text-muted mt-0.5">{editId ? 'Update competitor details' : 'Add a competitor to track across deals'}</p>
               </div>
-              <button onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>

@@ -65,7 +65,7 @@ export function Component() {
         </div>
         <div className="flex items-center gap-2">
           {specs.length > 1 && (
-            <select value={activeSpecId} onChange={e => setSelectedSpecId(e.target.value)} className="form-input max-w-[200px] appearance-none cursor-pointer">
+            <select aria-label="Active spec ID" value={activeSpecId} onChange={e => setSelectedSpecId(e.target.value)} className="form-input max-w-[200px] appearance-none cursor-pointer">
               {specs.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           )}

@@ -53,7 +53,7 @@ export function NlpCommandBar({ onSubmit, onFileUpload, isThinking, thinkingStep
             <Sparkles className="w-5 h-5 text-white" strokeWidth={1.8} />
           </div>
 
-          <input
+          <input aria-label="Text"
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -94,7 +94,7 @@ export function NlpCommandBar({ onSubmit, onFileUpload, isThinking, thinkingStep
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-success-soft border border-[rgba(6,214,160,0.15)]">
               <FileText className="w-3.5 h-3.5 text-success" strokeWidth={1.6} />
               <span className="text-2xs font-semibold text-success truncate flex-1">{uploadedFile.name}</span>
-              <button onClick={() => { setUploadedFile(null); if (fileRef.current) fileRef.current.value = ''; }} className="text-success/60 hover:text-success">
+              <button aria-label="Close" onClick={() => { setUploadedFile(null); if (fileRef.current) fileRef.current.value = ''; }} className="text-success/60 hover:text-success">
                 <X className="w-3 h-3" strokeWidth={2} />
               </button>
             </div>

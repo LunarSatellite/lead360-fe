@@ -36,7 +36,7 @@ function ReviewModal({
               Requested by {approval.requestedByUserName}
             </p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
             <X className="w-4 h-4" />
           </button>
         </div>

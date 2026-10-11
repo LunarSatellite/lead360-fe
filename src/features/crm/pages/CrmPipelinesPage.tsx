@@ -114,7 +114,7 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
       )}
 
       {gateType === StageGateType.RequiredField && (
-        <input
+        <input aria-label="Label"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder={`Label (e.g. "${allRequiredFields.find(f => f.value === fieldName)?.label ?? fieldName}")`}
@@ -174,7 +174,7 @@ function StageGateList({ stageId }: { stageId: string }) {
           ) : (
             <span className="text-[10px] text-text-muted shrink-0">optional</span>
           )}
-          <button
+          <button aria-label="Delete"
             onClick={() => deleteGate.mutate({ gateId: gate.id, stageId })}
             disabled={deleteGate.isPending}
             className="p-1 rounded text-text-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
@@ -286,7 +286,7 @@ function EditPipelineModal({ pipeline, onClose }: EditPipelineModalProps) {
             <Pencil className="w-4 h-4 text-brand" strokeWidth={1.5} />
             <h3 className="text-sm font-bold text-text-primary">Edit Pipeline</h3>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -429,7 +429,7 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
                 <Pencil className="w-3.5 h-3.5" />
               </button>
               {!pipeline.isDefault && (
-                <button
+                <button aria-label="Delete"
                   onClick={handleDelete}
                   className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
                 >
@@ -492,7 +492,7 @@ function CreatePipelineModal({ onCreated, onCancel }: CreateFormProps) {
             <GitBranch className="w-4 h-4 text-brand" strokeWidth={1.5} />
             <h3 className="text-sm font-bold text-text-primary">New Pipeline</h3>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onCancel}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >

@@ -82,7 +82,7 @@ export function ChatInput({
 
   return (
     <div className="flex items-center gap-2 p-3 border-t border-t-border-subtle">
-      <input
+      <input aria-label="Text"
         ref={inputRef}
         value={text}
         onChange={(e) => setText(e.target.value)}

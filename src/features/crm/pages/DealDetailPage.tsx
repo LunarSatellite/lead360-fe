@@ -406,7 +406,7 @@ export function Component() {
 
         {logOpen && (
           <div className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
-            <textarea autoFocus value={logText} onChange={e => setLogText(e.target.value)}
+            <textarea aria-label="Log" autoFocus value={logText} onChange={e => setLogText(e.target.value)}
               className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]"
               placeholder={logOpen === 'call' ? 'Describe the call...' : logOpen === 'meeting' ? 'Describe the meeting...' : 'Write a note...'} />
             <div className="flex gap-2">
@@ -461,7 +461,7 @@ export function Component() {
           <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
               <h3 className="font-bold text-text-primary">Edit Deal</h3>
-              <button onClick={() => setShowEdit(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors">
+              <button aria-label="Close" onClick={() => setShowEdit(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -586,7 +586,7 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
       </div>
       {showAdd && (
         <div className="space-y-2">
-          <select value={compId} onChange={e => setCompId(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+          <select aria-label="Comp ID" value={compId} onChange={e => setCompId(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             <option value="">Select competitor</option>
             {allComps.filter((c: any) => !usedIds.has(c.id)).map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
@@ -612,11 +612,11 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <select value={dc.outcome} onChange={e => updateOutcomeMut.mutate({ id: dc.id, outcome: Number(e.target.value) })}
+            <select aria-label="Outcome" value={dc.outcome} onChange={e => updateOutcomeMut.mutate({ id: dc.id, outcome: Number(e.target.value) })}
               className="px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs text-text-primary">
               {Object.entries(DEAL_COMPETITOR_OUTCOME_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
-            <button onClick={() => removeMut.mutate(dc.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3 h-3" /></button>
+            <button aria-label="Delete" onClick={() => removeMut.mutate(dc.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3 h-3" /></button>
           </div>
         </div>
       ))}
@@ -658,7 +658,7 @@ function DealContactsSection({ dealId }: { dealId: string }) {
       {showAdd && (
         <div className="flex gap-2">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." aria-label="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
-          <select value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+          <select aria-label="Role" value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             {DEAL_CONTACT_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
           <Button onClick={() => search.trim() && addMut.mutate({ contactId: search.trim(), role })} disabled={addMut.isPending || !search.trim()}
@@ -679,7 +679,7 @@ function DealContactsSection({ dealId }: { dealId: string }) {
                   <span className="text-xs px-1.5 py-0.5 rounded bg-brand-soft border border-border-glow text-brand font-medium">{dc.role || 'User'}</span>
                 </div>
               </div>
-              <button onClick={() => removeMut.mutate(dc.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+              <button aria-label="Delete" onClick={() => removeMut.mutate(dc.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
             </div>
           ))}
         </div>

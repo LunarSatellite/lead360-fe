@@ -78,8 +78,8 @@ export function Component() {
                 <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${r.isActive ? 'text-success border-success/30 bg-success-soft' : 'text-text-muted border-border-medium bg-glass-2'}`}>{r.isActive ? 'Active' : 'Inactive'}</span></td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
-                    <button onClick={() => openEdit(r)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                    <button onClick={() => deleteMut.mutate(r.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Edit" onClick={() => openEdit(r)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Delete" onClick={() => deleteMut.mutate(r.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </td>
               </tr>
@@ -128,7 +128,7 @@ export function Component() {
                 </h2>
                 <p className="text-xs text-text-muted mt-0.5">Define an event and its point value</p>
               </div>
-              <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>

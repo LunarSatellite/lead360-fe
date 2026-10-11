@@ -99,7 +99,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Connect a new channel to start receiving messages</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" strokeWidth={1.8} />
           </button>
         </div>

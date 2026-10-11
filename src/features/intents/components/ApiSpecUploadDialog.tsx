@@ -131,7 +131,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               <p className="text-xs text-text-muted mt-0.5">Swagger / OpenAPI 2.0 or 3.x</p>
             </div>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={handleClose}
             disabled={isPending}
             className="p-1.5 rounded-lg hover:bg-glass-1 text-text-muted hover:text-text-primary transition-all"

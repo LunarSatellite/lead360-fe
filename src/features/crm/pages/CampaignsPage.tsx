@@ -84,7 +84,7 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
           >
             {title}
           </h3>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-all">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -603,7 +603,7 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
                 <span className="text-text-muted">{ATTRIBUTION_MODEL_LABELS[a.attributionModel]}</span>
-                <button
+                <button aria-label="Close"
                   onClick={() => removeAttribution.mutate({ campaignId, attributionId: a.id })}
                   disabled={removeAttribution.isPending}
                   className="p-0.5 text-text-muted hover:text-danger transition-colors"
@@ -617,7 +617,7 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
       {showForm ? (
         <form onSubmit={handleAdd} className="rounded-xl border border-border-subtle bg-bg-elevated p-3 space-y-2.5">
           <div className="grid grid-cols-2 gap-2">
-            <select value={form.entityType} onChange={(e) => setForm((f) => ({ ...f, entityType: e.target.value }))} className={selectCls}>
+            <select aria-label="Entity type" value={form.entityType} onChange={(e) => setForm((f) => ({ ...f, entityType: e.target.value }))} className={selectCls}>
               {Object.entries(ATTRIBUTED_ENTITY_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
             <input required value={form.entityId} onChange={(e) => setForm((f) => ({ ...f, entityId: e.target.value }))}
@@ -825,7 +825,7 @@ function B2BCampaignCard({ campaign }: { campaign: CrmCampaignSummaryDto }) {
               <button onClick={() => setConfirmDelete(false)} className="text-xs text-text-muted">×</button>
             </div>
           ) : (
-            <button onClick={() => setConfirmDelete(true)}
+            <button aria-label="Delete" onClick={() => setConfirmDelete(true)}
               className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
@@ -1109,7 +1109,7 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
         <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Lead Outreach Campaign</h3>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
         </div>
         <form onSubmit={(e) => { e.preventDefault(); createCampaign.mutate(formToLeadRequest(form), { onSuccess: onClose }); }} className="flex-1 flex flex-col min-h-0">
           <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">

@@ -751,7 +751,7 @@ function FlowBuilderInner() {
             <FolderOpen className="w-4 h-4" />
           </button>
           {editingName ? (
-            <input
+            <input aria-label="Flow name"
               autoFocus
               value={editor.flowName}
               onChange={(e) => editor.setFlowName(e.target.value)}
@@ -1051,7 +1051,7 @@ function FlowBuilderInner() {
               )}
 
               <div className="flex items-center gap-1.5 p-2.5 border-t border-border-subtle flex-shrink-0">
-                <input
+                <input aria-label="Chat"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendChat()}
@@ -1071,7 +1071,7 @@ function FlowBuilderInner() {
                   disabled={!editor.flowId || chatModify.isPending}
                   size="xs"
                 />
-                <button
+                <button aria-label="Send"
                   onClick={sendChat}
                   disabled={
                     !editor.flowId ||
@@ -1320,7 +1320,7 @@ function FlowListOverlay({
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle flex-shrink-0">
           <h3 className="text-sm font-bold text-text-primary">Saved Flows</h3>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
+          <button aria-label="Close" onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
             <X className="w-4 h-4 text-text-muted" />
           </button>
         </div>
@@ -1352,7 +1352,7 @@ function FlowListOverlay({
                     </div>
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
+                    <button aria-label="Copy"
                       onClick={(e) => {
                         e.stopPropagation();
                         onDuplicate(f.id);
@@ -1361,7 +1361,7 @@ function FlowListOverlay({
                     >
                       <Copy className="w-3 h-3 text-text-muted" />
                     </button>
-                    <button
+                    <button aria-label="Delete"
                       onClick={(e) => {
                         e.stopPropagation();
                         confirmDialog({ message: `Delete "${f.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) onDelete(f.id); });
@@ -1616,7 +1616,7 @@ function PreviewPanel({ sessionId: _sessionId }: { sessionId: string }) {
                 const t = ch.apiType;
                 const chPending = pendingChannels.has(ch.key);
                 const sharedInput = (placeholder: string, textColor: string, bgColor: string) => (
-                  <input
+                  <input aria-label="Ch input"
                     value={chInput}
                     onChange={(e) => setInputs((p) => ({ ...p, [ch.key]: e.target.value }))}
                     onKeyDown={(e) => e.key === 'Enter' && send(chInput, ch.key)}
@@ -1704,7 +1704,7 @@ function PreviewPanel({ sessionId: _sessionId }: { sessionId: string }) {
                 /* ── Default dark (WebChat, Voice, Email, etc.) ── */
                 return (
                   <div className="flex items-center gap-1.5 px-2 py-2 flex-shrink-0 bg-bg" style={{ borderTop: `1px solid ${s.hdr}40` }}>
-                    <input
+                    <input aria-label="Ch input"
                       value={chInput}
                       onChange={(e) => setInputs((p) => ({ ...p, [ch.key]: e.target.value }))}
                       onKeyDown={(e) => e.key === 'Enter' && send(chInput, ch.key)}

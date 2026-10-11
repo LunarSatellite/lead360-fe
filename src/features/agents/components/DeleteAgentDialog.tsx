@@ -46,7 +46,7 @@ export function DeleteAgentDialog({ open, agentId, agentName, onClose }: Props) 
           <h2 className="text-lg font-extrabold text-text-primary tracking-tight">
             Delete agent?
           </h2>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             disabled={deleteMutation.isPending}

@@ -101,7 +101,7 @@ export function HotSegmentsEditor({ trackId }: { trackId: string }) {
             placeholder="Start s" aria-label="Start s"
             className={field}
           />
-          <input
+          <input aria-label="Label"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             placeholder={`Label (ordinal ${nextOrdinal})`}
@@ -139,7 +139,7 @@ function SegmentRow({
         <span className="font-mono text-text-muted">{formatSeconds(segment.segmentStartSeconds)}</span>{' '}
         {segment.label}
       </span>
-      <button
+      <button aria-label="Delete"
         disabled={busy}
         onClick={onRemove}
         className="shrink-0 rounded-sm p-1 text-text-muted hover:bg-glass-2 hover:text-rose-300 disabled:opacity-40"

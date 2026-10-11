@@ -291,7 +291,7 @@ export function WhatsAppPreview({ messages, onButtonClick, botName = 'Business B
           <div className="mx-auto mb-3 rounded-full" style={{ width: 36, height: 4, background: '#d1d1d1' }} />
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-bold" style={{ color: '#111' }}>Select an option</span>
-            <button onClick={closeSheet} className="p-1 rounded-full" style={{ background: '#f2f2f2' }}>
+            <button aria-label="Close" onClick={closeSheet} className="p-1 rounded-full" style={{ background: '#f2f2f2' }}>
               <X className="w-3.5 h-3.5" style={{ color: '#666' }} strokeWidth={2.5} />
             </button>
           </div>

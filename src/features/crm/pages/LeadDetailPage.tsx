@@ -309,7 +309,7 @@ export function Component() {
               <div className="border border-border-glow bg-bg-elevated rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-brand uppercase tracking-wider">Convert to Contact + Account + Deal</span>
-                  <button onClick={() => setShowConvertForm(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+                  <button aria-label="Close" onClick={() => setShowConvertForm(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2">
@@ -502,7 +502,7 @@ function EnrollModal({ leadId, onClose }: { leadId: string; onClose: () => void 
       <div className="relative w-full max-w-sm bg-bg-elevated border border-border-subtle rounded-card shadow-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-text-primary">Enroll in Sequence</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -733,7 +733,7 @@ function TriggerScoreEvent({ leadId }: { leadId: string }) {
   if (rules.length === 0) return null;
   return (
     <div className="flex gap-2 items-center">
-      <select value={eventType} onChange={e => setEventType(e.target.value)} className="flex-1 px-2 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary">
+      <select aria-label="Event type" value={eventType} onChange={e => setEventType(e.target.value)} className="flex-1 px-2 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary">
         <option value="">— Trigger scoring event —</option>
         {rules.map((r: any) => <option key={r.id} value={r.eventType}>{r.label || r.eventType} (+{r.points})</option>)}
       </select>

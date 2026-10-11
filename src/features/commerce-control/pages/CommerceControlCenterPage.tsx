@@ -289,7 +289,7 @@ export function CommerceControlCenterPage() {
           </div>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             <Field icon={Languages} label="Language">
-              <select
+              <select aria-label="Locale"
                 disabled={!canOperate}
                 value={preferences.locale}
                 onChange={(e) => update('locale', e.target.value as Preferences['locale'])}
@@ -300,7 +300,7 @@ export function CommerceControlCenterPage() {
               </select>
             </Field>
             <Field icon={BadgeDollarSign} label="Currency">
-              <select
+              <select aria-label="Currency"
                 disabled={!canOperate}
                 value={preferences.currency}
                 onChange={(e) => update('currency', e.target.value as Preferences['currency'])}
@@ -311,7 +311,7 @@ export function CommerceControlCenterPage() {
               </select>
             </Field>
             <Field icon={Clock3} label="Time zone">
-              <select
+              <select aria-label="Timezone"
                 disabled={!canOperate}
                 value={preferences.timezone}
                 onChange={(e) => update('timezone', e.target.value as Preferences['timezone'])}

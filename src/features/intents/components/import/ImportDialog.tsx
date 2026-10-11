@@ -62,7 +62,7 @@ export function ImportDialog({ open, onClose }: Props) {
       <div className="bg-bg-card rounded-2xl w-[720px] max-h-[80vh] flex flex-col shadow-2xl">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <div><h3 className="text-sm font-bold text-text-primary">📥 Import Intents</h3>{fileName && <p className="text-2xs text-text-muted mt-0.5">{fileName}</p>}</div>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-glass-1"><X className="w-4 h-4 text-text-muted" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1 rounded-md hover:bg-glass-1"><X className="w-4 h-4 text-text-muted" /></button>
         </div>
 
         <div className="flex-1 overflow-auto p-6">

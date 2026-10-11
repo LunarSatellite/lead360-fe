@@ -195,7 +195,7 @@ export function LivePreview() {
 
       {/* Shared Input */}
       <div className="flex items-center gap-2 px-4 py-3 border-t border-border-subtle bg-white">
-        <input
+        <input aria-label="Input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && sendMessage(input)}

@@ -75,7 +75,7 @@ export function ApiEndpointList({ endpoints, isLoading }: ApiEndpointListProps) 
             className="w-full pl-9 pr-4 py-2 rounded-lg bg-glass-1 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all"
           />
           {search && (
-            <button
+            <button aria-label="Close"
               onClick={() => setSearch('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
             >

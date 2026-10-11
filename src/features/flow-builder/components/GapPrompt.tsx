@@ -86,7 +86,7 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
                 <button key={m} className={yes(method === m)} onClick={() => setMethod(m)}>{m}</button>
               ))}
             </div>
-            <input
+            <input aria-label="API URL"
               value={apiUrl}
               onChange={e => setApiUrl(e.target.value)}
               placeholder="https://your-api.com/endpoint"

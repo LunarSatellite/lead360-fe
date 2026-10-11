@@ -405,7 +405,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Placement">
-          <select
+          <select aria-label="Placement"
             value={form.placement}
             onChange={(e) => set('placement', Number(e.target.value))}
             className={inputClass}
@@ -426,7 +426,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Title">
-          <input
+          <input aria-label="Title"
             value={form.title}
             onChange={(e) => set('title', e.target.value)}
             className={inputClass}
@@ -440,7 +440,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Priority">
-          <input
+          <input aria-label="Priority"
             type="number"
             value={form.priority}
             onChange={(e) => set('priority', Number(e.target.value))}
@@ -448,7 +448,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Hero image URL">
-          <input
+          <input aria-label="Hero image URL"
             value={form.heroImageUrl}
             onChange={(e) => set('heroImageUrl', e.target.value)}
             placeholder="https://…"

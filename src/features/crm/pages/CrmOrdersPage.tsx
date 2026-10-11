@@ -64,7 +64,7 @@ function SlideOver({ open, onClose, title, children, footer }: { open: boolean; 
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             <p className="text-xs text-text-muted mt-0.5">Create a new order</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -82,8 +82,7 @@ function SlideOver({ open, onClose, title, children, footer }: { open: boolean; 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>
-      {children}
+      <label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label>
     </div>
   );
 }
@@ -373,7 +372,7 @@ export function Component() {
         <form id="create-order-form" onSubmit={handleCreate} className="space-y-4">
           <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" aria-label="USD" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Customer PO #"><input value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Customer PO #"><input aria-label="Customer po number" value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <Field label="Account">
             <div className="relative">
               <button type="button" onClick={() => setAccountOpen(!accountOpen)}
@@ -436,9 +435,9 @@ export function Component() {
               {lines.map((l, i) => (
                 <div key={i} className="grid grid-cols-[1fr_60px_80px_28px] gap-1.5 items-center">
                   <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" aria-label="Product name" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <input type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
+                  <input aria-label="Quantity" type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input aria-label="Unit price" type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <button aria-label="Close" type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -450,7 +449,7 @@ export function Component() {
           </div>
 
           <Field label="Notes">
-            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls + ' resize-none'} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <textarea aria-label="Notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls + ' resize-none'} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </Field>
         </form>
       </SlideOver>
@@ -462,10 +461,10 @@ export function Component() {
             <>
               <p className="text-sm text-text-muted">Order <span className="font-mono text-text-primary">{selectedOrder.orderNumber}</span></p>
               <Field label="Amount *">
-                <input required type="number" min="0" step="0.01" value={paymentAmount} onChange={e => setPaymentAmount(e.target.value)} className={inputCls} />
+                <input aria-label="Payment amount" required type="number" min="0" step="0.01" value={paymentAmount} onChange={e => setPaymentAmount(e.target.value)} className={inputCls} />
               </Field>
               <Field label="Payment Method">
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className={inputCls}>
+                <select aria-label="Payment method" value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className={inputCls}>
                   <option value="">Select...</option>
                   <option value="Cash">Cash</option>
                   <option value="Bank Transfer">Bank Transfer</option>
@@ -707,7 +706,7 @@ export function Component() {
             <Field label="Customer PO #">
               {editingPOId === selectedOrder.id ? (
                 <div className="flex gap-2">
-                  <input value={editingPO} onChange={e => setEditingPO(e.target.value)} className="flex-1 px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-sm" autoFocus />
+                  <input aria-label="Editing po" value={editingPO} onChange={e => setEditingPO(e.target.value)} className="flex-1 px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-sm" autoFocus />
                   <button onClick={() => { updateOrder.mutate({ id: selectedOrder.id, data: { customerPONumber: editingPO.trim() || undefined } }); setEditingPOId(''); }} className="text-xs text-success hover:underline font-medium">Save</button>
                   <button onClick={() => setEditingPOId('')} className="text-xs text-text-muted hover:underline">Cancel</button>
                 </div>

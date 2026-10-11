@@ -221,7 +221,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
             >New report</h2>
             <p className="text-xs text-text-muted mt-0.5">Build a custom view over any CRM object</p>
           </div>
-          <button onClick={onCancel} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -236,7 +236,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
               <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Report Name</span>
               <div className="h-px bg-brand/20" />
             </div>
-            <Input icon={FileBarChart} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Open deals by owner" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <Input aria-label="Name" icon={FileBarChart} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Open deals by owner" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-2 mb-1.5">
@@ -339,7 +339,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 const field = object.fields.find((of) => of.key === f.field) ?? object.fields[0];
                 return (
                   <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2">
-                    <select
+                    <select aria-label="Field"
                       value={f.field}
                       onChange={(e) => {
                         const nf = object.fields.find((of) => of.key === e.target.value);
@@ -350,7 +350,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                     >
                       {object.fields.map((of) => <option key={of.key} value={of.key} className="bg-bg">{of.label}</option>)}
                     </select>
-                    <select
+                    <select aria-label="Operator"
                       value={f.operator}
                       onChange={(e) => updateFilter(i, { operator: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -378,7 +378,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       />
                     )}
-                    <button onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+                    <button aria-label="Delete" onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -520,7 +520,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Chart value</span>
                 <div className="h-px bg-brand/20" />
               </div>
-              <select
+              <select aria-label="Aggregate function"
                 value={aggregateFunction}
                 onChange={(e) => setAggregateFunction(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -535,7 +535,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                   <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Of field</span>
                   <div className="h-px bg-brand/20" />
                 </div>
-                <select
+                <select aria-label="Aggregate"
                   value={aggregateField}
                   onChange={(e) => setAggregateField(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -700,7 +700,7 @@ function ReportRow({ report }: { report: CrmReportDto }) {
         <button onClick={() => setShowSchedule((s) => !s)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3">
           <Calendar className="w-3.5 h-3.5" /> Schedule
         </button>
-        <button
+        <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Delete report "${report.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) del.mutate(report.id); })}
           className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
@@ -744,7 +744,7 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
 
   return (
     <form onSubmit={handleSubmit} className="border-t border-border-subtle p-4 flex items-center gap-3">
-      <select
+      <select aria-label="Frequency"
         value={frequency}
         onChange={(e) => setFrequency(e.target.value)}
         className="w-32 px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"

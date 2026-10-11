@@ -85,15 +85,15 @@ export function VendorCollaborationDialog({
         <div className="mt-6 space-y-4">
           {kind === 'squad' ? (
             <>
-              <Input label="Squad name" value={name} onChange={setName} />
-              <Input label="Commercial brief ID" value={briefId} onChange={setBriefId} mono />
-              <Input label="Budget total" value={amount} onChange={setAmount} type="number" suffix="CDF" />
+              <Input aria-label="Name" label="Squad name" value={name} onChange={setName} />
+              <Input aria-label="Brief ID" label="Commercial brief ID" value={briefId} onChange={setBriefId} mono />
+              <Input aria-label="Amount" label="Budget total" value={amount} onChange={setAmount} type="number" suffix="CDF" />
             </>
           ) : (
             <>
-              <Input label="Creator account ID" value={creatorAccountId} onChange={setCreatorAccountId} mono />
-              <Input label="Montant mensuel" value={amount} onChange={setAmount} type="number" suffix="CDF" />
-              <Input label="Deliverables per month" value={deliverables} onChange={setDeliverables} type="number" />
+              <Input aria-label="Creator account ID" label="Creator account ID" value={creatorAccountId} onChange={setCreatorAccountId} mono />
+              <Input aria-label="Amount" label="Montant mensuel" value={amount} onChange={setAmount} type="number" suffix="CDF" />
+              <Input aria-label="Deliverables" label="Deliverables per month" value={deliverables} onChange={setDeliverables} type="number" />
             </>
           )}
         </div>

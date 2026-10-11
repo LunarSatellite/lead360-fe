@@ -232,7 +232,7 @@ export function FlowSimulator() {
           </div>
         ) : (
           <div className="flex items-center gap-1.5">
-            <input
+            <input aria-label="Input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendMessage(input)}
@@ -252,7 +252,7 @@ export function FlowSimulator() {
               disabled={isProcessing}
               size="xs"
             />
-            <button
+            <button aria-label="Send"
               onClick={() => sendMessage(input)}
               disabled={!input.trim() || isProcessing || isRecording}
               className="w-7 h-7 rounded-md flex items-center justify-center text-white disabled:opacity-40 flex-shrink-0"

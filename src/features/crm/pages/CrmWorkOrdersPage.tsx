@@ -48,7 +48,7 @@ function SlideOver({ open, onClose, title, children, width = '640px', footer }: 
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             <p className="text-xs text-text-muted mt-0.5">Create a new work order</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && (
@@ -62,7 +62,7 @@ function SlideOver({ open, onClose, title, children, width = '640px', footer }: 
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label></div>;
 }
 
 const TRANSITIONS: Record<number, { status: number; label: string }[]> = {
@@ -144,7 +144,7 @@ function DetailPanel({ id }: { id: string }) {
         <div className="space-y-4">
           <form onSubmit={handleAddNote} className="space-y-2">
             <div className="flex gap-2">
-              <select value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+              <select aria-label="Note kind" value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
                 {Object.entries(CRM_WORK_ORDER_NOTE_KIND_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
               </select>
               <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." aria-label="Add a note..." className={`${inputCls} flex-1`} />
@@ -173,10 +173,10 @@ function DetailPanel({ id }: { id: string }) {
           {wo.status === CrmWorkOrderStatus.InProgress && (
             <div className="space-y-3">
               <Field label="Actual Minutes">
-                <input type="number" min="0" value={actualMinutes} onChange={e => setActualMinutes(e.target.value)} placeholder="e.g. 90" className={inputCls} />
+                <input aria-label="Actual minutes" type="number" min="0" value={actualMinutes} onChange={e => setActualMinutes(e.target.value)} placeholder="e.g. 90" className={inputCls} />
               </Field>
               <Field label="Resolution Notes (required to complete)">
-                <textarea value={resolutionNotes} onChange={e => setResolutionNotes(e.target.value)} rows={3} className={`${inputCls} resize-none`} />
+                <textarea aria-label="Resolution notes" value={resolutionNotes} onChange={e => setResolutionNotes(e.target.value)} rows={3} className={`${inputCls} resize-none`} />
               </Field>
             </div>
           )}
@@ -367,7 +367,7 @@ export function Component() {
         }
       >
         <form id="create-wo-form" onSubmit={handleCreate} className="space-y-4">
-          <Field label="Title *"><input required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Repair espresso machine" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Title *"><input aria-label="Title" required value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. Repair espresso machine" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
@@ -476,9 +476,9 @@ export function Component() {
                 <Input icon={Calendar} type="datetime-local" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} />
               </label>
             </div>
-            <Field label="Est. Minutes"><input type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+            <Field label="Est. Minutes"><input aria-label="Estimated minutes" type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           </div>
-          <Field label="Site Label"><input value={siteLabel} onChange={e => setSiteLabel(e.target.value)} placeholder="e.g. Kathmandu Branch" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Site Label"><input aria-label="Site label" value={siteLabel} onChange={e => setSiteLabel(e.target.value)} placeholder="e.g. Kathmandu Branch" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
         </form>
       </SlideOver>
 

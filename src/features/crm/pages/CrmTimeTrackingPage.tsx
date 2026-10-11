@@ -58,7 +58,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
             </h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -314,7 +314,7 @@ export function Component() {
                           <button onClick={() => setConfirmDelete(null)} className="text-xs text-text-muted hover:text-text-primary">×</button>
                         </div>
                       ) : (
-                        <button onClick={() => setConfirmDelete(row.id)}
+                        <button aria-label="Delete" onClick={() => setConfirmDelete(row.id)}
                           className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
                           <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>

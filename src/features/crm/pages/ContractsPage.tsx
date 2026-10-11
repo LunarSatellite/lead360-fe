@@ -190,7 +190,7 @@ export function Component() {
                       <td className="px-4 py-3 text-xs text-text-muted">{c.signedCount != null ? `${c.signedCount}/${c.signatoryCount}` : '—'}</td>
                       <td className="px-4 py-3 text-xs text-text-muted tabular-nums">{c.startDate ? new Date(c.startDate).toLocaleDateString() : '—'}</td>
                       <td className="px-4 py-3 text-xs text-text-muted tabular-nums">{c.endDate ? new Date(c.endDate).toLocaleDateString() : '—'}</td>
-                      <td className="px-4 py-3"><button onClick={(e) => { e.stopPropagation(); confirmDialog({ message: 'Delete?', confirmText: 'Delete', danger: true }).then(ok => { if (ok) deleteMut.mutate(c.id); }); }} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button></td>
+                      <td className="px-4 py-3"><button aria-label="Delete" onClick={(e) => { e.stopPropagation(); confirmDialog({ message: 'Delete?', confirmText: 'Delete', danger: true }).then(ok => { if (ok) deleteMut.mutate(c.id); }); }} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -270,8 +270,8 @@ export function Component() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-text-primary">{t.name}</span>
                   <div className="flex gap-1">
-                    <button onClick={() => { setEditTemplateId(t.id); setTemplateForm({ name: t.name, description: t.description || '', category: t.category, subject: t.subject || '', bodyHtml: t.bodyHtml }); setShowTemplateForm(true); }} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                    <button onClick={() => deleteTemplateMut.mutate(t.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Edit" onClick={() => { setEditTemplateId(t.id); setTemplateForm({ name: t.name, description: t.description || '', category: t.category, subject: t.subject || '', bodyHtml: t.bodyHtml }); setShowTemplateForm(true); }} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Delete" onClick={() => deleteTemplateMut.mutate(t.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
                 <div className="text-[11px] text-text-muted">{CONTRACT_TEMPLATE_CATEGORY_LABELS[t.category as ContractTemplateCategoryValue] ?? 'General'}{t.subject ? ` · ${t.subject}` : ''}</div>
@@ -289,10 +289,10 @@ export function Component() {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <form onSubmit={(e) => { e.preventDefault(); createTemplateMut.mutate({ ...templateForm, description: templateForm.description || undefined, subject: templateForm.subject || undefined }); }} className="w-full max-w-lg bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between"><h2 className="text-sm font-bold text-text-primary">{editTemplateId ? 'Edit' : 'New'} Template</h2>
-              <button type="button" onClick={() => { setShowTemplateForm(false); setEditTemplateId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
+              <button aria-label="Close" type="button" onClick={() => { setShowTemplateForm(false); setEditTemplateId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
             <input className={inputCls} placeholder="Template name" aria-label="Template name" value={templateForm.name} onChange={e => setTemplateForm(f => ({ ...f, name: e.target.value }))} required />
             <div className="grid grid-cols-2 gap-3">
-              <select className={inputCls} value={templateForm.category} onChange={e => setTemplateForm(f => ({ ...f, category: Number(e.target.value) }))}>
+              <select aria-label="Category" className={inputCls} value={templateForm.category} onChange={e => setTemplateForm(f => ({ ...f, category: Number(e.target.value) }))}>
                 {Object.entries(ContractTemplateCategory).filter(([k]) => isNaN(Number(k))).map(([k, v]) => (<option key={v} value={v}>{k}</option>))}
               </select>
               <input className={inputCls} placeholder="Subject" aria-label="Subject" value={templateForm.subject} onChange={e => setTemplateForm(f => ({ ...f, subject: e.target.value }))} />
@@ -341,7 +341,7 @@ export function Component() {
                 >New Contract</h2>
                 <p className="text-xs text-text-muted mt-0.5">Create a new contract</p>
               </div>
-              <button onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -446,7 +446,7 @@ export function Component() {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <div className="w-full max-w-2xl bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4 max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between shrink-0"><h2 className="text-sm font-bold text-text-primary flex items-center gap-2"><Eye className="w-4 h-4" /> Preview</h2>
-              <button onClick={() => setShowPreview(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
+              <button aria-label="Close" onClick={() => setShowPreview(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
             <div className="flex-1 overflow-y-auto rounded-card border-thin border-border-subtle bg-glass-1 p-4 text-sm text-text-primary" dangerouslySetInnerHTML={{ __html: previewHtml }} />
             <div className="flex gap-3 shrink-0">
               <Button onClick={confirmCreate} variant="primary" className="flex-1">Confirm & Create</Button>

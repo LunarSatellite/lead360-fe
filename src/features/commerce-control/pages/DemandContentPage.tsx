@@ -278,7 +278,7 @@ function UnitRow({ unit, onChanged }: { unit: DemandContentUnit; onChanged: () =
                   ? 'The unit stops progressing. The reason stays on the record.'
                   : 'The page comes down. The reason stays on the record.'}
             </p>
-            <input
+            <input aria-label="Text"
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder={gate ? 'Substantiation (optional)' : 'Reason'}

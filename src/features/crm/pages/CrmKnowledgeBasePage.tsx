@@ -158,7 +158,7 @@ function ArticleDetail({ id, onBack }: { id: string; onBack: () => void }) {
 
         {editing ? (
           <div className="space-y-3">
-            <textarea
+            <textarea aria-label="Content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={14}

@@ -21,7 +21,7 @@ export function ImportEditDialog({ row, onSave, onClose }: ImportEditDialogProps
       <div className="bg-bg-card rounded-2xl w-[420px] shadow-2xl">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle">
           <h3 className="text-sm font-bold text-text-primary">Edit Row #{row.rowNumber}</h3>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
+          <button aria-label="Close" onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
             <X className="w-4 h-4 text-text-muted" />
           </button>
         </div>

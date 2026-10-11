@@ -157,7 +157,7 @@ export function AiChatPanel({ flowId, llmConversationJson, onFlowUpdated }: AiCh
 
       {/* Input */}
       <div className="flex items-center gap-1.5 p-2.5 border-t border-border-subtle">
-        <input
+        <input aria-label="Input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}

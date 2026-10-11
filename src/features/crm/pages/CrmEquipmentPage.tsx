@@ -31,7 +31,7 @@ function SlideOver({ open, onClose, title, children, width = '540px' }: { open: 
       <div className="relative h-full flex flex-col bg-bg-shell border-l border-border-subtle" style={{ width, boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
@@ -40,7 +40,7 @@ function SlideOver({ open, onClose, title, children, width = '540px' }: { open: 
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-muted mb-1.5">{label}</span>{children}</label></div>;
 }
 
 function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
@@ -128,7 +128,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
         <div className="space-y-4">
           <form onSubmit={handleAddNote} className="space-y-2">
             <div className="flex gap-2">
-              <select value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+              <select aria-label="Note kind" value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
                 {Object.entries(CRM_EQUIPMENT_NOTE_KIND_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
               </select>
               <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." aria-label="Add a note..." className={`${inputCls} flex-1`} />
@@ -280,12 +280,12 @@ export function Component() {
           <Field label="Model *"><input required value={model} onChange={e => setModel(e.target.value)} placeholder="Machine model name" aria-label="Machine model name" className={inputCls} /></Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="Brand"><input value={brand} onChange={e => setBrand(e.target.value)} placeholder="Brand name" aria-label="Brand name" className={inputCls} /></Field>
-            <Field label="Category"><input value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Espresso Machine" className={inputCls} /></Field>
+            <Field label="Category"><input aria-label="Category" value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Espresso Machine" className={inputCls} /></Field>
           </div>
           <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" className={inputCls} /></Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Warranty End"><input type="date" value={warrantyEnd} onChange={e => setWarrantyEnd(e.target.value)} className={inputCls} /></Field>
-            <Field label="Next Service"><input type="date" value={nextService} onChange={e => setNextService(e.target.value)} className={inputCls} /></Field>
+            <Field label="Warranty End"><input aria-label="Warranty end" type="date" value={warrantyEnd} onChange={e => setWarrantyEnd(e.target.value)} className={inputCls} /></Field>
+            <Field label="Next Service"><input aria-label="Next service" type="date" value={nextService} onChange={e => setNextService(e.target.value)} className={inputCls} /></Field>
           </div>
           <div className="flex gap-3 pt-2">
             <Button type="submit" disabled={createEq.isPending} variant="primary" className="flex-1">

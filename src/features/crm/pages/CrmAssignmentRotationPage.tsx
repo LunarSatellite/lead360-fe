@@ -81,7 +81,7 @@ export function Component() {
 
       {/* Add member */}
       <div className="flex gap-2">
-        <select
+        <select aria-label="Selected user ID"
           value={selectedUserId}
           onChange={e => setSelectedUserId(e.target.value)}
           className="flex-1 px-3 py-2 rounded-lg border border-border-subtle bg-bg-input text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40"
@@ -124,7 +124,7 @@ export function Component() {
                   <p className="text-sm font-medium text-text-primary">{displayName}</p>
                   {email && <p className="text-xs text-text-muted">{email}</p>}
                 </div>
-                <button
+                <button aria-label="Delete"
                   onClick={() => removeMutation.mutate(userId)}
                   disabled={removeMutation.isPending}
                   className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger transition-colors shrink-0"

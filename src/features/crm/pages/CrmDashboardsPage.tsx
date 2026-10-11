@@ -78,7 +78,7 @@ function CreateDashboardForm({ onDone, onCancel }: { onDone: () => void; onCance
     <div className="bg-glass-1 border border-brand rounded-2xl p-6 space-y-4">
       <div className="flex items-center justify-between">
         <div className="text-base font-bold text-text-primary">New dashboard</div>
-        <button onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
+        <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -118,7 +118,7 @@ function DashboardCard({ dashboard, onOpen }: { dashboard: CrmDashboardDto; onOp
         </div>
         {dashboard.description && <div className="text-xs text-text-muted mt-0.5">{dashboard.description}</div>}
       </div>
-      <button
+      <button aria-label="Delete"
         onClick={(e) => {
           e.stopPropagation();
           confirmDialog({ message: `Delete dashboard "${dashboard.name}"?`, confirmText: 'Delete', danger: true })
@@ -245,7 +245,7 @@ function AddWidgetForm({ dashboardId, existingWidgets, onDone, onCancel }: {
     <div className="bg-glass-1 border border-brand rounded-2xl p-6 space-y-4">
       <div className="flex items-center justify-between">
         <div className="text-base font-bold text-text-primary">Add widget</div>
-        <button onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
+        <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
       </div>
       {reports.length === 0 && metrics.length === 0 ? (
         <div className="text-sm text-text-muted">You need at least one saved report first — build one on the Reports page.</div>
@@ -333,7 +333,7 @@ function WidgetCard({ widget, dashboardId }: { widget: CrmDashboardWidgetDto; da
         <button onClick={() => refetch()} disabled={isFetching} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
           <RotateCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
         </button>
-        <button
+        <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Remove widget "${widget.title}"?`, confirmText: 'Remove', danger: true })
             .then((ok) => { if (ok) removeWidget.mutate(widget.id); })}
           className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"

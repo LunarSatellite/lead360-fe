@@ -456,7 +456,7 @@ function OrderPanel({
               {order.receiverName || 'Commande client'}
             </h2>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="rounded-lg p-2 text-text-muted hover:bg-bg-elevated hover:text-text-primary"
           >
@@ -655,7 +655,7 @@ function PackageSealDialog({
             </p>
             <h3 className="mt-1 text-lg font-black text-text-primary">Seal the parcel</h3>
           </div>
-          <button type="button" onClick={onClose}>
+          <button aria-label="Close" type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </div>
@@ -663,8 +663,8 @@ function PackageSealDialog({
           Suivi: {trackingNumber}
         </p>
         <div className="mt-5 space-y-3">
-          <Input label="Seal identifier" value={sealId} onChange={setSealId} />
-          <Input label="Seal photo (HTTPS URL)" value={sealPhotoUrl} onChange={setSealPhotoUrl} />
+          <Input aria-label="Seal ID" label="Seal identifier" value={sealId} onChange={setSealId} />
+          <Input aria-label="Seal photo URL" label="Seal photo (HTTPS URL)" value={sealPhotoUrl} onChange={setSealPhotoUrl} />
         </div>
         {error && <p className="mt-3 text-xs font-semibold text-danger">{error}</p>}
         <button
@@ -727,7 +727,7 @@ function OrderOperationDialog({
       >
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-black text-text-primary">{title}</h3>
-          <button type="button" onClick={onClose}>
+          <button aria-label="Close" type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </div>
@@ -756,11 +756,11 @@ function OrderOperationDialog({
           )}
           {!isReject && (
             <>
-              <Input label="Transporteur" value={carrier} onChange={setCarrier} />
-              <Input label="Tracking number" value={trackingNumber} onChange={setTrackingNumber} />
+              <Input aria-label="Carrier" label="Transporteur" value={carrier} onChange={setCarrier} />
+              <Input aria-label="Tracking number" label="Tracking number" value={trackingNumber} onChange={setTrackingNumber} />
             </>
           )}
-          <Input
+          <Input aria-label="Note"
             label={isReject ? (reasonCode === '6' ? 'Explanation required' : 'Note to the customer (optional)') : 'Handover note (optional)'}
             value={note}
             onChange={setNote}
@@ -826,7 +826,7 @@ function RefundDialog({
       >
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-black text-text-primary">Issue a refund</h3>
-          <button type="button" onClick={onClose}>
+          <button aria-label="Close" type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </div>
@@ -834,9 +834,9 @@ function RefundDialog({
           Cette action appelle le moteur de paiement Stylemint et utilise une cle d'idempotence unique.
         </p>
         <div className="mt-5 space-y-3">
-          <Input label="Payment Intent ID" value={paymentId} onChange={setPaymentId} readOnly />
-          <Input label="Montant (CDF)" value={amount} onChange={setAmount} type="number" />
-          <Input label="Reason" value={reason} onChange={setReason} />
+          <Input aria-label="Payment ID" label="Payment Intent ID" value={paymentId} onChange={setPaymentId} readOnly />
+          <Input aria-label="Amount" label="Montant (CDF)" value={amount} onChange={setAmount} type="number" />
+          <Input aria-label="Reason" label="Reason" value={reason} onChange={setReason} />
         </div>
         {context.isLoading && (
           <p className="mt-3 text-xs text-text-muted">Verifying Stylemint payment…</p>

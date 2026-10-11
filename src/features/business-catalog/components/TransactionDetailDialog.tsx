@@ -81,7 +81,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
               </p>
             )}
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-7 h-7 rounded-sm flex items-center justify-center
                        hover:bg-glass-2 transition-colors"

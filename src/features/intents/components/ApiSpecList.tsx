@@ -125,7 +125,7 @@ export function ApiSpecList({ specs, isLoading, onUploadClick }: ApiSpecListProp
 
             {/* Actions menu */}
             <div className="relative" onClick={(e) => e.stopPropagation()}>
-              <button
+              <button aria-label="More actions"
                 onClick={() => setOpenMenuId(openMenuId === spec.id ? null : spec.id)}
                 className="p-1.5 rounded-lg hover:bg-glass-2 text-text-muted hover:text-text-primary transition-all opacity-0 group-hover:opacity-100"
               >

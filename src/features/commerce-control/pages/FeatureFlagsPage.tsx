@@ -357,7 +357,7 @@ function AddOverride({
   return (
     <div className="mt-2 space-y-2 rounded-card border-thin border-border-subtle bg-bg-elevated p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <select
+        <select aria-label="Audience"
           value={audience}
           onChange={(event) => setAudience(Number(event.target.value))}
           className="rounded-card border-thin border-border-subtle bg-bg-card px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"
@@ -367,7 +367,7 @@ function AddOverride({
         </select>
 
         {audience === FlagAudience.Role ? (
-          <select
+          <select aria-label="Role kind"
             value={roleKind}
             onChange={(event) => setRoleKind(Number(event.target.value))}
             className="rounded-card border-thin border-border-subtle bg-bg-card px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"

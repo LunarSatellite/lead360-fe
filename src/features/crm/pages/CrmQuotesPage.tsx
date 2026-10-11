@@ -33,8 +33,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block"><span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>{children}</label>
     </div>
   );
 }
@@ -71,7 +70,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide, pad
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -469,7 +468,7 @@ export function Component() {
                   onFocus={() => setShowDealDrop(true)}
                 />
                 {dealSearch ? (
-                  <button type="button" onClick={() => { setDealSearch(''); setShowDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setDealSearch(''); setShowDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -517,7 +516,7 @@ export function Component() {
                   onFocus={() => setShowContactDrop(true)}
                 />
                 {contactSearch ? (
-                  <button type="button" onClick={() => { setContactSearch(''); setShowContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setContactSearch(''); setShowContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -568,7 +567,7 @@ export function Component() {
                   onFocus={() => setShowPbDrop(true)}
                 />
                 {pbSearch ? (
-                  <button type="button" onClick={() => { setPbSearch(''); setShowPbDrop(false); setPriceBookId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setPbSearch(''); setShowPbDrop(false); setPriceBookId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -634,7 +633,7 @@ export function Component() {
             <div className="flex items-center gap-2">
               {!editingId && bundleList.length > 0 && (
                 <>
-                  <select
+                  <select aria-label="Bundle ID"
                     value={bundleId}
                     onChange={e => setBundleId(e.target.value)}
                     className="text-xs py-1 px-2 rounded-lg border border-brand/20 text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
@@ -704,7 +703,7 @@ export function Component() {
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
-                  <button
+                  <button aria-label="Close"
                     onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))}
                     className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors disabled:opacity-30"
                     disabled={lines.length === 1}
@@ -719,8 +718,12 @@ export function Component() {
           {/* Tax + Totals */}
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-2">
+              {/* aria-label rather than nesting: the label and the input are
+                  both flex items in this row, so wrapping one in the other
+                  would change the layout. */}
               <label className="text-xs font-semibold text-text-secondary">Tax %</label>
               <input
+                aria-label="Tax %"
                 type="number"
                 value={taxPercent}
                 onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}

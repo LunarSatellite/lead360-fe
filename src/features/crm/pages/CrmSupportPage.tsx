@@ -48,7 +48,7 @@ function SlideOver({ title, onClose, wide, children }: { title: string; onClose:
       <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[480px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -90,7 +90,7 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
                   {p.applicablePriority != null && <> · Priority: <span className="text-text-secondary font-medium">{priorityLabel(p.applicablePriority)}</span></>}
                 </p>
               </div>
-              <button onClick={() => deletePolicy.mutate(p.id)} disabled={deletePolicy.isPending} className="p-1.5 text-text-muted hover:text-danger transition-colors">
+              <button aria-label="Delete" onClick={() => deletePolicy.mutate(p.id)} disabled={deletePolicy.isPending} className="p-1.5 text-text-muted hover:text-danger transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -185,7 +185,7 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
         <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Support Case</h3>
-          <button onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
         </div>
         <form onSubmit={e => { e.preventDefault(); onSave({ subject: form.subject, contactId: form.contactId || undefined, priority: form.priority ? Number(form.priority) as CrmSupportCasePriority : undefined, slaPolicyId: form.slaPolicyId || undefined, description: form.description || undefined }); }} className="flex-1 flex flex-col min-h-0">
           <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">

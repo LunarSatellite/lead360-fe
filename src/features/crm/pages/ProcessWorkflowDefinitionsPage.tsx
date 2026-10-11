@@ -29,7 +29,7 @@ function RoleDropdown({ roleId, onChange }: { roleId: string; onChange: (id: str
   const { data: roles } = useProcessRoles();
   const list = roles ?? [];
   return (
-    <select value={roleId} onChange={e => onChange(e.target.value)}
+    <select aria-label="Role ID" value={roleId} onChange={e => onChange(e.target.value)}
       className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand">
       <option value="">No role (all users)</option>
       {list.map((r: { id: string; name: string }) => (
@@ -47,7 +47,7 @@ function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
           <GripVertical className="w-3.5 h-3.5 text-text-muted" strokeWidth={1.5} />
           <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Step {index + 1}</span>
         </div>
-        <button
+        <button aria-label="Delete"
           onClick={() => onRemove(index)}
           className="p-1 rounded text-text-muted hover:text-danger transition-colors"
         >
@@ -294,13 +294,13 @@ function DefinitionCard({
             >
               <Play className="w-3.5 h-3.5" />
             </button>
-            <button
+            <button aria-label="Edit"
               onClick={onEdit}
               className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors"
             >
               <Pencil className="w-3.5 h-3.5" />
             </button>
-            <button
+            <button aria-label="Delete"
               onClick={onDelete}
               className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
             >
@@ -381,7 +381,7 @@ function StartInstanceModal({
       <div className="relative w-full max-w-sm bg-bg shadow-2xl rounded-2xl border border-border-subtle">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <h3 className="font-bold text-text-primary">Start Instance</h3>
-          <button onClick={onClose} className="p-1 rounded-lg text-text-muted hover:text-text-primary">
+          <button aria-label="Close" onClick={onClose} className="p-1 rounded-lg text-text-muted hover:text-text-primary">
             <X className="w-4 h-4" />
           </button>
         </div>

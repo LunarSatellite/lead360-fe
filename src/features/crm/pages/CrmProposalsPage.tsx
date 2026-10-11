@@ -28,8 +28,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block"><span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>{children}</label>
     </div>
   );
 }
@@ -66,7 +65,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide, pad
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -115,7 +114,7 @@ function EditableSection({ proposalId, section }: { proposalId: string; section:
       </div>
 
       {editing ? (
-        <textarea value={content} onChange={e => setContent(e.target.value)} rows={6}
+        <textarea aria-label="Content" value={content} onChange={e => setContent(e.target.value)} rows={6}
           className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary resize-y focus:outline-none focus:border-border-glow" />
       ) : (
         <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{section.content || '—'}</p>
@@ -416,7 +415,7 @@ export function Component() {
               onFocus={() => setShowGenDealDrop(true)}
             />
             {genDealSearch ? (
-              <button type="button" onClick={() => { setGenDealSearch(''); setShowGenDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenDealSearch(''); setShowGenDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -464,7 +463,7 @@ export function Component() {
               onFocus={() => setShowGenContactDrop(true)}
             />
             {genContactSearch ? (
-              <button type="button" onClick={() => { setGenContactSearch(''); setShowGenContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenContactSearch(''); setShowGenContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -515,7 +514,7 @@ export function Component() {
               onFocus={() => setShowGenTemplateDrop(true)}
             />
             {genTemplateSearch ? (
-              <button type="button" onClick={() => { setGenTemplateSearch(''); setShowGenTemplateDrop(false); setTemplateId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenTemplateSearch(''); setShowGenTemplateDrop(false); setTemplateId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -552,7 +551,7 @@ export function Component() {
       {/* Manual Build SlideOver */}
       <SlideOver open={manualOpen} onClose={() => { setManualOpen(false); resetManual(); }} title="New Proposal" wide>
         <Field label="Title *">
-          <input value={mTitle} onChange={e => setMTitle(e.target.value)} className={inputCls} placeholder="e.g. Website Redesign Proposal — Acme Co" />
+          <input aria-label="M title" value={mTitle} onChange={e => setMTitle(e.target.value)} className={inputCls} placeholder="e.g. Website Redesign Proposal — Acme Co" />
         </Field>
         <Field label="Start from">
           <div className="flex gap-2">
@@ -567,13 +566,13 @@ export function Component() {
         {mSource === 'deal' ? (
           <>
             <Field label="Deal *">
-              <select value={mDealId} onChange={e => setMDealId(e.target.value)} className={selectCls}>
+              <select aria-label="M deal ID" value={mDealId} onChange={e => setMDealId(e.target.value)} className={selectCls}>
                 <option value="">Select a deal (required)</option>
                 {dealsList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
             </Field>
             <Field label="Contact">
-              <select value={mContactId} onChange={e => setMContactId(e.target.value)} className={selectCls}>
+              <select aria-label="M contact ID" value={mContactId} onChange={e => setMContactId(e.target.value)} className={selectCls}>
                 <option value="">Select a contact (optional)</option>
                 {contactsList.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
               </select>
@@ -581,7 +580,7 @@ export function Component() {
           </>
         ) : (
           <Field label="Lead *">
-            <select value={mLeadId} onChange={e => setMLeadId(e.target.value)} className={selectCls}>
+            <select aria-label="M lead ID" value={mLeadId} onChange={e => setMLeadId(e.target.value)} className={selectCls}>
               <option value="">Select a lead (required)</option>
               {leadsList.map(l => <option key={l.id} value={l.id}>{l.customerName ?? l.channelHandle}</option>)}
             </select>
@@ -597,11 +596,11 @@ export function Component() {
             {mSections.map((s, i) => (
               <div key={i} className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
                 <div className="flex gap-2">
-                  <select value={s.kind} onChange={e => updateSection(i, 'kind', Number(e.target.value))} className={selectCls + ' w-48'}>
+                  <select aria-label="Kind" value={s.kind} onChange={e => updateSection(i, 'kind', Number(e.target.value))} className={selectCls + ' w-48'}>
                     {Object.entries(PROPOSAL_SECTION_KINDS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                   <input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section heading (optional)" aria-label="Section heading (optional)" className={inputCls + ' flex-1'} />
-                  <button onClick={() => setMSections(ss => ss.filter((_, idx) => idx !== i))} disabled={mSections.length === 1}
+                  <button aria-label="Close" onClick={() => setMSections(ss => ss.filter((_, idx) => idx !== i))} disabled={mSections.length === 1}
                     className="p-1.5 rounded-lg text-danger hover:bg-danger-soft disabled:opacity-40 transition-colors">
                     <X className="w-3.5 h-3.5" />
                   </button>

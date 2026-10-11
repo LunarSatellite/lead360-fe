@@ -41,8 +41,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block"><span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>{children}</label>
     </div>
   );
 }
@@ -57,7 +56,7 @@ function SlideOver({ open, onClose, title, children, wide }: {
       <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[520px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="text-base font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -115,7 +114,7 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
 
       {showPause && (
         <div className="space-y-2 pt-1">
-          <select value={pauseReason} onChange={e => setPauseReason(Number(e.target.value) as DunningPauseReason)} className={selectCls}>
+          <select aria-label="Pause reason" value={pauseReason} onChange={e => setPauseReason(Number(e.target.value) as DunningPauseReason)} className={selectCls}>
             {Object.entries(DUNNING_PAUSE_REASON_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
           <input type="date" value={pauseUntil} onChange={e => setPauseUntil(e.target.value)} className={inputCls} placeholder="Paused until (optional)" aria-label="Paused until (optional)" />
@@ -221,7 +220,7 @@ function GenInvoiceSlideOver({
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Invoice</h2>
             <p className="text-xs text-text-muted mt-0.5">Generate an invoice from a deal or order</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           {/* ── Source ── */}
@@ -454,15 +453,15 @@ export function Component() {
                 <DollarSign className="w-3.5 h-3.5" /> Record Payment
               </p>
               <Field label="Amount">
-                <input type="number" value={payAmount} onChange={e => setPayAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
+                <input aria-label="Pay amount" type="number" value={payAmount} onChange={e => setPayAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
               </Field>
               <Field label="Payment Method">
-                <select value={payMethod} onChange={e => setPayMethod(Number(e.target.value) as CrmPaymentMethod)} className={selectCls}>
+                <select aria-label="Pay method" value={payMethod} onChange={e => setPayMethod(Number(e.target.value) as CrmPaymentMethod)} className={selectCls}>
                   {Object.entries(CRM_PAYMENT_METHOD_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
               </Field>
               <Field label="Paid At">
-                <input type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} />
+                <input aria-label="Pay date" type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} />
               </Field>
               <Field label="Notes">
                 <textarea value={payNotes} onChange={e => setPayNotes(e.target.value)} rows={2} className={inputCls} placeholder="Optional notes..." aria-label="Optional notes..." />
@@ -528,10 +527,10 @@ export function Component() {
             {showCreditNote && (
               <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
                 <Field label="Amount">
-                  <input type="number" value={cnAmount} onChange={e => setCnAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
+                  <input aria-label="Cn amount" type="number" value={cnAmount} onChange={e => setCnAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
                 </Field>
                 <Field label="Apply Method">
-                  <select value={cnApplyMethod} onChange={e => setCnApplyMethod(Number(e.target.value) as CreditNoteApplyMethod)} className={selectCls}>
+                  <select aria-label="Cn apply method" value={cnApplyMethod} onChange={e => setCnApplyMethod(Number(e.target.value) as CreditNoteApplyMethod)} className={selectCls}>
                     {Object.entries(CREDIT_NOTE_APPLY_METHOD_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </Field>

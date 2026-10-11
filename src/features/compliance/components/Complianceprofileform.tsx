@@ -176,7 +176,7 @@ export function ComplianceProfileForm({
           {requiresAgeVerification && (
             <div className="flex items-center gap-2">
               <label className="text-xs font-semibold text-text-muted">Min age:</label>
-              <input
+              <input aria-label="Minimum age"
                 type="number"
                 value={minimumAge}
                 onChange={(e) => setMinimumAge(e.target.value ? Number(e.target.value) : '')}
@@ -187,7 +187,7 @@ export function ComplianceProfileForm({
           )}
           <div className="flex items-center gap-2">
             <label className="text-xs font-semibold text-text-muted">Max response length:</label>
-            <input
+            <input aria-label="Max response length"
               type="number"
               value={maxResponseLength}
               onChange={(e) => setMaxResponseLength(e.target.value ? Number(e.target.value) : '')}
@@ -397,7 +397,7 @@ function TagListEditor({
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${colorMap[color] || colorMap.brand}`}
           >
             {item}
-            <button
+            <button aria-label="Close"
               onClick={() => setItems(items.filter((_, j) => j !== i))}
               className="opacity-60 hover:opacity-100"
             >
@@ -408,14 +408,14 @@ function TagListEditor({
         {items.length === 0 && <span className="text-xs text-text-muted italic">No items added</span>}
       </div>
       <div className="flex gap-2">
-        <input
+        <input aria-label="New"
           value={newValue}
           onChange={(e) => setNewValue(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
           placeholder={placeholder}
           className={smallInput}
         />
-        <button
+        <button aria-label="Add"
           onClick={add}
           disabled={!newValue.trim()}
           className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"
@@ -460,7 +460,7 @@ function DisclaimerEditor({
                 <div className="text-xs font-bold text-info font-mono">{d.trigger}</div>
                 <div className="text-xs text-text-secondary mt-0.5">{d.text}</div>
               </div>
-              <button
+              <button aria-label="Close"
                 onClick={() => setItems(items.filter((_, j) => j !== i))}
                 className="text-text-muted hover:text-danger shrink-0"
               >
@@ -484,7 +484,7 @@ function DisclaimerEditor({
           placeholder="Disclaimer text..." aria-label="Disclaimer text..."
           className={smallInput}
         />
-        <button
+        <button aria-label="Add"
           onClick={add}
           disabled={!trigger.trim() || !text.trim()}
           className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"
@@ -538,7 +538,7 @@ function MandatoryRefEditor({
                 </div>
                 <div className="text-xs text-text-secondary mt-0.5">{r.message}</div>
               </div>
-              <button
+              <button aria-label="Close"
                 onClick={() => setItems(items.filter((_, j) => j !== i))}
                 className="text-text-muted hover:text-danger shrink-0"
               >
@@ -575,7 +575,7 @@ function MandatoryRefEditor({
           />
           <span className="text-[10px] font-semibold text-text-muted">Handoff</span>
         </label>
-        <button
+        <button aria-label="Add"
           onClick={add}
           disabled={!trigger.trim() || !message.trim()}
           className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"

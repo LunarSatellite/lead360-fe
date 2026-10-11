@@ -90,7 +90,7 @@ export function CopilotPanel() {
             <div className="text-sm font-bold text-text-primary">CRM Copilot</div>
             <div className="text-[10px] text-text-muted">Ask questions or take actions across your CRM</div>
           </div>
-          <button onClick={() => setOpen(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
+          <button aria-label="Close" onClick={() => setOpen(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>

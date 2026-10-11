@@ -157,11 +157,17 @@ describe('defects that must not come back', () => {
      * and `aria-label` from that is the right fix for a toolbar search box
      * or a filter, which has no visible label by design.
      *
-     * A budget again: 400 are left, and they are the ones with no
-     * placeholder to take a name from. Each needs someone to decide what the
-     * control is for, which is not something a script can read off the page.
+     * A third source closed most of the rest: the state a control is bound
+     * to. `value={form.intentName}` is the intent name, and 274 controls
+     * were named that way. The result is not always what a writer would
+     * choose — "Config JSON" rather than "Agent configuration" — but it is
+     * specific and never wrong, and a person can improve any of them.
+     *
+     * 117 are left: controls bound to a loop variable or an index, where the
+     * binding says nothing about what the field is for. Those need someone
+     * to decide, which is not something a script can read off the page.
      */
-    const BUDGET_UNNAMED_CONTROLS = 400;
+    const BUDGET_UNNAMED_CONTROLS = 117;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 
@@ -172,10 +178,26 @@ describe('defects that must not come back', () => {
         if (close !== -1) spans.push([at, close]);
       }
 
+      // A label elsewhere in the file can name a control through `htmlFor`,
+      // which the first version of this check did not look for — it counted
+      // eight correctly-named controls as defects. A budget that over-counts
+      // hides the progress it exists to measure.
+      const pointedAt = new Set([
+        ...[...source.matchAll(/htmlFor="([^"]+)"/g)].map((m) => m[1]),
+        ...[...source.matchAll(/htmlFor=\{([^}]+)\}/g)].map((m) => m[1]),
+      ]);
+
       for (const m of source.matchAll(CONTROL)) {
         const at = m.index ?? 0;
         if (spans.some(([a, b]) => a < at && at < b)) continue;
-        if (!/\baria-label(?:ledby)?\b/.test(openingTag(source, at))) unnamed += 1;
+
+        const tag = openingTag(source, at);
+        if (/\baria-label(?:ledby)?\b/.test(tag)) continue;
+
+        const id = /\bid="([^"]+)"/.exec(tag) ?? /\bid=\{([^}]+)\}/.exec(tag);
+        if (id && pointedAt.has(id[1])) continue;
+
+        unnamed += 1;
       }
     }
 
@@ -185,6 +207,51 @@ describe('defects that must not come back', () => {
         ? 'a new control has nothing to name it — give it a label, or an aria-label'
         : `${BUDGET_UNNAMED_CONTROLS - unnamed} fewer — lower BUDGET_UNNAMED_CONTROLS to ${unnamed}`,
     ).toBe(BUDGET_UNNAMED_CONTROLS);
+  });
+
+  it('adds no new icon-only button that nothing names', () => {
+    /**
+     * A button whose whole body is one icon, with no aria-label and no
+     * title, is announced as "button". 231 matched that shape; 204 draw an
+     * icon whose meaning is unambiguous — a close cross, a bin, a pencil —
+     * and those are named from it.
+     *
+     * A looser count over the same code says 591, by also catching bodies
+     * like `{saving ? <Loader2/> : 'Save'}` whose text is in an expression.
+     * Those are named already; this check reads the narrow shape on purpose,
+     * so it cannot be satisfied by a button that merely looks empty to a
+     * regex.
+     *
+     * The chevrons are deliberately not: the same glyph is expand, collapse,
+     * next and previous in this codebase, and putting a wrong name in front
+     * of someone who cannot see the screen is worse than the nothing they
+     * get now. They are in the budget until a person decides.
+     */
+    const BUDGET_UNNAMED_ICON_BUTTONS = 27;
+    const ONLY_ICON = /^\s*<[A-Z]\w*\b[^<>]*\/>\s*$/;
+    let unnamed = 0;
+
+    for (const source of Object.values(TSX)) {
+      for (let at = source.indexOf('<button'); at !== -1; at = source.indexOf('<button', at + 1)) {
+        const tag = openingTag(source, at);
+        if (/\baria-label\b|\btitle=/.test(tag)) continue;
+
+        const gt = at + tag.length;
+        const close = source.indexOf('</button>', gt);
+        if (close === -1) continue;
+
+        const body = source.slice(gt + 1, close);
+        const text = body.replace(/<[^>]*>/g, '').replace(/\{[^}]*\}/g, '').trim();
+        if (!text && (ONLY_ICON.test(body) || !body.includes('{'))) unnamed += 1;
+      }
+    }
+
+    expect(
+      unnamed,
+      unnamed > BUDGET_UNNAMED_ICON_BUTTONS
+        ? 'a new icon-only button has no name — use IconButton, which requires one'
+        : `${BUDGET_UNNAMED_ICON_BUTTONS - unnamed} fewer — lower the budget to ${unnamed}`,
+    ).toBe(BUDGET_UNNAMED_ICON_BUTTONS);
   });
 
   it('never removes the focus outline without putting one back', () => {

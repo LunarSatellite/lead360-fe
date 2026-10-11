@@ -244,7 +244,7 @@ function ReputationPanel() {
         placeholder="Account id" aria-label="Account id"
         className={input}
       />
-      <select
+      <select aria-label="Facet"
         value={facet}
         onChange={(e) => setFacet(e.target.value === '' ? '' : (Number(e.target.value) as ReputationFacetValue))}
         className={`mt-2 ${plain}`}
@@ -397,7 +397,7 @@ function PassportPanel() {
         placeholder="Passport record id" aria-label="Passport record id"
         className={input}
       />
-      <select
+      <select aria-label="Outcome"
         value={outcome}
         onChange={(e) => setOutcome(Number(e.target.value) as PassportAssuranceValue)}
         className={`mt-2 ${plain}`}
@@ -414,7 +414,7 @@ function PassportPanel() {
         placeholder="How the check was carried out (required)" aria-label="How the check was carried out (required)"
         className={`mt-2 ${plain}`}
       />
-      <input
+      <input aria-label="Note"
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder={noteRequired ? 'What the check found (required)' : 'What the check found (optional)'}

@@ -201,7 +201,7 @@ function CreateForm({
             placeholder="Budget" aria-label="Budget"
             className={field}
           />
-          <input
+          <input aria-label="Currency"
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
             className={`${field} w-20`}
@@ -463,7 +463,7 @@ function GenerateForm({
         every review gate it was routed to.
       </p>
       <div className="mt-2 grid gap-2 sm:grid-cols-4">
-        <select
+        <select aria-label="Kind"
           value={kind}
           onChange={(e) => setKind(Number(e.target.value) as CampaignCreativeKindValue)}
           className={field}
@@ -572,7 +572,7 @@ function ReviewForm({
           placeholder="Draft id" aria-label="Draft id"
           className={`${field} font-mono sm:col-span-2`}
         />
-        <select
+        <select aria-label="Gate"
           value={gate}
           onChange={(e) => setGate(Number(e.target.value) as CampaignReviewGateValue)}
           className={field}

@@ -99,7 +99,7 @@ export function CatalogImportDialog({ onClose }: Props) {
             </h2>
             <p className="text-[11px] text-text-muted mt-1">Upload categories and items together from one CSV file.</p>
           </div>
-          <button type="button" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-glass-2 hover:text-text-primary">
+          <button aria-label="Close" type="button" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-glass-2 hover:text-text-primary">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -126,7 +126,7 @@ export function CatalogImportDialog({ onClose }: Props) {
 
             <div className="rounded-xl bg-glass-1 border border-border-subtle p-3">
               <label className="text-[11px] font-bold text-text-secondary">Import behavior</label>
-              <select
+              <select aria-label="Mode"
                 value={mode}
                 onChange={(event) => { setMode(event.target.value as CatalogImportMode); setPreview(null); }}
                 className="mt-2 w-full appearance-none cursor-pointer rounded-lg border border-border-subtle bg-glass-2 px-3 py-2 text-xs text-text-primary outline-none focus:border-brand"

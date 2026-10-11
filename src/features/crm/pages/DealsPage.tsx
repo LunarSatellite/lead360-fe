@@ -448,12 +448,12 @@ export function Component() {
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date From</label>
-            <input type="date" value={filterCloseDateFrom} onChange={e => setFilterCloseDateFrom(e.target.value)}
+            <input aria-label="Filter close date from" type="date" value={filterCloseDateFrom} onChange={e => setFilterCloseDateFrom(e.target.value)}
               className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date To</label>
-            <input type="date" value={filterCloseDateTo} onChange={e => setFilterCloseDateTo(e.target.value)}
+            <input aria-label="Filter close date to" type="date" value={filterCloseDateTo} onChange={e => setFilterCloseDateTo(e.target.value)}
               className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
           </div>
           <div className="flex flex-col gap-1 justify-end">
@@ -841,7 +841,7 @@ export function Component() {
                 >New Deal</h2>
                 <p className="text-xs text-text-muted mt-0.5">Create a deal directly in your pipeline</p>
               </div>
-              <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -1002,23 +1002,23 @@ export function Component() {
                 <h2 className="text-sm font-bold text-text-primary">Manage Pipeline</h2>
                 <p className="text-xs text-text-muted mt-0.5">Add, edit or reorder deal stages</p>
               </div>
-              <button onClick={() => setShowPipeline(false)} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+              <button aria-label="Close" onClick={() => setShowPipeline(false)} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
             </div>
             <div className="p-5 space-y-3">
               {stages.map((stage, idx) => (
                 <div key={stage.id} className="border border-border-subtle rounded-xl overflow-hidden">
                   {editingStageId === stage.id ? (
                     <div className="p-3 space-y-2 bg-bg-elevated">
-                      <input value={editingName} onChange={e => setEditingName(e.target.value)}
+                      <input aria-label="Editing name" value={editingName} onChange={e => setEditingName(e.target.value)}
                         className="w-full px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                       <div className="flex items-center gap-2">
-                        <input type="color" value={editingColor} onChange={e => setEditingColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
+                        <input aria-label="Editing color" type="color" value={editingColor} onChange={e => setEditingColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
                         <span className="text-xs text-text-muted">Color</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-text-muted">Win probability</span>
                         <div className="flex items-center gap-1">
-                          <input type="range" min={0} max={100} value={editingProb} onChange={e => setEditingProb(Number(e.target.value))} className="w-24 accent-brand" />
+                          <input aria-label="Editing prob" type="range" min={0} max={100} value={editingProb} onChange={e => setEditingProb(Number(e.target.value))} className="w-24 accent-brand" />
                           <span className="text-xs text-text-primary font-semibold tabular-nums w-8 text-right">{editingProb}%</span>
                         </div>
                       </div>
@@ -1039,9 +1039,9 @@ export function Component() {
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
                         <button disabled={idx === stages.length - 1} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order + 1 } })}
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
+                        <button aria-label="Settings" onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
                           className="p-1 text-text-muted hover:text-text-primary"><Settings className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button aria-label="Delete" onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </div>
                   )}
@@ -1052,7 +1052,7 @@ export function Component() {
                 <input value={newStageName} onChange={e => setNewStageName(e.target.value)} placeholder="Stage name" aria-label="Stage name"
                   className="w-full px-3 py-2 rounded-lg bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                 <div className="flex items-center gap-2">
-                  <input type="color" value={newStageColor} onChange={e => setNewStageColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
+                  <input aria-label="New stage color" type="color" value={newStageColor} onChange={e => setNewStageColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
                   <span className="text-xs text-text-muted">Color</span>
                 </div>
                 <button disabled={!newStageName.trim() || createStage.isPending}
@@ -1072,7 +1072,7 @@ export function Component() {
           <div className="w-full max-w-md bg-bg border border-border-subtle rounded-2xl p-6 space-y-4 shadow-2xl">
             <h3 className="text-sm font-bold text-text-primary">Mark as Won</h3>
             <p className="text-xs text-text-muted">Enter the win reason to record why this deal was closed.</p>
-            <textarea
+            <textarea aria-label="Win reason"
               autoFocus
               value={winReason}
               onChange={e => setWinReason(e.target.value)}

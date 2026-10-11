@@ -146,7 +146,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
               Produit, cinq visuels minimum, reel, prix CDF, stock et livraison dans un seul parcours.
             </p>
           </div>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             className="rounded-xl border border-border-subtle p-2 text-text-muted hover:text-text-primary"
@@ -185,7 +185,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
               )}</span>
               <Input label="Nom" value={form.name} onChange={(value) => set('name', value)} required />
             </label>
-            <Input
+            <Input aria-label="Short description"
               label="Description courte"
               value={form.shortDescription}
               onChange={(value) => set('shortDescription', value)}
@@ -230,18 +230,18 @@ export function ProductComposer({ onClose, onDone }: Props) {
               required
               rows={7}
             />
-            <Input
+            <Input aria-label="Video URL"
               label="Reel / video URL"
               value={form.videoUrl}
               onChange={(value) => set('videoUrl', value)}
             />
             <div className="grid grid-cols-2 gap-3">
-              <Input
+              <Input aria-label="Poster URL"
                 label="Reel poster"
                 value={form.posterUrl}
                 onChange={(value) => set('posterUrl', value)}
               />
-              <Input
+              <Input aria-label="Duration"
                 label="Duree (secondes)"
                 type="number"
                 value={form.duration}
@@ -251,23 +251,23 @@ export function ProductComposer({ onClose, onDone }: Props) {
           </Section>
 
           <Section title="3. Price and inventory">
-            <Input label="SKU" value={form.sku} onChange={(value) => set('sku', value)} required />
+            <Input aria-label="SKU" label="SKU" value={form.sku} onChange={(value) => set('sku', value)} required />
             <div className="grid grid-cols-3 gap-3">
-              <Input
+              <Input aria-label="Price"
                 label="Price (CDF)"
                 type="number"
                 value={form.price}
                 onChange={(value) => set('price', value)}
                 required
               />
-              <Input
+              <Input aria-label="Cost"
                 label="Cout CDF"
                 type="number"
                 value={form.cost}
                 onChange={(value) => set('cost', value)}
                 required
               />
-              <Input
+              <Input aria-label="Quantity"
                 label="Stock"
                 type="number"
                 value={form.quantity}
@@ -279,13 +279,13 @@ export function ProductComposer({ onClose, onDone }: Props) {
 
           <Section title="4. Livraison Kinshasa">
             <div className="grid grid-cols-2 gap-3">
-              <Input
+              <Input aria-label="Processing days"
                 label="Preparation (jours)"
                 type="number"
                 value={form.processingDays}
                 onChange={(value) => set('processingDays', value)}
               />
-              <Input
+              <Input aria-label="Weight grams"
                 label="Poids (g)"
                 type="number"
                 value={form.weightGrams}
@@ -293,19 +293,19 @@ export function ProductComposer({ onClose, onDone }: Props) {
               />
             </div>
             <div className="grid grid-cols-3 gap-3">
-              <Input
+              <Input aria-label="Length cm"
                 label="Longueur cm"
                 type="number"
                 value={form.lengthCm}
                 onChange={(value) => set('lengthCm', value)}
               />
-              <Input
+              <Input aria-label="Width cm"
                 label="Largeur cm"
                 type="number"
                 value={form.widthCm}
                 onChange={(value) => set('widthCm', value)}
               />
-              <Input
+              <Input aria-label="Height cm"
                 label="Hauteur cm"
                 type="number"
                 value={form.heightCm}
@@ -313,19 +313,19 @@ export function ProductComposer({ onClose, onDone }: Props) {
               />
             </div>
             <div className="grid grid-cols-3 gap-3">
-              <Input
+              <Input aria-label="Shipping fee"
                 label="Frais CDF"
                 type="number"
                 value={form.shippingFee}
                 onChange={(value) => set('shippingFee', value)}
               />
-              <Input
+              <Input aria-label="Shipping min"
                 label="Delai min"
                 type="number"
                 value={form.shippingMin}
                 onChange={(value) => set('shippingMin', value)}
               />
-              <Input
+              <Input aria-label="Shipping max"
                 label="Delai max"
                 type="number"
                 value={form.shippingMax}

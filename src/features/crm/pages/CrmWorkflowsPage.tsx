@@ -569,7 +569,7 @@ function GenericConditionEditor({ value, onChange }: { value: string; onChange: 
       <div className="flex items-center gap-2">
         <button type="button" className="nodrag text-[10px] text-brand hover:underline" onClick={add}>+ Add condition</button>
         {conditions.length > 1 && (
-          <select className={INPUT + ' w-24'} value={logic} onChange={(e) => emit(e.target.value, conditions)}>
+          <select aria-label="Logic" className={INPUT + ' w-24'} value={logic} onChange={(e) => emit(e.target.value, conditions)}>
             <option value="AND">Match ALL</option>
             <option value="OR">Match ANY</option>
           </select>
@@ -599,7 +599,7 @@ function TriggerConditionEditor({ triggerType, value, onChange }: {
           <span className="text-[10px] text-text-muted">Score threshold</span>
           <span className="text-[12px] font-bold text-brand">{threshold}</span>
         </div>
-        <input type="range" min={0} max={100} step={5} value={threshold}
+        <input aria-label="Threshold" type="range" min={0} max={100} step={5} value={threshold}
           onChange={(e) => set('threshold', Number(e.target.value))}
           className="nodrag w-full accent-brand cursor-pointer" />
         <p className="text-[9px] text-text-muted">Fires once when the lead score crosses this value</p>
@@ -717,7 +717,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
     return (
       <div className="space-y-1.5">
         <div><label className={L}>Send to *</label>
-          <select className={F} value={mode} onChange={(e) => {
+          <select aria-label="Mode" className={F} value={mode} onChange={(e) => {
             const v = e.target.value;
             setMany({ to: v === 'owner' ? 'owner' : v === 'customer' ? 'customer' : '' });
           }}>
@@ -749,7 +749,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
           <label className={L}>Score change</label>
           <span className={`text-[12px] font-bold ${delta >= 0 ? 'text-success' : 'text-danger'}`}>{delta >= 0 ? `+${delta}` : delta}</span>
         </div>
-        <input type="range" min={-50} max={50} step={5} value={delta}
+        <input aria-label="Delta" type="range" min={-50} max={50} step={5} value={delta}
           onChange={(e) => set('delta', Number(e.target.value))}
           className="nodrag w-full accent-brand cursor-pointer" />
         <p className="text-[9px] text-text-muted">Negative values reduce the score</p>
@@ -866,12 +866,12 @@ function CreateWorkflowForm({ onGenerate }: {
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-text-muted font-semibold">Step {s.stepOrder}</span>
                     {steps.length > 1 && (
-                      <button onClick={() => removeStep(i)} className="p-0.5 rounded text-danger hover:bg-danger-soft transition-colors">
+                      <button aria-label="Close" onClick={() => removeStep(i)} className="p-0.5 rounded text-danger hover:bg-danger-soft transition-colors">
                         <X className="w-3 h-3" />
                       </button>
                     )}
                   </div>
-                  <select value={s.actionType} onChange={(e) => updateStep(i, { actionType: e.target.value, actionConfigJson: '{}' })}
+                  <select aria-label="Action type" value={s.actionType} onChange={(e) => updateStep(i, { actionType: e.target.value, actionConfigJson: '{}' })}
                     className="nodrag w-full px-2 py-1 border border-border-subtle rounded text-[10px] bg-bg-shell text-text-primary outline-none focus:border-brand">
                     {Object.entries(CRM_WORKFLOW_ACTION_LABELS).map(([k, l]) => (
                       <option key={k} value={k}>{l}</option>
@@ -1707,7 +1707,7 @@ function WorkflowChatWidget({
         </span>
 
         {/* Input */}
-        <input
+        <input aria-label="Input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKey}
@@ -1719,7 +1719,7 @@ function WorkflowChatWidget({
         />
 
         {/* Send button */}
-        <button
+        <button aria-label="Send"
           onClick={handleSend}
           disabled={!input.trim() || loading}
           className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all disabled:opacity-30"
@@ -2118,7 +2118,7 @@ function WorkflowCard({ wf, onOpen, onRun, onDelete, onToggle }: {
               <button onClick={() => setConfirmDel(false)} className="text-[10px] text-text-muted px-1">✕</button>
             </div>
           ) : (
-            <button onClick={() => setConfirmDel(true)} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+            <button aria-label="Delete" onClick={() => setConfirmDel(true)} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
             </button>
           )}

@@ -332,7 +332,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
               {isEdit ? 'Modify agent settings and configuration' : 'Create a new agent to automate workflows'}
             </p>
           </div>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             disabled={isPending}

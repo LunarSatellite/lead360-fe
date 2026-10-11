@@ -117,7 +117,7 @@ export function IntentBulkImportModal({ open, onClose, tenantId }: IntentBulkImp
             <FileJson className="w-5 h-5 text-brand" strokeWidth={1.6} />
             <h2 className="text-lg font-extrabold text-text-primary tracking-tight">Bulk import intents</h2>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-8 h-8 rounded-lg bg-glass-2 flex items-center justify-center text-text-muted hover:text-text-primary transition-all"
           >

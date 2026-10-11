@@ -203,6 +203,56 @@ ${fromSystem} of ${total} visible buttons across ${ROUTES.length} pages (${(shar
   });
 });
 
+test.describe('the chrome says something the page does not', () => {
+  test.beforeEach(async ({ page }) => {
+    await stubTheApi(page);
+  });
+
+  test('the sticky bar is a breadcrumb, not a second copy of the heading', async ({ page }) => {
+    /**
+     * Measured across twelve pages before this: every one printed its own
+     * name in the sticky bar and again in its <h1> forty pixels below. Two
+     * headings, the same word, and neither the obvious one.
+     *
+     * The bar is the only place that can say which section and group a page
+     * is in — the thing the merged rail knows and the page cannot show —
+     * so it says that instead.
+     */
+    const checked = [
+      { href: '/dashboard/crm/quotes', crumbs: ['CRM', 'Deals & pipeline', 'Quotes'] },
+      { href: '/dashboard/stylemint/orders', crumbs: ['Commerce', 'Orders & fulfilment'] },
+      { href: '/dashboard/agents', crumbs: ['Commerce', 'Automation & AI', 'Agents'] },
+    ];
+
+    for (const { href, crumbs } of checked) {
+      await page.goto(href, { waitUntil: 'domcontentloaded' });
+      await page.waitForTimeout(900);
+
+      const trail = page.getByRole('navigation', { name: 'Breadcrumb' });
+      await expect(trail, `${href} has no breadcrumb`).toBeVisible();
+
+      const text = ((await trail.textContent()) ?? '').replace(/\s+/g, ' ').trim();
+      for (const crumb of crumbs) {
+        expect(text, `${href} breadcrumb is "${text}"`).toContain(crumb);
+      }
+
+      // And it must not simply repeat the page's own heading. `count()`
+      // first: a page with no h1 makes `textContent()` wait out the whole
+      // timeout rather than return nothing.
+      const headings = page.locator('main h1');
+      const heading =
+        (await headings.count()) > 0
+          ? ((await headings.first().textContent()) ?? '').trim()
+          : '';
+      if (heading) {
+        expect(text.toLowerCase(), `${href} bar is just the h1 again`).not.toBe(
+          heading.toLowerCase(),
+        );
+      }
+    }
+  });
+});
+
 test.describe('the admin fits on a phone', () => {
   test.beforeEach(async ({ page }) => {
     await stubTheApi(page);

@@ -12,6 +12,7 @@ import {
   Building2,
   ChefHat,
   ChevronDown,
+  ChevronRight,
   Compass,
   FileSearch,
   Flag,
@@ -354,6 +355,38 @@ export function DashboardLayout() {
     return navTitleFor(path) ?? 'Dashboard';
   };
 
+  /**
+   * Section › group › page, from the navigation model.
+   *
+   * Longest href wins for the same reason the rail picks its open group
+   * that way: `/dashboard` is itself a nav entry and on a plain prefix
+   * match it claims every page in the admin.
+   */
+  const breadcrumb = (() => {
+    const path = location.pathname;
+    let best: { section: string; group: string; label: string; length: number } | null = null;
+
+    for (const group of navGroups) {
+      for (const item of group.items) {
+        const hit = path === item.href || path.startsWith(`${item.href}/`);
+        if (!hit || item.href.length <= (best?.length ?? -1)) continue;
+        best = {
+          section: navSections.find((x) => x.id === group.section)?.label ?? '',
+          group: group.label,
+          label: item.label,
+          length: item.href.length,
+        };
+      }
+    }
+
+    // A page outside the nav — a detail route — still gets its title.
+    if (!best) return [getPageTitle()];
+    // Don't repeat the group when it is the page, as in Settings › Settings.
+    return [best.section, best.group, best.label].filter(
+      (part, index, all) => part && all.indexOf(part) === index,
+    );
+  })();
+
   const getPageIcon = () => {
     const path = location.pathname;
     const named = EXACT_NAV_PAGE.get(path);
@@ -546,9 +579,38 @@ export function DashboardLayout() {
           <div className="hidden lg:flex w-7 h-7 rounded-lg bg-brand-soft border border-border-glow items-center justify-center shrink-0">
             <PageIcon className="w-3.5 h-3.5 text-brand" strokeWidth={1.5} />
           </div>
-          <h1 className="text-[15px] font-extrabold text-text-primary tracking-tight truncate">
-            {getPageTitle()}
-          </h1>
+          {/* Where you are, not what the page is already called.
+
+              Measured across twelve pages, every one of them printed its
+              own name here and again in its <h1> forty pixels below. Two
+              headings, same word, and neither the obvious one. The sticky
+              bar is the only place that can say which section and group a
+              page sits in, which is the thing the merged rail knows and
+              the page itself cannot show. */}
+          <nav aria-label="Breadcrumb" className="min-w-0 truncate">
+            <ol className="flex items-center gap-1.5 text-[13px]">
+              {breadcrumb.map((crumb, index) => (
+                <li key={crumb} className="flex items-center gap-1.5">
+                  {index > 0 && (
+                    <ChevronRight
+                      className="h-3 w-3 shrink-0 text-text-muted"
+                      strokeWidth={2}
+                      aria-hidden
+                    />
+                  )}
+                  <span
+                    className={
+                      index === breadcrumb.length - 1
+                        ? 'truncate font-extrabold tracking-tight text-text-primary'
+                        : 'truncate font-semibold text-text-muted'
+                    }
+                  >
+                    {crumb}
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </nav>
           <div className="ml-auto flex items-center gap-2 shrink-0">
             <NotificationBell />
             <Button

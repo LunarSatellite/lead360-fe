@@ -7,6 +7,7 @@ import {
   DollarSign, Megaphone, Image, Globe, Users,
 } from 'lucide-react';
 import { apiClient } from '@/shared/lib/api-client';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -273,23 +274,23 @@ export function CreateCampaignDrawer({ onClose }: Props) {
           </button>
 
           {step < 3 ? (
-            <button
+            <Button
               onClick={() => setStep(s => s + 1)}
               disabled={!canNext()}
-              className="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold rounded-xl bg-brand text-bg disabled:opacity-50 hover:opacity-90 transition-all"
+              variant="primary" size="lg"
             >
               Next <ChevronRight className="w-4 h-4" />
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               onClick={onSubmit}
               disabled={!canNext() || createMut.isPending}
-              className="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold rounded-xl bg-brand text-bg disabled:opacity-50 hover:opacity-90 transition-all"
+              variant="primary" size="lg"
             >
               {createMut.isPending
                 ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating…</>
                 : <><Check className="w-4 h-4" /> Launch Campaign</>}
-            </button>
+            </Button>
           )}
         </div>
       </div>

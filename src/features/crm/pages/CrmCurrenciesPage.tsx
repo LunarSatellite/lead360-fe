@@ -10,6 +10,7 @@ import {
   useSetExchangeRate,
 } from '../api/crm-currency.queries';
 import type { CrmCurrencyDto } from '../types/crm-currency.types';
+import { Button } from '@/shared/ui/primitives';
 
 const field =
   'rounded-xl bg-bg-input border border-border-subtle px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand';
@@ -130,13 +131,13 @@ export function Component() {
             onChange={(e) => setDecimals(Number(e.target.value))}
             className={`w-24 ${field}`}
           />
-          <button
+          <Button
             type="submit"
             disabled={create.isPending || !code.trim() || !name.trim()}
-            className="rounded-xl bg-brand text-text-inverted px-4 py-2 text-sm font-bold disabled:opacity-40"
+            variant="primary"
           >
             Add
-          </button>
+          </Button>
         </div>
       </form>
 

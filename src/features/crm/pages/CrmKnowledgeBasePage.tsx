@@ -6,6 +6,7 @@ import {
 } from '../api/crm-kb.queries';
 import type { CrmKbArticleDto, CrmKbDraftDto } from '../types/crm-kb.types';
 import { CRM_KB_ARTICLE_STATUS_LABELS, CrmKbDraftStatus } from '../types/crm-kb.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
 
@@ -165,9 +166,9 @@ function ArticleDetail({ id, onBack }: { id: string; onBack: () => void }) {
             />
             <div className="flex justify-end gap-2">
               <button onClick={() => setEditing(false)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
-              <button onClick={save} disabled={update.isPending} className="px-4 py-1.5 rounded-lg text-xs font-bold bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">
+              <Button onClick={save} disabled={update.isPending} variant="primary">
                 Save
-              </button>
+              </Button>
             </div>
           </div>
         ) : (

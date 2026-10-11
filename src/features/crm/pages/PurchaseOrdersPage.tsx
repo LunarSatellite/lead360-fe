@@ -8,6 +8,7 @@ import {
 } from '../api/crm.queries';
 import type { PurchaseOrderDto, PurchaseOrderCreateRequest, PurchaseOrderLineItemRequest, PurchaseOrderFilter, VendorDto } from '../types/crm.types';
 import { PO_STATUS_LABELS, PO_STATUS_COLORS, PurchaseOrderStatus } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colors[value] ?? ''}`}>{labels[value] ?? value}</span>;
@@ -144,9 +145,9 @@ export function Component() {
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Purchase Orders</h2>
             <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New PO
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -220,10 +221,10 @@ export function Component() {
         footer={
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="po-form" disabled={createPO.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="submit" form="po-form" disabled={createPO.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Purchase Order'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -282,28 +283,10 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Expected Delivery">
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="date"
-                  value={expectedDelivery}
-                  onChange={e => setExpectedDelivery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                />
-              </div>
+              <Input icon={Calendar} type="date" value={expectedDelivery} onChange={e => setExpectedDelivery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
             <Field label="Currency">
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={currency}
-                  onChange={e => setCurrency(e.target.value)}
-                  placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                />
-              </div>
+              <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
           </div>
 

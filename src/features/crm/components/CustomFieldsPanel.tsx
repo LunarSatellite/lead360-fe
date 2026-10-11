@@ -3,6 +3,7 @@ import { Loader2, SlidersHorizontal, Save } from 'lucide-react';
 import { useCustomFieldValues, useSetCustomFieldValues } from '../api/crm.queries';
 import type { CustomFieldValueDto, SetCustomFieldValuesRequest } from '../types/crm.types';
 import { CustomFieldType } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   recordId: string;
@@ -63,14 +64,14 @@ export function CustomFieldsPanel({ recordId, entityType }: Props) {
             >
               Cancel
             </button>
-            <button
+            <Button
               onClick={handleSave}
               disabled={save.isPending}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-semibold hover:bg-brand-light transition-all disabled:opacity-50"
+              variant="primary" size="sm"
             >
               {save.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
               Save
-            </button>
+            </Button>
           </div>
         )}
       </div>

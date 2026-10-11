@@ -33,6 +33,7 @@ import {
   CRM_WORKFLOW_TRIGGER_LABELS, CRM_WORKFLOW_ACTION_LABELS,
   CRM_WORKFLOW_EXECUTION_STATUS_LABELS,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ── Canvas CSS — cleaner n8n-inspired style ────────────────────────────────────
 const CANVAS_CSS = `
@@ -2118,10 +2119,10 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Workflows</h2>
           <p className="text-xs text-text-muted mt-0.5">Automate CRM actions triggered by events</p>
         </div>
-        <button onClick={() => setBuilderTarget('new')}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setBuilderTarget('new')}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Workflow
-        </button>
+        </Button>
       </div>
 
       <div className="flex items-center gap-2">

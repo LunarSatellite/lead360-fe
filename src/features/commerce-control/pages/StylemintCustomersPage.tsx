@@ -15,6 +15,7 @@ import {
 import { stylemintCommerceApi, type StylemintCustomer } from '../api/stylemint-commerce.api';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function StylemintCustomersPage() {
   const { user } = useAuth();
@@ -122,7 +123,7 @@ export function StylemintCustomersPage() {
           <option value="2">Suspendus</option>
           <option value="3">Desactives</option>
         </select>
-        <button className="rounded-xl bg-brand px-5 py-2 text-xs font-extrabold text-bg">Search</button>
+        <Button variant="primary" size="lg">Search</Button>
       </form>
 
       <div className="overflow-hidden rounded-2xl border border-border-subtle bg-bg-card">
@@ -253,10 +254,10 @@ export function StylemintCustomersPage() {
                 Suspendre le compte
               </button>
             ) : selected.status === 2 ? (
-              <button
+              <Button
                 disabled={stateAction.isPending}
                 onClick={() => stateAction.mutate({ customer: selected, action: 'reinstate' })}
-                className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3 text-sm font-extrabold text-bg disabled:opacity-50"
+                variant="primary" size="lg" block className="mt-7"
               >
                 {stateAction.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -264,7 +265,7 @@ export function StylemintCustomersPage() {
                   <CheckCircle2 className="h-4 w-4" />
                 )}{' '}
                 Reactiver le compte
-              </button>
+              </Button>
             ) : null}
           </aside>
         </div>

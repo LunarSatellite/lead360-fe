@@ -13,6 +13,7 @@ import type {
   CrmOrganizationDetailDto, 
 } from '../types/crm.types';
 import { formatDistanceToNow } from 'date-fns';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 const inputCls =
@@ -128,13 +129,13 @@ function OrgForm({
         <textarea rows={3} value={form.description} onChange={set('description')} className={`${inputCls} resize-none`} />
       </div>
       <div className="flex gap-3 pt-1">
-        <button
+        <Button
           type="submit"
           disabled={isSaving || !form.name.trim()}
-          className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary" className="flex-1"
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> {submitLabel}</>}
-        </button>
+        </Button>
         <button
           type="button"
           onClick={onCancel}
@@ -311,12 +312,12 @@ export function Component() {
               {data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}
             </p>
           </div>
-          <button
+          <Button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Organization
-          </button>
+          </Button>
         </div>
 
         <form
@@ -450,99 +451,33 @@ export function Component() {
             >
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Name *</label>
-                <div className="relative">
-                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    required
-                    value={createForm.name}
-                    onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))}
-                    placeholder="Acme Corp"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  />
-                </div>
+                <Input icon={Building2} required value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} placeholder="Acme Corp" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      value={createForm.domain}
-                      onChange={e => setCreateForm(f => ({ ...f, domain: e.target.value }))}
-                      placeholder="acme.com"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <Input icon={Globe} value={createForm.domain} onChange={e => setCreateForm(f => ({ ...f, domain: e.target.value }))} placeholder="acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
-                  <div className="relative">
-                    <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      value={createForm.industry}
-                      onChange={e => setCreateForm(f => ({ ...f, industry: e.target.value }))}
-                      placeholder="SaaS, Retail…"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <Input icon={Layers} value={createForm.industry} onChange={e => setCreateForm(f => ({ ...f, industry: e.target.value }))} placeholder="SaaS, Retail…" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
-                  <div className="relative">
-                    <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number"
-                      min={0}
-                      value={createForm.employeeCount}
-                      onChange={e => setCreateForm(f => ({ ...f, employeeCount: e.target.value }))}
-                      placeholder="250"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <Input icon={Users} type="number" min={0} value={createForm.employeeCount} onChange={e => setCreateForm(f => ({ ...f, employeeCount: e.target.value }))} placeholder="250" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      value={createForm.country}
-                      onChange={e => setCreateForm(f => ({ ...f, country: e.target.value }))}
-                      placeholder="US"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <Input icon={MapPin} value={createForm.country} onChange={e => setCreateForm(f => ({ ...f, country: e.target.value }))} placeholder="US" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      value={createForm.city}
-                      onChange={e => setCreateForm(f => ({ ...f, city: e.target.value }))}
-                      placeholder="New York"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <Input icon={MapPin} value={createForm.city} onChange={e => setCreateForm(f => ({ ...f, city: e.target.value }))} placeholder="New York" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
-                  <div className="relative">
-                    <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      value={createForm.website}
-                      onChange={e => setCreateForm(f => ({ ...f, website: e.target.value }))}
-                      placeholder="https://acme.com"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <Input icon={Globe} value={createForm.website} onChange={e => setCreateForm(f => ({ ...f, website: e.target.value }))} placeholder="https://acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                 </div>
               </div>
 
@@ -566,14 +501,14 @@ export function Component() {
                 >
                   Cancel
                 </button>
-                <button
+                <Button
                   type="submit"
                   disabled={createOrg.isPending || !createForm.name.trim()}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  variant="primary"
                 >
                   {createOrg.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                   Create Organization
-                </button>
+                </Button>
               </div>
             </form>
           </div>

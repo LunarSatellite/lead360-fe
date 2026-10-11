@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 const PERIOD_PRESETS = [
   { label: 'This Month', code: new Date().toISOString().slice(0, 7) },
@@ -51,9 +52,9 @@ function PayoutModal({ payout, onClose }: { payout: CrmCommissionPayoutDto; onCl
         )}
 
         {payout.status === CrmCommissionRunStatus.Finalized && (
-          <button onClick={handleMarkPaid} disabled={markPaid.isPending} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">
+          <Button onClick={handleMarkPaid} disabled={markPaid.isPending} variant="primary" size="lg" block>
             {markPaid.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wallet className="w-4 h-4" />} Record Payout
-          </button>
+          </Button>
         )}
 
         <button onClick={onClose} className="w-full py-2 rounded-xl text-sm text-text-secondary border border-border-subtle hover:bg-bg-elevated">Close</button>
@@ -97,10 +98,10 @@ export function Component() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button onClick={() => runCommission.mutate()} disabled={runCommission.isPending}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand text-bg text-xs font-bold hover:bg-brand-light disabled:opacity-50">
+          <Button onClick={() => runCommission.mutate()} disabled={runCommission.isPending}
+            variant="primary">
             {runCommission.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />} Run Commission
-          </button>
+          </Button>
           <button onClick={() => {
             const p = crmApi.createCommissionPlan({ name: 'Default Plan', rateType: 1, rateValue: 5, targetEntity: 1 });
             toast.promise(p, { loading: 'Creating plan...', success: 'Commission plan created.', error: (e) => e?.message || 'Error' });

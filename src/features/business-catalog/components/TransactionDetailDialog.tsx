@@ -30,6 +30,7 @@ import {
   TransactionStatus,
   type TransactionStatusValue,
 } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   transactionId: string;
@@ -297,12 +298,11 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                 >
                   <Send className="w-3.5 h-3.5" strokeWidth={2} /> Resend "preparing" update
                 </button>
-                <button
+                <Button
                   type="button"
                   disabled={statusMutation.isPending}
                   onClick={() => setStatus(TransactionStatus.ReadyForPickup)}
-                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold
-                             bg-brand text-text-inverted hover:bg-brand/90 disabled:opacity-50 transition-all"
+                  variant="primary"
                 >
                   {statusMutation.isPending ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -310,7 +310,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                     <PackageCheck className="w-3.5 h-3.5" strokeWidth={2} />
                   )}
                   Mark ready for pickup &amp; notify
-                </button>
+                </Button>
               </div>
             )}
 

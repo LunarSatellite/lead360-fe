@@ -11,6 +11,7 @@ import {
   CrmNpsClassification, CrmNpsSurveyTrigger,
   CRM_NPS_CLASSIFICATION_LABELS, CRM_NPS_CLASSIFICATION_COLORS, CRM_NPS_TRIGGER_LABELS,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
@@ -181,32 +182,17 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
 
       <div>
         <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID *</label>
-        <div className="relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <input required value={form.contactId} onChange={set('contactId')} placeholder="contact-uuid"
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-            style={inputStyle} />
-        </div>
+        <Input icon={User} required value={form.contactId} onChange={set('contactId')} placeholder="contact-uuid" style={inputStyle} />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
-          <div className="relative">
-            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.dealId ?? ''} onChange={set('dealId')} placeholder="deal-uuid"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={inputStyle} />
-          </div>
+          <Input icon={Hash} value={form.dealId ?? ''} onChange={set('dealId')} placeholder="deal-uuid" style={inputStyle} />
         </div>
         <div>
           <label className="block text-xs font-semibold text-text-secondary mb-1">Support Case ID</label>
-          <div className="relative">
-            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="case-uuid"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={inputStyle} />
-          </div>
+          <Input icon={Hash} value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="case-uuid" style={inputStyle} />
         </div>
       </div>
 
@@ -255,10 +241,10 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">NPS Surveys</h2>
           <p className="text-xs text-text-muted mt-0.5">Net Promoter Score feedback from contacts</p>
         </div>
-        <button onClick={() => setShowSend(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setShowSend(true)}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Send Survey
-        </button>
+        </Button>
       </div>
 
       <SummaryCard />
@@ -338,10 +324,10 @@ export function Component() {
         footer={
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={() => setShowSend(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="nps-form"
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="submit" form="nps-form"
+              variant="primary" size="lg" className="flex-none">
               <Send className="w-4 h-4" /> Send Survey
-            </button>
+            </Button>
           </div>
         }
       >

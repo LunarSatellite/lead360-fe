@@ -6,6 +6,7 @@ import {
 } from '../api/crm.queries';
 import type { GoodsReceiptDto, GoodsReceiptCreateRequest, GoodsReceiptLineItemRequest, GoodsReceiptFilter } from '../types/crm.types';
 import { GR_STATUS_LABELS, GR_STATUS_COLORS, GOODS_CONDITION_LABELS, GoodsCondition, GoodsReceiptStatus } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colors[value] ?? ''}`}>{labels[value] ?? value}</span>;
@@ -122,9 +123,9 @@ export function Component() {
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Goods Receipts</h2>
             <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Receipt
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -186,10 +187,10 @@ export function Component() {
         footer={
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="gr-form" disabled={createGR.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="submit" form="gr-form" disabled={createGR.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createGR.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Receipt'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -201,21 +202,11 @@ export function Component() {
           </div>
 
           <Field label="Purchase Order ID *">
-            <div className="relative">
-              <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={inputStyle} />
-            </div>
+            <Input icon={Hash} required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" style={inputStyle} />
           </Field>
 
           <Field label="Warehouse Location">
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={inputStyle} />
-            </div>
+            <Input icon={MapPin} value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..." style={inputStyle} />
           </Field>
 
           {/* ── Received Items ── */}

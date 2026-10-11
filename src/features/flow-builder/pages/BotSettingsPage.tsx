@@ -3,6 +3,7 @@ import { Plus, Trash2, Save, Loader2, ChevronDown, ChevronUp } from 'lucide-reac
 import { toast } from 'sonner';
 import { flowApi } from '../api/flow.api';
 import type { BotSettings, NegotiationPlaybook } from '../types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors';
 
@@ -217,11 +218,11 @@ export function Component() {
         ))}
       </div>
 
-      <button onClick={save} disabled={saving}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand text-bg font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+      <Button onClick={save} disabled={saving}
+        variant="primary" size="lg" block>
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
         Save Settings
-      </button>
+      </Button>
     </div>
   );
 }

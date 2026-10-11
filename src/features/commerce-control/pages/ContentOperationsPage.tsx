@@ -21,6 +21,7 @@ import { UserRole } from '@/features/auth/types/auth.types';
 import { isUsableSocialAccount, socialProviderSlug } from '../lib/social-accounts';
 import { VendorInsightDialog } from '../components/VendorInsightDialog';
 import { ReelOperatorActions } from '../components/ReelOperatorActions';
+import { Button } from '@/shared/ui/primitives';
 
 const providers = [
   { slug: 'instagram', name: 'Instagram', platform: 1, icon: Instagram, color: 'from-fuchsia-500/25' },
@@ -223,9 +224,9 @@ export function ContentOperationsPage() {
         {canOperate && (
           <div className="flex flex-wrap gap-2">
             {!providerConnected ? (
-              <button onClick={() => connect.mutate()} disabled={connect.isPending} className="rounded-xl bg-brand px-4 py-2.5 text-xs font-extrabold text-text-inverted disabled:opacity-50">
+              <Button onClick={() => connect.mutate()} disabled={connect.isPending} variant="primary" size="lg">
                 Connect {provider.name}
-              </button>
+              </Button>
             ) : (
               <>
                 <button onClick={() => setShowAccountDetails(true)} className="rounded-xl border border-border-subtle px-3 py-2.5 text-xs font-bold text-text-secondary">Account details</button>
@@ -474,13 +475,13 @@ function ManagedReelCard({
         </p>
         {canOperate && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            <button
+            <Button
               disabled={busy}
               onClick={() => onAction(state === 3 ? 'unpublish' : 'publish')}
-              className="rounded-lg bg-brand px-3 py-2 text-[10px] font-extrabold text-text-inverted disabled:opacity-40"
+              variant="primary"
             >
               {state === 3 ? 'Depublier' : 'Publish'}
-            </button>
+            </Button>
             <button
               disabled={busy}
               onClick={() => onAction('caption')}
@@ -595,12 +596,12 @@ function SchedulePublishDialog({
           ))}
         </div>
         {error && <p className="mt-3 text-xs font-semibold text-danger">{error}</p>}
-        <button
+        <Button
           disabled={busy || !when || !caption.trim() || platforms.length === 0}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3 text-sm font-extrabold text-text-inverted disabled:opacity-40"
+          variant="primary" size="lg" block className="mt-5"
         >
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}Programmer la diffusion
-        </button>
+        </Button>
       </form>
     </div>
   );
@@ -662,10 +663,10 @@ function ContentCard({
           </p>
         </div>
         {canImport && (
-          <button
+          <Button
             onClick={onImport}
             disabled={imported || busy}
-            className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[10px] font-extrabold text-bg disabled:bg-bg-card disabled:text-text-muted"
+            variant="primary"
           >
             {busy ? (
               <Loader2 className="h-3 w-3 animate-spin" />
@@ -675,7 +676,7 @@ function ContentCard({
               <Send className="h-3 w-3" />
             )}
             {imported ? 'Importe' : 'Importer'}
-          </button>
+          </Button>
         )}
       </div>
     </article>

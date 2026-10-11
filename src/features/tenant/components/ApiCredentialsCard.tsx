@@ -9,6 +9,7 @@ import { ApiError } from '@/shared/lib/api-client';
 import type { ApiAuthType } from '../types/settings.types';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { useAuth } from '@/shared/hooks/useAuth';
+import { Button } from '@/shared/ui/primitives';
 
 /* ─── Helpers ───────────────────────────────────────────────────── */
 
@@ -429,14 +430,14 @@ function CredentialsModal({
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
               disabled={save.isPending}
-              className="flex items-center gap-2 px-5 py-2 rounded-[10px] text-xs font-semibold bg-brand text-bg hover:bg-brand-light disabled:opacity-40 transition-all"
+              variant="primary" size="lg"
             >
               {save.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               {mode === 'configure' ? 'Save credentials' : 'Update credentials'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -584,13 +585,13 @@ export function ApiCredentialsCard() {
         <div className="flex items-center justify-end gap-2 mt-4">
           {!configured ? (
             canEdit && (
-              <button
+              <Button
                 type="button"
                 onClick={() => setModal('configure')}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-xs font-semibold bg-brand text-bg hover:bg-brand-light transition-all"
+                variant="primary"
               >
                 + Configure API
-              </button>
+              </Button>
             )
           ) : (
             <>

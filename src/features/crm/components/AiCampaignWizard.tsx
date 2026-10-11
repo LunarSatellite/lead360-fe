@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { X, Loader2, Sparkles, Rocket, Facebook, Video, CheckCircle, LogIn, Youtube, Twitter, Linkedin } from 'lucide-react';
 import { apiClient } from '@/shared/lib/api-client';
+import { Button } from '@/shared/ui/primitives';
 
 interface AiDraft {
   name: string; objective: string; adName: string; headline: string;
@@ -269,11 +270,11 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
                   <input value={ttToken} onChange={e => setTtToken(e.target.value)}
                     placeholder="Access Token" type="password"
                     className="w-full px-3 py-2 rounded-lg bg-bg-card border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
-                  <button onClick={() => ttConnect.mutate()}
+                  <Button onClick={() => ttConnect.mutate()}
                     disabled={ttConnect.isPending || !ttId || !ttToken}
-                    className="w-full py-2 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-40 transition-all">
+                    variant="primary" block>
                     {ttConnect.isPending ? 'Connecting...' : 'Connect TikTok'}
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
@@ -289,12 +290,12 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
         {/* Footer — sticky action button */}
         {anyReady && (
           <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
-            <button onClick={handleSubmit} disabled={createMut.isPending || !prompt.trim()}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand text-bg font-bold text-sm disabled:opacity-40 hover:opacity-90 transition-all">
+            <Button onClick={handleSubmit} disabled={createMut.isPending || !prompt.trim()}
+              variant="primary" size="lg" block>
               {createMut.isPending
                 ? <><Loader2 className="w-4 h-4 animate-spin" /> AI is creating your campaign...</>
                 : <><Rocket className="w-4 h-4" /> Create & Launch</>}
-            </button>
+            </Button>
           </div>
         )}
       </div>

@@ -4,6 +4,7 @@ import { X, Plus, Loader2 } from 'lucide-react';
 import { createChannelSchema, type CreateChannelFormData } from '../types/channels.schemas';
 import { useCreateChannel } from '../api/channels.queries';
 import { ChannelType, CHANNEL_TYPE_LABEL, CHANNEL_TYPE_COLOR } from '../types/channels.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface CreateChannelDialogProps {
   tenantId: string;
@@ -209,10 +210,10 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
               disabled={create.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {create.isPending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -220,7 +221,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
                 <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
               )}
               {create.isPending ? 'Creating...' : 'Create connection'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

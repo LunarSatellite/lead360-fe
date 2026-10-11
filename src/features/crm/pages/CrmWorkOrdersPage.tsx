@@ -15,6 +15,7 @@ import {
   CRM_WORK_ORDER_NOTE_KIND_LABELS,
   CrmWorkOrderStatus, CrmWorkOrderType, CrmWorkOrderPriority, CrmWorkOrderNoteKind,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
 
@@ -147,9 +148,9 @@ function DetailPanel({ id }: { id: string }) {
                 {Object.entries(CRM_WORK_ORDER_NOTE_KIND_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
               </select>
               <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." className={`${inputCls} flex-1`} />
-              <button type="submit" disabled={!noteText.trim() || addNote.isPending} className="px-3 py-2 rounded-lg bg-brand text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+              <Button type="submit" disabled={!noteText.trim() || addNote.isPending} variant="primary">
                 {addNote.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Add'}
-              </button>
+              </Button>
             </div>
           </form>
           <div className="space-y-2">
@@ -288,9 +289,9 @@ export function Component() {
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Work Orders</h2>
             <p className="text-xs text-text-muted mt-0.5">Field service jobs — installation, repair, maintenance</p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Work Order
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -358,10 +359,10 @@ export function Component() {
         footer={
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="create-wo-form" disabled={createWo.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="submit" form="create-wo-form" disabled={createWo.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createWo.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Work Order'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -471,20 +472,7 @@ export function Component() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Scheduled At</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                <input
-                  type="datetime-local"
-                  value={scheduledAt}
-                  onChange={e => setScheduledAt(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{
-                    backgroundColor: 'rgb(var(--color-glass-1))',
-                    colorScheme: 'dark',
-                    backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  }}
-                />
-              </div>
+              <Input icon={Calendar} type="datetime-local" value={scheduledAt} onChange={e => setScheduledAt(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} />
             </div>
             <Field label="Est. Minutes"><input type="number" min="0" value={estimatedMinutes} onChange={e => setEstimatedMinutes(e.target.value)} placeholder="e.g. 120" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           </div>

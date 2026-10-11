@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Image, Loader2, Package, Save, Truck, Upload, X } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
+import { Button } from '@/shared/ui/primitives';
 
 type Props = {
   kind: 'product' | 'store';
@@ -477,13 +478,13 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
           </p>
         )}
         <footer className="sticky bottom-0 border-t border-border-subtle bg-bg-card/95 px-5 py-4 backdrop-blur-xl">
-          <button
+          <Button
             disabled={save.isPending || details.isLoading || !valid}
-            className="ml-auto flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-extrabold text-text-inverted disabled:opacity-40"
+            variant="primary" size="lg" className="ml-auto"
           >
             {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save and synchronize
-          </button>
+          </Button>
         </footer>
       </form>
     </div>

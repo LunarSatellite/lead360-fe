@@ -1,4 +1,5 @@
 import { Loader2, RefreshCw, Send, X } from 'lucide-react';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   open: boolean;
@@ -81,14 +82,14 @@ export function AiSendPreviewModal({
           >
             Cancel
           </button>
-          <button
+          <Button
             onClick={onConfirmSend}
             disabled={isSending || isDrafting}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3.5 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-50 transition-colors"
+            variant="primary" size="sm"
           >
             {isSending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
             {confirmLabel ?? 'Confirm & Send'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -23,6 +23,7 @@ import {
   type PayoutStateValue,
 } from '../api/stylemint-payouts.api';
 import { InsuranceClaimsPanel } from '../components/InsuranceClaimsPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The platform payout queue, with the two money actions an operator can actually take here.
@@ -302,15 +303,15 @@ function PayoutRow({ payout, onChanged }: { payout: Payout; onChanged: () => voi
             </button>
           )}
           {canRelease && (
-            <button
+            <Button
               onClick={() => {
                 setActing('release');
                 setError(null);
               }}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+              variant="primary" size="sm"
             >
               <PlayCircle className="h-3.5 w-3.5" strokeWidth={1.6} /> Release
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -333,14 +334,14 @@ function PayoutRow({ payout, onChanged }: { payout: Payout; onChanged: () => voi
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={!reason.trim() || act.isPending}
               onClick={() => act.mutate(acting)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm {acting}
-            </button>
+            </Button>
             <button
               onClick={() => {
                 setActing(null);

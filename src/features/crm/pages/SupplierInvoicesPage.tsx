@@ -8,6 +8,7 @@ import {
 } from '../api/crm.queries';
 import type { SupplierInvoiceDto, SupplierInvoiceCreateRequest, SupplierInvoiceFilter, VendorDto, ThreeWayMatchResult } from '../types/crm.types';
 import { SI_STATUS_LABELS, SI_STATUS_COLORS, SupplierInvoiceStatus, THREE_WAY_MATCH_RISK_LABELS } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -145,42 +146,22 @@ function NewSupplierInvoiceSlideOver({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Invoice Number *</label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required value={form.invNumber} onChange={e => setInvNumber(e.target.value)} placeholder="INV-2024-001"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={Hash} required value={form.invNumber} onChange={e => setInvNumber(e.target.value)} placeholder="INV-2024-001" style={inputStyle} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">PO ID (optional)</label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={form.poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={Hash} value={form.poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" style={inputStyle} />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Issued Date *</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required type="date" value={form.issuedDate} onChange={e => setIssuedDate(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              </div>
+              <Input icon={Calendar} required type="date" value={form.issuedDate} onChange={e => setIssuedDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Due Date *</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required type="date" value={form.dueDate} onChange={e => setDueDate(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              </div>
+              <Input icon={Calendar} required type="date" value={form.dueDate} onChange={e => setDueDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </div>
           </div>
 
@@ -193,30 +174,15 @@ function NewSupplierInvoiceSlideOver({
           <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Subtotal *</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required type="number" min="0" step="0.01" value={form.subTotal} onChange={e => setSubTotal(e.target.value)} placeholder="0.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={DollarSign} required type="number" min="0" step="0.01" value={form.subTotal} onChange={e => setSubTotal(e.target.value)} placeholder="0.00" style={inputStyle} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Tax Amount</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input type="number" min="0" step="0.01" value={form.taxAmount} onChange={e => setTaxAmount(e.target.value)} placeholder="0.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={DollarSign} type="number" min="0" step="0.01" value={form.taxAmount} onChange={e => setTaxAmount(e.target.value)} placeholder="0.00" style={inputStyle} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={form.currency} onChange={e => setCurrency(e.target.value)} placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={DollarSign} value={form.currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" style={inputStyle} />
             </div>
           </div>
 
@@ -240,10 +206,10 @@ function NewSupplierInvoiceSlideOver({
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="si-form" disabled={isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="submit" form="si-form" disabled={isPending}
+              variant="primary" size="lg" className="flex-none">
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Invoice'}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -324,9 +290,9 @@ export function Component() {
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Supplier Invoices</h2>
             <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Invoice
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2">

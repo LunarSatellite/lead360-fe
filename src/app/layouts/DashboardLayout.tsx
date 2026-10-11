@@ -70,6 +70,7 @@ import { isStyleMintConsole } from '@/shared/config/env';
 import { SidebarNav } from '@/app/navigation/SidebarNav';
 import { CommandPalette } from '@/shared/ui/CommandPalette';
 import { allNavItems, navGroups, navSections } from '@/app/navigation/nav-model';
+import { Button } from '@/shared/ui/primitives';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CHAT-FIRST NAVIGATION (new — primary rail shown to all users)
@@ -550,20 +551,22 @@ export function DashboardLayout() {
           </h1>
           <div className="ml-auto flex items-center gap-2 shrink-0">
             <NotificationBell />
-            <button
+            <Button
+              variant="secondary"
+              icon={Images}
               onClick={() => navigate(ROUTES.dashboard.contentOperations)}
-              className="hidden md:flex px-4 py-2 rounded-xl text-xs font-semibold border border-border-subtle text-text-secondary hover:text-text-primary hover:border-border-medium hover:bg-bg-elevated transition-all items-center gap-1.5"
+              className="hidden md:inline-flex"
             >
-              <Images className="w-3.5 h-3.5" strokeWidth={1.8} /> Content studio
-            </button>
-            <button
+              Content studio
+            </Button>
+            <Button
               onClick={() => navigate(ROUTES.dashboard.commerceControl)}
               aria-label="Review operations"
-              className="px-3 sm:px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all flex items-center gap-1.5"
+              variant="primary" className="sm:px-4"
             >
               <Zap className="w-3.5 h-3.5" strokeWidth={2} />
               <span className="hidden sm:inline">Review operations</span>
-            </button>
+            </Button>
           </div>
         </header>
 

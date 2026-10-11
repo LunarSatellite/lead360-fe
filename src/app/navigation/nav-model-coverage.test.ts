@@ -59,7 +59,7 @@ describe('unified navigation model', () => {
     // in a mobile sheet only. Plus the seven that had a page and no entry
     // anywhere, found by the unreachable-route check below. A drop here means
     // a page lost its only way in.
-    expect(allNavItems).toHaveLength(130);
+    expect(allNavItems).toHaveLength(131);
   });
 
   it('lists each page once, under one name', () => {

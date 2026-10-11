@@ -18,6 +18,7 @@ import { HandoverSection } from '../components/HandoverSection';
 
 import { ApprovalEntityType, CrmEntityType } from '../types/crm.types';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const { id } = useParams<{ id: string }>();
@@ -325,10 +326,10 @@ export function Component() {
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card p-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(`${ROUTES.dashboard.crmQuotes}?dealId=${id}`)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all">
+          <Button onClick={() => navigate(`${ROUTES.dashboard.crmQuotes}?dealId=${id}`)}
+            variant="primary" size="lg">
             <FileText className="w-4 h-4" strokeWidth={1.5} /> Create Quote
-          </button>
+          </Button>
           <button onClick={() => navigate(`${ROUTES.dashboard.crmProposals}?dealId=${id}`)}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-elevated border border-border-subtle text-text-primary text-sm font-bold hover:bg-bg-card transition-all">
             <ClipboardList className="w-4 h-4" strokeWidth={1.5} /> Generate Proposal
@@ -401,8 +402,8 @@ export function Component() {
               className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]"
               placeholder={logOpen === 'call' ? 'Describe the call...' : logOpen === 'meeting' ? 'Describe the meeting...' : 'Write a note...'} />
             <div className="flex gap-2">
-              <button onClick={() => handleLog(logOpen)} disabled={logActivity.isPending || !logText.trim()}
-                className="px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50">{logActivity.isPending ? 'Saving...' : 'Save'}</button>
+              <Button onClick={() => handleLog(logOpen)} disabled={logActivity.isPending || !logText.trim()}
+                variant="primary" size="sm">{logActivity.isPending ? 'Saving...' : 'Save'}</Button>
               <button onClick={() => { setLogOpen(null); setLogText(''); }} className="px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-muted">Cancel</button>
             </div>
           </div>
@@ -503,10 +504,10 @@ export function Component() {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border-subtle shrink-0 flex gap-3">
-              <button onClick={saveEdit} disabled={updateDeal.isPending}
-                className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+              <Button onClick={saveEdit} disabled={updateDeal.isPending}
+                variant="primary" className="flex-1">
                 {updateDeal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save
-              </button>
+              </Button>
               <button onClick={() => setShowEdit(false)}
                 className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
                 Cancel
@@ -569,9 +570,9 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
           </select>
           <input value={ourS} onChange={e => setOurS(e.target.value)} placeholder="Our strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
           <input value={theirS} onChange={e => setTheirS(e.target.value)} placeholder="Their strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
-          <button onClick={() => compId && addMut.mutate()} disabled={addMut.isPending || !compId} className="w-full py-2 rounded-xl bg-brand text-bg text-xs font-bold disabled:opacity-50">
+          <Button onClick={() => compId && addMut.mutate()} disabled={addMut.isPending || !compId} variant="primary" block>
             {addMut.isPending ? 'Adding...' : 'Add to deal'}
-          </button>
+          </Button>
         </div>
       )}
       {dealComps.length === 0 ? (
@@ -638,8 +639,8 @@ function DealContactsSection({ dealId }: { dealId: string }) {
           <select value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             {DEAL_CONTACT_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
-          <button onClick={() => search.trim() && addMut.mutate({ contactId: search.trim(), role })} disabled={addMut.isPending || !search.trim()}
-            className="px-3 py-2 rounded-xl bg-brand text-bg text-xs font-bold disabled:opacity-50">Add</button>
+          <Button onClick={() => search.trim() && addMut.mutate({ contactId: search.trim(), role })} disabled={addMut.isPending || !search.trim()}
+            variant="primary">Add</Button>
         </div>
       )}
 

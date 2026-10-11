@@ -20,6 +20,7 @@ import {
   CRM_MEETING_STATUS_LABELS, CRM_MEETING_STATUS_COLORS,
   CRM_CALL_SUMMARY_STATUS_LABELS, CrmCallSummaryStatus,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -207,9 +208,9 @@ function MeetingsTab() {
               {Object.entries(CRM_MEETING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
             </select>
           </div>
-          <button onClick={() => setShowInitiate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all shrink-0">
+          <Button onClick={() => setShowInitiate(true)} variant="primary" className="shrink-0">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Initiate Meeting
-          </button>
+          </Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -259,15 +260,15 @@ function MeetingsTab() {
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
               disabled={initiateMeeting.isPending}
               onClick={handleInitiate}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {initiateMeeting.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Initiate
-            </button>
+            </Button>
           </div>
         }
       >
@@ -282,17 +283,7 @@ function MeetingsTab() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Title *</label>
-              <div className="relative">
-                <CalendarCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  required
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Discovery Call"
-                  value={initForm.title}
-                  onChange={setI('title')}
-                />
-              </div>
+              <Input icon={CalendarCheck} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Discovery Call" value={initForm.title} onChange={setI('title')} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Duration</label>
@@ -416,16 +407,7 @@ function MeetingsTab() {
           {/* Additional Attendees */}
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Additional Attendees</label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                value={attendeeQuery}
-                onChange={(e) => setAttendeeQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="Type name or email..."
-              />
-            </div>
+            <Input icon={User} value={attendeeQuery} onChange={(e) => setAttendeeQuery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Type name or email..." />
 
             {/* The picker only lists people once you have typed, so the primary-contact
                 field above stays the fast path for the common one-attendee meeting. */}
@@ -476,20 +458,7 @@ function MeetingsTab() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Date</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                <input
-                  type="date"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{
-                    backgroundColor: 'rgb(var(--color-glass-1))',
-                    colorScheme: 'dark',
-                    backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  }}
-                  value={initForm.scheduledAt}
-                  onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))}
-                />
-              </div>
+              <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={initForm.scheduledAt} onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Linked Deal</label>
@@ -553,16 +522,7 @@ function MeetingsTab() {
           {/* Join Link */}
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Join Link</label>
-            <div className="relative">
-              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="https://zoom.us/j/..."
-                value={initForm.joinUrl}
-                onChange={setI('joinUrl')}
-              />
-            </div>
+            <Input icon={LinkIcon} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="https://zoom.us/j/..." value={initForm.joinUrl} onChange={setI('joinUrl')} />
           </div>
 
           {/* Google Calendar checkbox */}
@@ -716,11 +676,11 @@ function MeetingsTab() {
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Request AI Call Summary</p>
                 <input value={reqSummaryText} onChange={e => setReqSummaryText(e.target.value)} placeholder="What happened in this call / meeting?" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                 <div className="flex gap-2">
-                  <button onClick={() => {
+                  <Button onClick={() => {
                     requestSummary.mutate({ contactId: detail.contactId, meetingId: detail.id, trigger: 1 }, { onSuccess: () => { setShowRequestSummary(false); setReqSummaryText(''); toast.success('Summary requested.'); } });
-                  }} disabled={requestSummary.isPending} className="px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+                  }} disabled={requestSummary.isPending} variant="primary" size="sm">
                     {requestSummary.isPending ? 'Requesting...' : 'Request Summary'}
-                  </button>
+                  </Button>
                   <button onClick={() => setShowRequestSummary(false)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
                 </div>
               </div>
@@ -731,7 +691,7 @@ function MeetingsTab() {
             )}
             <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border-subtle">
               {detail.status === CrmMeetingStatus.ProposalDrafted && bookDate && bookTime && (
-                <button
+                <Button
                   onClick={() => bookMeeting.mutate(
                     { id: detail.id, selectedSlot: `${bookDate}T${bookTime}:00`, durationMinutes: Number(bookDuration) },
                     {
@@ -748,10 +708,10 @@ function MeetingsTab() {
                     }
                   )}
                   disabled={bookMeeting.isPending}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all"
+                  variant="primary"
                 >
                   {bookMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CalendarCheck className="w-4 h-4" strokeWidth={1.5} />} Book
-                </button>
+                </Button>
               )}
               {detail.status === CrmMeetingStatus.Booked && !showCompleteSummary && (
                 <button
@@ -765,12 +725,12 @@ function MeetingsTab() {
                 <div className="flex gap-2 items-center">
                   <input value={taskTitle} onChange={e => setTaskTitle(e.target.value)} placeholder="Task description..."
                     className="flex-1 px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
-                  <button onClick={() => taskTitle.trim() && createTask.mutate({ id: detail.id, title: taskTitle.trim(), assignedToUserId: taskAssigneeId || undefined })}
+                  <Button onClick={() => taskTitle.trim() && createTask.mutate({ id: detail.id, title: taskTitle.trim(), assignedToUserId: taskAssigneeId || undefined })}
                     disabled={createTask.isPending || !taskTitle.trim()}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all shrink-0">
+                    variant="primary" className="shrink-0">
                     {createTask.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.5} />}
                     {createTask.isPending ? 'Creating...' : 'Create Task'}
-                  </button>
+                  </Button>
                 </div>
                 <div className="flex justify-end">
                   <select value={taskAssigneeId} onChange={e => setTaskAssigneeId(e.target.value)}
@@ -827,9 +787,9 @@ function CallSummariesTab() {
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4 shrink-0">
           <div />
-          <button onClick={() => setShowRequest(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+          <Button onClick={() => setShowRequest(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Request Summary
-          </button>
+          </Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -879,16 +839,16 @@ function CallSummariesTab() {
             >
               Cancel
             </button>
-            <button
+            <Button
               type="button"
               disabled={requestSummary.isPending}
               onClick={handleRequest}
               form="request-summary-form"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {requestSummary.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" strokeWidth={2} />}
               {requestSummary.isPending ? 'Requesting…' : 'Request Summary'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -902,17 +862,7 @@ function CallSummariesTab() {
           {/* Signal ID — required */}
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger">*</span></label>
-            <div className="relative">
-              <PhoneCall className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                required
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="Signal ID from recorded call (required)"
-                value={reqForm.signalId}
-                onChange={setR('signalId')}
-              />
-            </div>
+            <Input icon={PhoneCall} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Signal ID from recorded call (required)" value={reqForm.signalId} onChange={setR('signalId')} />
           </div>
 
           {/* ── Links ── */}
@@ -925,29 +875,11 @@ function CallSummariesTab() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID</label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Contact ID (optional)"
-                  value={reqForm.contactId}
-                  onChange={setR('contactId')}
-                />
-              </div>
+              <Input icon={User} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contact ID (optional)" value={reqForm.contactId} onChange={setR('contactId')} />
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
-              <div className="relative">
-                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Deal ID (optional)"
-                  value={reqForm.dealId}
-                  onChange={setR('dealId')}
-                />
-              </div>
+              <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Deal ID (optional)" value={reqForm.dealId} onChange={setR('dealId')} />
             </div>
           </div>
 
@@ -976,9 +908,9 @@ function CallSummariesTab() {
             )}
 
             {selectedCs.status === CrmCallSummaryStatus.Pending && (
-              <button onClick={() => generateSummary.mutate(selectedCs.id)} disabled={generateSummary.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+              <Button onClick={() => generateSummary.mutate(selectedCs.id)} disabled={generateSummary.isPending} variant="primary">
                 {generateSummary.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Play className="w-4 h-4" strokeWidth={1.5} /> Generate</>}
-              </button>
+              </Button>
             )}
 
             <p className="text-xs text-text-muted">Created {format(parseISO(selectedCs.createdAt), 'MMM d, yyyy HH:mm')}</p>

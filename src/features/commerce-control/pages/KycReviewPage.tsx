@@ -36,6 +36,7 @@ import {
   matchesApplicantKind,
   reasonCodesFor,
 } from '../lib/kyc-review';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Creator, vendor and (EMI phase 1) buyer identity review.
@@ -463,13 +464,13 @@ function DecisionPanel({
               )}
 
               <div className="flex gap-2">
-                <button
+                <Button
                   onClick={() => decide.mutate(pending)}
                   disabled={decide.isPending || (isRejection && !reasonCode)}
-                  className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+                  variant="primary"
                 >
                   {decide.isPending ? 'Recording…' : 'Yes, record it'}
-                </button>
+                </Button>
                 <button
                   onClick={() => setPending(null)}
                   className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"

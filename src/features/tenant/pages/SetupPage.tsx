@@ -29,6 +29,7 @@ import {
 } from '@/features/channels/types/channels.types';
 import type { FlowDto } from '@/features/flow-builder/types/flow.types';
 import type { SyncStatusDto } from '@/features/catalog/types/catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 const CHANNEL_ICONS: Record<number, { icon: React.ReactNode; bg: string }> = {
   1: { icon: <Phone className="w-6 h-6 text-brand" strokeWidth={1.6} />, bg: 'bg-brand-soft' },
@@ -420,14 +421,14 @@ export function Component() {
             {completedCount}/{steps.length}
           </span>
           {completedCount < steps.length && (
-            <button
+            <Button
               onClick={() => navigate('/dashboard/onboarding')}
-              className="flex-1 sm:flex-initial px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-bg bg-brand hover:bg-brand-light transition-all flex items-center justify-center gap-1.5"
+              variant="primary" size="lg" className="flex-1 sm:flex-initial sm:px-5 sm:text-sm"
             >
               <Rocket className="w-3.5 h-3.5" />
               <span>Continue</span>
               <span className="hidden sm:inline">&nbsp;Setup</span>
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -511,12 +512,12 @@ export function Component() {
                 )}
 
                 <div className="flex gap-3">
-                  <button
+                  <Button
                     onClick={() => navigate(HERO_ROUTES[idx])}
-                    className="px-5 py-2.5 rounded-xl text-sm font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+                    variant="primary" size="lg"
                   >
                     {HERO_CTAS[idx]}
-                  </button>
+                  </Button>
                   <button
                     onClick={() => navigate(HERO_ROUTES[idx])}
                     className="px-5 py-2.5 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:border-border-medium hover:bg-bg-elevated transition-all"

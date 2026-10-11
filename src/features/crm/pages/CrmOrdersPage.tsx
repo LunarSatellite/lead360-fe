@@ -20,6 +20,7 @@ import {
   CRM_DELIVERY_STATUS_LABELS, CRM_DELIVERY_STATUS_COLORS,
   PICK_LIST_STATUS_LABELS,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
 
@@ -284,9 +285,9 @@ export function Component() {
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Orders</h2>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Order
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -362,10 +363,10 @@ export function Component() {
         footer={
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="create-order-form" disabled={createOrder.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="submit" form="create-order-form" disabled={createOrder.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createOrder.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Order'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -492,9 +493,9 @@ export function Component() {
           <Field label="Carrier"><input value={shipCarrier} onChange={e => setShipCarrier(e.target.value)} placeholder="DHL, FedEx, etc." className={inputCls} /></Field>
           <Field label="Tracking Number"><input value={shipTracking} onChange={e => setShipTracking(e.target.value)} placeholder="tracking-number" className={inputCls} /></Field>
           <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createDelivery.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+            <Button type="submit" disabled={createDelivery.isPending} variant="primary" className="flex-1">
               {createDelivery.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Shipment'}
-            </button>
+            </Button>
             <button type="button" onClick={() => setShowNewShipment(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
           </div>
         </form>

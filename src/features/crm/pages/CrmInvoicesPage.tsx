@@ -21,6 +21,7 @@ import {
   DunningEventKind, DunningPauseReason as PauseReasonEnum,
   DUNNING_STAGE_LABELS, DUNNING_EVENT_KIND_LABELS, DUNNING_PAUSE_REASON_LABELS,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 function balanceDue(inv: CrmInvoiceSummaryDto): number {
   return inv.totalAmount - (inv.amountPaid ?? 0) - (inv.creditAppliedAmount ?? 0);
@@ -252,43 +253,25 @@ function GenInvoiceSlideOver({
           {genSource === 'deal' ? (
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID *</label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={genDealId}
-                  onChange={e => setGenDealId(e.target.value)}
-                  placeholder="Enter Deal ID"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle}
-                />
-              </div>
+              <Input icon={Hash} value={genDealId} onChange={e => setGenDealId(e.target.value)} placeholder="Enter Deal ID" style={inputStyle} />
             </div>
           ) : (
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Order Number *</label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={genOrderId}
-                  onChange={e => setGenOrderId(e.target.value)}
-                  placeholder="e.g. ORD-20260701-XXXX"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle}
-                />
-              </div>
+              <Input icon={Hash} value={genOrderId} onChange={e => setGenOrderId(e.target.value)} placeholder="e.g. ORD-20260701-XXXX" style={inputStyle} />
             </div>
           )}
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button
+            <Button
               type="button"
               onClick={onGenerate}
               disabled={isPending || !isValid}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              variant="primary" size="lg" className="flex-none">
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Receipt className="w-4 h-4" />} Generate Invoice
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -371,9 +354,9 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Invoices</h2>
           <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
         </div>
-        <button onClick={() => setGenOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setGenOpen(true)} variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Invoice
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-2">
@@ -493,10 +476,10 @@ export function Component() {
 
             {/* Send action for Draft invoices */}
             {selected.status === CrmInvoiceStatus.Draft && (
-              <button onClick={() => { setSendPreviewInvoice(selected); setSelected(null); }}
-                className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+              <Button onClick={() => { setSendPreviewInvoice(selected); setSelected(null); }}
+                variant="primary" block>
                 <Send className="w-4 h-4" /> Send Invoice
-              </button>
+              </Button>
             )}
 
             {/* Payment link — share a pay-online URL with the customer */}
@@ -551,10 +534,10 @@ export function Component() {
                 <Field label="Reason">
                   <textarea value={cnReason} onChange={e => setCnReason(e.target.value)} rows={2} className={inputCls} placeholder="Why is this credit note being issued?" />
                 </Field>
-                <button onClick={handleIssueCreditNote} disabled={issueCreditNote.isPending || !cnAmount || !cnReason.trim()}
-                  className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                <Button onClick={handleIssueCreditNote} disabled={issueCreditNote.isPending || !cnAmount || !cnReason.trim()}
+                  variant="primary" block>
                   {issueCreditNote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Issue Credit Note'}
-                </button>
+                </Button>
               </div>
             )}
           </div>

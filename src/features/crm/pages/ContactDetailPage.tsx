@@ -27,6 +27,7 @@ import { RecordAuditTrail } from '../components/RecordAuditTrail';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
 import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow, format } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls =
   'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
@@ -122,15 +123,15 @@ function EditForm({
         <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
       </div>
       <div className="flex gap-3 pt-1">
-        <button
+        <Button
           type="submit"
           disabled={isSaving || !form.fullName.trim()}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary"
         >
           {isSaving
             ? <Loader2 className="w-4 h-4 animate-spin" />
             : <><Check className="w-3.5 h-3.5" /> Save</>}
-        </button>
+        </Button>
         <button
           type="button"
           onClick={onCancel}

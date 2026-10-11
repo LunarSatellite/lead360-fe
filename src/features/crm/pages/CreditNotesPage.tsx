@@ -4,6 +4,7 @@ import { format, parseISO } from 'date-fns';
 import { useCreditNotes, useApplyCreditNote, useRefundCreditNote, useInvoices } from '../api/crm.queries';
 import type { CrmCreditNoteDto, CrmCreditNoteFilter } from '../types/crm.types';
 import { CREDIT_NOTE_STATUS_LABELS, CREDIT_NOTE_STATUS_COLORS, CREDIT_NOTE_APPLY_METHOD_LABELS, CreditNoteStatus, CreditNoteApplyMethod } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -53,9 +54,9 @@ function ApplyForm({ note, onDone }: { note: CrmCreditNoteDto; onDone: () => voi
           ))}
         </div>
       )}
-      <button onClick={handleApply} disabled={!targetInvoiceId || apply.isPending} className="w-full py-2 rounded-lg bg-brand text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+      <Button onClick={handleApply} disabled={!targetInvoiceId || apply.isPending} variant="primary" block>
         {apply.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Apply Credit Note'}
-      </button>
+      </Button>
     </div>
   );
 }

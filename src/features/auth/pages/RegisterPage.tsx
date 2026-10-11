@@ -7,6 +7,7 @@ import { registerSchema, type RegisterFormData } from '../types/auth.schemas';
 import { useRegister } from '../api/auth.queries';
 import { BusinessType } from '../types/auth.types';
 import { consoleBrand } from '@/shared/config/console-brand';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const navigate = useNavigate();
@@ -222,16 +223,16 @@ export function Component() {
         )}
 
         {/* Submit */}
-        <button
+        <Button
           type="submit"
           disabled={register.isPending}
-          className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-bg text-base font-bold bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary" size="lg" block
         >
           {register.isPending && (
             <span className="w-5 h-5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
           )}
           {register.isPending ? 'Creating...' : 'Create account'}
-        </button>
+        </Button>
       </form>
 
       {/* Terms */}

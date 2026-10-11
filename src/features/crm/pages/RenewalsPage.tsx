@@ -9,6 +9,7 @@ import {
   RENEWAL_SEGMENT_LABELS, RENEWAL_STATUS_LABELS, RENEWAL_OUTCOME_LABELS,
   type CrmRenewalListItemDto, type CrmRenewalFilter,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const SEGMENT_STYLES: Record<RenewalSegment, string> = {
   [RenewalSegment.LowRiskRoutine]: 'text-success border-success/30 bg-success/10',
@@ -50,14 +51,14 @@ export function Component() {
             Upcoming contract renewals, risk-segmented. Reach out before they lapse and record the outcome.
           </p>
         </div>
-        <button
+        <Button
           onClick={() => evaluate.mutate()}
           disabled={evaluate.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary"
         >
           {evaluate.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" strokeWidth={2.2} />}
           Re-evaluate now
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-1.5 flex-wrap">

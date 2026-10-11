@@ -1,7 +1,15 @@
 import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { Loader2, type LucideIcon } from 'lucide-react';
 import { cn } from './cn';
-import { CONTROL_SIZE, DISABLED, FOCUS_RING, RADIUS, type ControlSize } from './scale';
+import {
+  CONTROL_PADDING,
+  CONTROL_PADDING_SQUARE,
+  CONTROL_TYPE,
+  DISABLED,
+  FOCUS_RING,
+  RADIUS,
+  type ControlSize,
+} from './scale';
 
 /**
  * The button, of which this admin previously had 219 spellings.
@@ -23,8 +31,15 @@ import { CONTROL_SIZE, DISABLED, FOCUS_RING, RADIUS, type ControlSize } from './
 
 const VARIANT = {
   primary: 'bg-brand text-text-inverted font-bold hover:bg-brand-light',
+  /**
+   * A brand-tinted action: the same weight of intent as `primary`, but it
+   * does not want to be the loudest thing on the screen. The admin had
+   * twelve of these already — `bg-brand-soft text-brand border-border-glow`
+   * — so it is a variant that existed before it had a name.
+   */
+  soft: 'border-border-glow bg-brand-soft text-brand font-semibold hover:bg-brand hover:text-text-inverted',
   secondary:
-    'border border-border-subtle text-text-secondary font-semibold hover:border-border-medium hover:text-text-primary',
+    'border-border-subtle text-text-secondary font-semibold hover:border-border-medium hover:text-text-primary',
   ghost: 'text-text-muted font-semibold hover:bg-glass-1 hover:text-text-primary',
   danger: 'bg-danger-soft text-danger font-bold hover:bg-danger hover:text-text-inverted',
 } as const;
@@ -40,6 +55,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   /** Fills its container — for a form's submit, or a mobile sheet. */
   block?: boolean;
+  /** Square padding, for a control whose whole content is one icon. */
+  square?: boolean;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
@@ -49,6 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     icon: Icon,
     loading = false,
     block = false,
+    square = false,
     className,
     children,
     disabled,
@@ -69,9 +87,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        'inline-flex items-center justify-center whitespace-nowrap transition-colors',
+        // `border border-transparent` on every variant, including the ones
+        // that draw no border. Without it a bordered variant is 2px taller
+        // than an unbordered one, so a primary and a secondary sitting in the
+        // same toolbar do not line up — measured at 35.33px against 34px.
+        // Nobody reports that; everybody sees it.
+        'inline-flex items-center justify-center whitespace-nowrap border border-transparent transition-colors',
         RADIUS.control,
-        CONTROL_SIZE[size],
+        square ? CONTROL_PADDING_SQUARE[size] : CONTROL_PADDING[size],
+        CONTROL_TYPE[size],
         VARIANT[variant],
         FOCUS_RING,
         DISABLED,
@@ -87,5 +111,40 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       )}
       {children}
     </button>
+  );
+});
+
+export interface IconButtonProps extends Omit<ButtonProps, 'children' | 'icon' | 'block' | 'square'> {
+  icon: LucideIcon;
+  /** Required: an icon with no label is unusable by anyone who cannot see it. */
+  label: string;
+}
+
+/**
+ * A button that is only an icon — the row actions in every table here.
+ *
+ * Measured on one list page: twelve of them, none a shared component, and
+ * none with an accessible name. A screen reader announced each as "button",
+ * twelve times in a row, which is the same as announcing nothing.
+ *
+ * `label` is a required prop rather than an optional `aria-label` so that
+ * omitting it is a type error instead of a defect nobody notices. It is also
+ * the tooltip, so sighted users get the same information.
+ */
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
+  { icon, label, size = 'md', className, ...rest },
+  ref,
+) {
+  return (
+    <Button
+      ref={ref}
+      size={size}
+      square
+      aria-label={label}
+      title={label}
+      className={className}
+      icon={icon}
+      {...rest}
+    />
   );
 });

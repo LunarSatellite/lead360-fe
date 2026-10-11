@@ -45,6 +45,7 @@ import { Component as BotSettingsPage } from '@/features/flow-builder/pages/BotS
 import { Component as TeamManagementContent } from '@/features/team/pages/TeamManagementPage';
 import { VoiceSettingsPanel } from '@/features/voice/components/VoiceSettingsPanel';
 import { DEFAULT_VOICE_SETTINGS, type VoiceSettings } from '@/features/voice/types/voice.types';
+import { Button } from '@/shared/ui/primitives';
 
 /* ═══════════════════════════════════════════════════════════
    SETTINGS PAGE — Dark theme, sidebar + content split
@@ -480,13 +481,10 @@ function ProfileSection({ profile }: { profile: UserProfileDto }) {
           >
             Cancel
           </button>
-          <button
+          <Button
             type="submit"
             disabled={update.isPending || !form.formState.isDirty}
-            className="flex items-center gap-2 px-5 py-2 rounded-[10px] text-xs font-semibold
-                       bg-brand text-bg hover:bg-brand-light hover:-translate-y-px
-                       hover:shadow-[0_4px_12px_rgb(var(--color-brand-glow)/0.15)]
-                       disabled:opacity-40 disabled:hover:transform-none transition-all"
+            variant="primary" size="lg"
           >
             {update.isPending ? (
               <span className="w-3.5 h-3.5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
@@ -494,7 +492,7 @@ function ProfileSection({ profile }: { profile: UserProfileDto }) {
               <Save className="w-3.5 h-3.5" />
             )}
             {update.isPending ? 'Saving...' : 'Save changes'}
-          </button>
+          </Button>
         </div>
       </form>
     </SettingsCard>
@@ -772,11 +770,10 @@ function PasswordSection() {
           )}
 
           <div className="flex justify-end pt-1">
-            <button
+            <Button
               type="submit"
               disabled={changePw.isPending}
-              className="flex items-center gap-2 px-5 py-2 rounded-[10px] text-xs font-semibold
-                         bg-brand text-bg hover:bg-brand-light disabled:opacity-40 transition-all"
+              variant="primary" size="lg"
             >
               {changePw.isPending ? (
                 <span className="w-3.5 h-3.5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
@@ -784,7 +781,7 @@ function PasswordSection() {
                 <Lock className="w-3.5 h-3.5" />
               )}
               {changePw.isPending ? 'Changing...' : 'Change password'}
-            </button>
+            </Button>
           </div>
         </form>
       </SettingsCard>

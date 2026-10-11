@@ -36,6 +36,53 @@ function classStrings(): { file: string; value: string }[] {
 /** A brand fill, not `bg-brand-dark` or `bg-brand-soft`. */
 const isBrandFilled = (value: string) => /\bbg-brand\b(?!-)/.test(value);
 
+/**
+ * className literals that belong to a `<button>`, rather than to any element.
+ *
+ * The first version of the brand-button budget counted every className with a
+ * brand fill and a padding, which swept in brand-coloured badges and chips —
+ * `<span class="px-1.5 py-0.5 … bg-brand">` — that are not buttons and will
+ * never become one. The number it reported was therefore a mix of work to do
+ * and work that does not exist.
+ *
+ * Finding where the opening tag ends needs a scan rather than a regex. A
+ * lazy match up to the first `>` stops inside `onClick={() => …}`, which cuts
+ * the tag in half before `className` and makes this report zero — a very
+ * convincing way to look finished.
+ */
+function openingTag(source: string, start: number): string {
+  let depth = 0;
+  let quote: string | null = null;
+
+  for (let i = start; i < source.length; i += 1) {
+    const c = source[i];
+    if (quote) {
+      if (c === quote) quote = null;
+    } else if (c === '"' || c === "'" || c === '`') {
+      quote = c;
+    } else if (c === '{') {
+      depth += 1;
+    } else if (c === '}') {
+      depth -= 1;
+    } else if (c === '>' && depth === 0) {
+      return source.slice(start, i);
+    }
+  }
+  return source.slice(start);
+}
+
+function buttonClassStrings(): { file: string; value: string }[] {
+  const found: { file: string; value: string }[] = [];
+
+  for (const [file, source] of Object.entries(TSX)) {
+    for (let at = source.indexOf('<button'); at !== -1; at = source.indexOf('<button', at + 1)) {
+      const m = /className="([^"]*)"/.exec(openingTag(source, at));
+      if (m) found.push({ file, value: m[1] });
+    }
+  }
+  return found;
+}
+
 describe('defects that must not come back', () => {
   it('never puts white or black text on a brand fill', () => {
     /**
@@ -79,26 +126,38 @@ describe('defects that must not come back', () => {
  * gone up, the page that did it should be using the primitive.
  */
 const BUDGET = {
-  /** A brand-filled control with its own padding — i.e. a <Button variant="primary">. */
-  brandButton: 302,
+  /**
+   * A brand-filled control with its own padding — i.e. a <Button>.
+   *
+   * Zero, and it is meant to stay zero: every one of the 302 is migrated.
+   * The budget stays here rather than becoming a plain "must be empty"
+   * assertion because the other two are not done, and one shape of check
+   * reading the same way for all three is worth more than a tidier assertion
+   * for the one that finished first.
+   */
+  brandButton: 0,
   /** `block text-xs font-semibold …` above an input — i.e. a <Field>. */
   fieldLabel: 235,
   /** A bare search box with a hand-positioned icon — i.e. a <SearchInput>. */
-  searchBox: 145,
+  searchBox: 42,
 } as const;
 
 const COUNTERS: Record<keyof typeof BUDGET, (value: string) => boolean> = {
-  brandButton: (v) => isBrandFilled(v) && /\bpx-[\d.]+\b/.test(v),
+  // Either axis: a full-width button sets only `py-`, and requiring `px-`
+  // made 44 of them invisible to this count — which read as zero left to do.
+  brandButton: (v) => isBrandFilled(v) && /\bp[xy]-[\d.]+\b/.test(v),
   fieldLabel: (v) => /^block text-xs font-semibold text-text-(secondary|muted) mb-1(\.5)?$/.test(v),
   searchBox: (v) => /absolute left-3 top-1\/2 -translate-y-1\/2/.test(v),
 };
 
 describe('migration to the shared primitives', () => {
   const all = classStrings();
+  const buttons = buttonClassStrings();
 
   for (const kind of Object.keys(BUDGET) as (keyof typeof BUDGET)[]) {
     it(`has no more than ${BUDGET[kind]} hand-rolled ${kind}s left`, () => {
-      const found = all.filter((c) => COUNTERS[kind](c.value)).length;
+      const source = kind === 'brandButton' ? buttons : all;
+      const found = source.filter((c) => COUNTERS[kind](c.value)).length;
 
       expect(
         found,
@@ -111,8 +170,21 @@ describe('migration to the shared primitives', () => {
 
   it('finds the source to count (the globs and patterns still match)', () => {
     // Every budget above reads zero if the glob breaks, which would look like
-    // total success.
+    // total success. The brandButton budget IS zero, so this is the only
+    // thing standing between a broken scan and a green run.
     expect(Object.keys(TSX).length).toBeGreaterThan(100);
     expect(all.length).toBeGreaterThan(1000);
+    expect(buttons.length, 'the <button> scan found nothing — it is broken').toBeGreaterThan(400);
+  });
+
+  it('actually routes brand-filled buttons through the primitive', () => {
+    /**
+     * The counter reading zero is only good news if the buttons went
+     * somewhere. An earlier version of this file reported zero because its
+     * regex stopped at the `>` inside `onClick={() => …}` and never reached
+     * className — a very convincing way to look finished.
+     */
+    const usages = Object.values(TSX).reduce((n, source) => n + (source.match(/<Button\b/g) ?? []).length, 0);
+    expect(usages).toBeGreaterThan(300);
   });
 });

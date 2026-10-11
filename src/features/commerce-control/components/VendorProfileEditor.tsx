@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { CheckCircle2, ImageUp, Loader2, Save } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
+import { Button } from '@/shared/ui/primitives';
 
 type Props = { data: unknown; canOperate: boolean; onSaved: () => void };
 
@@ -203,13 +204,13 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
           </span>
         )}
         {canOperate ? (
-          <button
+          <Button
             disabled={save.isPending || !form.businessName.trim()}
-            className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-text-inverted disabled:opacity-40"
+            variant="primary" size="lg"
           >
             {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save profile
-          </button>
+          </Button>
         ) : (
           <span className="text-xs text-text-muted">Read only for the Agent role</span>
         )}

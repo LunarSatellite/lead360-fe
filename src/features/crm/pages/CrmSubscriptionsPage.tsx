@@ -16,6 +16,7 @@ import {
   CRM_SUBSCRIPTION_STATUS_LABELS, CRM_SUBSCRIPTION_STATUS_COLORS,
   CRM_SUBSCRIPTION_TIER_LABELS, CRM_BILLING_CADENCE_LABELS,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
@@ -218,9 +219,9 @@ export function Component() {
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Subscriptions</h2>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Subscription
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -300,10 +301,10 @@ export function Component() {
         footer={
           <div className="flex gap-3 justify-end">
             <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="sub-form" disabled={createSub.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="submit" form="sub-form" disabled={createSub.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createSub.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Subscription'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -316,41 +317,21 @@ export function Component() {
 
           <div>
             <Field label="Contact ID *">
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={User} required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid" style={inputStyle} />
             </Field>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Account ID">
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={Hash} value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid" style={inputStyle} />
             </Field>
             <Field label="Deal ID">
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={Hash} value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid" style={inputStyle} />
             </Field>
           </div>
 
           <Field label="Plan Name">
-            <div className="relative">
-              <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={inputStyle} />
-            </div>
+            <Input icon={Layers} required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly" style={inputStyle} />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
@@ -364,39 +345,19 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Amount *">
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={DollarSign} required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00" style={inputStyle} />
             </Field>
             <Field label="Currency">
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={createForm.currency} onChange={setC('currency')} placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={DollarSign} value={createForm.currency} onChange={setC('currency')} placeholder="USD" style={inputStyle} />
             </Field>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Start Date">
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input type="date" value={createForm.startDate} onChange={setC('startDate')}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              </div>
+              <Input icon={Calendar} type="date" value={createForm.startDate} onChange={setC('startDate')} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
             <Field label="Seats">
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={User} type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5" style={inputStyle} />
             </Field>
           </div>
         </form>
@@ -443,9 +404,9 @@ export function Component() {
                   <Field label="Amount"><input type="number" min="0" step="0.01" value={editForm.amount} onChange={setE('amount')} className={inputCls} /></Field>
                   <Field label="Seats"><input type="number" min="1" value={editForm.seats} onChange={setE('seats')} className={inputCls} /></Field>
                 </div>
-                <button type="submit" disabled={updateSub.isPending} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+                <Button type="submit" disabled={updateSub.isPending} variant="primary" block>
                   {updateSub.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}
-                </button>
+                </Button>
               </form>
             )}
 

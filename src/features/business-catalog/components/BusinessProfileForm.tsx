@@ -16,6 +16,7 @@ import {
   type BusinessProfileUpsertRequest,
   type BusinessTypeValue,
 } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   existing: BusinessProfile | undefined;
@@ -236,13 +237,11 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
 
       {/* ─── Save ─── */}
       <div className="flex items-center justify-end gap-2 pt-2">
-        <button
+        <Button
           type="button"
           disabled={upsert.isPending}
           onClick={handleSubmit}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold
-                     bg-brand text-text-inverted hover:bg-brand/90 disabled:opacity-50
-                     transition-all"
+          variant="primary"
         >
           {upsert.isPending ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -250,7 +249,7 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
             <Save className="w-3.5 h-3.5" strokeWidth={2} />
           )}
           {existing ? 'Update profile' : 'Save profile'}
-        </button>
+        </Button>
       </div>
     </div>
   );

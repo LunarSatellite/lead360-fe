@@ -10,6 +10,7 @@ import type {
   DateCard,
   ButtonRowCard,
 } from '../../types/chat.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ControlProps<T> {
   card: T;
@@ -111,15 +112,15 @@ function FreeTextControl({ card, onSubmit, consumed }: ControlProps<FreeTextCard
             </p>
           )}
         </div>
-        <button
+        <Button
           type="button"
           onClick={handleSubmit}
           disabled={consumed}
-          className="flex items-center gap-1.5 px-4 py-1.5 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light disabled:opacity-30 transition-all"
+          variant="primary"
         >
           <Check className="w-3.5 h-3.5" strokeWidth={2.2} />
           Submit
-        </button>
+        </Button>
       </div>
       {isMultiline && !consumed && <p className="text-[10px] text-text-muted">Cmd/Ctrl + Enter to submit</p>}
     </div>
@@ -256,13 +257,13 @@ function RadioControl({ card, onSubmit, consumed }: ControlProps<RadioCard>) {
         </p>
       )}
 
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
-        className="self-end px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+        variant="primary" className="self-end"
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
@@ -354,13 +355,13 @@ function DropdownControl({ card, onSubmit, consumed }: ControlProps<DropdownCard
         </p>
       )}
 
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
-        className="self-end px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+        variant="primary" className="self-end"
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
@@ -514,13 +515,13 @@ function MultiSelectControl({ card, onSubmit, consumed }: ControlProps<MultiSele
             {error}
           </span>
         )}
-        <button
+        <Button
           type="button"
           onClick={handleSubmit}
-          className="px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+          variant="primary"
         >
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -608,13 +609,13 @@ function SliderControl({ card, onSubmit, consumed }: ControlProps<SliderCard>) {
         </span>
       </div>
 
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
-        className="self-end px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+        variant="primary" className="self-end"
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
@@ -663,13 +664,13 @@ function DateControl({ card, onSubmit, consumed }: ControlProps<DateCard>) {
         </p>
       )}
 
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
-        className="self-end px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+        variant="primary" className="self-end"
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }

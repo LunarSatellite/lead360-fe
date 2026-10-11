@@ -194,6 +194,7 @@ export const ROUTES = {
     calendarSettings: '/dashboard/settings/calendar',
     bookingPageSettings: '/dashboard/settings/booking-page',
     customDomainsSettings: '/dashboard/settings/custom-domains',
+    designSystem: '/dashboard/design-system',
   },
   schedule: (token: string) => `/schedule/${token}`,
   book: (slug: string) => `/book/${slug}`,

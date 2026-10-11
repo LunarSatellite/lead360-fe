@@ -20,6 +20,7 @@ import {
 } from '@/features/commerce-control/api/stylemint-support.api';
 import { Component as CrmSupportCases } from '@/features/crm/pages/CrmSupportPage';
 import { CareThemesPanel } from '@/features/commerce-control/components/CareThemesPanel';
+import { Button } from '@/shared/ui/primitives';
 
 type Queue = 'commerce' | 'crm' | 'themes';
 
@@ -315,10 +316,10 @@ function TicketDetail({
       )}
 
       <div className="flex flex-wrap gap-2">
-        <button
+        <Button
           onClick={() => act.mutate('reply')}
           disabled={act.isPending || !reply.trim()}
-          className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary"
         >
           {act.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -326,7 +327,7 @@ function TicketDetail({
             <Send className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Reply
-        </button>
+        </Button>
         <button
           onClick={() => act.mutate('waiting')}
           disabled={act.isPending}

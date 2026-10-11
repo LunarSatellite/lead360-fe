@@ -6,6 +6,7 @@ import {
   type PatchVendorPolicy,
   type VendorBrandStudioPolicy,
 } from '../api/stylemint-brand-studio.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * A vendor's brand-studio limits: how many model calls a month, the commission ceiling, and the
@@ -100,10 +101,10 @@ export function VendorPolicyPanel() {
           placeholder="Vendor profile id"
           className="flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
         />
-        <button
+        <Button
           disabled={!vendorId.trim() || load.isPending}
           onClick={() => load.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary"
         >
           {load.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -111,7 +112,7 @@ export function VendorPolicyPanel() {
             <Search className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Load
-        </button>
+        </Button>
       </div>
 
       {policy && (
@@ -149,10 +150,10 @@ export function VendorPolicyPanel() {
             Last updated {new Date(policy.updatedUtc).toLocaleString()}
           </p>
 
-          <button
+          <Button
             disabled={!changed || save.isPending}
             onClick={() => save.mutate()}
-            className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm" className="mt-2"
           >
             {save.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -160,7 +161,7 @@ export function VendorPolicyPanel() {
               <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
             )}
             Save changes
-          </button>
+          </Button>
         </>
       )}
 

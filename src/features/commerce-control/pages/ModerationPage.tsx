@@ -15,6 +15,7 @@ import {
   type ModerationActionValue,
   type ModerationItem,
 } from '../api/stylemint-moderation.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Content moderation — reported reels, reviews, comments, profiles and recommendation replies.
@@ -286,13 +287,13 @@ function DecisionPanel({
                 </p>
               )}
               <div className="flex gap-2">
-                <button
+                <Button
                   onClick={() => decide.mutate(pending)}
                   disabled={decide.isPending}
-                  className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+                  variant="primary"
                 >
                   {decide.isPending ? 'Recording…' : 'Yes, record it'}
-                </button>
+                </Button>
                 <button
                   onClick={() => setPending(null)}
                   className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"

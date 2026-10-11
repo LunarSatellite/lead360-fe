@@ -6,6 +6,7 @@ import { AlertTriangle, BarChart3, Bot, Check, CheckCircle, ChevronRight, Circle
 import { apiClient } from '@/shared/lib/api-client';
 import { AiCampaignWizard } from '../components/AiCampaignWizard';
 import { AdsReportTab } from '../components/AdsReportTab';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -328,10 +329,10 @@ function CampaignList({
     <div className="flex flex-col gap-2">
       {/* Actions */}
       <div className="flex gap-2">
-        <button onClick={onCreateClick}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl bg-brand text-bg hover:opacity-90 transition-all">
+        <Button onClick={onCreateClick}
+          variant="primary" className="flex-1">
           <Plus className="w-3.5 h-3.5" /> New Campaign
-        </button>
+        </Button>
         <button onClick={onSyncClick} disabled={isSyncing}
           className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
           {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
@@ -524,11 +525,11 @@ function CampaignDetail({
                   className="pl-10 pr-3 py-1.5 text-sm bg-bg-elevated border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:border-brand w-28"
                 />
               </div>
-              <button onClick={() => budgetMut.mutate()} disabled={budgetMut.isPending || !budgetVal}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+              <Button onClick={() => budgetMut.mutate()} disabled={budgetMut.isPending || !budgetVal}
+                variant="primary" size="sm">
                 {budgetMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
                 Save
-              </button>
+              </Button>
               <button onClick={() => setEditBudget(false)}
                 className="p-1.5 rounded-lg text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" />
@@ -1168,14 +1169,14 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
             className="flex-1 py-2.5 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
             Cancel
           </button>
-          <button onClick={() => mut.mutate()} disabled={!canSubmit}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-xl bg-brand text-bg hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+          <Button onClick={() => mut.mutate()} disabled={!canSubmit}
+            variant="primary" size="lg" className="flex-1">
             {mut.isPending
               ? <><Loader2 className="w-4 h-4 animate-spin" /> Posting…</>
               : scheduleDate
               ? <><Play className="w-4 h-4" /> Schedule Post</>
               : <><Zap className="w-4 h-4" /> Publish Now</>}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -1227,10 +1228,10 @@ function InstagramAdsTab({
         {account?.isActive && (
           <>
             <div className="flex gap-2">
-              <button onClick={onCreateClick}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl bg-brand text-bg hover:opacity-90 transition-all">
+              <Button onClick={onCreateClick}
+                variant="primary" className="flex-1">
                 <Plus className="w-3.5 h-3.5" /> New Campaign
-              </button>
+              </Button>
               <button onClick={onNewPost}
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border border-[rgba(228,64,95,0.4)] bg-[rgba(228,64,95,0.08)] text-[#E4405F] hover:bg-[rgba(228,64,95,0.14)] transition-all">
                 <Pencil className="w-3.5 h-3.5" /> New Post
@@ -1377,12 +1378,12 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         <div className="px-6 py-4 border-t border-border-subtle flex gap-3">
-          <button onClick={() => mut.mutate()}
+          <Button onClick={() => mut.mutate()}
             disabled={mut.isPending || !form.advertiserId || !form.accessToken}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-brand text-bg font-bold text-sm disabled:opacity-50 transition-all">
+            variant="primary" size="lg" className="flex-1">
             {mut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" strokeWidth={1.6} />}
             Connect
-          </button>
+          </Button>
           <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
             Cancel
           </button>
@@ -1441,10 +1442,10 @@ function TikTokAdsTab({ onNewPost }: { onNewPost?: () => void }) {
         {account?.isActive && (
           <>
             <div className="flex gap-2">
-              <button onClick={() => setShowConnect(true)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl bg-brand text-bg hover:opacity-90 transition-all">
+              <Button onClick={() => setShowConnect(true)}
+                variant="primary" className="flex-1">
                 <Plus className="w-3.5 h-3.5" /> New
-              </button>
+              </Button>
               <button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
                 className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
                 {syncMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
@@ -1607,10 +1608,10 @@ function TikTokAdsTab({ onNewPost }: { onNewPost?: () => void }) {
                   <p className="text-sm text-text-muted">
                     Sync your TikTok campaigns, track video performance, and monitor engagement metrics.
                   </p>
-                  <button onClick={() => setShowConnect(true)}
-                    className="px-5 py-2.5 rounded-xl bg-brand text-bg font-bold text-sm hover:opacity-90 transition-all">
+                  <Button onClick={() => setShowConnect(true)}
+                    variant="primary" size="lg">
                     Connect Now
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -1998,11 +1999,11 @@ function OAuthPlatformTab({
                         </div>
                       ))}
                       <div className="flex gap-2 pt-1 flex-wrap">
-                        <button onClick={handleSaveCreds} disabled={savingCreds}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all disabled:opacity-50">
+                        <Button onClick={handleSaveCreds} disabled={savingCreds}
+                          variant="primary">
                           {savingCreds ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" strokeWidth={2} />}
                           {credConfigured ? 'Update' : 'Save Credentials'}
-                        </button>
+                        </Button>
                         {credConfigured && (
                           <button onClick={handleConnect} disabled={connecting}
                             style={{ background: platformColor }}

@@ -29,6 +29,7 @@ import {
 } from '../api/stylemint-logistics.api';
 import { PackingSlipSheet } from './PackingSlipSheet';
 import { SubOrderDetailPanel } from './SubOrderDetailPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The fulfilment desk: the sub-orders waiting on a vendor step, and the step itself.
@@ -201,20 +202,20 @@ export function SubOrderDesk() {
           <span className="text-[11px] font-bold text-brand">
             {selected.size} selected
           </span>
-          <button
+          <Button
             disabled={!canBulkAccept || bulk.isPending}
             onClick={() => bulk.mutate({ step: 'accept' })}
-            className="rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             Accept all
-          </button>
-          <button
+          </Button>
+          <Button
             disabled={!canBulkReadyToShip || bulk.isPending}
             onClick={() => bulk.mutate({ step: 'readyToShip' })}
-            className="rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             Ready to ship all
-          </button>
+          </Button>
           {/* A read, so unlike the bulk steps it applies to any selection whatever state the
               rows are in — an operator printing a run of slips does not sort them first. */}
           <button
@@ -604,13 +605,13 @@ function HandoverPartnerChooser({ subOrderId }: { subOrderId: string }) {
       {error && <p className="text-[11px] text-rose-300">{error}</p>}
 
       {chosen && (
-        <button
+        <Button
           disabled={offer.isPending}
           onClick={() => offer.mutate(chosen)}
-          className="mt-1 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm" className="mt-1"
         >
           {offer.isPending ? 'Offering…' : 'Offer to this partner'}
-        </button>
+        </Button>
       )}
     </div>
   );

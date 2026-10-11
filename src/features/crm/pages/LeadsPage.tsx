@@ -52,6 +52,7 @@ import {
   LEAD_STAGE_COLORS,
   CHANNEL_LABELS,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -284,12 +285,12 @@ export function Component() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => { setForm({ stage: LeadStage.New }); setContactSearch(''); setOrgSearch(''); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); setShowCreate(true); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Lead
-          </button>
+          </Button>
           <CsvLeadsToolbar />
         </div>
       </div>
@@ -418,46 +419,18 @@ export function Component() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="John Doe"
-                      value={form.customerName ?? ''}
-                      onChange={e => setForm(f => ({ ...f, customerName: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={User} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="John Doe" value={form.customerName ?? ''} onChange={e => setForm(f => ({ ...f, customerName: e.target.value }))} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Phone</label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="+977 98XXXXXXXX"
-                      value={form.customerPhone ?? ''}
-                      onChange={e => setForm(f => ({ ...f, customerPhone: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Phone} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="+977 98XXXXXXXX" value={form.customerPhone ?? ''} onChange={e => setForm(f => ({ ...f, customerPhone: e.target.value }))} />
                 </div>
               </div>
 
               {/* Email */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    type="email"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="john@example.com"
-                    value={form.customerEmail ?? ''}
-                    onChange={e => setForm(f => ({ ...f, customerEmail: e.target.value }))}
-                  />
-                </div>
+                <Input icon={Mail} type="email" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="john@example.com" value={form.customerEmail ?? ''} onChange={e => setForm(f => ({ ...f, customerEmail: e.target.value }))} />
               </div>
               {/* ── Organization Details ── */}
               <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
@@ -541,103 +514,39 @@ export function Component() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Company Name</label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="Acme Corp"
-                      value={orgDetails.name}
-                      onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Building2} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Acme Corp" value={orgDetails.name} onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
-                  <div className="relative">
-                    <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="acme.com"
-                      value={orgDetails.domain}
-                      onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Layers} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="acme.com" value={orgDetails.domain} onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))} />
                 </div>
               </div>
               {/* Industry + Employees */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
-                  <div className="relative">
-                    <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="SaaS, Retail…"
-                      value={orgDetails.industry}
-                      onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Layers} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="SaaS, Retail…" value={orgDetails.industry} onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
-                  <div className="relative">
-                    <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number" min={0}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="250"
-                      value={orgDetails.employeeCount}
-                      onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Users} type="number" min={0} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="250" value={orgDetails.employeeCount} onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))} />
                 </div>
               </div>
               {/* Country + City */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
-                  <div className="relative">
-                    <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="US"
-                      value={orgDetails.country}
-                      onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Radio} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="US" value={orgDetails.country} onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))} />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
-                  <div className="relative">
-                    <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="New York"
-                      value={orgDetails.city}
-                      onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))}
-                    />
-                  </div>
+                  <Input icon={Radio} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="New York" value={orgDetails.city} onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))} />
                 </div>
               </div>
               {/* Website */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="https://acme.com"
-                    value={orgDetails.website}
-                    onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))}
-                  />
-                </div>
+                <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="https://acme.com" value={orgDetails.website} onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))} />
               </div>
 
               {/* ── Lead ── */}
@@ -699,33 +608,12 @@ export function Component() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Lead Score (0–100)</label>
-                  <div className="relative">
-                    <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="e.g. 75"
-                      value={form.score ?? ''}
-                      onChange={e => setForm(f => ({ ...f, score: e.target.value ? Math.min(100, Math.max(0, Number(e.target.value))) : undefined }))}
-                    />
-                  </div>
+                  <Input icon={Star} type="number" min={0} max={100} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. 75" value={form.score ?? ''} onChange={e => setForm(f => ({ ...f, score: e.target.value ? Math.min(100, Math.max(0, Number(e.target.value))) : undefined }))} />
                 </div>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Source / How did you meet?</label>
-                <div className="relative">
-                  <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="Trade show, Referral, Cold outreach…"
-                    value={form.adSource ?? ''}
-                    onChange={e => setForm(f => ({ ...f, adSource: e.target.value }))}
-                  />
-                </div>
+                <Input icon={Radio} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Trade show, Referral, Cold outreach…" value={form.adSource ?? ''} onChange={e => setForm(f => ({ ...f, adSource: e.target.value }))} />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
@@ -775,7 +663,7 @@ export function Component() {
               >
                 Cancel
               </button>
-              <button
+              <Button
                 disabled={createLead.isPending || (!form.customerName && !form.customerPhone && !form.customerEmail)}
                 onClick={() => createLead.mutate({
                   ...form,
@@ -794,11 +682,11 @@ export function Component() {
                   }
                   setShowCreate(false);
                 }})}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createLead.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Lead
-              </button>
+              </Button>
             </div>
           </div>
         </div>

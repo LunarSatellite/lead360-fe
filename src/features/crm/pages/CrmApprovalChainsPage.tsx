@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { crmApi } from '../api/crm.api';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const qc = useQueryClient();
@@ -86,9 +87,9 @@ export function Component() {
             Define multi-step approval templates. When a Quote, Deal, or other entity is submitted for approval, the matching chain determines who reviews it and in what order.
           </p>
         </div>
-        <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-text-inverted text-sm font-medium">
+        <Button onClick={() => { resetForm(); setShowForm(true); }} variant="primary" size="sm">
           <Plus className="w-4 h-4" /> New Chain
-        </button>
+        </Button>
       </div>
 
       {showForm && (
@@ -149,13 +150,13 @@ export function Component() {
           </div>
 
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => saveMutation.mutate({ name, description: desc || undefined, entityType, steps: steps.map(s => ({ ...s, approverUserId: s.approverUserId || undefined, requiredApprovals: 1 })) })}
               disabled={!canSave || saveMutation.isPending}
-              className="px-4 py-1.5 rounded-lg bg-brand text-text-inverted text-sm font-medium disabled:opacity-50"
+              variant="primary"
             >
               {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : editingId ? 'Update Chain' : 'Create Chain'}
-            </button>
+            </Button>
             <button onClick={resetForm} className="px-3 py-1.5 rounded-lg border border-border-subtle text-sm text-text-secondary">Cancel</button>
           </div>
         </div>

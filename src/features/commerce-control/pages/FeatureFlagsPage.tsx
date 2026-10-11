@@ -19,6 +19,7 @@ import {
   stylemintFeatureFlagsApi,
   type FeatureFlag,
 } from '../api/stylemint-feature-flags.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Platform feature flags, and the overrides layered on top of them.
@@ -58,12 +59,12 @@ export function FeatureFlagsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => setCreating(true)}
-            className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> New flag
-          </button>
+          </Button>
           <button
             onClick={() => flags.refetch()}
             className="flex items-center gap-2 rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
@@ -149,13 +150,13 @@ function NewFlagCard({ onDone }: { onDone: () => void }) {
       {error && <p className="text-xs text-rose-300">{error}</p>}
 
       <div className="flex gap-2">
-        <button
+        <Button
           onClick={() => create.mutate()}
           disabled={create.isPending || !key.trim()}
-          className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary"
         >
           {create.isPending ? 'Saving…' : 'Create flag'}
-        </button>
+        </Button>
         <button
           onClick={onDone}
           className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
@@ -230,13 +231,13 @@ function FlagCard({ flag, onChanged }: { flag: FeatureFlag; onChanged: () => voi
             This takes effect immediately for everyone without an override.
           </p>
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => toggleDefault.mutate()}
               disabled={toggleDefault.isPending}
-              className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary"
             >
               {toggleDefault.isPending ? 'Applying…' : 'Yes, change it'}
-            </button>
+            </Button>
             <button
               onClick={() => setConfirmToggle(false)}
               className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
@@ -398,13 +399,13 @@ function AddOverride({
       {error && <p className="text-xs text-rose-300">{error}</p>}
 
       <div className="flex gap-2">
-        <button
+        <Button
           onClick={() => save.mutate()}
           disabled={save.isPending || incomplete}
-          className="rounded-card bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {save.isPending ? 'Saving…' : 'Save override'}
-        </button>
+        </Button>
         <button
           onClick={onCancel}
           className="rounded-card border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary"

@@ -20,6 +20,7 @@ import {
   type DataRightsRequest,
   type DataRightsStatusValue,
 } from '../api/stylemint-privacy.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Data-rights requests — GDPR Articles 15 to 22.
@@ -333,14 +334,14 @@ function RequestRow({
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={act.isPending || (rejecting && !reason.trim())}
               onClick={() => act.mutate(completing ? 'complete' : 'reject')}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
-            </button>
+            </Button>
             <button
               onClick={done}
               className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"

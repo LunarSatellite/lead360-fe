@@ -28,6 +28,7 @@ import { isUsableSocialAccount } from '../lib/social-accounts';
 import { applyTenantAccent } from '@/shared/lib/tenant-theme';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 type Preferences = { locale: 'fr-CD' | 'en-CD'; currency: 'CDF' | 'USD'; timezone: 'Africa/Kinshasa' };
 const STORAGE_KEY = 'kinmarche_workspace_preferences';
@@ -356,13 +357,13 @@ export function CommerceControlCenterPage() {
               />
             </label>
             {canOperate ? (
-              <button
+              <Button
                 onClick={() => saveTenant.mutate({ preferences, branding })}
                 disabled={saveTenant.isPending || !branding.name.trim()}
-                className="rounded-xl bg-brand px-4 py-3 text-xs font-extrabold text-text-inverted disabled:opacity-40"
+                variant="primary" size="lg"
               >
                 {saveTenant.isPending ? 'Saving…' : 'Save'}
-              </button>
+              </Button>
             ) : (
               <span className="px-2 py-3 text-xs text-text-muted">Read only</span>
             )}

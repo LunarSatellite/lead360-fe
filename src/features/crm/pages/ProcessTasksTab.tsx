@@ -14,6 +14,7 @@ import {
   PROCESS_TASK_STATUS_LABELS,
   PROCESS_TASK_STATUS_COLORS,
 } from '../types/process-workflow.types';
+import { Button } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -101,14 +102,14 @@ function CompleteModal({
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
               disabled={complete.isPending}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-semibold hover:bg-brand-light transition-all disabled:opacity-50"
+              variant="primary" className="flex-1"
             >
               {complete.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
               Complete
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -229,13 +230,13 @@ function TaskDetail({ task, onClose }: { task: ProcessTaskDto; onClose: () => vo
               </button>
             )}
             {canComplete && (
-              <button
+              <Button
                 onClick={() => setShowComplete(true)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand text-bg text-sm font-semibold hover:bg-brand-light transition-all"
+                variant="primary" size="lg" block
               >
                 <CheckCircle2 className="w-4 h-4" />
                 Complete Task
-              </button>
+              </Button>
             )}
           </div>
         )}
@@ -464,13 +465,13 @@ function TeamTasksTab({ onSelectTask }: { onSelectTask: (task: ProcessTaskDto) =
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/40"
           />
         </div>
-        <button
+        <Button
           onClick={handleSearch}
           disabled={!teamLabel.trim() || isLoading}
-          className="px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary"
         >
           {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Search'}
-        </button>
+        </Button>
       </div>
 
       {!searchedLabel ? (

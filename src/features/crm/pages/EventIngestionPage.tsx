@@ -10,6 +10,7 @@ import { format, parseISO } from 'date-fns';
 import { apiClient } from '@/shared/lib/api-client';
 import { crmApi } from '../api/crm.api';
 import type { WebEventSummaryDto } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── API ──────────────────────────────────────────────────────────────────────
 
@@ -393,14 +394,14 @@ ${embedTag}`
             <p className="text-sm text-text-secondary text-center">
               No tracking key yet. Generate one to start embedding the tracker on your website.
             </p>
-            <button
+            <Button
               onClick={() => handleGenerate()}
               disabled={generate.isPending}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand text-bg text-sm font-semibold hover:bg-brand-light transition-all disabled:opacity-50"
+              variant="primary" size="lg"
             >
               {generate.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
               Generate Tracking Key
-            </button>
+            </Button>
           </div>
         )}
       </div>

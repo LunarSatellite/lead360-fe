@@ -3,6 +3,7 @@ import { Send, Loader2, CheckCircle2 } from 'lucide-react';
 import { useDealHandover, useSubmitDealHandover } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function HandoverSection({ dealId }: { dealId: string }) {
   const { data: handoverRaw, isLoading } = useDealHandover(dealId);
@@ -64,9 +65,9 @@ export function HandoverSection({ dealId }: { dealId: string }) {
               {members.map(m => <option key={m.id} value={m.id}>{m.fullName || m.email}</option>)}
             </select>
           </div>
-          <button onClick={handleSubmit} disabled={submitMutation.isPending} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">
+          <Button onClick={handleSubmit} disabled={submitMutation.isPending} variant="primary" size="lg">
             {submitMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Submit Handover
-          </button>
+          </Button>
         </div>
       )}
     </div>

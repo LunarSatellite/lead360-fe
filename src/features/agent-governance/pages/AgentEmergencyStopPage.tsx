@@ -16,6 +16,7 @@ import {
   useProvenAdminRoles,
 } from '../hooks/agent-governance.queries';
 import { HaltScope, type AgentHaltView } from '../types/governance.types';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The emergency stop.
@@ -167,7 +168,7 @@ function AgentEmergencyStopPage() {
               >
                 Cancel
               </button>
-              <button
+              <Button
                 type="button"
                 data-testid="clear-confirm"
                 disabled={clearReason.trim().length < 12 || clear.isPending}
@@ -181,10 +182,10 @@ function AgentEmergencyStopPage() {
                     { onSuccess: () => setClearing(null) },
                   )
                 }
-                className="rounded-sm bg-brand px-3.5 py-2 text-xs font-black text-bg disabled:cursor-not-allowed disabled:opacity-40 hover:bg-brand-light"
+                variant="primary"
               >
                 {clear.isPending ? 'Clearing…' : 'Clear the stop'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

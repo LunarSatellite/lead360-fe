@@ -23,6 +23,7 @@ import {
   DELIVERY_TIER_LABEL,
   type PackageAwaitingCourier,
 } from '../api/stylemint-logistics.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Delivery operations: what has no courier, what is stuck, how routing is performing, and what the
@@ -246,10 +247,10 @@ function AwaitingRow({
         </div>
 
         <div className="flex shrink-0 flex-col items-end gap-1.5">
-          <button
+          <Button
             disabled={replan.isPending}
             onClick={() => replan.mutate()}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             {replan.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -257,7 +258,7 @@ function AwaitingRow({
               <Zap className="h-3.5 w-3.5" strokeWidth={1.6} />
             )}
             Replan
-          </button>
+          </Button>
           <button
             onClick={() => setPicking((v) => !v)}
             className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
@@ -432,16 +433,16 @@ function CourierPicker({
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={offer.isPending}
               onClick={() => offer.mutate(chosen)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {offer.isPending && (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
               )}
               Send offer
-            </button>
+            </Button>
             <button
               onClick={() => setChosen(null)}
               className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
@@ -551,15 +552,15 @@ function StuckRow({ offer, onReplanned }: { offer: HopOffer; onReplanned: () => 
           </p>
         </button>
 
-        <button
+        <Button
           onClick={() => {
             setOpen(true);
             setError(null);
           }}
-          className="flex shrink-0 items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+          variant="primary" size="sm" className="shrink-0"
         >
           <Zap className="h-3.5 w-3.5" strokeWidth={1.6} /> Replan
-        </button>
+        </Button>
       </div>
 
       {open && (
@@ -579,16 +580,16 @@ function StuckRow({ offer, onReplanned }: { offer: HopOffer; onReplanned: () => 
             />
             {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
             <div className="mt-2 flex items-center gap-2">
-              <button
+              <Button
                 disabled={replan.isPending}
                 onClick={() => replan.mutate()}
-                className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+                variant="primary" size="sm"
               >
                 {replan.isPending && (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
                 )}
                 Confirm replan
-              </button>
+              </Button>
               <button
                 onClick={() => setOpen(false)}
                 className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
@@ -698,10 +699,10 @@ function GuardianTab() {
             Runs the guardian now over up to 200 parcels rather than waiting for its schedule.
           </p>
         </div>
-        <button
+        <Button
           disabled={sweep.isPending}
           onClick={() => sweep.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {sweep.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -709,7 +710,7 @@ function GuardianTab() {
             <Zap className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Sweep now
-        </button>
+        </Button>
       </div>
 
       {error && <ErrorBox error={new Error(error)} />}

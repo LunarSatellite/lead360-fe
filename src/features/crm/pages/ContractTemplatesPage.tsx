@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { ContractTemplateCategory, CONTRACT_TEMPLATE_CATEGORY_LABELS, type ContractTemplateCategoryValue } from '../types/crm.types';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 
@@ -65,10 +66,10 @@ export function Component() {
           <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Contract Templates</h1>
           <p className="text-sm text-text-secondary mt-1">Reusable agreement templates with {'{{variable}}'} placeholders. Create a contract from a template to auto-fill deal and customer details.</p>
         </div>
-        <button onClick={() => { resetForm(); setShowForm(true); setEditingId(null); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => { resetForm(); setShowForm(true); setEditingId(null); }}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> New template
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
@@ -110,10 +111,10 @@ export function Component() {
                 </div>
                 <textarea className={`${inputCls} min-h-[180px] font-mono text-xs`} value={form.bodyHtml} onChange={e => setForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p><p>Your {{ContractTitle}} is ready...</p>" />
               </div>
-              <button type="submit" disabled={createMut.isPending || updateMut.isPending || !form.name.trim()}
-                className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">
+              <Button type="submit" disabled={createMut.isPending || updateMut.isPending || !form.name.trim()}
+                variant="primary" block>
                 {editingId ? 'Update' : 'Create'} Template
-              </button>
+              </Button>
             </form>
           ) : selected ? (
             <div className="space-y-4">

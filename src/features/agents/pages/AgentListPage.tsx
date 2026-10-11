@@ -32,6 +32,7 @@ import { AgentCard } from '../components/AgentCard';
 import { AgentEditorDialog } from '../components/AgentEditorDialog';
 import { DeleteAgentDialog } from '../components/DeleteAgentDialog';
 import { EmptyAgentsState } from '../components/EmptyAgentsState';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Status filter (separate from agentType filter) ────────────
 type StatusFilter = 'all' | 'enabled' | 'disabled';
@@ -148,14 +149,14 @@ export function Component() {
         </div>
 
         {(role.canManage || true) && (
-          <button
+          <Button
             type="button"
             onClick={openCreate}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand hover:bg-brand-light text-bg text-sm font-bold transition-all shrink-0"
+            variant="primary" size="lg" className="shrink-0"
           >
             <Plus className="w-4 h-4" strokeWidth={2.4} />
             New agent
-          </button>
+          </Button>
         )}
       </header>
 

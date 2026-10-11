@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Bot, X, Send, Loader2, Wrench, Check, AlertTriangle } from 'lucide-react';
 import { streamAgentMessage, AgentStatus, type AgentProgress, type AgentResult } from '../api/agent.api';
+import { Button } from '@/shared/ui/primitives';
 
 /** Open the CRM Copilot panel from anywhere (header button). */
 export function openCopilot() {
@@ -142,7 +143,7 @@ export function CopilotPanel() {
               </div>
               <div className="flex gap-2 justify-end">
                 <button onClick={() => setConfirm(null)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:text-text-primary transition-all">Cancel</button>
-                <button onClick={() => run('Confirmed.', true)} className="px-3 py-1.5 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">Confirm</button>
+                <Button onClick={() => run('Confirmed.', true)} variant="primary" size="sm">Confirm</Button>
               </div>
             </div>
           )}

@@ -12,6 +12,7 @@ import type {
 } from '../types/crm.types';
 import { CrmProposalStatus, CRM_PROPOSAL_STATUS_LABELS, CRM_PROPOSAL_STATUS_COLORS, PROPOSAL_SECTION_KINDS, ApprovalEntityType } from '../types/crm.types';
 import { ApprovalPanel } from '../components/ApprovalPanel';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -264,9 +265,9 @@ export function Component() {
           <button onClick={() => setManualOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-text-primary bg-bg-card border border-border-subtle hover:bg-bg-elevated transition-all">
             <FilePlus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Proposal
           </button>
-          <button onClick={() => setGenOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+          <Button onClick={() => setGenOpen(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Generate Proposal
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -344,10 +345,10 @@ export function Component() {
             {detailData.id && <ApprovalPanel entityType={ApprovalEntityType.Proposal} entityId={detailData.id} entityName={detailData.title} />}
 
             {canSend(detailData) && (
-              <button onClick={() => { sendProposal.mutate(detailData.id); setSelectedId(null); }} disabled={sendProposal.isPending}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+              <Button onClick={() => { sendProposal.mutate(detailData.id); setSelectedId(null); }} disabled={sendProposal.isPending}
+                variant="primary">
                 {sendProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" strokeWidth={1.5} />} Send Proposal
-              </button>
+              </Button>
             )}
             {detailData.status === 4 && (
               <div className="flex gap-2">
@@ -381,16 +382,16 @@ export function Component() {
             >
               Cancel
             </button>
-            <button
+            <Button
               onClick={handleGenerate}
               disabled={generateProposal.isPending || !dealId.trim()}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {generateProposal.isPending
                 ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 : <ClipboardList className="w-3.5 h-3.5" />}
               Generate Proposal
-            </button>
+            </Button>
           </div>
         }
       >
@@ -610,11 +611,11 @@ export function Component() {
             ))}
           </div>
         </div>
-        <button onClick={handleCreateManual}
+        <Button onClick={handleCreateManual}
           disabled={createProposal.isPending || createFromLead.isPending || !mTitle.trim() || (mSource === 'deal' ? !mDealId.trim() : !mLeadId.trim())}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+          variant="primary" size="lg" block>
           {(createProposal.isPending || createFromLead.isPending) ? <Loader2 className="w-4 h-4 animate-spin" /> : <FilePlus className="w-4 h-4" />} Create Proposal
-        </button>
+        </Button>
       </SlideOver>
     </div>
   );

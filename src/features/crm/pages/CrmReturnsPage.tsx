@@ -12,6 +12,7 @@ import {
   CRM_RETURN_INSPECTION_LABELS,
   CrmReturnStatus, CrmReturnInspectionResult, CrmReturnResolution,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -63,9 +64,9 @@ function InspectionForm({ rmaId, onDone }: { rmaId: string; onDone: () => void }
       </select>
       <input value={findings} onChange={e => setFindings(e.target.value)} placeholder="Findings (optional)" className={inputCls} />
       <input value={disposition} onChange={e => setDisposition(e.target.value)} placeholder="Disposition (optional)" className={inputCls} />
-      <button type="submit" disabled={record.isPending} className="w-full py-2 rounded-lg bg-brand text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+      <Button type="submit" disabled={record.isPending} variant="primary" block>
         {record.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Save Inspection'}
-      </button>
+      </Button>
     </form>
   );
 }

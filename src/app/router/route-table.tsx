@@ -198,6 +198,7 @@ export const routeObjects: RouteObject[] = [
       // Same as bot-settings: AccountSettingsPage renders ComplianceSettings as
       // its "Compliance" section. Unlisted on purpose, kept for bookmarks.
       { path: 'compliance', lazy: () => import('@/features/compliance/pages/ComplianceSettings') },
+      { path: 'design-system', lazy: () => import('@/features/design-system/pages/DesignSystemPage') },
       // ── COMMENTED: 6-step Onboarding wizard — chat-first replaces it.
       //    Uncomment if you need the wizard back. The file
       //    src/features/onboarding/pages/OnboardingPage.tsx is intact on disk.

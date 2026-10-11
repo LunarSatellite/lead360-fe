@@ -10,6 +10,7 @@ import {
 import type {
   CrmPriceBookDto, CrmPriceBookDetailDto, CrmPriceBookEntryDto, CrmPriceBookEntryRequest, CatalogItemSummaryDto,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls =
   'w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
@@ -43,10 +44,10 @@ export function Component() {
           <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Price Books</h1>
           <p className="text-sm text-text-secondary mt-1">Per-currency rate cards. Quotes draw line-item prices from a book so pricing stays consistent.</p>
         </div>
-        <button onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setShowCreate(true)}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New price book
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
@@ -163,33 +164,13 @@ export function Component() {
               {/* Name */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
-                <div className="relative">
-                  <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="e.g. Enterprise USD"
-                    value={bookForm.name}
-                    onChange={(e) => setBookForm((f) => ({ ...f, name: e.target.value }))}
-                    required
-                  />
-                </div>
+                <Input icon={BookOpen} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. Enterprise USD" value={bookForm.name} onChange={(e) => setBookForm((f) => ({ ...f, name: e.target.value }))} required />
               </div>
 
               {/* Currency */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-                <div className="relative">
-                  <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="USD"
-                    value={bookForm.currency}
-                    onChange={(e) => setBookForm((f) => ({ ...f, currency: e.target.value.toUpperCase() }))}
-                    maxLength={10}
-                  />
-                </div>
+                <Input icon={DollarSign} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" value={bookForm.currency} onChange={(e) => setBookForm((f) => ({ ...f, currency: e.target.value.toUpperCase() }))} maxLength={10} />
               </div>
 
               {/* Description */}
@@ -229,14 +210,14 @@ export function Component() {
               >
                 Cancel
               </button>
-              <button
+              <Button
                 type="submit"
                 disabled={createBook.isPending || !bookForm.name.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createBook.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Price Book
-              </button>
+              </Button>
             </div>
           </div>
         </div>,
@@ -316,10 +297,10 @@ function EntryEditor({ bookId, currency, entries }: { bookId: string; currency: 
           onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))} />
         <input className={`${inputCls} w-32`} type="number" min="0" step="0.01" placeholder="Price" value={form.unitPrice}
           onChange={(e) => setForm((f) => ({ ...f, unitPrice: e.target.value }))} />
-        <button type="submit" disabled={addEntry.isPending}
-          className="flex items-center gap-1 px-3 py-2 rounded-xl bg-brand text-bg text-xs font-bold hover:bg-brand-light disabled:opacity-50">
+        <Button type="submit" disabled={addEntry.isPending}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> Add
-        </button>
+        </Button>
       </form>
     </div>
   );

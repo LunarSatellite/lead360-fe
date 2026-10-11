@@ -4,6 +4,7 @@ import { Plus, X, Loader2, Trash2, Pencil } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 const RULES_KEY = ['crm', 'scoring-rules'] as const;
 
@@ -49,10 +50,10 @@ export function Component() {
           <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Lead Scoring Rules</h1>
           <p className="text-sm text-text-secondary mt-1">Define events and their point values.When a trigger event occurs,the lead's score increases automatically.At 50+ points, the lead is promoted to MQL and auto-assigned.</p>
         </div>
-        <button onClick={() => { setEditId(null); setForm({ eventType: '', label: '', points: 10 }); setShowForm(true); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => { setEditId(null); setForm({ eventType: '', label: '', points: 10 }); setShowForm(true); }}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> New rule
-        </button>
+        </Button>
       </div>
 
       <div className="overflow-x-auto rounded-card border-thin border-border-subtle">
@@ -175,14 +176,14 @@ export function Component() {
               >
                 Cancel
               </button>
-              <button
+              <Button
                 type="submit"
                 disabled={createMut.isPending || updateMut.isPending || !form.eventType.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 <Plus className="w-3.5 h-3.5" />
                 {editId ? 'Update' : 'Create'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>,

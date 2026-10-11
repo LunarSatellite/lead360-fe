@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, Send } from 'lucide-react';
 import { usePortalOpenCase } from '../api/portal.queries';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const [subject, setSubject] = useState('');
@@ -61,10 +62,10 @@ export function Component() {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={openCase.isPending || !subject.trim()}
-            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-sm bg-brand text-bg font-bold hover:bg-brand-light transition-all disabled:opacity-30 text-sm"
+            variant="primary" size="lg"
           >
             {openCase.isPending ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -74,7 +75,7 @@ export function Component() {
                 Submit Case
               </>
             )}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

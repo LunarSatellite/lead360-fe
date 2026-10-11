@@ -28,6 +28,7 @@ import {
 } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -317,13 +318,13 @@ function ContactCreateForm({
       )}
 
       <div className="flex gap-3 pt-2">
-        <button
+        <Button
           type="submit"
           disabled={isSaving || !form.fullName.trim() || hasDupes}
-          className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          variant="primary" className="flex-1"
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : hasDupes ? 'Review duplicates above' : 'Create Contact'}
-        </button>
+        </Button>
         <button
           type="button"
           onClick={onCancel}
@@ -472,12 +473,12 @@ export function Component() {
               }}
               isImporting={importCsv.isPending}
             />
-            <button
+            <Button
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+              variant="primary"
             >
               <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Contact
-            </button>
+            </Button>
           </div>
         </div>
 

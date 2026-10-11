@@ -31,6 +31,7 @@ import {
   type TenantDomainDto,
   type TenantDomainStatus,
 } from '../types/tenant-domain.types';
+import { Button } from '@/shared/ui/primitives';
 
 const statusMeta: Record<TenantDomainStatus, { label: string; className: string }> = {
   [TENANT_DOMAIN_STATUS.Pending]: {
@@ -172,14 +173,14 @@ function CertificateForm({ domain, onClose }: { domain: TenantDomainDto; onClose
         <button onClick={onClose} className="rounded-xl border border-border-subtle px-3 py-2 text-xs text-text-muted hover:text-text-primary">
           Cancel
         </button>
-        <button
+        <Button
           onClick={submit}
           disabled={upload.isPending}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-50"
+          variant="primary"
         >
           {upload.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <KeyRound className="h-3.5 w-3.5" />}
           Save certificate
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -227,14 +228,14 @@ function DomainCard({ domain }: { domain: TenantDomainDto }) {
             </a>
           )}
           {canActivate && (
-            <button
+            <Button
               onClick={() => setStatus.mutate({ domainId: domain.id, status: TENANT_DOMAIN_STATUS.Active })}
               disabled={statusPending}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-50"
+              variant="primary"
             >
               {statusPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
               Activate
-            </button>
+            </Button>
           )}
           {isActive && (
             <button
@@ -367,14 +368,14 @@ function CustomDomainsPage() {
               className="w-full rounded-xl border border-border-subtle bg-bg-input py-2.5 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
             />
           </div>
-          <button
+          <Button
             type="submit"
             disabled={addDomain.isPending}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-50"
+            variant="primary" size="lg"
           >
             {addDomain.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
             Add domain
-          </button>
+          </Button>
         </div>
       </form>
 

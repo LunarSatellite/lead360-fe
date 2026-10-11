@@ -366,15 +366,15 @@ export function CounterHandoverPage() {
               )}
 
               {readiness?.kind === 'ready' && (
-                <button
+                <Button
                   onClick={() => {
                     setConfirming(true);
                     setOutcome(null);
                   }}
-                  className="w-full rounded-card border-thin border-border-glow bg-brand-soft px-3 py-2 text-xs font-bold text-brand hover:bg-glass-2"
+                  variant="soft" block
                 >
                   Record counter handover
-                </button>
+                </Button>
               )}
 
             </div>
@@ -424,16 +424,16 @@ export function CounterHandoverPage() {
               >
                 Cancel
               </Button>
-              <button
+              <Button
                 onClick={() => record.mutate(selected.id)}
                 disabled={record.isPending}
-                className="flex items-center gap-2 rounded-card border-thin border-border-glow bg-brand-soft px-3 py-2 text-xs font-bold text-brand disabled:opacity-60"
+                variant="soft"
               >
                 {record.isPending && (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
                 )}
                 Complete the order
-              </button>
+              </Button>
             </div>
           </div>
         </div>

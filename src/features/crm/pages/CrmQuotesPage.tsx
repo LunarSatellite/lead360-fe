@@ -409,9 +409,9 @@ export function Component() {
                 </button>
               </div>
             )}
-            <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) { deleteQuote.mutate(selected.id); setSelected(null); } })} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger-light text-sm font-bold hover:bg-danger hover:text-bg transition-all">
+            <Button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) { deleteQuote.mutate(selected.id); setSelected(null); } })} variant="danger">
               <Trash2 className="w-4 h-4" strokeWidth={1.5} /> Delete Quote
-            </button>
+            </Button>
           </div>
         )}
       </SlideOver>

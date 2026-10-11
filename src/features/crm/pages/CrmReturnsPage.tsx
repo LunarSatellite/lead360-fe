@@ -196,12 +196,12 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
       <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
         {rma.status === CrmReturnStatus.PendingApproval && (
           <>
-            <button onClick={() => approve.mutate(rma.id)} disabled={approve.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50 transition-all">
+            <Button onClick={() => approve.mutate(rma.id)} disabled={approve.isPending} variant="success">
               <CheckCircle className="w-3.5 h-3.5" /> Approve
-            </button>
-            <button onClick={() => setShowReject(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger-light bg-danger-soft border border-danger/20 hover:opacity-80 transition-all">
+            </Button>
+            <Button onClick={() => setShowReject(v => !v)} variant="danger">
               <XCircle className="w-3.5 h-3.5" /> Reject
-            </button>
+            </Button>
           </>
         )}
         {(rma.status === CrmReturnStatus.Approved || rma.status === CrmReturnStatus.AwaitingReceive) && (
@@ -215,9 +215,9 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
           </button>
         )}
         {rma.status === CrmReturnStatus.Inspecting && (
-          <button onClick={() => setShowResolve(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 transition-all">
+          <Button onClick={() => setShowResolve(v => !v)} variant="success">
             <CheckCircle className="w-3.5 h-3.5" /> Resolve
-          </button>
+          </Button>
         )}
         {rma.status < CrmReturnStatus.Resolved && rma.status !== CrmReturnStatus.Cancelled && (
           <button onClick={() => cancel.mutate(rma.id)} disabled={cancel.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-muted hover:text-danger-light transition-all disabled:opacity-50">

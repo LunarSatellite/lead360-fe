@@ -11,6 +11,7 @@ import {
   type SyncConfigDto,
   type SyncLogDto,
 } from '../types/catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface SyncConfigFormProps {
   config: SyncConfigDto | undefined;
@@ -160,18 +161,18 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
               )}
               Save Config
             </button>
-            <button
+            <Button
               type="button"
               onClick={() => triggerSync.mutate()}
               disabled={triggerSync.isPending}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-glass-1 border border-border-subtle text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all disabled:opacity-50"
+              variant="subtle" size="lg"
             >
               <RefreshCw
                 className={`w-4 h-4 ${triggerSync.isPending ? 'animate-spin' : ''}`}
                 strokeWidth={1.6}
               />
               Sync Now
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -256,19 +256,19 @@ export function Component() {
                   )}
                   {p.status === CrmTimePeriodStatus.Submitted && (
                     <>
-                      <button
+                      <Button
                         onClick={() => approveMutation.mutate(p.id)}
                         disabled={approveMutation.isPending}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-white transition-colors disabled:opacity-50"
+                        variant="success" size="sm"
                       >
                         <Check className="w-3.5 h-3.5" /> Approve
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => { setRejectId(p.id); setRejectReason(''); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-danger-soft text-danger-light text-xs font-semibold border border-[rgba(239,68,68,0.2)] hover:bg-danger hover:text-white transition-colors"
+                        variant="danger" size="sm"
                       >
                         <X className="w-3.5 h-3.5" /> Reject
-                      </button>
+                      </Button>
                     </>
                   )}
                 </div>

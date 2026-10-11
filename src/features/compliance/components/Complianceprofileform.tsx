@@ -23,6 +23,7 @@ import type {
   DisclaimerRule,
   MandatoryReferenceRule,
 } from '../types/compliance.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ComplianceProfileFormProps {
   /** If provided, we're editing. If null, we're creating. */
@@ -298,12 +299,12 @@ export function ComplianceProfileForm({
 
       {/* ─── Actions ─── */}
       <div className="flex items-center justify-end gap-3 pt-2">
-        <button
+        <Button
           onClick={onCancel}
-          className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary transition-all"
+          variant="subtle" size="lg"
         >
           Cancel
-        </button>
+        </Button>
         <button
           onClick={handleSubmit}
           disabled={isSubmitting || (!isEdit && (!name || !industry))}
@@ -415,13 +416,13 @@ function TagListEditor({
           placeholder={placeholder}
           className={smallInput}
         />
-        <button aria-label="Add"
+        <Button aria-label="Add"
           onClick={add}
           disabled={!newValue.trim()}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"
+          variant="subtle" size="sm"
         >
           <Plus className="w-3.5 h-3.5" />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -484,13 +485,13 @@ function DisclaimerEditor({
           placeholder="Disclaimer text..." aria-label="Disclaimer text..."
           className={smallInput}
         />
-        <button aria-label="Add"
+        <Button aria-label="Add"
           onClick={add}
           disabled={!trigger.trim() || !text.trim()}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"
+          variant="subtle" size="sm"
         >
           <Plus className="w-3.5 h-3.5" />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -575,13 +576,13 @@ function MandatoryRefEditor({
           />
           <span className="text-[10px] font-semibold text-text-muted">Handoff</span>
         </label>
-        <button aria-label="Add"
+        <Button aria-label="Add"
           onClick={add}
           disabled={!trigger.trim() || !message.trim()}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"
+          variant="subtle" size="sm"
         >
           <Plus className="w-3.5 h-3.5" />
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { Bot, User, Mic } from 'lucide-react';
 import type { ChatBubble, TestInteractiveItem, TestProductCard } from '../types/test-channel.types';
 import { ROUTING_PATH_COLOR } from '../types/test-channel.types';
 import { AudioMessage } from '@/features/voice/components/AudioMessage';
+import { Button } from '@/shared/ui/primitives';
 
 interface ChatMessageAreaProps {
   messages: ChatBubble[];
@@ -109,17 +110,16 @@ export function ChatMessageArea({
                   {msg.buttons && msg.buttons.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-2.5">
                       {msg.buttons.map((btn) => (
-                        <button
+                        <Button
                           key={btn.id ?? btn.title}
                           onClick={(e) => {
                             e.stopPropagation();
                             onButtonClick(btn);
                           }}
-                          className="px-3 py-1.5 rounded-lg border border-brand bg-brand-soft text-xs font-semibold
-                                     text-brand hover:bg-glass-3 hover:brightness-110 transition-all"
+                          variant="soft" size="sm"
                         >
                           {btn.title}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   )}

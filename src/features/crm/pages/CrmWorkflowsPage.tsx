@@ -1499,12 +1499,12 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
 
         {/* Delete — exact flow builder style */}
         {!isFixed && (
-          <button
+          <Button
             onClick={() => onDelete(node.id)}
-            className="w-full py-2 rounded-lg bg-danger-soft text-2xs font-semibold text-danger-light flex items-center justify-center gap-1.5"
+            variant="danger" block
           >
             <Trash2 className="w-3 h-3" /> Remove Block
-          </button>
+          </Button>
         )}
       </div>
     </div>

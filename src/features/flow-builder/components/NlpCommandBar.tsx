@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import {
   Sparkles, ArrowRight, Upload, FileText, X, Loader2,
 } from 'lucide-react';
+import { Button } from '@/shared/ui/primitives';
 
 interface NlpCommandBarProps {
   onSubmit: (text: string) => void;
@@ -136,13 +137,13 @@ export function NlpCommandBar({ onSubmit, onFileUpload, isThinking, thinkingStep
             <p className="text-[11px] font-bold uppercase tracking-[1.5px] text-text-muted mb-2">✨ Try these</p>
             <div className="flex flex-wrap gap-1.5">
               {HINTS.map((hint) => (
-                <button
+                <Button
                   key={hint}
                   onClick={() => { setText(hint); }}
-                  className="px-3 py-1.5 rounded-lg bg-glass-2 border border-border-subtle text-2xs text-text-secondary hover:text-brand hover:border-brand hover:bg-brand-soft transition-all"
+                  variant="subtle" size="sm"
                 >
                   {hint}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

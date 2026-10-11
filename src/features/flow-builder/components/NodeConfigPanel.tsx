@@ -4,6 +4,7 @@ import { useCategories } from '@/features/business-catalog/api/business-catalog.
 import type { CatalogCategory } from '@/features/business-catalog/types/business-catalog.types';
 import type { FlowNodeData } from '../types/flow.types';
 import { NODE_TYPE_META } from '../types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface NodeConfigPanelProps {
   node: Node<FlowNodeData> | null;
@@ -233,13 +234,13 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
       </div>
 
       {/* Delete */}
-      <button
+      <Button
         onClick={() => onDelete(node.id)}
-        className="w-full mt-2 py-2 rounded-lg bg-danger-soft border border-danger/[0.12] text-2xs font-semibold text-danger-light cursor-pointer hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5"
+        variant="danger" block className="mt-2"
       >
         <Trash2 className="w-3 h-3" />
         Delete Node
-      </button>
+      </Button>
     </div>
   );
 }

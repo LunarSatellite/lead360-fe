@@ -827,16 +827,14 @@ function DangerSection() {
               This will revoke your session on the server and clear all local data.
             </div>
           </div>
-          <button
+          <Button
             onClick={() => logout.mutate()}
             disabled={logout.isPending}
-            className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-xs font-semibold
-                       bg-danger-soft border border-danger/[0.12] text-danger-light
-                       hover:bg-danger/[0.12] disabled:opacity-40 transition-all"
+            variant="danger"
           >
             <LogOut className="w-3.5 h-3.5" />
             {logout.isPending ? 'Logging out...' : 'Log out'}
-          </button>
+          </Button>
         </div>
       </SettingsCard>
     </div>

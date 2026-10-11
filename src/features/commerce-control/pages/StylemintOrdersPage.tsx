@@ -568,13 +568,13 @@ function OrderPanel({
             </Button>
           )}
           {canOperate && [4, 5, 13].includes(order.state) && (
-            <button
+            <Button
               disabled={busy}
               onClick={() => onOperation('tracking')}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand/25 bg-brand-soft px-4 py-3 text-sm font-bold text-brand disabled:opacity-50"
+              variant="soft" size="lg" block
             >
               <Truck className="h-4 w-4" /> Add carrier tracking
-            </button>
+            </Button>
           )}
           {canOperate && [4, 13].includes(order.state) && (
             <button
@@ -595,13 +595,13 @@ function OrderPanel({
             </button>
           )}
           {canOperate && [2, 3, 12].includes(order.state) && (
-            <button
+            <Button
               disabled={busy}
               onClick={() => onOperation('reject')}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-sm font-bold text-danger-light disabled:opacity-50"
+              variant="danger" size="lg" block
             >
               <XCircle className="h-4 w-4" /> Rejeter / annuler cette sous-commande
-            </button>
+            </Button>
           )}
           {canRefund && (
             <button

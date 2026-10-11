@@ -78,7 +78,7 @@ export function ImportDialog({ open, onClose }: Props) {
               {approved > 0 && <span className="text-xs text-brand font-bold">{approved} approved</span>}
               <div className="ml-auto flex items-center gap-2">
                 {needsAi > 0 && <button onClick={handleEnrich} disabled={enrichMut.isPending} className="px-3 py-1.5 rounded-lg text-2xs font-semibold text-purple-600 bg-purple-50 border border-purple-200 hover:bg-purple-100 flex items-center gap-1.5 disabled:opacity-50">{enrichMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}Auto-fill with AI</button>}
-                <button onClick={handleApproveAll} className="px-3 py-1.5 rounded-lg text-2xs font-semibold text-brand bg-brand-soft border border-brand/20 hover:bg-emerald-100 flex items-center gap-1.5"><Check className="w-3 h-3" />Approve All</button>
+                <Button onClick={handleApproveAll} variant="soft" size="sm"><Check className="w-3 h-3" />Approve All</Button>
               </div>
             </div>
             <ImportPreviewTable rows={rows} onToggle={handleToggle} onEdit={setEditRow} />

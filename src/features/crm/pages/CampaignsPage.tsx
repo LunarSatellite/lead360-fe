@@ -1153,13 +1153,13 @@ function LeadCreateModal({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
               <div className="flex items-center gap-3 flex-wrap">
-                <button type="button"
+                <Button type="button"
                   onClick={() => previewSegment.mutate({ stages: form.stages.length > 0 ? form.stages : undefined, minScore: form.minScore > 0 ? form.minScore : undefined, lastActiveDays: form.lastActiveDays > 0 ? form.lastActiveDays : undefined })}
                   disabled={previewSegment.isPending}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-brand bg-brand-soft border border-border-glow px-3 py-1.5 rounded-xl transition-all disabled:opacity-50">
+                  variant="soft" size="sm">
                   {previewSegment.isPending && <Loader2 className="w-3 h-3 animate-spin" />}
                   Preview Segment
-                </button>
+                </Button>
                 {preview && <span className="text-xs text-text-secondary"><span className="font-semibold text-text-primary">{preview.matchCount}</span> leads match</span>}
               </div>
             </div>
@@ -1212,10 +1212,10 @@ function LeadCampaignCard({ campaign }: { campaign: LeadCampaignDto }) {
                 <button onClick={() => setConfirmExecute(false)} className="text-xs text-text-muted hover:text-text-primary">×</button>
               </div>
             ) : (
-              <button onClick={() => setConfirmExecute(true)}
-                className="flex items-center gap-1.5 text-xs font-semibold text-brand bg-brand-soft border border-border-glow px-3 py-1.5 rounded-xl transition-all">
+              <Button onClick={() => setConfirmExecute(true)}
+                variant="soft" size="sm">
                 <Zap className="w-3.5 h-3.5" /> Execute
-              </button>
+              </Button>
             )}
           </>
         )}

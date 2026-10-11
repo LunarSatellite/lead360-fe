@@ -466,10 +466,10 @@ export function Component() {
               <Field label="Notes">
                 <textarea value={payNotes} onChange={e => setPayNotes(e.target.value)} rows={2} className={inputCls} placeholder="Optional notes..." aria-label="Optional notes..." />
               </Field>
-              <button onClick={handleRecordPayment} disabled={recordPayment.isPending || !payAmount}
-                className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-success-soft text-success text-sm font-bold hover:bg-success hover:text-bg disabled:opacity-60 transition-all border border-success">
+              <Button onClick={handleRecordPayment} disabled={recordPayment.isPending || !payAmount}
+                variant="success" block>
                 {recordPayment.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <DollarSign className="w-4 h-4" />} Record Payment
-              </button>
+              </Button>
             </div>
 
             {/* Reminders / Dunning */}

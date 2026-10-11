@@ -938,15 +938,15 @@ function FlowBuilderInner() {
                       {NODE_TYPE_META[(sel.data as FlowNodeData).nodeType]?.label}
                     </span>
                   </div>
-                  <button
+                  <Button
                     onClick={() => {
                       editor.removeNode(sel.id);
                       setSel(null);
                     }}
-                    className="mt-1.5 w-full py-1 rounded-md bg-danger-soft border border-danger/[0.12] text-2xs font-semibold text-danger-light cursor-pointer"
+                    variant="danger" size="sm" block className="mt-1.5"
                   >
                     Delete
-                  </button>
+                  </Button>
                 </div>
               )}
               <div className="flex-1 overflow-y-auto px-3 py-2">
@@ -1220,15 +1220,15 @@ function FlowBuilderInner() {
                     </button>
                   )}
 
-                  <button
+                  <Button
                     onClick={() => {
                       editor.removeNode(sel.id);
                       setSel(null);
                     }}
-                    className="w-full py-2 rounded-lg bg-danger-soft text-2xs font-semibold text-danger-light flex items-center justify-center gap-1.5"
+                    variant="danger" block
                   >
                     <Trash2 className="w-3 h-3" /> Delete Node
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 /* No node selected — overall health summary */

@@ -234,18 +234,18 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
 
         <div className="flex gap-2 pt-1">
           {!isDone && (
-            <button onClick={() => complete.mutate(task.id)} disabled={complete.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-bg transition-all disabled:opacity-50">
+            <Button onClick={() => complete.mutate(task.id)} disabled={complete.isPending} variant="success" size="sm">
               {complete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckSquare className="w-3.5 h-3.5" />} Mark Complete
-            </button>
+            </Button>
           )}
           <Button onClick={() => setEditing(v => !v)} variant="secondary" size="sm">
             {editing ? 'Cancel Edit' : 'Edit'}
           </Button>
           {confirmDelete ? (
             <div className="flex gap-1.5 ml-auto">
-              <button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} className="px-2 py-1 rounded-lg bg-danger-soft text-danger-light text-xs font-semibold border border-danger/20 hover:bg-danger hover:text-bg transition-all">
+              <Button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} variant="danger" size="sm">
                 {del.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Confirm'}
-              </button>
+              </Button>
               <button onClick={() => setConfirmDelete(false)} className="text-xs text-text-muted hover:text-text-primary px-1">×</button>
             </div>
           ) : (

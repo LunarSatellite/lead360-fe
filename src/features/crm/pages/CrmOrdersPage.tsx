@@ -576,8 +576,8 @@ export function Component() {
                           {d.status === 3 && <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 4 } })} variant="secondary" size="sm">Out for Delivery</Button>}
                           {d.status === 4 && (
                             <>
-                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} className="text-[10px] px-2 py-1 rounded bg-success-soft text-success border border-success/20 hover:bg-success/20">Delivered</button>
-                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} className="text-[10px] px-2 py-1 rounded bg-danger-soft text-danger-light border border-danger/20 hover:bg-danger/20">Failed</button>
+                              <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} variant="success" size="sm">Delivered</Button>
+                              <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} variant="danger" size="sm">Failed</Button>
                             </>
                           )}
                         </div>
@@ -612,14 +612,14 @@ export function Component() {
                           </button>
                         )}
                         {pickList.status === 3 && (
-                          <button onClick={() => {
+                          <Button onClick={() => {
                             const boxC = prompt('Box count?');
                             const weight = prompt('Total weight (kg)?');
                             markPacked.mutate({ orderId: pickList.orderId, data: { boxCount: Number(boxC) || undefined, totalWeightKg: Number(weight) || undefined } }, { onSuccess: () => refetchPickList() });
                           }} disabled={markPacked.isPending}
-                            className="text-[10px] px-2 py-1 rounded border border-success/20 bg-success-soft text-success hover:bg-success/20 transition-all">
+                            variant="success" size="sm">
                             Mark Packed
-                          </button>
+                          </Button>
                         )}
                       </div>
                     </div>
@@ -754,9 +754,9 @@ export function Component() {
                   <button onClick={() => handleFulfillStatus(selectedOrder.id, 5)} disabled={updateFulfillment.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
                     <Truck className="w-3.5 h-3.5" /> Mark Shipped
                   </button>
-                  <button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 transition-all disabled:opacity-50">
+                  <Button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} variant="success">
                     <CheckCircle className="w-3.5 h-3.5" /> Mark Delivered
-                  </button>
+                  </Button>
                 </>
               )}
               {(selectedOrder.status === 2 || selectedOrder.status === 3) && (
@@ -779,9 +779,9 @@ export function Component() {
                   <button onClick={() => { setShowPayment(true); setPaymentAmount(String(selectedOrder.totalAmount)); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success transition-all">
                     <DollarSign className="w-3.5 h-3.5" /> Record Payment
                   </button>
-                  <button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
+                  <Button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} variant="danger">
                     <XCircle className="w-3.5 h-3.5" /> Cancel
-                  </button>
+                  </Button>
                 </>
               )}
             </div>

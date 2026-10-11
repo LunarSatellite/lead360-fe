@@ -421,9 +421,9 @@ export function Component() {
                 </button>
               )}
               {selected.status === SupplierInvoiceStatus.Received && (
-                <button onClick={() => { approveSI.mutate(selected.id); setSelected(null); }} disabled={approveSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
+                <Button onClick={() => { approveSI.mutate(selected.id); setSelected(null); }} disabled={approveSI.isPending} variant="success">
                   <CheckCircle className="w-3.5 h-3.5" /> Approve
-                </button>
+                </Button>
               )}
               {(selected.status === SupplierInvoiceStatus.Approved || selected.status === SupplierInvoiceStatus.Overdue || selected.status === SupplierInvoiceStatus.PartiallyPaid) && (
                 <button onClick={() => setShowPay(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success transition-all">
@@ -436,9 +436,9 @@ export function Component() {
                 </button>
               )}
               {selected.status !== SupplierInvoiceStatus.Void && selected.status !== SupplierInvoiceStatus.Paid && (
-                <button onClick={() => { if (confirm('Void this invoice?')) { voidSI.mutate(selected.id); setSelected(null); } }} disabled={voidSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80 disabled:opacity-50">
+                <Button onClick={() => { if (confirm('Void this invoice?')) { voidSI.mutate(selected.id); setSelected(null); } }} disabled={voidSI.isPending} variant="danger">
                   <XCircle className="w-3.5 h-3.5" /> Void
-                </button>
+                </Button>
               )}
             </div>
           </div>

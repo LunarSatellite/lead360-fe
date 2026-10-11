@@ -163,7 +163,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
           {tab === 'paste' ? (
             <form id="paste-form" onSubmit={pasteForm.handleSubmit(handlePasteSubmit)} className="space-y-4">
               <Field label="Name" error={pasteForm.formState.errors.name?.message} required>
-                <input
+                <input aria-label="Name"
                   {...pasteForm.register('name')}
                   placeholder="e.g. Petstore API v3"
                   className="form-input"
@@ -182,7 +182,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               </Field>
 
               <Field label="Format">
-                <select
+                <select aria-label="File format"
                   {...pasteForm.register('fileFormat')}
                   className="form-input appearance-none cursor-pointer"
                   disabled={isPending}
@@ -194,7 +194,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               </Field>
 
               <Field label="Spec Content" error={pasteForm.formState.errors.specContent?.message} required>
-                <textarea
+                <textarea aria-label="Spec content"
                   {...pasteForm.register('specContent')}
                   placeholder='Paste your OpenAPI / Swagger JSON or YAML here...'
                   rows={10}
@@ -210,7 +210,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
           ) : (
             <form id="file-form" onSubmit={fileForm.handleSubmit(handleFileSubmit)} className="space-y-4">
               <Field label="Name" error={fileForm.formState.errors.name?.message} required>
-                <input
+                <input aria-label="Name"
                   {...fileForm.register('name')}
                   placeholder="e.g. Petstore API v3"
                   className="form-input"

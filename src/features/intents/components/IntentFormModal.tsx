@@ -163,7 +163,7 @@ export function IntentFormModal({
           {/* Name */}
           <div>
             <label className={label}>Name *</label>
-            <input {...form.register('name')} placeholder="e.g. Track Order" className={input} />
+            <input aria-label="Name" {...form.register('name')} placeholder="e.g. Track Order" className={input} />
             {form.formState.errors.name && <p className={errorText}>{form.formState.errors.name.message}</p>}
           </div>
 
@@ -230,7 +230,7 @@ export function IntentFormModal({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={label}>Parent intent</label>
-              <select {...form.register('parentIntentId')} className={input}>
+              <select aria-label="Parent intent ID" {...form.register('parentIntentId')} className={input}>
                 <option value="" className="bg-bg-card">
                   None (root level)
                 </option>
@@ -243,7 +243,7 @@ export function IntentFormModal({
             </div>
             <div>
               <label className={label}>Sort order</label>
-              <input
+              <input aria-label="Sort order"
                 type="number"
                 {...form.register('sortOrder', { valueAsNumber: true })}
                 className={input}
@@ -306,7 +306,7 @@ export function IntentFormModal({
                   </div>
                   <div>
                     <label className={label}>Method</label>
-                    <select {...form.register('apiMethod')} className={input}>
+                    <select aria-label="API method" {...form.register('apiMethod')} className={input}>
                       {API_METHODS.map((m) => (
                         <option key={m} value={m} className="bg-bg-card">
                           {m}
@@ -317,7 +317,7 @@ export function IntentFormModal({
                 </div>
                 <div>
                   <label className={label}>Parameters JSON</label>
-                  <textarea
+                  <textarea aria-label="API parameters JSON"
                     {...form.register('apiParametersJson')}
                     placeholder='{"order_id": "string"}'
                     rows={3}
@@ -344,7 +344,7 @@ export function IntentFormModal({
             {watchedOp === IntentOperationType.AgentHandoff && (
               <div>
                 <label className={label}>Handoff target</label>
-                <input
+                <input aria-label="Handoff target"
                   {...form.register('handoffTarget')}
                   placeholder="e.g. support-team, billing-dept"
                   className={input}
@@ -357,7 +357,7 @@ export function IntentFormModal({
               watchedOp === IntentOperationType.CategoryBrowse) && (
               <div>
                 <label className={label}>Search scope</label>
-                <input
+                <input aria-label="Search scope"
                   {...form.register('searchScope')}
                   placeholder="e.g. electronics, all, category:phones"
                   className={input}
@@ -387,7 +387,7 @@ export function IntentFormModal({
               Advanced: Regex patterns (JSON array)
             </summary>
             <div className="mt-2">
-              <textarea
+              <textarea aria-label="Patterns JSON"
                 {...form.register('patternsJson')}
                 placeholder='["order\\s*(ORD-\\d+)"]'
                 rows={2}

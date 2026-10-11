@@ -433,7 +433,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Subtitle">
-          <input
+          <input aria-label="Subtitle"
             value={form.subtitle ?? ''}
             onChange={(e) => set('subtitle', e.target.value)}
             className={inputClass}
@@ -464,7 +464,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Starts">
-          <input
+          <input aria-label="Slice"
             type="datetime-local"
             value={form.startsUtc.slice(0, 16)}
             onChange={(e) => set('startsUtc', new Date(e.target.value).toISOString())}
@@ -472,7 +472,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Ends">
-          <input
+          <input aria-label="Slice"
             type="datetime-local"
             value={form.endsUtc.slice(0, 16)}
             onChange={(e) => set('endsUtc', new Date(e.target.value).toISOString())}

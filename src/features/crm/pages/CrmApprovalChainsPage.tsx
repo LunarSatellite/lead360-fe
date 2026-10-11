@@ -133,7 +133,7 @@ export function Component() {
                   placeholder="Step name (e.g. Sales Manager Review)" aria-label="Step name (e.g. Sales Manager Review)"
                   className="flex-1 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm"
                 />
-                <select
+                <select aria-label="Approver user ID"
                   value={s.approverUserId ?? ''}
                   onChange={e => updateStep(i, 'approverUserId', e.target.value)}
                   className="w-56 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm"

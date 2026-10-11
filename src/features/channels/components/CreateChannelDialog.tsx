@@ -141,7 +141,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
           {/* Channel identifier */}
           <div>
             <label className={labelClass}>Channel identifier</label>
-            <input
+            <input aria-label="Channel identifier"
               {...form.register('channelIdentifier')}
               placeholder={IDENTIFIER_HINTS[watchedType] ?? 'Unique channel identifier'}
               className={inputClass}
@@ -161,7 +161,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
             <label className={labelClass}>
               Display name <span className="opacity-40">(optional)</span>
             </label>
-            <input
+            <input aria-label="Display name"
               {...form.register('displayName')}
               placeholder="e.g. Main WhatsApp, Support SMS"
               className={inputClass}
@@ -179,7 +179,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
               Advanced configuration (JSON)
             </summary>
             <div className="mt-2">
-              <textarea
+              <textarea aria-label="Configuration JSON"
                 {...form.register('configurationJson')}
                 placeholder='{"accessToken": "...", "verifyToken": "..."}'
                 rows={3}

@@ -559,7 +559,7 @@ function GenericConditionEditor({ value, onChange }: { value: string; onChange: 
       {conditions.map((c, i) => (
         <div key={i} className="flex items-center gap-1">
           <input className={INPUT + ' flex-1'} placeholder="properties.amount" aria-label="properties.amount" value={String(c.field ?? '')} onChange={(e) => update(i, { field: e.target.value })} />
-          <select className={INPUT + ' w-28'} value={String(c.operator ?? 'gte')} onChange={(e) => update(i, { operator: e.target.value })}>
+          <select aria-label="String" className={INPUT + ' w-28'} value={String(c.operator ?? 'gte')} onChange={(e) => update(i, { operator: e.target.value })}>
             {OPERATORS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
           <input className={INPUT + ' w-20'} placeholder="value" aria-label="value" value={c.value == null ? '' : String(c.value)} onChange={(e) => update(i, { value: coerce(e.target.value) })} />
@@ -652,10 +652,10 @@ function ActionConfigEditor({ actionType, value, onChange }: {
   if (actionType === 'create_task') return (
     <div className="space-y-1.5">
       <div><label className={L}>Task title *</label>
-        <input className={F} placeholder="e.g. Follow up with lead" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
+        <input aria-label="String" className={F} placeholder="e.g. Follow up with lead" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
       </div>
       <div><label className={L}>Priority</label>
-        <select className={F} value={String(parsed.priority ?? 'Medium')} onChange={(e) => set('priority', e.target.value)}>
+        <select aria-label="String" className={F} value={String(parsed.priority ?? 'Medium')} onChange={(e) => set('priority', e.target.value)}>
           {['Low', 'Medium', 'High'].map(p => <option key={p}>{p}</option>)}
         </select>
       </div>
@@ -668,7 +668,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
   if (actionType === 'send_notification') return (
     <div className="space-y-1.5">
       <div><label className={L}>Alert title *</label>
-        <input className={F} placeholder="e.g. Hot lead alert" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
+        <input aria-label="String" className={F} placeholder="e.g. Hot lead alert" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
       </div>
       <div><label className={L}>Body (optional)</label>
         <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" aria-label="Additional details…" value={String(parsed.body ?? '')} onChange={(e) => set('body', e.target.value)} />
@@ -684,7 +684,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
 
   if (actionType === 'update_funnel_stage') return (
     <div><label className={L}>New stage</label>
-      <select className={F} value={String(parsed.newStage ?? 'Qualified')} onChange={(e) => set('newStage', e.target.value)}>
+      <select aria-label="String" className={F} value={String(parsed.newStage ?? 'Qualified')} onChange={(e) => set('newStage', e.target.value)}>
         {['Identified', 'Inquiring', 'Qualified', 'Negotiating', 'Closing', 'Customer', 'Repeat', 'Advocate', 'Dormant'].map(s => <option key={s}>{s}</option>)}
       </select>
     </div>
@@ -692,7 +692,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
 
   if (actionType === 'assign_to_user') return (
     <div><label className={L}>Assign to *</label>
-      <select className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
+      <select aria-label="String" className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
         <option value="">Select team member…</option>
         {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
       </select>
@@ -701,7 +701,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
 
   if (actionType === 'create_nurture_entry') return (
     <div><label className={L}>Nurture sequence *</label>
-      <select className={F} value={String(parsed.sequenceId ?? '')} onChange={(e) => set('sequenceId', e.target.value)}>
+      <select aria-label="String" className={F} value={String(parsed.sequenceId ?? '')} onChange={(e) => set('sequenceId', e.target.value)}>
         <option value="">Select sequence…</option>
         {sequences.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
       </select>
@@ -732,7 +732,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
           </div>
         )}
         <div><label className={L}>Subject *</label>
-          <input className={F} placeholder="e.g. Thanks for your order!" value={String(parsed.subject ?? '')} onChange={(e) => setMany({ subject: e.target.value })} />
+          <input aria-label="String" className={F} placeholder="e.g. Thanks for your order!" value={String(parsed.subject ?? '')} onChange={(e) => setMany({ subject: e.target.value })} />
         </div>
         <div><label className={L}>Message *</label>
           <textarea rows={3} className={F + ' resize-none'} placeholder="Your email message…" aria-label="Your email message…" value={String(parsed.body ?? '')} onChange={(e) => setMany({ body: e.target.value })} />
@@ -760,13 +760,13 @@ function ActionConfigEditor({ actionType, value, onChange }: {
   if (actionType === 'create_deal') return (
     <div className="space-y-1.5">
       <div><label className={L}>Stage</label>
-        <select className={F} value={String(parsed.stage_name ?? '')} onChange={(e) => set('stage_name', e.target.value)}>
+        <select aria-label="String" className={F} value={String(parsed.stage_name ?? '')} onChange={(e) => set('stage_name', e.target.value)}>
           <option value="">First open stage (default)</option>
           {stages.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
         </select>
       </div>
       <div><label className={L}>Assign to (optional)</label>
-        <select className={F} value={String(parsed.assign_to ?? '')} onChange={(e) => set('assign_to', e.target.value)}>
+        <select aria-label="String" className={F} value={String(parsed.assign_to ?? '')} onChange={(e) => set('assign_to', e.target.value)}>
           <option value="">Lead's assigned owner</option>
           {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
         </select>
@@ -784,7 +784,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
     const defs = processDefsQ.data ?? [];
     return (
       <div><label className={L}>Process Definition *</label>
-        <select className={F} value={String(parsed.definition_id ?? '')} onChange={(e) => set('definition_id', e.target.value)}>
+        <select aria-label="String" className={F} value={String(parsed.definition_id ?? '')} onChange={(e) => set('definition_id', e.target.value)}>
           <option value="">Select a process…</option>
           {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
         </select>
@@ -880,7 +880,7 @@ function CreateWorkflowForm({ onGenerate }: {
                   <ActionConfigEditor actionType={s.actionType} value={s.actionConfigJson ?? '{}'} onChange={(v) => updateStep(i, { actionConfigJson: v })} />
                   <div className="flex items-center gap-1.5 pt-1 border-t border-border-subtle mt-1">
                     <Clock className="w-3 h-3 text-text-muted shrink-0" />
-                    <input type="number" min={0} value={s.delayMinutes ?? 0}
+                    <input aria-label="Delay minutes" type="number" min={0} value={s.delayMinutes ?? 0}
                       onChange={(e) => updateStep(i, { delayMinutes: Number(e.target.value) })}
                       className="nodrag w-14 px-1.5 py-1 border border-border-subtle rounded text-[10px] bg-bg-shell text-text-primary outline-none focus:border-brand" />
                     <span className="text-[9px] text-text-muted">min delay before this step</span>

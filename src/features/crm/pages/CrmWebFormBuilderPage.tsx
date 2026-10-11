@@ -482,7 +482,7 @@ function FieldsTab(props: FieldsTabProps) {
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_140px_120px_auto] gap-2">
                       <input className={inputCls} value={f.label} onChange={(e) => patchField(idx, { label: e.target.value })} placeholder="Field label (e.g. Full name)" aria-label="Field label (e.g. Full name)" />
                       <input className={inputCls + " font-mono text-xs"} value={f.fieldKey ?? ""} onChange={(e) => patchField(idx, { fieldKey: e.target.value })} placeholder="field_key" aria-label="field_key" title="Storage key - auto-filled from label if left blank" />
-                      <select className={inputCls} value={f.fieldType ?? "Text"} onChange={(e) => patchField(idx, { fieldType: e.target.value as WebFormFieldType })}>
+                      <select aria-label="Field type" className={inputCls} value={f.fieldType ?? "Text"} onChange={(e) => patchField(idx, { fieldType: e.target.value as WebFormFieldType })}>
                         {FIELD_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
                       </select>
                       <label className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle cursor-pointer text-xs whitespace-nowrap">
@@ -491,7 +491,7 @@ function FieldsTab(props: FieldsTabProps) {
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-2">
                       <input className={inputCls} value={f.placeholder ?? ""} onChange={(e) => patchField(idx, { placeholder: e.target.value })} placeholder="Placeholder text (optional)" aria-label="Placeholder text (optional)" />
-                      <select className={inputCls} value={f.mapsToContactField ?? ""} onChange={(e) => patchField(idx, { mapsToContactField: e.target.value })} title="Map this field to a contact property">
+                      <select aria-label="Maps to contact" className={inputCls} value={f.mapsToContactField ?? ""} onChange={(e) => patchField(idx, { mapsToContactField: e.target.value })} title="Map this field to a contact property">
                         {CONTACT_FIELD_OPTIONS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
                       </select>
                     </div>
@@ -519,7 +519,7 @@ function SettingsTab({ draft, patch }: { draft: CreateWebFormRequest; patch: (p:
           <input className={inputCls} value={draft.name} onChange={(e) => patch({ name: e.target.value })} placeholder="Contact form" aria-label="Contact form" />
         </Field>
         <Field label="Mode">
-          <select className={inputCls} value={draft.mode ?? "Classic"} onChange={(e) => patch({ mode: e.target.value as WebFormMode })}>
+          <select aria-label="Mode" className={inputCls} value={draft.mode ?? "Classic"} onChange={(e) => patch({ mode: e.target.value as WebFormMode })}>
             <option value="Classic">Classic (all on one page)</option>
             <option value="Conversational">Conversational (one field at a time)</option>
           </select>
@@ -533,7 +533,7 @@ function SettingsTab({ draft, patch }: { draft: CreateWebFormRequest; patch: (p:
           <input className={inputCls} value={draft.successMessage ?? ""} onChange={(e) => patch({ successMessage: e.target.value })} placeholder="Thanks - we will be in touch." aria-label="Thanks - we will be in touch." />
         </Field>
         <Field label="Redirect URL (optional)">
-          <input className={inputCls} value={draft.redirectUrl ?? ""} onChange={(e) => patch({ redirectUrl: e.target.value })} placeholder="https://example.com/thank-you" />
+          <input aria-label="Redirect URL" className={inputCls} value={draft.redirectUrl ?? ""} onChange={(e) => patch({ redirectUrl: e.target.value })} placeholder="https://example.com/thank-you" />
         </Field>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -541,7 +541,7 @@ function SettingsTab({ draft, patch }: { draft: CreateWebFormRequest; patch: (p:
           <input className={inputCls + " font-mono text-xs"} value={draft.hostedSlug ?? ""} onChange={(e) => patch({ hostedSlug: e.target.value })} placeholder="contact-us" aria-label="contact-us" />
         </Field>
         <Field label="Notification emails (comma-separated)">
-          <input className={inputCls} value={draft.notificationEmails ?? ""} onChange={(e) => patch({ notificationEmails: e.target.value })} placeholder="sales@example.com" />
+          <input aria-label="Notification emails" className={inputCls} value={draft.notificationEmails ?? ""} onChange={(e) => patch({ notificationEmails: e.target.value })} placeholder="sales@example.com" />
         </Field>
       </div>
     </div>
@@ -600,7 +600,7 @@ function BrandingTab({
         </div>
 
         <Field label="Hero image URL" hint="Shown on HeroBanner and FullBleed themes. Recommended 1600x500.">
-          <input className={inputCls} value={draft.heroImageUrl ?? ""} onChange={(e) => patch({ heroImageUrl: e.target.value })} placeholder="https://images.example.com/voyager-hero.jpg" />
+          <input aria-label="Hero image URL" className={inputCls} value={draft.heroImageUrl ?? ""} onChange={(e) => patch({ heroImageUrl: e.target.value })} placeholder="https://images.example.com/voyager-hero.jpg" />
         </Field>
 
         <Field label="Background gradient (CSS)" hint="Used by Gradient + FullBleed. Leave blank for the theme default.">
@@ -626,7 +626,7 @@ function BrandingTab({
               <input className={inputCls} value={draft.footerLinkLabel ?? ""} onChange={(e) => patch({ footerLinkLabel: e.target.value })} placeholder="Privacy policy" aria-label="Privacy policy" />
             </Field>
             <Field label="Footer link URL">
-              <input className={inputCls} value={draft.footerLinkUrl ?? ""} onChange={(e) => patch({ footerLinkUrl: e.target.value })} placeholder="https://example.com/privacy" />
+              <input aria-label="Footer link URL" className={inputCls} value={draft.footerLinkUrl ?? ""} onChange={(e) => patch({ footerLinkUrl: e.target.value })} placeholder="https://example.com/privacy" />
             </Field>
           </div>
           <label className="flex items-center gap-2 p-3 rounded-xl bg-bg-input border-thin border-border-subtle cursor-pointer">
@@ -642,17 +642,17 @@ function BrandingTab({
         <h2 className="text-sm font-bold text-text-primary">Colors & typography</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Field label="Logo URL">
-            <input className={inputCls} value={draft.logoUrl ?? ""} onChange={(e) => patch({ logoUrl: e.target.value })} placeholder="https://..." />
+            <input aria-label="Logo URL" className={inputCls} value={draft.logoUrl ?? ""} onChange={(e) => patch({ logoUrl: e.target.value })} placeholder="https://..." />
           </Field>
           <Field label="Primary color">
             <div className="flex gap-2">
-              <input type="color" className="h-10 w-12 rounded-xl bg-bg-input border-thin border-border-subtle cursor-pointer" value={draft.primaryColor || "#0A4D8C"} onChange={(e) => patch({ primaryColor: e.target.value })} />
+              <input aria-label="Primary color" type="color" className="h-10 w-12 rounded-xl bg-bg-input border-thin border-border-subtle cursor-pointer" value={draft.primaryColor || "#0A4D8C"} onChange={(e) => patch({ primaryColor: e.target.value })} />
               <input className={inputCls + " font-mono text-xs"} value={draft.primaryColor ?? ""} onChange={(e) => patch({ primaryColor: e.target.value })} placeholder="#0A4D8C" aria-label="#0A4D8C" />
             </div>
           </Field>
           <Field label="Background color">
             <div className="flex gap-2">
-              <input type="color" className="h-10 w-12 rounded-xl bg-bg-input border-thin border-border-subtle cursor-pointer" value={draft.backgroundColor || "#FFFFFF"} onChange={(e) => patch({ backgroundColor: e.target.value })} />
+              <input aria-label="Background color" type="color" className="h-10 w-12 rounded-xl bg-bg-input border-thin border-border-subtle cursor-pointer" value={draft.backgroundColor || "#FFFFFF"} onChange={(e) => patch({ backgroundColor: e.target.value })} />
               <input className={inputCls + " font-mono text-xs"} value={draft.backgroundColor ?? ""} onChange={(e) => patch({ backgroundColor: e.target.value })} placeholder="#FFFFFF" aria-label="#FFFFFF" />
             </div>
           </Field>

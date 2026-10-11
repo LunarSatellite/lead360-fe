@@ -144,7 +144,7 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
         <Section title="Service and pickup">
           <div className="grid grid-cols-[1fr_110px] gap-3">
             <Input aria-label="Origin city"
-              label="Ville d'origine"
+              label="Home city"
               value={form.originCity}
               onChange={(value) => set('originCity', value)}
               disabled={!canOperate}

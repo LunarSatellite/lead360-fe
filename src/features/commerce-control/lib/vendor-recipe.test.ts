@@ -9,7 +9,7 @@ const draft: VendorRecipeDraft = {
   moodLabel: 'Chaleureux',
   durationSeconds: '40',
   songTitle: 'Kinshasa matin',
-  artist: 'Artiste demo',
+  artist: 'Demo artist',
   caption: 'Freshness that brings people together.',
 };
 

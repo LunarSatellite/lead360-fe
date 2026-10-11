@@ -172,7 +172,7 @@ export function StylemintOrdersPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-brand">
-            <PackageCheck className="h-3.5 w-3.5" /> Stylemint en direct
+            <PackageCheck className="h-3.5 w-3.5" /> Stylemint live
           </div>
           <h1 className="mt-2 text-2xl font-black tracking-tight text-text-primary">Orders & fulfilment</h1>
           <p className="mt-1 text-sm text-text-muted">Drive the full lifecycle of every Kin Marche order.</p>
@@ -217,14 +217,14 @@ export function StylemintOrdersPage() {
           onClick={() => ordersQuery.refetch()}
           className="flex items-center gap-2 rounded-xl border border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${ordersQuery.isFetching ? 'animate-spin' : ''}`} /> Actualiser
+          <RefreshCw className={`h-3.5 w-3.5 ${ordersQuery.isFetching ? 'animate-spin' : ''}`} /> Refresh
         </button>
       </div>
 
       {canOperate && selectedIds.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-brand/25 bg-brand-soft px-4 py-3">
           <span className="mr-auto text-xs font-extrabold text-brand">
-            {selectedIds.length} commande(s) selectionnee(s)
+            {selectedIds.length} order(s) selected
           </span>
           <Button
             disabled={bulkCommand.isPending}
@@ -245,7 +245,7 @@ export function StylemintOrdersPage() {
             onClick={() => bulkCommand.mutate('packing-slips')}
             className="rounded-lg border border-border-subtle bg-bg-card px-3 py-2 text-[11px] font-bold text-text-secondary disabled:opacity-40"
           >
-            Generer les bordereaux
+            Generate packing slips
           </button>
         </div>
       )}
@@ -265,8 +265,8 @@ export function StylemintOrdersPage() {
             <AlertTriangle className="h-8 w-8 text-amber-400" />
             <p className="font-bold text-text-primary">Could not load Stylemint orders</p>
             <p className="max-w-lg text-xs leading-5 text-text-muted">
-              Ajoutez le jeton operateur Stylemint dans la configuration securisee de Lead360, puis
-              actualisez.
+              Add the Stylemint operator token to the Lead360 secure configuration, then
+              refresh.
             </p>
           </div>
         ) : !orders.length ? (
@@ -292,7 +292,7 @@ export function StylemintOrdersPage() {
                       />
                     </th>
                   )}
-                  {['Commande', 'Client', 'Articles', 'Total', 'Statut', 'Date', ''].map((heading) => (
+                  {['Order', 'Customer', 'Items', 'Total', 'Status', 'Date', ''].map((heading) => (
                     <th
                       key={heading}
                       className="px-4 py-3 text-left text-[10px] font-extrabold uppercase tracking-wider text-text-muted"
@@ -453,7 +453,7 @@ function OrderPanel({
           <div>
             <p className="font-mono text-xs text-brand">{order.orderNumber}</p>
             <h2 className="mt-1 text-xl font-black text-text-primary">
-              {order.receiverName || 'Commande client'}
+              {order.receiverName || 'Customer order'}
             </h2>
           </div>
           <button aria-label="Close"
@@ -468,11 +468,11 @@ function OrderPanel({
         </div>
         <div className="mt-6 grid grid-cols-2 gap-3">
           <Info
-            label="Montant"
+            label="Amount"
             value={`${order.subtotalAmount.toLocaleString('fr-CD')} ${order.subtotalCurrency}`}
           />
           <Info label="Articles" value={String(order.itemCount)} />
-          <Info label="Transporteur" value={order.carrier || 'Unassigned'} />
+          <Info label="Carrier" value={order.carrier || 'Unassigned'} />
           <Info label="Tracking" value={order.trackingNumber || 'Unavailable'} />
         </div>
         {detailLoading && (
@@ -483,7 +483,7 @@ function OrderPanel({
         )}
         {detail?.shipTo && (
           <section className="mt-5 rounded-2xl border border-border-subtle bg-bg-elevated p-4">
-            <p className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Livraison</p>
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Delivery</p>
             <p className="mt-2 text-sm font-bold text-text-primary">{detail.shipTo.receiverName}</p>
             <p className="mt-1 text-xs text-text-secondary">{detail.shipTo.receiverPhone}</p>
             <p className="mt-2 text-xs leading-5 text-text-secondary">
@@ -505,7 +505,7 @@ function OrderPanel({
                 rel="noreferrer"
                 className="mt-3 inline-flex rounded-lg border border-brand/25 px-3 py-1.5 text-[11px] font-bold text-brand"
               >
-                Ouvrir le point sur la carte
+                Open pickup point on map
               </a>
             )}
           </section>
@@ -513,7 +513,7 @@ function OrderPanel({
         {!!detail?.lines?.length && (
           <section className="mt-5 rounded-2xl border border-border-subtle bg-bg-elevated p-4">
             <p className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">
-              Articles de la commande
+              Order items
             </p>
             <div className="mt-3 space-y-2">
               {detail.lines.map((line) => (
@@ -582,7 +582,7 @@ function OrderPanel({
               onClick={() => onOperation('handover')}
               className="flex w-full items-center justify-center gap-2 rounded-xl border border-border-subtle px-4 py-3 text-sm font-bold text-text-secondary hover:text-brand disabled:opacity-50"
             >
-              <PackageCheck className="h-4 w-4" /> Confirmer la remise au transporteur
+              <PackageCheck className="h-4 w-4" /> Confirm carrier handover
             </button>
           )}
           {canOperate && order.trackingNumber && (
@@ -600,7 +600,7 @@ function OrderPanel({
               onClick={() => onOperation('reject')}
               variant="danger" size="lg" block
             >
-              <XCircle className="h-4 w-4" /> Rejeter / annuler cette sous-commande
+              <XCircle className="h-4 w-4" /> Reject / cancel this sub-order
             </Button>
           )}
           {canRefund && (
@@ -608,12 +608,12 @@ function OrderPanel({
               onClick={onRefund}
               className="flex w-full items-center justify-center gap-2 rounded-xl border border-border-subtle px-4 py-3 text-sm font-bold text-text-secondary hover:text-brand"
             >
-              <CircleDollarSign className="h-4 w-4" /> Remboursement manuel
+              <CircleDollarSign className="h-4 w-4" /> Manual refund
             </button>
           )}
           {!canOperate && (
             <p className="rounded-xl border border-border-subtle bg-bg-elevated p-3 text-xs text-text-muted">
-              Acces lecture seule pour le role Agent.
+              Read-only access for the Agent role.
             </p>
           )}
         </div>
@@ -651,7 +651,7 @@ function PackageSealDialog({
         <div className="flex items-center justify-between">
           <div>
             <p className="text-[10px] font-extrabold uppercase tracking-wider text-amber-300">
-              Securite livraison
+              Delivery security
             </p>
             <h3 className="mt-1 text-lg font-black text-text-primary">Seal the parcel</h3>
           </div>
@@ -660,7 +660,7 @@ function PackageSealDialog({
           </button>
         </div>
         <p className="mt-3 rounded-xl bg-bg-elevated px-3 py-2 font-mono text-xs text-text-secondary">
-          Suivi: {trackingNumber}
+          Tracking: {trackingNumber}
         </p>
         <div className="mt-5 space-y-3">
           <Input aria-label="Seal ID" label="Seal identifier" value={sealId} onChange={setSealId} />
@@ -672,7 +672,7 @@ function PackageSealDialog({
           className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-300 py-3 text-sm font-extrabold text-black disabled:opacity-40"
         >
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}{' '}
-          Confirmer le scelle
+          Confirm seal
         </button>
       </form>
     </div>
@@ -699,7 +699,7 @@ function OrderOperationDialog({
     ? 'Reject sub-order'
     : mode === 'handover'
       ? 'Handover to carrier'
-      : 'Suivi transporteur';
+      : 'Carrier tracking';
   const valid = isReject
     ? Number(reasonCode) !== 6 || note.trim().length >= 3
     : carrier.trim().length > 1 && trackingNumber.trim().length > 2;
@@ -756,7 +756,7 @@ function OrderOperationDialog({
           )}
           {!isReject && (
             <>
-              <Input aria-label="Carrier" label="Transporteur" value={carrier} onChange={setCarrier} />
+              <Input aria-label="Carrier" label="Carrier" value={carrier} onChange={setCarrier} />
               <Input aria-label="Tracking number" label="Tracking number" value={trackingNumber} onChange={setTrackingNumber} />
             </>
           )}
@@ -831,11 +831,11 @@ function RefundDialog({
           </button>
         </div>
         <p className="mt-2 text-xs leading-5 text-text-muted">
-          Cette action appelle le moteur de paiement Stylemint et utilise une cle d'idempotence unique.
+          This calls the Stylemint payment engine with a unique idempotency key.
         </p>
         <div className="mt-5 space-y-3">
           <Input aria-label="Payment ID" label="Payment Intent ID" value={paymentId} onChange={setPaymentId} readOnly />
-          <Input aria-label="Amount" label="Montant (CDF)" value={amount} onChange={setAmount} type="number" />
+          <Input aria-label="Amount" label="Amount (CDF)" value={amount} onChange={setAmount} type="number" />
           <Input aria-label="Reason" label="Reason" value={reason} onChange={setReason} />
         </div>
         {context.isLoading && (
@@ -843,18 +843,18 @@ function RefundDialog({
         )}
         {context.data && (
           <p className="mt-3 text-xs text-text-muted">
-            Commande {context.data.orderNumber} · maximum{' '}
+            Order {context.data.orderNumber} · maximum{' '}
             {context.data.refundableAmount.toLocaleString('fr-CD')} {context.data.currency}
           </p>
         )}
         {context.isError && (
           <p className="mt-3 text-xs font-semibold text-danger-light">
-            Impossible de verifier le paiement ou droits PayoutsOps absents.
+            Could not verify the payment, or PayoutsOps rights are missing.
           </p>
         )}
         {context.data && !context.data.paymentIntentId && (
           <p className="mt-3 text-xs font-semibold text-danger-light">
-            Cette commande ne possede aucun paiement remboursable.
+            This order has no refundable payment.
           </p>
         )}
         {context.data?.paymentIntentId && (
@@ -866,7 +866,7 @@ function RefundDialog({
               className="mt-0.5"
             />
             <span>
-              Je confirme le remboursement de <strong>{Number(amount || 0).toLocaleString('fr-CD')} CDF</strong> for order <strong>{context.data.orderNumber}</strong>. Cette operation financiere sera auditee.
+              I confirm the refund of <strong>{Number(amount || 0).toLocaleString('fr-CD')} CDF</strong> for order <strong>{context.data.orderNumber}</strong>. This is a financial operation and will be audited.
             </span>
           </label>
         )}
@@ -885,7 +885,7 @@ function RefundDialog({
           })}
           variant="primary" size="lg" block className="mt-5"
         >
-          {refund.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Confirmer le remboursement
+          {refund.isPending && <Loader2 className="h-4 w-4 animate-spin" />} Confirm refund
         </Button>
       </form>
     </div>

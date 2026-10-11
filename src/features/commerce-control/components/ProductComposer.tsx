@@ -56,7 +56,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
         const wrapped =
           result.data && typeof result.data === 'object' ? (result.data as Record<string, unknown>) : result;
         const url = String(wrapped.url ?? '');
-        if (!url) throw new Error(`URL absente apres l'envoi de ${file.name}.`);
+        if (!url) throw new Error(`No URL came back after uploading ${file.name}.`);
         urls.push(url);
       }
       return urls;
@@ -74,7 +74,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
         longDescriptionMarkdown: form.longDescription.trim(),
       });
       const productId = String(draft.id ?? (draft.data as Record<string, unknown> | undefined)?.id ?? '');
-      if (!productId) throw new Error('Stylemint n’a pas retourne l’identifiant produit.');
+      if (!productId) throw new Error('Stylemint did not return a product id.');
       setCreatedId(productId);
 
       await stylemintCommerceApi.updateVendorProduct(productId, 'step-2', {
@@ -143,7 +143,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
             </p>
             <h2 className="mt-1 text-xl font-black text-text-primary">New Kin Marche product</h2>
             <p className="mt-1 text-xs text-text-muted">
-              Produit, cinq visuels minimum, reel, prix CDF, stock et livraison dans un seul parcours.
+              Product, five images minimum, reel, CDF price, stock and delivery in one pass.
             </p>
           </div>
           <button aria-label="Close"
@@ -156,7 +156,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
         </header>
 
         <div className="grid gap-5 p-5 lg:grid-cols-2">
-          <Section title="1. Identite produit">
+          <Section title="1. Product identity">
             <label className="block">
               <span className="block space-y-1.5"><span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
                 Category
@@ -224,7 +224,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
               />
             </label>
             <Area
-              label={`URLs images — une par ligne (${images.length}/5 minimum)`}
+              label={`Image URLs — one per line (${images.length}/5 minimum)`}
               value={form.imageUrls}
               onChange={(value) => set('imageUrls', value)}
               required
@@ -242,7 +242,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
                 onChange={(value) => set('posterUrl', value)}
               />
               <Input aria-label="Duration"
-                label="Duree (secondes)"
+                label="Duration (seconds)"
                 type="number"
                 value={form.duration}
                 onChange={(value) => set('duration', value)}
@@ -277,10 +277,10 @@ export function ProductComposer({ onClose, onDone }: Props) {
             </div>
           </Section>
 
-          <Section title="4. Livraison Kinshasa">
+          <Section title="4. Kinshasa delivery">
             <div className="grid grid-cols-2 gap-3">
               <Input aria-label="Processing days"
-                label="Preparation (jours)"
+                label="Preparation (days)"
                 type="number"
                 value={form.processingDays}
                 onChange={(value) => set('processingDays', value)}
@@ -314,7 +314,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
             </div>
             <div className="grid grid-cols-3 gap-3">
               <Input aria-label="Shipping fee"
-                label="Frais CDF"
+                label="Fee CDF"
                 type="number"
                 value={form.shippingFee}
                 onChange={(value) => set('shippingFee', value)}
@@ -339,7 +339,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
                 onChange={(event) => set('publish', event.target.checked)}
                 className="accent-[var(--color-brand)]"
               />
-              Publier automatiquement apres validation des quatre etapes
+              Publish automatically once all four steps validate
             </label>
           </Section>
         </div>
@@ -353,7 +353,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
         <footer className="sticky bottom-0 flex items-center justify-between gap-3 border-t border-border-subtle bg-bg-card/95 px-5 py-4 backdrop-blur-xl">
           <p className="hidden items-center gap-1.5 text-[11px] text-text-muted sm:flex">
             <CheckCircle2 className="h-3.5 w-3.5 text-brand" />
-            CDF · stock suivi · livraison standard
+            CDF · stock tracked · standard delivery
           </p>
           <div className="ml-auto flex gap-2">
             <Button

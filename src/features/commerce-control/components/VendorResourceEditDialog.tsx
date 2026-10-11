@@ -77,7 +77,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
         const wrapped =
           result.data && typeof result.data === 'object' ? (result.data as Record<string, unknown>) : result;
         const url = String(wrapped.url ?? '');
-        if (!url) throw new Error(`URL absente apres l'envoi de ${file.name}.`);
+        if (!url) throw new Error(`No URL came back after uploading ${file.name}.`);
         urls.push(url);
       }
       return urls;
@@ -238,7 +238,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
             </h3>
             {kind === 'product' && (
               <p className="mt-1 text-xs text-text-muted">
-                Activez uniquement les blocs que vous souhaitez remplacer.
+                Turn on only the blocks you want to replace.
               </p>
             )}
           </div>
@@ -254,7 +254,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
           <div className="grid gap-4 p-5 lg:grid-cols-2">
             {kind === 'product' ? (
               <>
-                <Section title="Identite produit">
+                <Section title="Product identity">
                   <Field label="Category">
                     <select aria-label="Category ID"
                       required
@@ -313,7 +313,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                     />
                   </label>
                   <Area
-                    label={`URLs images, une par ligne (${images.length}/5 minimum)`}
+                    label={`Image URLs, one per line (${images.length}/5 minimum)`}
                     value={form.imageUrls}
                     onChange={(v) => set('imageUrls', v)}
                     rows={6}
@@ -332,7 +332,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                       required={false}
                     />
                     <Input aria-label="Duration"
-                      label="Duree sec."
+                      label="Duration sec."
                       type="number"
                       value={form.duration}
                       onChange={(v) => set('duration', v)}
@@ -381,13 +381,13 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                 </OptionalSection>
                 <OptionalSection
                   icon={<Truck className="h-4 w-4" />}
-                  title="Livraison"
+                  title="Delivery"
                   enabled={sections.shipping}
                   onToggle={(value) => setSections((s) => ({ ...s, shipping: value }))}
                 >
                   <div className="grid grid-cols-2 gap-3">
                     <Input aria-label="Processing days"
-                      label="Preparation jours"
+                      label="Preparation days"
                       type="number"
                       value={form.processingDays}
                       onChange={(v) => set('processingDays', v)}
@@ -421,7 +421,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <Input aria-label="Shipping fee"
-                      label="Frais CDF"
+                      label="Fee CDF"
                       type="number"
                       value={form.shippingFee}
                       onChange={(v) => set('shippingFee', v)}
@@ -445,7 +445,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
               <Section title="Store contact details">
                 <div className="grid gap-3 md:grid-cols-2">
                   <Input aria-label="Name" label="Nom" value={form.name} onChange={(v) => set('name', v)} />
-                  <Input aria-label="City" label="Ville" value={form.city} onChange={(v) => set('city', v)} />
+                  <Input aria-label="City" label="City" value={form.city} onChange={(v) => set('city', v)} />
                   <div className="md:col-span-2">
                     <Input aria-label="Address line" label="Adresse" value={form.addressLine} onChange={(v) => set('addressLine', v)} />
                   </div>
@@ -524,7 +524,7 @@ function OptionalSection({
           {title}
         </span>
         <span className="flex items-center gap-2 text-[10px] font-bold uppercase text-text-muted">
-          Remplacer
+          Replace
           <input
             type="checkbox"
             checked={enabled}

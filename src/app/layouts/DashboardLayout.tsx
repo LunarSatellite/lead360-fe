@@ -69,6 +69,7 @@ import { useQuery } from '@tanstack/react-query';
 import { stylemintCommerceApi } from '@/features/commerce-control/api/stylemint-commerce.api';
 import { applyTenantAccent } from '@/shared/lib/tenant-theme';
 import { isStyleMintConsole } from '@/shared/config/env';
+import { SidebarNav } from '@/app/navigation/SidebarNav';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CHAT-FIRST NAVIGATION (new — primary rail shown to all users)
@@ -419,49 +420,12 @@ export function DashboardLayout() {
 
   const PageIcon = getPageIcon();
 
-  const renderNavItem = (item: { label: string; href: string; icon: LucideIcon; badge?: string; end?: boolean }) => {
-    const isActive = item.end
-      ? location.pathname === item.href
-      : location.pathname === item.href || location.pathname.startsWith(item.href + '/');
-    return (
-      <NavLink
-        key={item.href}
-        to={item.href}
-        title={item.label}
-        className={`sidebar-nav-item group relative flex items-center gap-3 rounded-xl transition-all duration-200 ${
-          isActive
-            ? 'bg-gradient-to-r from-brand/[0.18] via-brand/[0.06] to-transparent text-text-primary font-semibold'
-            : 'text-text-muted hover:text-text-secondary hover:bg-glass-1'
-        }`}
-        style={{
-          padding: showExpanded ? '8px 12px' : '8px',
-          justifyContent: showExpanded ? 'flex-start' : 'center',
-        }}
-      >
-        {/* Active accent bar — gradient top-to-bottom for depth */}
-        {isActive && (
-          <div className="absolute left-0 top-1 bottom-1 w-[2.5px] rounded-r-full bg-gradient-to-b from-brand-light to-brand" />
-        )}
-        <item.icon
-          className={`w-[18px] h-[18px] shrink-0 transition-colors ${isActive ? 'text-brand' : ''}`}
-          strokeWidth={1.5}
-        />
-        {showExpanded && (
-          <>
-            <span className="text-xs whitespace-nowrap overflow-hidden">{item.label}</span>
-            {item.badge && (
-              <span className="ml-auto px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-violet-soft text-violet-light">
-                {item.badge}
-              </span>
-            )}
-          </>
-        )}
-      </NavLink>
-    );
-  };
 
   // On desktop, expansion follows hover. Mobile hides the sidebar entirely.
-  const showExpanded = sidebarExpanded;
+  // The filter inside the rail holds it open: hovering away mid-search would
+  // otherwise collapse the sidebar and discard what was typed.
+  const [navHoldsOpen, setNavHoldsOpen] = useState(false);
+  const showExpanded = sidebarExpanded || navHoldsOpen;
 
   return (
     <div className="flex h-screen bg-bg overflow-hidden">
@@ -474,6 +438,7 @@ export function DashboardLayout() {
         }}
         onMouseEnter={() => setSidebarExpanded(true)}
         onMouseLeave={() => {
+          if (navHoldsOpen) return;
           setSidebarExpanded(false);
           setMenuOpen(false);
         }}
@@ -522,82 +487,8 @@ export function DashboardLayout() {
           </div>
         </div>
 
-        {/* Navigation */}
-        <nav
-          className="flex-1 overflow-y-auto overflow-x-hidden py-2"
-          style={{ padding: showExpanded ? '8px 8px' : '8px 6px' }}
-        >
-          {/* ── Primary (chat-first rail) ── */}
-          {showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-1">
-              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
-              </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
-                Commerce
-              </span>
-            </div>
-          )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />}
-          <div className="flex flex-col gap-0.5">{primaryNav.map(renderNavItem)}</div>
-
-          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
-              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <Bot className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
-              </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
-                Bot & IA
-              </span>
-            </div>
-          )}
-          {SHOW_LEGACY_PLATFORM_TOOLS && !showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          {SHOW_LEGACY_PLATFORM_TOOLS && <div className="flex flex-col gap-0.5">{botNav.map(renderNavItem)}</div>}
-
-          {/* ── OLD: Build / Configure sections (commented for now) ─────────
-          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
-            <div className="text-[9px] font-bold text-text-muted uppercase tracking-[1.5px] px-3 pt-2 pb-1.5">
-              Build
-            </div>
-          )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto mb-2 mt-1" />}
-          <div className="flex flex-col gap-0.5">{buildNav.map(renderNavItem)}</div>
-
-          {showExpanded && (
-            <div className="text-[9px] font-bold text-text-muted uppercase tracking-[1.5px] px-3 pt-4 pb-1.5">
-              Configure
-            </div>
-          )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          <div className="flex flex-col gap-0.5">{configureNav.map(renderNavItem)}</div>
-          ─────────────────────────────────────────────────────────────── */}
-
-          {/* ── CRM ── */}
-          {SHOW_LEGACY_PLATFORM_TOOLS && showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
-              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <Users className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
-              </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">CRM</span>
-            </div>
-          )}
-          {SHOW_LEGACY_PLATFORM_TOOLS && !showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          {SHOW_LEGACY_PLATFORM_TOOLS && <div className="flex flex-col gap-0.5">{crmNav.map(renderNavItem)}</div>}
-
-          {/* ── System / Settings ── */}
-          {showExpanded && (
-            <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-xl bg-glass-1 border-thin border-border-subtle mb-1.5 mt-3">
-              <div className="w-5 h-5 rounded-lg bg-brand-soft flex items-center justify-center shrink-0">
-                <Settings className="w-[11px] h-[11px] text-brand" strokeWidth={2} />
-              </div>
-              <span className="text-[9px] font-bold text-text-secondary uppercase tracking-[1.5px]">
-                Commerce settings
-              </span>
-            </div>
-          )}
-          {!showExpanded && <div className="w-6 h-px bg-border-subtle mx-auto my-2" />}
-          <div className="flex flex-col gap-0.5">{settingsNav.map(renderNavItem)}</div>
-        </nav>
+        {/* Navigation — one grouped rail for the whole admin. */}
+        <SidebarNav expanded={showExpanded} onHoldOpen={setNavHoldsOpen} />
 
         {/* User */}
         <div

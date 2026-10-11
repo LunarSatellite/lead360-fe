@@ -104,7 +104,7 @@ describe('unified navigation model', () => {
 
     expect(
       unreachable,
-      'these routes render a page that nothing links to — add a nav entry or an explicit reason'
+      'these routes render a page that nothing links to — add a nav entry or an explicit reason',
     ).toEqual([]);
   });
 

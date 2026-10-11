@@ -74,6 +74,9 @@ export default {
         },
         danger: {
           DEFAULT: 'rgb(var(--color-danger) / <alpha-value>)',
+          // For danger *text*. The default is a fill colour and does not
+          // reach 4.5:1 as small type on a dark card.
+          light: 'rgb(var(--color-danger-light) / <alpha-value>)',
           soft: 'rgb(var(--color-danger) / 0.1)',
         },
         warning: {

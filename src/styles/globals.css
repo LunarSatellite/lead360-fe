@@ -94,6 +94,10 @@
   --color-success-light:     52 211 153;   /* #34D399                    */
   --color-info:              59 130 246;   /* #3B82F6                    */
   --color-danger:           244  63  94;   /* #F43F5E                    */
+  /* Small danger text on a dark card measured 4.39:1 against the 4.5:1
+     floor -- found by axe, not by eye. The fill colour is unchanged; this
+     is the one to use for a sentence, and it measures about 6:1. */
+  --color-danger-light:     251 113 133;   /* #FB7185                    */
   --color-warning:          245 158  11;   /* #F59E0B                    */
   --color-warning-light:    251 191  36;   /* #FBBF24                    */
 
@@ -194,6 +198,7 @@
   --color-success-light:     88 214 141;   /* #58D68D — derived tint     */
   --color-info:               0 166 244;   /* #00A6F4 — colorInfo        */
   --color-danger:           255 100 103;   /* #FF6467 — colorError       */
+  --color-danger-light:     255 138 141;   /* #FF8A8D — derived tint     */
   --color-warning:          241 196  15;   /* #F1C40F — secondaryYellow  */
   --color-warning-light:    255 223  32;   /* #FFDF20 — warning300       */
 

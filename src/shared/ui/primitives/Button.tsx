@@ -41,7 +41,8 @@ const VARIANT = {
   secondary:
     'border-border-subtle text-text-secondary font-semibold hover:border-border-medium hover:text-text-primary',
   ghost: 'text-text-muted font-semibold hover:bg-glass-1 hover:text-text-primary',
-  danger: 'bg-danger-soft text-danger font-bold hover:bg-danger hover:text-text-inverted',
+  danger:
+    'bg-danger-soft text-danger-light font-bold hover:bg-danger hover:text-text-inverted',
 } as const;
 
 export type ButtonVariant = keyof typeof VARIANT;

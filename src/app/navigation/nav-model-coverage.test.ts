@@ -15,8 +15,17 @@ import { allNavItems, navAliases, navGroups } from './nav-model';
  * section. These checks extend the same guarantee to the whole admin.
  */
 
-/** Routes opened from a list page rather than from the nav. */
-const isReachedFromAList = (path: string) => path.includes(':') || path.endsWith('/new');
+/**
+ * Routes opened from inside another page rather than from the nav.
+ *
+ * A `:param` is a detail page reached from its list, `/new` is its create
+ * form, and a `*` is a sub-view of a page that carries its own menu — the
+ * vendor console's 31 sections, for instance. In each case the parent is in
+ * the nav and is the way in, so requiring a second entry for the child would
+ * mean putting all 31 vendor sections in the product-level rail.
+ */
+const isReachedFromAList = (path: string) =>
+  path.includes(':') || path.endsWith('/new') || path.endsWith('/*');
 
 /** Deliberate omissions, each with a stated reason — not a backlog. */
 const INTENTIONALLY_UNLINKED = new Map<string, string>([

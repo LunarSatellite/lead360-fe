@@ -111,6 +111,10 @@ export const routeObjects: RouteObject[] = [
       { path: 'commerce-control', lazy: () => import('@/features/commerce-control/pages/CommerceControlCenterPage') },
       { path: 'stylemint/orders', lazy: () => import('@/features/commerce-control/pages/StylemintOrdersPage') },
       { path: 'stylemint/vendor', lazy: () => import('@/features/commerce-control/pages/VendorOperationsPage') },
+      // A splat, because a vendor section key can contain a slash
+      // ('pricing/flash-sales', 'analytics/creators'). The page resolves an
+      // unknown one to its default rather than rendering an empty console.
+      { path: 'stylemint/vendor/*', lazy: () => import('@/features/commerce-control/pages/VendorOperationsPage') },
       { path: 'stylemint/content', lazy: () => import('@/features/commerce-control/pages/ContentOperationsPage') },
       { path: 'stylemint/customers', lazy: () => import('@/features/commerce-control/pages/StylemintCustomersPage') },
       { path: 'stylemint/finance', lazy: () => import('@/features/commerce-control/pages/SellerFinancePage') },

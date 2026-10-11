@@ -827,10 +827,12 @@ function CreateWorkflowForm({ onGenerate }: {
 
         {/* Description */}
         <div>
-          <label className="block text-2xs font-semibold mb-1 text-text-secondary">Description</label>
-          <input value={description} onChange={(e) => setDescription(e.target.value)}
+          <label className="block">
+            <span className="block text-2xs font-semibold mb-1 text-text-secondary">Description</span>
+            <input value={description} onChange={(e) => setDescription(e.target.value)}
             placeholder="What does this workflow do?"
             className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary placeholder:text-text-muted outline-none focus:border-brand" />
+          </label>
         </div>
 
         {/* Trigger Type */}
@@ -935,12 +937,14 @@ function CF({ label, value, onChange, placeholder, hint, type = 'text' }: {
 }) {
   return (
     <div>
-      <label className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</label>
-      <input
+      <label className="block">
+        <span className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</span>
+        <input
         type={type} value={value} onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
       />
+      </label>
       {hint && <p className="text-[10px] text-text-muted mt-1 leading-snug">{hint}</p>}
     </div>
   );
@@ -969,12 +973,14 @@ function CArea({ label, value, onChange, placeholder, hint }: {
 }) {
   return (
     <div>
-      <label className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</label>
-      <textarea
+      <label className="block">
+        <span className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</span>
+        <textarea
         value={value} onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder} rows={3}
         className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand resize-none"
       />
+      </label>
       {hint && <p className="text-[10px] text-text-muted mt-1 leading-snug">{hint}</p>}
     </div>
   );
@@ -1052,12 +1058,14 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
 
         {/* Label */}
         <div>
-          <label className="block text-2xs font-semibold mb-1 text-text-secondary">Name</label>
-          <input
+          <label className="block">
+            <span className="block text-2xs font-semibold mb-1 text-text-secondary">Name</span>
+            <input
             value={(node.data.label as string) ?? ''} onChange={(e) => onUpdateNode(node.id, { label: e.target.value })}
             className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
             placeholder="Block label…"
           />
+          </label>
         </div>
 
         {/* Type picker — 2-col grid, same pattern as flow builder node palette */}
@@ -1103,11 +1111,13 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
               <div className="space-y-3">
                 {/* Type — disabled display field, mirrors flow builder */}
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input
                     value="Trigger" disabled
                     className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted"
                   />
+                  </label>
                 </div>
                 {/* Free-text description */}
                 <CArea
@@ -1173,9 +1183,11 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
               <div className="space-y-3">
                 {/* Type — disabled display, mirrors flow builder */}
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input value="Action" disabled
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input value="Action" disabled
                     className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  </label>
                 </div>
                 {/* Free-text description */}
                 <CArea
@@ -1284,8 +1296,10 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
             {node.type === 'condition' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input value="Condition" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input value="Condition" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  </label>
                 </div>
                 <CArea label="What is the condition?" value={cfg.description ?? ''}
                   placeholder="Describe the condition in plain language…&#10;e.g. If the lead score is above 80&#10;e.g. If the contact's status is active&#10;e.g. If the deal amount is greater than $10,000"
@@ -1342,9 +1356,11 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                 {sub === 'wait' && <>
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="block text-2xs font-semibold mb-1 text-text-secondary">Duration</label>
-                      <input type="number" min={0} value={cfg.delayMinutes ?? '0'} onChange={(e) => sf('delayMinutes', e.target.value)} placeholder="0"
+                      <label className="block">
+                        <span className="block text-2xs font-semibold mb-1 text-text-secondary">Duration</span>
+                        <input type="number" min={0} value={cfg.delayMinutes ?? '0'} onChange={(e) => sf('delayMinutes', e.target.value)} placeholder="0"
                         className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand" />
+                      </label>
                     </div>
                     <CS label="Unit" value={cfg.unit ?? 'minutes'} onChange={(v) => sf('unit', v)}
                       options={[{ value: 'minutes', label: 'Minutes' }, { value: 'hours', label: 'Hours' }, { value: 'days', label: 'Days' }]} />
@@ -1364,8 +1380,10 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
             {node.type === 'ai' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input value="AI" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input value="AI" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  </label>
                 </div>
                 <CArea label="What should the AI do?" value={cfg.description ?? ''}
                   placeholder="Describe the AI task in plain language…&#10;e.g. Classify this lead as Hot, Warm, or Cold&#10;e.g. Write a personalised follow-up email&#10;e.g. Summarise the conversation history in 3 sentences"
@@ -1421,8 +1439,10 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
             {node.type === 'api' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input value="API" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input value="API" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  </label>
                 </div>
                 <CArea label="What does this API call do?" value={cfg.description ?? ''}
                   placeholder="Describe the API call in plain language…&#10;e.g. Fetch the contact's subscription plan from Stripe&#10;e.g. Send a Slack message to the sales channel&#10;e.g. Create a record in the billing system"

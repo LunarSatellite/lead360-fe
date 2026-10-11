@@ -109,8 +109,10 @@ function AccountForm({
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Account Name *</label>
-        <input required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" className={inputCls} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Account Name *</span>
+          <input required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" className={inputCls} />
+        </label>
       </div>
       <div>
         <label className="block text-xs font-semibold text-text-muted mb-1.5">Parent Account</label>
@@ -145,25 +147,35 @@ function AccountForm({
           </select>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Contract Value</label>
-          <input type="number" min="0" value={form.contractValue} onChange={set('contractValue')} placeholder="50000" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Contract Value</span>
+            <input type="number" min="0" value={form.contractValue} onChange={set('contractValue')} placeholder="50000" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Credit Limit</label>
-          <input type="number" min="0" value={form.creditLimit} onChange={set('creditLimit')} placeholder="100000" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Credit Limit</span>
+            <input type="number" min="0" value={form.creditLimit} onChange={set('creditLimit')} placeholder="100000" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Currency</label>
-          <input value={form.currency} onChange={set('currency')} placeholder="USD" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Currency</span>
+            <input value={form.currency} onChange={set('currency')} placeholder="USD" className={inputCls} />
+          </label>
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Renewal Date</label>
-        <input type="date" value={form.renewalDate} onChange={set('renewalDate')} className={inputCls} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Renewal Date</span>
+          <input type="date" value={form.renewalDate} onChange={set('renewalDate')} className={inputCls} />
+        </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Notes</label>
-        <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Notes</span>
+          <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
+        </label>
       </div>
       <div className="flex gap-3 pt-1">
         <Button
@@ -594,8 +606,10 @@ function CreateAccountModal({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Account Name *</label>
-            <Input icon={Building} required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" style={glowInput} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Account Name *</span>
+              <Input icon={Building} required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" style={glowInput} />
+            </label>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -686,18 +700,24 @@ function CreateAccountModal({
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Contract Value</label>
-              <Input icon={DollarSign} type="number" min={0} value={form.contractValue} onChange={set('contractValue')} placeholder="50000" style={glowInput} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Contract Value</span>
+                <Input icon={DollarSign} type="number" min={0} value={form.contractValue} onChange={set('contractValue')} placeholder="50000" style={glowInput} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-              <Input icon={DollarSign} value={form.currency} onChange={set('currency')} placeholder="USD" style={glowInput} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+                <Input icon={DollarSign} value={form.currency} onChange={set('currency')} placeholder="USD" style={glowInput} />
+              </label>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Renewal Date</label>
-            <Input icon={Calendar} type="date" value={form.renewalDate} onChange={set('renewalDate')} style={glowInput} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Renewal Date</span>
+              <Input icon={Calendar} type="date" value={form.renewalDate} onChange={set('renewalDate')} style={glowInput} />
+            </label>
           </div>
 
           <div>
@@ -796,43 +816,57 @@ function CreateAccountModal({
           {/* Company Name + Domain */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Company Name</label>
-              <Input icon={Building2} style={glowInput} placeholder="Acme Corp" value={orgDetails.name} onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Company Name</span>
+                <Input icon={Building2} style={glowInput} placeholder="Acme Corp" value={orgDetails.name} onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
-              <Input icon={Layers} style={glowInput} placeholder="acme.com" value={orgDetails.domain} onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Domain</span>
+                <Input icon={Layers} style={glowInput} placeholder="acme.com" value={orgDetails.domain} onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))} />
+              </label>
             </div>
           </div>
 
           {/* Industry + Employees */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
-              <Input icon={Layers} style={glowInput} placeholder="SaaS, Retail…" value={orgDetails.industry} onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Industry</span>
+                <Input icon={Layers} style={glowInput} placeholder="SaaS, Retail…" value={orgDetails.industry} onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
-              <Input icon={Users} type="number" min={0} style={glowInput} placeholder="250" value={orgDetails.employeeCount} onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Employees</span>
+                <Input icon={Users} type="number" min={0} style={glowInput} placeholder="250" value={orgDetails.employeeCount} onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))} />
+              </label>
             </div>
           </div>
 
           {/* Country + City */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
-              <Input icon={MapPin} style={glowInput} placeholder="US" value={orgDetails.country} onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Country</span>
+                <Input icon={MapPin} style={glowInput} placeholder="US" value={orgDetails.country} onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
-              <Input icon={MapPin} style={glowInput} placeholder="New York" value={orgDetails.city} onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">City</span>
+                <Input icon={MapPin} style={glowInput} placeholder="New York" value={orgDetails.city} onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))} />
+              </label>
             </div>
           </div>
 
           {/* Website */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
-            <Input icon={Globe} style={glowInput} placeholder="https://acme.com" value={orgDetails.website} onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Website</span>
+              <Input icon={Globe} style={glowInput} placeholder="https://acme.com" value={orgDetails.website} onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))} />
+            </label>
           </div>
 
           {customFieldsContent}

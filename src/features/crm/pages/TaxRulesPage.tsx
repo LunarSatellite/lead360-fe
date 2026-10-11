@@ -176,13 +176,17 @@ export function Component() {
       >
         <form id="tr-form" onSubmit={submit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Name *</label>
-            <Input icon={Layers} required placeholder="e.g. Nepal VAT" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Name *</span>
+              <Input icon={Layers} required placeholder="e.g. Nepal VAT" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Jurisdiction *</label>
-            <Input icon={MapPin} required placeholder="e.g. Nepal" value={form.jurisdiction} onChange={e => setForm(f => ({ ...f, jurisdiction: e.target.value }))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Jurisdiction *</span>
+              <Input icon={MapPin} required placeholder="e.g. Nepal" value={form.jurisdiction} onChange={e => setForm(f => ({ ...f, jurisdiction: e.target.value }))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -228,8 +232,10 @@ export function Component() {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Rate</label>
-              <Input icon={Percent} type="number" value={form.rate || ''} onChange={e => setForm(f => ({ ...f, rate: Number(e.target.value) }))} min={0} max={100} step={0.01} placeholder="0.00" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Rate</span>
+                <Input icon={Percent} type="number" value={form.rate || ''} onChange={e => setForm(f => ({ ...f, rate: Number(e.target.value) }))} min={0} max={100} step={0.01} placeholder="0.00" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
           </div>
 

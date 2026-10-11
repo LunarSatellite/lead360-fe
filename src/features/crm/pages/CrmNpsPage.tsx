@@ -181,18 +181,24 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID *</label>
-        <Input icon={User} required value={form.contactId} onChange={set('contactId')} placeholder="contact-uuid" style={inputStyle} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Contact ID *</span>
+          <Input icon={User} required value={form.contactId} onChange={set('contactId')} placeholder="contact-uuid" style={inputStyle} />
+        </label>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
-          <Input icon={Hash} value={form.dealId ?? ''} onChange={set('dealId')} placeholder="deal-uuid" style={inputStyle} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</span>
+            <Input icon={Hash} value={form.dealId ?? ''} onChange={set('dealId')} placeholder="deal-uuid" style={inputStyle} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Support Case ID</label>
-          <Input icon={Hash} value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="case-uuid" style={inputStyle} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Support Case ID</span>
+            <Input icon={Hash} value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="case-uuid" style={inputStyle} />
+          </label>
         </div>
       </div>
 

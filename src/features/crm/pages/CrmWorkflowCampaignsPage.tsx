@@ -145,14 +145,18 @@ export function Component() {
             <div className="h-px bg-brand/20" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
-            <Input icon={Target} required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></span>
+              <Input icon={Target} required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
-            <textarea value={form.description} rows={3} onChange={setF('description')} placeholder="Campaign description…"
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Description</span>
+              <textarea value={form.description} rows={3} onChange={setF('description')} placeholder="Campaign description…"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
           <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
             <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Target & Workflow</span>
@@ -225,11 +229,13 @@ export function Component() {
             <div className="h-px bg-brand/20" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Segment Conditions <span className="text-text-muted font-normal">(JSON)</span></label>
-            <textarea value={form.segmentConditionsJson} rows={4} onChange={setF('segmentConditionsJson')}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Segment Conditions <span className="text-text-muted font-normal">(JSON)</span></span>
+              <textarea value={form.segmentConditionsJson} rows={4} onChange={setF('segmentConditionsJson')}
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary font-mono placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               placeholder='{"filters":[{"field":"Status","op":"eq","value":"Open"}]}' />
+            </label>
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Schedule</label>

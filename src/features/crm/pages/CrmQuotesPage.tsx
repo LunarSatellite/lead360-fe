@@ -607,13 +607,17 @@ export function Component() {
         {/* Currency & Validity */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-            <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+              <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" />
+            </label>
           </div>
           {!editingId && (
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Validity (days)</label>
-              <Input icon={Calendar} type="number" value={validityDays} onChange={e => setValidityDays(Number(e.target.value))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} min={1} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Validity (days)</span>
+                <Input icon={Calendar} type="number" value={validityDays} onChange={e => setValidityDays(Number(e.target.value))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} min={1} />
+              </label>
             </div>
           )}
         </div>
@@ -736,8 +740,9 @@ export function Component() {
 
         {/* Notes */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-          <textarea
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
+            <textarea
             value={notes}
             onChange={e => setNotes(e.target.value)}
             rows={3}
@@ -745,6 +750,7 @@ export function Component() {
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             placeholder="Optional notes…"
           />
+          </label>
         </div>
       </SlideOver>
 

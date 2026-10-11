@@ -135,8 +135,9 @@ export function Component() {
             <div className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
               {/* Event type */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Event type</label>
-                <input
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Event type</span>
+                  <input
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. email_opened"
@@ -144,28 +145,33 @@ export function Component() {
                   onChange={e => setForm(f => ({ ...f, eventType: e.target.value }))}
                   required
                 />
+                </label>
               </div>
               {/* Label */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Label</label>
-                <input
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Label</span>
+                  <input
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. Email Opened"
                   value={form.label}
                   onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
                 />
+                </label>
               </div>
               {/* Points */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Points</label>
-                <input
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Points</span>
+                  <input
                   type="number"
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   value={form.points}
                   onChange={e => setForm(f => ({ ...f, points: Number(e.target.value) }))}
                 />
+                </label>
               </div>
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">

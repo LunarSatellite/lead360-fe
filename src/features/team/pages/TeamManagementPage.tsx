@@ -153,14 +153,16 @@ function InviteForm({ onClose }: { onClose: () => void }) {
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
           {/* Email */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
-            <input
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Email</span>
+              <input
               {...form.register('email')}
               type="email"
               placeholder="team@company.com"
               className={inputCls}
               style={inputBg}
             />
+            </label>
             {form.formState.errors.email && (
               <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
             )}
@@ -217,16 +219,16 @@ function InviteForm({ onClose }: { onClose: () => void }) {
 
           {/* Personal message */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">
-              Personal message <span className="opacity-40">(optional)</span>
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Personal message <span className="opacity-40">(optional)</span></span>
+              <textarea
               {...form.register('personalMessage')}
               placeholder="Hey, join our team!"
               rows={3}
               className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={inputBg}
             />
+            </label>
           </div>
 
           {send.isError && (

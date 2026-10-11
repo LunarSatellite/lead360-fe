@@ -108,9 +108,18 @@ function EditRowForm({ row, onSave, onClose }: { row: ImportRow; onSave: (r: Imp
     <div className="bg-bg-card rounded-xl w-[400px] shadow-2xl p-5">
       <h4 className="text-sm font-bold text-text-primary mb-4">Edit Row #{row.rowNumber}</h4>
       <div className="space-y-3">
-        <div><label className="block text-2xs font-semibold text-text-muted mb-1">Name</label><input value={name} onChange={e => setName(e.target.value)} className="form-input text-sm" /></div>
-        <div><label className="block text-2xs font-semibold text-text-muted mb-1">Keywords</label><input value={kw} onChange={e => setKw(e.target.value)} className="form-input text-sm" /></div>
-        <div><label className="block text-2xs font-semibold text-text-muted mb-1">Description</label><textarea value={desc} onChange={e => setDesc(e.target.value)} rows={2} className="form-input text-sm resize-none" /></div>
+        <div><label className="block">
+  <span className="block text-2xs font-semibold text-text-muted mb-1">Name</span>
+  <input value={name} onChange={e => setName(e.target.value)} className="form-input text-sm" />
+</label></div>
+        <div><label className="block">
+  <span className="block text-2xs font-semibold text-text-muted mb-1">Keywords</span>
+  <input value={kw} onChange={e => setKw(e.target.value)} className="form-input text-sm" />
+</label></div>
+        <div><label className="block">
+  <span className="block text-2xs font-semibold text-text-muted mb-1">Description</span>
+  <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={2} className="form-input text-sm resize-none" />
+</label></div>
         <div><label className="block text-2xs font-semibold text-text-muted mb-1">Operation Type</label><select value={op} onChange={e => setOp(e.target.value)} className="form-input text-sm"><option value="">—</option><option value="ApiCall">ApiCall</option><option value="MenuNavigation">MenuNavigation</option><option value="Browse">Browse</option><option value="Search">Search</option><option value="StaticResponse">StaticResponse</option></select></div>
       </div>
       <div className="flex items-center justify-end gap-2 mt-5">

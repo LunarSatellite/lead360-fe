@@ -95,38 +95,54 @@ function OrgForm({
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Name *</label>
-        <input required value={form.name} onChange={set('name')} placeholder="Acme Corp" className={inputCls} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Name *</span>
+          <input required value={form.name} onChange={set('name')} placeholder="Acme Corp" className={inputCls} />
+        </label>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Domain</label>
-          <input value={form.domain} onChange={set('domain')} placeholder="acme.com" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Domain</span>
+            <input value={form.domain} onChange={set('domain')} placeholder="acme.com" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Industry</label>
-          <input value={form.industry} onChange={set('industry')} placeholder="SaaS" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Industry</span>
+            <input value={form.industry} onChange={set('industry')} placeholder="SaaS" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Employees</label>
-          <input type="number" min="0" value={form.employeeCount} onChange={set('employeeCount')} placeholder="250" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Employees</span>
+            <input type="number" min="0" value={form.employeeCount} onChange={set('employeeCount')} placeholder="250" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Country</label>
-          <input value={form.country} onChange={set('country')} placeholder="US" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Country</span>
+            <input value={form.country} onChange={set('country')} placeholder="US" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">City</label>
-          <input value={form.city} onChange={set('city')} placeholder="New York" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">City</span>
+            <input value={form.city} onChange={set('city')} placeholder="New York" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Website</label>
-          <input value={form.website} onChange={set('website')} placeholder="https://acme.com" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Website</span>
+            <input value={form.website} onChange={set('website')} placeholder="https://acme.com" className={inputCls} />
+          </label>
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
-        <textarea rows={3} value={form.description} onChange={set('description')} className={`${inputCls} resize-none`} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+          <textarea rows={3} value={form.description} onChange={set('description')} className={`${inputCls} resize-none`} />
+        </label>
       </div>
       <div className="flex gap-3 pt-1">
         <Button
@@ -450,40 +466,55 @@ export function Component() {
               className="flex-1 px-6 py-5 space-y-4 overflow-y-auto"
             >
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Name *</label>
-                <Input icon={Building2} required value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} placeholder="Acme Corp" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name *</span>
+                  <Input icon={Building2} required value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} placeholder="Acme Corp" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                </label>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
-                  <Input icon={Globe} value={createForm.domain} onChange={e => setCreateForm(f => ({ ...f, domain: e.target.value }))} placeholder="acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Domain</span>
+                    <Input icon={Globe} value={createForm.domain} onChange={e => setCreateForm(f => ({ ...f, domain: e.target.value }))} placeholder="acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
-                  <Input icon={Layers} value={createForm.industry} onChange={e => setCreateForm(f => ({ ...f, industry: e.target.value }))} placeholder="SaaS, Retail…" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Industry</span>
+                    <Input icon={Layers} value={createForm.industry} onChange={e => setCreateForm(f => ({ ...f, industry: e.target.value }))} placeholder="SaaS, Retail…" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
-                  <Input icon={Users} type="number" min={0} value={createForm.employeeCount} onChange={e => setCreateForm(f => ({ ...f, employeeCount: e.target.value }))} placeholder="250" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Employees</span>
+                    <Input icon={Users} type="number" min={0} value={createForm.employeeCount} onChange={e => setCreateForm(f => ({ ...f, employeeCount: e.target.value }))} placeholder="250" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
-                  <Input icon={MapPin} value={createForm.country} onChange={e => setCreateForm(f => ({ ...f, country: e.target.value }))} placeholder="US" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Country</span>
+                    <Input icon={MapPin} value={createForm.country} onChange={e => setCreateForm(f => ({ ...f, country: e.target.value }))} placeholder="US" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
-                  <Input icon={MapPin} value={createForm.city} onChange={e => setCreateForm(f => ({ ...f, city: e.target.value }))} placeholder="New York" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">City</span>
+                    <Input icon={MapPin} value={createForm.city} onChange={e => setCreateForm(f => ({ ...f, city: e.target.value }))} placeholder="New York" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
-                  <Input icon={Globe} value={createForm.website} onChange={e => setCreateForm(f => ({ ...f, website: e.target.value }))} placeholder="https://acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Website</span>
+                    <Input icon={Globe} value={createForm.website} onChange={e => setCreateForm(f => ({ ...f, website: e.target.value }))} placeholder="https://acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
-                <textarea
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Description</span>
+                  <textarea
                   rows={3}
                   value={createForm.description}
                   onChange={e => setCreateForm(f => ({ ...f, description: e.target.value }))}
@@ -491,6 +522,7 @@ export function Component() {
                   className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
+                </label>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2 border-t border-border-subtle">

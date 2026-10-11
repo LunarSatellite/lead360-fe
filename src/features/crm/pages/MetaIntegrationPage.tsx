@@ -771,11 +771,13 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             </ol>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Ad Account ID <span className="text-danger">*</span></label>
-            <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Ad Account ID <span className="text-danger">*</span></span>
+              <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
               placeholder="act_123456789"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Access Token <span className="text-danger">*</span></label>
@@ -792,18 +794,22 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Business Name</label>
-            <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Business Name</span>
+              <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
               placeholder="Acme Marketing"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-            <input value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+              <input value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
               placeholder="USD"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle flex gap-3">
@@ -1988,14 +1994,16 @@ function OAuthPlatformTab({
                     <div className="pl-8 space-y-3">
                       {credentialFields.map(f => (
                         <div key={f.key}>
-                          <label className="block text-xs font-semibold text-text-secondary mb-1">{f.label}</label>
-                          <input
+                          <label className="block">
+                            <span className="block text-xs font-semibold text-text-secondary mb-1">{f.label}</span>
+                            <input
                             type={f.secret ? 'password' : 'text'}
                             placeholder={f.secret && savedCred?.hasSecret ? '•••••••• (saved — leave blank to keep)' : f.placeholder}
                             value={credValues[f.key] ?? ''}
                             onChange={e => setCredValues(v => ({ ...v, [f.key]: e.target.value }))}
                             className="w-full px-3 py-2 rounded-lg bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all"
                           />
+                          </label>
                         </div>
                       ))}
                       <div className="flex gap-2 pt-1 flex-wrap">

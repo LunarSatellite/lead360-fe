@@ -108,10 +108,9 @@ export function Component() {
               </div>
               <form onSubmit={handleSubmit} className="p-8 space-y-5">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                    Your message
-                  </label>
-                  <textarea
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Your message</span>
+                    <textarea
                     required
                     rows={6}
                     value={message}
@@ -120,6 +119,7 @@ export function Component() {
                     maxLength={2000}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 resize-none transition-all"
                   />
+                  </label>
                   <p className="text-xs text-gray-400 mt-1.5 text-right">{message.length}/2000</p>
                 </div>
                 <button

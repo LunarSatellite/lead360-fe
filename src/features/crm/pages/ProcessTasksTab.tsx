@@ -83,16 +83,16 @@ function CompleteModal({
             <p className="text-sm text-text-secondary mb-3">
               Complete <span className="font-semibold text-text-primary">"{task.stepName}"</span>?
             </p>
-            <label className="block text-xs font-semibold text-text-muted mb-1.5">
-              Completion Notes (optional)
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-muted mb-1.5">Completion Notes (optional)</span>
+              <textarea
               rows={3}
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Any notes about the outcome..."
               className={`${inputCls} resize-none`}
             />
+            </label>
           </div>
           <div className="flex gap-3 pt-1">
             <button

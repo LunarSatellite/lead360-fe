@@ -172,8 +172,10 @@ export function Component() {
       >
         <form id="pt-form" onSubmit={submit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Name *</label>
-            <Input icon={Layers} required placeholder="e.g. Net 30" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Name *</span>
+              <Input icon={Layers} required placeholder="e.g. Net 30" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
 
           <div>
@@ -193,12 +195,16 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Net Days</label>
-              <Input icon={Calendar} type="number" value={form.netDays} onChange={e => setForm(f => ({ ...f, netDays: Number(e.target.value) }))} min={0} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Net Days</span>
+                <Input icon={Calendar} type="number" value={form.netDays} onChange={e => setForm(f => ({ ...f, netDays: Number(e.target.value) }))} min={0} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Deposit %</label>
-              <Input icon={Percent} type="number" value={form.depositPercent} onChange={e => setForm(f => ({ ...f, depositPercent: Number(e.target.value) }))} min={0} max={100} step={0.01} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Deposit %</span>
+                <Input icon={Percent} type="number" value={form.depositPercent} onChange={e => setForm(f => ({ ...f, depositPercent: Number(e.target.value) }))} min={0} max={100} step={0.01} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
           </div>
 

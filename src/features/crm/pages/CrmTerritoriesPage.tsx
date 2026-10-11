@@ -89,22 +89,28 @@ export function Component() {
                 <div className="h-px bg-brand/20" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. North America"
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></span>
+                  <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. North America"
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} autoFocus />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Priority</label>
-                <input type="number" min={1} value={priority} onChange={(e) => setPriority(Number(e.target.value))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Priority</span>
+                  <input type="number" min={1} value={priority} onChange={(e) => setPriority(Number(e.target.value))}
                   className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Description <span className="text-text-muted font-normal">(optional)</span></label>
-                <textarea value={description} rows={3} onChange={(e) => setDescription(e.target.value)} placeholder="What leads does this territory cover?"
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Description <span className="text-text-muted font-normal">(optional)</span></span>
+                  <textarea value={description} rows={3} onChange={(e) => setDescription(e.target.value)} placeholder="What leads does this territory cover?"
                   className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                </label>
               </div>
             </form>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">

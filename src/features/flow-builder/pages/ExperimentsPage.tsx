@@ -210,18 +210,22 @@ function EditForm({ exp, onSave, onCancel, isSaving }: {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 mt-4 pt-4 border-t border-border-subtle">
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
-      </div>
-      <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
-        <textarea rows={2} value={description} onChange={(e) => setDescription(e.target.value)} className={`${inputCls} resize-none`} />
-      </div>
-      <div>
-        <label className="block text-xs font-semibold text-text-muted mb-2">
-          Traffic Split — Challenger {splitPercent}% / Control {100 - splitPercent}%
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Name</span>
+          <input value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
         </label>
-        <input type="range" min={10} max={90} value={splitPercent} onChange={(e) => setSplitPercent(Number(e.target.value))} className="w-full accent-brand" />
+      </div>
+      <div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+          <textarea rows={2} value={description} onChange={(e) => setDescription(e.target.value)} className={`${inputCls} resize-none`} />
+        </label>
+      </div>
+      <div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-2">Traffic Split — Challenger {splitPercent}% / Control {100 - splitPercent}%</span>
+          <input type="range" min={10} max={90} value={splitPercent} onChange={(e) => setSplitPercent(Number(e.target.value))} className="w-full accent-brand" />
+        </label>
       </div>
       <div className="flex gap-3">
         <Button type="submit" disabled={isSaving} variant="primary">

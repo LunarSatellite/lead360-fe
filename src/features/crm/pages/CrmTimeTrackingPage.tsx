@@ -130,8 +130,10 @@ function LogTimeForm({ form, setForm, onSubmit }: {
       {/* Minutes + Billable */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Minutes Logged *</label>
-          <Input icon={Clock} required type="number" min={1} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. 30" value={form.minutesLogged} onChange={set('minutesLogged')} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Minutes Logged *</span>
+            <Input icon={Clock} required type="number" min={1} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. 30" value={form.minutesLogged} onChange={set('minutesLogged')} />
+          </label>
         </div>
         <div className="flex flex-col justify-end">
           <label className="block text-xs font-semibold text-text-secondary mb-1">Billable</label>
@@ -193,8 +195,10 @@ function LogTimeForm({ form, setForm, onSubmit }: {
 
       {/* Entity ID */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Entity ID *</label>
-        <Input icon={HashIcon} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. deal-uuid or contact-uuid" value={form.entityId} onChange={set('entityId')} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Entity ID *</span>
+          <Input icon={HashIcon} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. deal-uuid or contact-uuid" value={form.entityId} onChange={set('entityId')} />
+        </label>
       </div>
     </form>
   );

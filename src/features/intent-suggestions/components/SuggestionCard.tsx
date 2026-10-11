@@ -175,17 +175,23 @@ function ApproveDialog({ suggestion, onClose }: { suggestion: SuggestionDto; onC
         </div>
         <form onSubmit={form.handleSubmit(onSubmit)} className="px-6 py-5 space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Name <span className="text-danger">*</span></label>
-            <input {...form.register('name')} className="form-input" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Name <span className="text-danger">*</span></span>
+              <input {...form.register('name')} className="form-input" />
+            </label>
             {form.formState.errors.name && <p className="text-xs text-danger mt-1">{form.formState.errors.name.message}</p>}
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Description</label>
-            <textarea {...form.register('description')} rows={3} className="form-input resize-none" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Description</span>
+              <textarea {...form.register('description')} rows={3} className="form-input resize-none" />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Keywords</label>
-            <input {...form.register('keywords')} className="form-input" placeholder="Comma-separated keywords" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Keywords</span>
+              <input {...form.register('keywords')} className="form-input" placeholder="Comma-separated keywords" />
+            </label>
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1.5">Operation Type</label>
@@ -224,8 +230,10 @@ function RejectDialog({ suggestionId, onClose }: { suggestionId: string; onClose
         <h3 className="text-[14px] font-bold text-text-primary mb-3">Reject Suggestion</h3>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Reason (optional)</label>
-            <textarea {...form.register('reason')} rows={3} placeholder="Why are you rejecting this?" className="form-input resize-none" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Reason (optional)</span>
+              <textarea {...form.register('reason')} rows={3} placeholder="Why are you rejecting this?" className="form-input resize-none" />
+            </label>
           </div>
           <div className="flex justify-end gap-2">
             <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all">Cancel</button>

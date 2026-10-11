@@ -168,19 +168,25 @@ export function Component() {
 
             {/* Name / Label */}
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Name / Label</label>
-              <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. June 2026, Q2 Week 3" value={name} onChange={e => setName(e.target.value)} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Name / Label</span>
+                <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. June 2026, Q2 Week 3" value={name} onChange={e => setName(e.target.value)} />
+              </label>
             </div>
 
             {/* Start Date + End Date */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date *</label>
-                <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={periodStart} onChange={e => setPeriodStart(e.target.value)} />
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Start Date *</span>
+                  <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={periodStart} onChange={e => setPeriodStart(e.target.value)} />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">End Date *</label>
-                <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} />
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">End Date *</span>
+                  <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} />
+                </label>
               </div>
             </div>
             {periodStart && periodEnd && periodStart >= periodEnd && (

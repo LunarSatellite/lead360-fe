@@ -98,13 +98,19 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
         </div>
         <div className="border-t border-border-subtle pt-4 space-y-3">
           <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Add New Policy</p>
-          <div><label className="block text-xs font-semibold text-text-muted mb-1">Name *</label>
-            <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Enterprise SLA, Standard" className={inputCls} /></div>
+          <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Name *</span>
+  <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Enterprise SLA, Standard" className={inputCls} />
+</label></div>
           <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">First Response (hrs)</label>
-              <input type="number" min={0.5} step={0.5} value={form.initialResponseSlaHours} onChange={e => setForm(f => ({ ...f, initialResponseSlaHours: Number(e.target.value) }))} className={inputCls} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Resolution (hrs)</label>
-              <input type="number" min={1} step={1} value={form.resolutionSlaHours} onChange={e => setForm(f => ({ ...f, resolutionSlaHours: Number(e.target.value) }))} className={inputCls} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">First Response (hrs)</span>
+  <input type="number" min={0.5} step={0.5} value={form.initialResponseSlaHours} onChange={e => setForm(f => ({ ...f, initialResponseSlaHours: Number(e.target.value) }))} className={inputCls} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Resolution (hrs)</span>
+  <input type="number" min={1} step={1} value={form.resolutionSlaHours} onChange={e => setForm(f => ({ ...f, resolutionSlaHours: Number(e.target.value) }))} className={inputCls} />
+</label></div>
           </div>
           <div><label className="block text-xs font-semibold text-text-muted mb-1">Applies to Priority</label>
             <select value={form.applicablePriority ?? ''} onChange={e => setForm(f => ({ ...f, applicablePriority: e.target.value ? Number(e.target.value) : undefined }))} className={`${selectCls} w-full`}>
@@ -181,8 +187,14 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
         </div>
         <form onSubmit={e => { e.preventDefault(); onSave({ subject: form.subject, contactId: form.contactId || undefined, priority: form.priority ? Number(form.priority) as CrmSupportCasePriority : undefined, slaPolicyId: form.slaPolicyId || undefined, description: form.description || undefined }); }} className="flex-1 flex flex-col min-h-0">
           <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Subject *</label><input required value={form.subject} onChange={set('subject')} placeholder="Describe the issue..." className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Contact ID</label><input value={form.contactId} onChange={set('contactId')} placeholder="UUID (optional)" className={formInputCls} style={formInputStyle} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Subject *</span>
+  <input required value={form.subject} onChange={set('subject')} placeholder="Describe the issue..." className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Contact ID</span>
+  <input value={form.contactId} onChange={set('contactId')} placeholder="UUID (optional)" className={formInputCls} style={formInputStyle} />
+</label></div>
 
             {/* Priority custom dropdown */}
             <div>
@@ -250,7 +262,10 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
               </div>
             </div>
 
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label><textarea rows={4} value={form.description} onChange={set('description')} placeholder="Additional details..." className={`${formInputCls} resize-none`} style={formInputStyle} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+  <textarea rows={4} value={form.description} onChange={set('description')} placeholder="Additional details..." className={`${formInputCls} resize-none`} style={formInputStyle} />
+</label></div>
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
             <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>

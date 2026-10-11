@@ -282,8 +282,10 @@ function MeetingsTab() {
           {/* Title + Duration */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Title *</label>
-              <Input icon={CalendarCheck} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Discovery Call" value={initForm.title} onChange={setI('title')} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Title *</span>
+                <Input icon={CalendarCheck} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Discovery Call" value={initForm.title} onChange={setI('title')} />
+              </label>
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Duration</label>
@@ -406,8 +408,10 @@ function MeetingsTab() {
 
           {/* Additional Attendees */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Additional Attendees</label>
-            <Input icon={User} value={attendeeQuery} onChange={(e) => setAttendeeQuery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Type name or email..." />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Additional Attendees</span>
+              <Input icon={User} value={attendeeQuery} onChange={(e) => setAttendeeQuery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Type name or email..." />
+            </label>
 
             {/* The picker only lists people once you have typed, so the primary-contact
                 field above stays the fast path for the common one-attendee meeting. */}
@@ -457,8 +461,10 @@ function MeetingsTab() {
           {/* Date + Deal */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Date</label>
-              <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={initForm.scheduledAt} onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Date</span>
+                <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={initForm.scheduledAt} onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))} />
+              </label>
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Linked Deal</label>
@@ -521,8 +527,10 @@ function MeetingsTab() {
 
           {/* Join Link */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Join Link</label>
-            <Input icon={LinkIcon} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="https://zoom.us/j/..." value={initForm.joinUrl} onChange={setI('joinUrl')} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Join Link</span>
+              <Input icon={LinkIcon} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="https://zoom.us/j/..." value={initForm.joinUrl} onChange={setI('joinUrl')} />
+            </label>
           </div>
 
           {/* Google Calendar checkbox */}
@@ -861,8 +869,10 @@ function CallSummariesTab() {
 
           {/* Signal ID — required */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger">*</span></label>
-            <Input icon={PhoneCall} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Signal ID from recorded call (required)" value={reqForm.signalId} onChange={setR('signalId')} />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger">*</span></span>
+              <Input icon={PhoneCall} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Signal ID from recorded call (required)" value={reqForm.signalId} onChange={setR('signalId')} />
+            </label>
           </div>
 
           {/* ── Links ── */}
@@ -874,12 +884,16 @@ function CallSummariesTab() {
           {/* Contact ID + Deal ID */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID</label>
-              <Input icon={User} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contact ID (optional)" value={reqForm.contactId} onChange={setR('contactId')} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Contact ID</span>
+                <Input icon={User} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contact ID (optional)" value={reqForm.contactId} onChange={setR('contactId')} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
-              <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Deal ID (optional)" value={reqForm.dealId} onChange={setR('dealId')} />
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</span>
+                <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Deal ID (optional)" value={reqForm.dealId} onChange={setR('dealId')} />
+              </label>
             </div>
           </div>
 

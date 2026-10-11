@@ -163,14 +163,18 @@ export function Component() {
             <form onSubmit={submitBook} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
               {/* Name */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
-                <Input icon={BookOpen} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. Enterprise USD" value={bookForm.name} onChange={(e) => setBookForm((f) => ({ ...f, name: e.target.value }))} required />
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></span>
+                  <Input icon={BookOpen} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. Enterprise USD" value={bookForm.name} onChange={(e) => setBookForm((f) => ({ ...f, name: e.target.value }))} required />
+                </label>
               </div>
 
               {/* Currency */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-                <Input icon={DollarSign} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" value={bookForm.currency} onChange={(e) => setBookForm((f) => ({ ...f, currency: e.target.value.toUpperCase() }))} maxLength={10} />
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+                  <Input icon={DollarSign} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" value={bookForm.currency} onChange={(e) => setBookForm((f) => ({ ...f, currency: e.target.value.toUpperCase() }))} maxLength={10} />
+                </label>
               </div>
 
               {/* Description */}

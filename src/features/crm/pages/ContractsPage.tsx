@@ -348,8 +348,10 @@ export function Component() {
             <form onSubmit={submit} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></label>
-                <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contract title…" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></span>
+                  <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contract title…" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
+                </label>
               </div>
 
               {/* Template */}
@@ -374,24 +376,32 @@ export function Component() {
               {/* Value + Currency */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Value</label>
-                  <Input icon={DollarSign} type="number" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="0" value={form.value} onChange={e => setForm(f => ({ ...f, value: e.target.value }))} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Value</span>
+                    <Input icon={DollarSign} type="number" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="0" value={form.value} onChange={e => setForm(f => ({ ...f, value: e.target.value }))} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-                  <Input icon={DollarSign} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+                    <Input icon={DollarSign} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))} />
+                  </label>
                 </div>
               </div>
 
               {/* Start + End Date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date</label>
-                  <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Start Date</span>
+                    <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">End Date</label>
-                  <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))} />
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">End Date</span>
+                    <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))} />
+                  </label>
                 </div>
               </div>
 

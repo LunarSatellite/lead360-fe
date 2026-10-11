@@ -69,14 +69,14 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Product Endpoint Path <span className="text-danger">*</span>
-            </label>
-            <input
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Product Endpoint Path <span className="text-danger">*</span></span>
+              <input
               {...form.register('productEndpointPath')}
               placeholder="/api/products"
               className="form-input"
             />
+            </label>
             {form.formState.errors.productEndpointPath && (
               <p className="text-xs text-danger mt-1">{form.formState.errors.productEndpointPath.message}</p>
             )}
@@ -94,27 +94,31 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Page Size</label>
-            <input
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Page Size</span>
+              <input
               {...form.register('pageSize', { valueAsNumber: true })}
               type="number"
               className="form-input"
             />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Data Array Path</label>
-            <input {...form.register('dataArrayPath')} placeholder="data" className="form-input" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Data Array Path</span>
+              <input {...form.register('dataArrayPath')} placeholder="data" className="form-input" />
+            </label>
           </div>
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Field Mappings (JSON)
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Field Mappings (JSON)</span>
+              <textarea
               {...form.register('fieldMappingsJson')}
               rows={3}
               placeholder='{"name": "product_name", "price": "unit_price"}'
               className="form-input resize-none font-mono text-[11px]"
             />
+            </label>
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1.5">Sync Interval</label>

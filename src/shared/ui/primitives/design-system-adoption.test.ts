@@ -157,11 +157,11 @@ describe('defects that must not come back', () => {
      * and `aria-label` from that is the right fix for a toolbar search box
      * or a filter, which has no visible label by design.
      *
-     * A budget again: 400 are left, and they are the ones with no
+     * A budget again: 399 are left, and they are the ones with no
      * placeholder to take a name from. Each needs someone to decide what the
      * control is for, which is not something a script can read off the page.
      */
-    const BUDGET_UNNAMED_CONTROLS = 400;
+    const BUDGET_UNNAMED_CONTROLS = 399;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 

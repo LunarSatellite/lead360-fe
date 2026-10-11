@@ -32,9 +32,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 24, not 20. The first run of this workflow pinned 20 and the whole
+      # suite died on `webidl.util.markAsUncloneable is not a function`:
+      # jsdom pulls undici 8, which needs a newer Node than early 20.x. The
+      # version this project runs on was only ever recorded in whichever
+      # Node a developer happened to have installed, which is exactly the
+      # kind of thing CI is for.
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       # `npm ci` rather than `npm install`: it installs what the lockfile

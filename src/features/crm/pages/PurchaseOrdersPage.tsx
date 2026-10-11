@@ -58,7 +58,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide }: {
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label></div>;
 }
 
 type LineItem = { productName: string; sku: string; quantity: string; unitCost: string; notes: string };

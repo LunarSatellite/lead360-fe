@@ -33,8 +33,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block"><span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>{children}</label>
     </div>
   );
 }
@@ -719,8 +718,12 @@ export function Component() {
           {/* Tax + Totals */}
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-2">
+              {/* aria-label rather than nesting: the label and the input are
+                  both flex items in this row, so wrapping one in the other
+                  would change the layout. */}
               <label className="text-xs font-semibold text-text-secondary">Tax %</label>
               <input
+                aria-label="Tax %"
                 type="number"
                 value={taxPercent}
                 onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}

@@ -33,7 +33,7 @@ function SlideOver({ open, onClose, title, wide, children }: { open: boolean; on
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-muted mb-1.5">{label}</span>{children}</label></div>;
 }
 
 function isOverdue(inv: SupplierInvoiceDto): boolean {

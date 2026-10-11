@@ -109,6 +109,42 @@ describe('unified navigation model', () => {
     expect(notActuallyAliases, 'both names are listed — this is not a merge').toEqual([]);
   });
 
+  it('gives no two pages names that read as the same name', () => {
+    /**
+     * Distinct labels are not enough. "Platform config" and "Platform
+     * configuration" are distinct strings and the same words; a section
+     * label tells them apart in the rail, but read on their own — in the
+     * command palette, in a search result, in a sentence to a colleague —
+     * they look like one page listed twice. That is the confusion this
+     * whole merge is about, in miniature.
+     *
+     * Compared on their words rather than their characters, so "Audit log"
+     * and "Audit trail" pass (different second word, different meaning)
+     * while "Platform config" and "Platform configuration" do not.
+     */
+    const words = (label: string) =>
+      label
+        .toLowerCase()
+        .replace(/[^a-z\s]/g, ' ')
+        .split(/\s+/)
+        .filter(Boolean)
+        // Stem crudely: configuration/config, settings/setting, requests/request.
+        .map((w) => w.replace(/(ation|ings|ing|es|s)$/, ''));
+
+    const tooClose: string[] = [];
+    for (let i = 0; i < allNavItems.length; i += 1) {
+      for (let j = i + 1; j < allNavItems.length; j += 1) {
+        const a = words(allNavItems[i].label);
+        const b = words(allNavItems[j].label);
+        if (a.length === b.length && a.every((w, k) => w === b[k])) {
+          tooClose.push(`"${allNavItems[i].label}" and "${allNavItems[j].label}"`);
+        }
+      }
+    }
+
+    expect(tooClose, 'say which product or which thing each one is').toEqual([]);
+  });
+
   it('gives every item a distinct label', () => {
     const seen = new Map<string, number>();
     for (const item of allNavItems) seen.set(item.label, (seen.get(item.label) ?? 0) + 1);

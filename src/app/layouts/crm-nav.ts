@@ -1,6 +1,7 @@
 import {
   ArrowRight,
   BookOpen,
+  Boxes,
   Briefcase,
   Building,
   Building2,
@@ -114,6 +115,7 @@ export const crmNav = [
   { label: 'Single sign-on', href: ROUTES.dashboard.crmSso, icon: KeyRound },
   { label: 'Currencies', href: ROUTES.dashboard.crmCurrencies, icon: Coins },
   { label: 'Email sync', href: ROUTES.dashboard.crmEmailSync, icon: Mail },
+  { label: 'Custom objects', href: ROUTES.dashboard.crmCustomObjects, icon: Boxes },
   { label: 'Notification settings', href: ROUTES.dashboard.crmNotificationSettings, icon: Settings },
   // ── Routed but previously unlinked: reachable only by typing the URL until now.
   // Analytics and Support stay out on purpose — see the note above; they live once

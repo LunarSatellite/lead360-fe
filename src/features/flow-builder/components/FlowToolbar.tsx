@@ -51,7 +51,7 @@ export function FlowToolbar({
         </span>
         {isDirty && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" title="Unsaved changes" />}
         {isActive && (
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold text-white bg-brand flex-shrink-0">LIVE</span>
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold text-text-inverted bg-brand flex-shrink-0">LIVE</span>
         )}
       </div>
 

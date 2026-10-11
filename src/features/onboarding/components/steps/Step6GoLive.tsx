@@ -95,7 +95,7 @@ export function Step6GoLive({ onComplete }: Step6Props) {
                 </button>
               )}
               {ch.isLive && (
-                <span className="px-2 py-1 rounded-lg text-[10px] font-bold text-white bg-brand">LIVE</span>
+                <span className="px-2 py-1 rounded-lg text-[10px] font-bold text-text-inverted bg-brand">LIVE</span>
               )}
             </div>
           ))}

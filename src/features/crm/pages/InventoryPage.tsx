@@ -109,7 +109,7 @@ export function Component() {
             <div className="flex gap-2 justify-end">
               <button onClick={() => setAdjustProduct(null)} className="px-4 py-2 rounded-xl text-sm text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
               <button onClick={() => { adjust.mutate({ productId: adjustProduct.productId, data: { quantity: adjustQty, notes: adjustNote || undefined } }); setAdjustProduct(null); }} disabled={adjust.isPending || adjustQty === 0}
-                className="px-4 py-2 rounded-xl text-sm font-bold text-white bg-brand hover:bg-brand-light disabled:opacity-50">{adjust.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}</button>
+                className="px-4 py-2 rounded-xl text-sm font-bold text-text-inverted bg-brand hover:bg-brand-light disabled:opacity-50">{adjust.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save'}</button>
             </div>
           </div>
         </div>

@@ -172,7 +172,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
               <button
                 type="button"
                 onClick={() => setRoleOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-brand/20 focus:outline-none transition-all"
+                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-brand/20 focus:outline-none transition-all focus-visible:ring-2 focus-visible:ring-brand/60"
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
@@ -560,7 +560,7 @@ function CreateRoleForm({ onDone, onCancel }: { onDone: (id: string) => void; on
         placeholder="Role name..."
         className="flex-1 px-3 py-2 rounded-lg bg-bg border border-border-medium text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
       />
-      <button type="submit" disabled={create.isPending || !name.trim()} className="p-2 rounded-lg bg-brand text-white hover:brightness-110 disabled:opacity-50">
+      <button type="submit" disabled={create.isPending || !name.trim()} className="p-2 rounded-lg bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">
         <Check className="w-4 h-4" />
       </button>
       <button type="button" onClick={onCancel} className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2">

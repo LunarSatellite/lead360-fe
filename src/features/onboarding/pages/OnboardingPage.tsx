@@ -640,7 +640,7 @@ function Step6({ onDone }: { onDone: () => void }) {
                 </button>
               )}
               {ch.isLive && (
-                <span className="px-2 py-1 rounded-sm text-[10px] font-bold bg-brand text-white">LIVE</span>
+                <span className="px-2 py-1 rounded-sm text-[10px] font-bold bg-brand text-text-inverted">LIVE</span>
               )}
             </div>
           ))}

@@ -106,7 +106,7 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
             <button
               onClick={saveApiUrl}
               disabled={!apiUrl.trim()}
-              className="w-full py-2 rounded-lg text-[11px] font-bold bg-brand text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              className="w-full py-2 rounded-lg text-[11px] font-bold bg-brand text-text-inverted disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               Save
             </button>
@@ -146,7 +146,7 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
               <button
                 onClick={saveCustomMsg}
                 disabled={!customMsg.trim()}
-                className="w-full py-2 rounded-lg text-[11px] font-bold bg-brand text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                className="w-full py-2 rounded-lg text-[11px] font-bold bg-brand text-text-inverted disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 Save
               </button>

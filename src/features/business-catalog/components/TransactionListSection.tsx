@@ -68,7 +68,7 @@ export function TransactionListSection({ transactionLabel }: Props) {
             }}
             placeholder="Search ID, customer name or phone…"
             className="bg-transparent text-xs text-text-primary placeholder:text-text-muted
-                       focus:outline-none flex-1 min-w-0"
+                       focus:outline-none flex-1 min-w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />
         </div>
         <div className="flex items-center gap-1">

@@ -478,7 +478,7 @@ function FloatingPalette() {
           <Search className="w-2.5 h-2.5 text-text-muted shrink-0" strokeWidth={2} />
           <input
             value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…"
-            className="bg-transparent text-[10px] text-text-primary placeholder:text-text-muted focus:outline-none flex-1 min-w-0 w-0"
+            className="bg-transparent text-[10px] text-text-primary placeholder:text-text-muted focus:outline-none flex-1 min-w-0 w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />
           {q && (
             <button onClick={() => setQ('')} className="text-text-muted hover:text-text-primary">
@@ -1688,7 +1688,7 @@ function WorkflowChatWidget({
             ? 'Describe a change… e.g. "Add a 1-day wait before the task"'
             : 'Describe your workflow… e.g. "When a deal closes, send email to contact"'}
           disabled={loading}
-          className="nodrag nopan flex-1 min-w-0 bg-transparent text-[12px] text-text-primary placeholder:text-text-muted focus:outline-none disabled:opacity-50"
+          className="nodrag nopan flex-1 min-w-0 bg-transparent text-[12px] text-text-primary placeholder:text-text-muted focus:outline-none disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand/60"
         />
 
         {/* Send button */}

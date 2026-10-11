@@ -133,7 +133,7 @@ export function CommentsPanel({ kind, entityId }: { kind: number; entityId: stri
           <button
             onClick={submit}
             disabled={!text.trim() || addComment.isPending}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-white text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-text-inverted text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all"
           >
             {addComment.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Comment

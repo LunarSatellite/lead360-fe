@@ -81,7 +81,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
           disabled={categories.length === 0}
           onClick={() => setCreating(true)}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                     bg-brand text-white hover:bg-brand/90 disabled:opacity-50 transition-all"
+                     bg-brand text-text-inverted hover:bg-brand/90 disabled:opacity-50 transition-all"
           title={categories.length === 0 ? 'Add a category first' : undefined}
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
@@ -102,7 +102,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
             }}
             placeholder="Search name, description, tags…"
             className="bg-transparent text-xs text-text-primary placeholder:text-text-muted
-                       focus:outline-none flex-1 min-w-0"
+                       focus:outline-none flex-1 min-w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />
         </div>
         {/* Only show the category dropdown when NOT drilled in from a specific category */}

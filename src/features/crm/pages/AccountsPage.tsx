@@ -231,7 +231,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
             <select
               value={addRole}
               onChange={(e) => setAddRole(e.target.value)}
-              className="px-2 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-xs text-text-secondary focus:outline-none"
+              className="px-2 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-xs text-text-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
             >
               {Object.entries(CRM_ACCOUNT_CONTACT_ROLE_LABELS).map(([k, label]) => (
                 <option key={k} value={k}>{label}</option>

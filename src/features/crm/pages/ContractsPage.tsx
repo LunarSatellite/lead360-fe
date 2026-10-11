@@ -244,7 +244,7 @@ export function Component() {
               <div className="flex gap-2 pt-1">
                 {detailData?.status === CrmContractStatus.Draft && (
                   <button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.PendingSignature })}
-                    className="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-white hover:brightness-110">Send for signature</button>
+                    className="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-text-inverted hover:brightness-110">Send for signature</button>
                 )}
                 {detailData?.status === CrmContractStatus.PendingSignature && allSigned && (
                   <button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.Active })}

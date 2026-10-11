@@ -205,7 +205,7 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
         {canOperate ? (
           <button
             disabled={save.isPending || !form.businessName.trim()}
-            className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+            className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-text-inverted disabled:opacity-40"
           >
             {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save profile

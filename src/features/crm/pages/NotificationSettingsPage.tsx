@@ -105,7 +105,7 @@ export function Component() {
             <button
               onClick={onSave}
               disabled={save.isPending}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand text-white px-4 py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand text-text-inverted px-4 py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-60"
             >
               {save.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save preferences

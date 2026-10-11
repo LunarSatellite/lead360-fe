@@ -33,7 +33,7 @@ export function Component() {
         >
           Pending Review
           {drafts.length > 0 && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand text-white">{drafts.length}</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand text-text-inverted">{drafts.length}</span>
           )}
         </button>
       </div>
@@ -165,7 +165,7 @@ function ArticleDetail({ id, onBack }: { id: string; onBack: () => void }) {
             />
             <div className="flex justify-end gap-2">
               <button onClick={() => setEditing(false)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
-              <button onClick={save} disabled={update.isPending} className="px-4 py-1.5 rounded-lg text-xs font-bold bg-brand text-white hover:brightness-110 disabled:opacity-50">
+              <button onClick={save} disabled={update.isPending} className="px-4 py-1.5 rounded-lg text-xs font-bold bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">
                 Save
               </button>
             </div>

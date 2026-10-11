@@ -770,7 +770,7 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
       <button
         type="submit"
         disabled={schedule.isPending || !emails.trim()}
-        className="px-4 py-2 rounded-lg text-sm font-bold bg-brand text-white hover:brightness-110 disabled:opacity-50"
+        className="px-4 py-2 rounded-lg text-sm font-bold bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50"
       >
         Save
       </button>

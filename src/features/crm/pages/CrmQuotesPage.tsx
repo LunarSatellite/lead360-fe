@@ -651,7 +651,7 @@ export function Component() {
                   <select
                     value={bundleId}
                     onChange={e => setBundleId(e.target.value)}
-                    className="text-xs py-1 px-2 rounded-lg border border-brand/20 text-text-primary focus:outline-none"
+                    className="text-xs py-1 px-2 rounded-lg border border-brand/20 text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
                   >
                     <option value="">Add bundle…</option>
@@ -677,7 +677,7 @@ export function Component() {
                     ? { ...x, productId: en.productId ?? undefined, description: en.productName, unitPrice: en.unitPrice }
                     : x));
                 }}
-                className="w-full px-3 py-2 rounded-xl border border-brand/20 text-xs text-text-primary focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl border border-brand/20 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
               >
                 <option value="">＋ Pick from {bookDetail?.data?.data?.name ?? 'price book'}…</option>

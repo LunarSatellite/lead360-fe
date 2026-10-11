@@ -42,7 +42,7 @@ export function CategoryListSection({ parentLabel, onSelectCategory }: Props) {
           type="button"
           onClick={() => setCreating(true)}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                     bg-brand text-white hover:bg-brand/90 transition-all"
+                     bg-brand text-text-inverted hover:bg-brand/90 transition-all"
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
           Add {parentLabel.toLowerCase()}

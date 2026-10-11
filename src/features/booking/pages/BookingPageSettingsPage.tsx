@@ -249,7 +249,7 @@ function BookingPageSettingsPage() {
             checked={page.isActive}
             onChange={handleToggleActive}
           />
-          <div className="w-11 h-6 bg-bg-card peer-focus:outline-none rounded-full peer border border-border-subtle peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-text-muted after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 peer-checked:after:bg-white" />
+          <div className="w-11 h-6 bg-bg-card peer-focus:outline-none rounded-full peer border border-border-subtle peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-text-muted after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 peer-checked:after:bg-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand/60" />
           <span className="text-xs text-text-muted">{page.isActive ? 'Active' : 'Hidden'}</span>
         </label>
       </div>
@@ -268,7 +268,7 @@ function BookingPageSettingsPage() {
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                className="flex-1 py-2.5 pr-3 text-sm text-text-primary bg-transparent focus:outline-none"
+                className="flex-1 py-2.5 pr-3 text-sm text-text-primary bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
                 autoFocus
               />
             </div>

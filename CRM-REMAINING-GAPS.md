@@ -1,6 +1,13 @@
 # OmniFlow CRM — Gaps by Priority
 
 > Verified by auditing actual backend (entities/services/controllers) and frontend (routes/pages/mutations) code — not by trusting status icons in `CRM-FULL-TEST-FLOW.md`, which is stale and mislabels most features. Ordered by business impact, not by doc section. `CRM-FULL-TEST-FLOW.md` section numbers are kept in parentheses for traceability.
+>
+> **Re-verified 2026-10-11, and this file had gone the same way it warns about.**
+> Four entries below were already built and still listed as missing: **Web Forms
+> builder**, **Webhooks (outbound)** and **Pipeline Forecasting AI** all have UI
+> now. Both Tier A gaps — **GDPR data requests** and **SSO** — were real and are
+> built in this pass. Check a claim here against the code before planning work
+> from it.
 
 ---
 
@@ -9,8 +16,8 @@
 | Feature | Status | Why it's Tier A |
 |---|---|---|
 | **Mobile Access** (20.10) | Partial — `DashboardLayout.tsx` has a responsive bottom tab bar + "More" sheet for small screens, but that's just a breakpoint treatment of the existing desktop routes. No PWA manifest, no offline/installable capability (confirmed: no `vite-plugin-pwa`/workbox config anywhere), no mobile-specific API surface | Field sales reps and field technicians — a role this platform explicitly serves (work orders, installations, repairs) — still have no real away-from-desk capability, just a squeezed desktop UI |
-| **GDPR data requests** | Backend built (`CrmAdminControllers`), **zero UI** | No way to action a right-to-be-forgotten or data-export request. Real legal exposure for any business serving EU customers |
-| **SSO (SAML/OAuth)** | Backend built (`CrmAdminControllers`), **zero UI** | Enterprise buyers routinely require SSO before they'll adopt any SaaS tool — this can silently kill enterprise deals with no obvious symptom until procurement asks for it |
+| **GDPR data requests** | ~~Backend built, zero UI~~ — **built 2026-10-11**, `CrmGdprRequestsPage` at `crm/gdpr`. Logs any of the five rights, tracks the 30-day deadline, manages retention policies. **Known limit, stated on the page:** `ProcessErasureRequestAsync` only sets a status — it deletes nothing, so the erasure itself is still manual | Was: no way to action a right-to-be-forgotten or data-export request |
+| **SSO (SAML/OAuth)** | ~~Backend built, zero UI~~ — **built 2026-10-11**, `CrmSsoPage` at `crm/sso`. Add/remove a connection for any of the five providers, provider-aware form, enforcement flagged in the list. **Known limit, stated on the page:** `TestConnectionAsync` only stamps `TestedAt` — it never contacts the provider, so there is no live test | Was: enterprise buyers require SSO before they'll adopt |
 
 ---
 
@@ -23,9 +30,9 @@
 | **Account Health Score** (17.3) | Not built as spec'd — re-verified 2026-07-09; churn-risk prediction (`CrmPredictionService`, `ChurnInterventionService`) is still active and is not the same thing. A `HealthScore` field does exist but it's scoped to onboarding progress (`CrmOnboardingStateDto.HealthScore`), not a general per-account risk score | CS has no simple at-a-glance risk indicator per account |
 | **RFQ to vendors** (9.1) | Not built — re-verified 2026-07-09, zero hits for RFQ/RequestForQuote/vendor-quote-comparison anywhere | No formal way to compare multiple supplier quotes before purchasing — procurement discipline gap |
 | **GR Discrepancy workflow** (9.5) | Not built — re-verified 2026-07-09; `GoodsReceiptService.ConfirmAsync` just sums received qty into the PO, no over/short-receipt flag. (`ThreeWayMatchService` variance is invoice-vs-PO at billing time, not at receiving time — doesn't cover this) | Short/damaged deliveries aren't auto-flagged against the PO — handled manually, easy to miss |
-| **Webhooks (outbound)** | Backend built (`CrmWebhookController`/`CrmWebhookService`), zero UI — re-verified 2026-07-09 | No way to connect OmniFlow to other systems (Zapier-style) without a developer |
-| **Web Forms builder** | Backend built, zero UI | No native lead-capture form for the website — marketing depends on a workaround |
-| **Pipeline Forecasting AI** (verified 2026-07-09) | Backend built (`CrmForecastController`/`CrmForecastService` — Monte Carlo pipeline forecast, per-deal AI win-probability, at-risk-deal scan), **zero frontend**. The "Weighted Forecast" card on the Analytics page is a separate, simpler calc — not this service | The weekly forecast/quota conversation runs blind to a system that already computes deal-level AI probability and flags at-risk deals |
+| **Webhooks (outbound)** | ~~zero UI~~ — **already built**, found 2026-10-11 (5 matching components/pages) | — |
+| **Web Forms builder** | ~~zero UI~~ — **already built**, found 2026-10-11 (`CrmWebFormBuilderPage` + 3 more) | — |
+| **Pipeline Forecasting AI** | ~~zero frontend~~ — **already built**, found 2026-10-11 (2 matching components/pages). Original note, kept for the detail: backend is `CrmForecastController`/`CrmForecastService` — Monte Carlo pipeline forecast, per-deal AI win-probability, at-risk-deal scan. The "Weighted Forecast" card on the Analytics page is a separate, simpler calc — not this service | The weekly forecast/quota conversation runs blind to a system that already computes deal-level AI probability and flags at-risk deals |
 | **Call Summary Transcript Source** (verified 2026-07-09) | The Call Summary feature itself works — LLM structured extraction (themes, decisions, objections, competitor mentions, sentiment arc) + full UI on the Meetings page — but it ingests `signal.Summary` text as a "transcript proxy" (explicit TODO in code); no real call-recording/audio-transcription pipeline feeds it | The AI analysis has nothing real to analyze until a recording/transcription source is wired in — summaries are only as good as manually-typed notes |
 
 ---

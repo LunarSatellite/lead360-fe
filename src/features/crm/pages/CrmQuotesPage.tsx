@@ -326,7 +326,7 @@ export function Component() {
                           <Send className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       )}
-                      <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteQuote.mutate(q.id); })} title="Delete" className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors">
+                      <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteQuote.mutate(q.id); })} title="Delete" className="p-1.5 rounded-lg text-danger-light hover:bg-danger-soft transition-colors">
                         <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                       </button>
                     </div>
@@ -354,7 +354,7 @@ export function Component() {
               <div>
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Line Items</p>
                 <table className="w-full text-sm border border-border-subtle rounded-xl overflow-hidden">
-                  <thead><tr className="bg-bg-subtle border-b border-border-subtle">
+                  <thead><tr className="bg-bg-sunken border-b border-border-subtle">
                     {['Description', 'Qty', 'Unit Price', 'Total'].map(h => <th key={h} className="text-left px-3 py-2 text-xs font-bold text-text-muted">{h}</th>)}
                   </tr></thead>
                   <tbody>{(selected as any).lineItems.map((li: any) => (
@@ -409,7 +409,7 @@ export function Component() {
                 </button>
               </div>
             )}
-            <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) { deleteQuote.mutate(selected.id); setSelected(null); } })} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger text-sm font-bold hover:bg-danger hover:text-bg transition-all">
+            <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) { deleteQuote.mutate(selected.id); setSelected(null); } })} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger-light text-sm font-bold hover:bg-danger hover:text-bg transition-all">
               <Trash2 className="w-4 h-4" strokeWidth={1.5} /> Delete Quote
             </button>
           </div>
@@ -705,7 +705,7 @@ export function Component() {
                   />
                   <button aria-label="Close"
                     onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))}
-                    className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors disabled:opacity-30"
+                    className="p-1.5 rounded-lg text-danger-light hover:bg-danger-soft transition-colors disabled:opacity-30"
                     disabled={lines.length === 1}
                   >
                     <X className="w-3.5 h-3.5" />

@@ -109,7 +109,7 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
               <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border ${
                 approval.status === 1 ? 'text-warning border-warning/30 bg-warning/10' :
                 approval.status === 2 ? 'text-success border-success/30 bg-success/10' :
-                'text-danger border-danger/30 bg-danger/10'
+                'text-danger-light border-danger/30 bg-danger/10'
               }`}>
                 {approval.status === 1 && <><Clock className="w-3 h-3" /> Pending</>}
                 {approval.status === 2 && <><CheckCircle2 className="w-3 h-3" /> Approved</>}

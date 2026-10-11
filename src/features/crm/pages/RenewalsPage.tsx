@@ -15,7 +15,7 @@ const SEGMENT_STYLES: Record<RenewalSegment, string> = {
   [RenewalSegment.LowRiskRoutine]: 'text-success border-success/30 bg-success/10',
   [RenewalSegment.ExpansionCandidate]: 'text-brand border-border-glow bg-brand-soft',
   [RenewalSegment.AtRisk]: 'text-warning border-warning/30 bg-warning/10',
-  [RenewalSegment.LostCause]: 'text-danger border-danger/30 bg-danger/10',
+  [RenewalSegment.LostCause]: 'text-danger-light border-danger/30 bg-danger/10',
 };
 
 const TERMINAL: RenewalStatus[] = [
@@ -109,7 +109,7 @@ export function Component() {
                       <td className="px-4 py-3 text-sm text-text-primary tabular-nums">
                         {new Date(r.renewalDate).toLocaleDateString()}
                       </td>
-                      <td className={`px-4 py-3 text-sm tabular-nums ${overdue ? 'text-danger font-bold' : 'text-text-secondary'}`}>
+                      <td className={`px-4 py-3 text-sm tabular-nums ${overdue ? 'text-danger-light font-bold' : 'text-text-secondary'}`}>
                         {overdue ? `${Math.abs(r.daysUntilRenewal)}d overdue` : `${r.daysUntilRenewal}d`}
                       </td>
                       <td className="px-4 py-3 text-sm font-semibold text-text-primary tabular-nums">{money(r.contractValue)}</td>

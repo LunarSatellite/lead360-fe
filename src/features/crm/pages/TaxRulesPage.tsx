@@ -112,7 +112,7 @@ export function Component() {
               className={`text-left rounded-card border-thin p-3.5 transition-all ${selectedId === r.id ? 'bg-brand-soft border-border-glow' : 'bg-glass-1 border-border-subtle hover:bg-glass-2'}`}>
               <div className="flex items-center justify-between gap-2">
                 <span className="text-sm font-bold text-text-primary">{r.name}</span>
-                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.isActive ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger'}`}>{r.isActive ? 'Active' : 'Inactive'}</span>
+                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.isActive ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger-light'}`}>{r.isActive ? 'Active' : 'Inactive'}</span>
               </div>
               <div className="text-[11px] text-text-muted mt-1 flex items-center gap-2">
                 <Globe className="w-3 h-3" /> {r.jurisdiction} · {CRM_TAX_TYPE_LABEL[r.taxType]} · {r.rate}%
@@ -130,17 +130,17 @@ export function Component() {
                 <div>
                   <div className="flex items-center gap-2">
                     <h2 className="text-base font-bold text-text-primary">{selected.name}</h2>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${selected.isActive ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger'}`}>{selected.isActive ? 'Active' : 'Inactive'}</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${selected.isActive ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger-light'}`}>{selected.isActive ? 'Active' : 'Inactive'}</span>
                   </div>
                   <p className="text-xs text-text-muted">{selected.jurisdiction} · {CRM_TAX_TYPE_LABEL[selected.taxType]} · {selected.rate}%</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button onClick={() => toggleMut.mutate(selected)}
-                    className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${selected.isActive ? 'text-text-secondary hover:text-danger hover:border-danger/40' : 'text-success'}`}>
+                    className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${selected.isActive ? 'text-text-secondary hover:text-danger-light hover:border-danger/40' : 'text-success'}`}>
                     {selected.isActive ? 'Deactivate' : 'Activate'}
                   </button>
                   <button onClick={() => confirmDialog({ message: `Delete "${selected.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteMut.mutate(selected.id); })}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger hover:border-danger/40 transition-all">
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger-light hover:border-danger/40 transition-all">
                     <Trash2 className="w-3 h-3" /> Delete
                   </button>
                 </div>

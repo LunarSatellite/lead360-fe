@@ -595,7 +595,7 @@ export function Component() {
                     >
                       <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
                       <span className={`flex-1 text-left font-medium ${
-                        form.stage === LeadStage.Hot  ? 'text-danger' :
+                        form.stage === LeadStage.Hot  ? 'text-danger-light' :
                         form.stage === LeadStage.Warm ? 'text-warning' : 'text-text-secondary'
                       }`}>
                         {LEAD_STAGE_LABELS[form.stage ?? LeadStage.New]}
@@ -609,7 +609,7 @@ export function Component() {
                         {([
                           { value: LeadStage.New,  label: 'New',  dot: '#B8E6D5', hover: 'hover:bg-text-secondary/[0.08]',  text: 'text-text-secondary' },
                           { value: LeadStage.Warm, label: 'Warm', dot: '#F59E0B', hover: 'hover:bg-warning-soft',   text: 'text-warning' },
-                          { value: LeadStage.Hot,  label: 'Hot',  dot: '#F43F5E', hover: 'hover:bg-danger-soft',    text: 'text-danger' },
+                          { value: LeadStage.Hot,  label: 'Hot',  dot: '#F43F5E', hover: 'hover:bg-danger-soft',    text: 'text-danger-light' },
                         ] as const).map(opt => (
                           <button
                             key={opt.value}
@@ -728,8 +728,8 @@ export function Component() {
           <StatCard label="Total Leads"     value={stats?.total ?? 0}                         valueClass="text-text-primary" />
           <StatCard label="New"             value={stats?.newCount ?? 0}                       valueClass="text-[#60A5FA]" />
           <StatCard label="Warm"            value={stats?.warmCount ?? 0}                      valueClass="text-warning" />
-          <StatCard label="Hot"             value={stats?.hotCount ?? 0}                       valueClass="text-danger"
-            icon={<Flame className="w-4 h-4 text-danger" />} />
+          <StatCard label="Hot"             value={stats?.hotCount ?? 0}                       valueClass="text-danger-light"
+            icon={<Flame className="w-4 h-4 text-danger-light" />} />
           <StatCard label="Converted"       value={stats?.convertedCount ?? 0}                 valueClass="text-success" />
           <StatCard label="Conversion Rate" value={`${(stats?.conversionRate ?? 0).toFixed(1)}%`} valueClass="text-brand" />
           <StatCard label="From Chatbot"    value={stats?.chatbotCount ?? 0}                   valueClass="text-brand"
@@ -806,6 +806,7 @@ export function Component() {
 
         {/* Min score */}
         <select
+          aria-label="Filter by minimum score"
           value={minScore ?? ''}
           onChange={(e) => setMinScore(e.target.value ? Number(e.target.value) : undefined)}
           className="text-xs bg-bg-elevated border border-border-subtle rounded-xl px-3 py-2 text-text-secondary focus:outline-none focus:border-border-glow transition-colors cursor-pointer"
@@ -912,7 +913,7 @@ export function Component() {
           <button
             onClick={runBulkDelete}
             disabled={bulkAction.isPending}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger-light border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
           >
             {bulkAction.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
             Delete

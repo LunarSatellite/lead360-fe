@@ -55,7 +55,7 @@ const btnGhost =
   "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated border border-border-subtle transition-all";
 
 const btnDanger =
-  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-danger border border-danger/30 hover:bg-danger-soft transition-all";
+  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-danger-light border border-danger/30 hover:bg-danger-soft transition-all";
 
 interface ComponentProps {
   inline?: boolean;
@@ -371,7 +371,7 @@ function PreviewSection({ card }: { card: CrmContactCardDto }) {
             className="w-48 h-48 rounded-md bg-white p-1"
           />
         ) : qrError ? (
-          <div className="w-48 h-48 rounded-md bg-danger-soft border border-danger/30 flex items-center justify-center px-3 text-center text-[10px] text-danger">
+          <div className="w-48 h-48 rounded-md bg-danger-soft border border-danger/30 flex items-center justify-center px-3 text-center text-[10px] text-danger-light">
             {qrError}
           </div>
         ) : (

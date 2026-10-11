@@ -167,8 +167,8 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
         className={`flex items-center justify-center gap-1 py-[6px] px-3 rounded-[7px]
                    text-2xs font-medium transition-all disabled:opacity-40 ${
                      confirmDelete
-                       ? 'bg-danger-soft border border-danger/15 text-danger'
-                       : 'text-danger hover:bg-danger-soft'
+                       ? 'bg-danger-soft border border-danger/15 text-danger-light'
+                       : 'text-danger-light hover:bg-danger-soft'
                    }`}
       >
         {remove.isPending ? (

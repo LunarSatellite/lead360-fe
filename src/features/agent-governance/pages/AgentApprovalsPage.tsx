@@ -100,7 +100,7 @@ function AgentApprovalsPage() {
           </button>
           <Link
             to={ROUTES.dashboard.agentEmergencyStop}
-            className="inline-flex items-center gap-1.5 rounded-sm border-thin border-danger/40 bg-danger-soft px-3 py-2 text-xs font-bold text-danger hover:bg-danger/20"
+            className="inline-flex items-center gap-1.5 rounded-sm border-thin border-danger/40 bg-danger-soft px-3 py-2 text-xs font-bold text-danger-light hover:bg-danger/20"
           >
             <OctagonX size={13} strokeWidth={1.6} />
             Emergency stop
@@ -113,8 +113,8 @@ function AgentApprovalsPage() {
           data-testid="halt-banner"
           className="flex items-center gap-2.5 rounded-card border-thin border-danger/40 bg-danger-soft p-3"
         >
-          <OctagonX size={16} strokeWidth={1.6} className="shrink-0 text-danger" />
-          <p className="text-xs font-bold text-danger">
+          <OctagonX size={16} strokeWidth={1.6} className="shrink-0 text-danger-light" />
+          <p className="text-xs font-bold text-danger-light">
             {engagedHalts.length} emergency stop{engagedHalts.length === 1 ? '' : 's'} engaged.
             Approving and running are blocked in scope; rejecting still works.
           </p>

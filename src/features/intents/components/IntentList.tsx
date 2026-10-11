@@ -209,8 +209,8 @@ function IntentRow({ intent, onEdit }: { intent: IntentDto; onEdit: (intent: Int
           disabled={remove.isPending}
           className={`p-1.5 rounded-lg border transition-all ${
             confirmDelete
-              ? 'bg-danger-soft border-danger/20 text-danger'
-              : 'border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft'
+              ? 'bg-danger-soft border-danger/20 text-danger-light'
+              : 'border-border-subtle text-text-muted hover:text-danger-light hover:bg-danger-soft'
           } disabled:opacity-40`}
           title={confirmDelete ? 'Confirm?' : 'Delete'}
         >

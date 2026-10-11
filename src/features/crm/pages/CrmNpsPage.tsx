@@ -96,7 +96,7 @@ function SummaryCard() {
   }
 
   const score: number = summary.npsScore ?? 0;
-  const scoreColor = score > 0 ? 'text-success' : 'text-danger';
+  const scoreColor = score > 0 ? 'text-success' : 'text-danger-light';
 
   return (
     <div className="rounded-2xl border border-border-subtle bg-bg-card p-5 space-y-3">
@@ -112,7 +112,7 @@ function SummaryCard() {
         <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-bg-elevated text-text-secondary border border-border-subtle">
           Passives {summary.passivePct?.toFixed(0) ?? 0}%
         </span>
-        <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-danger-soft text-danger border border-danger/20">
+        <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-danger-soft text-danger-light border border-danger/20">
           Detractors {summary.detractorPct?.toFixed(0) ?? 0}%
         </span>
       </div>
@@ -239,7 +239,7 @@ export function Component() {
     if (score === null) return 'bg-bg-elevated text-text-muted border-border-subtle';
     if (score >= 9) return 'bg-success-soft text-success border-success/20';
     if (score >= 7) return 'bg-bg-elevated text-text-secondary border-border-subtle';
-    return 'bg-danger-soft text-danger border-danger/20';
+    return 'bg-danger-soft text-danger-light border-danger/20';
   };
 
   return (
@@ -290,7 +290,7 @@ export function Component() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border-subtle bg-bg-subtle">
+                <tr className="border-b border-border-subtle bg-bg-sunken">
                   {['Contact', 'Score', 'Classification', 'Trigger', 'Comment', 'Sent At', 'Responded At'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-text-muted">{h}</th>
                   ))}

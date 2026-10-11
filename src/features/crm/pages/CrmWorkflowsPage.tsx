@@ -563,7 +563,7 @@ function GenericConditionEditor({ value, onChange }: { value: string; onChange: 
             {OPERATORS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
           <input className={INPUT + ' w-20'} placeholder="value" aria-label="value" value={c.value == null ? '' : String(c.value)} onChange={(e) => update(i, { value: coerce(e.target.value) })} />
-          <button type="button" className="nodrag text-text-muted hover:text-danger-DEFAULT px-1 text-xs" onClick={() => remove(i)}>✕</button>
+          <button type="button" className="nodrag text-text-muted hover:text-danger-light px-1 text-xs" onClick={() => remove(i)}>✕</button>
         </div>
       ))}
       <div className="flex items-center gap-2">
@@ -747,7 +747,7 @@ function ActionConfigEditor({ actionType, value, onChange }: {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label className={L}>Score change</label>
-          <span className={`text-[12px] font-bold ${delta >= 0 ? 'text-success' : 'text-danger'}`}>{delta >= 0 ? `+${delta}` : delta}</span>
+          <span className={`text-[12px] font-bold ${delta >= 0 ? 'text-success' : 'text-danger-light'}`}>{delta >= 0 ? `+${delta}` : delta}</span>
         </div>
         <input aria-label="Delta" type="range" min={-50} max={50} step={5} value={delta}
           onChange={(e) => set('delta', Number(e.target.value))}
@@ -866,7 +866,7 @@ function CreateWorkflowForm({ onGenerate }: {
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-text-muted font-semibold">Step {s.stepOrder}</span>
                     {steps.length > 1 && (
-                      <button aria-label="Close" onClick={() => removeStep(i)} className="p-0.5 rounded text-danger hover:bg-danger-soft transition-colors">
+                      <button aria-label="Close" onClick={() => removeStep(i)} className="p-0.5 rounded text-danger-light hover:bg-danger-soft transition-colors">
                         <X className="w-3 h-3" />
                       </button>
                     )}
@@ -1501,7 +1501,7 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
         {!isFixed && (
           <button
             onClick={() => onDelete(node.id)}
-            className="w-full py-2 rounded-lg bg-danger-soft text-2xs font-semibold text-danger flex items-center justify-center gap-1.5"
+            className="w-full py-2 rounded-lg bg-danger-soft text-2xs font-semibold text-danger-light flex items-center justify-center gap-1.5"
           >
             <Trash2 className="w-3 h-3" /> Remove Block
           </button>
@@ -1531,7 +1531,7 @@ function HistoryTab({ workflowId }: { workflowId: string | null }) {
     </div>
   );
 
-  const STATUS_COLOR: Record<number, string> = { 1:'text-text-muted', 2:'text-brand', 3:'text-success', 4:'text-danger', 5:'text-text-muted' };
+  const STATUS_COLOR: Record<number, string> = { 1:'text-text-muted', 2:'text-brand', 3:'text-success', 4:'text-danger-light', 5:'text-text-muted' };
   const STATUS_BG:    Record<number, string> = { 1:'bg-bg-elevated', 2:'bg-brand-soft', 3:'bg-success-soft', 4:'bg-danger-soft', 5:'bg-bg-elevated' };
 
   return (
@@ -1547,7 +1547,7 @@ function HistoryTab({ workflowId }: { workflowId: string | null }) {
             </span>
           </div>
           {ex.errorMessage ? (
-            <p className="text-[10px] text-danger truncate">{String(ex.errorMessage)}</p>
+            <p className="text-[10px] text-danger-light truncate">{String(ex.errorMessage)}</p>
           ) : null}
         </div>
       ))}
@@ -2114,11 +2114,11 @@ function WorkflowCard({ wf, onOpen, onRun, onDelete, onToggle }: {
           </button>
           {confirmDel ? (
             <div className="flex items-center gap-1">
-              <button onClick={onDelete} className="px-2 py-0.5 rounded text-[10px] font-bold bg-danger-soft text-danger border border-danger/20">Delete</button>
+              <button onClick={onDelete} className="px-2 py-0.5 rounded text-[10px] font-bold bg-danger-soft text-danger-light border border-danger/20">Delete</button>
               <button onClick={() => setConfirmDel(false)} className="text-[10px] text-text-muted px-1">✕</button>
             </div>
           ) : (
-            <button aria-label="Delete" onClick={() => setConfirmDel(true)} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+            <button aria-label="Delete" onClick={() => setConfirmDel(true)} className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
             </button>
           )}

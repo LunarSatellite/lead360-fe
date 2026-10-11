@@ -31,7 +31,7 @@ const STATUS_CLASS: Record<DataSubjectRequestStatus, string> = {
   Pending: 'text-warning bg-warning-soft border-warning/20',
   InProgress: 'text-info bg-info-soft border-info/20',
   Completed: 'text-success bg-success-soft border-success/20',
-  Rejected: 'text-danger bg-danger-soft border-danger/20',
+  Rejected: 'text-danger-light bg-danger-soft border-danger/20',
 };
 
 /** GDPR gives a month; the badge turns when there is a week left. */
@@ -219,7 +219,7 @@ export function Component() {
                       {r.requestType} ·{' '}
                       {formatDistanceToNow(parseISO(r.createdAt), { addSuffix: true })}
                       {overdue && (
-                        <span className="text-danger font-semibold">
+                        <span className="text-danger-light font-semibold">
                           {' '}
                           · past the {DUE_DAYS}-day deadline
                         </span>

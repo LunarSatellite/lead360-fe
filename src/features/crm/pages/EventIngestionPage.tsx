@@ -87,7 +87,7 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
         </div>
         <div className="px-6 py-5 space-y-4">
           <p className="text-sm text-text-secondary">
-            This will <span className="font-semibold text-danger-DEFAULT">invalidate your current key immediately</span>.
+            This will <span className="font-semibold text-danger-light">invalidate your current key immediately</span>.
             Any website using the old snippet will stop tracking until updated.
           </p>
           <div className="flex gap-3">
@@ -97,7 +97,7 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
             <button
               onClick={onConfirm}
               disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-danger-DEFAULT/10 border border-danger-DEFAULT/30 text-danger-DEFAULT text-sm font-semibold hover:bg-danger-DEFAULT/20 transition-all disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-danger/10 border border-danger/30 text-danger-light text-sm font-semibold hover:bg-danger/20 transition-all disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               Regenerate
@@ -164,7 +164,7 @@ function EventRow({ event }: { event: WebEventSummaryDto }) {
           {props && Object.keys(props).length > 0 && (
             <button
               onClick={() => setExpanded(v => !v)}
-              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-subtle transition-all"
+              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-sunken transition-all"
             >
               {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
@@ -172,7 +172,7 @@ function EventRow({ event }: { event: WebEventSummaryDto }) {
         </div>
       </div>
       {expanded && props && (
-        <div className="border-t border-border-subtle px-4 py-3 bg-bg-subtle">
+        <div className="border-t border-border-subtle px-4 py-3 bg-bg-sunken">
           <p className="text-xs font-semibold text-text-muted mb-1.5">Properties</p>
           <pre className="text-xs font-mono text-text-secondary whitespace-pre-wrap">
             {JSON.stringify(props, null, 2)}

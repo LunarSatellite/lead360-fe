@@ -191,7 +191,7 @@ export function Component() {
                           deleteMut.mutate(form.id);
                         }
                       }}
-                      className="p-1 text-text-muted hover:text-danger" title="Delete"
+                      className="p-1 text-text-muted hover:text-danger-light" title="Delete"
                     ><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </td>

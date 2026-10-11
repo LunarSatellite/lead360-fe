@@ -22,7 +22,7 @@ export function Component() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="w-14 h-14 rounded-xl bg-danger-soft flex items-center justify-center mb-4">
-          <AlertCircle className="w-7 h-7 text-danger" strokeWidth={1.6} />
+          <AlertCircle className="w-7 h-7 text-danger-light" strokeWidth={1.6} />
         </div>
         <p className="text-base font-bold text-text-secondary">Spec not found</p>
         <p className="text-sm text-text-muted mt-1">

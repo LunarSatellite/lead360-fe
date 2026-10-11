@@ -123,7 +123,7 @@ export function Component() {
                   <p className="text-xs text-text-muted">{CONTRACT_TEMPLATE_CATEGORY_LABELS[selected.category as ContractTemplateCategoryValue] ?? 'General'}</p></div>
                 <div className="flex gap-2">
                   <button aria-label="Edit" onClick={() => openEdit(selected)} className="p-1.5 rounded-lg text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                  <button aria-label="Delete" onClick={() => deleteMut.mutate(selected.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Delete" onClick={() => deleteMut.mutate(selected.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               </div>
               {selected.subject && <div className="text-xs"><span className="text-text-muted">Subject: </span><span className="text-text-primary">{selected.subject}</span></div>}

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ChevronRight, Search, X } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import { cn, FOCUS_RING } from '@/shared/ui/primitives';
 import { navAliases, navGroups, navSections, type NavGroup, type NavItem } from './nav-model';
 
 /**
@@ -107,9 +108,18 @@ export function SidebarNav({ expanded, onHoldOpen }: SidebarNavProps) {
     }
   };
 
-  // Collapsed, there is room for one column of icons and nothing else. One
-  // icon per group beats 130 undifferentiated ones, and the active group is
-  // marked so the rail still says where you are.
+  /**
+   * Collapsed, there is room for one column of icons and nothing else. One
+   * icon per group beats 130 undifferentiated ones, and the active group is
+   * marked so the rail still says where you are.
+   *
+   * Links, not divs. The first version drew these as `<div>`s, which made
+   * the rail a scrollable region containing nothing focusable: a keyboard
+   * user could neither reach it nor scroll it, and axe reported
+   * `scrollable-region-focusable` on all 131 pages of the admin — one cause,
+   * every page, because it is in the shell. It was also simply wrong as a
+   * product: clicking a group icon should go to that group.
+   */
   if (!expanded) {
     return (
       <nav className="flex-1 overflow-y-auto overflow-x-hidden px-1.5 py-2" aria-label="Sections">
@@ -119,19 +129,25 @@ export function SidebarNav({ expanded, onHoldOpen }: SidebarNavProps) {
             {navGroups
               .filter((g) => g.section === section.id)
               .map((group) => (
-                <div
+                <Link
                   key={group.id}
+                  to={group.items[0].href}
                   title={`${section.label} — ${group.label}`}
+                  aria-label={`${section.label} — ${group.label}`}
                   aria-current={group.id === activeGroupId ? 'true' : undefined}
-                  className={`relative flex items-center justify-center rounded-xl py-2 transition-colors ${
-                    group.id === activeGroupId ? 'bg-brand-soft text-brand' : 'text-text-muted'
-                  }`}
+                  className={cn(
+                    'relative flex items-center justify-center rounded-xl py-2 transition-colors',
+                    FOCUS_RING,
+                    group.id === activeGroupId
+                      ? 'bg-brand-soft text-brand'
+                      : 'text-text-muted hover:bg-glass-1 hover:text-text-secondary',
+                  )}
                 >
                   {group.id === activeGroupId && (
-                    <div className="absolute left-0 bottom-1 top-1 w-[2.5px] rounded-r-full bg-gradient-to-b from-brand-light to-brand" />
+                    <span className="absolute bottom-1 left-0 top-1 w-[2.5px] rounded-r-full bg-gradient-to-b from-brand-light to-brand" />
                   )}
                   <group.icon className="h-[18px] w-[18px] shrink-0" strokeWidth={1.5} />
-                </div>
+                </Link>
               ))}
           </div>
         ))}

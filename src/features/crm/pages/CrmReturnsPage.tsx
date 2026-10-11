@@ -32,7 +32,7 @@ function SlideOver({ open, onClose, title, children }: { open: boolean; onClose:
       <div className="relative w-[600px] h-full flex flex-col bg-bg-shell border-l border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
@@ -57,7 +57,7 @@ function InspectionForm({ rmaId, onDone }: { rmaId: string; onDone: () => void }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
+    <form onSubmit={handleSubmit} className="space-y-3 bg-bg-elevated rounded-xl p-4 mt-3">
       <p className="text-xs font-semibold text-text-muted">Record Inspection</p>
       <select aria-label="Result" value={result} onChange={e => setResult(Number(e.target.value))} className={inputCls}>
         {Object.entries(CRM_RETURN_INSPECTION_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
@@ -94,7 +94,7 @@ function ResolveForm({ rmaId, onDone }: { rmaId: string; onDone: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
+    <form onSubmit={handleSubmit} className="space-y-3 bg-bg-elevated rounded-xl p-4 mt-3">
       <p className="text-xs font-semibold text-text-muted">Set Resolution</p>
       <select aria-label="Resolution" value={resolution} onChange={e => setResolution(Number(e.target.value) as CrmReturnResolution)} className={inputCls}>
         {Object.entries(CRM_RETURN_RESOLUTION_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
@@ -137,7 +137,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
         <div className="font-mono text-xs text-text-muted mb-1">{rma.rmaNumber}</div>
         <div className="flex items-center gap-2 flex-wrap mt-2">
           <Badge value={rma.status} labels={CRM_RETURN_STATUS_LABELS} colors={CRM_RETURN_STATUS_COLORS} />
-          <span className="text-xs text-text-muted bg-bg-surface px-2 py-0.5 rounded-full">{CRM_RETURN_REASON_LABELS[rma.returnReason]}</span>
+          <span className="text-xs text-text-muted bg-bg-elevated px-2 py-0.5 rounded-full">{CRM_RETURN_REASON_LABELS[rma.returnReason]}</span>
           {rma.resolution != null && (
             <span className="text-xs font-semibold text-violet-light bg-violet-light/10 px-2 py-0.5 rounded-full border border-violet-light/20">
               {CRM_RETURN_RESOLUTION_LABELS[rma.resolution]}
@@ -146,7 +146,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
         </div>
       </div>
 
-      <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+      <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
         <div className="flex justify-between"><span className="text-text-muted">Currency</span><span className="text-text-primary">{rma.currency}</span></div>
         {rma.refundAmount != null && <div className="flex justify-between"><span className="text-text-muted">Refund</span><span className="text-success font-medium">{rma.currency} {rma.refundAmount.toLocaleString()}</span></div>}
         {rma.creditAmount != null && <div className="flex justify-between"><span className="text-text-muted">Credit</span><span className="text-brand font-medium">{rma.currency} {rma.creditAmount.toLocaleString()}</span></div>}
@@ -157,13 +157,13 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
         {rma.resolvedAt && <div className="flex justify-between text-xs"><span className="text-text-muted">Resolved</span><span className="text-success">{format(parseISO(rma.resolvedAt), 'MMM d, yyyy')}</span></div>}
         {rma.customerNotes && <div><span className="text-text-muted block text-xs mb-1">Customer Notes</span><p className="text-text-secondary text-xs">{rma.customerNotes}</p></div>}
         {rma.staffNotes && <div><span className="text-text-muted block text-xs mb-1">Staff Notes</span><p className="text-text-secondary text-xs">{rma.staffNotes}</p></div>}
-        {rma.rejectionReason && <div><span className="text-danger block text-xs mb-1">Rejection Reason</span><p className="text-danger text-xs">{rma.rejectionReason}</p></div>}
+        {rma.rejectionReason && <div><span className="text-danger-light block text-xs mb-1">Rejection Reason</span><p className="text-danger-light text-xs">{rma.rejectionReason}</p></div>}
       </div>
 
       {rma.lineItems.length > 0 && (
         <div>
           <label className="text-xs font-semibold text-text-muted mb-2 block">Line Items</label>
-          <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle">
+          <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle">
             {rma.lineItems.map(li => (
               <div key={li.id} className="flex justify-between items-center px-3 py-2 text-sm">
                 <div>
@@ -183,7 +183,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
           <label className="text-xs font-semibold text-text-muted mb-2 block">Inspections</label>
           <div className="space-y-2">
             {rma.inspections.map(ins => (
-              <div key={ins.id} className="bg-bg-surface rounded-xl p-3 text-xs space-y-1">
+              <div key={ins.id} className="bg-bg-elevated rounded-xl p-3 text-xs space-y-1">
                 <div className="flex justify-between"><span className="font-semibold text-text-primary">{CRM_RETURN_INSPECTION_LABELS[ins.result as CrmReturnInspectionResult]}</span>{ins.inspectedAt && <span className="text-text-muted">{format(parseISO(ins.inspectedAt), 'MMM d, yyyy')}</span>}</div>
                 {ins.findings && <p className="text-text-secondary">{ins.findings}</p>}
                 {ins.disposition && <p className="text-text-muted">Disposition: {ins.disposition}</p>}
@@ -199,7 +199,7 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
             <button onClick={() => approve.mutate(rma.id)} disabled={approve.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50 transition-all">
               <CheckCircle className="w-3.5 h-3.5" /> Approve
             </button>
-            <button onClick={() => setShowReject(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger bg-danger-soft border border-danger/20 hover:opacity-80 transition-all">
+            <button onClick={() => setShowReject(v => !v)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger-light bg-danger-soft border border-danger/20 hover:opacity-80 transition-all">
               <XCircle className="w-3.5 h-3.5" /> Reject
             </button>
           </>
@@ -220,14 +220,14 @@ function DetailPanel({ rma }: { rma: CrmReturnRequestDto }) {
           </button>
         )}
         {rma.status < CrmReturnStatus.Resolved && rma.status !== CrmReturnStatus.Cancelled && (
-          <button onClick={() => cancel.mutate(rma.id)} disabled={cancel.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-muted hover:text-danger transition-all disabled:opacity-50">
+          <button onClick={() => cancel.mutate(rma.id)} disabled={cancel.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-muted hover:text-danger-light transition-all disabled:opacity-50">
             Cancel
           </button>
         )}
       </div>
 
       {showReject && (
-        <form onSubmit={handleReject} className="space-y-2 bg-bg-surface rounded-xl p-4 mt-1">
+        <form onSubmit={handleReject} className="space-y-2 bg-bg-elevated rounded-xl p-4 mt-1">
           <input required value={rejectReason} onChange={e => setRejectReason(e.target.value)} placeholder="Reason for rejection..." aria-label="Reason for rejection..." className={inputCls} />
           <button type="submit" disabled={reject.isPending} className="w-full py-2 rounded-lg bg-danger text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
             {reject.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Confirm Reject'}
@@ -270,7 +270,7 @@ export function Component() {
 
         <div className="flex gap-2 flex-wrap">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search RMA #..." aria-label="Search RMA #..." className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Status</option>
             {Object.entries(CRM_RETURN_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>

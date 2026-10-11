@@ -120,7 +120,7 @@ export function CategoryListSection({ parentLabel, onSelectCategory }: Props) {
                              hover:bg-danger-soft transition-colors"
                   title="Delete"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-text-secondary hover:text-danger" strokeWidth={1.6} />
+                  <Trash2 className="w-3.5 h-3.5 text-text-secondary hover:text-danger-light" strokeWidth={1.6} />
                 </button>
               </div>
             </div>

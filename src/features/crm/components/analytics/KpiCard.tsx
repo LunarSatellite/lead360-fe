@@ -43,7 +43,7 @@ const ACCENT_CLASS: Record<KpiAccent, { square: string; icon: string; value: str
   success: { square: 'bg-success-soft border-border-success', icon: 'text-success', value: 'text-text-primary' },
   info: { square: 'bg-info-soft border-info/25', icon: 'text-info', value: 'text-text-primary' },
   warning: { square: 'bg-warning-soft border-warning/25', icon: 'text-warning', value: 'text-warning' },
-  danger: { square: 'bg-danger-soft border-danger/25', icon: 'text-danger', value: 'text-danger' },
+  danger: { square: 'bg-danger-soft border-danger/25', icon: 'text-danger-light', value: 'text-danger-light' },
 };
 
 const DIRECTION_ICON: Record<KpiDelta['direction'], ElementType> = {
@@ -54,7 +54,7 @@ const DIRECTION_ICON: Record<KpiDelta['direction'], ElementType> = {
 
 const TONE_CLASS: Record<KpiDelta['tone'], string> = {
   good: 'bg-success-soft text-success border-border-success',
-  bad: 'bg-danger-soft text-danger border-border-subtle',
+  bad: 'bg-danger-soft text-danger-light border-border-subtle',
   neutral: 'bg-glass-2 text-text-muted border-border-subtle',
 };
 

@@ -585,7 +585,7 @@ function Step6({ onDone }: { onDone: () => void }) {
                 {it.passed ? (
                   <Check className="w-2.5 h-2.5 text-brand" />
                 ) : (
-                  <X className="w-2.5 h-2.5 text-danger" />
+                  <X className="w-2.5 h-2.5 text-danger-light" />
                 )}
               </div>
               <div className="flex-1 min-w-0">
@@ -594,7 +594,7 @@ function Step6({ onDone }: { onDone: () => void }) {
               </div>
               <span
                 className={`text-[10px] font-medium px-1.5 py-0.5 rounded-xs ${
-                  it.category === 'required' ? 'bg-danger-soft text-danger' : 'bg-glass-1 text-text-muted'
+                  it.category === 'required' ? 'bg-danger-soft text-danger-light' : 'bg-glass-1 text-text-muted'
                 }`}
               >
                 {it.category}

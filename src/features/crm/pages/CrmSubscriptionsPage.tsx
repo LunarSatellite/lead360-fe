@@ -225,7 +225,7 @@ export function Component() {
 
         <div className="flex gap-2 flex-wrap">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search..." aria-label="Search..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select aria-label="Filter by statu" value={statusF} onChange={e => { setStatusF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <select aria-label="Filter by status" value={statusF} onChange={e => { setStatusF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Status</option>
             {Object.entries(CRM_SUBSCRIPTION_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -277,7 +277,7 @@ export function Component() {
                           </button>
                         )}
                         {s.status !== CrmSubscriptionStatus.Cancelled && (
-                          <button onClick={() => cancelSub.mutate(s.id)} disabled={cancelSub.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50">
+                          <button onClick={() => cancelSub.mutate(s.id)} disabled={cancelSub.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all disabled:opacity-50">
                             <XCircle className="w-4 h-4" />
                           </button>
                         )}
@@ -421,7 +421,7 @@ export function Component() {
                 </button>
               )}
               {selectedSub.status !== CrmSubscriptionStatus.Cancelled && (
-                <button onClick={() => { cancelSub.mutate(selectedSub.id, { onSuccess: () => setSelectedSub(null) }); }} disabled={cancelSub.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
+                <button onClick={() => { cancelSub.mutate(selectedSub.id, { onSuccess: () => setSelectedSub(null) }); }} disabled={cancelSub.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
                   <XCircle className="w-3.5 h-3.5" /> Cancel
                 </button>
               )}

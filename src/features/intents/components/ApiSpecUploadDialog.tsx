@@ -344,10 +344,10 @@ function Field({
     <div>
       <label className="block text-xs font-semibold text-text-secondary mb-1.5">
         {label}
-        {required && <span className="text-danger ml-0.5">*</span>}
+        {required && <span className="text-danger-light ml-0.5">*</span>}
       </label>
       {children}
-      {error && <p className="text-xs text-danger mt-1">{error}</p>}
+      {error && <p className="text-xs text-danger-light mt-1">{error}</p>}
     </div>
   );
 }
@@ -355,8 +355,8 @@ function Field({
 function ErrorBanner({ message }: { message: string }) {
   return (
     <div className="flex items-start gap-3 p-3 rounded-lg bg-danger-soft border border-danger/15">
-      <AlertCircle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" strokeWidth={1.8} />
-      <p className="text-xs text-danger font-medium">{message}</p>
+      <AlertCircle className="w-4 h-4 text-danger-light flex-shrink-0 mt-0.5" strokeWidth={1.8} />
+      <p className="text-xs text-danger-light font-medium">{message}</p>
     </div>
   );
 }

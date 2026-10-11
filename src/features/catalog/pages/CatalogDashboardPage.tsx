@@ -179,8 +179,13 @@ export function Component() {
                     />
                   )}
 
-                  {/* Ghost number */}
+                  {/* Ghost number. aria-hidden because it is a watermark:
+                      it repeats the position already in the list and axe
+                      measures it as unreadable text, correctly, until it is
+                      told it is decoration. */}
                   <span
+                    aria-hidden
+                    data-decorative
                     className="absolute -right-1 top-1/2 -translate-y-1/2 leading-none pointer-events-none select-none"
                     style={{ fontSize: 60, fontWeight: 800, color: m.color, opacity: sel ? 0.1 : 0.035 }}
                   >
@@ -414,6 +419,7 @@ export function Component() {
             style={{ padding: '12px 18px', fontSize: 13 }}
           />
           <select
+            aria-label="Number of results to return"
             value={mr}
             onChange={(e) => setMr(Number(e.target.value))}
             className="cfi appearance-none cursor-pointer"
@@ -1187,14 +1193,25 @@ function CchDtl({ d, mut }: { d: CacheStatsDto | undefined; mut: ReturnType<type
 }
 
 /* ═══ SHARED ═══ */
+/**
+ * A field label and its control — nested, so the label names it.
+ *
+ * This was a label and a sibling `{children}`, the same shape as the
+ * fourteen `Field` helpers elsewhere in the admin: it names nothing, so
+ * every control it wraps is announced unnamed. The page's own sync-config
+ * form had two criticals from this one component.
+ */
 function FF({ l, r, children }: { l: string; r?: boolean; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="block" style={{ fontSize: 12, fontWeight: 600, color: 'rgb(var(--color-text-muted))', marginBottom: 5 }}>
-        {l} {r && <span style={{ color: 'rgb(var(--color-danger))' }}>*</span>}
-      </label>
+    <label className="block">
+      <span
+        className="block"
+        style={{ fontSize: 12, fontWeight: 600, color: 'rgb(var(--color-text-muted))', marginBottom: 5 }}
+      >
+        {l} {r && <span style={{ color: 'rgb(var(--color-danger-light))' }}>*</span>}
+      </span>
       {children}
-    </div>
+    </label>
   );
 }
 function EmpS() {

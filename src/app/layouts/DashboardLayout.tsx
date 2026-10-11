@@ -516,7 +516,7 @@ export function DashboardLayout() {
                       setMenuOpen(false);
                       logout.mutate();
                     }}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-danger hover:bg-danger-soft transition-all"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-danger-light hover:bg-danger-soft transition-all"
                   >
                     <LogOut className="w-4 h-4" strokeWidth={1.6} />
                     {logout.isPending ? 'Logging out...' : 'Log out'}
@@ -571,9 +571,16 @@ export function DashboardLayout() {
         </header>
 
         {/* Page Content — pb-20 on mobile clears the bottom tab bar */}
-        <div className="flex-1 overflow-auto p-4 pb-20 md:p-6 lg:pb-6">
+        {/* `main` with a tabindex, because this region scrolls. A scrollable
+            region whose contents happen to hold nothing focusable — a page
+            that is all read-only cards, say — cannot be scrolled from a
+            keyboard at all. axe reported it on the two pages where that is
+            true today; making the region itself focusable fixes those and
+            every future page like them. `main` also gives the admin the
+            landmark it has been missing. */}
+        <main tabIndex={0} className="flex-1 overflow-auto p-4 pb-20 md:p-6 lg:pb-6">
           <Outlet />
-        </div>
+        </main>
       </main>
 
       {/* ═══ MOBILE BOTTOM TAB BAR ═══ */}
@@ -677,7 +684,7 @@ export function DashboardLayout() {
                 setMoreSheetOpen(false);
                 logout.mutate();
               }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-danger hover:bg-danger-soft transition-all border border-border-subtle"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-danger-light hover:bg-danger-soft transition-all border border-border-subtle"
             >
               <LogOut className="w-4 h-4" strokeWidth={1.8} />
               {logout.isPending ? 'Signing out…' : 'Sign out'}

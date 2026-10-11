@@ -393,7 +393,7 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
           ) : (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft hover:border-danger/20 transition-all"
+              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger-light hover:bg-danger-soft hover:border-danger/20 transition-all"
               title="Delete"
             >
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />

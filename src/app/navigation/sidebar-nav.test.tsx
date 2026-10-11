@@ -182,12 +182,35 @@ describe('the collapsed rail', () => {
   it('shows one icon per group instead of 130, and marks where you are', () => {
     renderNav('/dashboard/crm/leads', false);
 
-    // No links: a 64px column cannot label them, and an unlabelled icon per
-    // page is what made the old rail unusable collapsed.
-    expect(screen.queryAllByRole('link')).toEqual([]);
+    // One per group, not one per page: a 64px column cannot label 130 icons.
+    expect(screen.getAllByRole('link')).toHaveLength(navGroups.length);
 
     expect(screen.getByTitle('CRM — Leads & contacts').getAttribute('aria-current')).toBe('true');
     expect(screen.getByTitle('Workspace — Settings').getAttribute('aria-current')).toBeNull();
+  });
+
+  it('makes each icon a link, so the rail is reachable from a keyboard', () => {
+    /**
+     * These were `<div>`s, which made the collapsed rail a scrollable region
+     * with nothing focusable inside it: a keyboard user could neither reach
+     * it nor scroll it. axe reported `scrollable-region-focusable` on all
+     * 131 pages of the admin from this one element, because it is in the
+     * shell.
+     *
+     * It was also just wrong as a product — clicking a group's icon should
+     * go to that group — which is the usual way an accessibility defect
+     * turns out to be a plain defect.
+     */
+    renderNav('/dashboard', false);
+
+    for (const group of navGroups) {
+      const section = navSections.find((s) => s.id === group.section);
+      const link = screen.getByTitle(`${section?.label} — ${group.label}`);
+
+      expect(link.tagName).toBe('A');
+      expect(link).toHaveAttribute('href', group.items[0].href);
+      expect(link).toHaveAccessibleName(`${section?.label} — ${group.label}`);
+    }
   });
 
   it('names every group it draws, and says which section it is in', () => {

@@ -48,14 +48,14 @@ export function Step6GoLive({ onComplete }: Step6Props) {
           {checklist.items.map((item, i) => (
             <div key={i} className="flex items-center gap-3 px-4 py-2.5">
               <span className="text-sm flex-shrink-0">
-                {item.passed ? <Check className="w-4 h-4 text-brand" /> : <X className="w-4 h-4 text-danger" />}
+                {item.passed ? <Check className="w-4 h-4 text-brand" /> : <X className="w-4 h-4 text-danger-light" />}
               </span>
               <div className="flex-1 min-w-0">
                 <div className="text-xs font-medium text-text-primary">{item.name}</div>
                 <div className="text-[10px] text-text-muted">{item.detail}</div>
               </div>
               <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
-                item.category === 'required' ? 'bg-danger-soft text-danger' : 'bg-glass-1 text-text-muted'
+                item.category === 'required' ? 'bg-danger-soft text-danger-light' : 'bg-glass-1 text-text-muted'
               }`}>
                 {item.category}
               </span>

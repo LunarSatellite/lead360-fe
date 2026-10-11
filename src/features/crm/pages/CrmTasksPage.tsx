@@ -43,8 +43,8 @@ const dropPanelStyle: React.CSSProperties = { borderRadius: 12, background: 'var
 const TASK_PRIORITY_OPTS = [
   { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-text-secondary/[0.08]' },
   { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-warning',       hover: 'hover:bg-warning/[0.08]'  },
-  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-danger/[0.08]'   },
-  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-danger/[0.12]'   },
+  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger-light',           hover: 'hover:bg-danger/[0.08]'   },
+  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger-light font-bold', hover: 'hover:bg-danger/[0.12]'   },
 ] as const;
 
 function Badge({ label, colorCls }: { label: string; colorCls: string }) {
@@ -220,7 +220,7 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
           {task.description && <Field label="Description">{task.description}</Field>}
           {task.dueDate && (
             <Field label="Due Date">
-              <span className={isPast(parseISO(task.dueDate)) && !isDone ? 'text-danger' : ''}>
+              <span className={isPast(parseISO(task.dueDate)) && !isDone ? 'text-danger-light' : ''}>
                 {format(parseISO(task.dueDate), 'MMM d, yyyy HH:mm')}
               </span>
             </Field>
@@ -243,13 +243,13 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
           </button>
           {confirmDelete ? (
             <div className="flex gap-1.5 ml-auto">
-              <button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} className="px-2 py-1 rounded-lg bg-danger-soft text-danger text-xs font-semibold border border-danger/20 hover:bg-danger hover:text-bg transition-all">
+              <button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} className="px-2 py-1 rounded-lg bg-danger-soft text-danger-light text-xs font-semibold border border-danger/20 hover:bg-danger hover:text-bg transition-all">
                 {del.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Confirm'}
               </button>
               <button onClick={() => setConfirmDelete(false)} className="text-xs text-text-muted hover:text-text-primary px-1">×</button>
             </div>
           ) : (
-            <button onClick={() => setConfirmDelete(true)} className="ml-auto p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all" title="Delete task">
+            <button onClick={() => setConfirmDelete(true)} className="ml-auto p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all" title="Delete task">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
           )}
@@ -334,7 +334,7 @@ function TaskCard({ task, onClick, onComplete, isCompleting }: TaskCardProps) {
       <div className="flex items-center gap-1.5 text-[10px]">
         <Calendar className="w-3 h-3 text-text-muted shrink-0" strokeWidth={1.5} />
         {task.dueDate ? (
-          <span className={isOverdue ? 'text-danger font-semibold' : 'text-text-secondary'}>
+          <span className={isOverdue ? 'text-danger-light font-semibold' : 'text-text-secondary'}>
             {format(parseISO(task.dueDate), 'MMM d, yyyy')}{isOverdue ? ' · Overdue' : ''}
           </span>
         ) : (

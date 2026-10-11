@@ -50,7 +50,7 @@ const RECIPIENT_STATUS_LABEL: Record<number, string> = {
   1: 'Pending', 2: 'Sent', 3: 'Failed', 4: 'Replied', 5: 'Opened',
 };
 const RECIPIENT_STATUS_CLS: Record<number, string> = {
-  2: 'text-success', 3: 'text-danger', 4: 'text-brand', 5: 'text-brand',
+  2: 'text-success', 3: 'text-danger-light', 4: 'text-brand', 5: 'text-brand',
 };
 
 const selectCls = `${inputCls} cursor-pointer`;
@@ -267,7 +267,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           onChange={(e) => { set('targetFilterJson')(e); setFilterJsonError(''); }}
           placeholder={'{"hasOpenDeals": true}'} className={`${inputCls} resize-none font-mono text-xs ${filterJsonError ? 'border-danger' : ''}`} style={inputStyle} />
         </label>
-        {filterJsonError && <p className="text-xs text-danger mt-1">{filterJsonError}</p>}
+        {filterJsonError && <p className="text-xs text-danger-light mt-1">{filterJsonError}</p>}
       </div>
 
       <div>
@@ -420,7 +420,7 @@ function PreviewPanel({ onClose }: { onClose: () => void }) {
           <textarea rows={3} value={filterJson} onChange={(e) => { setFilterJson(e.target.value); setJsonError(''); }}
           className={`${inputCls} resize-none font-mono text-xs ${jsonError ? 'border-danger' : ''}`} />
         </label>
-        {jsonError && <p className="text-xs text-danger mt-1">{jsonError}</p>}
+        {jsonError && <p className="text-xs text-danger-light mt-1">{jsonError}</p>}
       </div>
       <Button onClick={handlePreview} disabled={preview.isPending}
         variant="primary">
@@ -428,7 +428,7 @@ function PreviewPanel({ onClose }: { onClose: () => void }) {
         Preview Recipients
       </Button>
       {preview.isError && (
-        <p className="text-xs text-danger">Failed to preview recipients. Check filter and try again.</p>
+        <p className="text-xs text-danger-light">Failed to preview recipients. Check filter and try again.</p>
       )}
       {result && (
         <div className="rounded-xl border border-border-subtle bg-bg-elevated p-4 space-y-3">
@@ -459,7 +459,7 @@ function PerformancePanel({ campaignId }: { campaignId: string }) {
   const d = raw;
 
   if (isLoading) return <div className="flex items-center justify-center h-24 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>;
-  if (isError) return <p className="text-sm text-danger">Failed to load performance data.</p>;
+  if (isError) return <p className="text-sm text-danger-light">Failed to load performance data.</p>;
   if (!d) return <p className="text-sm text-text-muted">No data yet.</p>;
 
   const fmt = (n: number | null | undefined, suffix = '') =>
@@ -584,7 +584,7 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
   };
 
   if (isLoading) return <div className="flex items-center justify-center h-16 text-text-muted"><Loader2 className="w-4 h-4 animate-spin" /></div>;
-  if (isError) return <p className="text-xs text-danger">Failed to load attributions.</p>;
+  if (isError) return <p className="text-xs text-danger-light">Failed to load attributions.</p>;
 
   return (
     <div className="space-y-3">
@@ -606,7 +606,7 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
                 <button aria-label="Close"
                   onClick={() => removeAttribution.mutate({ campaignId, attributionId: a.id })}
                   disabled={removeAttribution.isPending}
-                  className="p-0.5 text-text-muted hover:text-danger transition-colors"
+                  className="p-0.5 text-text-muted hover:text-danger-light transition-colors"
                 ><X className="w-3 h-3" /></button>
               </div>
             </div>
@@ -725,7 +725,7 @@ function RecipientsPanel({ campaignId }: { campaignId: string }) {
   const recipients = raw ?? [];
 
   if (isLoading) return <div className="flex items-center justify-center h-16 text-text-muted"><Loader2 className="w-4 h-4 animate-spin" /></div>;
-  if (isError) return <p className="text-xs text-danger">Failed to load recipients.</p>;
+  if (isError) return <p className="text-xs text-danger-light">Failed to load recipients.</p>;
   if (recipients.length === 0) return <p className="text-xs text-text-muted text-center py-3">No recipients yet. Launch the campaign to populate this list.</p>;
 
   return (
@@ -741,7 +741,7 @@ function RecipientsPanel({ campaignId }: { campaignId: string }) {
               {RECIPIENT_STATUS_LABEL[r.status] ?? 'Unknown'}
             </span>
             {r.failureReason && (
-              <span className="text-danger text-[10px] truncate max-w-[100px]" title={r.failureReason}>
+              <span className="text-danger-light text-[10px] truncate max-w-[100px]" title={r.failureReason}>
                 {r.failureReason}
               </span>
             )}
@@ -826,7 +826,7 @@ function B2BCampaignCard({ campaign }: { campaign: CrmCampaignSummaryDto }) {
             </div>
           ) : (
             <button aria-label="Delete" onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
+              className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
           )}
@@ -872,7 +872,7 @@ function B2BCampaignCard({ campaign }: { campaign: CrmCampaignSummaryDto }) {
             </span>
           )}
           {campaign.failedCount > 0 && (
-            <span className="inline-flex items-center gap-1 text-danger">
+            <span className="inline-flex items-center gap-1 text-danger-light">
               <XCircle className="w-3 h-3" strokeWidth={1.5} />
               <span className="font-semibold">{campaign.failedCount}</span> failed
             </span>
@@ -925,7 +925,7 @@ function B2BCampaignCard({ campaign }: { campaign: CrmCampaignSummaryDto }) {
         )}
         {(isScheduled || isRunning) && (
           <button onClick={() => cancel.mutate(campaign.id)} disabled={cancel.isPending}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-danger hover:bg-danger-soft hover:border-danger/20 transition-all disabled:opacity-50">
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-danger-light hover:bg-danger-soft hover:border-danger/20 transition-all disabled:opacity-50">
             {cancel.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Ban className="w-3.5 h-3.5" strokeWidth={1.5} /> Cancel</>}
           </button>
         )}
@@ -1286,7 +1286,7 @@ function LeadOutreachTab() {
 const FB_STATUS_CLS: Record<string, string> = {
   ACTIVE: 'text-success bg-success-soft border-success/20',
   PAUSED: 'text-warning bg-warning-soft border-warning/20',
-  DELETED: 'text-danger bg-danger-soft border-danger/20',
+  DELETED: 'text-danger-light bg-danger-soft border-danger/20',
   ARCHIVED: 'text-text-muted bg-bg-card border-border-subtle',
 };
 
@@ -1384,7 +1384,7 @@ function FbAdsTab() {
                 Sync Campaigns
               </button>
               <button onClick={() => disconnectMutation.mutate()} disabled={disconnectMutation.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-bg-elevated border border-border-subtle text-text-muted hover:text-danger transition-all disabled:opacity-50">
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-bg-elevated border border-border-subtle text-text-muted hover:text-danger-light transition-all disabled:opacity-50">
                 <Unplug className="w-3.5 h-3.5" /> Disconnect
               </button>
             </div>

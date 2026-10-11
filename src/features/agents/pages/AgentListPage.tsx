@@ -273,7 +273,7 @@ function ErrorBlock({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
       <div className="w-12 h-12 rounded-2xl bg-danger-soft border border-danger/15 flex items-center justify-center mb-4">
-        <AlertCircle className="w-5 h-5 text-danger" strokeWidth={1.6} />
+        <AlertCircle className="w-5 h-5 text-danger-light" strokeWidth={1.6} />
       </div>
       <h3 className="text-base font-extrabold text-text-primary mb-1">
         Couldn't load agents

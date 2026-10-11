@@ -23,7 +23,7 @@ export function BatchStats({ total, pending, approved, rejected }: BatchStatsPro
       <Pill label="Total" value={total} className="bg-glass-2 text-text-primary" />
       <Pill label="Pending" value={pending} className="bg-warning-soft text-warning" />
       <Pill label="Approved" value={approved} className="bg-success-soft text-success" />
-      <Pill label="Rejected" value={rejected} className="bg-danger-soft text-danger" />
+      <Pill label="Rejected" value={rejected} className="bg-danger-soft text-danger-light" />
     </div>
   );
 }
@@ -132,7 +132,7 @@ export function SuggestionCard({ suggestion: s }: SuggestionCardProps) {
               </button>
               <button
                 onClick={() => setRejectDialog(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-danger hover:bg-danger-soft transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-danger-light hover:bg-danger-soft transition-all"
               >
                 <X className="w-3.5 h-3.5" strokeWidth={2} /> Reject
               </button>
@@ -176,10 +176,10 @@ function ApproveDialog({ suggestion, onClose }: { suggestion: SuggestionDto; onC
         <form onSubmit={form.handleSubmit(onSubmit)} className="px-6 py-5 space-y-4">
           <div>
             <label className="block">
-              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Name <span className="text-danger">*</span></span>
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Name <span className="text-danger-light">*</span></span>
               <input {...form.register('name')} className="form-input" />
             </label>
-            {form.formState.errors.name && <p className="text-xs text-danger mt-1">{form.formState.errors.name.message}</p>}
+            {form.formState.errors.name && <p className="text-xs text-danger-light mt-1">{form.formState.errors.name.message}</p>}
           </div>
           <div>
             <label className="block">

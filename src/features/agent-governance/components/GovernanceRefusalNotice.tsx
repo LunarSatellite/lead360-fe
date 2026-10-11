@@ -9,7 +9,7 @@ const TONE_STYLES: Record<GovernanceRefusal['tone'], string> = {
 };
 
 const TONE_TEXT: Record<GovernanceRefusal['tone'], string> = {
-  danger: 'text-danger',
+  danger: 'text-danger-light',
   warning: 'text-warning',
   info: 'text-info',
 };

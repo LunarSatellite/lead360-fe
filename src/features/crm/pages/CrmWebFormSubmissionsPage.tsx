@@ -77,7 +77,7 @@ export function Component() {
             ) : items.map((s) => (
               <tr key={s.id} className="border-t border-border-subtle hover:bg-glass-1">
                 <td className="px-4 py-3">
-                  <span className={"text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded border " + (s.isSpam ? "text-danger border-danger/30 bg-danger/10" : "text-brand border-border-glow bg-brand-soft")}>
+                  <span className={"text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded border " + (s.isSpam ? "text-danger-light border-danger/30 bg-danger/10" : "text-brand border-border-glow bg-brand-soft")}>
                     {s.isSpam ? "Spam" : "Inbox"}
                   </span>
                 </td>

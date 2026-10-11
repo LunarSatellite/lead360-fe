@@ -101,7 +101,7 @@ function CommentItem({
               </button>
               <button
                 onClick={() => onDelete(comment.id)}
-                className="text-xs text-text-muted hover:text-danger transition-colors flex items-center gap-1"
+                className="text-xs text-text-muted hover:text-danger-light transition-colors flex items-center gap-1"
               >
                 <Trash2 className="w-3 h-3" /> Delete
               </button>

@@ -63,7 +63,7 @@ export function CustomerKycDetail({ detail }: { detail: KycApplicationDetail }) 
       </dl>
 
       {age !== null && age < 18 && (
-        <p className="text-[11px] font-bold text-danger">
+        <p className="text-[11px] font-bold text-danger-light">
           The date of birth makes this buyer {age}. EMI needs 18 or over — reject as
           <span className="font-mono"> UNDERAGE</span>.
         </p>
@@ -95,7 +95,7 @@ function Field({
           value === null
             ? 'italic text-text-muted'
             : tone === 'danger'
-              ? 'font-bold text-danger'
+              ? 'font-bold text-danger-light'
               : 'text-text-secondary'
         }`}
       >
@@ -210,7 +210,7 @@ function DocumentImage({ slot, link }: { slot: ComparisonSlot; link: LinkQuery |
       <div className="flex aspect-[3/4] items-center justify-center overflow-hidden rounded-sm border-thin border-border-subtle bg-bg-card">
         {link?.isLoading && <Loader2 className="h-4 w-4 animate-spin text-text-muted" strokeWidth={1.6} />}
         {link?.isError && (
-          <p className="p-2 text-center text-[10px] text-danger">
+          <p className="p-2 text-center text-[10px] text-danger-light">
             {link.error instanceof Error ? link.error.message : 'The image could not be loaded.'}
           </p>
         )}
@@ -265,7 +265,7 @@ function OtherDocuments({
         </button>
       ))}
       {open.isError && (
-        <p className="text-[11px] text-danger">{(open.error as Error).message}</p>
+        <p className="text-[11px] text-danger-light">{(open.error as Error).message}</p>
       )}
     </div>
   );

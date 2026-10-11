@@ -278,7 +278,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                 <div key={field.name} className={field.fullWidth ? 'col-span-2' : ''}>
                   <label className={labelClass}>
                     {field.label}
-                    {field.required && <span className="text-danger ml-0.5">*</span>}
+                    {field.required && <span className="text-danger-light ml-0.5">*</span>}
                   </label>
                   <input
                     {...form.register(field.name, {
@@ -289,7 +289,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                     className={inputClass}
                   />
                   {form.formState.errors[field.name] && (
-                    <p className="text-2xs text-danger mt-1">
+                    <p className="text-2xs text-danger-light mt-1">
                       {form.formState.errors[field.name]?.message as string}
                     </p>
                   )}
@@ -299,7 +299,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
 
             {/* Submit error */}
             {create.isError && (
-              <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-card bg-glass-1 border-thin border-border-subtle text-sm text-danger">
+              <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-card bg-glass-1 border-thin border-border-subtle text-sm text-danger-light">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" strokeWidth={1.6} />
                 {create.error?.message || 'Failed to create channel.'}
               </div>

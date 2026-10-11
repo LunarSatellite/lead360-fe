@@ -62,7 +62,7 @@ function SlideOver({ title, onClose, wide, children }: { title: string; onClose:
 function SlaTimer({ deadline }: { deadline: string | null }) {
   if (!deadline) return null;
   const mins = differenceInMinutes(parseISO(deadline), new Date());
-  if (mins < 0) return <span className="text-xs font-semibold text-danger">Breached</span>;
+  if (mins < 0) return <span className="text-xs font-semibold text-danger-light">Breached</span>;
   if (mins < 120) return <span className="text-xs font-semibold text-warning">{Math.floor(mins / 60)}h {mins % 60}m</span>;
   return <span className="text-xs font-semibold text-success">{Math.floor(mins / 60)}h left</span>;
 }
@@ -90,7 +90,7 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
                   {p.applicablePriority != null && <> · Priority: <span className="text-text-secondary font-medium">{priorityLabel(p.applicablePriority)}</span></>}
                 </p>
               </div>
-              <button aria-label="Delete" onClick={() => deletePolicy.mutate(p.id)} disabled={deletePolicy.isPending} className="p-1.5 text-text-muted hover:text-danger transition-colors">
+              <button aria-label="Delete" onClick={() => deletePolicy.mutate(p.id)} disabled={deletePolicy.isPending} className="p-1.5 text-text-muted hover:text-danger-light transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -140,8 +140,8 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
 const PRIORITY_OPTS = [
   { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-text-secondary/[0.08]' },
   { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-warning',       hover: 'hover:bg-warning/[0.08]'  },
-  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-danger/[0.08]'   },
-  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-danger/[0.12]'   },
+  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger-light',           hover: 'hover:bg-danger/[0.08]'   },
+  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger-light font-bold', hover: 'hover:bg-danger/[0.12]'   },
 ] as const;
 
 const dropTriggerStyle = (open: boolean) => ({
@@ -352,7 +352,7 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
                 {(detail.messages ?? []).length === 0 && <p className="text-sm text-text-muted text-center py-6">No messages yet.</p>}
                 {(detail.messages as CrmSupportMessageDto[]).map(m => (
                   <div key={m.id} className={`flex ${m.isFromCustomer ? 'justify-start' : 'justify-end'}`}>
-                    <div className={`max-w-xs px-3 py-2 rounded-xl text-sm ${m.isFromCustomer ? 'bg-bg-subtle text-text-primary' : 'bg-brand-soft text-brand'}`}>
+                    <div className={`max-w-xs px-3 py-2 rounded-xl text-sm ${m.isFromCustomer ? 'bg-bg-sunken text-text-primary' : 'bg-brand-soft text-brand'}`}>
                       <div className="font-semibold text-xs mb-0.5 text-text-muted">{m.authorName}</div>
                       <div>{m.body}</div>
                       <div className="text-[10px] mt-1 opacity-60">{format(parseISO(m.createdAt), 'HH:mm')}</div>

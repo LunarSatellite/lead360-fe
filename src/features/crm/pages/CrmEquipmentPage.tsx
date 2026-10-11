@@ -31,7 +31,7 @@ function SlideOver({ open, onClose, title, children, width = '540px' }: { open: 
       <div className="relative h-full flex flex-col bg-bg-shell border-l border-border-subtle" style={{ width, boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
@@ -75,7 +75,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
               {CRM_EQUIPMENT_CONDITION_LABELS[eq.condition as CrmEquipmentCondition]}
             </span>
           )}
-          {eq.category && <span className="text-xs text-text-muted bg-bg-surface px-2 py-0.5 rounded-full">{eq.category}</span>}
+          {eq.category && <span className="text-xs text-text-muted bg-bg-elevated px-2 py-0.5 rounded-full">{eq.category}</span>}
         </div>
       </div>
 
@@ -87,7 +87,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
 
       {tab === 'detail' && (
         <div className="space-y-4">
-          <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+          <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
             {eq.contactName && <div className="flex justify-between"><span className="text-text-muted">Contact</span><span className="text-text-primary">{eq.contactName}</span></div>}
             {eq.accountName && <div className="flex justify-between"><span className="text-text-muted">Account</span><span className="text-text-primary">{eq.accountName}</span></div>}
             {eq.siteLabel && <div className="flex justify-between"><span className="text-text-muted">Site</span><span className="text-text-primary">{eq.siteLabel}</span></div>}
@@ -117,7 +117,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
           <div className="pt-2 border-t border-border-subtle">
             <button onClick={() => { deleteEq.mutate(id); onClose(); }}
               disabled={deleteEq.isPending}
-              className="flex items-center gap-1.5 text-xs text-danger hover:opacity-80 disabled:opacity-50">
+              className="flex items-center gap-1.5 text-xs text-danger-light hover:opacity-80 disabled:opacity-50">
               <AlertTriangle className="w-3.5 h-3.5" /> Remove Equipment
             </button>
           </div>
@@ -141,7 +141,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
           <div className="space-y-2">
             {eq.notes.length === 0 && <p className="text-sm text-text-muted text-center py-6">No notes yet.</p>}
             {eq.notes.map(n => (
-              <div key={n.id} className="bg-bg-surface rounded-xl p-3 text-sm">
+              <div key={n.id} className="bg-bg-elevated rounded-xl p-3 text-sm">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-semibold text-text-secondary">{CRM_EQUIPMENT_NOTE_KIND_LABELS[n.kind as CrmEquipmentNoteKind]}</span>
                   <span className="text-xs text-text-muted">{format(parseISO(n.createdAt), 'MMM d, yyyy')}</span>
@@ -218,12 +218,12 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search serial #, model, brand..." aria-label="Search serial #, model, brand..." className="flex-1 min-w-48 rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search serial #, model, brand..." aria-label="Search serial #, model, brand..." className="flex-1 min-w-48 rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(CRM_EQUIPMENT_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-surface text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">

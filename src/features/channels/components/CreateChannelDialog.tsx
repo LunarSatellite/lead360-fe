@@ -117,7 +117,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
                   info: 'border-info/30 bg-info-soft text-info',
                   brand: 'border-brand bg-brand-soft text-brand',
                   warning: 'border-warning/30 bg-warning-soft text-warning',
-                  danger: 'border-danger/30 bg-danger-soft text-danger',
+                  danger: 'border-danger/30 bg-danger-soft text-danger-light',
                   muted: 'border-border-medium bg-glass-2 text-text-secondary',
                 };
                 return (
@@ -152,7 +152,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
               }}
             />
             {form.formState.errors.channelIdentifier && (
-              <p className="text-xs text-danger mt-1.5">{form.formState.errors.channelIdentifier.message}</p>
+              <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.channelIdentifier.message}</p>
             )}
           </div>
 
@@ -195,7 +195,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
 
           {/* Error */}
           {create.isError && (
-            <div className="px-3.5 py-3 rounded-xl border border-brand/20 text-sm text-danger"
+            <div className="px-3.5 py-3 rounded-xl border border-brand/20 text-sm text-danger-light"
               style={{ background: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
               {create.error?.message || 'Failed to create channel.'}
             </div>

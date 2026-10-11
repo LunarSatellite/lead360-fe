@@ -107,7 +107,7 @@ export function Component() {
                 <span className="text-sm font-bold text-text-primary">{t.name}</span>
                 <div className="flex items-center gap-1.5">
                   {t.isDefault && <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-warning-soft text-warning">Default</span>}
-                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${t.isActive ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger'}`}>{t.isActive ? 'Active' : 'Inactive'}</span>
+                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${t.isActive ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger-light'}`}>{t.isActive ? 'Active' : 'Inactive'}</span>
                 </div>
               </div>
               <div className="text-[11px] text-text-muted mt-1">Net {t.netDays}{t.depositPercent > 0 ? ` · ${t.depositPercent}% deposit` : ''}</div>
@@ -134,11 +134,11 @@ export function Component() {
                       className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-warning hover:border-warning/40 transition-all">Set as default</button>
                   )}
                   <button onClick={() => toggleMut.mutate(selected)}
-                    className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${selected.isActive ? 'text-text-secondary hover:text-danger' : 'text-success'}`}>
+                    className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${selected.isActive ? 'text-text-secondary hover:text-danger-light' : 'text-success'}`}>
                     {selected.isActive ? 'Deactivate' : 'Activate'}
                   </button>
                   <button onClick={() => confirmDialog({ message: `Delete "${selected.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteMut.mutate(selected.id); })}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger transition-all">
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger-light transition-all">
                     <Trash2 className="w-3 h-3" /> Delete
                   </button>
                 </div>

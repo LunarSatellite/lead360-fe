@@ -202,7 +202,7 @@ function EndpointDetail({ endpoint }: { endpoint: EndpointDto }) {
                   </code>
                   <span>
                     {(p.required ?? p.Required) ? (
-                      <span className="text-danger font-bold text-[10px]">Yes</span>
+                      <span className="text-danger-light font-bold text-[10px]">Yes</span>
                     ) : (
                       <span className="text-text-muted text-[10px]">No</span>
                     )}

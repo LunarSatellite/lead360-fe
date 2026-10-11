@@ -163,11 +163,11 @@ describe('defects that must not come back', () => {
      * choose — "Config JSON" rather than "Agent configuration" — but it is
      * specific and never wrong, and a person can improve any of them.
      *
-     * 117 are left: controls bound to a loop variable or an index, where the
+     * 115 are left: controls bound to a loop variable or an index, where the
      * binding says nothing about what the field is for. Those need someone
      * to decide, which is not something a script can read off the page.
      */
-    const BUDGET_UNNAMED_CONTROLS = 117;
+    const BUDGET_UNNAMED_CONTROLS = 115;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 

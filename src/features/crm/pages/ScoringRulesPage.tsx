@@ -74,12 +74,12 @@ export function Component() {
               <tr key={r.id} className="border-t border-border-subtle hover:bg-glass-1">
                 <td className="px-4 py-3 text-xs font-mono font-semibold text-brand">{r.eventType}</td>
                 <td className="px-4 py-3 text-sm text-text-primary">{r.label || '—'}</td>
-                <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-xs font-bold ${r.points > 0 ? 'text-success bg-success-soft' : 'text-danger bg-danger-soft'}`}>{r.points > 0 ? '+' : ''}{r.points}</span></td>
+                <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-xs font-bold ${r.points > 0 ? 'text-success bg-success-soft' : 'text-danger-light bg-danger-soft'}`}>{r.points > 0 ? '+' : ''}{r.points}</span></td>
                 <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${r.isActive ? 'text-success border-success/30 bg-success-soft' : 'text-text-muted border-border-medium bg-glass-2'}`}>{r.isActive ? 'Active' : 'Inactive'}</span></td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
                     <button aria-label="Edit" onClick={() => openEdit(r)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                    <button aria-label="Delete" onClick={() => deleteMut.mutate(r.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Delete" onClick={() => deleteMut.mutate(r.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </td>
               </tr>

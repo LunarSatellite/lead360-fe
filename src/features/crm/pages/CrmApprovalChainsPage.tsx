@@ -144,7 +144,7 @@ export function Component() {
                   ))}
                 </select>
                 {steps.length > 1 && (
-                  <button aria-label="Delete" onClick={() => removeStep(i)} className="p-1 text-danger hover:bg-danger/10 rounded shrink-0">
+                  <button aria-label="Delete" onClick={() => removeStep(i)} className="p-1 text-danger-light hover:bg-danger/10 rounded shrink-0">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 )}
@@ -193,10 +193,10 @@ export function Component() {
                     {chain.description && <p className="text-xs text-text-muted mt-0.5">{chain.description}</p>}
                   </div>
                   <div className="flex gap-1 shrink-0">
-                    <button aria-label="Edit" onClick={() => handleEdit(chain)} className="p-1.5 rounded-lg hover:bg-bg-subtle text-text-muted hover:text-text-primary">
+                    <button aria-label="Edit" onClick={() => handleEdit(chain)} className="p-1.5 rounded-lg hover:bg-bg-sunken text-text-muted hover:text-text-primary">
                       <Pencil className="w-4 h-4" />
                     </button>
-                    <button aria-label="Delete" onClick={() => { if (confirm('Delete this chain?')) deleteMutation.mutate(chain.id); }} className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger">
+                    <button aria-label="Delete" onClick={() => { if (confirm('Delete this chain?')) deleteMutation.mutate(chain.id); }} className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger-light">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -209,7 +209,7 @@ export function Component() {
                     const approverName = approver ? (approver.fullName || `${approver.firstName ?? ''} ${approver.lastName ?? ''}`.trim() || approver.email) : null;
                     return (
                       <div key={s.id ?? idx} className="flex items-center gap-1">
-                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-bg-subtle border border-border-subtle text-text-secondary font-medium">
+                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-bg-sunken border border-border-subtle text-text-secondary font-medium">
                           {s.stepOrder}. {s.stepName}
                           {approverName && <span className="text-text-muted"> → {approverName}</span>}
                         </span>

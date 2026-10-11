@@ -91,7 +91,7 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
   const isBlocked = m.status === CrmOnboardingStatus.Blocked;
 
   return (
-    <div className={`rounded-xl border p-3 transition-all ${isComplete ? 'border-success/20 bg-success/[0.04]' : isBlocked ? 'border-danger/20 bg-danger-soft' : 'border-border-subtle bg-bg-surface'}`}>
+    <div className={`rounded-xl border p-3 transition-all ${isComplete ? 'border-success/20 bg-success/[0.04]' : isBlocked ? 'border-danger/20 bg-danger-soft' : 'border-border-subtle bg-bg-elevated'}`}>
       <div className="flex items-start gap-3">
         <button onClick={() => toggle(isComplete ? CrmOnboardingStatus.InProgress : CrmOnboardingStatus.Completed)}
           disabled={update.isPending}
@@ -103,16 +103,16 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
             <span className={`text-sm font-medium ${isComplete ? 'line-through text-text-muted' : 'text-text-primary'}`}>{m.title}</span>
             <div className="flex items-center gap-1.5 flex-shrink-0">
               <span className="text-[10px] text-text-muted bg-bg-elevated px-1.5 py-0.5 rounded">{CRM_MILESTONE_KIND_LABELS[m.kind as CrmOnboardingMilestoneKind]}</span>
-              {m.dueDate && <span className={`text-[10px] ${new Date(m.dueDate) < new Date() && !isComplete ? 'text-danger' : 'text-text-muted'}`}>{format(parseISO(m.dueDate), 'MMM d')}</span>}
+              {m.dueDate && <span className={`text-[10px] ${new Date(m.dueDate) < new Date() && !isComplete ? 'text-danger-light' : 'text-text-muted'}`}>{format(parseISO(m.dueDate), 'MMM d')}</span>}
             </div>
           </div>
           {m.description && <p className="text-xs text-text-muted mt-0.5">{m.description}</p>}
           {m.completedAt && <p className="text-xs text-success mt-0.5">Completed {format(parseISO(m.completedAt), 'MMM d, yyyy')}</p>}
-          {isBlocked && m.blockerReason && <p className="text-xs text-danger mt-0.5">Blocked: {m.blockerReason}</p>}
+          {isBlocked && m.blockerReason && <p className="text-xs text-danger-light mt-0.5">Blocked: {m.blockerReason}</p>}
 
           {!isComplete && (
             <div className="flex gap-1.5 mt-2">
-              <button onClick={() => setExpanded(v => !v)} className={`text-[10px] px-2 py-0.5 rounded border transition-all ${isBlocked ? 'text-text-secondary border-border-subtle hover:bg-bg-elevated' : 'text-danger border-danger/20 hover:bg-danger-soft'}`}>
+              <button onClick={() => setExpanded(v => !v)} className={`text-[10px] px-2 py-0.5 rounded border transition-all ${isBlocked ? 'text-text-secondary border-border-subtle hover:bg-bg-elevated' : 'text-danger-light border-danger/20 hover:bg-danger-soft'}`}>
                 {isBlocked ? 'Unblock' : 'Mark Blocked'}
               </button>
             </div>
@@ -127,7 +127,7 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
               ) : (
                 <>
                   <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." aria-label="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
-                  <button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-danger-soft border border-danger/20 text-danger hover:opacity-80">
+                  <button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-danger-soft border border-danger/20 text-danger-light hover:opacity-80">
                     Set Blocked
                   </button>
                 </>
@@ -167,11 +167,11 @@ function DetailPanel({ id }: { id: string }) {
         </div>
       </div>
 
-      <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+      <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
         <div className="flex justify-between"><span className="text-text-muted">Started</span><span>{format(parseISO(d.startedAt), 'MMM d, yyyy')}</span></div>
         {d.completedAt && <div className="flex justify-between"><span className="text-text-muted">Completed</span><span className="text-success">{format(parseISO(d.completedAt), 'MMM d, yyyy')}</span></div>}
         {d.notes && <div><span className="text-text-muted block text-xs mb-1">Notes</span><p className="text-text-secondary text-xs">{d.notes}</p></div>}
-        {d.blockerReason && <div><span className="text-danger block text-xs mb-1">Blocker</span><p className="text-danger text-xs">{d.blockerReason}</p></div>}
+        {d.blockerReason && <div><span className="text-danger-light block text-xs mb-1">Blocker</span><p className="text-danger-light text-xs">{d.blockerReason}</p></div>}
       </div>
 
       <div className="space-y-2">
@@ -265,7 +265,7 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(CRM_ONBOARDING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -292,7 +292,7 @@ export function Component() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-semibold text-text-primary text-sm truncate">{ob.title}</span>
-                          {hasBlocker && <AlertCircle className="w-3.5 h-3.5 text-danger flex-shrink-0" />}
+                          {hasBlocker && <AlertCircle className="w-3.5 h-3.5 text-danger-light flex-shrink-0" />}
                         </div>
                         <div className="flex items-center gap-3 mt-1.5">
                           <Badge value={ob.status} labels={CRM_ONBOARDING_STATUS_LABELS} colors={CRM_ONBOARDING_STATUS_COLORS} />
@@ -370,7 +370,7 @@ export function Component() {
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Steps</label>
               <button type="button" onClick={() => setMilestones(ms => [...ms, emptyMilestone(ms.length)])}
-                className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all">
+                className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated transition-all">
                 <Plus className="w-3 h-3" /> Add
               </button>
             </div>
@@ -384,7 +384,7 @@ export function Component() {
                     className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button aria-label="Close" type="button" onClick={() => setMilestones(ms => ms.filter((_, idx) => idx !== i))} disabled={milestones.length === 1}
-                    className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
+                    className="p-1 rounded text-text-muted hover:text-danger-light disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>

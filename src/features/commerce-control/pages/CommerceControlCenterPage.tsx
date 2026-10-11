@@ -189,7 +189,7 @@ export function CommerceControlCenterPage() {
               <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-emerald-300">
                 Stylemint Control Center
               </span>
-              <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-white/65">
+              <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-text-muted">
                 <MapPin className="h-3 w-3" /> Kinshasa, RDC
               </span>
             </div>
@@ -197,7 +197,7 @@ export function CommerceControlCenterPage() {
             <h1 className="mt-2 max-w-3xl text-3xl font-black tracking-[-0.04em] text-white md:text-5xl">
               Your entire commercial operation, in one place.
             </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-white/60 md:text-base">
+            <p className="mt-4 max-w-2xl text-sm leading-6 text-text-muted md:text-base">
               Manage Stylemint content, products, orders, refunds and customer relationships from Lead360.
               Creators keep their complete experience in the mobile app; Kin Marche manages only its commercial
               partnerships with them here.
@@ -206,7 +206,7 @@ export function CommerceControlCenterPage() {
           <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur-xl">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-text-muted">
                   Demo readiness
                 </p>
                 <p className="mt-1 text-2xl font-black text-white">
@@ -223,7 +223,7 @@ export function CommerceControlCenterPage() {
                 style={{ width: `${(readyCount / readiness.length) * 100}%` }}
               />
             </div>
-            <p className="mt-3 text-xs leading-5 text-white/50">
+            <p className="mt-3 text-xs leading-5 text-text-muted">
               {integration.data?.ready
                 ? 'Stylemint vendor and administrator access is working correctly.'
                 : 'Readiness checks vendor and administrator access independently.'}
@@ -369,7 +369,7 @@ export function CommerceControlCenterPage() {
             )}
           </div>
           {saveTenant.isError && (
-            <p className="mt-3 text-xs font-semibold text-danger">
+            <p className="mt-3 text-xs font-semibold text-danger-light">
               Unable to save tenant settings.
             </p>
           )}
@@ -384,6 +384,7 @@ export function CommerceControlCenterPage() {
             </div>
             <Link
               to="/dashboard/channels"
+              aria-label="Configure social networks"
               className="rounded-lg border border-border-subtle p-2 text-text-muted hover:text-brand"
             >
               <Settings2 className="h-4 w-4" />

@@ -51,7 +51,7 @@ export function AiSendPreviewModal({
               </button>
             </div>
             {isDrafting ? (
-              <div className="flex items-center justify-center h-24 rounded-xl border border-border-subtle bg-bg-subtle text-text-muted">
+              <div className="flex items-center justify-center h-24 rounded-xl border border-border-subtle bg-bg-sunken text-text-muted">
                 <Loader2 className="w-4 h-4 animate-spin" />
               </div>
             ) : (
@@ -60,7 +60,7 @@ export function AiSendPreviewModal({
                 onChange={(e) => onIntroChange(e.target.value)}
                 rows={4}
                 placeholder="No intro drafted — sending without one." aria-label="No intro drafted — sending without one."
-                className="w-full px-3 py-2 rounded-xl bg-bg-subtle border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow resize-none"
+                className="w-full px-3 py-2 rounded-xl bg-bg-sunken border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow resize-none"
               />
             )}
           </div>
@@ -68,7 +68,7 @@ export function AiSendPreviewModal({
           {children && (
             <div>
               <label className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-1.5 block">Content (unchanged)</label>
-              <div className="rounded-xl border border-border-subtle bg-bg-subtle p-3 text-sm text-text-secondary">
+              <div className="rounded-xl border border-border-subtle bg-bg-sunken p-3 text-sm text-text-secondary">
                 {children}
               </div>
             </div>

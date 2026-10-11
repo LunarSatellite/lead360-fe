@@ -6,6 +6,13 @@ import { readFileSync } from 'node:fs';
 const css = readFileSync(`${__dirname}/globals.css`, 'utf8');
 const tailwindConfig = readFileSync(`${__dirname}/../../tailwind.config.js`, 'utf8');
 
+/** Every component, for checking the classes they actually use. */
+const sources = import.meta.glob('/src/**/*.tsx', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
 /**
  * The failure this suite exists for.
  *
@@ -144,33 +151,68 @@ describe('console colour tokens', () => {
     expect(below.map(({ label, ratio }) => `${label} = ${ratio.toFixed(2)}:1`)).toEqual([]);
   });
 
-  it('records the Lead360 pairs that already fall short of AA', () => {
-    // Pre-existing and deliberately left alone: the Lead360 build has to
-    // render exactly as it does today, so this is a record rather than a fix.
-    // It is here so the debt is visible and, more to the point, so the list
-    // cannot grow — a fourth entry means someone lightened a Lead360 surface.
-    const below = pairs(defaults)
-      .filter(({ ratio }) => ratio < 4.5)
-      .map(({ label }) => label);
+  it('uses no background class the config does not define', () => {
+    /**
+     * `bg-bg-surface` appeared 51 times and is not a class Tailwind emits:
+     * the `bg` scale is DEFAULT, sunken, shell, card, elevated and input.
+     * Those elements therefore had no background at all and fell through to
+     * the user agent's, which on Linux is #EFEFEF — white text on it is
+     * 1.14:1.
+     *
+     * It survived because it reads like a real token, it degrades silently,
+     * and Windows Chromium paints a default <select> differently enough to
+     * hide it. Only the Linux CI run found it. This is the cheaper way to
+     * find the next one.
+     */
+    const defined = new Set(
+      [...stripComments(tailwindConfig).matchAll(/\n        bg: \{([\s\S]*?)\n        \},/g)]
+        .flatMap(([, body]) => [...body.matchAll(/(\w+):/g)].map(([, key]) => key))
+        .map((key) => (key === 'DEFAULT' ? '' : `-${key}`)),
+    );
 
-    expect(below).toEqual([
-      'text-muted on surface-elevated',
-      'text-muted on glass-2',
-      'text-muted on glass-3',
-    ]);
+    const used = new Set(
+      Object.values(sources).flatMap((src) =>
+        [...src.matchAll(/(?<![\w-])bg-bg(-[\w]+)?(?![\w-])/g)].map(([, suffix]) => suffix ?? ''),
+      ),
+    );
+
+    const unknown = [...used].filter((suffix) => !defined.has(suffix)).map((s) => `bg-bg${s}`);
+    expect(unknown, 'this class paints nothing; the browser default shows through').toEqual([]);
   });
 
-  it('does not make the muted ramp harder to read than Lead360', () => {
-    // Muted helper text is the ramp that moves when a palette lightens its
-    // surfaces, and the one with no headroom to spare. StyleMint lightens
-    // every surface, so this is where a bad swap would show first.
-    const before = new Map(pairs(defaults).map(({ label, ratio }) => [label, ratio]));
+  it('meets AA for Lead360 text on every surface it can land on', () => {
+    /**
+     * This used to be a record of three known failures rather than an
+     * assertion — `text-muted` on surface-elevated, glass-2 and glass-3 —
+     * kept so the debt was visible and could not grow.
+     *
+     * All three were the same token at #7A9B8E, which measured 4.44:1 on a
+     * card. axe found it in a browser on eleven pages at once, because every
+     * table header in the admin is muted text. #8BA99D is 5.32:1 there, and
+     * the three recorded failures went with it.
+     *
+     * So it is an assertion now, matching the StyleMint one above. Both
+     * palettes meet AA on every surface, and neither is allowed to stop.
+     */
+    const below = pairs(defaults).filter(({ ratio }) => ratio < 4.5);
+    expect(below.map(({ label, ratio }) => `${label} = ${ratio.toFixed(2)}:1`)).toEqual([]);
+  });
 
-    const regressions = pairs(stylemint)
-      .filter(({ label, ratio }) => label.startsWith('text-muted') && ratio < before.get(label)!)
-      .map(({ label, ratio }) => `${label}: ${before.get(label)!.toFixed(2)} → ${ratio.toFixed(2)}`);
+  it('keeps muted text readable in both palettes, not merely no worse', () => {
+    /**
+     * This compared StyleMint's muted ramp against Lead360's and failed if
+     * StyleMint was lower. That made sense while Lead360 was the shipped
+     * baseline and had known failures to measure against — but a relative
+     * check passes happily when both sides are bad, and it broke the moment
+     * the baseline improved.
+     *
+     * AA on both is the thing that was actually wanted.
+     */
+    const below = [...pairs(defaults), ...pairs(stylemint)]
+      .filter(({ label, ratio }) => label.startsWith('text-muted') && ratio < 4.5)
+      .map(({ label, ratio }) => `${label} = ${ratio.toFixed(2)}:1`);
 
-    expect(regressions).toEqual([]);
+    expect(below).toEqual([]);
   });
 
   it('keeps StyleMint off Lead360s green text ramp', () => {

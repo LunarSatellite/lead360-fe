@@ -233,7 +233,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                   onClick={() => setStatus(TransactionStatus.Cancelled)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
                              border border-border-medium text-text-secondary
-                             hover:bg-danger-soft hover:text-danger hover:border-danger
+                             hover:bg-danger-soft hover:text-danger-light hover:border-danger
                              disabled:opacity-50 transition-all"
                 >
                   <Ban className="w-3.5 h-3.5" strokeWidth={2} /> Cancel
@@ -358,7 +358,7 @@ function StatusPill({ status }: { status: TransactionStatusValue }) {
     status === TransactionStatus.Confirmed
       ? 'bg-success-soft text-success'
       : status === TransactionStatus.Cancelled
-        ? 'bg-danger-soft text-danger'
+        ? 'bg-danger-soft text-danger-light'
         : status === TransactionStatus.Preparing
           ? 'bg-info-soft text-info'
           : status === TransactionStatus.ReadyForPickup

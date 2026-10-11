@@ -131,7 +131,7 @@ export function Component() {
                     </div>
                     <button
                       onClick={() => confirmDialog({ message: `Delete bundle "${bundle.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteBundle.mutate(bundle.id, { onSuccess: () => setSelectedId(undefined) }); })}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger hover:border-danger/40 transition-all">
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger-light hover:border-danger/40 transition-all">
                       <Trash2 className="w-3 h-3" /> Delete bundle
                     </button>
                   </div>
@@ -227,7 +227,7 @@ function ItemEditor({ bundleId, currency, items }: { bundleId: string; currency:
                 <td className="px-3 py-2 text-sm text-text-primary tabular-nums">{money(it.unitPrice, currency)}</td>
                 <td className="px-3 py-2 text-sm font-semibold text-text-primary tabular-nums">{money(it.unitPrice * it.quantity, currency)}</td>
                 <td className="px-3 py-2 text-right">
-                  <button aria-label="Delete" onClick={() => delItem.mutate(it.id)} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Delete" onClick={() => delItem.mutate(it.id)} className="text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                 </td>
               </tr>
             ))}

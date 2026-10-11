@@ -24,7 +24,7 @@ function SlideOver({ open, onClose, title, wide, children }: { open: boolean; on
       <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[520px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
@@ -345,7 +345,7 @@ export function Component() {
                       <td className="px-4 py-3 font-semibold text-text-primary">{inv.currency} {inv.totalAmount.toLocaleString()}</td>
                       <td className="px-4 py-3">
                         {overdue
-                          ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger border-danger">Overdue</span>
+                          ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger-light border-danger">Overdue</span>
                           : <Badge value={inv.status} labels={SI_STATUS_LABELS} colors={SI_STATUS_COLORS} />
                         }
                       </td>
@@ -393,14 +393,14 @@ export function Component() {
               <div className="font-extrabold text-lg text-text-primary">{selected.vendorName}</div>
               <div className="flex items-center gap-2 mt-2">
                 {isOverdue(selected)
-                  ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger border-danger">Overdue</span>
+                  ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger-light border-danger">Overdue</span>
                   : <Badge value={selected.status} labels={SI_STATUS_LABELS} colors={SI_STATUS_COLORS} />
                 }
                 {selected.poNumber && <span className="text-xs text-text-muted font-mono">PO: {selected.poNumber}</span>}
               </div>
             </div>
 
-            <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+            <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-text-muted">Subtotal</span><span>{selected.currency} {selected.subTotal.toLocaleString()}</span></div>
               <div className="flex justify-between"><span className="text-text-muted">Tax</span><span>{selected.currency} {selected.taxAmount.toLocaleString()}</span></div>
               <div className="flex justify-between font-bold border-t border-border-subtle pt-2"><span>Total</span><span>{selected.currency} {selected.totalAmount.toLocaleString()}</span></div>
@@ -409,10 +409,10 @@ export function Component() {
 
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div><span className="text-text-muted block text-xs">Issued</span><span className="text-text-primary">{format(parseISO(selected.issuedDate), 'MMM d, yyyy')}</span></div>
-              <div><span className="text-text-muted block text-xs">Due</span><span className={isOverdue(selected) ? 'text-danger font-semibold' : 'text-text-primary'}>{format(parseISO(selected.dueDate), 'MMM d, yyyy')}</span></div>
+              <div><span className="text-text-muted block text-xs">Due</span><span className={isOverdue(selected) ? 'text-danger-light font-semibold' : 'text-text-primary'}>{format(parseISO(selected.dueDate), 'MMM d, yyyy')}</span></div>
             </div>
 
-            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selected.notes}</p></div>}
+            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{selected.notes}</p></div>}
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.purchaseOrderId && (selected.status === SupplierInvoiceStatus.Received || selected.status === SupplierInvoiceStatus.Approved) && (
@@ -436,7 +436,7 @@ export function Component() {
                 </button>
               )}
               {selected.status !== SupplierInvoiceStatus.Void && selected.status !== SupplierInvoiceStatus.Paid && (
-                <button onClick={() => { if (confirm('Void this invoice?')) { voidSI.mutate(selected.id); setSelected(null); } }} disabled={voidSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 disabled:opacity-50">
+                <button onClick={() => { if (confirm('Void this invoice?')) { voidSI.mutate(selected.id); setSelected(null); } }} disabled={voidSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger-light bg-danger-soft hover:opacity-80 disabled:opacity-50">
                   <XCircle className="w-3.5 h-3.5" /> Void
                 </button>
               )}
@@ -491,14 +491,14 @@ export function Component() {
                   <div className="flex justify-between"><span className="text-text-muted">Expected (PO × Received)</span><span className="text-text-primary font-medium">{matchResult.expectedAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                   <div className="flex justify-between font-bold border-t border-border-subtle pt-2">
                     <span>Variance</span>
-                    <span className={matchResult.varianceAmount === 0 ? 'text-text-primary' : matchResult.varianceAmount > 0 ? 'text-danger' : 'text-success'}>
+                    <span className={matchResult.varianceAmount === 0 ? 'text-text-primary' : matchResult.varianceAmount > 0 ? 'text-danger-light' : 'text-success'}>
                       {matchResult.varianceAmount > 0 ? '+' : ''}{matchResult.varianceAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })} ({matchResult.variancePercent}%)
                     </span>
                   </div>
                 </div>
 
                 {matchResult.lines.length > 0 && (
-                  <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle max-h-48 overflow-y-auto">
+                  <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle max-h-48 overflow-y-auto">
                     {matchResult.lines.map(l => (
                       <div key={l.poLineItemId} className="flex justify-between items-center px-3 py-2 text-xs">
                         <div>
@@ -512,7 +512,7 @@ export function Component() {
                 )}
 
                 {matchResult.riskLevel === 3 && (
-                  <div className="px-3 py-2 rounded-lg bg-danger-soft border border-danger text-xs text-danger">
+                  <div className="px-3 py-2 rounded-lg bg-danger-soft border border-danger text-xs text-danger-light">
                     Major variance — verify with the vendor before approving payment.
                   </div>
                 )}

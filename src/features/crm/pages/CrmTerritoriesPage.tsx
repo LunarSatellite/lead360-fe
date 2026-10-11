@@ -90,7 +90,7 @@ export function Component() {
               </div>
               <div>
                 <label className="block">
-                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></span>
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger-light">*</span></span>
                   <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. North America"
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} autoFocus />
@@ -202,7 +202,7 @@ function TerritoryCard({ territory, index, isExpanded, onToggle }: {
         <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Delete territory "${territory.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) deleteTerritory.mutate(territory.id); })}
-          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -302,7 +302,7 @@ function RuleRow({ rule, index, onRemove }: { rule: SalesTerritoryRuleDto; index
       <span className="text-text-secondary font-medium">{TERRITORY_RULE_FIELD_LABEL[rule.field]}</span>
       <span className="text-text-muted">{TERRITORY_RULE_OPERATOR_LABEL[rule.operator]}</span>
       <span className="font-semibold text-text-primary">{rule.value}</span>
-      <button aria-label="Delete" onClick={onRemove} className="ml-auto p-1 rounded text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+      <button aria-label="Delete" onClick={onRemove} className="ml-auto p-1 rounded text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all">
         <Trash2 className="w-3 h-3" />
       </button>
     </div>
@@ -382,7 +382,7 @@ function MemberRow({ member, onRemove }: { member: SalesTerritoryMemberDto; onRe
         <div className="text-xs font-semibold text-text-primary truncate">{member.userName}</div>
         {member.userEmail && <div className="text-xs text-text-muted truncate">{member.userEmail}</div>}
       </div>
-      <button onClick={onRemove} className="p-1 rounded text-text-muted hover:text-danger hover:bg-danger-soft transition-all flex-shrink-0">
+      <button onClick={onRemove} className="p-1 rounded text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all flex-shrink-0">
         <UserMinus className="w-3.5 h-3.5" />
       </button>
     </div>

@@ -175,15 +175,15 @@ export function ContentOperationsPage() {
             <h1 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">
               From social feed to the Stylemint aisle
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-text-muted">
               Import Kin Marche content, check how it renders, then publish it to Mall and Discovery.
               The creator tools stay exclusively in the mobile app.
             </p>
           </div>
           <div className="rounded-2xl border border-white/10 bg-white/5 px-5 py-4">
-            <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">Cover</p>
+            <p className="text-[9px] font-bold uppercase tracking-wider text-text-muted">Cover</p>
             <p className="mt-1 text-2xl font-black text-white">
-              {connected.size}/4 <span className="text-xs font-semibold text-white/40">plateformes</span>
+              {connected.size}/4 <span className="text-xs font-semibold text-text-muted">plateformes</span>
             </p>
             {/*
               The server returns null for totalFollowers when no connected
@@ -191,7 +191,7 @@ export function ContentOperationsPage() {
               total" - a measured zero, and a different claim from "nobody
               told us". Absence is rendered as absence.
             */}
-            <p className="mt-1 text-[10px] text-white/45">
+            <p className="mt-1 text-[10px] text-text-muted">
               {typeof audience.data?.totalFollowers === 'number'
                 ? `${audience.data.totalFollowers.toLocaleString('fr-CD')} abonnes au total`
                 : 'Nombre d’abonnes non communique'}
@@ -234,7 +234,7 @@ export function ContentOperationsPage() {
                   {activePublishGrant(publishScopes.data) ? 'Unpublish' : 'Allow publishing'}
                 </button>
                 <button onClick={() => connect.mutate()} disabled={connect.isPending} className="rounded-xl border border-brand/30 px-3 py-2.5 text-xs font-bold text-brand">Reconnecter</button>
-                <button onClick={() => window.confirm(`Disconnect ${provider.name}?`) && disconnect.mutate()} disabled={disconnect.isPending} className="rounded-xl border border-danger/25 px-3 py-2.5 text-xs font-bold text-danger">Disconnect</button>
+                <button onClick={() => window.confirm(`Disconnect ${provider.name}?`) && disconnect.mutate()} disabled={disconnect.isPending} className="rounded-xl border border-danger/25 px-3 py-2.5 text-xs font-bold text-danger-light">Disconnect</button>
               </>
             )}
           </div>
@@ -424,7 +424,7 @@ function PublishQueue({ jobs, canOperate, cancelling, onCancel, onInspect }: { j
           const cancellable = !/cancel|complete|publish|fail/i.test(status);
           return <div key={id || index} className="flex items-center justify-between gap-4 px-5 py-3">
             <div><p className="text-xs font-extrabold text-text-primary">{String(job.baseCaption ?? job.caption ?? `Diffusion ${index + 1}`).slice(0, 90)}</p><p className="mt-1 text-[10px] uppercase tracking-wider text-text-muted">{status} · {String(job.scheduledUtc ?? job.createdUtc ?? '')}</p></div>
-            <div className="flex shrink-0 gap-2">{id && <button onClick={() => onInspect(id)} className="rounded-lg border border-border-subtle px-3 py-2 text-[10px] font-bold text-text-secondary">Details</button>}{canOperate && id && cancellable && <button onClick={() => onCancel(id)} disabled={cancelling} className="flex items-center gap-1.5 rounded-lg border border-danger/25 px-3 py-2 text-[10px] font-bold text-danger disabled:opacity-40"><XCircle className="h-3 w-3" /> Cancel</button>}</div>
+            <div className="flex shrink-0 gap-2">{id && <button onClick={() => onInspect(id)} className="rounded-lg border border-border-subtle px-3 py-2 text-[10px] font-bold text-text-secondary">Details</button>}{canOperate && id && cancellable && <button onClick={() => onCancel(id)} disabled={cancelling} className="flex items-center gap-1.5 rounded-lg border border-danger/25 px-3 py-2 text-[10px] font-bold text-danger-light disabled:opacity-40"><XCircle className="h-3 w-3" /> Cancel</button>}</div>
           </div>;
         })}
       </div>
@@ -457,7 +457,7 @@ function ManagedReelCard({
           <img src={image} alt="" className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <Play className="h-8 w-8 text-white/25" />
+            <Play className="h-8 w-8 text-text-muted" />
           </div>
         )}
         <div className="absolute inset-0 flex items-center justify-center">
@@ -595,7 +595,7 @@ function SchedulePublishDialog({
             </label>
           ))}
         </div>
-        {error && <p className="mt-3 text-xs font-semibold text-danger">{error}</p>}
+        {error && <p className="mt-3 text-xs font-semibold text-danger-light">{error}</p>}
         <Button
           disabled={busy || !when || !caption.trim() || platforms.length === 0}
           variant="primary" size="lg" block className="mt-5"
@@ -632,7 +632,7 @@ function ContentCard({
           />
         ) : (
           <div className="flex h-full items-center justify-center">
-            <Play className="h-10 w-10 text-white/25" />
+            <Play className="h-10 w-10 text-text-muted" />
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />

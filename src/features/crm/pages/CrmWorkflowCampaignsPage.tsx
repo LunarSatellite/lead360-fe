@@ -146,7 +146,7 @@ export function Component() {
           </div>
           <div>
             <label className="block">
-              <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></span>
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger-light">*</span></span>
               <Input icon={Target} required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </label>
           </div>

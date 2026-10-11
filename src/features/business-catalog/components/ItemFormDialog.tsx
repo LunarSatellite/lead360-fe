@@ -188,7 +188,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
               placeholder='{"specialty":"Cardiology","experience":"10 yrs"}'
               className={`${textareaCls} font-mono`}
             />
-            {jsonError && <p className="text-[10px] text-danger mt-1">{jsonError}</p>}
+            {jsonError && <p className="text-[10px] text-danger-light mt-1">{jsonError}</p>}
           </Field>
 
           <div className="flex items-center justify-between">

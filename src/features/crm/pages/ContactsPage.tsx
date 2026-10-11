@@ -113,7 +113,7 @@ function ContactCard({
             <button
               onClick={() => onDeleteConfirm(c.id)}
               disabled={isDeleting}
-              className="px-1.5 py-0.5 rounded-xs text-[10px] font-semibold bg-danger-soft text-danger border-thin border-danger/20 hover:bg-danger hover:text-bg transition-all disabled:opacity-50"
+              className="px-1.5 py-0.5 rounded-xs text-[10px] font-semibold bg-danger-soft text-danger-light border-thin border-danger/20 hover:bg-danger hover:text-bg transition-all disabled:opacity-50"
             >
               {isDeleting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : 'Delete'}
             </button>
@@ -127,7 +127,7 @@ function ContactCard({
         ) : (
           <button aria-label="Delete"
             onClick={() => onDeleteRequest(c.id)}
-            className="p-1 rounded-xs text-text-muted opacity-0 group-hover:opacity-100 hover:text-danger hover:bg-danger-soft transition-all"
+            className="p-1 rounded-xs text-text-muted opacity-0 group-hover:opacity-100 hover:text-danger-light hover:bg-danger-soft transition-all"
           >
             <Trash2 className="w-3 h-3" strokeWidth={1.5} />
           </button>
@@ -651,7 +651,7 @@ export function Component() {
             <button
               onClick={runBulkDelete}
               disabled={bulkDelete.isPending}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger-light border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
             >
               {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
               Delete

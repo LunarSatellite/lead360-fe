@@ -189,7 +189,7 @@ export function ResponseStorageCard() {
               <Loader2 className="w-3 h-3 text-text-muted animate-spin" strokeWidth={1.8} />
             )}
             {save.isError && !save.isPending && (
-              <span className="text-[10px] text-danger">Failed to save</span>
+              <span className="text-[10px] text-danger-light">Failed to save</span>
             )}
           </div>
         </div>

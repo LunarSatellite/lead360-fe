@@ -173,7 +173,7 @@ function ImportPreview({ preview }: { preview: CatalogImportPreviewResult }) {
       </div>
 
       <div className={`rounded-xl border px-3 py-2 flex items-start gap-2 ${preview.invalidRows > 0 ? 'bg-danger-soft border-danger/30' : 'bg-success-soft border-success/30'}`}>
-        {preview.invalidRows > 0 ? <AlertCircle className="w-4 h-4 text-danger mt-0.5" /> : <CheckCircle2 className="w-4 h-4 text-success mt-0.5" />}
+        {preview.invalidRows > 0 ? <AlertCircle className="w-4 h-4 text-danger-light mt-0.5" /> : <CheckCircle2 className="w-4 h-4 text-success mt-0.5" />}
         <div className="text-[11px] text-text-secondary">
           {preview.invalidRows > 0 ? 'Correct invalid rows and preview the file again before importing.' : 'Preview passed. The file is ready to import.'}
         </div>
@@ -191,7 +191,7 @@ function ImportPreview({ preview }: { preview: CatalogImportPreviewResult }) {
                 <td className="px-3 py-2 text-text-primary font-semibold">{row.categoryName || '—'}</td>
                 <td className="px-3 py-2 text-text-primary">{row.itemName || '—'}</td>
                 <td className="px-3 py-2 text-text-secondary">{row.action === 'CreateItem' ? 'Create' : row.action === 'UpdateItem' ? 'Update' : 'Invalid'}</td>
-                <td className={`px-3 py-2 ${row.errors.length ? 'text-danger' : 'text-success'}`}>{row.errors.length ? row.errors.join(' ') : 'Valid'}</td>
+                <td className={`px-3 py-2 ${row.errors.length ? 'text-danger-light' : 'text-success'}`}>{row.errors.length ? row.errors.join(' ') : 'Valid'}</td>
               </tr>
             ))}
           </tbody>
@@ -202,5 +202,5 @@ function ImportPreview({ preview }: { preview: CatalogImportPreviewResult }) {
 }
 
 function Metric({ label, value, danger = false }: { label: string; value: number; danger?: boolean }) {
-  return <div className="rounded-lg bg-glass-1 border border-border-subtle px-3 py-2"><div className="text-[10px] text-text-muted">{label}</div><div className={`text-sm font-extrabold ${danger ? 'text-danger' : 'text-text-primary'}`}>{value}</div></div>;
+  return <div className="rounded-lg bg-glass-1 border border-border-subtle px-3 py-2"><div className="text-[10px] text-text-muted">{label}</div><div className={`text-sm font-extrabold ${danger ? 'text-danger-light' : 'text-text-primary'}`}>{value}</div></div>;
 }

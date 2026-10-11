@@ -127,7 +127,7 @@ export function Component() {
                 <button aria-label="Delete"
                   onClick={() => removeMutation.mutate(userId)}
                   disabled={removeMutation.isPending}
-                  className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger transition-colors shrink-0"
+                  className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger-light transition-colors shrink-0"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

@@ -13,7 +13,7 @@ const COLUMNS: Column<PipelineStageDto>[] = [
         {row.color && <span className="w-2.5 h-2.5 rounded-xs shrink-0" style={{ background: row.color }} />}
         <span className="font-medium text-text-primary truncate">{row.stageName}</span>
         {row.isWon && <span className="text-2xs font-bold text-success">WON</span>}
-        {row.isClosed && !row.isWon && <span className="text-2xs font-bold text-danger">LOST</span>}
+        {row.isClosed && !row.isWon && <span className="text-2xs font-bold text-danger-light">LOST</span>}
       </span>
     ),
   },

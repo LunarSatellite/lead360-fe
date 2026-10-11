@@ -49,7 +49,7 @@ function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
         </div>
         <button aria-label="Delete"
           onClick={() => onRemove(index)}
-          className="p-1 rounded text-text-muted hover:text-danger transition-colors"
+          className="p-1 rounded text-text-muted hover:text-danger-light transition-colors"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -270,7 +270,7 @@ function DefinitionCard({
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-bold text-text-primary">{definition.name}</h3>
               {!definition.isActive && (
-                <span className="text-[10px] font-bold text-danger uppercase tracking-wide border border-danger/30 bg-danger/10 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-bold text-danger-light uppercase tracking-wide border border-danger/30 bg-danger/10 px-1.5 py-0.5 rounded">
                   Inactive
                 </span>
               )}
@@ -302,7 +302,7 @@ function DefinitionCard({
             </button>
             <button aria-label="Delete"
               onClick={onDelete}
-              className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+              className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger/10 transition-colors"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>

@@ -275,7 +275,7 @@ export function Component() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border-subtle bg-bg-subtle">
+                <tr className="border-b border-border-subtle bg-bg-sunken">
                   {['Type', 'Entity', 'Minutes', 'Billable', 'Logged By', 'Description', 'Date', ''].map((h, i) => (
                     <th key={i} className="px-4 py-3 text-left text-xs font-semibold text-text-muted">{h}</th>
                   ))}
@@ -315,7 +315,7 @@ export function Component() {
                         </div>
                       ) : (
                         <button aria-label="Delete" onClick={() => setConfirmDelete(row.id)}
-                          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
+                          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
                           <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       )}

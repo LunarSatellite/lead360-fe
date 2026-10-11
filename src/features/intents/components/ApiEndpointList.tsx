@@ -92,7 +92,7 @@ export function ApiEndpointList({ endpoints, isLoading }: ApiEndpointListProps) 
               success: isActive ? 'bg-success text-white' : 'bg-success-soft text-success hover:brightness-110',
               info: isActive ? 'bg-info text-white' : 'bg-info-soft text-info hover:brightness-110',
               warning: isActive ? 'bg-warning text-white' : 'bg-warning-soft text-warning hover:brightness-110',
-              danger: isActive ? 'bg-danger text-white' : 'bg-danger-soft text-danger hover:brightness-110',
+              danger: isActive ? 'bg-danger text-white' : 'bg-danger-soft text-danger-light hover:brightness-110',
               brand: isActive ? 'bg-brand text-white' : 'bg-brand-soft text-brand hover:brightness-110',
             };
             const color = HTTP_METHOD_COLOR[m] ?? 'info';
@@ -265,7 +265,7 @@ function EndpointDetail({ endpoint }: { endpoint: ApiEndpointDto }) {
                   </code>
                   <span>
                     {(param.required ?? param.Required) ? (
-                      <span className="text-danger font-bold text-[10px]">Yes</span>
+                      <span className="text-danger-light font-bold text-[10px]">Yes</span>
                     ) : (
                       <span className="text-text-muted text-[10px]">No</span>
                     )}

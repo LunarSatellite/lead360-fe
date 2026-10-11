@@ -123,7 +123,7 @@ function SlaChip({ deadline, breached }: { deadline: string | null; breached: bo
   const dt = parseISO(deadline);
   const overdue = breached || isPast(dt);
   return (
-    <span className={`inline-flex items-center gap-1 text-xs font-medium ${overdue ? 'text-danger-DEFAULT' : 'text-text-muted'}`}>
+    <span className={`inline-flex items-center gap-1 text-xs font-medium ${overdue ? 'text-danger-light' : 'text-text-muted'}`}>
       {overdue ? <AlertTriangle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
       {overdue && breached ? 'SLA breached' : format(dt, 'MMM d, HH:mm')}
     </span>
@@ -132,7 +132,7 @@ function SlaChip({ deadline, breached }: { deadline: string | null; breached: bo
 
 function TaskStatusIcon({ status }: { status: ProcessTaskStatus }) {
   if (status === ProcessTaskStatus.Completed) return <CheckCircle2 className="w-4 h-4 text-success-DEFAULT" />;
-  if (status === ProcessTaskStatus.Escalated) return <TriangleAlert className="w-4 h-4 text-danger-DEFAULT" />;
+  if (status === ProcessTaskStatus.Escalated) return <TriangleAlert className="w-4 h-4 text-danger-light" />;
   if (status === ProcessTaskStatus.InProgress) return <Play className="w-4 h-4 text-info-DEFAULT" />;
   return <Circle className="w-4 h-4 text-text-muted" />;
 }
@@ -178,7 +178,7 @@ function TaskDetail({ task, onClose }: { task: ProcessTaskDto; onClose: () => vo
           <div className="flex items-center gap-2 flex-wrap">
             <Badge label={PROCESS_TASK_STATUS_LABELS[task.status]} colorCls={PROCESS_TASK_STATUS_COLORS[task.status]} />
             {task.slaBreached && (
-              <Badge label="SLA Breached" colorCls="text-danger-DEFAULT border-danger-DEFAULT/30 bg-danger-DEFAULT/10" />
+              <Badge label="SLA Breached" colorCls="text-danger-light border-danger/30 bg-danger/10" />
             )}
             {task.escalationLevel > 0 && (
               <Badge label={`Escalation L${task.escalationLevel}`} colorCls="text-warning-DEFAULT border-warning-DEFAULT/30 bg-warning-DEFAULT/10" />
@@ -321,7 +321,7 @@ function TaskListView({
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-text-primary truncate">{task.stepName}</span>
                     {task.slaBreached && (
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold border text-danger-DEFAULT border-danger-DEFAULT/30 bg-danger-DEFAULT/10">
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold border text-danger-light border-danger/30 bg-danger/10">
                         <AlertTriangle className="w-2.5 h-2.5" /> SLA
                       </span>
                     )}

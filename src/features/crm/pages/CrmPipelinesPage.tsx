@@ -170,14 +170,14 @@ function StageGateList({ stageId }: { stageId: string }) {
             {STAGE_GATE_TYPE_LABELS[gate.gateType as keyof typeof STAGE_GATE_TYPE_LABELS]}
           </span>
           {gate.isRequired ? (
-            <span className="text-[10px] text-danger font-bold shrink-0">required</span>
+            <span className="text-[10px] text-danger-light font-bold shrink-0">required</span>
           ) : (
             <span className="text-[10px] text-text-muted shrink-0">optional</span>
           )}
           <button aria-label="Delete"
             onClick={() => deleteGate.mutate({ gateId: gate.id, stageId })}
             disabled={deleteGate.isPending}
-            className="p-1 rounded text-text-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+            className="p-1 rounded text-text-muted hover:text-danger-light opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
           >
             <Trash2 className="w-3 h-3" />
           </button>
@@ -431,7 +431,7 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
               {!pipeline.isDefault && (
                 <button aria-label="Delete"
                   onClick={handleDelete}
-                  className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+                  className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger/10 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -452,7 +452,7 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
 
           <div className="flex items-center gap-4 mt-2 ml-6 text-xs text-text-muted">
             <span>{pipeline.stageCount} stage{pipeline.stageCount !== 1 ? 's' : ''}</span>
-            {!pipeline.isActive && <span className="text-danger font-semibold">Inactive</span>}
+            {!pipeline.isActive && <span className="text-danger-light font-semibold">Inactive</span>}
           </div>
 
           {expanded && <StageGateConfigPanel pipelineId={pipeline.id} />}

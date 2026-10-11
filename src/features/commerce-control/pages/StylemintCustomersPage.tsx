@@ -244,7 +244,7 @@ export function StylemintCustomersPage() {
               <button
                 disabled={stateAction.isPending}
                 onClick={() => stateAction.mutate({ customer: selected, action: 'suspend' })}
-                className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl border border-danger/25 bg-danger-soft py-3 text-sm font-bold text-danger disabled:opacity-50"
+                className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl border border-danger/25 bg-danger-soft py-3 text-sm font-bold text-danger-light disabled:opacity-50"
               >
                 {stateAction.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -293,7 +293,7 @@ function Status({ status }: { status: number }) {
   const label = status === 1 ? 'Actif' : status === 2 ? 'Suspendu' : status === 3 ? 'Desactive' : 'Ferme';
   return (
     <span
-      className={`rounded-full border px-2.5 py-1 text-[10px] font-extrabold ${status === 1 ? 'border-success/25 bg-success-soft text-success' : 'border-danger/25 bg-danger-soft text-danger'}`}
+      className={`rounded-full border px-2.5 py-1 text-[10px] font-extrabold ${status === 1 ? 'border-success/25 bg-success-soft text-success' : 'border-danger/25 bg-danger-soft text-danger-light'}`}
     >
       {label}
     </span>

@@ -710,15 +710,15 @@ function SettingsSection({ card }: { card: CrmContactCardDto }) {
         </div>
 
         <div>
-          <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
-            Internal notes
+          <label className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Internal notes</span>
+            <textarea
+              className={inputCls + " mt-1 min-h-[64px]"}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="(only visible to your team)"
+            />
           </label>
-          <textarea
-            className={inputCls + " mt-1 min-h-[64px]"}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="(only visible to your team)" aria-label="(only visible to your team)"
-          />
           <div className="flex items-center justify-end gap-2 mt-2">
             <button
               type="button"

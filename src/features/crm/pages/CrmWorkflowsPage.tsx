@@ -651,60 +651,78 @@ function ActionConfigEditor({ actionType, value, onChange }: {
 
   if (actionType === 'create_task') return (
     <div className="space-y-1.5">
-      <div><label className={L}>Task title *</label>
-        <input aria-label="String" className={F} placeholder="e.g. Follow up with lead" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
+      <div><label className="flex flex-col">
+        <span className={L}>Task title *</span>
+        <input className={F} placeholder="e.g. Follow up with lead" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
+      </label>
       </div>
-      <div><label className={L}>Priority</label>
-        <select aria-label="String" className={F} value={String(parsed.priority ?? 'Medium')} onChange={(e) => set('priority', e.target.value)}>
-          {['Low', 'Medium', 'High'].map(p => <option key={p}>{p}</option>)}
-        </select>
+      <div><label className="flex flex-col">
+        <span className={L}>Priority</span>
+        <select className={F} value={String(parsed.priority ?? 'Medium')} onChange={(e) => set('priority', e.target.value)}>
+            {['Low', 'Medium', 'High'].map(p => <option key={p}>{p}</option>)}
+          </select>
+      </label>
       </div>
-      <div><label className={L}>Description (optional)</label>
-        <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" aria-label="Additional details…" value={String(parsed.description ?? '')} onChange={(e) => set('description', e.target.value)} />
+      <div><label className="flex flex-col">
+        <span className={L}>Description (optional)</span>
+        <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" value={String(parsed.description ?? '')} onChange={(e) => set('description', e.target.value)} />
+      </label>
       </div>
     </div>
   );
 
   if (actionType === 'send_notification') return (
     <div className="space-y-1.5">
-      <div><label className={L}>Alert title *</label>
-        <input aria-label="String" className={F} placeholder="e.g. Hot lead alert" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
+      <div><label className="flex flex-col">
+        <span className={L}>Alert title *</span>
+        <input className={F} placeholder="e.g. Hot lead alert" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
+      </label>
       </div>
-      <div><label className={L}>Body (optional)</label>
-        <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" aria-label="Additional details…" value={String(parsed.body ?? '')} onChange={(e) => set('body', e.target.value)} />
+      <div><label className="flex flex-col">
+        <span className={L}>Body (optional)</span>
+        <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" value={String(parsed.body ?? '')} onChange={(e) => set('body', e.target.value)} />
+      </label>
       </div>
-      <div><label className={L}>Notify user (optional)</label>
-        <select aria-label="Filter by user" className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
-          <option value="">All users</option>
-          {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
-        </select>
+      <div><label className="flex flex-col">
+        <span className={L}>Notify user (optional)</span>
+        <select className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
+            <option value="">All users</option>
+            {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
+          </select>
+      </label>
       </div>
     </div>
   );
 
   if (actionType === 'update_funnel_stage') return (
-    <div><label className={L}>New stage</label>
-      <select aria-label="String" className={F} value={String(parsed.newStage ?? 'Qualified')} onChange={(e) => set('newStage', e.target.value)}>
-        {['Identified', 'Inquiring', 'Qualified', 'Negotiating', 'Closing', 'Customer', 'Repeat', 'Advocate', 'Dormant'].map(s => <option key={s}>{s}</option>)}
-      </select>
+    <div><label className="flex flex-col">
+      <span className={L}>New stage</span>
+      <select className={F} value={String(parsed.newStage ?? 'Qualified')} onChange={(e) => set('newStage', e.target.value)}>
+          {['Identified', 'Inquiring', 'Qualified', 'Negotiating', 'Closing', 'Customer', 'Repeat', 'Advocate', 'Dormant'].map(s => <option key={s}>{s}</option>)}
+        </select>
+    </label>
     </div>
   );
 
   if (actionType === 'assign_to_user') return (
-    <div><label className={L}>Assign to *</label>
-      <select aria-label="String" className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
-        <option value="">Select team member…</option>
-        {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
-      </select>
+    <div><label className="flex flex-col">
+      <span className={L}>Assign to *</span>
+      <select className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
+          <option value="">Select team member…</option>
+          {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
+        </select>
+    </label>
     </div>
   );
 
   if (actionType === 'create_nurture_entry') return (
-    <div><label className={L}>Nurture sequence *</label>
-      <select aria-label="String" className={F} value={String(parsed.sequenceId ?? '')} onChange={(e) => set('sequenceId', e.target.value)}>
-        <option value="">Select sequence…</option>
-        {sequences.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-      </select>
+    <div><label className="flex flex-col">
+      <span className={L}>Nurture sequence *</span>
+      <select className={F} value={String(parsed.sequenceId ?? '')} onChange={(e) => set('sequenceId', e.target.value)}>
+          <option value="">Select sequence…</option>
+          {sequences.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+        </select>
+    </label>
     </div>
   );
 
@@ -716,26 +734,34 @@ function ActionConfigEditor({ actionType, value, onChange }: {
     const setMany = (patch: Record<string, unknown>) => onChange(JSON.stringify({ ...parsed, to, ...patch }));
     return (
       <div className="space-y-1.5">
-        <div><label className={L}>Send to *</label>
-          <select aria-label="Mode" className={F} value={mode} onChange={(e) => {
-            const v = e.target.value;
-            setMany({ to: v === 'owner' ? 'owner' : v === 'customer' ? 'customer' : '' });
-          }}>
-            <option value="customer">The customer (who triggered it)</option>
-            <option value="owner">The record owner (staff)</option>
-            <option value="custom">A custom address…</option>
-          </select>
+        <div><label className="flex flex-col">
+          <span className={L}>Send to *</span>
+          <select className={F} value={mode} onChange={(e) => {
+              const v = e.target.value;
+              setMany({ to: v === 'owner' ? 'owner' : v === 'customer' ? 'customer' : '' });
+            }}>
+              <option value="customer">The customer (who triggered it)</option>
+              <option value="owner">The record owner (staff)</option>
+              <option value="custom">A custom address…</option>
+            </select>
+        </label>
         </div>
         {mode === 'custom' && (
-          <div><label className={L}>Email address *</label>
+          <div><label className="flex flex-col">
+            <span className={L}>Email address *</span>
             <input className={F} placeholder="hello@example.com" value={to} onChange={(e) => setMany({ to: e.target.value })} />
+          </label>
           </div>
         )}
-        <div><label className={L}>Subject *</label>
-          <input aria-label="String" className={F} placeholder="e.g. Thanks for your order!" value={String(parsed.subject ?? '')} onChange={(e) => setMany({ subject: e.target.value })} />
+        <div><label className="flex flex-col">
+          <span className={L}>Subject *</span>
+          <input className={F} placeholder="e.g. Thanks for your order!" value={String(parsed.subject ?? '')} onChange={(e) => setMany({ subject: e.target.value })} />
+        </label>
         </div>
-        <div><label className={L}>Message *</label>
-          <textarea rows={3} className={F + ' resize-none'} placeholder="Your email message…" aria-label="Your email message…" value={String(parsed.body ?? '')} onChange={(e) => setMany({ body: e.target.value })} />
+        <div><label className="flex flex-col">
+          <span className={L}>Message *</span>
+          <textarea rows={3} className={F + ' resize-none'} placeholder="Your email message…" value={String(parsed.body ?? '')} onChange={(e) => setMany({ body: e.target.value })} />
+        </label>
         </div>
       </div>
     );
@@ -759,23 +785,31 @@ function ActionConfigEditor({ actionType, value, onChange }: {
 
   if (actionType === 'create_deal') return (
     <div className="space-y-1.5">
-      <div><label className={L}>Stage</label>
-        <select aria-label="String" className={F} value={String(parsed.stage_name ?? '')} onChange={(e) => set('stage_name', e.target.value)}>
-          <option value="">First open stage (default)</option>
-          {stages.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-        </select>
+      <div><label className="flex flex-col">
+        <span className={L}>Stage</span>
+        <select className={F} value={String(parsed.stage_name ?? '')} onChange={(e) => set('stage_name', e.target.value)}>
+            <option value="">First open stage (default)</option>
+            {stages.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+          </select>
+      </label>
       </div>
-      <div><label className={L}>Assign to (optional)</label>
-        <select aria-label="String" className={F} value={String(parsed.assign_to ?? '')} onChange={(e) => set('assign_to', e.target.value)}>
-          <option value="">Lead's assigned owner</option>
-          {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
-        </select>
+      <div><label className="flex flex-col">
+        <span className={L}>Assign to (optional)</span>
+        <select className={F} value={String(parsed.assign_to ?? '')} onChange={(e) => set('assign_to', e.target.value)}>
+            <option value="">Lead's assigned owner</option>
+            {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
+          </select>
+      </label>
       </div>
-      <div><label className={L}>Deal name (optional)</label>
-        <input className={F} placeholder="Auto-generated if empty" aria-label="Auto-generated if empty" value={String(parsed.deal_name ?? '')} onChange={(e) => set('deal_name', e.target.value)} />
+      <div><label className="flex flex-col">
+        <span className={L}>Deal name (optional)</span>
+        <input className={F} placeholder="Auto-generated if empty" value={String(parsed.deal_name ?? '')} onChange={(e) => set('deal_name', e.target.value)} />
+      </label>
       </div>
-      <div><label className={L}>Amount (optional)</label>
-        <input type="number" min={0} className={F} placeholder="Leave blank if unknown" aria-label="Leave blank if unknown" value={parsed.amount != null ? String(parsed.amount) : ''} onChange={(e) => set('amount', e.target.value ? Number(e.target.value) : undefined)} />
+      <div><label className="flex flex-col">
+        <span className={L}>Amount (optional)</span>
+        <input type="number" min={0} className={F} placeholder="Leave blank if unknown" value={parsed.amount != null ? String(parsed.amount) : ''} onChange={(e) => set('amount', e.target.value ? Number(e.target.value) : undefined)} />
+      </label>
       </div>
     </div>
   );
@@ -783,11 +817,13 @@ function ActionConfigEditor({ actionType, value, onChange }: {
   if (actionType === 'start_process') {
     const defs = processDefsQ.data ?? [];
     return (
-      <div><label className={L}>Process Definition *</label>
-        <select aria-label="String" className={F} value={String(parsed.definition_id ?? '')} onChange={(e) => set('definition_id', e.target.value)}>
-          <option value="">Select a process…</option>
-          {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-        </select>
+      <div><label className="flex flex-col">
+        <span className={L}>Process Definition *</span>
+        <select className={F} value={String(parsed.definition_id ?? '')} onChange={(e) => set('definition_id', e.target.value)}>
+            <option value="">Select a process…</option>
+            {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+          </select>
+      </label>
         {!processDefsQ.data && <p className="text-[9px] text-text-muted mt-0.5">Loading…</p>}
         {defs.length === 0 && processDefsQ.isSuccess && (
           <p className="text-[9px] text-amber-400 mt-0.5">No process definitions found — create one in Process Flows first.</p>

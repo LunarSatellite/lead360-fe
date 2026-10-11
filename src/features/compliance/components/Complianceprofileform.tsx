@@ -176,25 +176,29 @@ export function ComplianceProfileForm({
           </label>
           {requiresAgeVerification && (
             <div className="flex items-center gap-2">
-              <label className="text-xs font-semibold text-text-muted">Min age:</label>
-              <input aria-label="Minimum age"
-                type="number"
-                value={minimumAge}
-                onChange={(e) => setMinimumAge(e.target.value ? Number(e.target.value) : '')}
-                placeholder="18"
-                className="w-16 px-2 py-1 rounded-lg bg-glass-2 border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
-              />
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-text-muted">Min age:</span>
+                <input
+                  type="number"
+                  value={minimumAge}
+                  onChange={(e) => setMinimumAge(e.target.value ? Number(e.target.value) : '')}
+                  placeholder="18"
+                  className="w-16 px-2 py-1 rounded-lg bg-glass-2 border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
+                />
+              </label>
             </div>
           )}
           <div className="flex items-center gap-2">
-            <label className="text-xs font-semibold text-text-muted">Max response length:</label>
-            <input aria-label="Max response length"
-              type="number"
-              value={maxResponseLength}
-              onChange={(e) => setMaxResponseLength(e.target.value ? Number(e.target.value) : '')}
-              placeholder="500"
-              className="w-20 px-2 py-1 rounded-lg bg-glass-2 border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
-            />
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold text-text-muted">Max response length:</span>
+              <input
+                type="number"
+                value={maxResponseLength}
+                onChange={(e) => setMaxResponseLength(e.target.value ? Number(e.target.value) : '')}
+                placeholder="500"
+                className="w-20 px-2 py-1 rounded-lg bg-glass-2 border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
+              />
+            </label>
           </div>
         </div>
       </div>

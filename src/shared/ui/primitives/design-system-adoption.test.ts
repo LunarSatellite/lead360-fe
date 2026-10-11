@@ -141,7 +141,7 @@ describe('defects that must not come back', () => {
      *
      * Lower it when you fix some. It may not go up.
      */
-    const BUDGET_ORPHAN_LABELS = 185;
+    const BUDGET_ORPHAN_LABELS = 134;
     const orphans: string[] = [];
 
     for (const [file, source] of Object.entries(TSX)) {
@@ -200,7 +200,7 @@ describe('defects that must not come back', () => {
      * no binding, an index, a loop variable. Those need someone to decide
      * what the control is for.
      */
-    const BUDGET_UNNAMED_CONTROLS = 59;
+    const BUDGET_UNNAMED_CONTROLS = 58;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 

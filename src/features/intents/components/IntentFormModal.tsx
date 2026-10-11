@@ -162,20 +162,24 @@ export function IntentFormModal({
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-6 space-y-4">
           {/* Name */}
           <div>
-            <label className={label}>Name *</label>
-            <input aria-label="Name" {...form.register('name')} placeholder="e.g. Track Order" className={input} />
+            <label className="flex flex-col">
+              <span className={label}>Name *</span>
+              <input {...form.register('name')} placeholder="e.g. Track Order" className={input} />
+            </label>
             {form.formState.errors.name && <p className={errorText}>{form.formState.errors.name.message}</p>}
           </div>
 
           {/* Description */}
           <div>
-            <label className={label}>Description</label>
-            <textarea
-              {...form.register('description')}
-              placeholder="What does this intent do?" aria-label="What does this intent do?"
-              rows={2}
-              className={`${input} resize-none`}
-            />
+            <label className="flex flex-col">
+              <span className={label}>Description</span>
+              <textarea
+                {...form.register('description')}
+                placeholder="What does this intent do?"
+                rows={2}
+                className={`${input} resize-none`}
+              />
+            </label>
           </div>
 
           {/* Track: visual pill selector */}
@@ -229,27 +233,31 @@ export function IntentFormModal({
           {/* Two columns: Parent + Sort Order */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={label}>Parent intent</label>
-              <select aria-label="Parent intent ID" {...form.register('parentIntentId')} className={input}>
-                <option value="" className="bg-bg-card">
-                  None (root level)
-                </option>
-                {availableParents.map((p) => (
-                  <option key={p.id} value={p.id} className="bg-bg-card">
-                    {'—'.repeat(p.level)} {p.name}
+              <label className="flex flex-col">
+                <span className={label}>Parent intent</span>
+                <select {...form.register('parentIntentId')} className={input}>
+                  <option value="" className="bg-bg-card">
+                    None (root level)
                   </option>
-                ))}
-              </select>
+                  {availableParents.map((p) => (
+                    <option key={p.id} value={p.id} className="bg-bg-card">
+                      {'—'.repeat(p.level)} {p.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
             <div>
-              <label className={label}>Sort order</label>
-              <input aria-label="Sort order"
-                type="number"
-                {...form.register('sortOrder', { valueAsNumber: true })}
-                className={input}
-                min={0}
-                max={999}
-              />
+              <label className="flex flex-col">
+                <span className={label}>Sort order</span>
+                <input
+                  type="number"
+                  {...form.register('sortOrder', { valueAsNumber: true })}
+                  className={input}
+                  min={0}
+                  max={999}
+                />
+              </label>
             </div>
           </div>
 
@@ -297,32 +305,38 @@ export function IntentFormModal({
               <div className="space-y-3">
                 <div className="grid grid-cols-[1fr_120px] gap-3">
                   <div>
-                    <label className={label}>API Endpoint</label>
-                    <input
-                      {...form.register('apiEndpoint')}
-                      placeholder="GET /orders/{order_id}/status" aria-label="GET /orders/{order_id}/status"
-                      className={input}
-                    />
+                    <label className="flex flex-col">
+                      <span className={label}>API Endpoint</span>
+                      <input
+                        {...form.register('apiEndpoint')}
+                        placeholder="GET /orders/{order_id}/status"
+                        className={input}
+                      />
+                    </label>
                   </div>
                   <div>
-                    <label className={label}>Method</label>
-                    <select aria-label="API method" {...form.register('apiMethod')} className={input}>
-                      {API_METHODS.map((m) => (
-                        <option key={m} value={m} className="bg-bg-card">
-                          {m}
-                        </option>
-                      ))}
-                    </select>
+                    <label className="flex flex-col">
+                      <span className={label}>Method</span>
+                      <select {...form.register('apiMethod')} className={input}>
+                        {API_METHODS.map((m) => (
+                          <option key={m} value={m} className="bg-bg-card">
+                            {m}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                   </div>
                 </div>
                 <div>
-                  <label className={label}>Parameters JSON</label>
-                  <textarea aria-label="API parameters JSON"
-                    {...form.register('apiParametersJson')}
-                    placeholder='{"order_id": "string"}'
-                    rows={3}
-                    className={`${input} resize-none font-mono text-2xs`}
-                  />
+                  <label className="flex flex-col">
+                    <span className={label}>Parameters JSON</span>
+                    <textarea
+                      {...form.register('apiParametersJson')}
+                      placeholder='{"order_id": "string"}'
+                      rows={3}
+                      className={`${input} resize-none font-mono text-2xs`}
+                    />
+                  </label>
                 </div>
               </div>
             )}
@@ -330,25 +344,29 @@ export function IntentFormModal({
             {/* StaticResponse fields */}
             {watchedOp === IntentOperationType.StaticResponse && (
               <div>
-                <label className={label}>Response text</label>
-                <textarea
-                  {...form.register('staticResponseText')}
-                  placeholder="The response your chatbot will send..." aria-label="The response your chatbot will send..."
-                  rows={4}
-                  className={`${input} resize-none`}
-                />
+                <label className="flex flex-col">
+                  <span className={label}>Response text</span>
+                  <textarea
+                    {...form.register('staticResponseText')}
+                    placeholder="The response your chatbot will send..."
+                    rows={4}
+                    className={`${input} resize-none`}
+                  />
+                </label>
               </div>
             )}
 
             {/* AgentHandoff fields */}
             {watchedOp === IntentOperationType.AgentHandoff && (
               <div>
-                <label className={label}>Handoff target</label>
-                <input aria-label="Handoff target"
-                  {...form.register('handoffTarget')}
-                  placeholder="e.g. support-team, billing-dept"
-                  className={input}
-                />
+                <label className="flex flex-col">
+                  <span className={label}>Handoff target</span>
+                  <input
+                    {...form.register('handoffTarget')}
+                    placeholder="e.g. support-team, billing-dept"
+                    className={input}
+                  />
+                </label>
               </div>
             )}
 
@@ -356,12 +374,14 @@ export function IntentFormModal({
             {(watchedOp === IntentOperationType.ProductSearch ||
               watchedOp === IntentOperationType.CategoryBrowse) && (
               <div>
-                <label className={label}>Search scope</label>
-                <input aria-label="Search scope"
-                  {...form.register('searchScope')}
-                  placeholder="e.g. electronics, all, category:phones"
-                  className={input}
-                />
+                <label className="flex flex-col">
+                  <span className={label}>Search scope</span>
+                  <input
+                    {...form.register('searchScope')}
+                    placeholder="e.g. electronics, all, category:phones"
+                    className={input}
+                  />
+                </label>
               </div>
             )}
 

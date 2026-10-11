@@ -723,17 +723,18 @@ export function Component() {
               {/* aria-label rather than nesting: the label and the input are
                   both flex items in this row, so wrapping one in the other
                   would change the layout. */}
-              <label className="text-xs font-semibold text-text-secondary">Tax %</label>
-              <input
-                aria-label="Tax %"
-                type="number"
-                value={taxPercent}
-                onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
-                className="w-20 px-2 py-1.5 rounded-xl border border-brand/20 text-xs text-text-primary text-right focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
-                min={0}
-                step={0.01}
-              />
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-text-secondary">Tax %</span>
+                <input
+                  type="number"
+                  value={taxPercent}
+                  onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
+                  className="w-20 px-2 py-1.5 rounded-xl border border-brand/20 text-xs text-text-primary text-right focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
+                  min={0}
+                  step={0.01}
+                />
+              </label>
             </div>
             <div className="text-xs text-text-secondary text-right space-y-0.5">
               <p>Subtotal: <span className="font-bold text-text-primary">{currency} {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>

@@ -1416,24 +1416,32 @@ function FbAdsTab() {
               </div>
               <SectionLabel label="Ad Account" />
               <div>
-                <label className="text-xs text-text-muted">Ad Account ID *</label>
-                <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
-                  placeholder="act_123456789 or 123456789" aria-label="act_123456789 or 123456789" className={`mt-1 ${inputCls}`} style={inputStyle} required />
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-text-muted">Ad Account ID *</span>
+                  <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
+                    placeholder="act_123456789 or 123456789" className={`mt-1 ${inputCls}`} style={inputStyle} required />
+                </label>
               </div>
               <div>
-                <label className="text-xs text-text-muted">Access Token *</label>
-                <input type="password" value={form.accessToken} onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
-                  placeholder="EAAxxxx..." aria-label="EAAxxxx..." className={`mt-1 ${inputCls}`} style={inputStyle} required />
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-text-muted">Access Token *</span>
+                  <input type="password" value={form.accessToken} onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
+                    placeholder="EAAxxxx..." className={`mt-1 ${inputCls}`} style={inputStyle} required />
+                </label>
               </div>
               <div>
-                <label className="text-xs text-text-muted">Business Name</label>
-                <input value={form.businessName ?? ''} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-                  placeholder="My Business" aria-label="My Business" className={`mt-1 ${inputCls}`} style={inputStyle} />
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-text-muted">Business Name</span>
+                  <input value={form.businessName ?? ''} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+                    placeholder="My Business" className={`mt-1 ${inputCls}`} style={inputStyle} />
+                </label>
               </div>
               <div>
-                <label className="text-xs text-text-muted">Currency</label>
-                <input value={form.currency ?? 'USD'} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
-                  placeholder="USD" aria-label="USD" className={`mt-1 ${inputCls}`} style={inputStyle} maxLength={10} />
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs text-text-muted">Currency</span>
+                  <input value={form.currency ?? 'USD'} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
+                    placeholder="USD" className={`mt-1 ${inputCls}`} style={inputStyle} maxLength={10} />
+                </label>
               </div>
             </div>
             <div className="shrink-0 flex items-center justify-end px-6 py-4 border-t border-border-subtle">

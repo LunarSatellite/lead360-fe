@@ -933,9 +933,11 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
 
           {/* App ID */}
           <div>
-            <label className={labelCls}>Facebook App ID *</label>
-            <input aria-label="App ID" value={form.appId} onChange={e => setForm(f => ({ ...f, appId: e.target.value }))}
-              placeholder="1234567890123456" className={inputCls} />
+            <label className="flex flex-col">
+              <span className={labelCls}>Facebook App ID *</span>
+              <input value={form.appId} onChange={e => setForm(f => ({ ...f, appId: e.target.value }))}
+                placeholder="1234567890123456" className={inputCls} />
+            </label>
             {meta?.appId && <p className="text-[10px] text-text-muted mt-1">Current: {meta.appId}</p>}
           </div>
 
@@ -1362,9 +1364,11 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
             </ol>
           </div>
           <div>
-            <label className={labelCls}>Advertiser ID *</label>
-            <input aria-label="Advertiser ID" value={form.advertiserId} onChange={e => setForm(f => ({ ...f, advertiserId: e.target.value }))}
-              placeholder="7012345678901234567" className={inputCls} />
+            <label className="flex flex-col">
+              <span className={labelCls}>Advertiser ID *</span>
+              <input value={form.advertiserId} onChange={e => setForm(f => ({ ...f, advertiserId: e.target.value }))}
+                placeholder="7012345678901234567" className={inputCls} />
+            </label>
           </div>
           <div>
             <label className={labelCls}>Access Token *</label>
@@ -1379,9 +1383,11 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div>
-            <label className={labelCls}>Business Name</label>
-            <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-              placeholder="Your Business" aria-label="Your Business" className={inputCls} />
+            <label className="flex flex-col">
+              <span className={labelCls}>Business Name</span>
+              <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+                placeholder="Your Business" className={inputCls} />
+            </label>
           </div>
         </div>
         <div className="px-6 py-4 border-t border-border-subtle flex gap-3">

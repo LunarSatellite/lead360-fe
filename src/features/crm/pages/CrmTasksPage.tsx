@@ -269,10 +269,12 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
   <textarea rows={2} value={editForm.description} onChange={setEdit('description')} className={`${inputCls} resize-none`} />
 </label></div>
             <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1">Priority</label>
-              <select value={editForm.priority} onChange={setEdit('priority')} className={`${selectCls} w-full`}>
-                {Object.entries(CRM_TASK_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-              </select>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-muted mb-1">Priority</span>
+                <select value={editForm.priority} onChange={setEdit('priority')} className={`${selectCls} w-full`}>
+                  {Object.entries(CRM_TASK_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+                </select>
+              </label>
             </div>
             <div><label className="block">
   <span className="block text-xs font-semibold text-text-muted mb-1">Due Date</span>

@@ -154,18 +154,20 @@ function LogTimeForm({ form, setForm, onSubmit }: {
 
       {/* Description */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
-        <div className="relative">
-          <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <textarea
-            rows={3}
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-            placeholder="What did you work on?"
-            value={form.description ?? ''}
-            onChange={set('description')}
-          />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Description</span>
+          <div className="relative">
+            <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <textarea
+              rows={3}
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              placeholder="What did you work on?"
+              value={form.description ?? ''}
+              onChange={set('description')}
+            />
+          </div>
+        </label>
       </div>
 
       {/* ── Link Entity ── */}
@@ -176,21 +178,23 @@ function LogTimeForm({ form, setForm, onSubmit }: {
 
       {/* Entity Type */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Entity Type *</label>
-        <div className="relative">
-          <LayersIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <select
-            required
-            value={form.entityKind}
-            onChange={set('entityKind')}
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-          >
-            {(Object.entries(CRM_TIME_ENTITY_LABELS) as [string, string][]).map(([v, l]) => (
-              <option key={v} value={v}>{l}</option>
-            ))}
-          </select>
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Entity Type *</span>
+          <div className="relative">
+            <LayersIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <select
+              required
+              value={form.entityKind}
+              onChange={set('entityKind')}
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            >
+              {(Object.entries(CRM_TIME_ENTITY_LABELS) as [string, string][]).map(([v, l]) => (
+                <option key={v} value={v}>{l}</option>
+              ))}
+            </select>
+          </div>
+        </label>
       </div>
 
       {/* Entity ID */}

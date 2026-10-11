@@ -97,19 +97,25 @@ export function Component() {
           <h3 className="text-sm font-semibold">{editingId ? 'Edit' : 'New'} Approval Chain</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-text-muted block mb-1">Name *</label>
-              <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Quote Approval" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
+              <label className="block">
+                <span className="text-xs text-text-muted block mb-1">Name *</span>
+                <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Quote Approval" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
+              </label>
             </div>
             <div>
-              <label className="text-xs text-text-muted block mb-1">Applies To</label>
-              <select value={entityType} onChange={e => setEntityType(Number(e.target.value))} className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm">
-                {Object.entries(entityTypeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-              </select>
+              <label className="block">
+                <span className="text-xs text-text-muted block mb-1">Applies To</span>
+                <select value={entityType} onChange={e => setEntityType(Number(e.target.value))} className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm">
+                  {Object.entries(entityTypeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                </select>
+              </label>
             </div>
           </div>
           <div>
-            <label className="text-xs text-text-muted block mb-1">Description</label>
-            <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Optional description" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
+            <label className="block">
+              <span className="text-xs text-text-muted block mb-1">Description</span>
+              <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Optional description" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
+            </label>
           </div>
 
           {/* Steps */}

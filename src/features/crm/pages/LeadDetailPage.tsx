@@ -313,39 +313,49 @@ export function Component() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2">
-                    <label className="text-xs text-text-muted mb-1 block">Deal Name</label>
-                    <input value={convertForm.dealName ?? `Deal — ${displayName}`} onChange={(e) => setConvertForm((f) => ({ ...f, dealName: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Deal Name</span>
+                      <input value={convertForm.dealName ?? `Deal — ${displayName}`} onChange={(e) => setConvertForm((f) => ({ ...f, dealName: e.target.value }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                    </label>
                   </div>
                   <div>
-                    <label className="text-xs text-text-muted mb-1 block">Amount</label>
-                    <input type="number" min={0} value={convertForm.dealAmount ?? ''}
-                      onChange={(e) => setConvertForm((f) => ({ ...f, dealAmount: e.target.value ? Number(e.target.value) : undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" placeholder="0" />
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Amount</span>
+                      <input type="number" min={0} value={convertForm.dealAmount ?? ''}
+                        onChange={(e) => setConvertForm((f) => ({ ...f, dealAmount: e.target.value ? Number(e.target.value) : undefined }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" placeholder="0" />
+                    </label>
                   </div>
                   <div>
-                    <label className="text-xs text-text-muted mb-1 block">Close Date</label>
-                    <input type="date" value={convertForm.closeDate ?? ''}
-                      onChange={(e) => setConvertForm((f) => ({ ...f, closeDate: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Close Date</span>
+                      <input type="date" value={convertForm.closeDate ?? ''}
+                        onChange={(e) => setConvertForm((f) => ({ ...f, closeDate: e.target.value || undefined }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                    </label>
                   </div>
                   <div>
-                    <label className="text-xs text-text-muted mb-1 block">Stage</label>
-                    <select value={convertForm.stageId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, stageId: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                      <option value="">First open stage</option>
-                      {(dealStages as any[]).filter((s: any) => !s.isClosed).map((s: any) => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                    </select>
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Stage</span>
+                      <select value={convertForm.stageId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, stageId: e.target.value || undefined }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                        <option value="">First open stage</option>
+                        {(dealStages as any[]).filter((s: any) => !s.isClosed).map((s: any) => (
+                          <option key={s.id} value={s.id}>{s.name}</option>
+                        ))}
+                      </select>
+                    </label>
                   </div>
                   <div>
-                    <label className="text-xs text-text-muted mb-1 block">Assign Owner</label>
-                    <select value={convertForm.ownedByUserId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, ownedByUserId: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                      <option value="">Assign to me (default)</option>
-                      {teamMembers.map((u) => (<option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>))}
-                    </select>
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Assign Owner</span>
+                      <select value={convertForm.ownedByUserId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, ownedByUserId: e.target.value || undefined }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                        <option value="">Assign to me (default)</option>
+                        {teamMembers.map((u) => (<option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>))}
+                      </select>
+                    </label>
                   </div>
                 </div>
                 <Button disabled={convertLead.isPending}

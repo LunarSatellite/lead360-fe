@@ -357,19 +357,21 @@ export function Component() {
               {/* Template */}
               {templates.length > 0 && (
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Template</label>
-                  <div className="relative">
-                    <FileSignature className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <select
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      value={form.templateId}
-                      onChange={e => setForm(f => ({ ...f, templateId: e.target.value }))}
-                    >
-                      <option value="">No template</option>
-                      {templates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
-                    </select>
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Template</span>
+                    <div className="relative">
+                      <FileSignature className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                      <select
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                        value={form.templateId}
+                        onChange={e => setForm(f => ({ ...f, templateId: e.target.value }))}
+                      >
+                        <option value="">No template</option>
+                        {templates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                      </select>
+                    </div>
+                  </label>
                 </div>
               )}
 

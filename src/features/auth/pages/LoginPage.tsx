@@ -60,17 +60,17 @@ export function Component() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
         {/* Email */}
         <div>
-          <label className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">
-            Email address
+          <label className="block">
+            <span className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">Email address</span>
+            <input
+              {...form.register('email')}
+              type="email"
+              placeholder="you@company.com"
+              autoComplete="email"
+              inputMode="email"
+              className="w-full px-3.5 sm:px-4 py-3 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all"
+            />
           </label>
-          <input
-            {...form.register('email')}
-            type="email"
-            placeholder="you@company.com"
-            autoComplete="email"
-            inputMode="email"
-            className="w-full px-3.5 sm:px-4 py-3 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all"
-          />
           {form.formState.errors.email && (
             <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
           )}

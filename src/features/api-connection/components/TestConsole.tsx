@@ -80,19 +80,21 @@ export function TestConsole({ endpoints }: TestConsoleProps) {
         {/* Left: select + params */}
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Select Endpoint</label>
-            <select
-              value={selectedId}
-              onChange={(e) => handleSelect(e.target.value)}
-              className="form-input appearance-none cursor-pointer"
-            >
-              <option value="">— Choose an endpoint —</option>
-              {endpoints.map((ep) => (
-                <option key={ep.id} value={ep.id}>
-                  {ep.httpMethod.toUpperCase()} {ep.path} {ep.summary ? `— ${ep.summary}` : ''}
-                </option>
-              ))}
-            </select>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Select Endpoint</span>
+              <select
+                value={selectedId}
+                onChange={(e) => handleSelect(e.target.value)}
+                className="form-input appearance-none cursor-pointer"
+              >
+                <option value="">— Choose an endpoint —</option>
+                {endpoints.map((ep) => (
+                  <option key={ep.id} value={ep.id}>
+                    {ep.httpMethod.toUpperCase()} {ep.path} {ep.summary ? `— ${ep.summary}` : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
 
           {selected && (

@@ -837,12 +837,14 @@ function CreateWorkflowForm({ onGenerate }: {
 
         {/* Trigger Type */}
         <div>
-          <label className="block text-2xs font-semibold mb-1 text-text-secondary">Trigger</label>
-          <select value={triggerType} onChange={(e) => { setTriggerType(e.target.value); setTriggerConditionsJson('{}'); }}
-            className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary outline-none focus:border-brand">
-            {(triggerDefs ?? Object.entries(CRM_WORKFLOW_TRIGGER_LABELS).map(([k, l]) => ({ triggerType: k, displayName: l })))
-              .map((d) => <option key={d.triggerType} value={d.triggerType}>{d.displayName}</option>)}
-          </select>
+          <label className="block">
+            <span className="block text-2xs font-semibold mb-1 text-text-secondary">Trigger</span>
+            <select value={triggerType} onChange={(e) => { setTriggerType(e.target.value); setTriggerConditionsJson('{}'); }}
+              className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary outline-none focus:border-brand">
+              {(triggerDefs ?? Object.entries(CRM_WORKFLOW_TRIGGER_LABELS).map(([k, l]) => ({ triggerType: k, displayName: l })))
+                .map((d) => <option key={d.triggerType} value={d.triggerType}>{d.displayName}</option>)}
+            </select>
+          </label>
         </div>
 
         {/* Trigger Conditions */}
@@ -956,13 +958,15 @@ function CS({ label, value, onChange, options, hint }: {
 }) {
   return (
     <div>
-      <label className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</label>
-      <select
-        value={value} onChange={(e) => onChange(e.target.value)}
-        className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
-      >
-        {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>
+      <label className="block">
+        <span className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</span>
+        <select
+          value={value} onChange={(e) => onChange(e.target.value)}
+          className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
+        >
+          {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      </label>
       {hint && <p className="text-[10px] text-text-muted mt-1 leading-snug">{hint}</p>}
     </div>
   );
@@ -1274,15 +1278,17 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                   const defs = processDefsQ.data ?? [];
                   return (
                     <div>
-                      <label className="block text-2xs font-semibold mb-1 text-text-secondary">Process Definition *</label>
-                      <select
-                        value={cfg.definition_id ?? ''}
-                        onChange={(e) => sf('definition_id', e.target.value)}
-                        className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
-                      >
-                        <option value="">Select a process…</option>
-                        {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                      </select>
+                      <label className="block">
+                        <span className="block text-2xs font-semibold mb-1 text-text-secondary">Process Definition *</span>
+                        <select
+                          value={cfg.definition_id ?? ''}
+                          onChange={(e) => sf('definition_id', e.target.value)}
+                          className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
+                        >
+                          <option value="">Select a process…</option>
+                          {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                        </select>
+                      </label>
                       {defs.length === 0 && processDefsQ.isSuccess && (
                         <p className="text-[10px] text-amber-400 mt-1">No process definitions found — create one in Process Flows first.</p>
                       )}

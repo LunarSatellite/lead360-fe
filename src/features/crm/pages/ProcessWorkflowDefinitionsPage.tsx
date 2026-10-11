@@ -75,14 +75,16 @@ function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
           <RoleDropdown roleId={step.assignedRoleId ?? ''} onChange={id => onChange(index, { ...step, assignedRoleId: id || undefined })} />
         </div>
         <div className="w-28">
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">SLA (hrs)</label>
-          <input
-            type="number"
-            min={1}
-            value={step.slaHours ?? 24}
-            onChange={e => onChange(index, { ...step, slaHours: parseInt(e.target.value) || 24 })}
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          />
+          <label className="block">
+            <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">SLA (hrs)</span>
+            <input
+              type="number"
+              min={1}
+              value={step.slaHours ?? 24}
+              onChange={e => onChange(index, { ...step, slaHours: parseInt(e.target.value) || 24 })}
+              className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+          </label>
         </div>
       </div>
     </div>

@@ -62,19 +62,21 @@ export function ImportEditDialog({ row, onSave, onClose }: ImportEditDialogProps
             </label>
           </div>
           <div>
-            <label className="block text-2xs font-semibold text-text-secondary mb-1">Operation Type</label>
-            <select
-              value={operationType}
-              onChange={(e) => setOperationType(e.target.value)}
-              className="form-input"
-            >
-              <option value="">Select...</option>
-              <option value="ApiCall">API Call</option>
-              <option value="MenuNavigation">Menu Navigation</option>
-              <option value="StaticResponse">Static Response</option>
-              <option value="Browsing">Browsing</option>
-              <option value="Greeting">Greeting</option>
-            </select>
+            <label className="block">
+              <span className="block text-2xs font-semibold text-text-secondary mb-1">Operation Type</span>
+              <select
+                value={operationType}
+                onChange={(e) => setOperationType(e.target.value)}
+                className="form-input"
+              >
+                <option value="">Select...</option>
+                <option value="ApiCall">API Call</option>
+                <option value="MenuNavigation">Menu Navigation</option>
+                <option value="StaticResponse">Static Response</option>
+                <option value="Browsing">Browsing</option>
+                <option value="Greeting">Greeting</option>
+              </select>
+            </label>
           </div>
         </div>
 

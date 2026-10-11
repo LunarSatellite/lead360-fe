@@ -103,10 +103,14 @@ export function Component() {
           <div className="w-full max-w-sm bg-bg border border-border-subtle rounded-2xl p-6 space-y-4 shadow-2xl">
             <h3 className="text-sm font-bold text-text-primary">Adjust — {adjustProduct.productName}</h3>
             <p className="text-xs text-text-muted">Current on hand: {adjustProduct.quantityOnHand}</p>
-            <div><label className="text-xs text-text-muted block mb-1">Quantity Change</label>
-              <input type="number" value={adjustQty} onChange={e => setAdjustQty(Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" placeholder="+10 or -5" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Notes</label>
-              <input value={adjustNote} onChange={e => setAdjustNote(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" placeholder="Receipt from vendor..." /></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Quantity Change</span>
+  <input type="number" value={adjustQty} onChange={e => setAdjustQty(Number(e.target.value))} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" placeholder="+10 or -5" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Notes</span>
+  <input value={adjustNote} onChange={e => setAdjustNote(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" placeholder="Receipt from vendor..." />
+</label></div>
             <div className="flex gap-2 justify-end">
               <button onClick={() => setAdjustProduct(null)} className="px-4 py-2 rounded-xl text-sm text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
               <Button onClick={() => { adjust.mutate({ productId: adjustProduct.productId, data: { quantity: adjustQty, notes: adjustNote || undefined } }); setAdjustProduct(null); }} disabled={adjust.isPending || adjustQty === 0}

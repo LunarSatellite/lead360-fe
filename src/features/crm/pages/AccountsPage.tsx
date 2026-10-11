@@ -115,36 +115,44 @@ function AccountForm({
         </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Parent Account</label>
-        <select value={form.parentAccountId} onChange={set('parentAccountId')} className={inputCls}>
-          <option value="">No parent (top-level)</option>
-          {allAccountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-        </select>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Parent Account</span>
+          <select value={form.parentAccountId} onChange={set('parentAccountId')} className={inputCls}>
+            <option value="">No parent (top-level)</option>
+            {allAccountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+          </select>
+        </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Organization</label>
-        <select value={form.organizationId} onChange={set('organizationId')} className={inputCls}>
-          <option value="">No organization</option>
-          {orgsList.map((o: any) => <option key={o.id} value={o.id}>{o.name}</option>)}
-        </select>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Organization</span>
+          <select value={form.organizationId} onChange={set('organizationId')} className={inputCls}>
+            <option value="">No organization</option>
+            {orgsList.map((o: any) => <option key={o.id} value={o.id}>{o.name}</option>)}
+          </select>
+        </label>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Status</label>
-          <select value={form.status} onChange={set('status')} className={inputCls}>
-            {Object.entries(CRM_ACCOUNT_STATUS_LABELS).map(([k, label]) => (
-              <option key={k} value={k}>{label}</option>
-            ))}
-          </select>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Status</span>
+            <select value={form.status} onChange={set('status')} className={inputCls}>
+              {Object.entries(CRM_ACCOUNT_STATUS_LABELS).map(([k, label]) => (
+                <option key={k} value={k}>{label}</option>
+              ))}
+            </select>
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Tier</label>
-          <select value={form.tier} onChange={set('tier')} className={inputCls}>
-            <option value="">— None —</option>
-            {Object.entries(CRM_ACCOUNT_TIER_LABELS).map(([k, label]) => (
-              <option key={k} value={k}>{label}</option>
-            ))}
-          </select>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Tier</span>
+            <select value={form.tier} onChange={set('tier')} className={inputCls}>
+              <option value="">— None —</option>
+              {Object.entries(CRM_ACCOUNT_TIER_LABELS).map(([k, label]) => (
+                <option key={k} value={k}>{label}</option>
+              ))}
+            </select>
+          </label>
         </div>
         <div>
           <label className="block">
@@ -721,18 +729,20 @@ function CreateAccountModal({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea
-                rows={3}
-                value={form.notes}
-                onChange={set('notes')}
-                placeholder="Add any relevant notes…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={glowInput}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
+              <div className="relative">
+                <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <textarea
+                  rows={3}
+                  value={form.notes}
+                  onChange={set('notes')}
+                  placeholder="Add any relevant notes…"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                  style={glowInput}
+                />
+              </div>
+            </label>
           </div>
 
           {/* ── Organization Details ── */}

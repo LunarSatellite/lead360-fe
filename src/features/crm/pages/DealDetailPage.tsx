@@ -361,18 +361,26 @@ export function Component() {
         </div>
         {stratEdit ? (
           <div className="space-y-3">
-            <div><label className="text-xs text-text-muted block mb-1">Champion</label>
-              <input value={stratForm.champion ?? ''} onChange={e => setStratForm({ ...stratForm, champion: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who is our champion?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Competition</label>
-              <input value={stratForm.competition ?? ''} onChange={e => setStratForm({ ...stratForm, competition: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who are we competing against?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Win Plan</label>
-              <textarea value={stratForm.winPlan ?? ''} onChange={e => setStratForm({ ...stratForm, winPlan: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="How will we win?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Next Steps</label>
-              <textarea value={stratForm.nextSteps ?? ''} onChange={e => setStratForm({ ...stratForm, nextSteps: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="What are the next actions?" /></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Champion</span>
+  <input value={stratForm.champion ?? ''} onChange={e => setStratForm({ ...stratForm, champion: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who is our champion?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Competition</span>
+  <input value={stratForm.competition ?? ''} onChange={e => setStratForm({ ...stratForm, competition: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who are we competing against?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Win Plan</span>
+  <textarea value={stratForm.winPlan ?? ''} onChange={e => setStratForm({ ...stratForm, winPlan: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="How will we win?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Next Steps</span>
+  <textarea value={stratForm.nextSteps ?? ''} onChange={e => setStratForm({ ...stratForm, nextSteps: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="What are the next actions?" />
+</label></div>
           </div>
         ) : (
           <div className="space-y-2 text-sm">
@@ -466,12 +474,14 @@ export function Component() {
                 </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Account</label>
-                <select value={editForm.accountId ?? ''} onChange={e => setEditForm(f => ({ ...f, accountId: e.target.value || undefined }))}
-                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                  <option value="">— No account —</option>
-                  {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                </select>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Account</span>
+                  <select value={editForm.accountId ?? ''} onChange={e => setEditForm(f => ({ ...f, accountId: e.target.value || undefined }))}
+                    className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                    <option value="">— No account —</option>
+                    {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                  </select>
+                </label>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -483,11 +493,13 @@ export function Component() {
                   </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Currency</label>
-                  <select value={editForm.currency ?? 'USD'} onChange={e => setEditForm(f => ({ ...f, currency: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                    {['USD', 'EUR', 'GBP', 'INR', 'AUD', 'CAD'].map(c => <option key={c}>{c}</option>)}
-                  </select>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-muted mb-1.5">Currency</span>
+                    <select value={editForm.currency ?? 'USD'} onChange={e => setEditForm(f => ({ ...f, currency: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                      {['USD', 'EUR', 'GBP', 'INR', 'AUD', 'CAD'].map(c => <option key={c}>{c}</option>)}
+                    </select>
+                  </label>
                 </div>
               </div>
               <div>

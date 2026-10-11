@@ -316,13 +316,15 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           <SectionLabel label="Goal" />
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-text-muted mb-1">Goal Type</label>
-              <select value={form.goalType} onChange={set('goalType')} className={selectCls} style={inputStyle}>
-                <option value="">No goal</option>
-                {Object.entries(CAMPAIGN_GOAL_LABELS).map(([k, v]) => (
-                  <option key={k} value={k}>{v}</option>
-                ))}
-              </select>
+              <label className="block">
+                <span className="block text-xs text-text-muted mb-1">Goal Type</span>
+                <select value={form.goalType} onChange={set('goalType')} className={selectCls} style={inputStyle}>
+                  <option value="">No goal</option>
+                  {Object.entries(CAMPAIGN_GOAL_LABELS).map(([k, v]) => (
+                    <option key={k} value={k}>{v}</option>
+                  ))}
+                </select>
+              </label>
             </div>
             <div>
               <label className="block">
@@ -335,12 +337,14 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
           {/* Attribution */}
           <SectionLabel label="Attribution" />
           <div>
-            <label className="block text-xs text-text-muted mb-1">Default Attribution Model</label>
-            <select value={form.defaultAttributionModel} onChange={set('defaultAttributionModel')} className={selectCls} style={inputStyle}>
-              {Object.entries(ATTRIBUTION_MODEL_LABELS).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
-              ))}
-            </select>
+            <label className="block">
+              <span className="block text-xs text-text-muted mb-1">Default Attribution Model</span>
+              <select value={form.defaultAttributionModel} onChange={set('defaultAttributionModel')} className={selectCls} style={inputStyle}>
+                {Object.entries(ATTRIBUTION_MODEL_LABELS).map(([k, v]) => (
+                  <option key={k} value={k}>{v}</option>
+                ))}
+              </select>
+            </label>
           </div>
 
           {/* UTM */}
@@ -627,11 +631,13 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
               </label>
             </div>
             <div>
-              <label className="block text-[10px] text-text-muted mb-1">Attribution Model</label>
-              <select value={form.model} onChange={(e) => setForm((f) => ({ ...f, model: e.target.value }))} className={selectCls}>
-                <option value="">Default</option>
-                {Object.entries(ATTRIBUTION_MODEL_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-              </select>
+              <label className="block">
+                <span className="block text-[10px] text-text-muted mb-1">Attribution Model</span>
+                <select value={form.model} onChange={(e) => setForm((f) => ({ ...f, model: e.target.value }))} className={selectCls}>
+                  <option value="">Default</option>
+                  {Object.entries(ATTRIBUTION_MODEL_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                </select>
+              </label>
             </div>
           </div>
           <input value={form.notes} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}

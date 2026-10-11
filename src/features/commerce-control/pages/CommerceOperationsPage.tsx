@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   AlertTriangle,
@@ -44,7 +45,17 @@ export function CommerceOperationsPage() {
   const canOperate = user?.role === UserRole.Owner || user?.role === UserRole.Admin;
 
   const [areaFilter, setAreaFilter] = useState('');
-  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  // The open area is a query parameter, so it can be linked and survives a
+  // refresh. As component state it did neither: one URL served the whole
+  // catalogue, which is the defect the vendor console had too.
+  const [params, setParams] = useSearchParams();
+  const selectedArea = params.get('area');
+  const setSelectedArea = (area: string | null) => {
+    const next = new URLSearchParams(params);
+    if (area) next.set('area', area);
+    else next.delete('area');
+    setParams(next, { replace: true });
+  };
   const [openOperation, setOpenOperation] = useState<string | null>(null);
 
   const catalog = useQuery({

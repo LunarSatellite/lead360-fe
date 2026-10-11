@@ -120,7 +120,10 @@ function EditRowForm({ row, onSave, onClose }: { row: ImportRow; onSave: (r: Imp
   <span className="block text-2xs font-semibold text-text-muted mb-1">Description</span>
   <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={2} className="form-input text-sm resize-none" />
 </label></div>
-        <div><label className="block text-2xs font-semibold text-text-muted mb-1">Operation Type</label><select value={op} onChange={e => setOp(e.target.value)} className="form-input text-sm"><option value="">—</option><option value="ApiCall">ApiCall</option><option value="MenuNavigation">MenuNavigation</option><option value="Browse">Browse</option><option value="Search">Search</option><option value="StaticResponse">StaticResponse</option></select></div>
+        <div><label className="block">
+  <span className="block text-2xs font-semibold text-text-muted mb-1">Operation Type</span>
+  <select value={op} onChange={e => setOp(e.target.value)} className="form-input text-sm"><option value="">—</option><option value="ApiCall">ApiCall</option><option value="MenuNavigation">MenuNavigation</option><option value="Browse">Browse</option><option value="Search">Search</option><option value="StaticResponse">StaticResponse</option></select>
+</label></div>
       </div>
       <div className="flex items-center justify-end gap-2 mt-5">
         <button onClick={onClose} className="px-3 py-2 rounded-lg text-xs text-text-muted hover:bg-glass-1">Cancel</button>

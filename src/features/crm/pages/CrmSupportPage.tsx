@@ -112,11 +112,13 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
   <input type="number" min={1} step={1} value={form.resolutionSlaHours} onChange={e => setForm(f => ({ ...f, resolutionSlaHours: Number(e.target.value) }))} className={inputCls} />
 </label></div>
           </div>
-          <div><label className="block text-xs font-semibold text-text-muted mb-1">Applies to Priority</label>
-            <select value={form.applicablePriority ?? ''} onChange={e => setForm(f => ({ ...f, applicablePriority: e.target.value ? Number(e.target.value) : undefined }))} className={`${selectCls} w-full`}>
-              <option value="">All priorities (default fallback)</option>
-              {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-            </select>
+          <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Applies to Priority</span>
+  <select value={form.applicablePriority ?? ''} onChange={e => setForm(f => ({ ...f, applicablePriority: e.target.value ? Number(e.target.value) : undefined }))} className={`${selectCls} w-full`}>
+                <option value="">All priorities (default fallback)</option>
+                {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+              </select>
+</label>
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={form.isDefault} onChange={e => setForm(f => ({ ...f, isDefault: e.target.checked }))} className="rounded" />

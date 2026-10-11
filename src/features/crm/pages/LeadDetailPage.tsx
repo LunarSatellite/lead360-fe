@@ -20,8 +20,9 @@ import type {
   LeadStage as LeadStageType, ConvertLeadRequest,
    NurtureEnrollmentDto,
 } from '../types/crm.types';
-import { LeadStage, LEAD_STAGE_LABELS, LEAD_STAGE_COLORS, CHANNEL_LABELS, CrmEntityType } from '../types/crm.types';
+import { LeadStage, LEAD_STAGE_LABELS, LEAD_STAGE_COLORS, CHANNEL_LABELS, CrmEntityType, CrmActivityEntityKind } from '../types/crm.types';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
+import { RecordAuditTrail } from '../components/RecordAuditTrail';
 
 // ─── Activity type color helper ───────────────────────────────────────────────
 
@@ -406,6 +407,13 @@ export function Component() {
       </div>
     </div>
     {lead && <CustomFieldsPanel recordId={lead.id} entityType={CrmEntityType.Lead} />}
+
+    {/* Field-level history — `RecordAuditTrail` existed but was mounted
+        nowhere; "who changed this and when" is a Tier C gap in
+        CRM-REMAINING-GAPS.md. */}
+    {lead && (
+      <RecordAuditTrail kind={CrmActivityEntityKind.Lead} entityId={lead.id} />
+    )}
     {showEnrollModal && lead && (
       <EnrollModal leadId={lead.id} onClose={() => setShowEnrollModal(false)} />
     )}

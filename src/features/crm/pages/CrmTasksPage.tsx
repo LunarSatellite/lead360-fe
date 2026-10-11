@@ -412,7 +412,7 @@ export function Component() {
         {/* Header */}
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Tasks</h1>
+            <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Tasks</h1>
             <p className="text-sm text-text-secondary mt-1">Manage and track your team's tasks</p>
           </div>
           <Button

@@ -46,7 +46,7 @@ export function Component() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Renewals</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Renewals</h1>
           <p className="text-sm text-text-secondary mt-1">
             Upcoming contract renewals, risk-segmented. Reach out before they lapse and record the outcome.
           </p>

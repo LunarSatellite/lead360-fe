@@ -88,7 +88,7 @@ export function Component() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Tax Rules</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Tax Rules</h1>
           <p className="text-sm text-text-secondary mt-1">Auto-calculate tax on quotes and invoices based on customer jurisdiction.</p>
         </div>
         <Button onClick={() => setShowCreate(true)}

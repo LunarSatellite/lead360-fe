@@ -59,7 +59,7 @@ function InspectionForm({ rmaId, onDone }: { rmaId: string; onDone: () => void }
   return (
     <form onSubmit={handleSubmit} className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
       <p className="text-xs font-semibold text-text-muted">Record Inspection</p>
-      <select value={result} onChange={e => setResult(Number(e.target.value))} className={inputCls}>
+      <select aria-label="Result" value={result} onChange={e => setResult(Number(e.target.value))} className={inputCls}>
         {Object.entries(CRM_RETURN_INSPECTION_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
       </select>
       <input value={findings} onChange={e => setFindings(e.target.value)} placeholder="Findings (optional)" aria-label="Findings (optional)" className={inputCls} />
@@ -96,11 +96,11 @@ function ResolveForm({ rmaId, onDone }: { rmaId: string; onDone: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
       <p className="text-xs font-semibold text-text-muted">Set Resolution</p>
-      <select value={resolution} onChange={e => setResolution(Number(e.target.value) as CrmReturnResolution)} className={inputCls}>
+      <select aria-label="Resolution" value={resolution} onChange={e => setResolution(Number(e.target.value) as CrmReturnResolution)} className={inputCls}>
         {Object.entries(CRM_RETURN_RESOLUTION_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
       </select>
       {needsAmount && (
-        <input
+        <input aria-label="Amount"
           required type="number" min="0" step="0.01" value={amount} onChange={e => setAmount(e.target.value)}
           placeholder={resolution === CrmReturnResolution.Refund ? 'Refund amount' : 'Credit amount'}
           className={inputCls}

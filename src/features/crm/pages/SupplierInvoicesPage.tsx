@@ -450,7 +450,7 @@ export function Component() {
         <form onSubmit={handlePay} className="space-y-4">
           {selected && <p className="text-sm text-text-muted">Invoice <span className="font-semibold text-text-primary">{selected.invoiceNumber}</span> — {selected.currency} {selected.totalAmount.toLocaleString()}</p>}
           <Field label="Payment Reference"><input value={payRef} onChange={e => setPayRef(e.target.value)} placeholder="Bank ref, cheque no..." aria-label="Bank ref, cheque no..." className={inputCls} /></Field>
-          <Field label="Paid At"><input type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} /></Field>
+          <Field label="Paid At"><input aria-label="Pay date" type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} /></Field>
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={paySI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {paySI.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><DollarSign className="w-4 h-4" /> Mark Paid</>}

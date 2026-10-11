@@ -176,7 +176,7 @@ export function ComplianceProfileForm({
           {requiresAgeVerification && (
             <div className="flex items-center gap-2">
               <label className="text-xs font-semibold text-text-muted">Min age:</label>
-              <input
+              <input aria-label="Minimum age"
                 type="number"
                 value={minimumAge}
                 onChange={(e) => setMinimumAge(e.target.value ? Number(e.target.value) : '')}
@@ -187,7 +187,7 @@ export function ComplianceProfileForm({
           )}
           <div className="flex items-center gap-2">
             <label className="text-xs font-semibold text-text-muted">Max response length:</label>
-            <input
+            <input aria-label="Max response length"
               type="number"
               value={maxResponseLength}
               onChange={(e) => setMaxResponseLength(e.target.value ? Number(e.target.value) : '')}
@@ -408,7 +408,7 @@ function TagListEditor({
         {items.length === 0 && <span className="text-xs text-text-muted italic">No items added</span>}
       </div>
       <div className="flex gap-2">
-        <input
+        <input aria-label="New"
           value={newValue}
           onChange={(e) => setNewValue(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}

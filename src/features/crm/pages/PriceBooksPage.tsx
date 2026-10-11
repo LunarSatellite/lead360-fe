@@ -285,7 +285,7 @@ function EntryEditor({ bookId, currency, entries }: { bookId: string; currency: 
       <form onSubmit={add} className="flex flex-wrap gap-2 items-end">
         <div className="flex-1 min-w-[200px]">
           {items.length > 0 ? (
-            <select
+            <select aria-label="Product ID"
               value={form.productId}
               onChange={(e) => pickProduct(e.target.value)}
               className={`${inputCls} appearance-none`}>

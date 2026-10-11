@@ -89,7 +89,7 @@ function EventTypeModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
             <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Title *</label>
-            <input
+            <input aria-label="Title"
               type="text"
               placeholder="e.g. 30 min intro call"
               value={title}
@@ -110,7 +110,7 @@ function EventTypeModal({
           </div>
           <div className="space-y-1">
             <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Duration</label>
-            <select
+            <select aria-label="Duration"
               value={duration}
               onChange={(e) => setDuration(Number(e.target.value))}
               className={inputCls}
@@ -264,7 +264,7 @@ function BookingPageSettingsPage() {
               <span className="px-3 text-xs text-text-muted whitespace-nowrap">
                 {publicOrigin}/book/
               </span>
-              <input
+              <input aria-label="Slug"
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}

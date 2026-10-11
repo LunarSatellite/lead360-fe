@@ -97,7 +97,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
 
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           <Field label="Category">
-            <select
+            <select aria-label="Category ID"
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
               className="w-full rounded-lg px-3 py-2 text-xs bg-glass-2 border border-border-subtle
@@ -113,7 +113,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
           </Field>
 
           <Field label="Name">
-            <input
+            <input aria-label="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={`e.g. ${itemLabel} name`}
@@ -122,7 +122,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
           </Field>
 
           <Field label="Description (optional)">
-            <textarea
+            <textarea aria-label="Description"
               value={description}
               rows={2}
               onChange={(e) => setDescription(e.target.value)}
@@ -132,7 +132,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
 
           <div className="grid grid-cols-3 gap-2 items-end">
             <Field label="Price (leave blank = on inquiry)">
-              <input
+              <input aria-label="Price"
                 type="number"
                 step="0.01"
                 value={price}
@@ -141,7 +141,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
               />
             </Field>
             <Field label="Currency">
-              <input
+              <input aria-label="Currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value.toUpperCase())}
                 maxLength={10}
@@ -159,7 +159,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
           </div>
 
           <Field label="Image URL (optional)">
-            <input
+            <input aria-label="Image URL"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
               placeholder="https://..."
@@ -177,7 +177,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
           </Field>
 
           <Field label="Custom data (JSON, optional)">
-            <textarea
+            <textarea aria-label="Metadata JSON"
               value={metadataJson}
               rows={3}
               spellCheck={false}
@@ -202,7 +202,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
               <span className="text-xs text-text-primary">Available now</span>
             </label>
             <Field label="Sort">
-              <input
+              <input aria-label="Sort order"
                 type="number"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(Number(e.target.value) || 0)}

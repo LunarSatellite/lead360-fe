@@ -160,7 +160,7 @@ function CreateForm({ onSave, onCancel, isSaving }: {
             {challengerPct >= 15 && `${challengerPct}%`}
           </div>
         </div>
-        <input
+        <input aria-label="Split percent"
           type="range"
           min={10}
           max={90}

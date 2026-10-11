@@ -43,12 +43,12 @@ export function CollectionEditDialog({ id, initial, onClose, onSaved }: Props) {
       </header>
       {details.isLoading ? <div className="flex h-48 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-brand" /></div> :
         <div className="grid gap-4 p-5 md:grid-cols-2">
-          <Input label="Title" value={form.title} onChange={(v) => set('title', v)} required />
-          <Input label="Slug" value={form.slug} onChange={(v) => set('slug', v)} required />
-          <Input label="Subtitle" value={form.subtitle} onChange={(v) => set('subtitle', v)} />
-          <Input label="Cover image URL" value={form.coverImageUrl} onChange={(v) => set('coverImageUrl', v)} />
-          <Input label="Sort order" type="number" value={form.sortOrder} onChange={(v) => set('sortOrder', v)} />
-          <div className="grid grid-cols-2 gap-3"><Input label="Starts" type="datetime-local" value={form.startsUtc} onChange={(v) => set('startsUtc', v)} /><Input label="Ends" type="datetime-local" value={form.endsUtc} onChange={(v) => set('endsUtc', v)} /></div>
+          <Input aria-label="Title" label="Title" value={form.title} onChange={(v) => set('title', v)} required />
+          <Input aria-label="Slug" label="Slug" value={form.slug} onChange={(v) => set('slug', v)} required />
+          <Input aria-label="Subtitle" label="Subtitle" value={form.subtitle} onChange={(v) => set('subtitle', v)} />
+          <Input aria-label="Cover image URL" label="Cover image URL" value={form.coverImageUrl} onChange={(v) => set('coverImageUrl', v)} />
+          <Input aria-label="Sort order" label="Sort order" type="number" value={form.sortOrder} onChange={(v) => set('sortOrder', v)} />
+          <div className="grid grid-cols-2 gap-3"><Input aria-label="Starts UTC" label="Starts" type="datetime-local" value={form.startsUtc} onChange={(v) => set('startsUtc', v)} /><Input aria-label="Ends UTC" label="Ends" type="datetime-local" value={form.endsUtc} onChange={(v) => set('endsUtc', v)} /></div>
           <label className="space-y-1.5 md:col-span-2"><span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Description</span><textarea rows={5} value={form.description} onChange={(e) => set('description', e.target.value)} className="w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50" /></label>
         </div>}
       <footer className="flex items-center justify-end gap-2 border-t border-border-subtle px-5 py-4"><button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">Cancel</button><Button disabled={save.isPending || !form.title.trim() || !form.slug.trim()} variant="primary" size="lg"><Save className="h-4 w-4" />{save.isPending ? 'Saving…' : 'Save collection'}</Button></footer>

@@ -117,7 +117,7 @@ export function Component() {
         </div>
 
         {/* Period filter */}
-        <select value={periodCode} onChange={e => setPeriodCode(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+        <select aria-label="Period code" value={periodCode} onChange={e => setPeriodCode(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
           {PERIOD_PRESETS.map(p => <option key={p.code} value={p.code}>{p.label}</option>)}
         </select>
       </div>

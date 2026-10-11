@@ -153,7 +153,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
 
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           <Field label="Name">
-            <input
+            <input aria-label="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Mountain Bikes, Repair Services"
@@ -164,7 +164,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
           </Field>
 
           <Field label="Description (optional)">
-            <textarea
+            <textarea aria-label="Description"
               value={description}
               rows={2}
               onChange={(e) => setDescription(e.target.value)}
@@ -205,7 +205,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
 
           {/* Transaction label — overrides the profile-level label for this category only */}
           <Field label="Button label (optional)">
-            <input
+            <input aria-label="Transaction label"
               value={transactionLabel}
               onChange={(e) => setTransactionLabel(e.target.value)}
               placeholder={
@@ -249,7 +249,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
               />
             </Field>
             <Field label="Sort order">
-              <input
+              <input aria-label="Sort order"
                 type="number"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(Number(e.target.value) || 0)}
@@ -260,7 +260,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
           </div>
 
           <Field label="Icon URL (optional)">
-            <input
+            <input aria-label="Icon URL"
               value={iconUrl}
               onChange={(e) => setIconUrl(e.target.value)}
               placeholder="https://..."

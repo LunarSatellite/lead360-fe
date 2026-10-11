@@ -751,7 +751,7 @@ function FlowBuilderInner() {
             <FolderOpen className="w-4 h-4" />
           </button>
           {editingName ? (
-            <input
+            <input aria-label="Flow name"
               autoFocus
               value={editor.flowName}
               onChange={(e) => editor.setFlowName(e.target.value)}
@@ -1051,7 +1051,7 @@ function FlowBuilderInner() {
               )}
 
               <div className="flex items-center gap-1.5 p-2.5 border-t border-border-subtle flex-shrink-0">
-                <input
+                <input aria-label="Chat"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendChat()}
@@ -1616,7 +1616,7 @@ function PreviewPanel({ sessionId: _sessionId }: { sessionId: string }) {
                 const t = ch.apiType;
                 const chPending = pendingChannels.has(ch.key);
                 const sharedInput = (placeholder: string, textColor: string, bgColor: string) => (
-                  <input
+                  <input aria-label="Ch input"
                     value={chInput}
                     onChange={(e) => setInputs((p) => ({ ...p, [ch.key]: e.target.value }))}
                     onKeyDown={(e) => e.key === 'Enter' && send(chInput, ch.key)}
@@ -1704,7 +1704,7 @@ function PreviewPanel({ sessionId: _sessionId }: { sessionId: string }) {
                 /* ── Default dark (WebChat, Voice, Email, etc.) ── */
                 return (
                   <div className="flex items-center gap-1.5 px-2 py-2 flex-shrink-0 bg-bg" style={{ borderTop: `1px solid ${s.hdr}40` }}>
-                    <input
+                    <input aria-label="Ch input"
                       value={chInput}
                       onChange={(e) => setInputs((p) => ({ ...p, [ch.key]: e.target.value }))}
                       onKeyDown={(e) => e.key === 'Enter' && send(chInput, ch.key)}

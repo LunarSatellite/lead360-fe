@@ -114,7 +114,7 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
       )}
 
       {gateType === StageGateType.RequiredField && (
-        <input
+        <input aria-label="Label"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder={`Label (e.g. "${allRequiredFields.find(f => f.value === fieldName)?.label ?? fieldName}")`}

@@ -60,7 +60,7 @@ function CommentItem({
 
           {isEditing ? (
             <div className="space-y-2">
-              <textarea
+              <textarea aria-label="Edit body"
                 className="w-full rounded-lg border border-border-subtle bg-bg-elevated text-text-primary text-sm px-3 py-2 resize-none focus:outline-none focus:border-brand"
                 rows={3}
                 value={editBody}

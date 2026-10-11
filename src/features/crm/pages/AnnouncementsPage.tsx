@@ -278,14 +278,14 @@ function DetailPanel({ item, onClose }: { item: AnnouncementSummaryDto; onClose:
             </>
           ) : (
             <div className="flex flex-col gap-4">
-              <div>{lbl('Title')}<input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} /></div>
-              <div>{lbl('Content')}<textarea className={`${inputCls} min-h-[120px] resize-y`} value={form.content} onChange={e => set('content', e.target.value)} /></div>
+              <div>{lbl('Title')}<input aria-label="Title" className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} /></div>
+              <div>{lbl('Content')}<textarea aria-label="Content" className={`${inputCls} min-h-[120px] resize-y`} value={form.content} onChange={e => set('content', e.target.value)} /></div>
               <div>{lbl('Type')}
-                <select className={selectCls} value={form.type} onChange={e => set('type', Number(e.target.value))}>
+                <select aria-label="Type" className={selectCls} value={form.type} onChange={e => set('type', Number(e.target.value))}>
                   {Object.entries(ANNOUNCEMENT_TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
               </div>
-              <div>{lbl('Reschedule')}<input type="datetime-local" className={inputCls} value={form.scheduledAt} onChange={e => set('scheduledAt', e.target.value)} /></div>
+              <div>{lbl('Reschedule')}<input aria-label="Scheduled at" type="datetime-local" className={inputCls} value={form.scheduledAt} onChange={e => set('scheduledAt', e.target.value)} /></div>
               <div className="flex gap-2 justify-end">
                 <button className={btnGhost} onClick={() => setEditing(false)}>Cancel</button>
                 <button className={btnPrimary} onClick={saveEdit} disabled={update.isPending}>{update.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}Save</button>
@@ -307,7 +307,7 @@ function DetailPanel({ item, onClose }: { item: AnnouncementSummaryDto; onClose:
             )}
             {item.status !== AnnouncementStatus.Published && item.status !== AnnouncementStatus.Archived && (
               <div className="flex gap-2 items-center">
-                <input type="datetime-local" className={`${inputCls} flex-1`} value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} />
+                <input aria-label="Schedule time" type="datetime-local" className={`${inputCls} flex-1`} value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} />
                 <button className={btnPrimary} disabled={!scheduleTime || schedule.isPending} onClick={() => schedule.mutateAsync({ id: item.id, scheduledAt: scheduleTime })}>
                   <Calendar className="w-4 h-4" />Schedule
                 </button>

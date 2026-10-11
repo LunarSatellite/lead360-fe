@@ -119,7 +119,7 @@ export function VendorPolicyPanel() {
         <>
           <div className="mt-3 grid gap-2 sm:grid-cols-3">
             <Field label="Monthly model calls">
-              <input
+              <input aria-label="Quota"
                 type="number"
                 min={0}
                 value={quota}
@@ -128,7 +128,7 @@ export function VendorPolicyPanel() {
               />
             </Field>
             <Field label="Commission ceiling %">
-              <input
+              <input aria-label="Ceiling"
                 type="number"
                 min={0}
                 step="0.1"
@@ -138,7 +138,7 @@ export function VendorPolicyPanel() {
               />
             </Field>
             <Field label="Default currency">
-              <input
+              <input aria-label="Currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 className={field}

@@ -157,11 +157,17 @@ describe('defects that must not come back', () => {
      * and `aria-label` from that is the right fix for a toolbar search box
      * or a filter, which has no visible label by design.
      *
-     * A budget again: 399 are left, and they are the ones with no
-     * placeholder to take a name from. Each needs someone to decide what the
-     * control is for, which is not something a script can read off the page.
+     * A third source closed most of the rest: the state a control is bound
+     * to. `value={form.intentName}` is the intent name, and 274 controls
+     * were named that way. The result is not always what a writer would
+     * choose — "Config JSON" rather than "Agent configuration" — but it is
+     * specific and never wrong, and a person can improve any of them.
+     *
+     * 117 are left: controls bound to a loop variable or an index, where the
+     * binding says nothing about what the field is for. Those need someone
+     * to decide, which is not something a script can read off the page.
      */
-    const BUDGET_UNNAMED_CONTROLS = 399;
+    const BUDGET_UNNAMED_CONTROLS = 117;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 
@@ -172,10 +178,26 @@ describe('defects that must not come back', () => {
         if (close !== -1) spans.push([at, close]);
       }
 
+      // A label elsewhere in the file can name a control through `htmlFor`,
+      // which the first version of this check did not look for — it counted
+      // eight correctly-named controls as defects. A budget that over-counts
+      // hides the progress it exists to measure.
+      const pointedAt = new Set([
+        ...[...source.matchAll(/htmlFor="([^"]+)"/g)].map((m) => m[1]),
+        ...[...source.matchAll(/htmlFor=\{([^}]+)\}/g)].map((m) => m[1]),
+      ]);
+
       for (const m of source.matchAll(CONTROL)) {
         const at = m.index ?? 0;
         if (spans.some(([a, b]) => a < at && at < b)) continue;
-        if (!/\baria-label(?:ledby)?\b/.test(openingTag(source, at))) unnamed += 1;
+
+        const tag = openingTag(source, at);
+        if (/\baria-label(?:ledby)?\b/.test(tag)) continue;
+
+        const id = /\bid="([^"]+)"/.exec(tag) ?? /\bid=\{([^}]+)\}/.exec(tag);
+        if (id && pointedAt.has(id[1])) continue;
+
+        unnamed += 1;
       }
     }
 

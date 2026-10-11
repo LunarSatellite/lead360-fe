@@ -1477,7 +1477,7 @@ function CollectionItemsDialog({
           <p className="mt-1 text-[11px] text-text-muted">
             Entrez tous les identifiants produit dans l’ordre souhaite, separes par des virgules.
           </p>
-          <textarea
+          <textarea aria-label="Ordered ids"
             rows={4}
             value={orderedIds}
             onChange={(event) => setOrderedIds(event.target.value)}

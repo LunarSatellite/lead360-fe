@@ -633,7 +633,7 @@ export function Component() {
             <div className="flex items-center gap-2">
               {!editingId && bundleList.length > 0 && (
                 <>
-                  <select
+                  <select aria-label="Bundle ID"
                     value={bundleId}
                     onChange={e => setBundleId(e.target.value)}
                     className="text-xs py-1 px-2 rounded-lg border border-brand/20 text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"

@@ -163,7 +163,7 @@ export function Component() {
           </div>
 
           <Field label="Name *">
-            <Input icon={Layers} required placeholder="e.g. Starter Kit" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={inputStyle} />
+            <Input aria-label="Name" icon={Layers} required placeholder="e.g. Starter Kit" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={inputStyle} />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">

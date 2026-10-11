@@ -556,7 +556,7 @@ function BindPanel({
           placeholder="Sub-order line id" aria-label="Sub-order line id"
           className={`${field} font-mono`}
         />
-        <select
+        <select aria-label="Stage"
           value={stage}
           onChange={(e) => setStage(Number(e.target.value) as UnitBindingStageValue)}
           className={field}

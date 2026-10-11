@@ -344,7 +344,7 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Amount *">
-              <Input icon={DollarSign} required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00" style={inputStyle} />
+              <Input aria-label="Amount" icon={DollarSign} required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00" style={inputStyle} />
             </Field>
             <Field label="Currency">
               <Input icon={DollarSign} value={createForm.currency} onChange={setC('currency')} placeholder="USD" aria-label="USD" style={inputStyle} />
@@ -353,10 +353,10 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Start Date">
-              <Input icon={Calendar} type="date" value={createForm.startDate} onChange={setC('startDate')} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <Input aria-label="Start date" icon={Calendar} type="date" value={createForm.startDate} onChange={setC('startDate')} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
             <Field label="Seats">
-              <Input icon={User} type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5" style={inputStyle} />
+              <Input aria-label="Seats" icon={User} type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5" style={inputStyle} />
             </Field>
           </div>
         </form>
@@ -396,12 +396,12 @@ export function Component() {
               </div>
             ) : (
               <form onSubmit={handleUpdate} className="space-y-4">
-                <Field label="Plan Name"><input value={editForm.planName} onChange={setE('planName')} className={inputCls} /></Field>
+                <Field label="Plan Name"><input aria-label="Plan name" value={editForm.planName} onChange={setE('planName')} className={inputCls} /></Field>
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label="Plan Tier"><select value={editForm.planTier} onChange={setE('planTier')} className={selectCls}>{Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
-                  <Field label="Billing Cadence"><select value={editForm.billingCadence} onChange={setE('billingCadence')} className={selectCls}>{Object.entries(CRM_BILLING_CADENCE_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
-                  <Field label="Amount"><input type="number" min="0" step="0.01" value={editForm.amount} onChange={setE('amount')} className={inputCls} /></Field>
-                  <Field label="Seats"><input type="number" min="1" value={editForm.seats} onChange={setE('seats')} className={inputCls} /></Field>
+                  <Field label="Plan Tier"><select aria-label="Plan tier" value={editForm.planTier} onChange={setE('planTier')} className={selectCls}>{Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
+                  <Field label="Billing Cadence"><select aria-label="Billing cadence" value={editForm.billingCadence} onChange={setE('billingCadence')} className={selectCls}>{Object.entries(CRM_BILLING_CADENCE_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
+                  <Field label="Amount"><input aria-label="Amount" type="number" min="0" step="0.01" value={editForm.amount} onChange={setE('amount')} className={inputCls} /></Field>
+                  <Field label="Seats"><input aria-label="Seats" type="number" min="1" value={editForm.seats} onChange={setE('seats')} className={inputCls} /></Field>
                 </div>
                 <Button type="submit" disabled={updateSub.isPending} variant="primary" block>
                   {updateSub.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}

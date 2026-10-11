@@ -613,10 +613,10 @@ function MeetingsTab() {
 
             {detail.status === CrmMeetingStatus.ProposalDrafted && (
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Date"><input type="date" value={bookDate} onChange={e => setBookDate(e.target.value)} className={inputCls} /></Field>
-                <Field label="Time"><input type="time" value={bookTime} onChange={e => setBookTime(e.target.value)} className={inputCls} /></Field>
+                <Field label="Date"><input aria-label="Book date" type="date" value={bookDate} onChange={e => setBookDate(e.target.value)} className={inputCls} /></Field>
+                <Field label="Time"><input aria-label="Book time" type="time" value={bookTime} onChange={e => setBookTime(e.target.value)} className={inputCls} /></Field>
                 <Field label="Duration">
-                  <select value={bookDuration} onChange={e => setBookDuration(e.target.value)} className={selectCls}>
+                  <select aria-label="Book duration" value={bookDuration} onChange={e => setBookDuration(e.target.value)} className={selectCls}>
                     <option value="15">15 min</option>
                     <option value="30">30 min</option>
                     <option value="45">45 min</option>
@@ -742,7 +742,7 @@ function MeetingsTab() {
                   </Button>
                 </div>
                 <div className="flex justify-end">
-                  <select value={taskAssigneeId} onChange={e => setTaskAssigneeId(e.target.value)}
+                  <select aria-label="Task assignee ID" value={taskAssigneeId} onChange={e => setTaskAssigneeId(e.target.value)}
                     className="px-2 py-1 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-border-glow w-48">
                     <option value="">Assign to me (default)</option>
                     {teamMembers.filter((u: any) => u.role !== 1).map((u: any) => (

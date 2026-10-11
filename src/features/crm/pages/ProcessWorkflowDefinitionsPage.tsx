@@ -29,7 +29,7 @@ function RoleDropdown({ roleId, onChange }: { roleId: string; onChange: (id: str
   const { data: roles } = useProcessRoles();
   const list = roles ?? [];
   return (
-    <select value={roleId} onChange={e => onChange(e.target.value)}
+    <select aria-label="Role ID" value={roleId} onChange={e => onChange(e.target.value)}
       className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand">
       <option value="">No role (all users)</option>
       {list.map((r: { id: string; name: string }) => (

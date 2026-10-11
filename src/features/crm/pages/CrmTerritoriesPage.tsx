@@ -263,18 +263,18 @@ function RulesPanel({ territory }: { territory: SalesTerritoryDto }) {
       {showForm && (
         <form onSubmit={handleAdd} className="space-y-2 pt-2 border-t border-border-subtle">
           {territory.rules.length > 0 && (
-            <select value={logicGate} onChange={(e) => setLogicGate(Number(e.target.value) as TerritoryRuleLogicValue)} className={select}>
+            <select aria-label="Logic gate" value={logicGate} onChange={(e) => setLogicGate(Number(e.target.value) as TerritoryRuleLogicValue)} className={select}>
               <option value={TerritoryRuleLogic.And} className="bg-bg">AND</option>
               <option value={TerritoryRuleLogic.Or} className="bg-bg">OR</option>
             </select>
           )}
           <div className="grid grid-cols-3 gap-2">
-            <select value={field} onChange={(e) => setField(Number(e.target.value) as TerritoryRuleFieldValue)} className={select}>
+            <select aria-label="Field" value={field} onChange={(e) => setField(Number(e.target.value) as TerritoryRuleFieldValue)} className={select}>
               {Object.entries(TerritoryRuleField).map(([_k, v]) => (
                 <option key={v} value={v} className="bg-bg">{TERRITORY_RULE_FIELD_LABEL[v as TerritoryRuleFieldValue]}</option>
               ))}
             </select>
-            <select value={operator} onChange={(e) => setOperator(Number(e.target.value) as TerritoryRuleOperatorValue)} className={select}>
+            <select aria-label="Operator" value={operator} onChange={(e) => setOperator(Number(e.target.value) as TerritoryRuleOperatorValue)} className={select}>
               {Object.entries(TerritoryRuleOperator).map(([_k, v]) => (
                 <option key={v} value={v} className="bg-bg">{TERRITORY_RULE_OPERATOR_LABEL[v as TerritoryRuleOperatorValue]}</option>
               ))}
@@ -348,7 +348,7 @@ function MembersPanel({ territory }: { territory: SalesTerritoryDto }) {
 
       {available.length > 0 && (
         <div className="flex items-center gap-2 pt-2 border-t border-border-subtle">
-          <select
+          <select aria-label="Selected user ID"
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
             className="flex-1 px-3 py-2 rounded-lg bg-bg border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"

@@ -65,7 +65,7 @@ export function ConstitutionTab() {
         submitLabel="Assess"
       >
         <Field label="Action key" span>
-          <input
+          <input aria-label="Action key"
             value={actionKey}
             onChange={(e) => setActionKey(e.target.value)}
             placeholder="e.g. pricing.reprice"
@@ -73,7 +73,7 @@ export function ConstitutionTab() {
           />
         </Field>
         <Field label="Risk tier">
-          <select
+          <select aria-label="Risk tier"
             value={riskTier}
             onChange={(e) => setRiskTier(Number(e.target.value) as AgentActionRiskTierValue)}
             className={field}

@@ -133,7 +133,7 @@ export function Component() {
         <div>
           <label className="text-xs text-text-muted mb-2 block">Custom Trigger Phrases (always handoff)</label>
           <div className="flex gap-2 mb-2">
-            <input value={newPhrase} onChange={e => setNewPhrase(e.target.value)}
+            <input aria-label="New phrase" value={newPhrase} onChange={e => setNewPhrase(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addPhrase()}
               placeholder="e.g. speak to manager" className={`${inputCls} flex-1`} />
             <button onClick={addPhrase} className="px-3 py-2 rounded-xl bg-brand-soft text-brand border border-border-glow text-sm font-semibold">
@@ -202,7 +202,7 @@ export function Component() {
                     {pb.moves.map((move, mi) => (
                       <div key={mi} className="flex items-center gap-2">
                         <span className="text-xs text-text-muted w-5 flex-shrink-0">{mi + 1}.</span>
-                        <input value={move}
+                        <input aria-label="Move" value={move}
                           onChange={e => updateMove(pi, mi, e.target.value)}
                           placeholder={mi === pb.moves.length - 1 ? 'e.g. Connect to human sales team' : 'e.g. Offer 5% discount'}
                           className={`${inputCls} flex-1`} />

@@ -101,7 +101,7 @@ export function HotSegmentsEditor({ trackId }: { trackId: string }) {
             placeholder="Start s" aria-label="Start s"
             className={field}
           />
-          <input
+          <input aria-label="Label"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             placeholder={`Label (ordinal ${nextOrdinal})`}

@@ -53,7 +53,7 @@ export function NlpCommandBar({ onSubmit, onFileUpload, isThinking, thinkingStep
             <Sparkles className="w-5 h-5 text-white" strokeWidth={1.8} />
           </div>
 
-          <input
+          <input aria-label="Text"
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}

@@ -406,7 +406,7 @@ export function Component() {
 
         {logOpen && (
           <div className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
-            <textarea autoFocus value={logText} onChange={e => setLogText(e.target.value)}
+            <textarea aria-label="Log" autoFocus value={logText} onChange={e => setLogText(e.target.value)}
               className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]"
               placeholder={logOpen === 'call' ? 'Describe the call...' : logOpen === 'meeting' ? 'Describe the meeting...' : 'Write a note...'} />
             <div className="flex gap-2">
@@ -586,7 +586,7 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
       </div>
       {showAdd && (
         <div className="space-y-2">
-          <select value={compId} onChange={e => setCompId(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+          <select aria-label="Comp ID" value={compId} onChange={e => setCompId(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             <option value="">Select competitor</option>
             {allComps.filter((c: any) => !usedIds.has(c.id)).map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
@@ -612,7 +612,7 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <select value={dc.outcome} onChange={e => updateOutcomeMut.mutate({ id: dc.id, outcome: Number(e.target.value) })}
+            <select aria-label="Outcome" value={dc.outcome} onChange={e => updateOutcomeMut.mutate({ id: dc.id, outcome: Number(e.target.value) })}
               className="px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs text-text-primary">
               {Object.entries(DEAL_COMPETITOR_OUTCOME_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
@@ -658,7 +658,7 @@ function DealContactsSection({ dealId }: { dealId: string }) {
       {showAdd && (
         <div className="flex gap-2">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." aria-label="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
-          <select value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+          <select aria-label="Role" value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             {DEAL_CONTACT_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
           <Button onClick={() => search.trim() && addMut.mutate({ contactId: search.trim(), role })} disabled={addMut.isPending || !search.trim()}

@@ -43,7 +43,7 @@ export function Component() {
       <div className="rounded-2xl border border-border-subtle bg-bg-card p-4 space-y-3">
         <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Quick Stock Check</p>
         <div className="flex gap-2">
-          <input value={checkInput} onChange={e => setCheckInput(e.target.value)} placeholder='[{"productId":"guid","quantity":10}]' className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm font-mono" />
+          <input aria-label="Check" value={checkInput} onChange={e => setCheckInput(e.target.value)} placeholder='[{"productId":"guid","quantity":10}]' className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm font-mono" />
           <Button onClick={handleCheck} disabled={checkStock.isPending || !checkInput} variant="primary">
             {checkStock.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Check'}
           </Button>

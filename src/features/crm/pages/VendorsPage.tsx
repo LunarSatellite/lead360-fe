@@ -75,13 +75,13 @@ function VendorForm({ form, editing, set, onSubmit }: {
           <Input icon={FileText} value={form.taxNumber} onChange={e => set('taxNumber', e.target.value)} placeholder="TAX-123456" aria-label="TAX-123456" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Payment Terms (days)">
-          <Input icon={CreditCard} type="number" min="0" value={form.paymentTermsDays} onChange={e => set('paymentTermsDays', e.target.value)} placeholder="30" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          <Input aria-label="Payment terms days" icon={CreditCard} type="number" min="0" value={form.paymentTermsDays} onChange={e => set('paymentTermsDays', e.target.value)} placeholder="30" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Currency">
           <Input icon={DollarSign} value={form.currency} onChange={e => set('currency', e.target.value)} placeholder="USD" aria-label="USD" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Website">
-          <Input icon={Globe} value={form.website} onChange={e => set('website', e.target.value)} placeholder="https://acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          <Input aria-label="Website" icon={Globe} value={form.website} onChange={e => set('website', e.target.value)} placeholder="https://acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
       </div>
 
@@ -99,7 +99,7 @@ function VendorForm({ form, editing, set, onSubmit }: {
           <Input icon={Mail} type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="jane@acme.com" aria-label="jane@acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Phone">
-          <Input icon={Phone} value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+1 555 000 1234" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          <Input aria-label="Phone" icon={Phone} value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+1 555 000 1234" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
       </div>
 

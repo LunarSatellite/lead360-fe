@@ -464,7 +464,7 @@ function RejectForm({
       onCancel={onCancel}
       onSubmit={() => reject.mutate()}
     >
-      <select
+      <select aria-label="Reason"
         value={reason}
         onChange={(e) => setReason(Number(e.target.value) as VendorRejectionReasonValue)}
         className={field}
@@ -475,7 +475,7 @@ function RejectForm({
           </option>
         ))}
       </select>
-      <input
+      <input aria-label="Note"
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder={

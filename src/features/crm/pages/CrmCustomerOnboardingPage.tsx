@@ -348,7 +348,7 @@ export function Component() {
           </div>
 
           <Field label="Title *">
-            <Input icon={Users} required value={obTitle} onChange={e => setObTitle(e.target.value)} placeholder="e.g. Acme Corp Onboarding" style={inputStyle} />
+            <Input aria-label="Ob title" icon={Users} required value={obTitle} onChange={e => setObTitle(e.target.value)} placeholder="e.g. Acme Corp Onboarding" style={inputStyle} />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
@@ -380,7 +380,7 @@ export function Component() {
                   <input value={m.title} onChange={e => setMs(i, 'title', e.target.value)} placeholder="Milestone title" aria-label="Milestone title"
                     className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={inputStyle} />
-                  <input type="date" value={m.dueDate} onChange={e => setMs(i, 'dueDate', e.target.value)}
+                  <input aria-label="Due date" type="date" value={m.dueDate} onChange={e => setMs(i, 'dueDate', e.target.value)}
                     className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button aria-label="Close" type="button" onClick={() => setMilestones(ms => ms.filter((_, idx) => idx !== i))} disabled={milestones.length === 1}

@@ -283,7 +283,7 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Expected Delivery">
-              <Input icon={Calendar} type="date" value={expectedDelivery} onChange={e => setExpectedDelivery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              <Input aria-label="Expected delivery" icon={Calendar} type="date" value={expectedDelivery} onChange={e => setExpectedDelivery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
             <Field label="Currency">
               <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" aria-label="USD" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
@@ -330,10 +330,10 @@ export function Component() {
                       className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                       style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
-                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)}
+                  <input aria-label="Quantity" type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)}
                     className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <input type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00"
+                  <input aria-label="Unit cost" type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00"
                     className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   <button aria-label="Close" type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30"><X className="w-3.5 h-3.5" /></button>
@@ -445,7 +445,7 @@ export function Component() {
       <SlideOver open={showReject} onClose={() => setShowReject(false)} title="Reject Purchase Order">
         <form onSubmit={handleReject} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Rejection Reason *"><textarea required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Rejection Reason *"><textarea aria-label="Reject reason" required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={rejectPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {rejectPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Reject'}

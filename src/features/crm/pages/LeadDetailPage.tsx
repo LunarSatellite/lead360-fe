@@ -733,7 +733,7 @@ function TriggerScoreEvent({ leadId }: { leadId: string }) {
   if (rules.length === 0) return null;
   return (
     <div className="flex gap-2 items-center">
-      <select value={eventType} onChange={e => setEventType(e.target.value)} className="flex-1 px-2 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary">
+      <select aria-label="Event type" value={eventType} onChange={e => setEventType(e.target.value)} className="flex-1 px-2 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary">
         <option value="">— Trigger scoring event —</option>
         {rules.map((r: any) => <option key={r.id} value={r.eventType}>{r.label || r.eventType} (+{r.points})</option>)}
       </select>

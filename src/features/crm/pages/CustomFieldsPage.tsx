@@ -91,7 +91,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
               <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Name</span>
               <div className="h-px bg-brand/20" />
             </div>
-            <Input icon={SlidersHorizontal} value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Case Reference" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <Input aria-label="Name" icon={SlidersHorizontal} value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Case Reference" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-2 mb-1.5">

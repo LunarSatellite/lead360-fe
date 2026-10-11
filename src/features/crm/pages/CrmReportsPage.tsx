@@ -236,7 +236,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
               <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Report Name</span>
               <div className="h-px bg-brand/20" />
             </div>
-            <Input icon={FileBarChart} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Open deals by owner" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <Input aria-label="Name" icon={FileBarChart} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Open deals by owner" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-2 mb-1.5">
@@ -339,7 +339,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 const field = object.fields.find((of) => of.key === f.field) ?? object.fields[0];
                 return (
                   <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2">
-                    <select
+                    <select aria-label="Field"
                       value={f.field}
                       onChange={(e) => {
                         const nf = object.fields.find((of) => of.key === e.target.value);
@@ -350,7 +350,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                     >
                       {object.fields.map((of) => <option key={of.key} value={of.key} className="bg-bg">{of.label}</option>)}
                     </select>
-                    <select
+                    <select aria-label="Operator"
                       value={f.operator}
                       onChange={(e) => updateFilter(i, { operator: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -520,7 +520,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Chart value</span>
                 <div className="h-px bg-brand/20" />
               </div>
-              <select
+              <select aria-label="Aggregate function"
                 value={aggregateFunction}
                 onChange={(e) => setAggregateFunction(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -535,7 +535,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                   <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Of field</span>
                   <div className="h-px bg-brand/20" />
                 </div>
-                <select
+                <select aria-label="Aggregate"
                   value={aggregateField}
                   onChange={(e) => setAggregateField(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -744,7 +744,7 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
 
   return (
     <form onSubmit={handleSubmit} className="border-t border-border-subtle p-4 flex items-center gap-3">
-      <select
+      <select aria-label="Frequency"
         value={frequency}
         onChange={(e) => setFrequency(e.target.value)}
         className="w-32 px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"

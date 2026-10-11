@@ -513,14 +513,14 @@ function CampaignDetail({
             </div>
           ) : (
             <div className="flex items-center gap-2 flex-wrap">
-              <select value={budgetType} onChange={e => setBudgetType(e.target.value)}
+              <select aria-label="Budget type" value={budgetType} onChange={e => setBudgetType(e.target.value)}
                 className="text-xs bg-bg-elevated border border-border-subtle rounded-lg px-2 py-1.5 text-text-secondary focus:outline-none focus:border-brand">
                 <option value="daily">Daily</option>
                 <option value="lifetime">Lifetime</option>
               </select>
               <div className="relative">
                 <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-text-muted">{currency}</span>
-                <input type="number" min={1} step={0.01} value={budgetVal}
+                <input aria-label="Budget val" type="number" min={1} step={0.01} value={budgetVal}
                   onChange={e => setBudgetVal(e.target.value)}
                   className="pl-10 pr-3 py-1.5 text-sm bg-bg-elevated border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:border-brand w-28"
                 />
@@ -909,7 +909,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           <div>
             <label className={labelCls}>Webhook URL <span className="text-text-muted font-normal">(copy to Facebook App settings)</span></label>
             <div className="flex gap-2">
-              <input readOnly value={webhookUrl}
+              <input aria-label="Webhook URL" readOnly value={webhookUrl}
                 className={inputCls + ' flex-1 bg-bg font-mono text-[11px] text-text-secondary cursor-text select-all'} />
               <button onClick={handleCopy}
                 className="px-3 py-2.5 rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all shrink-0">
@@ -933,7 +933,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           {/* App ID */}
           <div>
             <label className={labelCls}>Facebook App ID *</label>
-            <input value={form.appId} onChange={e => setForm(f => ({ ...f, appId: e.target.value }))}
+            <input aria-label="App ID" value={form.appId} onChange={e => setForm(f => ({ ...f, appId: e.target.value }))}
               placeholder="1234567890123456" className={inputCls} />
             {meta?.appId && <p className="text-[10px] text-text-muted mt-1">Current: {meta.appId}</p>}
           </div>
@@ -942,7 +942,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           <div>
             <label className={labelCls}>Page Access Token</label>
             <div className="relative">
-              <input type={showToken ? 'text' : 'password'} value={form.pageAccessToken}
+              <input aria-label="Page access token" type={showToken ? 'text' : 'password'} value={form.pageAccessToken}
                 onChange={e => setForm(f => ({ ...f, pageAccessToken: e.target.value }))}
                 placeholder={meta?.hasPageToken ? '••••••• (leave blank to keep current)' : 'EAABsbCS...'}
                 className={inputCls + ' pr-10'} />
@@ -956,7 +956,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           {/* Pixel ID */}
           <div>
             <label className={labelCls}>Facebook Pixel ID <span className="text-text-muted font-normal">(optional)</span></label>
-            <input value={form.pixelId} onChange={e => setForm(f => ({ ...f, pixelId: e.target.value }))}
+            <input aria-label="Pixel ID" value={form.pixelId} onChange={e => setForm(f => ({ ...f, pixelId: e.target.value }))}
               placeholder="987654321098765" className={inputCls} />
           </div>
 
@@ -964,7 +964,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           <div>
             <label className={labelCls}>Conversions API Token <span className="text-text-muted font-normal">(optional)</span></label>
             <div className="relative">
-              <input type={showCapi ? 'text' : 'password'} value={form.capiToken}
+              <input aria-label="Capi token" type={showCapi ? 'text' : 'password'} value={form.capiToken}
                 onChange={e => setForm(f => ({ ...f, capiToken: e.target.value }))}
                 placeholder={meta?.hasCapiToken ? '••••••• (leave blank to keep current)' : 'EAABsbCS...'}
                 className={inputCls + ' pr-10'} />
@@ -1116,7 +1116,7 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
               {platform === 'instagram' ? 'Caption' : 'Message'}
               {platform !== 'instagram' && <span className="text-text-muted font-normal"> *</span>}
             </label>
-            <textarea
+            <textarea aria-label="Message"
               rows={5}
               value={message}
               onChange={e => setMessage(e.target.value)}
@@ -1142,7 +1142,7 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
               {meta.requiresImage && <span className="text-danger font-semibold"> *</span>}
               {!meta.requiresImage && <span className="text-text-muted font-normal"> (optional)</span>}
             </label>
-            <input
+            <input aria-label="Image URL"
               value={imageUrl}
               onChange={e => setImageUrl(e.target.value)}
               placeholder={platform === 'tiktok' ? 'https://example.com/video.mp4' : 'https://example.com/image.jpg'}
@@ -1158,9 +1158,9 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
           <div>
             <label className={labelCls}>Schedule (optional — leave blank to post now)</label>
             <div className="flex gap-2">
-              <input type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)}
+              <input aria-label="Schedule date" type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)}
                 className={inputCls + ' flex-1'} />
-              <input type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)}
+              <input aria-label="Schedule time" type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)}
                 className={inputCls + ' w-32'} disabled={!scheduleDate} />
             </div>
             {scheduleDate && (
@@ -1362,7 +1362,7 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
           </div>
           <div>
             <label className={labelCls}>Advertiser ID *</label>
-            <input value={form.advertiserId} onChange={e => setForm(f => ({ ...f, advertiserId: e.target.value }))}
+            <input aria-label="Advertiser ID" value={form.advertiserId} onChange={e => setForm(f => ({ ...f, advertiserId: e.target.value }))}
               placeholder="7012345678901234567" className={inputCls} />
           </div>
           <div>

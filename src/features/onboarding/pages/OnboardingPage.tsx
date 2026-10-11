@@ -414,7 +414,7 @@ function Step4({ onDone }: { onDone: () => void }) {
           <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-glass-2 to-glass-3 flex items-center justify-center text-base flex-shrink-0">
             ✨
           </div>
-          <input
+          <input aria-label="Input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}

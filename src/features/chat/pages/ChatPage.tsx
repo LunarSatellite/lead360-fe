@@ -510,7 +510,7 @@ export function Component() {
                           <span style={{ color: 'rgba(160,160,160,0.75)' }}>{ghostText}</span>
                         </div>
                       )}
-                      <textarea
+                      <textarea aria-label="Draft"
                         value={draft}
                         onChange={(e) => {
                           const v = e.target.value;

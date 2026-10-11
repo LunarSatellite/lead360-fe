@@ -249,7 +249,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
               placeholder="Search contact by name..." aria-label="Search contact by name..."
               className={inputCls}
             />
-            <select
+            <select aria-label="Add role"
               value={addRole}
               onChange={(e) => setAddRole(e.target.value)}
               className="px-2 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-xs text-text-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"

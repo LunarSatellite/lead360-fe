@@ -213,7 +213,7 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
-          <textarea
+          <textarea aria-label="Prompt"
             className="w-full px-3.5 py-3 rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-all min-h-[100px] resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', border: '1px solid rgb(var(--brand-rgb) / 0.2)' }}
             placeholder="e.g. Summer 30% off on all laptops for young professionals"

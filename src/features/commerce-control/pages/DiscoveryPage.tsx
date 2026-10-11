@@ -449,7 +449,7 @@ function FeaturedRow({
               ? 'A note is optional.'
               : 'A note is required — the matcher learns from why this was wrong.'}
           </p>
-          <input
+          <input aria-label="Note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder={mode === 'approve' ? 'Note (optional)' : 'Why this pairing is wrong'}

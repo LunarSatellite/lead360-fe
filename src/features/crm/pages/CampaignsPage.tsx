@@ -617,7 +617,7 @@ function AttributionPanel({ campaignId }: { campaignId: string }) {
       {showForm ? (
         <form onSubmit={handleAdd} className="rounded-xl border border-border-subtle bg-bg-elevated p-3 space-y-2.5">
           <div className="grid grid-cols-2 gap-2">
-            <select value={form.entityType} onChange={(e) => setForm((f) => ({ ...f, entityType: e.target.value }))} className={selectCls}>
+            <select aria-label="Entity type" value={form.entityType} onChange={(e) => setForm((f) => ({ ...f, entityType: e.target.value }))} className={selectCls}>
               {Object.entries(ATTRIBUTED_ENTITY_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
             <input required value={form.entityId} onChange={(e) => setForm((f) => ({ ...f, entityId: e.target.value }))}

@@ -96,7 +96,7 @@ export function Component() {
                 <button aria-label="Close" type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
               <input className={inputCls} placeholder="Template name" aria-label="Template name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
               <div className="grid grid-cols-2 gap-3">
-                <select className={inputCls} value={form.category} onChange={e => setForm(f => ({ ...f, category: Number(e.target.value) as ContractTemplateCategoryValue }))}>
+                <select aria-label="Category" className={inputCls} value={form.category} onChange={e => setForm(f => ({ ...f, category: Number(e.target.value) as ContractTemplateCategoryValue }))}>
                   {Object.entries(ContractTemplateCategory).filter(([k]) => isNaN(Number(k))).map(([k, v]) => (<option key={v} value={v}>{k}</option>))}
                 </select>
                 <input className={inputCls} placeholder="Subject line (optional)" aria-label="Subject line (optional)" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} />

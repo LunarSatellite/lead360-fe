@@ -146,7 +146,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Invite a team member to your workspace</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -530,7 +530,7 @@ function RoleListItem({ role, isSelected, onClick }: { role: CrmRoleDto; isSelec
       </div>
       <ChevronRight className="w-4 h-4 text-text-muted flex-shrink-0" />
       {!role.isSystem && (
-        <button
+        <button aria-label="Delete"
           onClick={(e) => {
             e.stopPropagation();
             confirmDialog({ message: `Delete role "${role.name}"?`, confirmText: 'Delete', danger: true }).then(
@@ -563,10 +563,10 @@ function CreateRoleForm({ onDone, onCancel }: { onDone: (id: string) => void; on
         placeholder="Role name..." aria-label="Role name..."
         className="flex-1 px-3 py-2 rounded-lg bg-bg border border-border-medium text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
       />
-      <button type="submit" disabled={create.isPending || !name.trim()} className="p-2 rounded-lg bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">
+      <button aria-label="Confirm" type="submit" disabled={create.isPending || !name.trim()} className="p-2 rounded-lg bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">
         <Check className="w-4 h-4" />
       </button>
-      <button type="button" onClick={onCancel} className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2">
+      <button aria-label="Close" type="button" onClick={onCancel} className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2">
         <X className="w-4 h-4" />
       </button>
     </form>

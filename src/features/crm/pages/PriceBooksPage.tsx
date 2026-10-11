@@ -156,7 +156,7 @@ export function Component() {
                 >New Price Book</h2>
                 <p className="text-xs text-text-muted mt-0.5">Create a new price book</p>
               </div>
-              <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -274,7 +274,7 @@ function EntryEditor({ bookId, currency, entries }: { bookId: string; currency: 
                 <td className="px-3 py-2 text-xs text-text-muted">{e.sku || '—'}</td>
                 <td className="px-3 py-2 text-sm font-semibold text-text-primary tabular-nums">{money(e.unitPrice, currency)}</td>
                 <td className="px-3 py-2 text-right">
-                  <button onClick={() => delEntry.mutate(e.id)} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Delete" onClick={() => delEntry.mutate(e.id)} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                 </td>
               </tr>
             ))}

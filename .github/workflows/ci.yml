@@ -1,0 +1,60 @@
+# The checks that were only ever run locally.
+#
+# This repository had no workflows at all, so every claim about it — 497
+# passing tests, a clean typecheck, the design-system budgets — rested on
+# someone having run them on their own machine and said so. The budgets in
+# design-system-adoption.test.ts are the clearest case: they exist to stop a
+# hand-rolled button or an unnamed control being added back, and a budget
+# nothing enforces on a pull request is a comment.
+#
+# Hosted runners on this account were rejected for billing earlier in this
+# work on another repository. If that is still true the job will queue
+# rather than run, which is visible and fixable; it is not a reason to leave
+# the checks unrun.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A second push to the same branch cancels the first: the older run's answer
+# is about code nobody is looking at any more.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # `npm ci` rather than `npm install`: it installs what the lockfile
+      # says and fails if the lockfile and package.json disagree, so CI
+      # cannot pass against a dependency tree nobody has.
+      - run: npm ci
+
+      # Types first. A type error makes the test failures that follow it
+      # noise, and tsc is the faster of the two.
+      - name: Typecheck
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Tests
+        run: npx vitest run --reporter=dot
+
+      # Lint last and advisory. The repository has pre-existing violations
+      # that predate this workflow — 8 `any`s in CampaignsPage among them —
+      # so failing the build on them would make CI red on arrival and teach
+      # everyone to ignore it. It reports, and `continue-on-error` comes off
+      # when the count reaches zero.
+      - name: Lint
+        run: npx eslint src
+        continue-on-error: true

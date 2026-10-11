@@ -76,7 +76,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
             >New Field</h2>
             <p className="text-xs text-text-muted mt-0.5">Add a custom field to {CRM_ENTITY_TYPE_LABELS[entityType as keyof typeof CRM_ENTITY_TYPE_LABELS]}</p>
           </div>
-          <button onClick={onDone} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onDone} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -274,7 +274,7 @@ function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; enti
           {field.isActive ? 'Disable' : 'Enable'}
         </button>
         {!deleting ? (
-          <button
+          <button aria-label="Delete"
             onClick={() => setDeleting(true)}
             className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
           >
@@ -285,7 +285,7 @@ function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; enti
             <button onClick={handleDelete} disabled={deleteField.isPending} className="text-xs text-danger font-semibold px-2 py-1 rounded-lg hover:bg-danger-soft transition-all">
               {deleteField.isPending ? '…' : 'Delete'}
             </button>
-            <button onClick={() => setDeleting(false)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-card transition-all">
+            <button aria-label="Close" onClick={() => setDeleting(false)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-card transition-all">
               <X className="w-3 h-3" />
             </button>
           </div>

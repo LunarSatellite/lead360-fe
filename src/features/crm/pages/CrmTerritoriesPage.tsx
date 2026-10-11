@@ -81,7 +81,7 @@ export function Component() {
                 <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Territory</h2>
                 <p className="text-xs text-text-muted mt-0.5">Create a new sales territory</p>
               </div>
-              <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+              <button aria-label="Close" onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={handleSubmit} className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
               <div className="grid grid-cols-[auto_1fr] items-center gap-2">
@@ -199,7 +199,7 @@ function TerritoryCard({ territory, index, isExpanded, onToggle }: {
         >
           {territory.isActive ? <ToggleRight className="w-6 h-6" /> : <ToggleLeft className="w-6 h-6" />}
         </button>
-        <button
+        <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Delete territory "${territory.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) deleteTerritory.mutate(territory.id); })}
           className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
@@ -302,7 +302,7 @@ function RuleRow({ rule, index, onRemove }: { rule: SalesTerritoryRuleDto; index
       <span className="text-text-secondary font-medium">{TERRITORY_RULE_FIELD_LABEL[rule.field]}</span>
       <span className="text-text-muted">{TERRITORY_RULE_OPERATOR_LABEL[rule.operator]}</span>
       <span className="font-semibold text-text-primary">{rule.value}</span>
-      <button onClick={onRemove} className="ml-auto p-1 rounded text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+      <button aria-label="Delete" onClick={onRemove} className="ml-auto p-1 rounded text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
         <Trash2 className="w-3 h-3" />
       </button>
     </div>

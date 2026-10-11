@@ -41,7 +41,7 @@ function SlideOver({
       <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -427,7 +427,7 @@ function AccountDetailPanel({
               <button onClick={() => setConfirmDelete(false)} className="text-xs text-text-muted hover:text-text-primary">×</button>
             </div>
           ) : (
-            <button
+            <button aria-label="Delete"
               onClick={() => setConfirmDelete(true)}
               className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
             >
@@ -598,7 +598,7 @@ function CreateAccountModal({
             >New Account</h2>
             <p className="text-xs text-text-muted mt-0.5">Add a new account to your CRM</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -764,7 +764,7 @@ function CreateAccountModal({
               onFocus={() => setShowOrgDrop(true)}
             />
             {orgSearch && (
-              <button
+              <button aria-label="Close"
                 type="button"
                 onClick={() => { setOrgSearch(''); setOrgQuery(''); setShowOrgDrop(false); onChange(f => ({ ...f, organizationId: '' })); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); }}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"

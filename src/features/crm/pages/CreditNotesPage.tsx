@@ -20,7 +20,7 @@ function SlideOver({ open, onClose, title, children }: { open: boolean; onClose:
       <div className="relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>

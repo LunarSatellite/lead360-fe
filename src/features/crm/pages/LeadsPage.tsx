@@ -324,7 +324,7 @@ export function Component() {
                 >New Lead</h2>
                 <p className="text-xs text-text-muted mt-0.5">Capture a new lead into your pipeline</p>
               </div>
-              <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -348,7 +348,7 @@ export function Component() {
                   onFocus={() => setShowContactDrop(true)}
                 />
                 {contactSearch && (
-                  <button
+                  <button aria-label="Close"
                     type="button"
                     onClick={() => { setContactSearch(''); setContactQuery(''); setShowContactDrop(false); }}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
@@ -457,7 +457,7 @@ export function Component() {
                   onFocus={() => setShowOrgDrop(true)}
                 />
                 {orgSearch && (
-                  <button
+                  <button aria-label="Close"
                     type="button"
                     onClick={() => { setOrgSearch(''); setOrgQuery(''); setShowOrgDrop(false); setForm(f => ({ ...f, organizationId: undefined })); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); }}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"

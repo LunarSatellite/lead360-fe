@@ -866,7 +866,7 @@ function CreateWorkflowForm({ onGenerate }: {
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-text-muted font-semibold">Step {s.stepOrder}</span>
                     {steps.length > 1 && (
-                      <button onClick={() => removeStep(i)} className="p-0.5 rounded text-danger hover:bg-danger-soft transition-colors">
+                      <button aria-label="Close" onClick={() => removeStep(i)} className="p-0.5 rounded text-danger hover:bg-danger-soft transition-colors">
                         <X className="w-3 h-3" />
                       </button>
                     )}
@@ -1719,7 +1719,7 @@ function WorkflowChatWidget({
         />
 
         {/* Send button */}
-        <button
+        <button aria-label="Send"
           onClick={handleSend}
           disabled={!input.trim() || loading}
           className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all disabled:opacity-30"
@@ -2118,7 +2118,7 @@ function WorkflowCard({ wf, onOpen, onRun, onDelete, onToggle }: {
               <button onClick={() => setConfirmDel(false)} className="text-[10px] text-text-muted px-1">✕</button>
             </div>
           ) : (
-            <button onClick={() => setConfirmDel(true)} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+            <button aria-label="Delete" onClick={() => setConfirmDel(true)} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
             </button>
           )}

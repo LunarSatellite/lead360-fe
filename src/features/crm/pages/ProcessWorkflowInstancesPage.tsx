@@ -159,7 +159,7 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
       <div className="relative w-full max-w-md bg-bg shadow-2xl flex flex-col border-l border-border-subtle h-full">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>

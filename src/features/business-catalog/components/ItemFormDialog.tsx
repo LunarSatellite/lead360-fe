@@ -86,7 +86,7 @@ export function ItemFormDialog({ itemLabel, categories, item, onClose }: Props) 
           <h2 className="text-sm font-bold text-text-primary tracking-tight">
             {editing ? `Edit ${itemLabel}` : `Add ${itemLabel}`}
           </h2>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-7 h-7 rounded-sm flex items-center justify-center
                        hover:bg-glass-2 transition-colors"

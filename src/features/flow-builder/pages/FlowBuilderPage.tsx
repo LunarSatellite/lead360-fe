@@ -1071,7 +1071,7 @@ function FlowBuilderInner() {
                   disabled={!editor.flowId || chatModify.isPending}
                   size="xs"
                 />
-                <button
+                <button aria-label="Send"
                   onClick={sendChat}
                   disabled={
                     !editor.flowId ||
@@ -1320,7 +1320,7 @@ function FlowListOverlay({
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle flex-shrink-0">
           <h3 className="text-sm font-bold text-text-primary">Saved Flows</h3>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
+          <button aria-label="Close" onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
             <X className="w-4 h-4 text-text-muted" />
           </button>
         </div>
@@ -1352,7 +1352,7 @@ function FlowListOverlay({
                     </div>
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
+                    <button aria-label="Copy"
                       onClick={(e) => {
                         e.stopPropagation();
                         onDuplicate(f.id);
@@ -1361,7 +1361,7 @@ function FlowListOverlay({
                     >
                       <Copy className="w-3 h-3 text-text-muted" />
                     </button>
-                    <button
+                    <button aria-label="Delete"
                       onClick={(e) => {
                         e.stopPropagation();
                         confirmDialog({ message: `Delete "${f.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) onDelete(f.id); });

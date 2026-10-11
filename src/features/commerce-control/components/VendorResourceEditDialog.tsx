@@ -242,7 +242,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
               </p>
             )}
           </div>
-          <button type="button" onClick={onClose}>
+          <button aria-label="Close" type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </header>

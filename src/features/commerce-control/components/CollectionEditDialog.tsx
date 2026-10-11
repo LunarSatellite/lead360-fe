@@ -39,7 +39,7 @@ export function CollectionEditDialog({ id, initial, onClose, onSaved }: Props) {
     <form onSubmit={(event) => { event.preventDefault(); save.mutate(); }} className="relative w-full max-w-3xl overflow-hidden rounded-[24px] border border-brand/20 bg-bg-card shadow-2xl">
       <header className="flex items-start justify-between border-b border-border-subtle px-5 py-4">
         <div><p className="text-[10px] font-extrabold uppercase tracking-wider text-brand">Stylemint catalogue</p><h3 className="mt-1 text-xl font-black text-text-primary">Edit collection</h3></div>
-        <button type="button" onClick={onClose}><X className="h-4 w-4 text-text-muted" /></button>
+        <button aria-label="Close" type="button" onClick={onClose}><X className="h-4 w-4 text-text-muted" /></button>
       </header>
       {details.isLoading ? <div className="flex h-48 items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-brand" /></div> :
         <div className="grid gap-4 p-5 md:grid-cols-2">

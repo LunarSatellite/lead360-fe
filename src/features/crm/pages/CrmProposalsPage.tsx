@@ -66,7 +66,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide, pad
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -416,7 +416,7 @@ export function Component() {
               onFocus={() => setShowGenDealDrop(true)}
             />
             {genDealSearch ? (
-              <button type="button" onClick={() => { setGenDealSearch(''); setShowGenDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenDealSearch(''); setShowGenDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -464,7 +464,7 @@ export function Component() {
               onFocus={() => setShowGenContactDrop(true)}
             />
             {genContactSearch ? (
-              <button type="button" onClick={() => { setGenContactSearch(''); setShowGenContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenContactSearch(''); setShowGenContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -515,7 +515,7 @@ export function Component() {
               onFocus={() => setShowGenTemplateDrop(true)}
             />
             {genTemplateSearch ? (
-              <button type="button" onClick={() => { setGenTemplateSearch(''); setShowGenTemplateDrop(false); setTemplateId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenTemplateSearch(''); setShowGenTemplateDrop(false); setTemplateId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -601,7 +601,7 @@ export function Component() {
                     {Object.entries(PROPOSAL_SECTION_KINDS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                   <input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section heading (optional)" aria-label="Section heading (optional)" className={inputCls + ' flex-1'} />
-                  <button onClick={() => setMSections(ss => ss.filter((_, idx) => idx !== i))} disabled={mSections.length === 1}
+                  <button aria-label="Close" onClick={() => setMSections(ss => ss.filter((_, idx) => idx !== i))} disabled={mSections.length === 1}
                     className="p-1.5 rounded-lg text-danger hover:bg-danger-soft disabled:opacity-40 transition-colors">
                     <X className="w-3.5 h-3.5" />
                   </button>

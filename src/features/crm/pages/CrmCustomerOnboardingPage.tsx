@@ -49,7 +49,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, width = '
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>}
@@ -383,7 +383,7 @@ export function Component() {
                   <input type="date" value={m.dueDate} onChange={e => setMs(i, 'dueDate', e.target.value)}
                     className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <button type="button" onClick={() => setMilestones(ms => ms.filter((_, idx) => idx !== i))} disabled={milestones.length === 1}
+                  <button aria-label="Close" type="button" onClick={() => setMilestones(ms => ms.filter((_, idx) => idx !== i))} disabled={milestones.length === 1}
                     className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />
                   </button>

@@ -71,7 +71,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide, pad
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -469,7 +469,7 @@ export function Component() {
                   onFocus={() => setShowDealDrop(true)}
                 />
                 {dealSearch ? (
-                  <button type="button" onClick={() => { setDealSearch(''); setShowDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setDealSearch(''); setShowDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -517,7 +517,7 @@ export function Component() {
                   onFocus={() => setShowContactDrop(true)}
                 />
                 {contactSearch ? (
-                  <button type="button" onClick={() => { setContactSearch(''); setShowContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setContactSearch(''); setShowContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -568,7 +568,7 @@ export function Component() {
                   onFocus={() => setShowPbDrop(true)}
                 />
                 {pbSearch ? (
-                  <button type="button" onClick={() => { setPbSearch(''); setShowPbDrop(false); setPriceBookId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setPbSearch(''); setShowPbDrop(false); setPriceBookId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -704,7 +704,7 @@ export function Component() {
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
-                  <button
+                  <button aria-label="Close"
                     onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))}
                     className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors disabled:opacity-30"
                     disabled={lines.length === 1}

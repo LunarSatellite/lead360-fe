@@ -146,7 +146,7 @@ export function ProductComposer({ onClose, onDone }: Props) {
               Produit, cinq visuels minimum, reel, prix CDF, stock et livraison dans un seul parcours.
             </p>
           </div>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             className="rounded-xl border border-border-subtle p-2 text-text-muted hover:text-text-primary"

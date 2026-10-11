@@ -82,7 +82,7 @@ function EventTypeModal({
           <h2 className="text-base font-bold text-text-primary">
             {initial ? 'Edit meeting type' : 'New meeting type'}
           </h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -371,13 +371,13 @@ function BookingPageSettingsPage() {
                       : <Copy className="w-3.5 h-3.5" />
                     }
                   </button>
-                  <button
+                  <button aria-label="Edit"
                     onClick={() => setEditingEventType(et)}
                     className="p-1.5 rounded-lg text-text-muted hover:text-indigo-400 hover:bg-indigo-400/10 transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5" />
                   </button>
-                  <button
+                  <button aria-label="Delete"
                     onClick={() => confirmDialog({ message: `Delete "${et.title}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteEventType.mutate(et.id); })}
                     className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
                   >

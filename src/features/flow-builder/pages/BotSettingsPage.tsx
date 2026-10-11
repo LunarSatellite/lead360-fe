@@ -144,7 +144,7 @@ export function Component() {
             {settings.handoffPhrases?.map((p, i) => (
               <span key={i} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-secondary">
                 {p}
-                <button onClick={() => removePhrase(i)} className="text-text-muted hover:text-danger"><Trash2 className="w-3 h-3" /></button>
+                <button aria-label="Delete" onClick={() => removePhrase(i)} className="text-text-muted hover:text-danger"><Trash2 className="w-3 h-3" /></button>
               </span>
             ))}
           </div>
@@ -178,7 +178,7 @@ export function Component() {
               <span className="flex-1 text-sm text-text-primary truncate">{pb.trigger || 'No trigger set'}</span>
               <span className="text-xs text-text-muted">{pb.moves.length} moves</span>
               {expandedPlaybook === pi ? <ChevronUp className="w-4 h-4 text-text-muted" /> : <ChevronDown className="w-4 h-4 text-text-muted" />}
-              <button onClick={e => { e.stopPropagation(); removePlaybook(pi); }}
+              <button aria-label="Delete" onClick={e => { e.stopPropagation(); removePlaybook(pi); }}
                 className="p-1 text-text-muted hover:text-danger transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -207,7 +207,7 @@ export function Component() {
                           placeholder={mi === pb.moves.length - 1 ? 'e.g. Connect to human sales team' : 'e.g. Offer 5% discount'}
                           className={`${inputCls} flex-1`} />
                         {pb.moves.length > 1 && (
-                          <button onClick={() => removeMove(pi, mi)} className="p-1 text-text-muted hover:text-danger">
+                          <button aria-label="Delete" onClick={() => removeMove(pi, mi)} className="p-1 text-text-muted hover:text-danger">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         )}

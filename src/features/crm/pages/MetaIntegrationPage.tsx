@@ -530,7 +530,7 @@ function CampaignDetail({
                 {budgetMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
                 Save
               </Button>
-              <button onClick={() => setEditBudget(false)}
+              <button aria-label="Close" onClick={() => setEditBudget(false)}
                 className="p-1.5 rounded-lg text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -742,7 +742,7 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Link your Meta ad account to run campaigns</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -787,7 +787,7 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
                 placeholder="EAABsbCS..." aria-label="EAABsbCS..."
                 className="w-full pl-3 pr-10 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              <button type="button" onClick={() => setShowToken(v => !v)}
+              <button aria-label="Show" type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
               </button>
@@ -875,7 +875,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           <h3 className="font-bold text-text-primary flex items-center gap-2">
             <Link className="w-5 h-5 text-[#1877F2]" /> Lead Ads Webhook Setup
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -946,7 +946,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
                 onChange={e => setForm(f => ({ ...f, pageAccessToken: e.target.value }))}
                 placeholder={meta?.hasPageToken ? '••••••• (leave blank to keep current)' : 'EAABsbCS...'}
                 className={inputCls + ' pr-10'} />
-              <button type="button" onClick={() => setShowToken(v => !v)}
+              <button aria-label="Show" type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
               </button>
@@ -968,7 +968,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
                 onChange={e => setForm(f => ({ ...f, capiToken: e.target.value }))}
                 placeholder={meta?.hasCapiToken ? '••••••• (leave blank to keep current)' : 'EAABsbCS...'}
                 className={inputCls + ' pr-10'} />
-              <button type="button" onClick={() => setShowCapi(v => !v)}
+              <button aria-label="Show" type="button" onClick={() => setShowCapi(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
               </button>
@@ -1097,7 +1097,7 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
             {meta.icon}
             New {meta.label} Post
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -1296,7 +1296,7 @@ function InstagramAdsTab({
                 <h3 className="font-bold text-text-primary truncate">{selected.name}</h3>
                 <StatusBadge status={selected.fbStatus} />
               </div>
-              <button onClick={() => setSelectedId(null)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated shrink-0">
+              <button aria-label="Close" onClick={() => setSelectedId(null)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated shrink-0">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -1347,7 +1347,7 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
           <h3 className="font-bold text-text-primary flex items-center gap-2">
             <Video className="w-5 h-5 text-text-secondary" strokeWidth={1.6} /> Connect TikTok Ads
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -1371,7 +1371,7 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
               <input type={showToken ? 'text' : 'password'} value={form.accessToken}
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
                 placeholder="Enter your TikTok access token" aria-label="Enter your TikTok access token" className={inputCls + ' pr-10'} />
-              <button type="button" onClick={() => setShowToken(v => !v)}
+              <button aria-label="Show" type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
               </button>
@@ -1973,7 +1973,7 @@ function OAuthPlatformTab({
                       <code className="flex-1 px-2.5 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-[11px] text-brand font-mono truncate">
                         {redirectUri}
                       </code>
-                      <button onClick={() => { navigator.clipboard.writeText(redirectUri); toast.success('Copied!'); }}
+                      <button aria-label="Copy" onClick={() => { navigator.clipboard.writeText(redirectUri); toast.success('Copied!'); }}
                         className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-text-primary hover:border-border-medium transition-all shrink-0">
                         <Copy className="w-3.5 h-3.5" />
                       </button>
@@ -2215,7 +2215,7 @@ export function Component() {
               <div className="flex items-center gap-2 min-w-0">
                 <h3 className="font-bold text-text-primary truncate">{selectedCampaign.name}</h3>
               </div>
-              <button onClick={() => setSelectedId(null)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated shrink-0">
+              <button aria-label="Close" onClick={() => setSelectedId(null)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated shrink-0">
                 <X className="w-4 h-4" />
               </button>
             </div>

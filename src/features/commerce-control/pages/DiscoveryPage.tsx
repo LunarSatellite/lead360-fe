@@ -223,7 +223,7 @@ function SearchRow({ search, onChanged }: { search: PopularSearch; onChanged: ()
             )}
             {search.isActive ? 'Active' : 'Inactive'}
           </button>
-          <button
+          <button aria-label="Delete"
             onClick={() => { setConfirmDelete(true); setError(null); }}
             className="rounded-sm border-thin border-border-medium p-1.5 text-text-secondary hover:bg-glass-2 hover:text-rose-300"
           >

@@ -125,7 +125,7 @@ function ContactCard({
             </button>
           </div>
         ) : (
-          <button
+          <button aria-label="Delete"
             onClick={() => onDeleteRequest(c.id)}
             className="p-1 rounded-xs text-text-muted opacity-0 group-hover:opacity-100 hover:text-danger hover:bg-danger-soft transition-all"
           >
@@ -174,7 +174,7 @@ function Modal({
             >New Contact</h2>
             <p className="text-xs text-text-muted mt-0.5">Add a new contact to your CRM</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>

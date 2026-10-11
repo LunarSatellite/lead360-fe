@@ -149,7 +149,7 @@ export function IntentFormModal({
           <h2 className="text-lg font-extrabold text-text-primary tracking-tight">
             {isEdit ? 'Edit intent' : 'Create intent'}
           </h2>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-8 h-8 rounded-lg bg-glass-2 flex items-center justify-center text-text-muted hover:text-text-primary transition-all"
           >

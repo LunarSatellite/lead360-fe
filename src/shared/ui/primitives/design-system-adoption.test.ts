@@ -187,6 +187,51 @@ describe('defects that must not come back', () => {
     ).toBe(BUDGET_UNNAMED_CONTROLS);
   });
 
+  it('adds no new icon-only button that nothing names', () => {
+    /**
+     * A button whose whole body is one icon, with no aria-label and no
+     * title, is announced as "button". 231 matched that shape; 204 draw an
+     * icon whose meaning is unambiguous — a close cross, a bin, a pencil —
+     * and those are named from it.
+     *
+     * A looser count over the same code says 591, by also catching bodies
+     * like `{saving ? <Loader2/> : 'Save'}` whose text is in an expression.
+     * Those are named already; this check reads the narrow shape on purpose,
+     * so it cannot be satisfied by a button that merely looks empty to a
+     * regex.
+     *
+     * The chevrons are deliberately not: the same glyph is expand, collapse,
+     * next and previous in this codebase, and putting a wrong name in front
+     * of someone who cannot see the screen is worse than the nothing they
+     * get now. They are in the budget until a person decides.
+     */
+    const BUDGET_UNNAMED_ICON_BUTTONS = 27;
+    const ONLY_ICON = /^\s*<[A-Z]\w*\b[^<>]*\/>\s*$/;
+    let unnamed = 0;
+
+    for (const source of Object.values(TSX)) {
+      for (let at = source.indexOf('<button'); at !== -1; at = source.indexOf('<button', at + 1)) {
+        const tag = openingTag(source, at);
+        if (/\baria-label\b|\btitle=/.test(tag)) continue;
+
+        const gt = at + tag.length;
+        const close = source.indexOf('</button>', gt);
+        if (close === -1) continue;
+
+        const body = source.slice(gt + 1, close);
+        const text = body.replace(/<[^>]*>/g, '').replace(/\{[^}]*\}/g, '').trim();
+        if (!text && (ONLY_ICON.test(body) || !body.includes('{'))) unnamed += 1;
+      }
+    }
+
+    expect(
+      unnamed,
+      unnamed > BUDGET_UNNAMED_ICON_BUTTONS
+        ? 'a new icon-only button has no name — use IconButton, which requires one'
+        : `${BUDGET_UNNAMED_ICON_BUTTONS - unnamed} fewer — lower the budget to ${unnamed}`,
+    ).toBe(BUDGET_UNNAMED_ICON_BUTTONS);
+  });
+
   it('never removes the focus outline without putting one back', () => {
     // A control with `focus:outline-none` and no ring of its own cannot be
     // used from a keyboard: the cursor is invisible. The primitives carry

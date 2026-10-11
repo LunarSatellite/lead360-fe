@@ -24,7 +24,7 @@ function SlideOver({ open, onClose, title, wide, children }: { open: boolean; on
       <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[520px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
@@ -89,7 +89,7 @@ function NewSupplierInvoiceSlideOver({
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Supplier Invoice</h2>
             <p className="text-xs text-text-muted mt-0.5">Record an incoming invoice from a vendor</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           <form id="si-form" onSubmit={onSubmit}>

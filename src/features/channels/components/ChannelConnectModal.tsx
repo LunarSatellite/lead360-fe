@@ -254,7 +254,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
               </p>
             </div>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={handleClose}
             className="w-8 h-8 rounded-sm bg-glass-1 border-thin border-border-subtle flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all"
           >

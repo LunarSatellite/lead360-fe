@@ -44,7 +44,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && (
@@ -227,7 +227,7 @@ function ItemEditor({ bundleId, currency, items }: { bundleId: string; currency:
                 <td className="px-3 py-2 text-sm text-text-primary tabular-nums">{money(it.unitPrice, currency)}</td>
                 <td className="px-3 py-2 text-sm font-semibold text-text-primary tabular-nums">{money(it.unitPrice * it.quantity, currency)}</td>
                 <td className="px-3 py-2 text-right">
-                  <button onClick={() => delItem.mutate(it.id)} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Delete" onClick={() => delItem.mutate(it.id)} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                 </td>
               </tr>
             ))}

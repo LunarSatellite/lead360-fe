@@ -456,7 +456,7 @@ function OrderPanel({
               {order.receiverName || 'Commande client'}
             </h2>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="rounded-lg p-2 text-text-muted hover:bg-bg-elevated hover:text-text-primary"
           >
@@ -655,7 +655,7 @@ function PackageSealDialog({
             </p>
             <h3 className="mt-1 text-lg font-black text-text-primary">Seal the parcel</h3>
           </div>
-          <button type="button" onClick={onClose}>
+          <button aria-label="Close" type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </div>
@@ -727,7 +727,7 @@ function OrderOperationDialog({
       >
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-black text-text-primary">{title}</h3>
-          <button type="button" onClick={onClose}>
+          <button aria-label="Close" type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </div>
@@ -826,7 +826,7 @@ function RefundDialog({
       >
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-black text-text-primary">Issue a refund</h3>
-          <button type="button" onClick={onClose}>
+          <button aria-label="Close" type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </div>

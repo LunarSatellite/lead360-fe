@@ -221,7 +221,7 @@ export function CreateCampaignDrawer({ onClose }: Props) {
             <h2 className="text-base font-extrabold text-text-primary">Create Facebook Ad Campaign</h2>
             <p className="text-xs text-text-muted mt-0.5">4 steps — takes about 2 minutes</p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-elevated text-text-muted">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-elevated text-text-muted">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -488,7 +488,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
                 return (
                   <span key={code} className="flex items-center gap-1 px-2.5 py-1 bg-brand-soft text-brand border border-border-glow text-xs font-semibold rounded-full">
                     {country?.label ?? code}
-                    <button type="button" onClick={() => toggleCountry(code)}>
+                    <button aria-label="Close" type="button" onClick={() => toggleCountry(code)}>
                       <X className="w-3 h-3" />
                     </button>
                   </span>
@@ -547,7 +547,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               {form.interests.map(i => (
                 <span key={i.id} className="flex items-center gap-1 px-2.5 py-1 bg-brand-soft text-brand border border-border-glow text-xs font-semibold rounded-full">
                   {i.name}
-                  <button type="button" onClick={() => removeInterest(i.id)}>
+                  <button aria-label="Close" type="button" onClick={() => removeInterest(i.id)}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>

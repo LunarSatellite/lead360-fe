@@ -21,7 +21,7 @@ function ReviewModal({ mode, approvalId, onClose }: {
       <div className="w-full max-w-md rounded-2xl bg-bg border border-border-subtle shadow-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-text-primary">{mode === 'approve' ? 'Approve' : 'Reject'} Request</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated"><X className="w-4 h-4" /></button>
         </div>
         <div>
           <label className="block">

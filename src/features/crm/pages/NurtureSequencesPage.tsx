@@ -154,7 +154,7 @@ function StepCard({
       {/* Step header */}
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-text-primary">Step {index + 1}</span>
-        <button
+        <button aria-label="Close"
           type="button"
           onClick={onRemove}
           className="text-text-muted hover:text-danger transition-colors p-1 rounded-lg hover:bg-danger-soft"
@@ -397,7 +397,7 @@ function SequenceModal({
               {editing ? 'Update this nurture sequence settings' : 'Configure an automated nurture sequence for your leads'}
             </p>
           </div>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             className="text-text-muted hover:text-text-primary mt-0.5"

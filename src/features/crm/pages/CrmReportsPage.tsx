@@ -221,7 +221,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
             >New report</h2>
             <p className="text-xs text-text-muted mt-0.5">Build a custom view over any CRM object</p>
           </div>
-          <button onClick={onCancel} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -378,7 +378,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       />
                     )}
-                    <button onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+                    <button aria-label="Delete" onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -700,7 +700,7 @@ function ReportRow({ report }: { report: CrmReportDto }) {
         <button onClick={() => setShowSchedule((s) => !s)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3">
           <Calendar className="w-3.5 h-3.5" /> Schedule
         </button>
-        <button
+        <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Delete report "${report.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) del.mutate(report.id); })}
           className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"

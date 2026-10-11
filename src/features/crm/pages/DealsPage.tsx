@@ -841,7 +841,7 @@ export function Component() {
                 >New Deal</h2>
                 <p className="text-xs text-text-muted mt-0.5">Create a deal directly in your pipeline</p>
               </div>
-              <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -1002,7 +1002,7 @@ export function Component() {
                 <h2 className="text-sm font-bold text-text-primary">Manage Pipeline</h2>
                 <p className="text-xs text-text-muted mt-0.5">Add, edit or reorder deal stages</p>
               </div>
-              <button onClick={() => setShowPipeline(false)} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+              <button aria-label="Close" onClick={() => setShowPipeline(false)} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
             </div>
             <div className="p-5 space-y-3">
               {stages.map((stage, idx) => (
@@ -1039,9 +1039,9 @@ export function Component() {
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
                         <button disabled={idx === stages.length - 1} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order + 1 } })}
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
+                        <button aria-label="Settings" onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
                           className="p-1 text-text-muted hover:text-text-primary"><Settings className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button aria-label="Delete" onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </div>
                   )}

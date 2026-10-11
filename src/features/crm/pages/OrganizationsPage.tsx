@@ -30,7 +30,7 @@ function SlideOver({
       <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -247,7 +247,7 @@ function OrgDetailPanel({
               <button onClick={() => setConfirmDelete(false)} className="text-xs text-text-muted hover:text-text-primary">×</button>
             </div>
           ) : (
-            <button
+            <button aria-label="Delete"
               onClick={() => setConfirmDelete(true)}
               className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
             >
@@ -456,7 +456,7 @@ export function Component() {
                 >New Organization</h2>
                 <p className="text-xs text-text-muted mt-0.5">Add a new organization to your CRM</p>
               </div>
-              <button onClick={() => { setShowCreate(false); setCreateForm(EMPTY_ORG); }} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => { setShowCreate(false); setCreateForm(EMPTY_ORG); }} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>

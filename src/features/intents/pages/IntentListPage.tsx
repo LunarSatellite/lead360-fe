@@ -114,7 +114,7 @@ export function Component() {
             placeholder="Search intents..." aria-label="Search intents..."
             className="w-full text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
             style={{ padding: '8px 12px 8px 32px', borderRadius: 10, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-glass-2))' }} />
-          {searchFilter && <button onClick={() => setSearchFilter('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X style={{ width: 12, height: 12, color: 'rgb(var(--color-text-muted))' }} strokeWidth={2} /></button>}
+          {searchFilter && <button aria-label="Close" onClick={() => setSearchFilter('')} className="absolute right-3 top-1/2 -translate-y-1/2"><X style={{ width: 12, height: 12, color: 'rgb(var(--color-text-muted))' }} strokeWidth={2} /></button>}
         </div>
         <button onClick={() => setImportOpen(true)}
           style={{ padding: '8px 16px', borderRadius: 10, background: 'rgb(var(--color-surface-sunken))', border: '1px solid rgb(var(--color-border-subtle))', fontSize: 12, fontWeight: 600, color: 'rgb(var(--color-text-muted))', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 5 }}>

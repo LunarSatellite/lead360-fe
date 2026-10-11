@@ -1443,7 +1443,7 @@ function CollectionItemsDialog({
             <h3 className="mt-1 text-lg font-black text-text-primary">Collection products</h3>
             <p className="mt-1 font-mono text-[10px] text-text-muted">{collectionId}</p>
           </div>
-          <button onClick={onClose}>
+          <button aria-label="Close" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </div>

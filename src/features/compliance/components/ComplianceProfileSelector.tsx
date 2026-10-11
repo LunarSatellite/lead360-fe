@@ -46,7 +46,7 @@ export function ComplianceProfileSelector({
             <h2 className="text-sm font-bold text-text-primary tracking-tight">Select Compliance Profile</h2>
             <p className="text-[10px] text-text-muted mt-0.5">Choose the compliance rules for your chatbot</p>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-7 h-7 rounded-sm flex items-center justify-center
                        bg-bg-elevated border border-border-subtle

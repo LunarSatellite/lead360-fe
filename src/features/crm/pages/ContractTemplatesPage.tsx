@@ -93,7 +93,7 @@ export function Component() {
           {showForm ? (
             <form onSubmit={submit} className="space-y-4">
               <div className="flex items-center justify-between"><h2 className="text-sm font-bold text-text-primary">{editingId ? 'Edit' : 'New'} Template</h2>
-                <button type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
+                <button aria-label="Close" type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
               <input className={inputCls} placeholder="Template name" aria-label="Template name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
               <div className="grid grid-cols-2 gap-3">
                 <select className={inputCls} value={form.category} onChange={e => setForm(f => ({ ...f, category: Number(e.target.value) as ContractTemplateCategoryValue }))}>
@@ -122,8 +122,8 @@ export function Component() {
                 <div><h2 className="text-base font-bold text-text-primary">{selected.name}</h2>
                   <p className="text-xs text-text-muted">{CONTRACT_TEMPLATE_CATEGORY_LABELS[selected.category as ContractTemplateCategoryValue] ?? 'General'}</p></div>
                 <div className="flex gap-2">
-                  <button onClick={() => openEdit(selected)} className="p-1.5 rounded-lg text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                  <button onClick={() => deleteMut.mutate(selected.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Edit" onClick={() => openEdit(selected)} className="p-1.5 rounded-lg text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Delete" onClick={() => deleteMut.mutate(selected.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               </div>
               {selected.subject && <div className="text-xs"><span className="text-text-muted">Subject: </span><span className="text-text-primary">{selected.subject}</span></div>}

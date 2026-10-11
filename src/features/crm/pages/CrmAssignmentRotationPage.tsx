@@ -124,7 +124,7 @@ export function Component() {
                   <p className="text-sm font-medium text-text-primary">{displayName}</p>
                   {email && <p className="text-xs text-text-muted">{email}</p>}
                 </div>
-                <button
+                <button aria-label="Delete"
                   onClick={() => removeMutation.mutate(userId)}
                   disabled={removeMutation.isPending}
                   className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger transition-colors shrink-0"

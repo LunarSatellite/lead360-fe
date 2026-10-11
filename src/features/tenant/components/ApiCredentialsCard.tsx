@@ -328,7 +328,7 @@ function CredentialsModal({
               {mode === 'configure' ? 'Configure external API' : 'Update credentials'}
             </h2>
           </div>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             disabled={save.isPending}
@@ -625,7 +625,7 @@ export function ApiCredentialsCard() {
               {/* ⋯ menu */}
               {canEdit && (
                 <div className="relative" ref={menuRef}>
-                  <button
+                  <button aria-label="More actions"
                     type="button"
                     onClick={() => setMenuOpen((v) => !v)}
                     className="w-8 h-8 flex items-center justify-center rounded-[9px] border border-border-subtle text-text-muted hover:text-text-primary hover:bg-glass-2 transition-colors"

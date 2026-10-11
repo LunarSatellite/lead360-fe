@@ -60,7 +60,7 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Set up a new A/B experiment to test flow variants</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>

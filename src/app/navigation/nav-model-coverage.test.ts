@@ -2,7 +2,13 @@ import { isValidElement } from 'react';
 import { Navigate } from 'react-router-dom';
 import { describe, expect, it } from 'vitest';
 import { routeObjects } from '@/app/router/route-table';
-import { allNavItems, navAliases, navGroups } from './nav-model';
+import {
+  allNavItems,
+  counterpartOf,
+  navAliases,
+  navCounterparts,
+  navGroups,
+} from './nav-model';
 
 /**
  * The guarantees that make regrouping the navigation safe.
@@ -107,6 +113,32 @@ describe('unified navigation model', () => {
 
     const notActuallyAliases = navAliases.filter((a) => labels.has(a.alsoKnownAs));
     expect(notActuallyAliases, 'both names are listed — this is not a merge').toEqual([]);
+  });
+
+  it('points each half of a duplicated pair at the other', () => {
+    /**
+     * Orders, returns, deliveries and vendors each exist once per product.
+     * They are not one screen duplicated: the CRM pages call /v1/crm/* and
+     * the commerce pages call /v1/stylemint/* and a separate logistics
+     * service, which was checked rather than assumed. Merging them means
+     * choosing which backend survives.
+     *
+     * So the pairing is declared instead, and the palette says "also in …".
+     * This asserts both halves exist and that the pairing is symmetric —
+     * a counterpart pointing at a page that is not in the nav would be a
+     * dead end, which is worse than silence.
+     */
+    const byHref = new Map(allNavItems.map((i) => [i.href, i]));
+
+    for (const [a, b] of navCounterparts) {
+      expect(byHref.has(a), `${a} is not in the nav`).toBe(true);
+      expect(byHref.has(b), `${b} is not in the nav`).toBe(true);
+      expect(counterpartOf(a)?.href).toBe(b);
+      expect(counterpartOf(b)?.href).toBe(a);
+    }
+
+    // And a page in no pair says so, rather than guessing at one.
+    expect(counterpartOf('/dashboard/settings')).toBeUndefined();
   });
 
   it('gives no two pages names that read as the same name', () => {

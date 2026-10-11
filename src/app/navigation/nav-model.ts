@@ -156,6 +156,38 @@ export interface NavItem {
   end?: boolean;
 }
 
+/**
+ * Pages that are the same idea in the two products, and are not the same
+ * page.
+ *
+ * Four pairs survived the merge: orders, returns, deliveries and vendors
+ * each exist once for the CRM and once for commerce. They are not a
+ * duplicated screen over one backend -- checked, not assumed: the CRM pages
+ * call /v1/crm/orders, /v1/crm/returns and /v1/crm/deliveries, and the
+ * commerce pages call /v1/stylemint/* and a separate logistics service.
+ * Collapsing them means choosing which backend survives, which is a
+ * migration and somebody's decision to make.
+ *
+ * Until then the honest thing is not to hide the overlap but to label it.
+ * An operator who finds one of these should be told the other exists, in
+ * the same breath, rather than discovering it a week later and wondering
+ * which one has been wrong all along.
+ */
+export const navCounterparts: ReadonlyArray<readonly [string, string]> = [
+  ['/dashboard/crm/orders', '/dashboard/stylemint/orders'],
+  ['/dashboard/crm/returns', '/dashboard/stylemint/returns'],
+  ['/dashboard/crm/deliveries', '/dashboard/stylemint/logistics'],
+  ['/dashboard/crm/vendors', '/dashboard/stylemint/vendor'],
+];
+
+/** The other page of a pair, if this page is in one. */
+export function counterpartOf(href: string): NavItem | undefined {
+  const pair = navCounterparts.find(([a, b]) => a === href || b === href);
+  if (!pair) return undefined;
+  const otherHref = pair[0] === href ? pair[1] : pair[0];
+  return allNavItems.find((item) => item.href === otherHref);
+}
+
 export interface NavGroup {
   id: string;
   section: NavSectionId;

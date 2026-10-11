@@ -76,9 +76,14 @@ export type CreditInstalment = {
   paidUtc: string | null;
   /** Principal a partial refund took off this instalment: no longer owed. */
   credited: number;
+  /** Late fee an operator forgave on this instalment; absent from servers before waivers. */
+  lateFeeWaived?: number;
 };
 
 export type CreditAgreement = {
+  /** The late fee this plan was signed on (0: none) and the grace days before it is charged. */
+  lateFeeAmount?: number;
+  lateFeeGraceDays?: number;
   id: string;
   buyerAccountId: string;
   vendorAccountId: string;
@@ -368,6 +373,20 @@ export const stylemintCreditApi = {
       'decide',
     ),
 
+  /**
+   * Forgives the late fee still owed on one instalment. The reason is required and kept with who
+   * waived it; what was already paid stays paid.
+   */
+  waiveLateFee: async (agreementId: string, instalment: number, reason: string): Promise<CreditAgreement> =>
+    unwrap(
+      await stylemintOperationsApi.invoke({
+        method: 'POST',
+        path: `${BASE}/agreements/${encodeURIComponent(agreementId)}/instalments/${instalment}/late-fee/waive`,
+        body: JSON.stringify({ reason }),
+      }),
+      'decide',
+    ),
+
   reserve: async (): Promise<ReserveSummary> =>
     unwrap(await stylemintOperationsApi.invoke({ method: 'GET', path: `${BASE}/reserve` }), 'read'),
 
@@ -472,8 +491,5 @@ export const stylemintCreditApi = {
 
   /** Runs the daily aging pass now. Safe to repeat: reminders already sent today are skipped. */
   runAging: async (): Promise<AgingRunSummary> =>
-    unwrap(
-      await stylemintOperationsApi.invoke({ method: 'POST', path: `${BASE}/aging/run` }),
-      'super',
-    ),
+    unwrap(await stylemintOperationsApi.invoke({ method: 'POST', path: `${BASE}/aging/run` }), 'super'),
 };

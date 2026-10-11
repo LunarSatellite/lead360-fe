@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  InstalmentState,
   stylemintCreditApi,
   type CreditAgreement,
   type CreditPortfolio,
@@ -41,6 +42,7 @@ vi.mock('../api/stylemint-credit.api', async () => {
       refundPlan: vi.fn(),
       retryRefundPayment: vi.fn(),
       runAging: vi.fn(),
+      waiveLateFee: vi.fn(),
     },
   };
 });
@@ -187,6 +189,46 @@ beforeEach(() => {
   api.refunds.mockResolvedValue([]);
 });
 
+describe('late fees', () => {
+  it('shows the fee a plan was signed on, and waives a charged one only with a reason', async () => {
+    const running: CreditAgreement = {
+      ...referred,
+      state: 3,
+      stateReasons: [],
+      lateFeeAmount: 250,
+      lateFeeGraceDays: 5,
+      instalments: referred.instalments.map((i) =>
+        i.number === 1
+          ? {
+              ...i,
+              dueDate: '2026-04-02',
+              state: InstalmentState.Overdue,
+              lateFeeDue: 250,
+              outstanding: 16250,
+            }
+          : i,
+      ),
+    };
+    api.agreement.mockResolvedValue(running);
+    api.waiveLateFee.mockResolvedValue({ ...running, lateFeeAmount: 250 });
+    renderAt(`?agreement=${running.id}`);
+
+    expect(await screen.findByText(/250.00 after 5 days late/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Waive fee' }));
+    const confirm = screen.getByRole('button', { name: /Waive .*250/ });
+    expect(confirm).toBeDisabled();
+
+    fireEvent.change(screen.getByLabelText('Why waive the late fee on payment 1'), {
+      target: { value: 'Salary delayed by the strike' },
+    });
+    fireEvent.click(confirm);
+
+    await waitFor(() =>
+      expect(api.waiveLateFee).toHaveBeenCalledWith(running.id, 1, 'Salary delayed by the strike'),
+    );
+  });
+});
+
 describe('the credit console', () => {
   it('leads with what is owed, what is late, the reserve and money held', async () => {
     renderAt();
@@ -208,9 +250,7 @@ describe('the credit console', () => {
     // Identity verified and account age both moved it by 60.
     expect(screen.getAllByText('+60', { selector: 'span' })).toHaveLength(2);
     expect(screen.getByText('scorecard-2026-10-v1')).toBeInTheDocument();
-    expect(
-      screen.getAllByText("Seller's terms ask to review every request").length,
-    ).toBeGreaterThan(0);
+    expect(screen.getAllByText("Seller's terms ask to review every request").length).toBeGreaterThan(0);
   });
 
   it('says whether an approved plan has been checked out, and names its order', async () => {
@@ -405,7 +445,9 @@ describe('the credit console', () => {
     renderAt(`?agreement=${referred.id}`);
 
     // The state filter offers the label too, so wait for the panel's own explanation.
-    expect(await screen.findByText(/The item was returned; every payment is being refunded/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/The item was returned; every payment is being refunded/),
+    ).toBeInTheDocument();
     expect(screen.getAllByText('Reversed — refunded').length).toBeGreaterThan(1);
   });
 
@@ -429,10 +471,14 @@ describe('the credit console', () => {
 
   it('says which role is missing rather than failing silently', async () => {
     api.portfolio.mockRejectedValue(
-      new Error('Your operator account needs the Stylemint SuperAdmin, PayoutsOps or Readonly role for this.'),
+      new Error(
+        'Your operator account needs the Stylemint SuperAdmin, PayoutsOps or Readonly role for this.',
+      ),
     );
     renderAt();
 
-    expect(await screen.findByText(/needs the Stylemint SuperAdmin, PayoutsOps or Readonly role/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/needs the Stylemint SuperAdmin, PayoutsOps or Readonly role/),
+    ).toBeInTheDocument();
   });
 });

@@ -7,6 +7,7 @@ import {
   InstalmentState,
   stylemintCreditApi,
   type CreditAgreement,
+  type CreditInstalment,
 } from '../../api/stylemint-credit.api';
 import {
   DECLINE_REASONS,
@@ -105,6 +106,16 @@ export function CreditAgreementDetail({
         {a.activatedUtc && <Fact label="Started" value={new Date(a.activatedUtc).toLocaleString()} />}
         {a.reversedUtc && <Fact label="Reversed" value={new Date(a.reversedUtc).toLocaleString()} />}
         {a.priceReduced > 0 && <Fact label="Refunded off the price" value={npr(a.priceReduced)} />}
+        {a.lateFeeAmount !== undefined && (
+          <Fact
+            label="Late fee"
+            value={
+              a.lateFeeAmount > 0
+                ? `${npr(a.lateFeeAmount)} after ${a.lateFeeGraceDays ?? 0} days late`
+                : 'None'
+            }
+          />
+        )}
       </dl>
 
       {a.stateReasons.length > 0 && (
@@ -120,9 +131,7 @@ export function CreditAgreementDetail({
         </div>
       )}
 
-      {a.state === AgreementState.PendingApproval && (
-        <ReviewActions agreement={a} onDecided={onDecided} />
-      )}
+      {a.state === AgreementState.PendingApproval && <ReviewActions agreement={a} onDecided={onDecided} />}
 
       <CreditPlanRefunds agreementId={a.id} />
 
@@ -130,22 +139,27 @@ export function CreditAgreementDetail({
         <SectionTitle>Schedule</SectionTitle>
         <div className="mt-1.5 divide-y divide-border-subtle rounded-card border-thin border-border-subtle">
           {a.instalments.map((i) => (
-            <div key={i.number} className="flex items-center justify-between px-3 py-1.5 text-xs">
-              <span className="text-text-secondary">
-                Payment {i.number}
-                {i.dueDate ? ` · ${calendarDate(i.dueDate)}` : ' · starts with the plan'}
-              </span>
-              <span
-                className={
-                  i.state === InstalmentState.Overdue
-                    ? 'font-bold text-danger'
-                    : i.state === InstalmentState.Paid
-                      ? 'text-success'
-                      : 'text-text-primary'
-                }
-              >
-                {i.state === InstalmentState.Paid ? 'Paid' : npr(i.outstanding)}
-              </span>
+            <div key={i.number}>
+              <div className="flex items-center justify-between px-3 py-1.5 text-xs">
+                <span className="text-text-secondary">
+                  Payment {i.number}
+                  {i.dueDate ? ` · ${calendarDate(i.dueDate)}` : ' · starts with the plan'}
+                </span>
+                <span
+                  className={
+                    i.state === InstalmentState.Overdue
+                      ? 'font-bold text-danger'
+                      : i.state === InstalmentState.Paid
+                        ? 'text-success'
+                        : 'text-text-primary'
+                  }
+                >
+                  {i.state === InstalmentState.Paid ? 'Paid' : npr(i.outstanding)}
+                </span>
+              </div>
+              {a.state === AgreementState.Active && (
+                <LateFeeLine agreementId={a.id} instalment={i} onWaived={onDecided} />
+              )}
             </div>
           ))}
         </div>
@@ -203,13 +217,70 @@ export function CreditAgreementDetail({
   );
 }
 
-function ReviewActions({
-  agreement,
-  onDecided,
+/**
+ * A charged late fee on one instalment, and the operator's way to forgive it. Waiving needs a reason,
+ * kept on the instalment with who waived it.
+ */
+function LateFeeLine({
+  agreementId,
+  instalment,
+  onWaived,
 }: {
-  agreement: CreditAgreement;
-  onDecided: () => void;
+  agreementId: string;
+  instalment: CreditInstalment;
+  onWaived: () => void;
 }) {
+  const [reason, setReason] = useState('');
+  const [open, setOpen] = useState(false);
+  const waive = useMutation({
+    mutationFn: () => stylemintCreditApi.waiveLateFee(agreementId, instalment.number, reason.trim()),
+    onSuccess: () => {
+      setOpen(false);
+      onWaived();
+    },
+  });
+
+  const waived = instalment.lateFeeWaived ?? 0;
+  if (instalment.lateFeeDue <= 0 && waived <= 0) return null;
+
+  return (
+    <div className="px-3 pb-2 text-2xs text-text-secondary">
+      {instalment.lateFeeDue > 0 && <span>Includes a late fee of {npr(instalment.lateFeeDue)}. </span>}
+      {waived > 0 && <span>{npr(waived)} of late fee waived.</span>}
+      {instalment.lateFeeDue > 0 && instalment.state !== InstalmentState.Paid && !open && (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="ml-1 font-bold text-brand hover:text-brand-light"
+        >
+          Waive fee
+        </button>
+      )}
+      {open && (
+        <div className="mt-1.5 flex flex-wrap items-center gap-2">
+          <input
+            aria-label={`Why waive the late fee on payment ${instalment.number}`}
+            value={reason}
+            onChange={(event) => setReason(event.target.value)}
+            placeholder="Why it is waived"
+            className="min-w-[12rem] flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-2 py-1 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow"
+          />
+          <button
+            type="button"
+            disabled={!reason.trim() || waive.isPending}
+            onClick={() => waive.mutate()}
+            className="rounded-sm bg-brand px-2.5 py-1 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-50"
+          >
+            Waive {npr(instalment.lateFeeDue)}
+          </button>
+          {waive.isError && <ErrorLine message={(waive.error as Error).message} />}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReviewActions({ agreement, onDecided }: { agreement: CreditAgreement; onDecided: () => void }) {
   const [reasons, setReasons] = useState<string[]>([]);
   // One key per decision on this agreement: retrying after a timeout is the same decision.
   const [key] = useState(() => crypto.randomUUID());
@@ -227,8 +298,8 @@ function ReviewActions({
       <p className="text-xs font-bold text-text-primary">This agreement is waiting for a decision.</p>
       {sellerCarriesRisk && (
         <p className="mt-1 text-xs text-text-secondary">
-          The seller carries this risk and normally decides. Approving here commits the seller's
-          money on their behalf — do it only when they have asked you to.
+          The seller carries this risk and normally decides. Approving here commits the seller's money on
+          their behalf — do it only when they have asked you to.
         </p>
       )}
       <div className="mt-3 flex flex-wrap gap-2">
@@ -274,9 +345,7 @@ function ReviewActions({
 
 function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <aside className="h-fit rounded-frame border-thin border-border-subtle bg-bg-card p-4">
-      {children}
-    </aside>
+    <aside className="h-fit rounded-frame border-thin border-border-subtle bg-bg-card p-4">{children}</aside>
   );
 }
 
@@ -288,21 +357,13 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Fact({
-  label,
-  value,
-  mono,
-  tone,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-  tone?: string;
-}) {
+function Fact({ label, value, mono, tone }: { label: string; value: string; mono?: boolean; tone?: string }) {
   return (
     <div className="min-w-0">
       <dt className="text-text-muted">{label}</dt>
-      <dd className={`truncate font-bold ${tone ?? 'text-text-primary'} ${mono ? 'font-mono text-[11px]' : ''}`}>
+      <dd
+        className={`truncate font-bold ${tone ?? 'text-text-primary'} ${mono ? 'font-mono text-[11px]' : ''}`}
+      >
         {value}
       </dd>
     </div>

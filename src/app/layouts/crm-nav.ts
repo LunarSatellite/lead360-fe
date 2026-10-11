@@ -21,6 +21,7 @@ import {
   GitMerge,
   Globe,
   IdCard,
+  KeyRound,
   LayoutDashboard,
   LayoutPanelTop,
   ListChecks,
@@ -108,6 +109,7 @@ export const crmNav = [
   { label: 'Activity feed', href: ROUTES.dashboard.crmActivity, icon: Globe },
   { label: 'Audit log', href: ROUTES.dashboard.crmAudit, icon: ScrollText },
   { label: 'Data requests', href: ROUTES.dashboard.crmGdpr, icon: ShieldAlert },
+  { label: 'Single sign-on', href: ROUTES.dashboard.crmSso, icon: KeyRound },
   { label: 'Notification settings', href: ROUTES.dashboard.crmNotificationSettings, icon: Settings },
   // ── Routed but previously unlinked: reachable only by typing the URL until now.
   // Analytics and Support stay out on purpose — see the note above; they live once

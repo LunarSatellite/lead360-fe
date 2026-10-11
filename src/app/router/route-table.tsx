@@ -268,6 +268,7 @@ export const routeObjects: RouteObject[] = [
       { path: 'crm/assignment-rotation', lazy: () => import('@/features/crm/pages/CrmAssignmentRotationPage') },
       { path: 'crm/audit', lazy: () => import('@/features/crm/pages/AuditLogPage') },
       { path: 'crm/gdpr', lazy: () => import('@/features/crm/pages/CrmGdprRequestsPage') },
+      { path: 'crm/sso', lazy: () => import('@/features/crm/pages/CrmSsoPage') },
       { path: 'crm/customer-onboarding', lazy: () => import('@/features/crm/pages/CrmCustomerOnboardingPage') },
       { path: 'crm/deals-hub', lazy: () => import('@/features/crm/pages/CrmDealsHubPage') },
       { path: 'crm/deliveries', lazy: () => import('@/features/crm/pages/CrmDeliveriesPage') },

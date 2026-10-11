@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { useTokenAutoRefresh } from '@/features/auth/hooks/useTokenAutoRefresh';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { CounterpartNotice } from '@/app/navigation/CounterpartNotice';
 import {
   BadgeCheck,
   Banknote,
@@ -641,6 +642,11 @@ export function DashboardLayout() {
             every future page like them. `main` also gives the admin the
             landmark it has been missing. */}
         <main tabIndex={0} className="flex-1 overflow-auto p-4 pb-20 md:p-6 lg:pb-6">
+          {/* Four page names exist twice in this admin and read different
+              backends. Saying so here rather than in the eight pages means
+              a pair added to `navCounterparts` is covered automatically
+              and none of them can be missed. */}
+          <CounterpartNotice />
           <Outlet />
         </main>
       </main>

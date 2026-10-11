@@ -156,3 +156,38 @@ Verified with real mutations/data, not just routes: Price Books, Tax Rules, Paym
 ## What OmniFlow has that Salesforce/HubSpot/Zoho don't ship natively
 
 Native multi-channel chatbot engine (WhatsApp/Telegram/Messenger/SMS/Voice/WebChat/Email) driving CRM data directly — competitors need a bolted-on third party for this. AI-native churn prediction + auto-refreshing "Living Account Brief" narrative per account. An AI Actions panel with approve/reject/undo built into analytics. A visual flow builder wired into the same CRM data model. A deeper procurement chain (RFQ-adjacent PO → GR → Supplier Invoice) than HubSpot/Zoho ship out of the box — even though the Three-Way-Match step is still missing (Tier A).
+
+---
+
+## Currently broken by a dependency-injection regression (2026-10-11)
+
+Several entries above are listed as built, and some as verified live
+against a running app. They were, when that was written. They are not
+reachable today: forty service interfaces injected by controller
+constructors are registered in no container, so those controllers cannot
+be activated and every request to their routes returns an
+unresolved-service 500.
+
+Affected here: Tax Rules, Payment Terms, Contracts, Credit Notes,
+Returns, Work Orders, Equipment, Purchase Orders, Goods Receipts,
+Supplier Invoices (and Three-Way Match), Vendors, Inventory, Pick Lists,
+the Ops Dashboard, the Customer Portal, Contact Cards, the Audit Log,
+Dispatch Calendar, Deal Handover, Lead Scoring Rules, Time Periods,
+Approval Chains, Product Bundles, Customer Onboarding, Notification
+Preferences, Competitor Tracking, Credit Check, the four ad platforms,
+Social Posts, RBAC Roles and Sales Territories.
+
+Cause: `8ad5d2fa` registered nineteen of them and the
+smartflow-crm-upgrade merge (`1cab3d7a`) dropped the block. `904bc53a`
+restored a different set, so the registration count stayed at 335 and
+the loss never showed in a diffstat. Nothing went red because the
+solution has no `WebApplicationFactory` test that boots the container.
+
+Fix in flight: lead360#2, which restores all forty and adds a reflection
+guard over every controller constructor. Until that merges, treat any
+"verified" marking above as describing the code rather than the running
+system.
+
+**Worth doing regardless of that PR:** a smoke test that boots the app
+and hits one route per controller. It is the only thing that would have
+caught this, and the same absence will let it happen again.

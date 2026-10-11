@@ -77,19 +77,27 @@ The same suite also checks WCAG contrast for every text-on-surface pair in both 
 2. Reference it from `tailwind.config.js` as `rgb(var(--your-token) / <alpha-value>)`.
 3. Use the resulting utility class. **Never** a hex or `rgba()` at a call site — not in `className`, not in a `style` object, not in an arbitrary value like `bg-[rgba(0,217,138,0.08)]`. Those bypass both files and stay Lead360 green in the StyleMint build.
 
-There is a large backlog of exactly that: roughly 2,300 colour literals across ~120 feature files duplicate a token instead of reading it. They are a known defect, not a pattern to copy.
+That backlog is cleared. Around 2,800 literals across 135 feature files used to duplicate a token or sit a rung off the ramp; they now read tokens. What is left is deliberate, and none of it is a pattern to copy:
+
+- **Other companies' colours** — the messaging-channel previews (`flow-builder/components/preview/**`, the chat mockups in `FlowBuilderPage`), the Meta ad preview in `CreateCampaignDrawer`, the channel cards. WhatsApp green is WhatsApp's.
+- **Black and white** — `rgba(0,0,0,*)` and `#fff` are the same value in both palettes, so a token buys nothing.
+- **SVG presentation attributes** — a handful of values React Flow and Recharts write straight onto an attribute (`<Background color>`, `nodeColor`, `maskColor`, `CartesianGrid stroke`), plus all of `chart-tokens.ts`. `var()` does not resolve in a presentation attribute; it silently falls back to black. When you need a token inside inline SVG, set `fill` / `stroke` through a `fill-*` / `stroke-*` utility or a `style` entry, both of which are CSS.
+- **The landing page**, which the StyleMint build drops.
 
 ### Color tokens (from `tailwind.config.js` — names, not values)
 
 ```ts
-bg:     { DEFAULT, shell, card, elevated, input }   // page → panel → card → modal
-glass:  { 1, 2, 3 }                                 // card → hover → raised
-border: { subtle, medium, glow, success }           // glow = brand tint, active/selected
-text:   { primary, secondary, muted }
-brand:  { DEFAULT, light, dark, soft }              // soft = brand tint, active bg
+bg:     { DEFAULT, sunken, shell, card, elevated, input }  // sunken → page → panel → card → modal
+glass:  { 1, 2, 3 }                                        // card → hover → raised
+border: { subtle, medium, strong, glow, success }          // glow = brand tint, active/selected
+text:   { primary, secondary, muted, inverted }            // inverted = label on a brand fill
+brand:  { DEFAULT, light, dark, soft,                      // soft = brand tint, active bg
+          glow, glow-light, beacon }                       // a *hue*, not a tint — see below
 // status: success, info, warning, danger — each with a `soft` tint
 // accents: teal (analytics, data viz), violet (AI, flow builder, premium badges)
 ```
+
+Two of those need a word. `bg.sunken` is the one plane *below* the body — the compact page header, the mobile bottom nav, the logo tile. And `brand.glow` is a hue, not a tint: the second brand green the AuroraBI port left behind for glows and drop-shadows, which is not `border.glow` (the brand hue at `--alpha-brand-glow`). StyleMint collapses the two greens, so there it is simply the brand colour.
 
 The brand tint *alpha* is per-product too (`--alpha-brand-soft`, `--alpha-brand-glow`): 8%/18% over Lead360's near-black reads the same as 14%/28% over StyleMint's much lighter zinc. Adjust those rather than reaching for a different green.
 
@@ -97,6 +105,7 @@ The brand tint *alpha* is per-product too (`--alpha-brand-soft`, `--alpha-brand-
 
 ### Surfaces & borders
 - Borders are **always `0.5px`** (`border-thin` token) — never 1px or thicker.
+- Page chrome — the compact header, the mobile bottom nav — sits on `bg-bg-sunken`, below the body rather than above it.
 - Cards use `bg-glass-1 border-thin border-border-subtle rounded-card` (12px radius).
 - Hover: `hover:bg-glass-2 hover:border-border-medium`.
 - Active/selected: `bg-brand-soft border-thin border-border-glow`.

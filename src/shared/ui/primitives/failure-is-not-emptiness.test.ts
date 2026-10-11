@@ -48,10 +48,10 @@ function blindReadsIn(source: string): string[] {
 }
 
 /**
- * Measured at the commit that introduced `ListState`: 180 before, less
- * the three reads migrated with it. Lower this number; never raise it.
+ * 180 when `ListState` was introduced; 163 after the fourteen uniform
+ * CRM lists moved onto it. Lower this number; never raise it.
  */
-const BUDGET_BLIND_READS = 177;
+const BUDGET_BLIND_READS = 163;
 
 describe('a failed list is not an empty list', () => {
   it('is reading the pages at all', () => {

@@ -15,7 +15,7 @@ import {
   CRM_WORK_ORDER_NOTE_KIND_LABELS,
   CrmWorkOrderStatus, CrmWorkOrderType, CrmWorkOrderPriority, CrmWorkOrderNoteKind,
 } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
 
@@ -246,7 +246,8 @@ export function Component() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const { data: raw, isLoading } = useWorkOrders(filter);
+  const workOrdersQuery = useWorkOrders(filter);
+  const { data: raw } = workOrdersQuery;
   const items: CrmWorkOrderSummaryDto[] = (raw as any)?.item1 ?? [];
   const total: number = (raw as any)?.item2 ?? 0;
 
@@ -308,14 +309,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Hammer className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No work orders found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={workOrdersQuery}
+            isEmpty={!items.length}
+            noun="work orders"
+            icon={Hammer}
+            emptyTitle="No work orders found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -341,7 +341,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {total > filter.pageSize! && (

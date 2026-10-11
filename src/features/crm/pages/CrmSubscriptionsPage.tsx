@@ -16,7 +16,7 @@ import {
   CRM_SUBSCRIPTION_STATUS_LABELS, CRM_SUBSCRIPTION_STATUS_COLORS,
   CRM_SUBSCRIPTION_TIER_LABELS, CRM_BILLING_CADENCE_LABELS,
 } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
@@ -160,7 +160,8 @@ export function Component() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<EditForm>({ planName: '', planTier: '1', billingCadence: '1', amount: '', seats: '' });
 
-  const { data: raw, isLoading } = useSubscriptions(filter);
+  const subscriptionsQuery = useSubscriptions(filter);
+  const { data: raw } = subscriptionsQuery;
   const items: CrmSubscriptionSummaryDto[] = (raw as any)?.items ?? [];
 
   const createSub = useCreateSubscription();
@@ -239,11 +240,12 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex items-center justify-center h-40 text-text-muted text-sm">No subscriptions found.</div>
-          ) : (
+          <ListState
+            query={subscriptionsQuery}
+            isEmpty={!items.length}
+            noun="subscriptions"
+            emptyTitle="No subscriptions found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -287,7 +289,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 

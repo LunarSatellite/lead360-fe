@@ -11,7 +11,7 @@ import {
   CRM_EQUIPMENT_CONDITION_LABELS, CRM_EQUIPMENT_NOTE_KIND_LABELS,
   CrmEquipmentStatus, CrmEquipmentCondition, CrmEquipmentNoteKind,
 } from '../types/crm.types';
-import { Button } from '@/shared/ui/primitives';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -171,7 +171,8 @@ export function Component() {
   const [warrantyEnd, setWarrantyEnd] = useState('');
   const [nextService, setNextService] = useState('');
 
-  const { data: raw, isLoading } = useEquipment(filter);
+  const equipmentQuery = useEquipment(filter);
+  const { data: raw } = equipmentQuery;
   const items: CrmEquipmentSummaryDto[] = (raw as any)?.item1 ?? [];
   const total: number = (raw as any)?.item2 ?? 0;
 
@@ -227,14 +228,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Wrench className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No equipment registered.</p>
-            </div>
-          ) : (
+          <ListState
+            query={equipmentQuery}
+            isEmpty={!items.length}
+            noun="equipment"
+            icon={Wrench}
+            emptyTitle="No equipment registered"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -260,7 +260,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {total > filter.pageSize! && (

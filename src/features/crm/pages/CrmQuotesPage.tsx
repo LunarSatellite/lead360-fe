@@ -16,7 +16,7 @@ import type {
   CrmPriceBookDetailDto,
 } from '../types/crm.types';
 import { CrmQuoteStatus, CRM_QUOTE_STATUS_LABELS, CRM_QUOTE_STATUS_COLORS } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 // Shared input/select class
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors';
@@ -203,7 +203,8 @@ export function Component() {
     setBundleId('');
   }
 
-  const { data: raw, isLoading } = useQuotes(filter);
+  const quotesQuery = useQuotes(filter);
+  const { data: raw } = quotesQuery;
   const items: CrmQuoteSummaryDto[] = (raw as any)?.items ?? [];
 
   const createQuote = useCreateQuote();
@@ -271,7 +272,9 @@ export function Component() {
       <div className="flex items-center justify-between gap-4 shrink-0">
         <div>
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Quotes</h2>
-          <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+          <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={quotesQuery} total={(raw as any)?.totalCount} />
+          </p>
         </div>
         <Button onClick={() => setCreateOpen(true)} variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Quote
@@ -288,14 +291,13 @@ export function Component() {
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-        ) : !items.length ? (
-          <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-            <FileText className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No quotes found</p>
-          </div>
-        ) : (
+        <ListState
+          query={quotesQuery}
+          isEmpty={!items.length}
+          noun="quotes"
+          icon={FileText}
+          emptyTitle="No quotes found"
+        >
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
@@ -335,7 +337,7 @@ export function Component() {
               ))}
             </tbody>
           </table>
-        )}
+        </ListState>
       </div>
 
       {/* Detail SlideOver */}

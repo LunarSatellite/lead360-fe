@@ -5,7 +5,7 @@ import { useAllDeliveries, useUpdateDeliveryStatus, useRecordDeliveryPOD } from 
 import type { CrmDeliveryFilter } from '../types/crm.types';
 import { CRM_DELIVERY_STATUS_LABELS, CRM_DELIVERY_STATUS_COLORS, CrmDeliveryStatus } from '../types/crm.types';
 import type { CrmDeliveryDto } from '../types/crm.types';
-import { Button } from '@/shared/ui/primitives';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
@@ -50,7 +50,8 @@ export function Component() {
   const [statusF, setStatusF] = useState('');
   const [selected, setSelected] = useState<CrmDeliveryDto | null>(null);
 
-  const { data: raw, isLoading, refetch } = useAllDeliveries(filter);
+  const allDeliveriesQuery = useAllDeliveries(filter);
+  const { data: raw, refetch } = allDeliveriesQuery;
   const items: CrmDeliveryDto[] = (raw as any)?.items ?? [];
   const total: number = (raw as any)?.totalCount ?? 0;
 
@@ -117,14 +118,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Truck className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No deliveries found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={allDeliveriesQuery}
+            isEmpty={!items.length}
+            noun="deliveries"
+            icon={Truck}
+            emptyTitle="No deliveries found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -158,7 +158,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {total > filter.pageSize! && (

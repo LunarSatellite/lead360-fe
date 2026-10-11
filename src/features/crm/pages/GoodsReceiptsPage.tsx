@@ -6,7 +6,7 @@ import {
 } from '../api/crm.queries';
 import type { GoodsReceiptDto, GoodsReceiptCreateRequest, GoodsReceiptLineItemRequest, GoodsReceiptFilter } from '../types/crm.types';
 import { GR_STATUS_LABELS, GR_STATUS_COLORS, GOODS_CONDITION_LABELS, GoodsCondition, GoodsReceiptStatus } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colors[value] ?? ''}`}>{labels[value] ?? value}</span>;
@@ -89,7 +89,8 @@ export function Component() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const { data: raw, isLoading } = useGoodsReceipts(filter);
+  const goodsReceiptsQuery = useGoodsReceipts(filter);
+  const { data: raw } = goodsReceiptsQuery;
   const items: GoodsReceiptDto[] = (raw as any)?.items ?? [];
 
   const createGR = useCreateGoodsReceipt();
@@ -121,7 +122,9 @@ export function Component() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Goods Receipts</h2>
-            <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+            <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={goodsReceiptsQuery} total={(raw as any)?.totalCount} />
+          </p>
           </div>
           <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Receipt
@@ -139,14 +142,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <PackageCheck className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No goods receipts found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={goodsReceiptsQuery}
+            isEmpty={!items.length}
+            noun="goods receipts"
+            icon={PackageCheck}
+            emptyTitle="No goods receipts found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -178,7 +180,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 

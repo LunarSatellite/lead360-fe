@@ -20,7 +20,7 @@ import {
   CRM_DELIVERY_STATUS_LABELS, CRM_DELIVERY_STATUS_COLORS,
   PICK_LIST_STATUS_LABELS,
 } from '../types/crm.types';
-import { Button } from '@/shared/ui/primitives';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
 
@@ -178,7 +178,8 @@ export function Component() {
   const [shipCarrier, setShipCarrier] = useState('');
   const [shipTracking, setShipTracking] = useState('');
 
-  const { data: raw, isLoading } = useOrders(filter);
+  const ordersQuery = useOrders(filter);
+  const { data: raw } = ordersQuery;
   const items: CrmOrderDetailDto[] = (raw as any)?.items ?? [];
 
   const { data: pendingOrder } = useOrderById(urlOrderId || undefined);
@@ -299,14 +300,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Package className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No orders found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={ordersQuery}
+            isEmpty={!items.length}
+            noun="orders"
+            icon={Package}
+            emptyTitle="No orders found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -353,7 +353,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 

@@ -158,6 +158,7 @@ export const ROUTES = {
     crmAudit: '/dashboard/crm/audit',
     crmGdpr: '/dashboard/crm/gdpr',
     crmSso: '/dashboard/crm/sso',
+    crmCurrencies: '/dashboard/crm/currencies',
     crmNotificationSettings: '/dashboard/crm/notification-settings',
     crmReturns: '/dashboard/crm/returns',
     crmWorkOrders: '/dashboard/crm/work-orders',

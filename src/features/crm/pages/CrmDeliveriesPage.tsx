@@ -23,7 +23,7 @@ function SlideOver({ open, onClose, title, children }: { open: boolean; onClose:
       <div className="relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -108,7 +108,7 @@ export function Component() {
             placeholder="Search shipment #, tracking #, carrier..." aria-label="Search shipment #, tracking #, carrier..."
             className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow"
           />
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Status</option>
             {Object.entries(CRM_DELIVERY_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -181,7 +181,7 @@ export function Component() {
               </div>
             </div>
 
-            <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+            <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
               {selected.carrier && <div className="flex justify-between"><span className="text-text-muted">Carrier</span><span className="text-text-primary font-medium">{selected.carrier}</span></div>}
               {selected.trackingNumber && <div className="flex justify-between"><span className="text-text-muted">Tracking</span><span className="font-mono text-text-primary">{selected.trackingNumber}</span></div>}
               {selected.recipientName && <div className="flex justify-between"><span className="text-text-muted">Recipient</span><span className="text-text-primary">{selected.recipientName}</span></div>}
@@ -212,7 +212,7 @@ export function Component() {
               <div className="pt-3 border-t border-border-subtle space-y-3">
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Proof of Delivery</p>
                 {selected.podSignedByName ? (
-                  <div className="bg-bg-surface rounded-xl p-3 space-y-2 text-sm">
+                  <div className="bg-bg-elevated rounded-xl p-3 space-y-2 text-sm">
                     <div className="flex justify-between"><span className="text-text-muted">Signed By</span><span className="text-text-primary font-medium">{selected.podSignedByName}</span></div>
                     {selected.podSignedAt && <div className="flex justify-between"><span className="text-text-muted">Signed At</span><span className="text-text-primary">{format(parseISO(selected.podSignedAt), 'MMM d, yyyy HH:mm')}</span></div>}
                     {selected.signatureUrl && <div><a href={selected.signatureUrl} target="_blank" rel="noopener noreferrer" className="text-brand text-xs hover:underline">View Signature</a></div>}

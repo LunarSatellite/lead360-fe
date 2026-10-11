@@ -92,7 +92,7 @@ function EditableSection({ proposalId, section }: { proposalId: string; section:
   };
 
   return (
-    <div className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
+    <div className="p-3 rounded-xl bg-bg-sunken border border-border-subtle space-y-2">
       <div className="flex items-center justify-between gap-2">
         <p className="text-xs font-bold text-text-primary">{section.title}</p>
         <div className="flex gap-1">
@@ -594,7 +594,7 @@ export function Component() {
           </div>
           <div className="space-y-3">
             {mSections.map((s, i) => (
-              <div key={i} className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
+              <div key={i} className="p-3 rounded-xl bg-bg-sunken border border-border-subtle space-y-2">
                 <div className="flex gap-2">
                   <select aria-label="Kind" value={s.kind} onChange={e => updateSection(i, 'kind', Number(e.target.value))} className={selectCls + ' w-48'}>
                     {Object.entries(PROPOSAL_SECTION_KINDS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}

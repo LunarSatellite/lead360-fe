@@ -164,7 +164,7 @@ function EventRow({ event }: { event: WebEventSummaryDto }) {
           {props && Object.keys(props).length > 0 && (
             <button
               onClick={() => setExpanded(v => !v)}
-              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-subtle transition-all"
+              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-sunken transition-all"
             >
               {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
@@ -172,7 +172,7 @@ function EventRow({ event }: { event: WebEventSummaryDto }) {
         </div>
       </div>
       {expanded && props && (
-        <div className="border-t border-border-subtle px-4 py-3 bg-bg-subtle">
+        <div className="border-t border-border-subtle px-4 py-3 bg-bg-sunken">
           <p className="text-xs font-semibold text-text-muted mb-1.5">Properties</p>
           <pre className="text-xs font-mono text-text-secondary whitespace-pre-wrap">
             {JSON.stringify(props, null, 2)}

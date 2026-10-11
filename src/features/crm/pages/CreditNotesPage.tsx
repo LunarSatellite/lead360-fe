@@ -20,7 +20,7 @@ function SlideOver({ open, onClose, title, children }: { open: boolean; onClose:
       <div className="relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
@@ -41,7 +41,7 @@ function ApplyForm({ note, onDone }: { note: CrmCreditNoteDto; onDone: () => voi
   };
 
   return (
-    <div className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
+    <div className="space-y-3 bg-bg-elevated rounded-xl p-4 mt-3">
       <p className="text-xs font-semibold text-text-muted">Apply to Invoice</p>
       <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search invoice number..." aria-label="Search invoice number..." className={inputCls} />
       {results.length > 0 && (
@@ -66,7 +66,7 @@ function RefundForm({ note, onDone }: { note: CrmCreditNoteDto; onDone: () => vo
   const refund = useRefundCreditNote();
 
   return (
-    <div className="space-y-3 bg-bg-surface rounded-xl p-4 mt-3">
+    <div className="space-y-3 bg-bg-elevated rounded-xl p-4 mt-3">
       <p className="text-xs font-semibold text-text-muted">Record Refund</p>
       <input value={reference} onChange={e => setReference(e.target.value)} placeholder="Payment reference (optional)" aria-label="Payment reference (optional)" className={inputCls} />
       <button onClick={() => refund.mutate({ id: note.id, data: { refundReference: reference.trim() || undefined } }, { onSuccess: onDone })}
@@ -87,11 +87,11 @@ function DetailPanel({ note }: { note: CrmCreditNoteDto }) {
         <div className="font-mono text-xs text-text-muted mb-1">{note.creditNoteNumber}</div>
         <div className="flex items-center gap-2 flex-wrap mt-2">
           <Badge value={note.status} labels={CREDIT_NOTE_STATUS_LABELS} colors={CREDIT_NOTE_STATUS_COLORS} />
-          <span className="text-xs text-text-muted bg-bg-surface px-2 py-0.5 rounded-full">{CREDIT_NOTE_APPLY_METHOD_LABELS[note.applyMethod]}</span>
+          <span className="text-xs text-text-muted bg-bg-elevated px-2 py-0.5 rounded-full">{CREDIT_NOTE_APPLY_METHOD_LABELS[note.applyMethod]}</span>
         </div>
       </div>
 
-      <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+      <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
         <div className="flex justify-between"><span className="text-text-muted">Account</span><span className="text-text-primary">{note.accountName ?? note.accountId}</span></div>
         <div className="flex justify-between"><span className="text-text-muted">Amount</span><span className="text-text-primary font-bold">{note.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
         <div className="flex justify-between"><span className="text-text-muted">Original Invoice</span><span className="text-text-primary">{note.originalInvoiceNumber ?? note.originalInvoiceId}</span></div>
@@ -104,7 +104,7 @@ function DetailPanel({ note }: { note: CrmCreditNoteDto }) {
 
       <div>
         <label className="text-xs font-semibold text-text-muted mb-1 block">Reason</label>
-        <p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{note.reason}</p>
+        <p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{note.reason}</p>
       </div>
 
       {note.status === CreditNoteStatus.Issued && (

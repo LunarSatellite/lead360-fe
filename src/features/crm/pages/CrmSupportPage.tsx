@@ -352,7 +352,7 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
                 {(detail.messages ?? []).length === 0 && <p className="text-sm text-text-muted text-center py-6">No messages yet.</p>}
                 {(detail.messages as CrmSupportMessageDto[]).map(m => (
                   <div key={m.id} className={`flex ${m.isFromCustomer ? 'justify-start' : 'justify-end'}`}>
-                    <div className={`max-w-xs px-3 py-2 rounded-xl text-sm ${m.isFromCustomer ? 'bg-bg-subtle text-text-primary' : 'bg-brand-soft text-brand'}`}>
+                    <div className={`max-w-xs px-3 py-2 rounded-xl text-sm ${m.isFromCustomer ? 'bg-bg-sunken text-text-primary' : 'bg-brand-soft text-brand'}`}>
                       <div className="font-semibold text-xs mb-0.5 text-text-muted">{m.authorName}</div>
                       <div>{m.body}</div>
                       <div className="text-[10px] mt-1 opacity-60">{format(parseISO(m.createdAt), 'HH:mm')}</div>

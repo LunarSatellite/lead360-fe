@@ -91,7 +91,7 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
   const isBlocked = m.status === CrmOnboardingStatus.Blocked;
 
   return (
-    <div className={`rounded-xl border p-3 transition-all ${isComplete ? 'border-success/20 bg-success/[0.04]' : isBlocked ? 'border-danger/20 bg-danger-soft' : 'border-border-subtle bg-bg-surface'}`}>
+    <div className={`rounded-xl border p-3 transition-all ${isComplete ? 'border-success/20 bg-success/[0.04]' : isBlocked ? 'border-danger/20 bg-danger-soft' : 'border-border-subtle bg-bg-elevated'}`}>
       <div className="flex items-start gap-3">
         <button onClick={() => toggle(isComplete ? CrmOnboardingStatus.InProgress : CrmOnboardingStatus.Completed)}
           disabled={update.isPending}
@@ -167,7 +167,7 @@ function DetailPanel({ id }: { id: string }) {
         </div>
       </div>
 
-      <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+      <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
         <div className="flex justify-between"><span className="text-text-muted">Started</span><span>{format(parseISO(d.startedAt), 'MMM d, yyyy')}</span></div>
         {d.completedAt && <div className="flex justify-between"><span className="text-text-muted">Completed</span><span className="text-success">{format(parseISO(d.completedAt), 'MMM d, yyyy')}</span></div>}
         {d.notes && <div><span className="text-text-muted block text-xs mb-1">Notes</span><p className="text-text-secondary text-xs">{d.notes}</p></div>}
@@ -265,7 +265,7 @@ export function Component() {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(CRM_ONBOARDING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -370,7 +370,7 @@ export function Component() {
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Steps</label>
               <button type="button" onClick={() => setMilestones(ms => [...ms, emptyMilestone(ms.length)])}
-                className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all">
+                className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated transition-all">
                 <Plus className="w-3 h-3" /> Add
               </button>
             </div>

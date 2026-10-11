@@ -131,7 +131,7 @@ export function Component() {
         <div className="flex gap-2 flex-wrap">
           <input value={poFilter} onChange={e => setPoFilter(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, purchaseOrderId: poFilter.trim() || undefined, page: 1 }))}
             placeholder="Filter by PO ID..." aria-label="Filter by PO ID..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(GR_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -218,7 +218,7 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
+              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
@@ -344,7 +344,7 @@ export function Component() {
             {selected.lineItems?.length > 0 && (
               <div>
                 <label className="text-xs font-semibold text-text-muted mb-1.5 block">Received Items ({selected.lineItems.length})</label>
-                <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle">
+                <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle">
                   {selected.lineItems.map(li => (
                     <div key={li.id} className="px-3 py-2.5 text-sm">
                       <div className="flex items-center justify-between">
@@ -363,7 +363,7 @@ export function Component() {
               </div>
             )}
 
-            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selected.notes}</p></div>}
+            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{selected.notes}</p></div>}
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.status === GoodsReceiptStatus.Draft && (

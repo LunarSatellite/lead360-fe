@@ -275,7 +275,7 @@ export function Component() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border-subtle bg-bg-subtle">
+                <tr className="border-b border-border-subtle bg-bg-sunken">
                   {['Type', 'Entity', 'Minutes', 'Billable', 'Logged By', 'Description', 'Date', ''].map((h, i) => (
                     <th key={i} className="px-4 py-3 text-left text-xs font-semibold text-text-muted">{h}</th>
                   ))}

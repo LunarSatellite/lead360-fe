@@ -11,7 +11,7 @@ import { Button, Input } from '@/shared/ui/primitives';
 const inputCls = 'w-full px-3 py-2 rounded-lg border border-border-subtle bg-bg-elevated text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
 const STATUS_COLORS: Record<number, string> = {
-  [CrmTimePeriodStatus.Draft]:     'bg-bg-subtle text-text-muted',
+  [CrmTimePeriodStatus.Draft]:     'bg-bg-sunken text-text-muted',
   [CrmTimePeriodStatus.Submitted]: 'bg-warning-soft text-warning',
   [CrmTimePeriodStatus.Approved]:  'bg-success-soft text-success',
   [CrmTimePeriodStatus.Rejected]:  'bg-danger-soft text-danger-light',
@@ -202,7 +202,7 @@ export function Component() {
           <button
             key={String(s)}
             onClick={() => setFilter(s as any)}
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${filter === s ? 'bg-brand text-white' : 'bg-bg-elevated border border-border-subtle text-text-secondary hover:bg-bg-subtle'}`}
+            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${filter === s ? 'bg-brand text-white' : 'bg-bg-elevated border border-border-subtle text-text-secondary hover:bg-bg-sunken'}`}
           >
             {s == null ? 'All' : CRM_TIME_PERIOD_STATUS_LABELS[s]}
           </button>
@@ -249,7 +249,7 @@ export function Component() {
                     <button
                       onClick={() => submitMutation.mutate(p.id)}
                       disabled={submitMutation.isPending}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-subtle border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-sunken border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors disabled:opacity-50"
                     >
                       <Send className="w-3.5 h-3.5" /> Submit for Approval
                     </button>

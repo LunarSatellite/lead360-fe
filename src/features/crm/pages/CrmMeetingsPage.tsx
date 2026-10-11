@@ -640,7 +640,7 @@ function MeetingsTab() {
 
             {/* Complete with summary prompt */}
             {detail.status === CrmMeetingStatus.Booked && showCompleteSummary && (
-              <div className="p-4 rounded-xl bg-bg-subtle border border-border-subtle space-y-3">
+              <div className="p-4 rounded-xl bg-bg-sunken border border-border-subtle space-y-3">
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Meeting Summary</p>
                 <textarea
                   autoFocus

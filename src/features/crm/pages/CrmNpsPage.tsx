@@ -290,7 +290,7 @@ export function Component() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border-subtle bg-bg-subtle">
+                <tr className="border-b border-border-subtle bg-bg-sunken">
                   {['Contact', 'Score', 'Classification', 'Trigger', 'Comment', 'Sent At', 'Responded At'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-text-muted">{h}</th>
                   ))}

@@ -405,7 +405,7 @@ export function Component() {
         </div>
 
         {logOpen && (
-          <div className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
+          <div className="p-3 rounded-xl bg-bg-sunken border border-border-subtle space-y-2">
             <textarea aria-label="Log" autoFocus value={logText} onChange={e => setLogText(e.target.value)}
               className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]"
               placeholder={logOpen === 'call' ? 'Describe the call...' : logOpen === 'meeting' ? 'Describe the meeting...' : 'Write a note...'} />
@@ -420,7 +420,7 @@ export function Component() {
         <div className="space-y-2 min-h-[120px] max-h-[500px] overflow-y-auto">
           {timeline.length === 0 && <p className="text-xs text-text-muted italic">No activity yet.</p>}
           {timeline.map((e: any) => (
-            <div key={e.id} className="p-3 rounded-xl bg-bg-subtle border border-border-subtle">
+            <div key={e.id} className="p-3 rounded-xl bg-bg-sunken border border-border-subtle">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs font-semibold text-text-muted">
                   {e.eventKind === 17 ? '📞 Call'

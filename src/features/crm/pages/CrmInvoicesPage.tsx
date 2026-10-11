@@ -81,7 +81,7 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
   const isPaused = latest?.kind === DunningEventKind.Paused;
 
   return (
-    <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
+    <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-sunken">
       <div className="flex items-center justify-between">
         <p className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
           <Bell className="w-3.5 h-3.5" /> Reminders
@@ -132,7 +132,7 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
       ) : (
         <div className="space-y-1.5 max-h-48 overflow-y-auto">
           {events.map((e: any) => (
-            <div key={e.id} className="flex items-center justify-between text-xs px-2 py-1.5 rounded-lg bg-bg-surface">
+            <div key={e.id} className="flex items-center justify-between text-xs px-2 py-1.5 rounded-lg bg-bg-elevated">
               <div>
                 <span className="font-semibold text-text-primary">{DUNNING_EVENT_KIND_LABELS[e.kind as import('../types/crm.types').DunningEventKind] ?? e.kind}</span>
                 {e.kind === DunningEventKind.ReminderSent && (
@@ -448,7 +448,7 @@ export function Component() {
             </div>
 
             {/* Record Payment */}
-            <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
+            <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-sunken">
               <p className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
                 <DollarSign className="w-3.5 h-3.5" /> Record Payment
               </p>
@@ -525,7 +525,7 @@ export function Component() {
             </div>
 
             {showCreditNote && (
-              <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
+              <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-sunken">
                 <Field label="Amount">
                   <input aria-label="Cn amount" type="number" value={cnAmount} onChange={e => setCnAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
                 </Field>

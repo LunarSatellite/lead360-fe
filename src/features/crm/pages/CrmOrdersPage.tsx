@@ -291,11 +291,11 @@ export function Component() {
 
         <div className="flex gap-2 flex-wrap">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search orders..." aria-label="Search orders..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Status</option>
             {Object.entries(CRM_ORDER_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-surface text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -517,7 +517,7 @@ export function Component() {
             </div>
 
             {/* Financials */}
-            <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+            <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-text-muted">Subtotal</span><span className="text-text-primary">{selectedOrder.currency} {selectedOrder.subtotal.toLocaleString()}</span></div>
               <div className="flex justify-between"><span className="text-text-muted">Tax</span><span className="text-text-primary">{selectedOrder.currency} {selectedOrder.taxAmount.toLocaleString()}</span></div>
               <div className="flex justify-between"><span className="text-text-muted">Discount</span><span className="text-text-primary">-{selectedOrder.currency} {selectedOrder.discountAmount.toLocaleString()}</span></div>
@@ -529,7 +529,7 @@ export function Component() {
             {selectedOrder.shippingAddressLine1 && (
               <div>
                 <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-1.5"><MapPin className="w-3 h-3" /> Shipping Address</label>
-                <div className="text-sm text-text-primary bg-bg-surface rounded-xl p-3">
+                <div className="text-sm text-text-primary bg-bg-elevated rounded-xl p-3">
                   <p>{selectedOrder.shippingAddressLine1}</p>
                   {selectedOrder.shippingAddressLine2 && <p>{selectedOrder.shippingAddressLine2}</p>}
                   <p>{[selectedOrder.shippingCity, selectedOrder.shippingState, selectedOrder.shippingPostalCode].filter(Boolean).join(', ')}</p>
@@ -542,7 +542,7 @@ export function Component() {
             {selectedOrder.trackingNumber && (
               <div>
                 <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-1.5"><Hash className="w-3 h-3" /> Tracking</label>
-                <div className="text-sm text-text-primary bg-bg-surface rounded-xl p-3">
+                <div className="text-sm text-text-primary bg-bg-elevated rounded-xl p-3">
                   <p>Carrier: {selectedOrder.carrier ?? '-'}</p>
                   <p className="font-mono">{selectedOrder.trackingNumber}</p>
                   {selectedOrder.shippedAt && <p className="text-xs text-text-muted mt-1">Shipped: {format(parseISO(selectedOrder.shippedAt), 'MMM d, yyyy')}</p>}
@@ -557,7 +557,7 @@ export function Component() {
                 <label className="text-xs font-semibold text-text-muted mb-1.5">Shipments ({deliveryList.length})</label>
                 <div className="space-y-2">
                   {deliveryList.map(d => (
-                    <div key={d.id} className="bg-bg-surface rounded-xl p-3 text-sm space-y-1">
+                    <div key={d.id} className="bg-bg-elevated rounded-xl p-3 text-sm space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="font-mono text-xs text-text-secondary">{d.shipmentNumber}</span>
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${CRM_DELIVERY_STATUS_COLORS[d.status] ?? ''}`}>
@@ -601,7 +601,7 @@ export function Component() {
                   )}
                 </div>
                 {pickList && (
-                  <div className="bg-bg-surface rounded-xl p-3 space-y-3">
+                  <div className="bg-bg-elevated rounded-xl p-3 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-text-muted">Status: <span className="font-semibold text-text-primary">{PICK_LIST_STATUS_LABELS[pickList.status]}</span></span>
                       <div className="flex gap-1">
@@ -686,7 +686,7 @@ export function Component() {
             {selectedOrder.lineItems?.length > 0 && (
               <div>
                 <label className="text-xs font-semibold text-text-muted mb-1.5">Line Items</label>
-                <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle">
+                <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle">
                   {selectedOrder.lineItems.map(li => (
                     <div key={li.id} className="flex justify-between items-center px-3 py-2 text-sm">
                       <div>
@@ -718,7 +718,7 @@ export function Component() {
               )}
             </Field>
             {selectedOrder.acknowledgmentSentAt && <Field label="Acknowledgment Sent"><span className="text-sm text-text-muted">{format(new Date(selectedOrder.acknowledgmentSentAt), 'MMM d, yyyy HH:mm')}</span></Field>}
-            {selectedOrder.notes && <div><label className="text-xs font-semibold text-text-muted mb-1">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selectedOrder.notes}</p></div>}
+            {selectedOrder.notes && <div><label className="text-xs font-semibold text-text-muted mb-1">Notes</label><p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{selectedOrder.notes}</p></div>}
             {selectedOrder.cancellationReason && <div><label className="text-xs font-semibold text-danger-light mb-1">Cancellation Reason</label><p className="text-sm text-danger-light bg-danger-soft rounded-xl p-3">{selectedOrder.cancellationReason}</p></div>}
 
             {/* Actions */}

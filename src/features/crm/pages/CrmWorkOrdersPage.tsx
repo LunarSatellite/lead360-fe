@@ -111,7 +111,7 @@ function DetailPanel({ id }: { id: string }) {
         <div className="flex items-center gap-2 mt-2 flex-wrap">
           <Badge value={wo.status} labels={CRM_WORK_ORDER_STATUS_LABELS} colors={CRM_WORK_ORDER_STATUS_COLORS} />
           <Badge value={wo.priority} labels={CRM_WORK_ORDER_PRIORITY_LABELS} colors={CRM_WORK_ORDER_PRIORITY_COLORS} />
-          <span className="text-xs text-text-muted bg-bg-surface px-2 py-0.5 rounded-full">{CRM_WORK_ORDER_TYPE_LABELS[wo.type as CrmWorkOrderType]}</span>
+          <span className="text-xs text-text-muted bg-bg-elevated px-2 py-0.5 rounded-full">{CRM_WORK_ORDER_TYPE_LABELS[wo.type as CrmWorkOrderType]}</span>
         </div>
       </div>
 
@@ -123,7 +123,7 @@ function DetailPanel({ id }: { id: string }) {
 
       {tab === 'detail' && (
         <div className="space-y-4">
-          <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+          <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
             {wo.contactName && <div className="flex justify-between"><span className="text-text-muted">Contact</span><span className="text-text-primary">{wo.contactName}</span></div>}
             {wo.equipmentModel && <div className="flex justify-between"><span className="text-text-muted">Equipment</span><span className="text-text-primary">{wo.equipmentModel} — {wo.equipmentSerial}</span></div>}
             {wo.siteLabel && <div className="flex justify-between"><span className="text-text-muted">Site</span><span className="text-text-primary">{wo.siteLabel}</span></div>}
@@ -156,7 +156,7 @@ function DetailPanel({ id }: { id: string }) {
           <div className="space-y-2">
             {wo.notes.length === 0 && <p className="text-sm text-text-muted text-center py-6">No notes yet.</p>}
             {wo.notes.map((n: any) => (
-              <div key={n.id} className="bg-bg-surface rounded-xl p-3 text-sm">
+              <div key={n.id} className="bg-bg-elevated rounded-xl p-3 text-sm">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-semibold text-text-secondary">{CRM_WORK_ORDER_NOTE_KIND_LABELS[n.kind as CrmWorkOrderNoteKind]}</span>
                   <span className="text-xs text-text-muted">{format(parseISO(n.createdAt), 'MMM d, yyyy')}</span>
@@ -296,7 +296,7 @@ export function Component() {
 
         <div className="flex gap-2 flex-wrap">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search work orders..." aria-label="Search work orders..." className="flex-1 min-w-48 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow" />
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-border-glow">
             <option value="">All Status</option>
             {Object.entries(CRM_WORK_ORDER_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>

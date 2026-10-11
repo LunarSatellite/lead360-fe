@@ -153,7 +153,7 @@ export function Component() {
         <div className="flex gap-2 flex-wrap">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
             placeholder="Search POs..." aria-label="Search POs..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select aria-label="Filter by statu" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(PO_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -201,7 +201,7 @@ export function Component() {
                           <button onClick={() => sendToVendor.mutate(po.id)} disabled={sendToVendor.isPending} title="Mark Sent to Vendor" className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all disabled:opacity-50"><Send className="w-3.5 h-3.5" /></button>
                         )}
                         {(po.status === PurchaseOrderStatus.FullyReceived) && (
-                          <button onClick={() => closePO.mutate(po.id)} disabled={closePO.isPending} title="Close PO" className="p-1.5 rounded-lg text-text-muted hover:text-text-secondary hover:bg-bg-surface transition-all disabled:opacity-50"><Lock className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => closePO.mutate(po.id)} disabled={closePO.isPending} title="Close PO" className="p-1.5 rounded-lg text-text-muted hover:text-text-secondary hover:bg-bg-elevated transition-all disabled:opacity-50"><Lock className="w-3.5 h-3.5" /></button>
                         )}
                         {po.status <= PurchaseOrderStatus.Approved && (
                           <button onClick={() => { setSelected(po); setShowCancel(true); }} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
@@ -313,7 +313,7 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
+              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
@@ -371,7 +371,7 @@ export function Component() {
               <div className="mt-2"><Badge value={selected.status} labels={PO_STATUS_LABELS} colors={PO_STATUS_COLORS} /></div>
             </div>
 
-            <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+            <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-text-muted">Subtotal</span><span>{selected.currency} {selected.subTotal.toLocaleString()}</span></div>
               <div className="flex justify-between"><span className="text-text-muted">Tax</span><span>{selected.currency} {selected.taxAmount.toLocaleString()}</span></div>
               <div className="flex justify-between font-bold border-t border-border-subtle pt-2"><span>Total</span><span>{selected.currency} {selected.totalAmount.toLocaleString()}</span></div>
@@ -385,7 +385,7 @@ export function Component() {
             {selected.lineItems?.length > 0 && (
               <div>
                 <label className="text-xs font-semibold text-text-muted mb-1.5 block">Line Items</label>
-                <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle">
+                <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle">
                   {selected.lineItems.map(li => (
                     <div key={li.id} className="flex items-center justify-between px-3 py-2.5 text-sm">
                       <div>
@@ -403,7 +403,7 @@ export function Component() {
               </div>
             )}
 
-            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selected.notes}</p></div>}
+            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{selected.notes}</p></div>}
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.status === PurchaseOrderStatus.Draft && (

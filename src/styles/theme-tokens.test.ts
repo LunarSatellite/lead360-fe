@@ -6,6 +6,13 @@ import { readFileSync } from 'node:fs';
 const css = readFileSync(`${__dirname}/globals.css`, 'utf8');
 const tailwindConfig = readFileSync(`${__dirname}/../../tailwind.config.js`, 'utf8');
 
+/** Every component, for checking the classes they actually use. */
+const sources = import.meta.glob('/src/**/*.tsx', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
 /**
  * The failure this suite exists for.
  *
@@ -142,6 +149,35 @@ describe('console colour tokens', () => {
   it('meets AA for StyleMint text on every surface it can land on', () => {
     const below = pairs(stylemint).filter(({ ratio }) => ratio < 4.5);
     expect(below.map(({ label, ratio }) => `${label} = ${ratio.toFixed(2)}:1`)).toEqual([]);
+  });
+
+  it('uses no background class the config does not define', () => {
+    /**
+     * `bg-bg-surface` appeared 51 times and is not a class Tailwind emits:
+     * the `bg` scale is DEFAULT, sunken, shell, card, elevated and input.
+     * Those elements therefore had no background at all and fell through to
+     * the user agent's, which on Linux is #EFEFEF — white text on it is
+     * 1.14:1.
+     *
+     * It survived because it reads like a real token, it degrades silently,
+     * and Windows Chromium paints a default <select> differently enough to
+     * hide it. Only the Linux CI run found it. This is the cheaper way to
+     * find the next one.
+     */
+    const defined = new Set(
+      [...stripComments(tailwindConfig).matchAll(/\n        bg: \{([\s\S]*?)\n        \},/g)]
+        .flatMap(([, body]) => [...body.matchAll(/(\w+):/g)].map(([, key]) => key))
+        .map((key) => (key === 'DEFAULT' ? '' : `-${key}`)),
+    );
+
+    const used = new Set(
+      Object.values(sources).flatMap((src) =>
+        [...src.matchAll(/(?<![\w-])bg-bg(-[\w]+)?(?![\w-])/g)].map(([, suffix]) => suffix ?? ''),
+      ),
+    );
+
+    const unknown = [...used].filter((suffix) => !defined.has(suffix)).map((s) => `bg-bg${s}`);
+    expect(unknown, 'this class paints nothing; the browser default shows through').toEqual([]);
   });
 
   it('meets AA for Lead360 text on every surface it can land on', () => {

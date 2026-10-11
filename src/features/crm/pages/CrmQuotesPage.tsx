@@ -354,7 +354,7 @@ export function Component() {
               <div>
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Line Items</p>
                 <table className="w-full text-sm border border-border-subtle rounded-xl overflow-hidden">
-                  <thead><tr className="bg-bg-subtle border-b border-border-subtle">
+                  <thead><tr className="bg-bg-sunken border-b border-border-subtle">
                     {['Description', 'Qty', 'Unit Price', 'Total'].map(h => <th key={h} className="text-left px-3 py-2 text-xs font-bold text-text-muted">{h}</th>)}
                   </tr></thead>
                   <tbody>{(selected as any).lineItems.map((li: any) => (

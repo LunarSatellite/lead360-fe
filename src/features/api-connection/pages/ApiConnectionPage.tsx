@@ -146,7 +146,7 @@ export function Component() {
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
           {specs.length > 1 && step !== 'upload' && (
-            <select
+            <select aria-label="Active spec"
               value={activeSpec?.id || ''}
               onChange={(e) => setSelectedSpecId(e.target.value)}
               className="cfi appearance-none cursor-pointer"

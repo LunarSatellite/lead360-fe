@@ -828,7 +828,7 @@ function SyncDtl({
                 />
               </FF>
               <FF l="Pagination Type">
-                <select {...f.register('paginationType')} className="cfi appearance-none cursor-pointer">
+                <select aria-label="Pagination type" {...f.register('paginationType')} className="cfi appearance-none cursor-pointer">
                   <option value="page">Page</option>
                   <option value="offset">Offset</option>
                   <option value="cursor">Cursor</option>
@@ -836,10 +836,10 @@ function SyncDtl({
                 </select>
               </FF>
               <FF l="Page Size">
-                <input {...f.register('pageSize', { valueAsNumber: true })} type="number" className="cfi" />
+                <input aria-label="Page size" {...f.register('pageSize', { valueAsNumber: true })} type="number" className="cfi" />
               </FF>
               <FF l="Sync Interval">
-                <select
+                <select aria-label="Sync interval minutes"
                   {...f.register('syncIntervalMinutes', { valueAsNumber: true })}
                   className="cfi appearance-none cursor-pointer"
                 >
@@ -866,7 +866,7 @@ function SyncDtl({
               </div>
               <div className="col-span-2">
                 <FF l="Field Mappings (JSON)">
-                  <textarea
+                  <textarea aria-label="Field mappings JSON"
                     {...f.register('fieldMappingsJson')}
                     rows={2}
                     placeholder='{"name": "product_name"}'

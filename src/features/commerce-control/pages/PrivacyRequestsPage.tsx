@@ -326,7 +326,7 @@ function RequestRow({
               ? 'A fulfilment reference is optional but is what links this to the export or deletion you ran.'
               : 'The reason goes on the record — a legal hold, for example — and is visible in the audit trail.'}
           </p>
-          <input
+          <input aria-label="Completing"
             value={completing ? reference : reason}
             onChange={(e) => (completing ? setReference(e.target.value) : setReason(e.target.value))}
             placeholder={completing ? 'Fulfilment reference (optional)' : 'Reason'}

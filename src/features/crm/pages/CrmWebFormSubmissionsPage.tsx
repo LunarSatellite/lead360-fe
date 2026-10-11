@@ -39,7 +39,7 @@ export function Component() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative w-full sm:w-52">
           <Filter className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
-          <select
+          <select aria-label="Is spam"
             className={inputCls + " pl-9"}
             value={filter.isSpam === undefined ? "all" : filter.isSpam ? "spam" : "inbox"}
             onChange={(e) => {

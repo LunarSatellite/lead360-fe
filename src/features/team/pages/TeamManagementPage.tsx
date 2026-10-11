@@ -360,7 +360,7 @@ function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrm
                 <option value={UserRole.Agent} className="bg-bg">Agent</option>
               </select>
               {roles.length > 0 && (
-                <select
+                <select aria-label="Crm role ID"
                   value={user.crmRoleId ?? ''}
                   onChange={(e) => assignCrmRole.mutate({ userId: user.id, roleId: e.target.value || null })}
                   className="px-2 py-1 rounded-lg bg-bg border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"

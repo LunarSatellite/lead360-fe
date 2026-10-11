@@ -189,7 +189,7 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
         {form.collectsTimeSlot && (
           <div className="mt-3">
             <Field label="Slot duration (minutes)">
-              <Input
+              <Input aria-label="Slot duration mins"
                 type="number"
                 value={form.slotDurationMins?.toString() ?? ''}
                 onChange={(v) =>
@@ -226,7 +226,7 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
             />
           </Field>
           <Field label="Notify phone (optional)">
-            <Input
+            <Input aria-label="Notify phone"
               value={form.notifyPhone ?? ''}
               onChange={(v) => setForm({ ...form, notifyPhone: v.trim() === '' ? null : v })}
               placeholder="+1 555 555 0123"

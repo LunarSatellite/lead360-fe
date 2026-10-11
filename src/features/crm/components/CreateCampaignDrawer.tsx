@@ -682,7 +682,7 @@ function StepBudget({ form, set }: { form: CreateCampaignRequest; set: SetFn }) 
       </Field>
 
       <Field label={`End Date & Time ${form.budgetType === 'lifetime' ? '(required)' : '(optional)'}`}>
-        <input
+        <input aria-label="Stop time"
           type="datetime-local"
           className={inputCls}
 
@@ -750,7 +750,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       <Field label="Image URL (optional — leave blank for link preview)">
         <div className="relative">
           <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-          <input
+          <input aria-label="Image URL"
             className={inputCls + ' pl-8'}
   
             value={form.imageUrl ?? ''}

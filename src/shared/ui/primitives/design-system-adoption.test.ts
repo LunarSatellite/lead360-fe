@@ -163,11 +163,26 @@ describe('defects that must not come back', () => {
      * choose — "Config JSON" rather than "Agent configuration" — but it is
      * specific and never wrong, and a person can improve any of them.
      *
-     * 115 are left: controls bound to a loop variable or an index, where the
-     * binding says nothing about what the field is for. Those need someone
-     * to decide, which is not something a script can read off the page.
+     * A fourth source closed more of it: react-hook-form carries the field
+     * name as the argument to `register()`, which is the best name in these
+     * files. That and reading the head of a defaulted binding —
+     * `value={form.notifyPhone ?? ''}`, which an earlier pattern required
+     * to be a bare identifier and so skipped 65 times — took another 56.
+     *
+     * 59 are left, and two things should be said about that number.
+     *
+     * It over-counts. This reads source, so it cannot see a label supplied
+     * by a wrapper component: `<FF l="Page Size"><input …/></FF>` renders a
+     * label around the control and counts here as unnamed. The browser
+     * audit is the measure that matters, and it reports zero unnamed
+     * controls on all 131 pages. What this number is good for is stopping
+     * the count climbing, not describing the product.
+     *
+     * And what remains is genuinely not derivable: a bare `<select>` with
+     * no binding, an index, a loop variable. Those need someone to decide
+     * what the control is for.
      */
-    const BUDGET_UNNAMED_CONTROLS = 115;
+    const BUDGET_UNNAMED_CONTROLS = 59;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 

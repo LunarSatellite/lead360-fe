@@ -172,7 +172,7 @@ export function Component() {
           <div className="flex items-center gap-2 text-sm">
             <Tag className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
             {stages.length > 0 ? (
-              <select
+              <select aria-label="Stage ID"
                 value={deal.stageId ?? ''}
                 onChange={(e) => {
                   if (id && e.target.value) moveStage.mutate({ id, data: { stageId: e.target.value } });

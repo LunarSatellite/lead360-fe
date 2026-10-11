@@ -121,6 +121,29 @@ describe('defects that must not come back', () => {
      * an absolute check — unlike the contrast and focus rules above, which
      * are absolute because their fixes were unambiguous.
      *
+     * Sixty of them look unambiguous and are not, which is worth writing
+     * down because the trap is invisible in a diff. They are exactly
+     *
+     *     <label className="... uppercase tracking-wider font-semibold">
+     *       Title *
+     *     </label>
+     *     <input className={inputCls} … />
+     *
+     * — one native control, immediately after, nothing in between. Nesting
+     * that input compiles, passes every test here, passes axe, and renders
+     * what the user types in uppercase. Tailwind's preflight sets
+     * `letter-spacing` and `font-weight` to `inherit` on form elements, and
+     * `text-transform` inherits on its own, so the control picks up the
+     * label's styling; the shared input classes set a font size and none of
+     * the other three, so nothing overrides it. 57 sites were converted and
+     * reverted on finding this.
+     *
+     * The fix that does work is to move the text into a `<span>` and leave
+     * the `<label>` carrying only layout classes — but the spacing then has
+     * to be reproduced per site, because it currently comes from whatever
+     * wrapper the pair sits in. That is the per-site look this budget is
+     * about.
+     *
      * Lower it when you fix some. It may not go up.
      */
     const BUDGET_ORPHAN_LABELS = 185;

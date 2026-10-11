@@ -26,6 +26,7 @@ import {
   LayoutDashboard,
   LayoutPanelTop,
   ListChecks,
+  Mail,
   MapPin,
   Megaphone,
   Newspaper,
@@ -112,6 +113,7 @@ export const crmNav = [
   { label: 'Data requests', href: ROUTES.dashboard.crmGdpr, icon: ShieldAlert },
   { label: 'Single sign-on', href: ROUTES.dashboard.crmSso, icon: KeyRound },
   { label: 'Currencies', href: ROUTES.dashboard.crmCurrencies, icon: Coins },
+  { label: 'Email sync', href: ROUTES.dashboard.crmEmailSync, icon: Mail },
   { label: 'Notification settings', href: ROUTES.dashboard.crmNotificationSettings, icon: Settings },
   // ── Routed but previously unlinked: reachable only by typing the URL until now.
   // Analytics and Support stay out on purpose — see the note above; they live once

@@ -20,9 +20,10 @@ import type { CrmCsatRecordDto } from '../types/crm-csat.types';
 import { CrmCsatRecordType, CRM_NPS_CLASSIFICATION_LABELS } from '../types/crm-csat.types';
 import {
   EnrollmentStatus, CRM_CONTACT_SOURCE_LABELS,
-  CrmSignalKind, CrmSignalSource, CrmEntityType,
+  CrmSignalKind, CrmSignalSource, CrmEntityType, CrmActivityEntityKind,
   CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS,
 } from '../types/crm.types';
+import { RecordAuditTrail } from '../components/RecordAuditTrail';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
 import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -683,6 +684,16 @@ export function Component() {
 
           {/* Custom fields */}
           {!isEditing && <CustomFieldsPanel recordId={contact.id} entityType={CrmEntityType.Contact} />}
+
+          {/* Field-level history — `RecordAuditTrail` existed but was mounted
+              nowhere; "who changed this and when" is a Tier C gap in
+              CRM-REMAINING-GAPS.md. */}
+          {!isEditing && (
+            <RecordAuditTrail
+              kind={CrmActivityEntityKind.Contact}
+              entityId={contact.id}
+            />
+          )}
 
         </div>
       </div>

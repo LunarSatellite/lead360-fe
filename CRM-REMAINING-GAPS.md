@@ -1,6 +1,13 @@
 # OmniFlow CRM — Gaps by Priority
 
 > Verified by auditing actual backend (entities/services/controllers) and frontend (routes/pages/mutations) code — not by trusting status icons in `CRM-FULL-TEST-FLOW.md`, which is stale and mislabels most features. Ordered by business impact, not by doc section. `CRM-FULL-TEST-FLOW.md` section numbers are kept in parentheses for traceability.
+>
+> **Re-verified 2026-10-11, and this file had gone the same way it warns about.**
+> Four entries below were already built and still listed as missing: **Web Forms
+> builder**, **Webhooks (outbound)** and **Pipeline Forecasting AI** all have UI
+> now. Both Tier A gaps — **GDPR data requests** and **SSO** — were real and are
+> built in this pass. Check a claim here against the code before planning work
+> from it.
 
 ---
 
@@ -9,8 +16,8 @@
 | Feature | Status | Why it's Tier A |
 |---|---|---|
 | **Mobile Access** (20.10) | Partial — `DashboardLayout.tsx` has a responsive bottom tab bar + "More" sheet for small screens, but that's just a breakpoint treatment of the existing desktop routes. No PWA manifest, no offline/installable capability (confirmed: no `vite-plugin-pwa`/workbox config anywhere), no mobile-specific API surface | Field sales reps and field technicians — a role this platform explicitly serves (work orders, installations, repairs) — still have no real away-from-desk capability, just a squeezed desktop UI |
-| **GDPR data requests** | Backend built (`CrmAdminControllers`), **zero UI** | No way to action a right-to-be-forgotten or data-export request. Real legal exposure for any business serving EU customers |
-| **SSO (SAML/OAuth)** | Backend built (`CrmAdminControllers`), **zero UI** | Enterprise buyers routinely require SSO before they'll adopt any SaaS tool — this can silently kill enterprise deals with no obvious symptom until procurement asks for it |
+| **GDPR data requests** | ~~Backend built, zero UI~~ — **built 2026-10-11**, `CrmGdprRequestsPage` at `crm/gdpr`. Logs any of the five rights, tracks the 30-day deadline, manages retention policies. **Known limit, stated on the page:** `ProcessErasureRequestAsync` only sets a status — it deletes nothing, so the erasure itself is still manual | Was: no way to action a right-to-be-forgotten or data-export request |
+| **SSO (SAML/OAuth)** | ~~Backend built, zero UI~~ — **built 2026-10-11**, `CrmSsoPage` at `crm/sso`. Add/remove a connection for any of the five providers, provider-aware form, enforcement flagged in the list. **Known limit, stated on the page:** `TestConnectionAsync` only stamps `TestedAt` — it never contacts the provider, so there is no live test | Was: enterprise buyers require SSO before they'll adopt |
 
 ---
 
@@ -23,9 +30,9 @@
 | **Account Health Score** (17.3) | Not built as spec'd — re-verified 2026-07-09; churn-risk prediction (`CrmPredictionService`, `ChurnInterventionService`) is still active and is not the same thing. A `HealthScore` field does exist but it's scoped to onboarding progress (`CrmOnboardingStateDto.HealthScore`), not a general per-account risk score | CS has no simple at-a-glance risk indicator per account |
 | **RFQ to vendors** (9.1) | Not built — re-verified 2026-07-09, zero hits for RFQ/RequestForQuote/vendor-quote-comparison anywhere | No formal way to compare multiple supplier quotes before purchasing — procurement discipline gap |
 | **GR Discrepancy workflow** (9.5) | Not built — re-verified 2026-07-09; `GoodsReceiptService.ConfirmAsync` just sums received qty into the PO, no over/short-receipt flag. (`ThreeWayMatchService` variance is invoice-vs-PO at billing time, not at receiving time — doesn't cover this) | Short/damaged deliveries aren't auto-flagged against the PO — handled manually, easy to miss |
-| **Webhooks (outbound)** | Backend built (`CrmWebhookController`/`CrmWebhookService`), zero UI — re-verified 2026-07-09 | No way to connect OmniFlow to other systems (Zapier-style) without a developer |
-| **Web Forms builder** | Backend built, zero UI | No native lead-capture form for the website — marketing depends on a workaround |
-| **Pipeline Forecasting AI** (verified 2026-07-09) | Backend built (`CrmForecastController`/`CrmForecastService` — Monte Carlo pipeline forecast, per-deal AI win-probability, at-risk-deal scan), **zero frontend**. The "Weighted Forecast" card on the Analytics page is a separate, simpler calc — not this service | The weekly forecast/quota conversation runs blind to a system that already computes deal-level AI probability and flags at-risk deals |
+| **Webhooks (outbound)** | ~~zero UI~~ — **already built**, found 2026-10-11 (5 matching components/pages) | — |
+| **Web Forms builder** | ~~zero UI~~ — **already built**, found 2026-10-11 (`CrmWebFormBuilderPage` + 3 more) | — |
+| **Pipeline Forecasting AI** | ~~zero frontend~~ — **already built**, found 2026-10-11 (2 matching components/pages). Original note, kept for the detail: backend is `CrmForecastController`/`CrmForecastService` — Monte Carlo pipeline forecast, per-deal AI win-probability, at-risk-deal scan. The "Weighted Forecast" card on the Analytics page is a separate, simpler calc — not this service | The weekly forecast/quota conversation runs blind to a system that already computes deal-level AI probability and flags at-risk deals |
 | **Call Summary Transcript Source** (verified 2026-07-09) | The Call Summary feature itself works — LLM structured extraction (themes, decisions, objections, competitor mentions, sentiment arc) + full UI on the Meetings page — but it ingests `signal.Summary` text as a "transcript proxy" (explicit TODO in code); no real call-recording/audio-transcription pipeline feeds it | The AI analysis has nothing real to analyze until a recording/transcription source is wired in — summaries are only as good as manually-typed notes |
 
 ---
@@ -34,15 +41,17 @@
 
 | Feature | Status | Why it matters |
 |---|---|---|
-| **Multi-Currency** (20.6) | Backend built (`CrmMultiCurrencyController`), zero UI | Blocks accurate consolidated reporting the moment you sell internationally |
-| **Field-Level Audit Trail** (20.7) | Backend built (`CrmFieldAuditController` at `crm/field-audit`), zero UI — re-verified 2026-07-09. **Trap for future audits:** the sidebar's existing "Audit Log" nav item (`AuditLogPage.tsx`) is a *different* feature — it calls `crmApi.getAuditFeed()` (`/audit-feed`), a general activity log, not field-level history. There's also a `RecordAuditTrail.tsx` component already written but never imported anywhere (dead code) | No "who changed this deal's value and when" — blocks regulated industries (SOX/HIPAA-style) and makes disputes guesswork |
-| **Individual Email Sync** (20.2) | Backend built (`CrmEmailSyncWorker`), zero UI | Reps' 1:1 emails never land in the CRM automatically — the single most-used daily feature in Salesforce/HubSpot |
-| **Custom Objects / Formula Fields / Validation Rules / Rollup Summaries** | All backend built, zero UI | Salesforce-Platform-style extensibility — only bites once a customer needs to model something outside the built-in entities |
+| **Multi-Currency** (20.6) | ~~zero UI~~ — **built 2026-10-11**, `CrmCurrenciesPage` at `crm/currencies`. Add and remove currencies, set a rate per currency, move the base. The base cannot be deleted and has no rate against itself; a tenant with currencies and no base is warned, because conversion has nothing to quote against | Was: blocks consolidated reporting the moment you sell internationally |
+| **Field-Level Audit Trail** (20.7) | ~~zero UI~~ — **built 2026-10-11**. The `RecordAuditTrail.tsx` this row called dead code was complete; it was simply imported nowhere. Now mounted on the Deal, Contact and Lead detail pages, with a test that fails if a page stops mounting it — a component nothing imports is indistinguishable from one that was never written, which is how this sat for months. **Trap still worth knowing:** the sidebar's "Audit Log" item (`AuditLogPage.tsx`) is a *different* feature — `crmApi.getAuditFeed()` (`/audit-feed`), a general activity log, not field-level history | Was: no "who changed this deal's value and when" |
+| **Individual Email Sync** (20.2) | ~~zero UI~~ — **built 2026-10-11**, `CrmEmailSyncPage` at `crm/email-sync`. Lists connected mailboxes with last-synced, syncs one on demand, disconnects. An errored mailbox is called out, because mail that stops arriving reads on a contact's timeline as the customer going quiet. **Connecting is not in the page:** it is an OAuth round trip the console cannot complete for the user, and there is no configured redirect target, so the page says where connecting happens rather than offering a button that cannot work | Was: reps' 1:1 emails never land in the CRM |
+| **Custom Objects** | ~~zero UI~~ — **built 2026-10-11**, `CrmCustomObjectsPage` at `crm/custom-objects`. Create and delete objects, expand one to see and add its fields. API names are derived from the label and shown before you commit, because they are identifiers integrations will depend on. **One type withheld:** `Reference` needs a target object id and the console has no picker, so the form refuses it and says to use the API — `Enum.Parse` would otherwise turn a bad value into a 500, not a validation error | Was: Salesforce-Platform-style extensibility, zero UI |
+| **Formula Fields / Validation Rules / Rollup Summaries** | Backend built, zero UI — still open | The rest of the extensibility set |
 | **Supplier Order Confirmation tracking** (9.3) | Not built | No vendor acknowledgment or confirmed-delivery-date on file |
 | **Pro-Forma Invoice** (12.2) | Not built | Blocks international trade (import clearance paperwork) and large B2B deals needing pre-shipment docs |
 | **Negotiation Rounds UI** (5.2) | Backend built — re-verified 2026-07-09, naming corrected: the actual entity is `CrmConcession` via `CrmNegotiationController` (`crm/negotiation`, `/deals/{id}/concessions`), not a literal "NegotiationRound". `DealDetailPage.tsx` has zero references to it — no rounds/concessions tab | Still logged as free-text notes instead of structured rounds |
 | **Stock Disposition** (16.5) | Partial — free-text field only | No structured Restock/Refurbish/Write-off classification or inventory adjustment on returns |
-| **Login History / Login Policy** | Backend built, zero UI | Basic security hygiene missing from the admin surface |
+| **Login History** | Backend was built but **had no caller** — `LogLoginEventAsync` was never invoked, so the endpoint returned an empty page on every tenant forever. Wired into `AuthService.LoginAsync` 2026-10-11 (lead360 `c23178de`). UI still to build, but it will now have something to show | Was: basic security hygiene missing |
+| **Login Policy** | **Not a UI gap — nothing enforces it.** `RequireMfa`, `MaxConcurrentSessions`, `AllowedIpRangesJson` and `AllowedHoursJson` are stored and read back and acted on nowhere. There is no MFA mechanism in the codebase at all, and token lifetime comes from `JwtSettings.AccessTokenExpirationMinutes` in config — both `Tenant.SessionTimeoutMinutes` and `CrmLoginPolicy.SessionTimeoutMinutes` are inert. **Do not build the page first:** an admin who ticks "Require MFA" and is told it saved has been lied to. Needs an MFA mechanism, a decision on whether tenant policy may override the JWT config, and a defined format for the IP/hours JSON | Security settings that look applied and are not |
 | **RBAC Anomaly Detection** | Backend built, zero UI | Would flag suspicious permission usage — currently invisible |
 | **CPQ Configuration & Pricing Rules** (re-verified 2026-07-09 — gap is deeper than previously stated) | Product Bundles are fully built + UI'd (`ProductBundlesPage`, a separate feature); but `ICrmCpqService`/`CrmCpqServices.cs` (dynamic pricing rules, configurable product options, quote-level bundles) has **no controller anywhere calling it** — not wired to an HTTP endpoint at all, let alone a UI | Static bundles work but guided-selling/configure-price logic isn't even reachable via API yet, not just missing a UI |
 | **No-Code AI Action Builder** (verified 2026-07-09) | 30 AI action kinds are hardcoded in the `CrmAiActionKind` enum with a full approve/reject/undo UI already built, but there's no way to define a new action type without shipping code (unlike Zoho's Zia Agent Studio) | Every new automation idea requires an engineering sprint instead of an admin configuring it |
@@ -62,6 +71,55 @@
 | **Browser extension** | Log emails/calls from inside Gmail/Outlook without switching tabs | Compounds the Email Sync gap above |
 | **Sandbox / tenant cloning** | Safe copy of a tenant to test automation changes before going live | Correction (2026-07-09): NOT "zero code" — a real `CrmSandbox` entity + `SandboxStatus` enum + EF table + DTOs (`CrmSandboxDto`/`CreateSandboxRequest`) already exist. But there's no service, no controller, and no frontend reference — it's a data-model-only stub, someone started this and stopped |
 | **Autonomous AI SDR / Outbound Agents** (verified 2026-07-09, confirmed zero code anywhere) | An agent that prospects, qualifies leads, and books meetings without human intervention | Now a standard 2025-2026 differentiator shipped by Salesforce Agentforce / HubSpot Breeze / Zoho Zia — reps here do 100% of prospecting manually |
+
+---
+
+## Tier A-adjacent — Stored but never applied (the settings lie)
+
+A distinct and more dangerous failure than "no UI": the API is complete,
+the rows save, the page can look finished, and **nothing in the backend
+ever reads them**. An admin configures the setting, gets a success toast,
+and reasonably believes the system now behaves differently. It does not.
+
+Verified 2026-10-11 by grepping every reader of each type. In each case
+the only non-generated references are the entity, the enum declaration,
+and that type's own CRUD service.
+
+| Surface | Endpoint | What an admin would wrongly believe |
+| --- | --- | --- |
+| Validation rules | `/v1/crm/validation-rules` | Bad saves are rejected |
+| Formula fields | `/v1/crm/formula-fields` | The expression is computed onto records |
+| Rollup summaries | `/v1/crm/rollups` | Child totals appear on the parent |
+| **Field-level security** | `/v1/crm/field-security/rules` | **Restricted fields are hidden from reps** |
+| **Permission sets** | `/v1/crm/field-security/permission-sets` | **Assigning a set grants/limits access** |
+| Login policy | (see note below) | Session timeout / IP / hours are enforced |
+
+**Built 2026-10-11:** the first three now have a console at
+`/dashboard/crm/platform` (three tabs), whose first element is a notice
+that the definitions are recorded and not yet applied. The notice is the
+reason the page is shippable at all — a form that implies a stored rule
+blocks a save would leave the workspace worse off than no form.
+
+**Deliberately NOT built:** field-level security and permission sets.
+Same CRUD-only shape, but the false belief is a *confidentiality* one.
+A page letting someone mark a salary or margin field "hidden from reps",
+which then does not hide it, is an attractive nuisance no banner makes
+safe — the honest version of that page is its absence. `FieldAccessLevel`
+has no reader outside the CRUD service, and `CrmPermissionSetAssignment`
+has **zero** readers anywhere, so assigning a permission set to a user is
+a no-op today. These need the enforcement layer first, in the query
+pipeline and the DTO projections; the UI is the easy half.
+
+**Login policy** was investigated earlier and belongs in this class: no
+MFA mechanism exists anywhere in the codebase, access-token lifetime
+comes from `JwtSettings.AccessTokenExpirationMinutes` (so both
+`Tenant.SessionTimeoutMinutes` and `CrmLoginPolicy.SessionTimeoutMinutes`
+are inert), and the IP/hours JSON has no parser.
+
+**Recommendation:** treat an inert setting as a bug of the same severity
+as the feature being absent, and higher when it concerns access control.
+Before building a page against an unfamiliar settings endpoint, grep for
+a reader of the stored value first — on this backend the pattern recurs.
 
 ---
 
@@ -98,3 +156,38 @@ Verified with real mutations/data, not just routes: Price Books, Tax Rules, Paym
 ## What OmniFlow has that Salesforce/HubSpot/Zoho don't ship natively
 
 Native multi-channel chatbot engine (WhatsApp/Telegram/Messenger/SMS/Voice/WebChat/Email) driving CRM data directly — competitors need a bolted-on third party for this. AI-native churn prediction + auto-refreshing "Living Account Brief" narrative per account. An AI Actions panel with approve/reject/undo built into analytics. A visual flow builder wired into the same CRM data model. A deeper procurement chain (RFQ-adjacent PO → GR → Supplier Invoice) than HubSpot/Zoho ship out of the box — even though the Three-Way-Match step is still missing (Tier A).
+
+---
+
+## Currently broken by a dependency-injection regression (2026-10-11)
+
+Several entries above are listed as built, and some as verified live
+against a running app. They were, when that was written. They are not
+reachable today: forty service interfaces injected by controller
+constructors are registered in no container, so those controllers cannot
+be activated and every request to their routes returns an
+unresolved-service 500.
+
+Affected here: Tax Rules, Payment Terms, Contracts, Credit Notes,
+Returns, Work Orders, Equipment, Purchase Orders, Goods Receipts,
+Supplier Invoices (and Three-Way Match), Vendors, Inventory, Pick Lists,
+the Ops Dashboard, the Customer Portal, Contact Cards, the Audit Log,
+Dispatch Calendar, Deal Handover, Lead Scoring Rules, Time Periods,
+Approval Chains, Product Bundles, Customer Onboarding, Notification
+Preferences, Competitor Tracking, Credit Check, the four ad platforms,
+Social Posts, RBAC Roles and Sales Territories.
+
+Cause: `8ad5d2fa` registered nineteen of them and the
+smartflow-crm-upgrade merge (`1cab3d7a`) dropped the block. `904bc53a`
+restored a different set, so the registration count stayed at 335 and
+the loss never showed in a diffstat. Nothing went red because the
+solution has no `WebApplicationFactory` test that boots the container.
+
+Fix in flight: lead360#2, which restores all forty and adds a reflection
+guard over every controller constructor. Until that merges, treat any
+"verified" marking above as describing the code rather than the running
+system.
+
+**Worth doing regardless of that PR:** a smoke test that boots the app
+and hits one route per controller. It is the only thing that would have
+caught this, and the same absence will let it happen again.

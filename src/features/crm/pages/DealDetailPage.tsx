@@ -5,7 +5,8 @@ import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, Cli
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
-import { DEAL_COMPETITOR_OUTCOME_LABELS } from '../types/crm.types';
+import { RecordAuditTrail } from '../components/RecordAuditTrail';
+import { CrmActivityEntityKind, DEAL_COMPETITOR_OUTCOME_LABELS } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
 import { useDealById, useTimeline, useLogActivity, useDealStrategy, useUpdateDealStrategy, useMoveDealStage, useDealStages, useRefreshDealSummary, useUpdateDeal, useAccounts } from '../api/crm.queries';
 import type { CrmDealUpdateRequest } from '../types/crm.types';
@@ -434,6 +435,12 @@ export function Component() {
           ))}
         </div>
       </div>
+
+      {/* Field-level history. `RecordAuditTrail` was written and then never
+          mounted anywhere — CRM-REMAINING-GAPS.md lists it as dead code, and
+          "who changed this deal's value and when" as a Tier C gap. Same
+          component, now on the record it was written for. */}
+      {id && <RecordAuditTrail kind={CrmActivityEntityKind.Deal} entityId={id} />}
 
       </div>{/* end right column */}
       </div>{/* end grid */}

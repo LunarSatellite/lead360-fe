@@ -772,7 +772,8 @@ function CallSummariesTab() {
   const [reqForm, setReqForm] = useState<{ signalId: string; contactId: string; dealId: string }>({ signalId: '', contactId: '', dealId: '' });
   const [selectedCs, setSelectedCs] = useState<CrmCallSummarySummaryDto | null>(null);
 
-  const { data: raw, isLoading } = useCallSummaries(filter);
+  const callSummariesQuery = useCallSummaries(filter);
+  const { data: raw } = callSummariesQuery;
   const items: CrmCallSummarySummaryDto[] = (raw as any)?.items ?? [];
 
   const requestSummary = useRequestCallSummary();
@@ -802,14 +803,13 @@ function CallSummariesTab() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <PhoneCall className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No call summaries found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={callSummariesQuery}
+            isEmpty={!items.length}
+            noun="call summaries"
+            icon={PhoneCall}
+            emptyTitle="No call summaries found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -830,7 +830,7 @@ function CallSummariesTab() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 

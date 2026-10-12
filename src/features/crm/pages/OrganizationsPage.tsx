@@ -13,7 +13,7 @@ import type {
   CrmOrganizationDetailDto, 
 } from '../types/crm.types';
 import { formatDistanceToNow } from 'date-fns';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 const inputCls =
@@ -306,7 +306,8 @@ export function Component() {
   const [createForm, setCreateForm] = useState<OrgFormState>(EMPTY_ORG);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { data: raw, isLoading } = useOrganizations(filter);
+  const organizationsQuery = useOrganizations(filter);
+  const { data: raw } = organizationsQuery;
   const data = raw;
 
   const createOrg = useCreateOrganization();
@@ -325,7 +326,7 @@ export function Component() {
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Organizations</h2>
             <p className="text-xs text-text-muted mt-0.5">
-              {data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}
+              <ResultCount query={organizationsQuery} total={data?.totalCount} />
             </p>
           </div>
           <Button
@@ -358,16 +359,13 @@ export function Component() {
         </form>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-48 text-text-muted">
-              <Loader2 className="w-5 h-5 animate-spin" />
-            </div>
-          ) : !data?.items.length ? (
-            <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-              <Building2 className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No organizations found</p>
-            </div>
-          ) : (
+          <ListState
+            query={organizationsQuery}
+            isEmpty={!data?.items.length}
+            noun="organizations"
+            icon={Building2}
+            emptyTitle="No organizations found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -379,7 +377,7 @@ export function Component() {
                 </tr>
               </thead>
               <tbody>
-                {data.items.map((o: CrmOrganizationSummaryDto) => (
+                {data?.items.map((o: CrmOrganizationSummaryDto) => (
                   <tr
                     key={o.id}
                     onClick={() => setSelectedId(o.id)}
@@ -403,7 +401,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {totalPages > 1 && (

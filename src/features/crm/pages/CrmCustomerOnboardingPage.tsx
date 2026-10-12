@@ -15,7 +15,7 @@ import {
   CRM_MILESTONE_KIND_LABELS,
   CrmOnboardingStatus, CrmOnboardingMilestoneKind,
 } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
@@ -211,7 +211,8 @@ export function Component() {
   const [contactId, setContactId] = useState('');
   const [milestones, setMilestones] = useState<MilestoneDraft[]>(DEFAULT_MILESTONES);
 
-  const { data: raw, isLoading } = useOnboardings(filter);
+  const onboardingsQuery = useOnboardings(filter);
+  const { data: raw } = onboardingsQuery;
   const items: CrmCustomerOnboardingDto[] = (raw as any)?.item1 ?? [];
   const total: number = (raw as any)?.item2 ?? 0;
 
@@ -273,14 +274,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Users className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No onboardings in progress.</p>
-            </div>
-          ) : (
+          <ListState
+            query={onboardingsQuery}
+            isEmpty={!items.length}
+            noun="onboardings in progress"
+            icon={Users}
+            emptyTitle="No onboardings in progress"
+          >
             <div className="divide-y divide-border-subtle">
               {items.map(ob => {
                 const total_ms = ob.milestones.length;
@@ -311,7 +311,7 @@ export function Component() {
                 );
               })}
             </div>
-          )}
+          </ListState>
         </div>
 
         {total > (filter.pageSize ?? 20) && (

@@ -24,7 +24,7 @@ import {
   CRM_ACCOUNT_TIER_LABELS, CRM_ACCOUNT_CONTACT_ROLE_LABELS,
 } from '../types/crm.types';
 import { formatDistanceToNow, format } from 'date-fns';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 const inputCls =
@@ -913,7 +913,8 @@ export function Component() {
   const [createForm, setCreateForm] = useState<AccountFormState>(EMPTY_ACCOUNT);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { data: raw, isLoading } = useAccounts(filter);
+  const accountsQuery = useAccounts(filter);
+  const { data: raw } = accountsQuery;
   const data = raw;
 
   const createAccount = useCreateAccount();
@@ -953,7 +954,7 @@ export function Component() {
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Accounts</h2>
             <p className="text-xs text-text-muted mt-0.5">
-              {data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}
+              <ResultCount query={accountsQuery} total={data?.totalCount} />
             </p>
           </div>
           <Button
@@ -1001,16 +1002,13 @@ export function Component() {
         </form>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-48 text-text-muted">
-              <Loader2 className="w-5 h-5 animate-spin" />
-            </div>
-          ) : !data?.items.length ? (
-            <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-              <Building className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No accounts found</p>
-            </div>
-          ) : (
+          <ListState
+            query={accountsQuery}
+            isEmpty={!data?.items.length}
+            noun="accounts"
+            icon={Building}
+            emptyTitle="No accounts found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -1022,7 +1020,7 @@ export function Component() {
                 </tr>
               </thead>
               <tbody>
-                {data.items.map((a: CrmAccountSummaryDto) => (
+                {data?.items.map((a: CrmAccountSummaryDto) => (
                   <tr
                     key={a.id}
                     onClick={() => setSelectedId(a.id)}
@@ -1052,7 +1050,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {totalPages > 1 && (

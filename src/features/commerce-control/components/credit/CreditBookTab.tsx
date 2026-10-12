@@ -9,13 +9,7 @@ import {
   type CreditPortfolio,
   type GuarantorValue,
 } from '../../api/stylemint-credit.api';
-import {
-  BUCKET_LABEL,
-  GUARANTOR_LABEL,
-  KIND_LABEL,
-  STATE_LABEL,
-  npr,
-} from '../../lib/credit-console';
+import { BUCKET_LABEL, GUARANTOR_LABEL, KIND_LABEL, STATE_LABEL, npr } from '../../lib/credit-console';
 import { ErrorLine } from './CreditAgreementDetail';
 
 /** What principal on a slice means depends on its state; say which. */
@@ -31,8 +25,8 @@ const PRINCIPAL_MEANING: Partial<Record<number, string>> = {
  * sums over every agreement — the console adds nothing up itself beyond these slices.
  */
 export function CreditBookTab({ portfolio }: { portfolio: CreditPortfolio }) {
-  const guarantors = [Guarantor.Vendor, Guarantor.Platform, Guarantor.Partner, Guarantor.None].filter(
-    (g) => portfolio.delinquency.some((d) => d.guarantor === g),
+  const guarantors = [Guarantor.Vendor, Guarantor.Platform, Guarantor.Partner, Guarantor.None].filter((g) =>
+    portfolio.delinquency.some((d) => d.guarantor === g),
   );
   const buckets = Object.values(DelinquencyBucket);
   const cell = (bucket: number, guarantor: GuarantorValue) =>
@@ -150,7 +144,10 @@ function AgingRun() {
   };
 
   return (
-    <Section title="Aging" note="Runs by itself every day at 03:15 UTC (09:00 in Kathmandu). Running it here does the same pass now.">
+    <Section
+      title="Aging"
+      note="Runs by itself every day at 03:15 UTC (09:00 in Kathmandu). Running it here does the same pass now."
+    >
       <div className="flex flex-wrap items-center gap-3 p-3">
         <button
           type="button"

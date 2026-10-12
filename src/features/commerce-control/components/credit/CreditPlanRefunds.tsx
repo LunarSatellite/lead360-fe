@@ -42,7 +42,8 @@ function RefundItem({ refund: r }: { refund: CreditRefund }) {
       </div>
       <p className="mt-0.5 text-text-secondary">{r.reason}</p>
       <p className="mt-1 text-text-muted">
-        {npr(r.credited)} off what was owed · {npr(r.cash)} back to the buyer · {npr(r.vendorClawback)} from the seller
+        {npr(r.credited)} off what was owed · {npr(r.cash)} back to the buyer · {npr(r.vendorClawback)} from
+        the seller
       </p>
       {r.payments.length > 0 && (
         <ul className="mt-2 space-y-1">
@@ -81,9 +82,11 @@ function RefundPart({ part: p }: { part: CreditRefundPayment }) {
         <span className="font-bold text-text-primary">{npr(p.amount)}</span>{' '}
         <span className="font-mono text-[11px] text-text-muted">intent {shortId(p.paymentIntentId)}</span>
         <span className={`block ${tone}`}>
-          {p.supersededUtc ? 'Returned with the plan’s reversal instead' : PART_LABEL[p.state] ?? 'Unknown'}
+          {p.supersededUtc ? 'Returned with the plan’s reversal instead' : (PART_LABEL[p.state] ?? 'Unknown')}
         </span>
-        {failed && p.lastError && !p.supersededUtc && <span className="block text-danger">{p.lastError}</span>}
+        {failed && p.lastError && !p.supersededUtc && (
+          <span className="block text-danger">{p.lastError}</span>
+        )}
         {retry.isError && <span className="block text-danger">{(retry.error as Error).message}</span>}
       </span>
       {failed && !p.supersededUtc && (

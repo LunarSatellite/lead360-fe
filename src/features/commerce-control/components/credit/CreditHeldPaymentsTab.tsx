@@ -93,7 +93,8 @@ export function CreditHeldPaymentsTab() {
       )}
       {held.isSuccess && held.data.length >= CREDIT_LIST_LIMIT && (
         <p className="border-t border-border-subtle px-3 py-2 text-xs text-warning">
-          Showing {held.data.length}. {showRefunded ? 'Older ones are not listed.' : 'Return these and the rest will follow.'}
+          Showing {held.data.length}.{' '}
+          {showRefunded ? 'Older ones are not listed.' : 'Return these and the rest will follow.'}
         </p>
       )}
     </Section>

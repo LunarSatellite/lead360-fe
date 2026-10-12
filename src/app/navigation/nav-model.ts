@@ -299,6 +299,7 @@ export const navGroups: NavGroup[] = [
       { label: 'Delivery ops', href: '/dashboard/stylemint/logistics', icon: Route },
       { label: 'Couriers', href: '/dashboard/stylemint/couriers', icon: Truck },
       { label: 'Counter handover', href: '/dashboard/stylemint/counter-handover', icon: Store },
+      { label: 'Payment plans', href: '/dashboard/stylemint/credit', icon: CreditCard },
       { label: 'Commerce operations', href: '/dashboard/stylemint/operations', icon: SlidersHorizontal },
     ],
   },

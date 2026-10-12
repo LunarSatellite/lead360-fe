@@ -6,7 +6,9 @@ import { stylemintCreditApi, type CreditRefundQuote } from '../../api/stylemint-
 import { PlanRefundForm } from './PlanRefundForm';
 
 vi.mock('../../api/stylemint-credit.api', async () => {
-  const actual = await vi.importActual<typeof import('../../api/stylemint-credit.api')>('../../api/stylemint-credit.api');
+  const actual = await vi.importActual<typeof import('../../api/stylemint-credit.api')>(
+    '../../api/stylemint-credit.api',
+  );
   return { ...actual, stylemintCreditApi: { refundQuote: vi.fn(), refundPlan: vi.fn() } };
 });
 
@@ -22,7 +24,8 @@ const quoteFor = (amount: number): CreditRefundQuote => ({
   cash: Math.max(0, amount - 32000),
   vendorClawback: Math.max(0, amount - 32000),
   priceReduced: 0,
-  payments: amount > 32000 ? [{ attemptId: 'a1', paymentIntentId: 'i1', amount: amount - 32000, paidUtc: null }] : [],
+  payments:
+    amount > 32000 ? [{ attemptId: 'a1', paymentIntentId: 'i1', amount: amount - 32000, paidUtc: null }] : [],
 });
 
 function renderForm(onDone = vi.fn()) {
@@ -57,7 +60,9 @@ describe('refunding part of a plan order', () => {
     fireEvent.click(screen.getByRole('checkbox'));
     fireEvent.click(submit);
 
-    await waitFor(() => expect(api.refundPlan).toHaveBeenCalledWith(PLAN, 40000, 'Arrived scratched', expect.any(String)));
+    await waitFor(() =>
+      expect(api.refundPlan).toHaveBeenCalledWith(PLAN, 40000, 'Arrived scratched', expect.any(String)),
+    );
     await waitFor(() => expect(onDone).toHaveBeenCalled());
   });
 

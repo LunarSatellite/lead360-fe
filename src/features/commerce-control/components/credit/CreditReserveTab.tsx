@@ -6,6 +6,7 @@ import { stylemintCreditApi, type ReserveSummary } from '../../api/stylemint-cre
 import { npr } from '../../lib/credit-console';
 import { ErrorLine } from './CreditAgreementDetail';
 import { Section } from './CreditBookTab';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The guarantee reserve: what stands behind every pay-later plan StyleMint guarantees.
@@ -21,8 +22,9 @@ export function CreditReserveTab({ reserve }: { reserve: ReserveSummary }) {
     <div className="space-y-4">
       {!reserve.platformGuaranteeEnabled && (
         <p className="rounded-frame border-thin border-info/25 bg-info-soft p-3 text-xs text-text-secondary">
-          StyleMint's guarantee is switched off (<span className="font-mono">Credit:Risk:PlatformGuaranteeEnabled</span>),
-          so no new pay-later plan is approved whatever the reserve holds.
+          StyleMint's guarantee is switched off (
+          <span className="font-mono">Credit:Risk:PlatformGuaranteeEnabled</span>), so no new pay-later plan
+          is approved whatever the reserve holds.
         </p>
       )}
 
@@ -71,7 +73,8 @@ function AddCapital() {
   });
 
   const value = Number(amount);
-  const valid = amount.trim() !== '' && Number.isFinite(value) && value > 0 && Math.round(value * 100) === value * 100;
+  const valid =
+    amount.trim() !== '' && Number.isFinite(value) && value > 0 && Math.round(value * 100) === value * 100;
 
   const submit = async () => {
     const ok = await confirmDialog({
@@ -97,18 +100,12 @@ function AddCapital() {
             value={amount}
             onChange={(event) => setAmount(event.target.value)}
             placeholder="100000"
-            className="w-48 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 focus:outline-none"
+            className="w-48 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-sm font-normal text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 focus:outline-none"
           />
         </label>
-        <button
-          type="button"
-          onClick={submit}
-          disabled={!valid || add.isPending}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-50"
-        >
-          <Landmark className="h-3.5 w-3.5" strokeWidth={1.6} />
-          {add.isPending ? 'Recording…' : 'Record capital'}
-        </button>
+        <Button variant="primary" icon={Landmark} disabled={!valid} loading={add.isPending} onClick={submit}>
+          Record capital
+        </Button>
         <p className="w-full font-mono text-[10px] text-text-muted">Movement {movementId}</p>
         {add.isSuccess && (
           <p className="w-full text-xs text-success" role="status">

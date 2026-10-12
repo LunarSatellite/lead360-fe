@@ -152,7 +152,7 @@ function DashboardDetail({ dashboardId, onBack }: { dashboardId: string; onBack:
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <button onClick={onBack} className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
+        <button aria-label="Back to dashboards" onClick={onBack} className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1">
@@ -331,7 +331,7 @@ function WidgetCard({ widget, dashboardId }: { widget: CrmDashboardWidgetDto; da
           <div className="text-sm font-bold text-text-primary truncate">{widget.title}</div>
           <div className="text-xs text-text-muted">{widget.widgetType}</div>
         </div>
-        <button onClick={() => refetch()} disabled={isFetching} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
+        <button aria-label="Refresh" onClick={() => refetch()} disabled={isFetching} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
           <RotateCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
         </button>
         <button aria-label="Delete"

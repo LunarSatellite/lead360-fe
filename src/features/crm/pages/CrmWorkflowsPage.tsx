@@ -2000,7 +2000,7 @@ function WorkflowBuilder({ workflow, onBack }: { workflow: CrmWorkflowSummaryDto
 
         {/* ── Top bar ── */}
         <div className="flex items-center gap-3 px-4 h-14 shrink-0 border-b border-border-subtle bg-bg-shell">
-          <button onClick={onBack} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-1 transition-all">
+          <button aria-label="Back to workflows" onClick={onBack} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-1 transition-all">
             <ArrowLeft className="w-4 h-4" strokeWidth={1.6} />
           </button>
           <div className="w-px h-5 bg-border-subtle" />
@@ -2145,7 +2145,7 @@ function WorkflowCard({ wf, onOpen, onRun, onDelete, onToggle }: {
           <button onClick={onToggle} className="p-1.5 rounded-lg hover:bg-glass-1 transition-all" style={{ color: wf.isActive ? 'rgb(var(--brand-rgb))' : 'rgb(var(--color-text-muted))' }}>
             {wf.isActive ? <ToggleRight className="w-3.5 h-3.5" strokeWidth={1.6} /> : <ToggleLeft className="w-3.5 h-3.5" strokeWidth={1.6} />}
           </button>
-          <button onClick={onRun} className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all">
+          <button aria-label="Run this workflow now" onClick={onRun} className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all">
             <Play className="w-3.5 h-3.5" strokeWidth={1.6} />
           </button>
           {confirmDel ? (

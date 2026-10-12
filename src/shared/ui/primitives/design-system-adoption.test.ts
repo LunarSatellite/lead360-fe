@@ -287,8 +287,14 @@ describe('defects that must not come back', () => {
      * next and previous in this codebase, and putting a wrong name in front
      * of someone who cannot see the screen is worse than the nothing they
      * get now. They are in the budget until a person decides.
+     *
+     * Seven that were not chevrons -- a back arrow, a refresh, add and
+     * remove person, a run button -- were named later, from what their
+     * handler does rather than from the glyph: `onRun` on a workflow row
+     * is "Run this workflow now", which the icon alone does not say.
+     * Of the twenty left, eighteen are chevrons.
      */
-    const BUDGET_UNNAMED_ICON_BUTTONS = 27;
+    const BUDGET_UNNAMED_ICON_BUTTONS = 20;
     const ONLY_ICON = /^\s*<[A-Z]\w*\b[^<>]*\/>\s*$/;
     let unnamed = 0;
 

@@ -48,10 +48,12 @@ const BUDGET_PAGES_WITH_NO_HEADING = 9;
  * Budgeted, not absolute, because closing one means choosing which name
  * is right -- "Delivery ops" or "Delivery operations" -- and that is an
  * editorial call per page, not something to settle in a codemod. Some
- * are only a spelling convention apart ("Organisations" in the nav,
- * "Organizations" on the page), which is its own thing to settle.
+ * were only a spelling convention apart; the admin wrote visible text
+ * in American English 39 times and British 5, and the routes agreed
+ * (`/dashboard/crm/organizations` was listed as "Organisations"), so
+ * those were brought into line separately.
  */
-const BUDGET_NAME_DISAGREEMENTS = 37;
+const BUDGET_NAME_DISAGREEMENTS = 36;
 const HOUSE_SIZE = '20px';
 
 test('the page heading is converging on one size', async ({ page }) => {

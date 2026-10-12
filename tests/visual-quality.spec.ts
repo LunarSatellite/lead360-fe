@@ -220,7 +220,7 @@ test.describe('the chrome says something the page does not', () => {
      */
     const checked = [
       { href: '/dashboard/crm/quotes', crumbs: ['CRM', 'Deals & pipeline', 'Quotes'] },
-      { href: '/dashboard/stylemint/orders', crumbs: ['Commerce', 'Orders & fulfilment'] },
+      { href: '/dashboard/stylemint/orders', crumbs: ['Commerce', 'Orders & fulfillment'] },
       { href: '/dashboard/agents', crumbs: ['Commerce', 'Automation & AI', 'Agents'] },
     ];
 

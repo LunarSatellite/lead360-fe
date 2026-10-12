@@ -95,7 +95,7 @@ function pairs(palette: Map<string, string>) {
   return out;
 }
 
-describe('console colour tokens', () => {
+describe('console color tokens', () => {
   it('finds both palettes', () => {
     expect(defaults.size).toBeGreaterThan(30);
     expect(stylemint.size).toBeGreaterThan(30);

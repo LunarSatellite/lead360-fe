@@ -58,7 +58,7 @@ import { Button } from '@/shared/ui/primitives';
 const FILTERS: Array<{ label: string; state?: number }> = [
   { label: 'All' },
   { label: 'Paid', state: SubOrderState.Paid },
-  { label: 'Awaiting fulfilment', state: SubOrderState.AwaitingFulfillment },
+  { label: 'Awaiting fulfillment', state: SubOrderState.AwaitingFulfillment },
   { label: 'Accepted', state: SubOrderState.Accepted },
   { label: 'Packed', state: SubOrderState.Packed },
   { label: 'Ready to ship', state: SubOrderState.ReadyToShip },
@@ -813,7 +813,7 @@ function Banner({ tone, message }: { tone: 'error' | 'ok'; message: string }) {
 function describe(error: unknown): string {
   if (!(error instanceof Error)) return 'Something went wrong.';
   if (error.message === 'NOT_DEPLOYED') {
-    return 'This Stylemint build does not serve the vendor fulfilment surface yet.';
+    return 'This Stylemint build does not serve the vendor fulfillment surface yet.';
   }
   if (error.message === 'NOT_FOUND') return 'No sub-order matches that identifier.';
   return error.message;

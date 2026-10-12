@@ -14,7 +14,7 @@ import { navAliases, navGroups, navSections, type NavGroup, type NavItem } from 
  * A filter sits above them because twelve groups are still twelve groups: an
  * operator who knows the page they want should not have to know which group we
  * decided it belongs to. It matches the names the old rails used as well as the
- * current one, so someone who learned "Organisations" still finds Stores.
+ * current one, so someone who learned "Organizations" still finds Stores.
  */
 
 /** The old name for a page, by the name it goes under now. */

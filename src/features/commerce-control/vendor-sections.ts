@@ -54,16 +54,16 @@ export const vendorSectionGroups: VendorSectionGroup[] = [
     label: 'Overview',
     sections: [
       { key: 'dashboard', label: 'Vendor dashboard', description: 'Complete view of commercial operations.', icon: LayoutDashboard },
-      { key: 'synchronization', label: 'Synchronization', description: 'Live status of catalogue, orders, content and customers.', icon: RefreshCw },
+      { key: 'synchronization', label: 'Synchronization', description: 'Live status of catalog, orders, content and customers.', icon: RefreshCw },
       { key: 'activity', label: 'Activity', description: 'Audited history of vendor actions.', icon: Activity },
       { key: 'growth-quality', label: 'Growth & quality', description: 'Operational performance indicators.', icon: BadgeCheck },
     ],
   },
   {
-    id: 'catalogue',
-    label: 'Catalogue',
+    id: 'catalog',
+    label: 'Catalog',
     sections: [
-      { key: 'products', label: 'Products', description: 'Catalogue, variants, stock, media and publishing.', icon: Boxes },
+      { key: 'products', label: 'Products', description: 'Catalog, variants, stock, media and publishing.', icon: Boxes },
       { key: 'collections', label: 'Collections', description: 'Assortments, ordering and publishing.', icon: Tags },
       { key: 'recipes', label: 'Content recipes', description: 'Reusable templates for producing commercial reels.', icon: PackageOpen },
       { key: 'briefs', label: 'Campaign briefs', description: 'Scope, locking, variants and expected-return calculation.', icon: ClipboardList },
@@ -114,9 +114,9 @@ export const vendorSectionGroups: VendorSectionGroup[] = [
     sections: [
       { key: 'store/digital-twin', label: 'Store twin', description: 'Real-time stock, sales and commercial capacity.', icon: Activity },
       { key: 'demand-signals', label: 'Demand signals', description: 'Popular searches and unmet demand to replenish.', icon: BarChart3 },
-      { key: 'intent-decision-board', label: 'Assortment decisions', description: 'Ranked customer intent to guide catalogue and stock.', icon: BadgeCheck },
+      { key: 'intent-decision-board', label: 'Assortment decisions', description: 'Ranked customer intent to guide catalog and stock.', icon: BadgeCheck },
       { key: 'analytics', label: 'Seller analytics', description: 'Sales, conversion, products and quality.', icon: BarChart3 },
-      { key: 'analytics/products', label: 'Product performance', description: 'Detailed catalogue conversion and performance.', icon: BarChart3 },
+      { key: 'analytics/products', label: 'Product performance', description: 'Detailed catalog conversion and performance.', icon: BarChart3 },
       { key: 'analytics/creators', label: 'Partner performance', description: 'Attribution, conversions and commercial returns without managing creator profiles.', icon: Users },
     ],
   },

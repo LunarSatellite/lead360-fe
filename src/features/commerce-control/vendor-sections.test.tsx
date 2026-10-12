@@ -92,7 +92,7 @@ describe('the vendor side menu', () => {
     const open = vendorSectionGroups.filter(
       (g) => groupButton(g.label).getAttribute('aria-expanded') === 'true',
     );
-    expect(open.map((g) => g.id)).toEqual(['catalogue']);
+    expect(open.map((g) => g.id)).toEqual(['catalog']);
   });
 
   it('reaches every section by opening groups', () => {

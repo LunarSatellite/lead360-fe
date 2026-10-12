@@ -28,7 +28,7 @@ import { Button } from '@/shared/ui/primitives';
 const STATES: Record<number, string> = {
   1: 'Pending',
   2: 'Paid',
-  3: 'Awaiting fulfilment',
+  3: 'Awaiting fulfillment',
   4: 'Ready to ship',
   5: 'Awaiting tracking',
   6: 'Shipped',
@@ -174,7 +174,7 @@ export function StylemintOrdersPage() {
           <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-brand">
             <PackageCheck className="h-3.5 w-3.5" /> Stylemint live
           </div>
-          <h1 className="mt-2 text-2xl font-black tracking-tight text-text-primary">Orders & fulfilment</h1>
+          <h1 className="mt-2 text-2xl font-black tracking-tight text-text-primary">Orders & fulfillment</h1>
           <p className="mt-1 text-sm text-text-muted">Drive the full lifecycle of every Kin Marche order.</p>
         </div>
         <div

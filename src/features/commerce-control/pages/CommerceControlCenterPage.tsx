@@ -44,7 +44,7 @@ function loadPreferences(): Preferences {
 
 const operations = [
   [
-    'Catalogue & products',
+    'Catalog & products',
     'Products, categories, images, pricing and availability.',
     '/dashboard/business-catalog',
     Boxes,
@@ -152,7 +152,7 @@ export function CommerceControlCenterPage() {
       ['Language, currency and timezone', true],
       ['Stylemint vendor access', integration.data?.vendor.reachable === true],
       ['Stylemint administrator access', integration.data?.admin.reachable === true],
-      [`Catalogue: ${catalogue.data?.displayableProducts ?? 0}/${catalogue.data?.requiredProducts ?? 50} products, 5 images + reel`, catalogue.data?.ready === true],
+      [`Catalog: ${catalogue.data?.displayableProducts ?? 0}/${catalogue.data?.requiredProducts ?? 50} products, 5 images + reel`, catalogue.data?.ready === true],
       ['Social accounts connected', socialConnected],
     ] as const;
   }, [catalogue.data, integration.data, social.data]);

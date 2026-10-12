@@ -1428,7 +1428,7 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                   </label>
                 </div>
                 <CArea label="What should the AI do?" value={cfg.description ?? ''}
-                  placeholder="Describe the AI task in plain language…&#10;e.g. Classify this lead as Hot, Warm, or Cold&#10;e.g. Write a personalised follow-up email&#10;e.g. Summarise the conversation history in 3 sentences"
+                  placeholder="Describe the AI task in plain language…&#10;e.g. Classify this lead as Hot, Warm, or Cold&#10;e.g. Write a personalised follow-up email&#10;e.g. Summarize the conversation history in 3 sentences"
                   onChange={(v) => sf('description', v)} hint="Write in plain language — be as specific as you need" />
                 <CS label="AI Model Type" value={cfg.aiType ?? 'generate'} onChange={(v) => sf('aiType', v)}
                   options={[

@@ -226,21 +226,21 @@ export const navSections: ReadonlyArray<{ id: NavSectionId; label: string }> = [
  */
 export const navAliases: ReadonlyArray<{ label: string; alsoKnownAs: string }> = [
   // /dashboard/business-catalog. "Products" is what an operator calls these,
-  // and "& catalogue" was doing real harm: it sat directly above a separate
-  // page called "Catalogue", so the group read as two catalogues.
-  { label: 'Products', alsoKnownAs: 'Products & catalogue' },
-  { label: 'Products', alsoKnownAs: 'Business catalogue' },
+  // and "& catalog" was doing real harm: it sat directly above a separate
+  // page called "Catalog", so the group read as two catalogues.
+  { label: 'Products', alsoKnownAs: 'Products & catalog' },
+  { label: 'Products', alsoKnownAs: 'Business catalog' },
 
   // /dashboard/catalog is the ingestion pipeline — a sync config and a run
   // history, not a list of products. Naming it for what it does is the other
   // half of the fix above.
-  { label: 'Catalogue sync', alsoKnownAs: 'Catalogue' },
+  { label: 'Catalog sync', alsoKnownAs: 'Catalog' },
 
   // /dashboard/crm/organizations lists companies. "Stores" is the StyleMint
   // word and it collides twice over: with retail locations, and with the
   // vendor stores that exist elsewhere in this admin. In the CRM section
-  // "Organisations" is unambiguous and is the term the CRM already uses.
-  { label: 'Organisations', alsoKnownAs: 'Stores' },
+  // "Organizations" is unambiguous and is the term the CRM already uses.
+  { label: 'Organizations', alsoKnownAs: 'Stores' },
 
   // "Conversation Map" is a metaphor; "Bot flows" is the thing.
   { label: 'Bot flows', alsoKnownAs: 'Conversation Map' },
@@ -275,13 +275,13 @@ export const navGroups: NavGroup[] = [
     ],
   },
   {
-    id: 'catalogue',
+    id: 'catalog',
     section: 'commerce',
-    label: 'Catalogue',
+    label: 'Catalog',
     icon: Package,
     items: [
       { label: 'Products', href: '/dashboard/business-catalog', icon: Boxes },
-      { label: 'Catalogue sync', href: '/dashboard/catalog', icon: Package },
+      { label: 'Catalog sync', href: '/dashboard/catalog', icon: Package },
       { label: 'Content & media', href: '/dashboard/stylemint/content', icon: Images },
       { label: 'Audio', href: '/dashboard/stylemint/audio', icon: Music },
       { label: 'Reel recipes', href: '/dashboard/stylemint/recipes', icon: ChefHat },
@@ -291,10 +291,10 @@ export const navGroups: NavGroup[] = [
   {
     id: 'orders',
     section: 'commerce',
-    label: 'Orders & fulfilment',
+    label: 'Orders & fulfillment',
     icon: ShoppingCart,
     items: [
-      { label: 'Orders & fulfilment', href: '/dashboard/stylemint/orders', icon: ShoppingBag },
+      { label: 'Orders & fulfillment', href: '/dashboard/stylemint/orders', icon: ShoppingBag },
       { label: 'Returns queue', href: '/dashboard/stylemint/returns', icon: PackageOpen },
       { label: 'Delivery ops', href: '/dashboard/stylemint/logistics', icon: Route },
       { label: 'Couriers', href: '/dashboard/stylemint/couriers', icon: Truck },
@@ -389,7 +389,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { label: 'Leads', href: '/dashboard/crm/leads', icon: Users },
       { label: 'Contacts', href: '/dashboard/crm/contacts', icon: UserCheck },
-      { label: 'Organisations', href: '/dashboard/crm/organizations', icon: Store },
+      { label: 'Organizations', href: '/dashboard/crm/organizations', icon: Store },
       { label: 'Accounts', href: '/dashboard/crm/accounts', icon: Building },
       { label: 'Duplicates', href: '/dashboard/crm/dedup', icon: GitMerge },
       { label: 'Customer onboarding', href: '/dashboard/crm/customer-onboarding', icon: UserPlus },
@@ -460,7 +460,7 @@ export const navGroups: NavGroup[] = [
       { label: 'Invoices', href: '/dashboard/crm/invoices', icon: Receipt },
       { label: 'Credit notes', href: '/dashboard/crm/credit-notes', icon: Undo2 },
       { label: 'Subscriptions', href: '/dashboard/crm/subscriptions', icon: RefreshCw },
-      { label: 'Return authorisations', href: '/dashboard/crm/returns', icon: RotateCw },
+      { label: 'Return authorizations', href: '/dashboard/crm/returns', icon: RotateCw },
       { label: 'Deliveries', href: '/dashboard/crm/deliveries', icon: Truck },
       { label: 'Inventory', href: '/dashboard/crm/inventory', icon: Package },
       { label: 'Work orders', href: '/dashboard/crm/work-orders', icon: Wrench },

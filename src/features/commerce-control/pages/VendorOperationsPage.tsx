@@ -349,7 +349,7 @@ export function VendorOperationsPage() {
         return stylemintCommerceApi.applyPricingSuggestion(id);
       if (selectedKey === 'pricing/flash-sales')
         return stylemintCommerceApi.flashSaleIncrementality(id).then((result) => {
-          setActionMessage(`Analyse: ${JSON.stringify(result).slice(0, 280)}`);
+          setActionMessage(`Analyze: ${JSON.stringify(result).slice(0, 280)}`);
           return result;
         });
       if (selectedKey === 'store/sponsored') {
@@ -638,8 +638,8 @@ export function VendorOperationsPage() {
                     const name = window.prompt('Scenario name', 'Peak demand resilience')?.trim();
                     if (!name) return;
                     try {
-                      const result = await stylemintCommerceApi.runVendorScenario({ name, seed: Date.now() % 2147483647, customerAgents: Number(window.prompt('Customer agents', '500') || '500'), days: Number(window.prompt('Simulation days', '30') || '30'), demandShockPercent: Number(window.prompt('Demand shock %', '25') || '25'), inventoryLossPercent: Number(window.prompt('Inventory loss %', '10') || '10'), fulfillmentCapacityLossPercent: Number(window.prompt('Fulfilment capacity loss %', '15') || '15') });
-                      setInsightDialog({ title: 'Digital-twin scenario', subtitle: 'Simulated demand, stock and fulfilment resilience.', data: result });
+                      const result = await stylemintCommerceApi.runVendorScenario({ name, seed: Date.now() % 2147483647, customerAgents: Number(window.prompt('Customer agents', '500') || '500'), days: Number(window.prompt('Simulation days', '30') || '30'), demandShockPercent: Number(window.prompt('Demand shock %', '25') || '25'), inventoryLossPercent: Number(window.prompt('Inventory loss %', '10') || '10'), fulfillmentCapacityLossPercent: Number(window.prompt('Fulfillment capacity loss %', '15') || '15') });
+                      setInsightDialog({ title: 'Digital-twin scenario', subtitle: 'Simulated demand, stock and fulfillment resilience.', data: result });
                     } catch { setActionMessage('The scenario could not be completed. Check the simulation values.'); }
                   }}
                   variant="primary" size="sm"

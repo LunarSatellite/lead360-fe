@@ -83,9 +83,9 @@ import { Button } from '@/shared/ui/primitives';
 // ═══════════════════════════════════════════════════════════════════════════
 export const primaryNav = [
   { label: 'Control center', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
-  { label: 'Products & catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
+  { label: 'Products & catalog', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
   { label: 'Content & media', href: ROUTES.dashboard.contentOperations, icon: Images },
-  { label: 'Orders & fulfilment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
+  { label: 'Orders & fulfillment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
   { label: 'Vendor operations', href: ROUTES.dashboard.vendorOperations, icon: Building2 },
   { label: 'Seller finance', href: ROUTES.dashboard.sellerFinance, icon: WalletCards },
   { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
@@ -155,7 +155,7 @@ const FALLBACK_LOGO_SRC = '/Lead360logo/1.png';
 export const primaryMobileTabs = [
   { label: 'Home', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
   { label: 'Products', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
-  { label: 'Orders & fulfilment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
+  { label: 'Orders & fulfillment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
   { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
 ];
 
@@ -282,7 +282,7 @@ export function DashboardLayout() {
     const named = EXACT_NAV_PAGE.get(path);
     if (named) return named.label;
     if (path.includes('/commerce-control')) return 'Stylemint Control Center';
-    if (path.includes('/stylemint/orders')) return 'Orders & Fulfilment';
+    if (path.includes('/stylemint/orders')) return 'Orders & Fulfillment';
     // Before the broader /stylemint/vendor test, which would otherwise swallow it.
     if (path.includes('/stylemint/unit-markers')) return 'Unit Markers';
     if (path.includes('/stylemint/vendor-desk')) return 'Vendor Desk';
@@ -321,8 +321,8 @@ export function DashboardLayout() {
     if (path.includes('/test-channel')) return 'Simulator';
     if (path.includes('/setup')) return 'Configuration';
     if (path.includes('/api-connection')) return 'API Connection';
-    if (path.includes('/business-catalog')) return 'Products & Catalogue';
-    if (path.includes('/catalog')) return 'Catalogue';
+    if (path.includes('/business-catalog')) return 'Products & Catalog';
+    if (path.includes('/catalog')) return 'Catalog';
     if (path.includes('/intents')) return 'Intents';
     if (path.includes('/channels')) return 'Channels';
     if (path.includes('/conversations')) return 'Conversations';
@@ -333,7 +333,7 @@ export function DashboardLayout() {
     if (path.includes('/crm/dedup')) return 'Duplicate Contacts';
     if (path.includes('/crm/contacts')) return 'Contacts';
     if (path.includes('/crm/leads')) return 'Leads';
-    if (path.includes('/crm/returns')) return 'Return authorisations';
+    if (path.includes('/crm/returns')) return 'Return authorizations';
     if (path.includes('/crm/deals-hub')) return 'Deals hub';
     if (path.includes('/crm/deals')) return 'Deals';
     if (path.includes('/crm/organizations')) return 'Stores';

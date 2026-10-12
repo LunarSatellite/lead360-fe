@@ -141,7 +141,7 @@ describe('defects that must not come back', () => {
      *
      * Lower it when you fix some. It may not go up.
      */
-    const BUDGET_ORPHAN_LABELS = 129;
+    const BUDGET_ORPHAN_LABELS = 103;
     const orphans: string[] = [];
 
     for (const [file, source] of Object.entries(TSX)) {
@@ -153,9 +153,22 @@ describe('defects that must not come back', () => {
         if (close === -1) continue;
 
         const body = source.slice(at, close);
-        if (!/<(input|select|textarea|Input|SearchInput)\b/.test(body)) {
-          orphans.push(`${file.replace('/src/', '')}: ${body.replace(/\s+/g, ' ').slice(0, 70)}…`);
-        }
+        if (/<(input|select|textarea|Input|SearchInput)\b/.test(body)) continue;
+
+        /**
+         * A label whose control arrives as `children` is correct, and
+         * this check could not see it.
+         *
+         * `<label className="block"><span>{label}</span>{children}</label>`
+         * is the field wrapper twenty-five files here use, and the
+         * control is nested inside it at every call site. Counting
+         * those inflated this budget by a fifth, and anyone driving
+         * the number to zero would have "fixed" working code into
+         * something worse.
+         */
+        if (/\{\s*(children|render|control|field|element)\b/.test(body)) continue;
+
+        orphans.push(`${file.replace('/src/', '')}: ${body.replace(/\s+/g, ' ').slice(0, 70)}…`);
       }
     }
 

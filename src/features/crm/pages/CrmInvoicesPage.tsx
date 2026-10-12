@@ -129,7 +129,7 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
       <ListState
         query={historyQuery}
         isEmpty={!events.length}
-        noun="the reminder history"
+        noun="reminder history"
         emptyTitle="No reminders sent yet."
       >
         <div className="space-y-1.5 max-h-48 overflow-y-auto">

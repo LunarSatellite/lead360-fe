@@ -183,7 +183,7 @@ export function Component() {
             {rightTabs.map((tab) => {
               const isActive = rightTab === tab.id;
               return (
-                <button
+                <button aria-pressed={isActive}
                   key={tab.id}
                   onClick={() => setRightTab(tab.id)}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-bold

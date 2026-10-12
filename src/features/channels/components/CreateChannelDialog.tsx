@@ -121,7 +121,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
                   muted: 'border-border-medium bg-glass-2 text-text-secondary',
                 };
                 return (
-                  <button
+                  <button aria-pressed={isSelected}
                     key={opt.value}
                     type="button"
                     onClick={() => form.setValue('channelType', opt.value)}

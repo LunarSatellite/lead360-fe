@@ -65,7 +65,7 @@ export function Component() {
         {SEGMENT_FILTERS.map((f) => {
           const active = f.value === segment;
           return (
-            <button
+            <button aria-pressed={active}
               key={f.label}
               onClick={() => setSegment(f.value)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${

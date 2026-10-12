@@ -358,7 +358,7 @@ function CampaignList({
         const isActive = selected === c.id;
         const spend = c.spend > 0 ? fmtMoney(c.spend, c.budgetCurrency || 'USD') : null;
         return (
-          <button key={c.id} onClick={() => onSelect(c.id)}
+          <button aria-pressed={isActive} key={c.id} onClick={() => onSelect(c.id)}
             className={`w-full text-left rounded-xl border p-3 transition-all ${
               isActive
                 ? 'border-brand bg-brand-soft'
@@ -1264,7 +1264,7 @@ function InstagramAdsTab({
             {campaigns.map(c => {
               const isActive = selectedId === c.id;
               return (
-                <button key={c.id} onClick={() => setSelectedId(c.id)}
+                <button aria-pressed={isActive} key={c.id} onClick={() => setSelectedId(c.id)}
                   className={`w-full text-left rounded-xl border p-3 transition-all ${
                     isActive ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium hover:bg-bg-elevated'
                   }`}>
@@ -1488,7 +1488,7 @@ function TikTokAdsTab({ onNewPost }: { onNewPost?: () => void }) {
             {campaigns.map(c => {
               const isSelected = selectedId === c.id;
               return (
-                <button key={c.id} onClick={() => setSelectedId(c.id)}
+                <button aria-pressed={isSelected} key={c.id} onClick={() => setSelectedId(c.id)}
                   className={`w-full text-left rounded-xl border p-3 transition-all ${
                     isSelected ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium hover:bg-bg-elevated'
                   }`}>
@@ -1851,7 +1851,7 @@ function OAuthPlatformTab({
               const isSelected = selectedId === c.id;
               const statusVal = c[campaignStatusKey] ?? c.status ?? '';
               return (
-                <button key={c.id} onClick={() => setSelectedId(c.id)}
+                <button aria-pressed={isSelected} key={c.id} onClick={() => setSelectedId(c.id)}
                   className={`w-full text-left rounded-xl border p-3 transition-all ${
                     isSelected ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium hover:bg-bg-elevated'
                   }`}>

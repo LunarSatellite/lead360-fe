@@ -34,7 +34,7 @@ export function Component() {
           const Icon = t.icon;
           const isActive = tab === t.key;
           return (
-            <button
+            <button aria-pressed={isActive}
               key={t.key}
               onClick={() => setTab(t.key)}
               className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${

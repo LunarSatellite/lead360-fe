@@ -94,7 +94,7 @@ function QueueTab({
   label: string;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`flex flex-1 items-center justify-center gap-2 rounded-sm px-4 py-2 text-xs font-bold transition ${
         active
@@ -178,7 +178,7 @@ function CommerceQueue() {
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="overflow-hidden rounded-frame border-thin border-border-subtle bg-bg-card">
             {(queue.data?.items ?? []).map((ticket) => (
-              <button
+              <button aria-pressed={selected?.id === ticket.id}
                 key={ticket.id}
                 onClick={() => setSelected(ticket)}
                 className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${

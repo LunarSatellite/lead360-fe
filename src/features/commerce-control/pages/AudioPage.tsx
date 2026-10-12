@@ -86,7 +86,7 @@ function TabButton({
   label: string;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`flex flex-1 items-center justify-center gap-2 rounded-sm px-4 py-2 text-xs font-bold transition ${
         active

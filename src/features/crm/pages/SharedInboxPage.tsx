@@ -67,7 +67,7 @@ function Stat({ label, value, active, onClick }: {
   label: string; value: number; active: boolean; onClick: () => void;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`flex-1 min-w-[120px] rounded-2xl border px-4 py-3 text-left transition-all ${
         active ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium'

@@ -27,7 +27,7 @@ export function Component() {
             const isActive = active === key;
             const showBadge = key === 'duplicates' && dedupCount > 0;
             return (
-              <button
+              <button aria-pressed={isActive}
                 key={key}
                 onClick={() => setTab(key)}
                 className={`relative flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${

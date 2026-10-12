@@ -484,7 +484,7 @@ function DecisionToggle({
       {opts.map((opt) => {
         const active = value === opt.v;
         return (
-          <button
+          <button aria-pressed={active}
             key={opt.v}
             type="button"
             onClick={() => onChange(opt.v)}

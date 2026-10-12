@@ -124,7 +124,7 @@ export function ReturnsPage() {
                 {data.totalCount} {data.totalCount === 1 ? 'return' : 'returns'}
               </p>
               {data.items.map((item) => (
-                <button
+                <button aria-pressed={selected?.id === item.id}
                   key={item.id}
                   onClick={() => setSelected(item)}
                   className={`flex w-full items-start gap-3 rounded-card border-thin p-3 text-left ${

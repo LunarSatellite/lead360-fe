@@ -226,7 +226,7 @@ function ProcessWorkflowInstancesPage() {
         {STATUS_PILLS.map(pill => {
           const isActive = pill.value === statusFilter;
           return (
-            <button
+            <button aria-pressed={isActive}
               key={pill.label}
               onClick={() => { setStatusFilter(pill.value); setPage(1); }}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${

@@ -135,7 +135,7 @@ export function Component() {
                   <p className="text-xs text-text-muted">{selected.jurisdiction} · {CRM_TAX_TYPE_LABEL[selected.taxType]} · {selected.rate}%</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button onClick={() => toggleMut.mutate(selected)}
+                  <button aria-pressed={selected.isActive} onClick={() => toggleMut.mutate(selected)}
                     className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${selected.isActive ? 'text-text-secondary hover:text-danger-light hover:border-danger/40' : 'text-success'}`}>
                     {selected.isActive ? 'Deactivate' : 'Activate'}
                   </button>

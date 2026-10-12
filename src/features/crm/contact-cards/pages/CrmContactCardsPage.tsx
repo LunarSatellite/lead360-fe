@@ -177,7 +177,7 @@ function CardTile({
 }) {
   const missing = !card.phone || !card.jobTitle;
   return (
-    <button
+    <button aria-pressed={card.isActive}
       type="button"
       onClick={onClick}
       className={`text-left rounded-card border-thin p-4 transition-all hover:border-border-glow ${

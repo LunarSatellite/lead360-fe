@@ -179,7 +179,7 @@ function IntentRow({ intent, onEdit }: { intent: IntentDto; onEdit: (intent: Int
 
       {/* Actions */}
       <div className="flex items-center justify-end gap-1.5">
-        <button
+        <button aria-pressed={intent.isActive}
           onClick={() => toggleActive.mutate({ id: intent.id, isActive: !intent.isActive })}
           disabled={toggleActive.isPending}
           className={`p-1.5 rounded-lg border transition-all ${

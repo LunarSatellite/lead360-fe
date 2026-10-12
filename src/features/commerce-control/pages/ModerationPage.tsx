@@ -112,7 +112,7 @@ export function ModerationPage() {
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
           <div className="overflow-hidden rounded-frame border-thin border-border-subtle bg-bg-card">
             {(queue.data?.items ?? []).map((item) => (
-              <button
+              <button aria-pressed={selected?.id === item.id}
                 key={item.id}
                 onClick={() => setSelected(item)}
                 className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${

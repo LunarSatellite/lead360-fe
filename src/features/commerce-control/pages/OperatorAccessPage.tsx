@@ -132,7 +132,7 @@ function AccountRow({
   const fromLead360 = account.ssoSubject.startsWith(LEAD360_SUBJECT_PREFIX);
 
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`w-full border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${
         active ? 'bg-brand-soft' : ''

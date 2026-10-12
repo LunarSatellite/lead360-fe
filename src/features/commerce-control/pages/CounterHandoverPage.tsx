@@ -261,7 +261,7 @@ export function CounterHandoverPage() {
             </div>
           ) : (
             rows.map((row) => (
-              <button
+              <button aria-pressed={selected?.id === row.id}
                 key={row.id}
                 onClick={() => {
                   setSelected(row);

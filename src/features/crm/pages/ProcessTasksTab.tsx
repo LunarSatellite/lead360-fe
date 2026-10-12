@@ -278,7 +278,7 @@ function TaskListView({
         {STATUS_PILLS.map(pill => {
           const isActive = pill.slaBreached ? slaBreachedOnly : (!slaBreachedOnly && pill.value === statusFilter);
           return (
-            <button
+            <button aria-pressed={isActive}
               key={pill.label}
               onClick={() => onPillClick(pill)}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${

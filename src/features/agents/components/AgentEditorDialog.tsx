@@ -412,7 +412,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                   const isActive = form.agentType === opt.value;
                   const disabled = !opt.available || (isEdit && opt.value !== editAgent?.agentType);
                   return (
-                    <button
+                    <button aria-pressed={isActive}
                       key={opt.value}
                       type="button"
                       disabled={disabled}

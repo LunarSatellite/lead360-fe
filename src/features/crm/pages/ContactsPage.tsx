@@ -70,7 +70,7 @@ function ContactCard({
       {/* Avatar + source badge */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <button
+          <button aria-pressed={selected}
             onClick={(e) => { e.stopPropagation(); onToggle(); }}
             className={`w-5 h-5 rounded-[5px] border flex items-center justify-center transition-all shrink-0 ${
               selected ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'

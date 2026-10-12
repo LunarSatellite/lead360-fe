@@ -254,7 +254,7 @@ export function Component() {
 
                   /* Regular nav item */
                   return (
-                    <button
+                    <button aria-pressed={isActive}
                       key={section.id}
                       onClick={() => !isDisabled && handleNav(section.id)}
                       disabled={isDisabled}

@@ -259,7 +259,7 @@ function QueueRow({
   const overdue = isOverdue(item);
 
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${
         active ? 'bg-brand-soft' : ''

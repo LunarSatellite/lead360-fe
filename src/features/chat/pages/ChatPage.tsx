@@ -791,7 +791,7 @@ function SessionDropdown({
                 const isCurrent = s.id === currentSessionId;
                 const title = s.title?.trim() || 'Untitled chat';
                 return (
-                  <button
+                  <button aria-pressed={isCurrent}
                     key={s.id}
                     type="button"
                     role="menuitem"

@@ -192,7 +192,7 @@ function TerritoryCard({ territory, index, isExpanded, onToggle }: {
           <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" /> {territory.rules.length} rules</span>
           <span className="flex items-center gap-1"><UserPlus className="w-3.5 h-3.5" /> {territory.members.length} members</span>
         </div>
-        <button
+        <button aria-pressed={territory.isActive}
           onClick={toggleActive}
           className={`transition-colors ${territory.isActive ? 'text-brand' : 'text-text-muted'}`}
           title={territory.isActive ? 'Deactivate' : 'Activate'}

@@ -184,7 +184,7 @@ export function ChannelConnectionCard({ connection, variant = 'medium' }: Channe
 
   /* ─── Toggle switch ─── */
   const Toggle = () => (
-    <button
+    <button aria-pressed={isActive}
       onClick={handleToggle}
       disabled={isToggling}
       className={`

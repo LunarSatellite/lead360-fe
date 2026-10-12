@@ -223,7 +223,7 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
             const Icon = CHANNEL_ICONS[ch] ?? ChannelIconFallback;
             const active = form.channelType === ch;
             return (
-              <button
+              <button aria-pressed={active}
                 key={ch} type="button"
                 onClick={() => setForm((f) => ({ ...f, channelType: ch }))}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${active ? 'bg-brand text-bg border-brand' : 'bg-bg-elevated text-text-secondary border-border-subtle hover:border-border-medium'}`}
@@ -1064,7 +1064,7 @@ function StageCheckboxes({ selected, onChange }: { selected: LeadStage[]; onChan
   return (
     <div className="flex flex-wrap gap-2">
       {SELECTABLE_STAGES.map((s) => (
-        <button key={s} type="button" onClick={() => toggle(s)}
+        <button aria-pressed={selected.includes(s)} key={s} type="button" onClick={() => toggle(s)}
           className={`text-xs font-medium px-3 py-1.5 rounded-xl border transition-colors ${selected.includes(s) ? 'text-brand bg-brand-soft border-border-glow' : 'text-text-secondary bg-bg-elevated border-border-subtle hover:border-border-medium'}`}>
           {LEAD_STAGE_LABELS[s]}
         </button>

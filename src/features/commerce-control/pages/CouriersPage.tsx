@@ -85,7 +85,7 @@ export function CouriersPage() {
           const numeric = Number(value) as CourierStateValue;
           const active = state === numeric;
           return (
-            <button
+            <button aria-pressed={active}
               key={value}
               onClick={() => { setState(numeric); setSelected(null); }}
               className={`rounded-sm px-3 py-1.5 text-xs font-bold transition ${
@@ -118,7 +118,7 @@ export function CouriersPage() {
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
           <div className="overflow-hidden rounded-frame border-thin border-border-subtle bg-bg-card">
             {(couriers.data ?? []).map((courier) => (
-              <button
+              <button aria-pressed={selected?.id === courier.id}
                 key={courier.id}
                 onClick={() => setSelected(courier)}
                 className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${

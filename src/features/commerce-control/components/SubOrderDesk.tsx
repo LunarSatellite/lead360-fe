@@ -577,7 +577,7 @@ function HandoverPartnerChooser({ subOrderId }: { subOrderId: string }) {
   return (
     <div className="space-y-1.5">
       {picks.map((pick, index) => (
-        <button
+        <button aria-pressed={chosen === pick.courierProfileId}
           key={pick.courierProfileId}
           onClick={() => {
             setChosen(pick.courierProfileId);

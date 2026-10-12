@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { Loader2, RotateCw, Wrench, UserPlus, AlertTriangle } from 'lucide-react';
+import { RotateCw, Wrench, UserPlus, AlertTriangle } from 'lucide-react';
 import { crmApi } from '../api/crm.api';
 import { CRM_RETURN_STATUS_LABELS } from '../types/crm.types';
 import { CRM_WORK_ORDER_STATUS_LABELS } from '../types/crm.types';
 import { CRM_ONBOARDING_STATUS_LABELS } from '../types/crm.types';
+import { ListState } from '@/shared/ui/primitives';
 
 function StatCard({ title, value, icon: Icon, sub, color }: { title: string; value: number; icon: any; sub?: string; color: string }) {
   return (
@@ -32,12 +33,11 @@ function StatusBreakdown({ data, labels }: { data: Record<number, number>; label
 }
 
 export function Component() {
-  const { data, isLoading } = useQuery({
+  const query = useQuery({
     queryKey: ['crm', 'ops-dashboard'],
     queryFn: () => crmApi.getOpsDashboard(),
   });
-
-  if (isLoading) return <div className="flex items-center justify-center h-64"><Loader2 className="w-6 h-6 animate-spin text-text-muted" /></div>;
+  const { data } = query;
 
   // apiClient hands back the DTO itself; the extra `.data` was unwrapping a level that
   // the old, wrongly-typed client pretended existed.
@@ -46,6 +46,19 @@ export function Component() {
   return (
     <div className="space-y-8">
       <h1 className="text-2xl font-bold text-text-primary">Operations Dashboard</h1>
+
+      {/* Every figure below is `?? 0`, so with no answer this page read
+          "Total Returns 0, Work Orders 0, Onboardings 0" and an operator
+          would conclude there was nothing to action today. The early
+          return above only covered `isLoading`, which React Query sets
+          false for a paused or failed query -- so the zeros were exactly
+          what showed when the server could not be reached. */}
+      <ListState
+        query={query}
+        isEmpty={false}
+        noun="operations summary"
+        emptyTitle="Nothing to show yet"
+      >
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard title="Total Returns" value={d?.totalReturns ?? 0} icon={RotateCw} color="text-blue-500" sub={`${d?.returnsAwaitingAction ?? 0} awaiting action`} />
@@ -74,6 +87,7 @@ export function Component() {
           <p className="text-sm text-status-danger font-medium">{d?.workOrdersOverdue} overdue work orders need attention.</p>
         </div>
       )}
+      </ListState>
     </div>
   );
 }

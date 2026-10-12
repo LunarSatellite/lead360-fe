@@ -96,3 +96,42 @@ describe('ResultCount', () => {
     expect(screen.queryByText('Loading…')).toBeNull();
   });
 });
+
+describe('the noun reads as English in the sentence it lands in', () => {
+  /**
+   * `noun` is dropped into "This is not showing your {noun}", so a noun
+   * carrying its own article produces "your the operations summary".
+   * Two shipped that way before anyone read the rendered sentence
+   * rather than the prop.
+   */
+  const SOURCES = import.meta.glob('/src/features/**/*.tsx', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  }) as Record<string, string>;
+
+  it('has no noun that starts with an article', () => {
+    const offenders: string[] = [];
+    for (const [path, source] of Object.entries(SOURCES)) {
+      for (const m of source.matchAll(/noun="((?:the|a|an|your)\s[^"]*)"/gi)) {
+        offenders.push(`${path}: noun="${m[1]}"`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('renders the sentence without a doubled article', () => {
+    render(
+      <ListState
+        query={{ isPending: true, isLoading: false, isError: false, fetchStatus: 'paused' }}
+        isEmpty={false}
+        noun="operations summary"
+        emptyTitle="none"
+      >
+        <p>rows</p>
+      </ListState>,
+    );
+    expect(screen.getByText(/your operations summary/)).toBeTruthy();
+    expect(screen.queryByText(/your the /)).toBeNull();
+  });
+});

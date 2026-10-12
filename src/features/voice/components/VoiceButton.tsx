@@ -113,7 +113,7 @@ export function VoiceButton({
             onClick={handleCancel}
             className={`${s.cancel} ${s.radius} bg-glass-2 border border-border-subtle
                        flex items-center justify-center text-text-muted
-                       hover:bg-danger-soft hover:text-danger transition-all duration-150 flex-shrink-0`}
+                       hover:bg-danger-soft hover:text-danger-light transition-all duration-150 flex-shrink-0`}
             title="Cancel"
           >
             <X className={s.cancelIcon} strokeWidth={2} />
@@ -123,7 +123,7 @@ export function VoiceButton({
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-danger" />
             </span>
-            <span className="text-[9px] font-bold text-danger tabular-nums">
+            <span className="text-[9px] font-bold text-danger-light tabular-nums">
               {formatDuration(recorder.duration)}
             </span>
           </div>
@@ -146,7 +146,7 @@ export function VoiceButton({
           onClick={handleCancel}
           className={`${s.cancel} ${s.radius} bg-glass-2 border border-border-subtle
                      flex items-center justify-center text-text-muted
-                     hover:bg-danger-soft hover:text-danger hover:border-danger/15
+                     hover:bg-danger-soft hover:text-danger-light hover:border-danger/15
                      transition-all duration-150 flex-shrink-0`}
           title="Cancel recording"
         >
@@ -158,7 +158,7 @@ export function VoiceButton({
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-danger" />
           </span>
-          <span className="text-[10px] font-bold text-danger tabular-nums">
+          <span className="text-[10px] font-bold text-danger-light tabular-nums">
             {formatDuration(recorder.duration)}
           </span>
         </div>
@@ -199,7 +199,7 @@ export function VoiceButton({
       {/* Error tooltip */}
       {recorder.error && (
         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-lg
-                        bg-bg-shell border border-border-subtle text-[10px] text-danger
+                        bg-bg-shell border border-border-subtle text-[10px] text-danger-light
                         font-medium whitespace-nowrap opacity-0 group-hover:opacity-100
                         transition-opacity duration-150 pointer-events-none z-50">
           {permissionDeniedText || recorder.error}

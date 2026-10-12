@@ -20,8 +20,8 @@ import type { GovernedAgentActionView } from '../types/governance.types';
 const TONE: Record<ReturnType<typeof clockUrgency>, string> = {
   calm: 'text-text-primary',
   closing: 'text-warning',
-  'last-minute': 'text-danger animate-pulse',
-  gone: 'text-danger',
+  'last-minute': 'text-danger-light animate-pulse',
+  gone: 'text-danger-light',
 };
 
 export function ApprovalClockReadout({
@@ -57,7 +57,7 @@ export function ClockReadout({ clock }: { clock: Clock }) {
   if (clock.kind === 'expired') {
     return (
       <div
-        className="flex items-center gap-1.5 text-danger"
+        className="flex items-center gap-1.5 text-danger-light"
         data-testid="approval-clock"
         data-clock="expired"
       >

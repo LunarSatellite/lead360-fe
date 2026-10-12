@@ -85,10 +85,10 @@ function unwrap<T>(response: { status: number; body: unknown }): T {
   if (response.status === 403) {
     throw new Error(
       detail ??
-        'Reading the fulfilment queue takes a Stylemint operator role. An administrator grants it.',
+        'Reading the fulfillment queue takes a Stylemint operator role. An administrator grants it.',
     );
   }
-  throw new Error(detail ?? `The fulfilment surface returned HTTP ${response.status}.`);
+  throw new Error(detail ?? `The fulfillment surface returned HTTP ${response.status}.`);
 }
 
 export const stylemintFulfillmentApi = {

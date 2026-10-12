@@ -14,6 +14,7 @@ import {
   useRejectAction,
 } from '../hooks/agent-governance.queries';
 import { ActionStatus, type GovernedAgentActionView } from '../types/governance.types';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The approval queue.
@@ -90,17 +91,17 @@ function AgentApprovalsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             type="button"
             onClick={() => void queue.refetch()}
-            className="inline-flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary"
           >
             <RefreshCcw size={13} strokeWidth={1.6} />
             Refresh
-          </button>
+          </Button>
           <Link
             to={ROUTES.dashboard.agentEmergencyStop}
-            className="inline-flex items-center gap-1.5 rounded-sm border-thin border-danger/40 bg-danger-soft px-3 py-2 text-xs font-bold text-danger hover:bg-danger/20"
+            className="inline-flex items-center gap-1.5 rounded-sm border-thin border-danger/40 bg-danger-soft px-3 py-2 text-xs font-bold text-danger-light hover:bg-danger/20"
           >
             <OctagonX size={13} strokeWidth={1.6} />
             Emergency stop
@@ -113,8 +114,8 @@ function AgentApprovalsPage() {
           data-testid="halt-banner"
           className="flex items-center gap-2.5 rounded-card border-thin border-danger/40 bg-danger-soft p-3"
         >
-          <OctagonX size={16} strokeWidth={1.6} className="shrink-0 text-danger" />
-          <p className="text-xs font-bold text-danger">
+          <OctagonX size={16} strokeWidth={1.6} className="shrink-0 text-danger-light" />
+          <p className="text-xs font-bold text-danger-light">
             {engagedHalts.length} emergency stop{engagedHalts.length === 1 ? '' : 's'} engaged.
             Approving and running are blocked in scope; rejecting still works.
           </p>
@@ -164,13 +165,13 @@ function AgentApprovalsPage() {
             className="rounded-sm border-thin border-border-subtle bg-bg-input px-2.5 py-2 font-mono text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1"
           />
         </label>
-        <button
+        <Button
           type="submit"
-          className="inline-flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary"
         >
           <Search size={13} strokeWidth={1.6} />
           Open
-        </button>
+        </Button>
       </form>
 
       {execute.isError && (

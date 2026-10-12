@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Loader2, Send } from 'lucide-react';
 import { usePortalOpenCase } from '../api/portal.queries';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const [subject, setSubject] = useState('');
@@ -32,10 +33,9 @@ export function Component() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Subject <span className="text-danger-400">*</span>
-            </label>
-            <input
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Subject <span className="text-danger-400">*</span></span>
+              <input
               type="text"
               required
               minLength={3}
@@ -46,25 +46,26 @@ export function Component() {
               className="w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm"
               autoFocus
             />
+            </label>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Description
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Description</span>
+              <textarea
               rows={4}
               placeholder="Describe your issue in detail (optional)"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm resize-none"
             />
+            </label>
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={openCase.isPending || !subject.trim()}
-            className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-sm bg-brand text-bg font-bold hover:bg-brand-light transition-all disabled:opacity-30 text-sm"
+            variant="primary" size="lg"
           >
             {openCase.isPending ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -74,7 +75,7 @@ export function Component() {
                 Submit Case
               </>
             )}
-          </button>
+          </Button>
         </form>
       </div>
     </div>

@@ -23,6 +23,7 @@ import {
   DELIVERY_TIER_LABEL,
   type PackageAwaitingCourier,
 } from '../api/stylemint-logistics.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Delivery operations: what has no courier, what is stuck, how routing is performing, and what the
@@ -41,7 +42,7 @@ import {
 type Tab = 'subOrders' | 'awaiting' | 'stuck' | 'metrics' | 'guardian';
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof Route }> = [
-  { id: 'subOrders', label: 'Fulfilment desk', icon: ClipboardList },
+  { id: 'subOrders', label: 'Fulfillment desk', icon: ClipboardList },
   { id: 'awaiting', label: 'Awaiting courier', icon: PackageSearch },
   { id: 'stuck', label: 'Stuck offers', icon: AlertTriangle },
   { id: 'metrics', label: 'Routing metrics', icon: Activity },
@@ -246,10 +247,10 @@ function AwaitingRow({
         </div>
 
         <div className="flex shrink-0 flex-col items-end gap-1.5">
-          <button
+          <Button
             disabled={replan.isPending}
             onClick={() => replan.mutate()}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             {replan.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -257,18 +258,18 @@ function AwaitingRow({
               <Zap className="h-3.5 w-3.5" strokeWidth={1.6} />
             )}
             Replan
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setPicking((v) => !v)}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             <UserCheck className="h-3.5 w-3.5" strokeWidth={1.6} />
             {picking ? 'Hide couriers' : 'Choose courier'}
-          </button>
+          </Button>
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Note (optional)"
+            placeholder="Note (optional)" aria-label="Note (optional)"
             className="w-44 rounded-sm border-thin border-border-subtle bg-bg-input px-2 py-1 text-[11px] text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
         </div>
@@ -427,27 +428,27 @@ function CourierPicker({
           <input
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Why this courier (optional) — recorded on the routing decision"
+            placeholder="Why this courier (optional) — recorded on the routing decision" aria-label="Why this courier (optional) — recorded on the routing decision"
             className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={offer.isPending}
               onClick={() => offer.mutate(chosen)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {offer.isPending && (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
               )}
               Send offer
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setChosen(null)}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -551,15 +552,15 @@ function StuckRow({ offer, onReplanned }: { offer: HopOffer; onReplanned: () => 
           </p>
         </button>
 
-        <button
+        <Button
           onClick={() => {
             setOpen(true);
             setError(null);
           }}
-          className="flex shrink-0 items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+          variant="primary" size="sm" className="shrink-0"
         >
           <Zap className="h-3.5 w-3.5" strokeWidth={1.6} /> Replan
-        </button>
+        </Button>
       </div>
 
       {open && (
@@ -574,27 +575,27 @@ function StuckRow({ offer, onReplanned }: { offer: HopOffer; onReplanned: () => 
             <input
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Note (optional)"
+              placeholder="Note (optional)" aria-label="Note (optional)"
               className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
             />
             {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
             <div className="mt-2 flex items-center gap-2">
-              <button
+              <Button
                 disabled={replan.isPending}
                 onClick={() => replan.mutate()}
-                className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+                variant="primary" size="sm"
               >
                 {replan.isPending && (
                   <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
                 )}
                 Confirm replan
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setOpen(false)}
-                className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary" size="sm"
               >
                 Close
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -698,10 +699,10 @@ function GuardianTab() {
             Runs the guardian now over up to 200 parcels rather than waiting for its schedule.
           </p>
         </div>
-        <button
+        <Button
           disabled={sweep.isPending}
           onClick={() => sweep.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {sweep.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -709,7 +710,7 @@ function GuardianTab() {
             <Zap className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Sweep now
-        </button>
+        </Button>
       </div>
 
       {error && <ErrorBox error={new Error(error)} />}

@@ -10,6 +10,7 @@ import {
   approveSchema, rejectSchema,
   type SuggestionDto, type SuggestionStatusValue, type ApproveFormData, type RejectFormData,
 } from '../types/intent-suggestion.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ═══ Batch Stats ═══
 
@@ -23,7 +24,7 @@ export function BatchStats({ total, pending, approved, rejected }: BatchStatsPro
       <Pill label="Total" value={total} className="bg-glass-2 text-text-primary" />
       <Pill label="Pending" value={pending} className="bg-warning-soft text-warning" />
       <Pill label="Approved" value={approved} className="bg-success-soft text-success" />
-      <Pill label="Rejected" value={rejected} className="bg-danger-soft text-danger" />
+      <Pill label="Rejected" value={rejected} className="bg-danger-soft text-danger-light" />
     </div>
   );
 }
@@ -132,7 +133,7 @@ export function SuggestionCard({ suggestion: s }: SuggestionCardProps) {
               </button>
               <button
                 onClick={() => setRejectDialog(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-danger hover:bg-danger-soft transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-danger-light hover:bg-danger-soft transition-all"
               >
                 <X className="w-3.5 h-3.5" strokeWidth={2} /> Reject
               </button>
@@ -175,28 +176,36 @@ function ApproveDialog({ suggestion, onClose }: { suggestion: SuggestionDto; onC
         </div>
         <form onSubmit={form.handleSubmit(onSubmit)} className="px-6 py-5 space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Name <span className="text-danger">*</span></label>
-            <input {...form.register('name')} className="form-input" />
-            {form.formState.errors.name && <p className="text-xs text-danger mt-1">{form.formState.errors.name.message}</p>}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Name <span className="text-danger-light">*</span></span>
+              <input {...form.register('name')} className="form-input" />
+            </label>
+            {form.formState.errors.name && <p className="text-xs text-danger-light mt-1">{form.formState.errors.name.message}</p>}
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Description</label>
-            <textarea {...form.register('description')} rows={3} className="form-input resize-none" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Description</span>
+              <textarea {...form.register('description')} rows={3} className="form-input resize-none" />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Keywords</label>
-            <input {...form.register('keywords')} className="form-input" placeholder="Comma-separated keywords" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Keywords</span>
+              <input {...form.register('keywords')} className="form-input" placeholder="Comma-separated keywords" />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Operation Type</label>
-            <select {...form.register('operationType')} className="form-input appearance-none cursor-pointer">
-              {['ApiCall','ProductSearch','CategoryBrowse','StaticResponse','AgentHandoff','MenuNavigation','OutboundAction','DomainConversation'].map(t => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Operation Type</span>
+              <select {...form.register('operationType')} className="form-input appearance-none cursor-pointer">
+                {['ApiCall','ProductSearch','CategoryBrowse','StaticResponse','AgentHandoff','MenuNavigation','OutboundAction','DomainConversation'].map(t => (
+                  <option key={t} value={t}>{t}</option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all">Cancel</button>
+            <Button type="button" onClick={onClose} variant="ghost">Cancel</Button>
             <button type="submit" disabled={approve.isPending} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-success text-sm font-bold text-white hover:brightness-110 transition-all disabled:opacity-50">
               <Check className="w-3.5 h-3.5" strokeWidth={2} /> Approve with Changes
             </button>
@@ -224,11 +233,13 @@ function RejectDialog({ suggestionId, onClose }: { suggestionId: string; onClose
         <h3 className="text-[14px] font-bold text-text-primary mb-3">Reject Suggestion</h3>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Reason (optional)</label>
-            <textarea {...form.register('reason')} rows={3} placeholder="Why are you rejecting this?" className="form-input resize-none" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Reason (optional)</span>
+              <textarea {...form.register('reason')} rows={3} placeholder="Why are you rejecting this?" className="form-input resize-none" />
+            </label>
           </div>
           <div className="flex justify-end gap-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all">Cancel</button>
+            <Button type="button" onClick={onClose} variant="ghost">Cancel</Button>
             <button type="submit" disabled={reject.isPending} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-danger text-sm font-bold text-white hover:brightness-110 transition-all disabled:opacity-50">
               <X className="w-3.5 h-3.5" strokeWidth={2} /> Reject
             </button>

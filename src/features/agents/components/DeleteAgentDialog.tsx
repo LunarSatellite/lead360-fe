@@ -46,7 +46,7 @@ export function DeleteAgentDialog({ open, agentId, agentName, onClose }: Props) 
           <h2 className="text-lg font-extrabold text-text-primary tracking-tight">
             Delete agent?
           </h2>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             disabled={deleteMutation.isPending}
@@ -60,7 +60,7 @@ export function DeleteAgentDialog({ open, agentId, agentName, onClose }: Props) 
         <div className="px-6 py-5 space-y-4">
           <div className="flex gap-3">
             <div className="w-9 h-9 rounded-xl bg-danger-soft border border-danger/15 flex items-center justify-center shrink-0">
-              <AlertTriangle className="w-4 h-4 text-danger" strokeWidth={2} />
+              <AlertTriangle className="w-4 h-4 text-danger-light" strokeWidth={2} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-text-primary leading-relaxed">

@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { allNavItems } from '@/app/navigation/nav-model';
 
 /**
  * The page-header title and icon are picked by a run of `path.includes(...)` checks where the
@@ -24,12 +25,9 @@ const SOURCES = import.meta.glob('/src/app/{layouts,router}/*.{ts,tsx}', {
   eager: true,
 }) as Record<string, string>;
 
-const raw = (name: string): string =>
-  Object.entries(SOURCES).find(([path]) => path.endsWith(`/${name}`))![1];
+const raw = (name: string): string => Object.entries(SOURCES).find(([path]) => path.endsWith(`/${name}`))![1];
 
 const LAYOUT = raw('DashboardLayout.tsx');
-const CRM_NAV = raw('crm-nav.ts');
-const ROUTE_PATHS = raw('route-paths.ts');
 
 const BRANCH = /if \(path\.includes\('([^']+)'\)\) return ([^;]+);/g;
 
@@ -53,20 +51,17 @@ function resolvers(): { name: string; rules: { pattern: string; value: string }[
   });
 }
 
-/** Every `[href, label]` the nav offers, with route keys resolved to paths. */
+/**
+ * Every `[href, label]` the nav offers.
+ *
+ * Read from the model rather than scraped out of the layout source, which is
+ * what this did while the nav was four arrays of literals across two files.
+ * The resolver chain below is still read as source, because its defect — a
+ * generic pattern shadowing a specific one — is a property of the order the
+ * branches are written in and exists nowhere else.
+ */
 function navEntries(): [string, string][] {
-  const paths = new Map(
-    [...ROUTE_PATHS.matchAll(/^\s+([a-zA-Z][A-Za-z0-9]*): '(\/[^']*)'/gm)].map((m) => [m[1], m[2]]),
-  );
-  const out: [string, string][] = [];
-  for (const source of [LAYOUT, CRM_NAV]) {
-    for (const m of source.matchAll(/\{ label: '([^']+)', href: ROUTES\.dashboard\.([A-Za-z0-9]+),/g)) {
-      const path = paths.get(m[2]);
-      if (path) out.push([path, m[1]]);
-    }
-    for (const m of source.matchAll(/\{ label: '([^']+)', href: '(\/[^']+)',/g)) out.push([m[2], m[1]]);
-  }
-  return out;
+  return allNavItems.map((i) => [i.href, i.label]);
 }
 
 /** Every path the nav can send an operator to. */
@@ -85,9 +80,7 @@ describe('the page header identifies the page you are actually on', () => {
   it.each(resolvers())('$name tests every specific path before the generic one', ({ rules }) => {
     const unreachable = rules
       .map(({ pattern }, i) => {
-        const shadow = rules
-          .slice(0, i)
-          .find((e) => e.pattern !== pattern && pattern.includes(e.pattern));
+        const shadow = rules.slice(0, i).find((e) => e.pattern !== pattern && pattern.includes(e.pattern));
         return shadow ? `'${pattern}' can never match — '${shadow.pattern}' is tested first` : null;
       })
       .filter((x): x is string => x !== null);
@@ -96,10 +89,18 @@ describe('the page header identifies the page you are actually on', () => {
   });
 
   /**
-   * `getPageTitle` falls back to the nav label when no rule matches, so this mirrors both
-   * halves: the explicit chain first, then the longest matching nav destination.
+   * `getPageTitle` consults three things in order, and this mirrors all three: an exact nav
+   * match, then the explicit chain, then the longest matching nav destination.
+   *
+   * The exact match is first because the chain matches on substrings. Four settings pages
+   * — Custom domains, Video conferencing, Calendar, Booking page — all sit under `/settings`
+   * and were all titled "Settings" by the generic rule, which is how this assertion first
+   * failed. They had no nav entry before the merge, so nothing had ever asked.
    */
   function titleOf(path: string): string | null {
+    const exact = navEntries().find(([href]) => href === path);
+    if (exact) return exact[1];
+
     const rules = resolvers().find((r) => r.name === 'getPageTitle')!.rules;
     const explicit = rules.find((r) => path.includes(r.pattern))?.value;
     if (explicit) return explicit;
@@ -121,6 +122,19 @@ describe('the page header identifies the page you are actually on', () => {
    * phrased over it would hold even with the fallback deleted from the layout, which is
    * exactly what a first draft of this test did.
    */
+  it('asks the nav for an exact match before running either chain', () => {
+    // Asserted against the source for the same reason as the fallback below:
+    // `titleOf` mirrors this rule, so every assertion phrased over `titleOf`
+    // would still hold if the rule were deleted from the layout.
+    for (const resolver of ['const getPageTitle', 'const getPageIcon']) {
+      const body = LAYOUT.slice(LAYOUT.indexOf(resolver));
+      const head = body.slice(0, body.indexOf('if (path.includes'));
+      expect(head, `${resolver} runs its chain before consulting the nav`).toContain(
+        'EXACT_NAV_PAGE.get(path)',
+      );
+    }
+  });
+
   it('still falls back to the nav rather than to the literal "Dashboard"', () => {
     const body = LAYOUT.slice(LAYOUT.indexOf('const getPageTitle'));
     const resolver = body.slice(0, body.indexOf('};'));

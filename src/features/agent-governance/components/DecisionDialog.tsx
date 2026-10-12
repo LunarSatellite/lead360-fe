@@ -5,6 +5,7 @@ import { GovernanceRefusalNotice } from './GovernanceRefusalNotice';
 import { ClockReadout } from './ApprovalClock';
 import { approvalClock } from '../lib/approval-window';
 import { APPROVAL_WINDOW_MINUTES, type GovernedAgentActionView } from '../types/governance.types';
+import { Button } from '@/shared/ui/primitives';
 
 export type Decision = 'approve' | 'reject';
 
@@ -139,13 +140,13 @@ export function DecisionDialog({
         )}
 
         <div className="mt-4 flex items-center justify-end gap-2">
-          <button
+          <Button
             type="button"
             onClick={onCancel}
-            className="rounded-sm border-thin border-border-medium px-3.5 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
           <button
             type="button"
             disabled={tooShort || pending}

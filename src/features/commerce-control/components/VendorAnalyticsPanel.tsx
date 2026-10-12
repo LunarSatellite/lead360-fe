@@ -58,7 +58,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
       icon: BarChart3,
     },
     {
-      label: 'Revenu net',
+      label: 'Net revenue',
       value: money(analytics.netRevenue?.current),
       delta: analytics.netRevenue?.deltaPercent,
       icon: Wallet,
@@ -84,19 +84,19 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
           <p className="text-[10px] font-extrabold uppercase tracking-[0.18em] text-brand">
             Performance Kin Marche
           </p>
-          <h3 className="mt-1 text-xl font-black text-text-primary">Tableau commercial Stylemint</h3>
+          <h3 className="mt-1 text-xl font-black text-text-primary">Stylemint commercial dashboard</h3>
         </div>
         {/*
-          "donnees attribuees en direct" over four zeros claims a live
+          "live attributed data" over four zeros claims a live
           attribution that did not happen. The window is real either way, so
           it is still stated; the attribution claim is only made when
           something was actually attributed in it.
         */}
         <p className="text-xs text-text-muted">
-          {analytics.window?.durationDays ?? 30} jours ·{' '}
+          {analytics.window?.durationDays ?? 30} days ·{' '}
           {Number(analytics.grossSales?.current ?? 0) > 0
-            ? 'donnees attribuees en direct'
-            : 'aucune vente attribuee sur cette periode'}
+            ? 'live attributed data'
+            : 'no attributed sales in this window'}
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -120,7 +120,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                 </span>
               </div>
               <p
-                className={`relative mt-3 flex items-center gap-1 text-[11px] font-bold ${delta == null ? 'text-text-muted' : positive ? 'text-success' : 'text-danger'}`}
+                className={`relative mt-3 flex items-center gap-1 text-[11px] font-bold ${delta == null ? 'text-text-muted' : positive ? 'text-success' : 'text-danger-light'}`}
               >
                 {delta == null ? (
                   'No comparable period'
@@ -131,8 +131,8 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                     ) : (
                       <TrendingDown className="h-3.5 w-3.5" />
                     )}
-                    {Math.abs(delta).toLocaleString('fr-CD', { maximumFractionDigits: 1 })}% vs periode
-                    precedente
+                    {Math.abs(delta).toLocaleString('fr-CD', { maximumFractionDigits: 1 })}% vs previous
+                    period
                   </>
                 )}
               </p>
@@ -144,9 +144,9 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
         <section className="rounded-2xl border border-border-subtle bg-bg-elevated p-4">
           <div className="mb-4">
             <p className="text-xs font-extrabold uppercase tracking-wider text-text-primary">
-              Evolution du revenu
+              Revenue over time
             </p>
-            <p className="mt-1 text-[11px] text-text-muted">Montants journaliers en CDF</p>
+            <p className="mt-1 text-[11px] text-text-muted">Daily totals in CDF</p>
           </div>
           {trend.length ? (
             <div className="h-72">
@@ -172,7 +172,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                     width={62}
                   />
                   <Tooltip
-                    formatter={(value) => [`${Number(value).toLocaleString('fr-CD')} CDF`, 'Revenu']}
+                    formatter={(value) => [`${Number(value).toLocaleString('fr-CD')} CDF`, 'Revenue']}
                     contentStyle={{
                       background: 'rgb(var(--color-surface-inset))',
                       border: '1px solid rgb(var(--color-text-muted) / 0.2)',
@@ -195,7 +195,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
         </section>
         <section className="rounded-2xl border border-border-subtle bg-bg-elevated p-4">
           <p className="text-xs font-extrabold uppercase tracking-wider text-text-primary">
-            Origine du trafic
+            Traffic sources
           </p>
           <p className="mt-1 text-[11px] text-text-muted">Contribution by platform</p>
           {traffic.length ? (
@@ -218,7 +218,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                     <Tooltip
                       formatter={(value) => [
                         `${Number(value).toLocaleString('fr-CD', { maximumFractionDigits: 1 })}%`,
-                        'Trafic',
+                        'Traffic',
                       ]}
                       contentStyle={{
                         background: 'rgb(var(--color-surface-inset))',
@@ -315,7 +315,7 @@ export function VendorAnalyticsPanel({ data }: { data: unknown }) {
                     tickLine={false}
                   />
                   <Tooltip
-                    formatter={(value) => [`${Number(value).toLocaleString('fr-CD')} CDF`, 'Revenu']}
+                    formatter={(value) => [`${Number(value).toLocaleString('fr-CD')} CDF`, 'Revenue']}
                     contentStyle={{
                       background: 'rgb(var(--color-surface-inset))',
                       border: '1px solid rgb(var(--color-text-muted) / 0.2)',

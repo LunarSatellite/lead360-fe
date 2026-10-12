@@ -19,6 +19,7 @@ import {
   CRM_SUPPORT_PRIORITY_LABELS, CRM_SUPPORT_PRIORITY_COLORS,
 } from '../types/crm.types';
 import { format, parseISO, differenceInMinutes } from 'date-fns';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -47,7 +48,7 @@ function SlideOver({ title, onClose, wide, children }: { title: string; onClose:
       <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[480px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -61,7 +62,7 @@ function SlideOver({ title, onClose, wide, children }: { title: string; onClose:
 function SlaTimer({ deadline }: { deadline: string | null }) {
   if (!deadline) return null;
   const mins = differenceInMinutes(parseISO(deadline), new Date());
-  if (mins < 0) return <span className="text-xs font-semibold text-danger">Breached</span>;
+  if (mins < 0) return <span className="text-xs font-semibold text-danger-light">Breached</span>;
   if (mins < 120) return <span className="text-xs font-semibold text-warning">{Math.floor(mins / 60)}h {mins % 60}m</span>;
   return <span className="text-xs font-semibold text-success">{Math.floor(mins / 60)}h left</span>;
 }
@@ -89,7 +90,7 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
                   {p.applicablePriority != null && <> · Priority: <span className="text-text-secondary font-medium">{priorityLabel(p.applicablePriority)}</span></>}
                 </p>
               </div>
-              <button onClick={() => deletePolicy.mutate(p.id)} disabled={deletePolicy.isPending} className="p-1.5 text-text-muted hover:text-danger transition-colors">
+              <button aria-label="Delete" onClick={() => deletePolicy.mutate(p.id)} disabled={deletePolicy.isPending} className="p-1.5 text-text-muted hover:text-danger-light transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -97,31 +98,39 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
         </div>
         <div className="border-t border-border-subtle pt-4 space-y-3">
           <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Add New Policy</p>
-          <div><label className="block text-xs font-semibold text-text-muted mb-1">Name *</label>
-            <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Enterprise SLA, Standard" className={inputCls} /></div>
+          <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Name *</span>
+  <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g. Enterprise SLA, Standard" className={inputCls} />
+</label></div>
           <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">First Response (hrs)</label>
-              <input type="number" min={0.5} step={0.5} value={form.initialResponseSlaHours} onChange={e => setForm(f => ({ ...f, initialResponseSlaHours: Number(e.target.value) }))} className={inputCls} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Resolution (hrs)</label>
-              <input type="number" min={1} step={1} value={form.resolutionSlaHours} onChange={e => setForm(f => ({ ...f, resolutionSlaHours: Number(e.target.value) }))} className={inputCls} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">First Response (hrs)</span>
+  <input type="number" min={0.5} step={0.5} value={form.initialResponseSlaHours} onChange={e => setForm(f => ({ ...f, initialResponseSlaHours: Number(e.target.value) }))} className={inputCls} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Resolution (hrs)</span>
+  <input type="number" min={1} step={1} value={form.resolutionSlaHours} onChange={e => setForm(f => ({ ...f, resolutionSlaHours: Number(e.target.value) }))} className={inputCls} />
+</label></div>
           </div>
-          <div><label className="block text-xs font-semibold text-text-muted mb-1">Applies to Priority</label>
-            <select value={form.applicablePriority ?? ''} onChange={e => setForm(f => ({ ...f, applicablePriority: e.target.value ? Number(e.target.value) : undefined }))} className={`${selectCls} w-full`}>
-              <option value="">All priorities (default fallback)</option>
-              {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-            </select>
+          <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Applies to Priority</span>
+  <select value={form.applicablePriority ?? ''} onChange={e => setForm(f => ({ ...f, applicablePriority: e.target.value ? Number(e.target.value) : undefined }))} className={`${selectCls} w-full`}>
+                <option value="">All priorities (default fallback)</option>
+                {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+              </select>
+</label>
           </div>
           <label className="flex items-center gap-2 cursor-pointer">
             <input type="checkbox" checked={form.isDefault} onChange={e => setForm(f => ({ ...f, isDefault: e.target.checked }))} className="rounded" />
             <span className="text-xs text-text-secondary">Set as default policy</span>
           </label>
-          <button
+          <Button
             disabled={!form.name.trim() || createPolicy.isPending}
             onClick={() => createPolicy.mutate(form, { onSuccess: () => setForm({ name: '', initialResponseSlaHours: 4, resolutionSlaHours: 48, isDefault: false, applicablePriority: undefined }) })}
-            className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+            variant="primary" block
           >
             {createPolicy.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Add Policy'}
-          </button>
+          </Button>
         </div>
       </div>
     </SlideOver>
@@ -131,8 +140,8 @@ function SlaPolicyManager({ onClose }: { onClose: () => void }) {
 const PRIORITY_OPTS = [
   { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-text-secondary/[0.08]' },
   { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-warning',       hover: 'hover:bg-warning/[0.08]'  },
-  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-danger/[0.08]'   },
-  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-danger/[0.12]'   },
+  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger-light',           hover: 'hover:bg-danger/[0.08]'   },
+  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger-light font-bold', hover: 'hover:bg-danger/[0.12]'   },
 ] as const;
 
 const dropTriggerStyle = (open: boolean) => ({
@@ -176,12 +185,18 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
         <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Support Case</h3>
-          <button onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
         </div>
         <form onSubmit={e => { e.preventDefault(); onSave({ subject: form.subject, contactId: form.contactId || undefined, priority: form.priority ? Number(form.priority) as CrmSupportCasePriority : undefined, slaPolicyId: form.slaPolicyId || undefined, description: form.description || undefined }); }} className="flex-1 flex flex-col min-h-0">
           <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Subject *</label><input required value={form.subject} onChange={set('subject')} placeholder="Describe the issue..." className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Contact ID</label><input value={form.contactId} onChange={set('contactId')} placeholder="UUID (optional)" className={formInputCls} style={formInputStyle} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Subject *</span>
+  <input required value={form.subject} onChange={set('subject')} placeholder="Describe the issue..." className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Contact ID</span>
+  <input value={form.contactId} onChange={set('contactId')} placeholder="UUID (optional)" className={formInputCls} style={formInputStyle} />
+</label></div>
 
             {/* Priority custom dropdown */}
             <div>
@@ -249,14 +264,17 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmSupportCase
               </div>
             </div>
 
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label><textarea rows={4} value={form.description} onChange={set('description')} placeholder="Additional details..." className={`${formInputCls} resize-none`} style={formInputStyle} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+  <textarea rows={4} value={form.description} onChange={set('description')} placeholder="Additional details..." className={`${formInputCls} resize-none`} style={formInputStyle} />
+</label></div>
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-            <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
-            <button type="submit" disabled={isSaving || !form.subject.trim()} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <Button type="button" onClick={onCancel} variant="secondary">Cancel</Button>
+            <Button type="submit" disabled={isSaving || !form.subject.trim()} variant="primary">
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Case
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -294,22 +312,22 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
             <button onClick={() => escalate.mutate(caseId)} disabled={escalate.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-warning-soft text-warning text-xs font-semibold border border-warning/20 hover:bg-warning/20 transition-all disabled:opacity-50">
               <AlertTriangle className="w-3.5 h-3.5" /> Escalate
             </button>
-            <button onClick={() => resolve.mutate(caseId)} disabled={resolve.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-bg transition-all disabled:opacity-50">
+            <Button onClick={() => resolve.mutate(caseId)} disabled={resolve.isPending} variant="success" size="sm">
               <CheckCircle className="w-3.5 h-3.5" /> Resolve
-            </button>
+            </Button>
             <button onClick={() => close.mutate(caseId)} disabled={close.isPending} className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-bg-elevated text-text-secondary text-xs font-semibold border border-border-subtle hover:bg-bg-card transition-all disabled:opacity-50">
               <XCircle className="w-3.5 h-3.5" /> Close
             </button>
             {canGenerateKbDraft && (
-              <button
+              <Button
                 onClick={() => generateKbDraft.mutate(caseId)}
                 disabled={generateKbDraft.isPending}
                 title="Propose a Knowledge Base article from this resolved case"
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-soft text-brand text-xs font-semibold border border-border-glow hover:bg-brand hover:text-white transition-all disabled:opacity-50"
+                variant="primary" size="sm"
               >
                 {generateKbDraft.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                 Generate KB Draft
-              </button>
+              </Button>
             )}
           </div>
           <div className="flex border-b border-border-subtle">
@@ -334,7 +352,7 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
                 {(detail.messages ?? []).length === 0 && <p className="text-sm text-text-muted text-center py-6">No messages yet.</p>}
                 {(detail.messages as CrmSupportMessageDto[]).map(m => (
                   <div key={m.id} className={`flex ${m.isFromCustomer ? 'justify-start' : 'justify-end'}`}>
-                    <div className={`max-w-xs px-3 py-2 rounded-xl text-sm ${m.isFromCustomer ? 'bg-bg-subtle text-text-primary' : 'bg-brand-soft text-brand'}`}>
+                    <div className={`max-w-xs px-3 py-2 rounded-xl text-sm ${m.isFromCustomer ? 'bg-bg-sunken text-text-primary' : 'bg-brand-soft text-brand'}`}>
                       <div className="font-semibold text-xs mb-0.5 text-text-muted">{m.authorName}</div>
                       <div>{m.body}</div>
                       <div className="text-[10px] mt-1 opacity-60">{format(parseISO(m.createdAt), 'HH:mm')}</div>
@@ -343,10 +361,10 @@ function DetailPanel({ caseId, onClose }: { caseId: string; onClose: () => void 
                 ))}
               </div>
               <div className="flex gap-2 pt-2 border-t border-border-subtle">
-                <textarea rows={2} value={msgBody} onChange={e => setMsgBody(e.target.value)} placeholder="Type a message..." className={`${inputCls} flex-1 resize-none`} />
-                <button onClick={handleSend} disabled={!msgBody.trim() || addMsg.isPending} className="px-3 py-2 rounded-xl bg-brand text-bg self-end disabled:opacity-50 hover:bg-brand-light transition-all">
+                <textarea rows={2} value={msgBody} onChange={e => setMsgBody(e.target.value)} placeholder="Type a message..." aria-label="Type a message..." className={`${inputCls} flex-1 resize-none`} />
+                <Button onClick={handleSend} disabled={!msgBody.trim() || addMsg.isPending} variant="primary" className="self-end">
                   {addMsg.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -374,7 +392,8 @@ export function Component() {
   const [showSla, setShowSla] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { data: raw, isLoading } = useSupportCases(filter);
+  const supportCasesQuery = useSupportCases(filter);
+  const { data: raw } = supportCasesQuery;
   const data = raw;
   const items: CrmSupportCaseSummaryDto[] = (raw as any)?.items ?? [];
 
@@ -397,21 +416,21 @@ export function Component() {
             <p className="text-xs text-text-muted mt-0.5">{data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}</p>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={() => setShowSla(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary transition-all">
+            <Button onClick={() => setShowSla(true)} variant="secondary">
               <Shield className="w-3.5 h-3.5" /> SLA Policies
-            </button>
-            <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+            </Button>
+            <Button onClick={() => setShowCreate(true)} variant="primary">
               <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Case
-            </button>
+            </Button>
           </div>
         </div>
 
         <form onSubmit={applyFilters} className="flex gap-2 flex-wrap">
           <div className="relative flex-1 min-w-48">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" strokeWidth={1.5} />
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search cases..." className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium" />
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search cases..." aria-label="Search cases..." className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium" />
           </div>
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className={selectCls}>
+          <select aria-label="Filter by status" value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className={selectCls}>
             <option value="">All Statuses</option>
             <option value="1">Open</option>
             <option value="5">In Progress</option>
@@ -419,22 +438,21 @@ export function Component() {
             <option value="6">Resolved</option>
             <option value="7">Closed</option>
           </select>
-          <select value={priorityFilter} onChange={e => setPriorityFilter(e.target.value)} className={selectCls}>
+          <select aria-label="Filter by priority" value={priorityFilter} onChange={e => setPriorityFilter(e.target.value)} className={selectCls}>
             <option value="">All Priorities</option>
             {Object.entries(CRM_SUPPORT_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button type="submit" className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <Button type="submit" variant="secondary">Search</Button>
         </form>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-              <LifeBuoy className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No support cases found</p>
-            </div>
-          ) : (
+          <ListState
+            query={supportCasesQuery}
+            isEmpty={!items.length}
+            noun="support cases"
+            icon={LifeBuoy}
+            emptyTitle="No support cases found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -458,7 +476,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {totalPages > 1 && (

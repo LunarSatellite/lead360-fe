@@ -12,6 +12,7 @@ import type {
 } from '../types/crm.types';
 import { CrmProposalStatus, CRM_PROPOSAL_STATUS_LABELS, CRM_PROPOSAL_STATUS_COLORS, PROPOSAL_SECTION_KINDS, ApprovalEntityType } from '../types/crm.types';
 import { ApprovalPanel } from '../components/ApprovalPanel';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -27,8 +28,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block"><span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>{children}</label>
     </div>
   );
 }
@@ -65,7 +65,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide, pad
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -92,7 +92,7 @@ function EditableSection({ proposalId, section }: { proposalId: string; section:
   };
 
   return (
-    <div className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
+    <div className="p-3 rounded-xl bg-bg-sunken border border-border-subtle space-y-2">
       <div className="flex items-center justify-between gap-2">
         <p className="text-xs font-bold text-text-primary">{section.title}</p>
         <div className="flex gap-1">
@@ -114,7 +114,7 @@ function EditableSection({ proposalId, section }: { proposalId: string; section:
       </div>
 
       {editing ? (
-        <textarea value={content} onChange={e => setContent(e.target.value)} rows={6}
+        <textarea aria-label="Content" value={content} onChange={e => setContent(e.target.value)} rows={6}
           className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary resize-y focus:outline-none focus:border-border-glow" />
       ) : (
         <p className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{section.content || '—'}</p>
@@ -176,7 +176,8 @@ export function Component() {
     }
   }, []);
 
-  const { data: raw, isLoading } = useProposals(filter);
+  const proposalsQuery = useProposals(filter);
+  const { data: raw } = proposalsQuery;
   const items: CrmProposalSummaryDto[] = (raw as any)?.items ?? [];
 
   const { data: detail, isLoading: detailLoading } = useProposalById(selectedId ?? undefined);
@@ -264,30 +265,29 @@ export function Component() {
           <button onClick={() => setManualOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-text-primary bg-bg-card border border-border-subtle hover:bg-bg-elevated transition-all">
             <FilePlus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Proposal
           </button>
-          <button onClick={() => setGenOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+          <Button onClick={() => setGenOpen(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Generate Proposal
-          </button>
+          </Button>
         </div>
       </div>
 
       <div className="flex gap-2">
         <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-          placeholder="Search proposals..." className={inputCls + ' flex-1'} />
-        <select className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
+          placeholder="Search proposals..." aria-label="Search proposals..." className={inputCls + ' flex-1'} />
+        <select aria-label="Filter by status" className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
           <option value="">All Statuses</option>
           {Object.entries(CRM_PROPOSAL_STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-        ) : !items.length ? (
-          <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-            <ClipboardList className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No proposals found</p>
-          </div>
-        ) : (
+        <ListState
+          query={proposalsQuery}
+          isEmpty={!items.length}
+          noun="proposals"
+          icon={ClipboardList}
+          emptyTitle="No proposals found"
+        >
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
@@ -310,7 +310,7 @@ export function Component() {
               ))}
             </tbody>
           </table>
-        )}
+        </ListState>
       </div>
 
       {/* Detail SlideOver */}
@@ -344,10 +344,10 @@ export function Component() {
             {detailData.id && <ApprovalPanel entityType={ApprovalEntityType.Proposal} entityId={detailData.id} entityName={detailData.title} />}
 
             {canSend(detailData) && (
-              <button onClick={() => { sendProposal.mutate(detailData.id); setSelectedId(null); }} disabled={sendProposal.isPending}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+              <Button onClick={() => { sendProposal.mutate(detailData.id); setSelectedId(null); }} disabled={sendProposal.isPending}
+                variant="primary">
                 {sendProposal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" strokeWidth={1.5} />} Send Proposal
-              </button>
+              </Button>
             )}
             {detailData.status === 4 && (
               <div className="flex gap-2">
@@ -375,22 +375,22 @@ export function Component() {
         padRight
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button
+            <Button
               onClick={() => { setGenOpen(false); resetForm(); }}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleGenerate}
               disabled={generateProposal.isPending || !dealId.trim()}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {generateProposal.isPending
                 ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 : <ClipboardList className="w-3.5 h-3.5" />}
               Generate Proposal
-            </button>
+            </Button>
           </div>
         }
       >
@@ -402,20 +402,20 @@ export function Component() {
 
         {/* Deal */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal <span className="text-danger">*</span></label>
+          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal <span className="text-danger-light">*</span></label>
           <div className="relative" ref={genDealDropRef}>
             <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
             <input
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              placeholder="Search existing deals…"
+              placeholder="Search existing deals…" aria-label="Search existing deals…"
               autoComplete="off"
               value={genDealSearch}
               onChange={e => { setGenDealSearch(e.target.value); setShowGenDealDrop(true); }}
               onFocus={() => setShowGenDealDrop(true)}
             />
             {genDealSearch ? (
-              <button type="button" onClick={() => { setGenDealSearch(''); setShowGenDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenDealSearch(''); setShowGenDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -456,14 +456,14 @@ export function Component() {
             <input
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              placeholder="Search existing contacts…"
+              placeholder="Search existing contacts…" aria-label="Search existing contacts…"
               autoComplete="off"
               value={genContactSearch}
               onChange={e => { setGenContactSearch(e.target.value); setShowGenContactDrop(true); }}
               onFocus={() => setShowGenContactDrop(true)}
             />
             {genContactSearch ? (
-              <button type="button" onClick={() => { setGenContactSearch(''); setShowGenContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenContactSearch(''); setShowGenContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -507,14 +507,14 @@ export function Component() {
             <input
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              placeholder="Select a template…"
+              placeholder="Select a template…" aria-label="Select a template…"
               autoComplete="off"
               value={genTemplateSearch}
               onChange={e => { setGenTemplateSearch(e.target.value); setShowGenTemplateDrop(true); }}
               onFocus={() => setShowGenTemplateDrop(true)}
             />
             {genTemplateSearch ? (
-              <button type="button" onClick={() => { setGenTemplateSearch(''); setShowGenTemplateDrop(false); setTemplateId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+              <button aria-label="Close" type="button" onClick={() => { setGenTemplateSearch(''); setShowGenTemplateDrop(false); setTemplateId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" strokeWidth={2} />
               </button>
             ) : null}
@@ -551,7 +551,7 @@ export function Component() {
       {/* Manual Build SlideOver */}
       <SlideOver open={manualOpen} onClose={() => { setManualOpen(false); resetManual(); }} title="New Proposal" wide>
         <Field label="Title *">
-          <input value={mTitle} onChange={e => setMTitle(e.target.value)} className={inputCls} placeholder="e.g. Website Redesign Proposal — Acme Co" />
+          <input aria-label="M title" value={mTitle} onChange={e => setMTitle(e.target.value)} className={inputCls} placeholder="e.g. Website Redesign Proposal — Acme Co" />
         </Field>
         <Field label="Start from">
           <div className="flex gap-2">
@@ -566,13 +566,13 @@ export function Component() {
         {mSource === 'deal' ? (
           <>
             <Field label="Deal *">
-              <select value={mDealId} onChange={e => setMDealId(e.target.value)} className={selectCls}>
+              <select aria-label="M deal ID" value={mDealId} onChange={e => setMDealId(e.target.value)} className={selectCls}>
                 <option value="">Select a deal (required)</option>
                 {dealsList.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
             </Field>
             <Field label="Contact">
-              <select value={mContactId} onChange={e => setMContactId(e.target.value)} className={selectCls}>
+              <select aria-label="M contact ID" value={mContactId} onChange={e => setMContactId(e.target.value)} className={selectCls}>
                 <option value="">Select a contact (optional)</option>
                 {contactsList.map(c => <option key={c.id} value={c.id}>{c.fullName}</option>)}
               </select>
@@ -580,7 +580,7 @@ export function Component() {
           </>
         ) : (
           <Field label="Lead *">
-            <select value={mLeadId} onChange={e => setMLeadId(e.target.value)} className={selectCls}>
+            <select aria-label="M lead ID" value={mLeadId} onChange={e => setMLeadId(e.target.value)} className={selectCls}>
               <option value="">Select a lead (required)</option>
               {leadsList.map(l => <option key={l.id} value={l.id}>{l.customerName ?? l.channelHandle}</option>)}
             </select>
@@ -594,27 +594,27 @@ export function Component() {
           </div>
           <div className="space-y-3">
             {mSections.map((s, i) => (
-              <div key={i} className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
+              <div key={i} className="p-3 rounded-xl bg-bg-sunken border border-border-subtle space-y-2">
                 <div className="flex gap-2">
-                  <select value={s.kind} onChange={e => updateSection(i, 'kind', Number(e.target.value))} className={selectCls + ' w-48'}>
+                  <select aria-label="Kind" value={s.kind} onChange={e => updateSection(i, 'kind', Number(e.target.value))} className={selectCls + ' w-48'}>
                     {Object.entries(PROPOSAL_SECTION_KINDS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
-                  <input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section heading (optional)" className={inputCls + ' flex-1'} />
-                  <button onClick={() => setMSections(ss => ss.filter((_, idx) => idx !== i))} disabled={mSections.length === 1}
-                    className="p-1.5 rounded-lg text-danger hover:bg-danger-soft disabled:opacity-40 transition-colors">
+                  <input value={s.title} onChange={e => updateSection(i, 'title', e.target.value)} placeholder="Section heading (optional)" aria-label="Section heading (optional)" className={inputCls + ' flex-1'} />
+                  <button aria-label="Close" onClick={() => setMSections(ss => ss.filter((_, idx) => idx !== i))} disabled={mSections.length === 1}
+                    className="p-1.5 rounded-lg text-danger-light hover:bg-danger-soft disabled:opacity-40 transition-colors">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <textarea value={s.content} onChange={e => updateSection(i, 'content', e.target.value)} rows={3} className={inputCls} placeholder="Section content..." />
+                <textarea value={s.content} onChange={e => updateSection(i, 'content', e.target.value)} rows={3} className={inputCls} placeholder="Section content..." aria-label="Section content..." />
               </div>
             ))}
           </div>
         </div>
-        <button onClick={handleCreateManual}
+        <Button onClick={handleCreateManual}
           disabled={createProposal.isPending || createFromLead.isPending || !mTitle.trim() || (mSource === 'deal' ? !mDealId.trim() : !mLeadId.trim())}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+          variant="primary" size="lg" block>
           {(createProposal.isPending || createFromLead.isPending) ? <Loader2 className="w-4 h-4 animate-spin" /> : <FilePlus className="w-4 h-4" />} Create Proposal
-        </button>
+        </Button>
       </SlideOver>
     </div>
   );

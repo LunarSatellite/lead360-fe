@@ -13,6 +13,7 @@ import {
 } from '../api/business-catalog.queries';
 import { ItemFormDialog } from './ItemFormDialog';
 import type { CatalogCategory, CatalogItem } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   itemLabel: string;
@@ -58,16 +59,15 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
         <div className="flex items-center gap-2">
           {/* Back button — shown only when drilled in from a category */}
           {selectedCategory && onBack && (
-            <button
+            <Button
               type="button"
               onClick={onBack}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold
-                         text-text-muted hover:text-text-primary hover:bg-glass-2 transition-colors"
+              variant="ghost" size="sm"
               title="Back to categories"
             >
               <ArrowLeft className="w-3.5 h-3.5" strokeWidth={2} />
               Back
-            </button>
+            </Button>
           )}
           <div>
             <h3 className="text-sm font-extrabold text-text-primary tracking-tight">
@@ -76,17 +76,16 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
             <p className="text-[11px] text-text-muted">{total} item{total === 1 ? '' : 's'} total</p>
           </div>
         </div>
-        <button
+        <Button
           type="button"
           disabled={categories.length === 0}
           onClick={() => setCreating(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                     bg-brand text-white hover:bg-brand/90 disabled:opacity-50 transition-all"
+          variant="primary" size="sm"
           title={categories.length === 0 ? 'Add a category first' : undefined}
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
           Add {itemLabel.toLowerCase()}
-        </button>
+        </Button>
       </div>
 
       {/* Filter bar — hide category dropdown when already drilled into a category */}
@@ -100,14 +99,14 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
               setSearch(e.target.value);
               setPage(1);
             }}
-            placeholder="Search name, description, tags…"
+            placeholder="Search name, description, tags…" aria-label="Search name, description, tags…"
             className="bg-transparent text-xs text-text-primary placeholder:text-text-muted
-                       focus:outline-none flex-1 min-w-0"
+                       focus:outline-none flex-1 min-w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />
         </div>
         {/* Only show the category dropdown when NOT drilled in from a specific category */}
         {!selectedCategory && (
-          <select
+          <select aria-label="Filter by category"
             value={categoryFilter}
             onChange={(e) => {
               setCategoryFilter(e.target.value);
@@ -124,7 +123,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
             ))}
           </select>
         )}
-        <select
+        <select aria-label="Filter by status"
           value={availableOnly === null ? '' : availableOnly ? 'yes' : 'no'}
           onChange={(e) => {
             const v = e.target.value;
@@ -187,7 +186,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-text-primary truncate">{i.name}</span>
                   {!i.isAvailable && (
-                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-danger-soft text-danger">
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-danger-soft text-danger-light">
                       Unavailable
                     </span>
                   )}
@@ -214,7 +213,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
                   {i.isAvailable ? (
                     <PackageCheck className="w-3.5 h-3.5 text-success" strokeWidth={1.8} />
                   ) : (
-                    <PackageX className="w-3.5 h-3.5 text-danger" strokeWidth={1.8} />
+                    <PackageX className="w-3.5 h-3.5 text-danger-light" strokeWidth={1.8} />
                   )}
                 </button>
                 <button
@@ -233,7 +232,7 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
                              hover:bg-danger-soft transition-colors"
                   title="Delete"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-text-secondary hover:text-danger" strokeWidth={1.6} />
+                  <Trash2 className="w-3.5 h-3.5 text-text-secondary hover:text-danger-light" strokeWidth={1.6} />
                 </button>
               </div>
             </div>
@@ -248,24 +247,22 @@ export function ItemListSection({ itemLabel, selectedCategory, onBack }: Props) 
             Page {page} of {Math.max(1, Math.ceil(total / 20))}
           </span>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               type="button"
               disabled={page === 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="px-3 py-1 rounded-lg bg-glass-2 border border-border-subtle
-                         text-text-secondary hover:text-text-primary disabled:opacity-50 transition-colors"
+              variant="subtle" size="sm"
             >
               Prev
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               disabled={page * 20 >= total}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1 rounded-lg bg-glass-2 border border-border-subtle
-                         text-text-secondary hover:text-text-primary disabled:opacity-50 transition-colors"
+              variant="subtle" size="sm"
             >
               Next
-            </button>
+            </Button>
           </div>
         </div>
       )}

@@ -25,6 +25,7 @@ import { CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS } from '../types/crm.typ
 import { ROUTES } from '@/app/router/route-paths';
 import { format, formatDistanceToNow, isPast, differenceInDays } from 'date-fns';
 import { toast } from 'sonner';
+import { Button, Input } from '@/shared/ui/primitives';
 
 type View = 'kanban' | 'list';
 const LIST_PAGE_SIZE = 20;
@@ -52,7 +53,7 @@ function DealCard({
     const d = new Date(deal.closeDate);
     const daysLeft = differenceInDays(d, new Date());
     if (isPast(d)) {
-      closeDateColor = 'text-danger';
+      closeDateColor = 'text-danger-light';
       closeDateLabel = `${format(d, 'MMM d')} (overdue)`;
     } else if (daysLeft <= 7) {
       closeDateColor = 'text-warning';
@@ -112,7 +113,7 @@ function DealCard({
               </button>
               <button
                 onClick={onCloseLost}
-                className="p-1 rounded-md bg-danger-soft text-danger hover:bg-danger hover:text-bg transition-all"
+                className="p-1 rounded-md bg-danger-soft text-danger-light hover:bg-danger hover:text-bg transition-all"
                 title="Lost"
               >
                 <XCircle className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -397,10 +398,10 @@ export function Component() {
               <List className="w-3.5 h-3.5" strokeWidth={1.5} /> List
             </button>
           </div>
-          <button onClick={() => setShowPipeline(true)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-border-subtle bg-bg-elevated text-text-secondary hover:text-text-primary transition-all">
+          <Button onClick={() => setShowPipeline(true)}
+            variant="secondary">
             <Settings className="w-3.5 h-3.5" /> Pipeline
-          </button>
+          </Button>
           <CsvDealsToolbar />
           <button
             onClick={() => {
@@ -414,18 +415,18 @@ export function Component() {
             <User className="w-3.5 h-3.5" />
             My Deals
           </button>
-          <button
+          <Button
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all bg-bg-elevated border-border-subtle text-text-secondary hover:text-text-primary"
+            variant="secondary"
           >
             <Filter className="w-3.5 h-3.5" />
             Filter{activeFiltersCount > 0 ? ` (${activeFiltersCount})` : ''}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setShowNewDeal(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+            variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Deal
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -433,27 +434,33 @@ export function Component() {
       {showFilters && (
         <div className="flex flex-wrap items-end gap-3 p-3 rounded-xl bg-bg-elevated border border-border-subtle shrink-0">
           <div className="flex flex-col gap-1 min-w-[180px]">
-            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Owner / Rep</label>
-            <select
-              value={filterOwnerId}
-              onChange={e => setFilterOwnerId(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
-            >
-              <option value="">All reps</option>
-              {teamMembers.map(u => (
-                <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
-              ))}
-            </select>
+            <label className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Owner / Rep</span>
+              <select
+                value={filterOwnerId}
+                onChange={e => setFilterOwnerId(e.target.value)}
+                className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
+              >
+                <option value="">All reps</option>
+                {teamMembers.map(u => (
+                  <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date From</label>
-            <input type="date" value={filterCloseDateFrom} onChange={e => setFilterCloseDateFrom(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+            <label className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date From</span>
+              <input type="date" value={filterCloseDateFrom} onChange={e => setFilterCloseDateFrom(e.target.value)}
+                className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+            </label>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date To</label>
-            <input type="date" value={filterCloseDateTo} onChange={e => setFilterCloseDateTo(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+            <label className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date To</span>
+              <input type="date" value={filterCloseDateTo} onChange={e => setFilterCloseDateTo(e.target.value)}
+                className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+            </label>
           </div>
           <div className="flex flex-col gap-1 justify-end">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Stale Deals</label>
@@ -467,7 +474,7 @@ export function Component() {
           {activeFiltersCount > 0 && (
             <button
               onClick={() => { setFilterOwnerId(''); setFilterCloseDateFrom(''); setFilterCloseDateTo(''); setFilterInactive(false); setListFilter((f) => ({ ...f, ownedByUserId: undefined, closeDateFrom: undefined, closeDateTo: undefined, inactiveSinceDays: undefined, page: 1 })); }}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-danger border border-danger/30 hover:bg-danger-soft transition-all self-end"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-danger-light border border-danger/30 hover:bg-danger-soft transition-all self-end"
             >
               Clear filters
             </button>
@@ -547,7 +554,7 @@ export function Component() {
                           <Trophy className="w-3.5 h-3.5 text-success shrink-0" strokeWidth={1.5} />
                         )}
                         {stage.isClosed && !stage.isWon && (
-                          <XCircle className="w-3.5 h-3.5 text-danger shrink-0" strokeWidth={1.5} />
+                          <XCircle className="w-3.5 h-3.5 text-danger-light shrink-0" strokeWidth={1.5} />
                         )}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -630,20 +637,20 @@ export function Component() {
           >
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" strokeWidth={1.5} />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals..."
+              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search deals..." aria-label="Search deals..."
                 className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium" />
             </div>
-            <select value={filterOwnerId} onChange={e => setFilterOwnerId(e.target.value)}
+            <select aria-label="Filter by rep" value={filterOwnerId} onChange={e => setFilterOwnerId(e.target.value)}
               className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium">
               <option value="">All reps</option>
               {teamMembers.map(u => (
                 <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
               ))}
             </select>
-            <button type="submit"
-              className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+            <Button type="submit"
+              variant="secondary">
               Search
-            </button>
+            </Button>
           </form>
 
           <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
@@ -793,17 +800,17 @@ export function Component() {
               <button
                 onClick={runBulkDelete}
                 disabled={bulkDelete.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger-light border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
               >
                 {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
                 Delete
               </button>
-              <button
+              <Button
                 onClick={clearSelection}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+                variant="ghost" size="sm"
               >
                 <X className="w-3.5 h-3.5" /> Clear
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -840,7 +847,7 @@ export function Component() {
                 >New Deal</h2>
                 <p className="text-xs text-text-muted mt-0.5">Create a deal directly in your pipeline</p>
               </div>
-              <button onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => { setShowNewDeal(false); resetNewDeal(); }} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -849,27 +856,20 @@ export function Component() {
             <div className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
               {/* Deal Name */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Deal Name *</label>
-                <div className="relative">
-                  <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    value={ndName}
-                    onChange={e => setNdName(e.target.value)}
-                    placeholder="e.g. Acme Corp — Enterprise"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Deal Name *</span>
+                  <Input icon={Briefcase} value={ndName} onChange={e => setNdName(e.target.value)} placeholder="e.g. Acme Corp — Enterprise" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                </label>
               </div>
 
               {/* Stage */}
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Stage *</label>
                 <div className="relative" ref={ndStageRef}>
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setNdStageOpen(o => !o)}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                    variant="ghost" block
                     style={{
                       backgroundColor: 'rgb(var(--color-glass-1))',
                       backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
@@ -884,7 +884,7 @@ export function Component() {
                       {ndStageId ? (stages.find(s => s.id === ndStageId)?.name ?? 'Select stage') : 'Select stage'}
                     </span>
                     <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${ndStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-                  </button>
+                  </Button>
                   {ndStageOpen && (
                     <div
                       className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
@@ -910,67 +910,56 @@ export function Component() {
               {/* Amount + Close Date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Amount</label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number"
-                      value={ndAmount}
-                      onChange={e => setNdAmount(e.target.value)}
-                      placeholder="0"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Amount</span>
+                    <Input icon={DollarSign} type="number" value={ndAmount} onChange={e => setNdAmount(e.target.value)} placeholder="0" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Expected Close Date</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="date"
-                      value={ndCloseDate}
-                      onChange={e => setNdCloseDate(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Expected Close Date</span>
+                    <Input icon={Calendar} type="date" value={ndCloseDate} onChange={e => setNdCloseDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  </label>
                 </div>
               </div>
 
               {/* Owner + Account */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Owner</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <select
-                      value={ndOwnerId}
-                      onChange={e => setNdOwnerId(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 appearance-none"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    >
-                      <option value="">Assign to me (default)</option>
-                      {teamMembers.map(u => (
-                        <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Owner</span>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                      <select
+                        value={ndOwnerId}
+                        onChange={e => setNdOwnerId(e.target.value)}
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 appearance-none"
+                        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      >
+                        <option value="">Assign to me (default)</option>
+                        {teamMembers.map(u => (
+                          <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Account</label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <select
-                      value={ndAccountId}
-                      onChange={e => { setNdAccountId(e.target.value); setNdContactId(''); }}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 appearance-none"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    >
-                      <option value="">No account linked</option>
-                      {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                    </select>
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Account</span>
+                    <div className="relative">
+                      <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                      <select
+                        value={ndAccountId}
+                        onChange={e => { setNdAccountId(e.target.value); setNdContactId(''); }}
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 appearance-none"
+                        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      >
+                        <option value="">No account linked</option>
+                        {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                      </select>
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -990,20 +979,20 @@ export function Component() {
 
             {/* Footer */}
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle shrink-0">
-              <button
+              <Button
                 onClick={() => { setShowNewDeal(false); resetNewDeal(); }}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={submitNewDeal}
                 disabled={!ndName.trim() || !ndStageId || createDeal.isPending}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createDeal.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Deal
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -1019,30 +1008,30 @@ export function Component() {
                 <h2 className="text-sm font-bold text-text-primary">Manage Pipeline</h2>
                 <p className="text-xs text-text-muted mt-0.5">Add, edit or reorder deal stages</p>
               </div>
-              <button onClick={() => setShowPipeline(false)} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+              <button aria-label="Close" onClick={() => setShowPipeline(false)} className="p-1.5 text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
             </div>
             <div className="p-5 space-y-3">
               {stages.map((stage, idx) => (
                 <div key={stage.id} className="border border-border-subtle rounded-xl overflow-hidden">
                   {editingStageId === stage.id ? (
                     <div className="p-3 space-y-2 bg-bg-elevated">
-                      <input value={editingName} onChange={e => setEditingName(e.target.value)}
+                      <input aria-label="Editing name" value={editingName} onChange={e => setEditingName(e.target.value)}
                         className="w-full px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                       <div className="flex items-center gap-2">
-                        <input type="color" value={editingColor} onChange={e => setEditingColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
+                        <input aria-label="Editing color" type="color" value={editingColor} onChange={e => setEditingColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
                         <span className="text-xs text-text-muted">Color</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-text-muted">Win probability</span>
                         <div className="flex items-center gap-1">
-                          <input type="range" min={0} max={100} value={editingProb} onChange={e => setEditingProb(Number(e.target.value))} className="w-24 accent-brand" />
+                          <input aria-label="Editing prob" type="range" min={0} max={100} value={editingProb} onChange={e => setEditingProb(Number(e.target.value))} className="w-24 accent-brand" />
                           <span className="text-xs text-text-primary font-semibold tabular-nums w-8 text-right">{editingProb}%</span>
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor, defaultProbability: editingProb / 100 } }); setEditingStageId(null); }}
-                          className="flex-1 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold">Save</button>
-                        <button onClick={() => setEditingStageId(null)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
+                        <Button onClick={() => { updateStage.mutate({ id: stage.id, data: { name: editingName, color: editingColor, defaultProbability: editingProb / 100 } }); setEditingStageId(null); }}
+                          variant="primary" size="sm" className="flex-1">Save</Button>
+                        <Button onClick={() => setEditingStageId(null)} variant="secondary" size="sm">Cancel</Button>
                       </div>
                     </div>
                   ) : (
@@ -1056,9 +1045,9 @@ export function Component() {
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
                         <button disabled={idx === stages.length - 1} onClick={() => updateStage.mutate({ id: stage.id, data: { order: stage.order + 1 } })}
                           className="p-1 text-text-muted hover:text-text-primary disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
+                        <button aria-label="Settings" onClick={() => { setEditingStageId(stage.id); setEditingName(stage.name); setEditingColor(stage.color ?? '#6366f1'); setEditingProb(Math.round((stage.defaultProbability ?? 0) * 100)); }}
                           className="p-1 text-text-muted hover:text-text-primary"><Settings className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <button aria-label="Delete" onClick={() => deleteStage.mutate(stage.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
                     </div>
                   )}
@@ -1066,17 +1055,17 @@ export function Component() {
               ))}
               <div className="border border-dashed border-border-subtle rounded-xl p-3 space-y-2">
                 <p className="text-xs font-semibold text-text-muted">Add Stage</p>
-                <input value={newStageName} onChange={e => setNewStageName(e.target.value)} placeholder="Stage name"
+                <input value={newStageName} onChange={e => setNewStageName(e.target.value)} placeholder="Stage name" aria-label="Stage name"
                   className="w-full px-3 py-2 rounded-lg bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                 <div className="flex items-center gap-2">
-                  <input type="color" value={newStageColor} onChange={e => setNewStageColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
+                  <input aria-label="New stage color" type="color" value={newStageColor} onChange={e => setNewStageColor(e.target.value)} className="w-8 h-8 rounded cursor-pointer border border-border-subtle" />
                   <span className="text-xs text-text-muted">Color</span>
                 </div>
-                <button disabled={!newStageName.trim() || createStage.isPending}
+                <Button disabled={!newStageName.trim() || createStage.isPending}
                   onClick={() => createStage.mutate({ name: newStageName.trim(), order: stages.length + 1, color: newStageColor, pipelineId: activePipelineId ?? undefined } as CrmDealStageCreateRequest, { onSuccess: () => setNewStageName('') })}
-                  className="w-full py-2 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold disabled:opacity-50 flex items-center justify-center gap-1.5">
+                  variant="soft" block>
                   {createStage.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />} Add Stage
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -1089,7 +1078,7 @@ export function Component() {
           <div className="w-full max-w-md bg-bg border border-border-subtle rounded-2xl p-6 space-y-4 shadow-2xl">
             <h3 className="text-sm font-bold text-text-primary">Mark as Won</h3>
             <p className="text-xs text-text-muted">Enter the win reason to record why this deal was closed.</p>
-            <textarea
+            <textarea aria-label="Win reason"
               autoFocus
               value={winReason}
               onChange={e => setWinReason(e.target.value)}
@@ -1098,7 +1087,7 @@ export function Component() {
               className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary resize-none focus:outline-none focus:border-border-glow"
             />
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setWinDealId(null)} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+              <Button onClick={() => setWinDealId(null)} variant="secondary">Cancel</Button>
               <button onClick={() => { closeDeal.mutate({ id: winDealId, data: { isWon: true, winReason: winReason.trim() || undefined } }); setWinDealId(null); }}
                 disabled={closeDeal.isPending}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-success hover:opacity-90 disabled:opacity-50">
@@ -1140,10 +1129,10 @@ function ContactDropdown({
 
   return (
     <div className="relative" ref={ref}>
-      <button
+      <Button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+        variant="ghost" block
         style={{
           backgroundColor: 'rgb(var(--color-glass-1))',
           backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
@@ -1158,7 +1147,7 @@ function ContactDropdown({
           {selected ? selected.fullName : 'Select a contact…'}
         </span>
         <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${open ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-      </button>
+      </Button>
       {open && (
         <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
           style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)', maxHeight: 240, overflowY: 'auto' }}
@@ -1168,7 +1157,7 @@ function ContactDropdown({
               autoFocus
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search contacts…"
+              placeholder="Search contacts…" aria-label="Search contacts…"
               className="w-full px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow"
             />
           </div>

@@ -40,6 +40,7 @@ import type { AiActionFilter } from '../components/analytics/widgets';
 import { useDrillNavigate } from '@/shared/hooks';
 import { drillToContactDetail, drillToLeadDetail, drillToDealDetail } from '@/shared/lib';
 import type { DrillSpec } from '@/shared/lib';
+import { Button } from '@/shared/ui/primitives';
 
 // An AI action's subject → its detail page. Account (3) has no detail route, so
 // those rows are not navigable. Keys off subjectKind/subjectId, which every
@@ -133,20 +134,20 @@ function AiActionsTab({ filter, onClearFilter }: { filter?: AiActionFilter; onCl
                   </p>
                 </div>
                 <div className="flex gap-2 shrink-0">
-                  <button
+                  <Button
                     onClick={() => approveAction.mutate(action.id)}
                     disabled={approveAction.isPending}
-                    className="text-xs px-3 py-1.5 rounded-sm bg-success-soft text-success border-thin border-border-success font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                    variant="success" size="sm"
                   >
                     Approve
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => rejectAction.mutate(action.id)}
                     disabled={rejectAction.isPending}
-                    className="text-xs px-3 py-1.5 rounded-sm bg-danger-soft text-danger border-thin border-border-subtle font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+                    variant="danger" size="sm"
                   >
                     Reject
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
@@ -158,13 +159,13 @@ function AiActionsTab({ filter, onClearFilter }: { filter?: AiActionFilter; onCl
         <div className="flex items-center gap-3 mb-3">
           <h3 className="text-xs font-bold text-text-muted uppercase tracking-wider">Recent Actions</h3>
           {hasFilter && (
-            <button
+            <Button
               onClick={onClearFilter}
-              className="inline-flex items-center gap-1.5 text-2xs font-semibold px-2.5 py-1 rounded-xs bg-brand-soft text-brand border-thin border-border-glow hover:bg-glass-2 transition-colors"
+              variant="soft" size="sm"
             >
               {filterChipLabel(filter!)}
               <X className="w-3 h-3" strokeWidth={2} />
-            </button>
+            </Button>
           )}
         </div>
         {allActions.length === 0 ? (

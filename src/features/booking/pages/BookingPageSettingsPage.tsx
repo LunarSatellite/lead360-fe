@@ -82,43 +82,49 @@ function EventTypeModal({
           <h2 className="text-base font-bold text-text-primary">
             {initial ? 'Edit meeting type' : 'New meeting type'}
           </h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Title *</label>
-            <input
-              type="text"
-              placeholder="e.g. 30 min intro call"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className={inputCls}
-            />
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Title *</span>
+              <input
+                type="text"
+                placeholder="e.g. 30 min intro call"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                className={inputCls}
+              />
+            </label>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Description</label>
-            <textarea
-              placeholder="What is this meeting for?"
-              value={description ?? ''}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-              className={`${inputCls} resize-none`}
-            />
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Description</span>
+              <textarea
+                placeholder="What is this meeting for?"
+                value={description ?? ''}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={2}
+                className={`${inputCls} resize-none`}
+              />
+            </label>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Duration</label>
-            <select
-              value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
-              className={inputCls}
-            >
-              {[15, 20, 30, 45, 60, 90].map((d) => (
-                <option key={d} value={d}>{d} minutes</option>
-              ))}
-            </select>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Duration</span>
+              <select
+                value={duration}
+                onChange={(e) => setDuration(Number(e.target.value))}
+                className={inputCls}
+              >
+                {[15, 20, 30, 45, 60, 90].map((d) => (
+                  <option key={d} value={d}>{d} minutes</option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className="space-y-2">
             <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Color</label>
@@ -249,7 +255,7 @@ function BookingPageSettingsPage() {
             checked={page.isActive}
             onChange={handleToggleActive}
           />
-          <div className="w-11 h-6 bg-bg-card peer-focus:outline-none rounded-full peer border border-border-subtle peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-text-muted after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 peer-checked:after:bg-white" />
+          <div className="w-11 h-6 bg-bg-card peer-focus:outline-none rounded-full peer border border-border-subtle peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-text-muted after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600 peer-checked:after:bg-white peer-focus-visible:ring-2 peer-focus-visible:ring-brand/60" />
           <span className="text-xs text-text-muted">{page.isActive ? 'Active' : 'Hidden'}</span>
         </label>
       </div>
@@ -264,11 +270,11 @@ function BookingPageSettingsPage() {
               <span className="px-3 text-xs text-text-muted whitespace-nowrap">
                 {publicOrigin}/book/
               </span>
-              <input
+              <input aria-label="Slug"
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                className="flex-1 py-2.5 pr-3 text-sm text-text-primary bg-transparent focus:outline-none"
+                className="flex-1 py-2.5 pr-3 text-sm text-text-primary bg-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
                 autoFocus
               />
             </div>
@@ -371,13 +377,13 @@ function BookingPageSettingsPage() {
                       : <Copy className="w-3.5 h-3.5" />
                     }
                   </button>
-                  <button
+                  <button aria-label="Edit"
                     onClick={() => setEditingEventType(et)}
                     className="p-1.5 rounded-lg text-text-muted hover:text-indigo-400 hover:bg-indigo-400/10 transition-colors"
                   >
                     <Pencil className="w-3.5 h-3.5" />
                   </button>
-                  <button
+                  <button aria-label="Delete"
                     onClick={() => confirmDialog({ message: `Delete "${et.title}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteEventType.mutate(et.id); })}
                     className="p-1.5 rounded-lg text-text-muted hover:text-red-400 hover:bg-red-400/10 transition-colors"
                   >

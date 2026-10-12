@@ -13,6 +13,7 @@ import {
   CRM_TASK_PRIORITY_LABELS, CRM_TASK_PRIORITY_COLORS,
 } from '../types/crm.types';
 import { format, isPast, parseISO } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -42,8 +43,8 @@ const dropPanelStyle: React.CSSProperties = { borderRadius: 12, background: 'var
 const TASK_PRIORITY_OPTS = [
   { value: '1', label: 'Low',      dot: '#B8E6D5', text: 'text-text-secondary',  hover: 'hover:bg-text-secondary/[0.08]' },
   { value: '2', label: 'Medium',   dot: '#F59E0B', text: 'text-warning',       hover: 'hover:bg-warning/[0.08]'  },
-  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger',           hover: 'hover:bg-danger/[0.08]'   },
-  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger font-bold', hover: 'hover:bg-danger/[0.12]'   },
+  { value: '3', label: 'High',     dot: '#F43F5E', text: 'text-danger-light',           hover: 'hover:bg-danger/[0.08]'   },
+  { value: '4', label: 'Critical', dot: '#F43F5E', text: 'text-danger-light font-bold', hover: 'hover:bg-danger/[0.12]'   },
 ] as const;
 
 function Badge({ label, colorCls }: { label: string; colorCls: string }) {
@@ -67,7 +68,7 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
       <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -115,12 +116,18 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmTaskCreateR
         <div style={{ height: 1, background: 'linear-gradient(90deg, transparent, rgb(var(--brand-rgb)) 35%, rgb(var(--brand-light-rgb)) 65%, transparent)', flexShrink: 0 }} />
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Task</h3>
-          <button onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary transition-all"><X className="w-4 h-4" /></button>
         </div>
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col min-h-0">
           <div className="overflow-y-auto flex-1 min-h-0 px-6 py-5 space-y-4">
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Title *</label><input required value={form.title} onChange={set('title')} placeholder="Task title..." className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label><textarea rows={3} value={form.description} onChange={set('description')} placeholder="Optional details..." className={`${formInputCls} resize-none`} style={formInputStyle} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Title *</span>
+  <input required value={form.title} onChange={set('title')} placeholder="Task title..." className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+  <textarea rows={3} value={form.description} onChange={set('description')} placeholder="Optional details..." className={`${formInputCls} resize-none`} style={formInputStyle} />
+</label></div>
 
             {/* Priority custom dropdown */}
             <div>
@@ -155,17 +162,29 @@ function CreateForm({ onSave, onCancel, isSaving }: { onSave: (d: CrmTaskCreateR
               </div>
             </div>
 
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Due Date</label><input type="datetime-local" value={form.dueDate} onChange={set('dueDate')} className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Deal ID (optional)</label><input value={form.dealId} onChange={set('dealId')} placeholder="UUID" className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Assign To (User ID)</label><input value={form.assignedToUserId} onChange={set('assignedToUserId')} placeholder="UUID" className={formInputCls} style={formInputStyle} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1.5">Reminder (minutes before)</label><input type="number" min={0} value={form.reminderMinutesBefore} onChange={set('reminderMinutesBefore')} placeholder="e.g. 30" className={formInputCls} style={formInputStyle} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Due Date</span>
+  <input type="datetime-local" value={form.dueDate} onChange={set('dueDate')} className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Deal ID (optional)</span>
+  <input value={form.dealId} onChange={set('dealId')} placeholder="UUID" className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Assign To (User ID)</span>
+  <input value={form.assignedToUserId} onChange={set('assignedToUserId')} placeholder="UUID" className={formInputCls} style={formInputStyle} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1.5">Reminder (minutes before)</span>
+  <input type="number" min={0} value={form.reminderMinutesBefore} onChange={set('reminderMinutesBefore')} placeholder="e.g. 30" className={formInputCls} style={formInputStyle} />
+</label></div>
           </div>
           <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-            <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-colors">Cancel</button>
-            <button type="submit" disabled={isSaving || !form.title.trim()} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+            <Button type="button" onClick={onCancel} variant="secondary">Cancel</Button>
+            <Button type="submit" disabled={isSaving || !form.title.trim()} variant="primary">
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Task
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -201,7 +220,7 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
           {task.description && <Field label="Description">{task.description}</Field>}
           {task.dueDate && (
             <Field label="Due Date">
-              <span className={isPast(parseISO(task.dueDate)) && !isDone ? 'text-danger' : ''}>
+              <span className={isPast(parseISO(task.dueDate)) && !isDone ? 'text-danger-light' : ''}>
                 {format(parseISO(task.dueDate), 'MMM d, yyyy HH:mm')}
               </span>
             </Field>
@@ -215,22 +234,22 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
 
         <div className="flex gap-2 pt-1">
           {!isDone && (
-            <button onClick={() => complete.mutate(task.id)} disabled={complete.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-bg transition-all disabled:opacity-50">
+            <Button onClick={() => complete.mutate(task.id)} disabled={complete.isPending} variant="success" size="sm">
               {complete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CheckSquare className="w-3.5 h-3.5" />} Mark Complete
-            </button>
+            </Button>
           )}
-          <button onClick={() => setEditing(v => !v)} className="px-3 py-1.5 rounded-lg bg-bg-elevated text-text-secondary text-xs font-semibold border border-border-subtle hover:text-text-primary transition-all">
+          <Button onClick={() => setEditing(v => !v)} variant="secondary" size="sm">
             {editing ? 'Cancel Edit' : 'Edit'}
-          </button>
+          </Button>
           {confirmDelete ? (
             <div className="flex gap-1.5 ml-auto">
-              <button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} className="px-2 py-1 rounded-lg bg-danger-soft text-danger text-xs font-semibold border border-danger/20 hover:bg-danger hover:text-bg transition-all">
+              <Button onClick={() => del.mutate(task.id, { onSuccess: onClose })} disabled={del.isPending} variant="danger" size="sm">
                 {del.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Confirm'}
-              </button>
+              </Button>
               <button onClick={() => setConfirmDelete(false)} className="text-xs text-text-muted hover:text-text-primary px-1">×</button>
             </div>
           ) : (
-            <button onClick={() => setConfirmDelete(true)} className="ml-auto p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all" title="Delete task">
+            <button onClick={() => setConfirmDelete(true)} className="ml-auto p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all" title="Delete task">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
           )}
@@ -241,19 +260,33 @@ function DetailPanel({ task, onClose }: { task: CrmTaskSummaryDto; onClose: () =
             e.preventDefault();
             update.mutate({ id: task.id, data: { title: editForm.title || undefined, description: editForm.description || undefined, priority: editForm.priority ? Number(editForm.priority) as CrmTaskPriority : undefined, dueDate: editForm.dueDate || undefined, completionNotes: editForm.completionNotes || undefined } }, { onSuccess: () => setEditing(false) });
           }} className="space-y-3 pt-3 border-t border-border-subtle">
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Title</label><input value={editForm.title} onChange={setEdit('title')} className={inputCls} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Description</label><textarea rows={2} value={editForm.description} onChange={setEdit('description')} className={`${inputCls} resize-none`} /></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Title</span>
+  <input value={editForm.title} onChange={setEdit('title')} className={inputCls} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Description</span>
+  <textarea rows={2} value={editForm.description} onChange={setEdit('description')} className={`${inputCls} resize-none`} />
+</label></div>
             <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1">Priority</label>
-              <select value={editForm.priority} onChange={setEdit('priority')} className={`${selectCls} w-full`}>
-                {Object.entries(CRM_TASK_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
-              </select>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-muted mb-1">Priority</span>
+                <select value={editForm.priority} onChange={setEdit('priority')} className={`${selectCls} w-full`}>
+                  {Object.entries(CRM_TASK_PRIORITY_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
+                </select>
+              </label>
             </div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Due Date</label><input type="datetime-local" value={editForm.dueDate} onChange={setEdit('dueDate')} className={inputCls} /></div>
-            <div><label className="block text-xs font-semibold text-text-muted mb-1">Completion Notes</label><textarea rows={2} value={editForm.completionNotes} onChange={setEdit('completionNotes')} className={`${inputCls} resize-none`} /></div>
-            <button type="submit" disabled={update.isPending} className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all">
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Due Date</span>
+  <input type="datetime-local" value={editForm.dueDate} onChange={setEdit('dueDate')} className={inputCls} />
+</label></div>
+            <div><label className="block">
+  <span className="block text-xs font-semibold text-text-muted mb-1">Completion Notes</span>
+  <textarea rows={2} value={editForm.completionNotes} onChange={setEdit('completionNotes')} className={`${inputCls} resize-none`} />
+</label></div>
+            <Button type="submit" disabled={update.isPending} variant="primary" block>
               {update.isPending ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Save Changes'}
-            </button>
+            </Button>
           </form>
         )}
       </div>
@@ -301,7 +334,7 @@ function TaskCard({ task, onClick, onComplete, isCompleting }: TaskCardProps) {
       <div className="flex items-center gap-1.5 text-[10px]">
         <Calendar className="w-3 h-3 text-text-muted shrink-0" strokeWidth={1.5} />
         {task.dueDate ? (
-          <span className={isOverdue ? 'text-danger font-semibold' : 'text-text-secondary'}>
+          <span className={isOverdue ? 'text-danger-light font-semibold' : 'text-text-secondary'}>
             {format(parseISO(task.dueDate), 'MMM d, yyyy')}{isOverdue ? ' · Overdue' : ''}
           </span>
         ) : (
@@ -379,15 +412,15 @@ export function Component() {
         {/* Header */}
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Tasks</h1>
+            <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Tasks</h1>
             <p className="text-sm text-text-secondary mt-1">Manage and track your team's tasks</p>
           </div>
-          <button
+          <Button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Task
-          </button>
+          </Button>
         </div>
 
         {/* Filter bar */}
@@ -397,7 +430,7 @@ export function Component() {
             <input
               value={searchInput}
               onChange={e => setSearchInput(e.target.value)}
-              placeholder="Search tasks..."
+              placeholder="Search tasks..." aria-label="Search tasks..."
               className="w-full pl-9 pr-4 py-2 text-sm bg-bg-elevated border border-border-subtle rounded-xl text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors"
             />
           </div>
@@ -406,7 +439,7 @@ export function Component() {
             {STATUS_PILLS.map((pill) => {
               const isActive = pill.value === selectedStatus;
               return (
-                <button
+                <button aria-pressed={isActive}
                   key={pill.label}
                   onClick={() => setSelectedStatus(pill.value)}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
@@ -421,7 +454,7 @@ export function Component() {
             })}
           </div>
 
-          <select
+          <select aria-label="Filter by priority"
             value={priorityFilter ?? ''}
             onChange={e => setPriorityFilter(e.target.value ? Number(e.target.value) as CrmTaskPriority : undefined)}
             className="text-xs bg-bg-elevated border border-border-subtle rounded-xl px-3 py-2 text-text-secondary focus:outline-none focus:border-border-glow transition-colors cursor-pointer"
@@ -467,22 +500,22 @@ export function Component() {
               Showing {fromItem}–{toItem} of {totalCount} tasks
             </span>
             <div className="flex gap-2">
-              <button
+              <Button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+                variant="secondary" size="sm"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 Prev
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+                variant="secondary" size="sm"
               >
                 Next
                 <ChevronRight className="w-3.5 h-3.5" />
-              </button>
+              </Button>
             </div>
           </div>
         )}

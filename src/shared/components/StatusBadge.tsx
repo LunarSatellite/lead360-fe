@@ -7,7 +7,7 @@ const variantStyles: Record<BadgeVariant, string> = {
   brand: 'bg-brand-soft text-brand',
   info: 'bg-info-soft text-info',
   warning: 'bg-warning-soft text-warning',
-  danger: 'bg-danger-soft text-danger',
+  danger: 'bg-danger-soft text-danger-light',
   muted: 'bg-glass-2 text-text-muted',
 };
 

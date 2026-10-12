@@ -4,6 +4,7 @@ import { useCategories } from '@/features/business-catalog/api/business-catalog.
 import type { CatalogCategory } from '@/features/business-catalog/types/business-catalog.types';
 import type { FlowNodeData } from '../types/flow.types';
 import { NODE_TYPE_META } from '../types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface NodeConfigPanelProps {
   node: Node<FlowNodeData> | null;
@@ -83,59 +84,67 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
 
       {/* Name */}
       <div>
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Name</label>
-        <input
+        <label className="block">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Name</span>
+          <input
           value={data.label}
           onChange={(e) => onUpdate(node.id, { label: e.target.value })}
           className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white"
         />
+        </label>
       </div>
 
       {/* Type (read-only) */}
       <div>
-        <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Type</label>
-        <input
+        <label className="block">
+          <span className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Type</span>
+          <input
           value={meta?.label || data.nodeType}
           disabled
           className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs bg-glass-1 text-text-muted"
         />
+        </label>
       </div>
 
       {/* Catalog node: friendly Action + Category controls (avoids hand-editing raw JSON) */}
       {data.nodeType === 'catalog' && (
         <>
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Action</label>
-            <select
-              value={catalogConfig?.action ?? 'browse'}
-              onChange={(e) =>
-                onUpdate(node.id, { config: { ...(data.config || {}), action: e.target.value } })
-              }
-              className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white"
-            >
-              {CATALOG_ACTION_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
+            <label className="block">
+              <span className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Action</span>
+              <select
+                value={catalogConfig?.action ?? 'browse'}
+                onChange={(e) =>
+                  onUpdate(node.id, { config: { ...(data.config || {}), action: e.target.value } })
+                }
+                className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white"
+              >
+                {CATALOG_ACTION_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </label>
           </div>
 
           {catalogConfig?.action === 'items' && (
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Category</label>
-              <select
-                value={catalogConfig?.categoryId ?? ''}
-                onChange={(e) =>
-                  onUpdate(node.id, {
-                    config: { ...(data.config || {}), categoryId: e.target.value || undefined },
-                  })
-                }
-                className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white"
-              >
-                <option value="">Select a category…</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
+              <label className="block">
+                <span className="block text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1">Category</span>
+                <select
+                  value={catalogConfig?.categoryId ?? ''}
+                  onChange={(e) =>
+                    onUpdate(node.id, {
+                      config: { ...(data.config || {}), categoryId: e.target.value || undefined },
+                    })
+                  }
+                  className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-white"
+                >
+                  <option value="">Select a category…</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </label>
               <p className="mt-1 text-[10px] text-text-muted">
                 This button will jump straight into this category's items — customers won't see the "choose a category" list first.
               </p>
@@ -225,13 +234,13 @@ export function NodeConfigPanel({ node, onUpdate, onDelete }: NodeConfigPanelPro
       </div>
 
       {/* Delete */}
-      <button
+      <Button
         onClick={() => onDelete(node.id)}
-        className="w-full mt-2 py-2 rounded-lg bg-danger-soft border border-danger/[0.12] text-2xs font-semibold text-danger cursor-pointer hover:bg-red-100 transition-colors flex items-center justify-center gap-1.5"
+        variant="danger" block className="mt-2"
       >
         <Trash2 className="w-3 h-3" />
         Delete Node
-      </button>
+      </Button>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, X, Loader2, Building2, Pencil, Trash2, User, Mail, Phone, Globe, CreditCard, MapPin, FileText, DollarSign } from 'lucide-react';
 import { useVendors, useCreateVendor, useUpdateVendor, useDeleteVendor } from '../api/crm.queries';
 import type { VendorDto, VendorCreateRequest, VendorUpdateRequest, VendorFilter } from '../types/crm.types';
+import { Button, IconButton, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
@@ -33,7 +34,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && (
@@ -47,7 +48,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label></div>;
 }
 
 type FormState = { name: string; contactPerson: string; email: string; phone: string; website: string; paymentTermsDays: string; currency: string; address: string; taxNumber: string; notes: string; isActive: boolean };
@@ -66,46 +67,21 @@ function VendorForm({ form, editing, set, onSubmit }: {
       </div>
 
       <Field label="Name *">
-        <div className="relative">
-          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <input required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Acme Supplies Ltd."
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-        </div>
+        <Input icon={Building2} required value={form.name} onChange={e => set('name', e.target.value)} placeholder="Acme Supplies Ltd." aria-label="Acme Supplies Ltd." style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
       </Field>
 
       <div className="grid grid-cols-2 gap-3">
         <Field label="Tax Number">
-          <div className="relative">
-            <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.taxNumber} onChange={e => set('taxNumber', e.target.value)} placeholder="TAX-123456"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-          </div>
+          <Input icon={FileText} value={form.taxNumber} onChange={e => set('taxNumber', e.target.value)} placeholder="TAX-123456" aria-label="TAX-123456" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Payment Terms (days)">
-          <div className="relative">
-            <CreditCard className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input type="number" min="0" value={form.paymentTermsDays} onChange={e => set('paymentTermsDays', e.target.value)} placeholder="30"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-          </div>
+          <Input aria-label="Payment terms days" icon={CreditCard} type="number" min="0" value={form.paymentTermsDays} onChange={e => set('paymentTermsDays', e.target.value)} placeholder="30" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Currency">
-          <div className="relative">
-            <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.currency} onChange={e => set('currency', e.target.value)} placeholder="USD"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-          </div>
+          <Input icon={DollarSign} value={form.currency} onChange={e => set('currency', e.target.value)} placeholder="USD" aria-label="USD" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Website">
-          <div className="relative">
-            <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.website} onChange={e => set('website', e.target.value)} placeholder="https://acme.com"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-          </div>
+          <Input aria-label="Website" icon={Globe} value={form.website} onChange={e => set('website', e.target.value)} placeholder="https://acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
       </div>
 
@@ -117,35 +93,20 @@ function VendorForm({ form, editing, set, onSubmit }: {
 
       <div className="grid grid-cols-2 gap-3">
         <Field label="Contact Person">
-          <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.contactPerson} onChange={e => set('contactPerson', e.target.value)} placeholder="Jane Smith"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-          </div>
+          <Input icon={User} value={form.contactPerson} onChange={e => set('contactPerson', e.target.value)} placeholder="Jane Smith" aria-label="Jane Smith" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Email">
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="jane@acme.com"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-          </div>
+          <Input icon={Mail} type="email" value={form.email} onChange={e => set('email', e.target.value)} placeholder="jane@acme.com" aria-label="jane@acme.com" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
         <Field label="Phone">
-          <div className="relative">
-            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+1 555 000 1234"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-          </div>
+          <Input aria-label="Phone" icon={Phone} value={form.phone} onChange={e => set('phone', e.target.value)} placeholder="+1 555 000 1234" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </Field>
       </div>
 
       <Field label="Address">
         <div className="relative">
           <MapPin className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <textarea value={form.address} onChange={e => set('address', e.target.value)} rows={2} placeholder="123 Industrial Ave, Suite 400, New York, NY 10001"
+          <textarea value={form.address} onChange={e => set('address', e.target.value)} rows={2} placeholder="123 Industrial Ave, Suite 400, New York, NY 10001" aria-label="123 Industrial Ave, Suite 400, New York, NY 10001"
             className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </div>
@@ -154,7 +115,7 @@ function VendorForm({ form, editing, set, onSubmit }: {
       <Field label="Notes">
         <div className="relative">
           <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={2} placeholder="Preferred supplier for office electronics…"
+          <textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows={2} placeholder="Preferred supplier for office electronics…" aria-label="Preferred supplier for office electronics…"
             className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
         </div>
@@ -191,7 +152,8 @@ export function Component() {
   const [editing, setEditing] = useState<VendorDto | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm());
 
-  const { data: raw, isLoading } = useVendors(filter);
+  const vendorsQuery = useVendors(filter);
+  const { data: raw } = vendorsQuery;
   const items: VendorDto[] = (raw as any)?.items ?? [];
 
   const createVendor = useCreateVendor();
@@ -229,17 +191,19 @@ export function Component() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Vendors</h2>
-            <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+            <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={vendorsQuery} total={(raw as any)?.totalCount} />
+          </p>
           </div>
-          <button onClick={openCreate} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={openCreate} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Vendor
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-            placeholder="Search vendors..." className="flex-1 rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none" value={filter.isActive === undefined ? '' : String(filter.isActive)} onChange={e => setFilter(f => ({ ...f, isActive: e.target.value === '' ? undefined : e.target.value === 'true', page: 1 }))}>
+            placeholder="Search vendors..." aria-label="Search vendors..." className="flex-1 rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by status" className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" value={filter.isActive === undefined ? '' : String(filter.isActive)} onChange={e => setFilter(f => ({ ...f, isActive: e.target.value === '' ? undefined : e.target.value === 'true', page: 1 }))}>
             <option value="">All</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
@@ -248,14 +212,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-glass-1 overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Building2 className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No vendors found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={vendorsQuery}
+            isEmpty={!items.length}
+            noun="vendors"
+            icon={Building2}
+            emptyTitle="No vendors found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -280,26 +243,26 @@ export function Component() {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
-                        <button onClick={() => openEdit(v)} className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all"><Pencil className="w-3.5 h-3.5" /></button>
-                        <button onClick={() => handleDelete(v)} disabled={deleteVendor.isPending} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50"><Trash2 className="w-3.5 h-3.5" /></button>
+                        <IconButton icon={Pencil} label={`Edit ${v.name}`} variant="ghost" size="sm" onClick={() => openEdit(v)} />
+                        <IconButton icon={Trash2} label={`Delete ${v.name}`} variant="ghost" size="sm" className="hover:bg-danger-soft hover:text-danger-light" onClick={() => handleDelete(v)} disabled={deleteVendor.isPending} />
                       </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Vendor" subtitle="Add a new vendor to your directory"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="vendor-form" disabled={createVendor.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="vendor-form" disabled={createVendor.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createVendor.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Vendor'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -309,11 +272,11 @@ export function Component() {
       <SlideOver open={!!editing} onClose={() => setEditing(null)} title={`Edit — ${editing?.name}`} subtitle="Update vendor details"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setEditing(null)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="vendor-form" disabled={updateVendor.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setEditing(null)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="vendor-form" disabled={updateVendor.isPending}
+              variant="primary" size="lg" className="flex-none">
               {updateVendor.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}
-            </button>
+            </Button>
           </div>
         }
       >

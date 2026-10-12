@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { X, Upload, FileJson, Loader2, AlertTriangle } from 'lucide-react';
 import { useBulkImportIntents } from '../api/intents.queries';
 import type { IntentCreateRequest } from '../types/intents.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface IntentBulkImportModalProps {
   open: boolean;
@@ -117,7 +118,7 @@ export function IntentBulkImportModal({ open, onClose, tenantId }: IntentBulkImp
             <FileJson className="w-5 h-5 text-brand" strokeWidth={1.6} />
             <h2 className="text-lg font-extrabold text-text-primary tracking-tight">Bulk import intents</h2>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-8 h-8 rounded-lg bg-glass-2 flex items-center justify-center text-text-muted hover:text-text-primary transition-all"
           >
@@ -145,37 +146,37 @@ export function IntentBulkImportModal({ open, onClose, tenantId }: IntentBulkImp
               onChange={handleFileUpload}
               className="hidden"
             />
-            <button
+            <Button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-glass-2 border border-border-medium text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-3 transition-all"
+              variant="subtle" size="lg"
             >
               <Upload className="w-4 h-4" strokeWidth={1.8} />
               Upload JSON or CSV file
-            </button>
+            </Button>
           </div>
 
           {/* Textarea */}
           <div>
-            <label className="text-2xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">
-              Or paste JSON array
+            <label className="block">
+              <span className="text-2xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Or paste JSON array</span>
+              <textarea
+                value={jsonData}
+                onChange={(e) => validateAndPreview(e.target.value)}
+                placeholder={
+                  '[\n  {\n    "name": "Track Order",\n    "operationType": 1,\n    "keywords": "track,order,delivery"\n  }\n]'
+                }
+                rows={8}
+                className="w-full px-4 py-3 rounded-lg bg-glass-2 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all resize-none font-mono text-2xs"
+              />
             </label>
-            <textarea
-              value={jsonData}
-              onChange={(e) => validateAndPreview(e.target.value)}
-              placeholder={
-                '[\n  {\n    "name": "Track Order",\n    "operationType": 1,\n    "keywords": "track,order,delivery"\n  }\n]'
-              }
-              rows={8}
-              className="w-full px-4 py-3 rounded-lg bg-glass-2 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all resize-none font-mono text-2xs"
-            />
           </div>
 
           {/* Preview / Error */}
           {parseError && (
             <div className="flex items-start gap-2 px-4 py-3 rounded-lg bg-danger-soft border border-danger/15">
-              <AlertTriangle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" strokeWidth={1.8} />
-              <span className="text-sm text-danger">{parseError}</span>
+              <AlertTriangle className="w-4 h-4 text-danger-light flex-shrink-0 mt-0.5" strokeWidth={1.8} />
+              <span className="text-sm text-danger-light">{parseError}</span>
             </div>
           )}
 
@@ -189,20 +190,20 @@ export function IntentBulkImportModal({ open, onClose, tenantId }: IntentBulkImp
 
           {/* Error from API */}
           {bulkImport.isError && (
-            <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger">
+            <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger-light">
               {bulkImport.error?.message || 'Import failed.'}
             </div>
           )}
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-2">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-lg bg-glass-2 border border-border-medium text-sm font-semibold text-text-secondary hover:text-text-primary transition-all"
+              variant="subtle" size="lg"
             >
               Cancel
-            </button>
+            </Button>
             <button
               onClick={handleImport}
               disabled={previewCount === 0 || !!parseError || bulkImport.isPending}

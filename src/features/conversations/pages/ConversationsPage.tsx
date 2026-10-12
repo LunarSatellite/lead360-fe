@@ -6,6 +6,7 @@ import { useActiveSessions, useAwaitingSessions, useMySessions, useMessages, use
 import { useMoveDealStage, useCloseDeal, useDealStages } from '../../crm/api/crm.queries';
 import { SESSION_STATUS_LABEL, SESSION_STATUS_COLOR, CHANNEL_LABEL, ROUTING_PATH_LABEL, MessageDirection } from '../types/conversation.types';
 import type { SessionDto } from '../types/conversation.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   // Deep-link support: /dashboard/conversations?session=<id> (used by the Home
@@ -29,7 +30,7 @@ export function Component() {
       <div className="grid grid-cols-3 gap-4">
         {[
           { key: 'active' as const, label: 'Active', count: active?.length ?? 0, icon: MessageSquare, color: 'text-success' },
-          { key: 'awaiting' as const, label: 'Awaiting Agent', count: (awaiting as any)?.length ?? 0, icon: Users, color: ((awaiting as any)?.length ?? 0) > 0 ? 'text-danger' : 'text-warning' },
+          { key: 'awaiting' as const, label: 'Awaiting Agent', count: (awaiting as any)?.length ?? 0, icon: Users, color: ((awaiting as any)?.length ?? 0) > 0 ? 'text-danger-light' : 'text-warning' },
           { key: 'mine' as const, label: 'My Sessions', count: mine?.length ?? 0, icon: UserCheck, color: 'text-info' },
         ].map(c => (
           <button key={c.key} onClick={() => setTab(c.key)} className={`text-left ${tab === c.key ? 'ring-2 ring-brand rounded-2xl' : ''}`}>
@@ -62,7 +63,7 @@ export function Component() {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-75" />
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-danger" />
                     </span>
-                    <span className="text-2xs font-bold text-danger uppercase tracking-wide">Needs Agent</span>
+                    <span className="text-2xs font-bold text-danger-light uppercase tracking-wide">Needs Agent</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between mb-1">
@@ -158,24 +159,24 @@ function DealSidebar({ sessionId }: { sessionId: string }) {
           {/* Stage control */}
           <div className="p-4 border-b border-border-subtle space-y-2">
             <p className="text-xs font-semibold text-text-muted">Stage</p>
-            <select
+            <select aria-label="Stage ID"
               value={deal.stageId ?? ''}
               onChange={e => moveStage.mutate({ id: deal.id, data: { stageId: e.target.value } })}
-              className="w-full px-2 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary focus:outline-none"
+              className="w-full px-2 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
             >
               {stages.filter(s => !s.isClosed).map(s => (
                 <option key={s.id} value={s.id}>{s.name}</option>
               ))}
             </select>
             <div className="flex gap-2">
-              <button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: true } })}
-                className="flex-1 py-1.5 rounded-lg bg-success-soft text-success text-xs font-bold border border-success/20 hover:bg-success hover:text-white transition-all">
+              <Button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: true } })}
+                variant="success" size="sm" className="flex-1">
                 Won ✓
-              </button>
-              <button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: false } })}
-                className="flex-1 py-1.5 rounded-lg bg-danger-soft text-danger text-xs font-bold border border-danger/20 hover:bg-danger hover:text-white transition-all">
+              </Button>
+              <Button onClick={() => closeDeal.mutate({ id: deal.id, data: { isWon: false } })}
+                variant="danger" size="sm" className="flex-1">
                 Lost ✗
-              </button>
+              </Button>
             </div>
           </div>
 
@@ -236,9 +237,9 @@ function MessageViewer({ sessionId }: { sessionId: string }) {
           <button onClick={() => returnBot.mutate(sessionId)} className="flex items-center gap-1 px-2 py-1 rounded text-2xs font-bold text-info bg-info-soft hover:brightness-110">
             <ArrowLeftRight className="w-3 h-3" /> Return to Bot
           </button>
-          <button onClick={() => close.mutate(sessionId)} className="flex items-center gap-1 px-2 py-1 rounded text-2xs font-bold text-danger bg-danger-soft hover:brightness-110">
+          <Button onClick={() => close.mutate(sessionId)} variant="danger" size="sm">
             <XIcon className="w-3 h-3" /> Close
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -262,7 +263,7 @@ function MessageViewer({ sessionId }: { sessionId: string }) {
                       : 'bg-brand text-white rounded-br-none'    // bot message = brand
                 }`}>
                   {m.direction !== MessageDirection.Inbound && m.createdBy && m.createdBy !== '00000000-0000-0000-0000-000000000000' && (
-                    <p className="text-2xs text-white/70 mb-0.5 font-semibold">Agent</p>
+                    <p className="text-2xs text-text-muted mb-0.5 font-semibold">Agent</p>
                   )}
                   {m.content}
                   <div className="text-2xs mt-1 opacity-70">
@@ -294,16 +295,16 @@ function MessageViewer({ sessionId }: { sessionId: string }) {
             value={replyText}
             onChange={e => setReplyText(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && sendReply()}
-            placeholder="Type a reply to the customer..."
+            placeholder="Type a reply to the customer..." aria-label="Type a reply to the customer..."
             className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors"
           />
-          <button
+          <Button
             onClick={sendReply}
             disabled={!replyText.trim() || reply.isPending}
-            className="px-3 py-2 rounded-xl bg-brand text-bg font-bold disabled:opacity-50 hover:opacity-90 transition-all flex items-center gap-1.5"
+            variant="primary"
           >
             {reply.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-          </button>
+          </Button>
         </div>
         <p className="text-2xs text-text-muted mt-1.5">Press Enter to send · Green = agent · Blue = bot</p>
       </div>

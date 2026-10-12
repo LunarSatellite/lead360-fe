@@ -16,6 +16,7 @@ import {
   type BusinessProfileUpsertRequest,
   type BusinessTypeValue,
 } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   existing: BusinessProfile | undefined;
@@ -114,28 +115,28 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
             <Input
               value={form.transactionLabel}
               onChange={(v) => setForm({ ...form, transactionLabel: v })}
-              placeholder="Order / Appointment / Booking"
+              placeholder="Order / Appointment / Booking" aria-label="Order / Appointment / Booking"
             />
           </Field>
           <Field label="Internal type code">
             <Input
               value={form.transactionType}
               onChange={(v) => setForm({ ...form, transactionType: v.toLowerCase() })}
-              placeholder="order / appointment / booking"
+              placeholder="order / appointment / booking" aria-label="order / appointment / booking"
             />
           </Field>
           <Field label="What you call your catalog">
             <Input
               value={form.catalogLabel}
               onChange={(v) => setForm({ ...form, catalogLabel: v })}
-              placeholder="Products / Doctors / Rooms"
+              placeholder="Products / Doctors / Rooms" aria-label="Products / Doctors / Rooms"
             />
           </Field>
           <Field label="What you call one item">
             <Input
               value={form.itemLabel}
               onChange={(v) => setForm({ ...form, itemLabel: v })}
-              placeholder="Product / Doctor / Room"
+              placeholder="Product / Doctor / Room" aria-label="Product / Doctor / Room"
             />
           </Field>
         </div>
@@ -188,7 +189,7 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
         {form.collectsTimeSlot && (
           <div className="mt-3">
             <Field label="Slot duration (minutes)">
-              <Input
+              <Input aria-label="Slot duration mins"
                 type="number"
                 value={form.slotDurationMins?.toString() ?? ''}
                 onChange={(v) =>
@@ -221,11 +222,11 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
             <Input
               value={form.notifyEmail ?? ''}
               onChange={(v) => setForm({ ...form, notifyEmail: v.trim() === '' ? null : v })}
-              placeholder="orders@yourbusiness.com"
+              placeholder="orders@yourbusiness.com" aria-label="orders@yourbusiness.com"
             />
           </Field>
           <Field label="Notify phone (optional)">
-            <Input
+            <Input aria-label="Notify phone"
               value={form.notifyPhone ?? ''}
               onChange={(v) => setForm({ ...form, notifyPhone: v.trim() === '' ? null : v })}
               placeholder="+1 555 555 0123"
@@ -236,13 +237,11 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
 
       {/* ─── Save ─── */}
       <div className="flex items-center justify-end gap-2 pt-2">
-        <button
+        <Button
           type="button"
           disabled={upsert.isPending}
           onClick={handleSubmit}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold
-                     bg-brand text-white hover:bg-brand/90 disabled:opacity-50
-                     transition-all"
+          variant="primary"
         >
           {upsert.isPending ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -250,7 +249,7 @@ export function BusinessProfileForm({ existing, onSaved }: Props) {
             <Save className="w-3.5 h-3.5" strokeWidth={2} />
           )}
           {existing ? 'Update profile' : 'Save profile'}
-        </button>
+        </Button>
       </div>
     </div>
   );

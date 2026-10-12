@@ -143,7 +143,7 @@ function SummaryPill({ label, value, color }: { label: string; value: number; co
     info: 'bg-info-soft text-info',
     success: 'bg-success-soft text-success',
     warning: 'bg-warning-soft text-warning',
-    danger: 'bg-danger-soft text-danger',
+    danger: 'bg-danger-soft text-danger-light',
   };
   return (
     <div

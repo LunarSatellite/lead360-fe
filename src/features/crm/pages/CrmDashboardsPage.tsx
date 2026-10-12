@@ -12,6 +12,7 @@ import {
 import { ReportResultView } from './CrmReportsPage';
 import type { CrmDashboardDto, CrmDashboardWidgetDto, CrmDashboardMetricDto } from '../types/crm-reports.types';
 import { WIDGET_TYPES } from '../types/crm-reports.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
 const selectCls = inputCls;
@@ -78,19 +79,23 @@ function CreateDashboardForm({ onDone, onCancel }: { onDone: () => void; onCance
     <div className="bg-glass-1 border border-brand rounded-2xl p-6 space-y-4">
       <div className="flex items-center justify-between">
         <div className="text-base font-bold text-text-primary">New dashboard</div>
-        <button onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
+        <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Name</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sales Overview" className={inputCls} />
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Name</span>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sales Overview" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Description <span className="opacity-40">(optional)</span></label>
-          <input value={description} onChange={(e) => setDescription(e.target.value)} className={inputCls} />
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Description <span className="opacity-40">(optional)</span></span>
+            <input value={description} onChange={(e) => setDescription(e.target.value)} className={inputCls} />
+          </label>
         </div>
         <div className="flex justify-end gap-3">
-          <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary">Cancel</button>
+          <Button type="button" onClick={onCancel} variant="subtle">Cancel</Button>
           <button type="submit" disabled={create.isPending || !name.trim()} className="px-5 py-2 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 disabled:opacity-50">
             Create dashboard
           </button>
@@ -114,13 +119,13 @@ function DashboardCard({ dashboard, onOpen }: { dashboard: CrmDashboardDto; onOp
         </div>
         {dashboard.description && <div className="text-xs text-text-muted mt-0.5">{dashboard.description}</div>}
       </div>
-      <button
+      <button aria-label="Delete"
         onClick={(e) => {
           e.stopPropagation();
           confirmDialog({ message: `Delete dashboard "${dashboard.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) del.mutate(dashboard.id); });
         }}
-        className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all flex-shrink-0"
+        className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all flex-shrink-0"
       >
         <Trash2 className="w-4 h-4" />
       </button>
@@ -241,7 +246,7 @@ function AddWidgetForm({ dashboardId, existingWidgets, onDone, onCancel }: {
     <div className="bg-glass-1 border border-brand rounded-2xl p-6 space-y-4">
       <div className="flex items-center justify-between">
         <div className="text-base font-bold text-text-primary">Add widget</div>
-        <button onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
+        <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary"><X className="w-5 h-5" /></button>
       </div>
       {reports.length === 0 && metrics.length === 0 ? (
         <div className="text-sm text-text-muted">You need at least one saved report first — build one on the Reports page.</div>
@@ -265,35 +270,43 @@ function AddWidgetForm({ dashboardId, existingWidgets, onDone, onCancel }: {
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">
-              <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Title</label>
-              <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Open deals" className={inputCls} />
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Title</span>
+                <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Open deals" className={inputCls} />
+              </label>
             </div>
             <div>
-              <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Widget type</label>
-              <select value={widgetType} onChange={(e) => setWidgetType(e.target.value)} className={selectCls}>
-                {WIDGET_TYPES.map((t) => <option key={t} value={t} className="bg-bg">{t}</option>)}
-              </select>
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Widget type</span>
+                <select value={widgetType} onChange={(e) => setWidgetType(e.target.value)} className={selectCls}>
+                  {WIDGET_TYPES.map((t) => <option key={t} value={t} className="bg-bg">{t}</option>)}
+                </select>
+              </label>
             </div>
           </div>
           {source === 'report' ? (
             <div>
-              <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Report</label>
-              <select value={reportId} onChange={(e) => setReportId(e.target.value)} className={selectCls}>
-                <option value="" className="bg-bg">Select a saved report...</option>
-                {reports.map((r) => <option key={r.id} value={r.id} className="bg-bg">{r.name}</option>)}
-              </select>
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Report</span>
+                <select value={reportId} onChange={(e) => setReportId(e.target.value)} className={selectCls}>
+                  <option value="" className="bg-bg">Select a saved report...</option>
+                  {reports.map((r) => <option key={r.id} value={r.id} className="bg-bg">{r.name}</option>)}
+                </select>
+              </label>
             </div>
           ) : (
             <div>
-              <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Metric</label>
-              <select value={metricKey} onChange={(e) => setMetricKey(e.target.value)} className={selectCls}>
-                <option value="" className="bg-bg">Select a built-in metric...</option>
-                {metrics.map((m) => <option key={m.key} value={m.key} className="bg-bg">{m.label}</option>)}
-              </select>
+              <label className="block">
+                <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Metric</span>
+                <select value={metricKey} onChange={(e) => setMetricKey(e.target.value)} className={selectCls}>
+                  <option value="" className="bg-bg">Select a built-in metric...</option>
+                  {metrics.map((m) => <option key={m.key} value={m.key} className="bg-bg">{m.label}</option>)}
+                </select>
+              </label>
             </div>
           )}
           <div className="flex justify-end gap-3">
-            <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary">Cancel</button>
+            <Button type="button" onClick={onCancel} variant="subtle">Cancel</Button>
             <button type="submit" disabled={addWidget.isPending || !isValid} className="px-5 py-2 rounded-lg text-sm font-bold bg-gradient-to-br from-brand to-brand-dark text-white hover:brightness-110 disabled:opacity-50">
               Add widget
             </button>
@@ -321,10 +334,10 @@ function WidgetCard({ widget, dashboardId }: { widget: CrmDashboardWidgetDto; da
         <button onClick={() => refetch()} disabled={isFetching} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
           <RotateCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
         </button>
-        <button
+        <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Remove widget "${widget.title}"?`, confirmText: 'Remove', danger: true })
             .then((ok) => { if (ok) removeWidget.mutate(widget.id); })}
-          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
         >
           <Trash2 className="w-4 h-4" />
         </button>

@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import {
   Sparkles, ArrowRight, Upload, FileText, X, Loader2,
 } from 'lucide-react';
+import { Button } from '@/shared/ui/primitives';
 
 interface NlpCommandBarProps {
   onSubmit: (text: string) => void;
@@ -53,7 +54,7 @@ export function NlpCommandBar({ onSubmit, onFileUpload, isThinking, thinkingStep
             <Sparkles className="w-5 h-5 text-white" strokeWidth={1.8} />
           </div>
 
-          <input
+          <input aria-label="Text"
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -94,7 +95,7 @@ export function NlpCommandBar({ onSubmit, onFileUpload, isThinking, thinkingStep
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-success-soft border border-[rgba(6,214,160,0.15)]">
               <FileText className="w-3.5 h-3.5 text-success" strokeWidth={1.6} />
               <span className="text-2xs font-semibold text-success truncate flex-1">{uploadedFile.name}</span>
-              <button onClick={() => { setUploadedFile(null); if (fileRef.current) fileRef.current.value = ''; }} className="text-success/60 hover:text-success">
+              <button aria-label="Close" onClick={() => { setUploadedFile(null); if (fileRef.current) fileRef.current.value = ''; }} className="text-success/60 hover:text-success">
                 <X className="w-3 h-3" strokeWidth={2} />
               </button>
             </div>
@@ -136,13 +137,13 @@ export function NlpCommandBar({ onSubmit, onFileUpload, isThinking, thinkingStep
             <p className="text-[11px] font-bold uppercase tracking-[1.5px] text-text-muted mb-2">✨ Try these</p>
             <div className="flex flex-wrap gap-1.5">
               {HINTS.map((hint) => (
-                <button
+                <Button
                   key={hint}
                   onClick={() => { setText(hint); }}
-                  className="px-3 py-1.5 rounded-lg bg-glass-2 border border-border-subtle text-2xs text-text-secondary hover:text-brand hover:border-brand hover:bg-brand-soft transition-all"
+                  variant="subtle" size="sm"
                 >
                   {hint}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

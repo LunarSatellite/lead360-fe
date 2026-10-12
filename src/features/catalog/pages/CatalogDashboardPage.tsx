@@ -112,7 +112,7 @@ export function Component() {
         style={{ background: 'rgb(var(--color-surface-sunken))', borderRight: '1px solid rgb(var(--color-border-subtle))' }}
       >
         <div style={{ padding: '20px 20px 16px' }}>
-          <h1 style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>Pipeline</h1>
+          <h1 className="text-xl font-extrabold tracking-tight text-text-primary">Pipeline</h1>
           {/* Fat segmented bar */}
           <div
             style={{
@@ -179,8 +179,13 @@ export function Component() {
                     />
                   )}
 
-                  {/* Ghost number */}
+                  {/* Ghost number. aria-hidden because it is a watermark:
+                      it repeats the position already in the list and axe
+                      measures it as unreadable text, correctly, until it is
+                      told it is decoration. */}
                   <span
+                    aria-hidden
+                    data-decorative
                     className="absolute -right-1 top-1/2 -translate-y-1/2 leading-none pointer-events-none select-none"
                     style={{ fontSize: 60, fontWeight: 800, color: m.color, opacity: sel ? 0.1 : 0.035 }}
                   >
@@ -414,6 +419,7 @@ export function Component() {
             style={{ padding: '12px 18px', fontSize: 13 }}
           />
           <select
+            aria-label="Number of results to return"
             value={mr}
             onChange={(e) => setMr(Number(e.target.value))}
             className="cfi appearance-none cursor-pointer"
@@ -817,12 +823,12 @@ function SyncDtl({
               <FF l="Product Endpoint Path" r>
                 <input
                   {...f.register('productEndpointPath')}
-                  placeholder="/api/products"
+                  placeholder="/api/products" aria-label="/api/products"
                   className="cfi font-mono"
                 />
               </FF>
               <FF l="Pagination Type">
-                <select {...f.register('paginationType')} className="cfi appearance-none cursor-pointer">
+                <select aria-label="Pagination type" {...f.register('paginationType')} className="cfi appearance-none cursor-pointer">
                   <option value="page">Page</option>
                   <option value="offset">Offset</option>
                   <option value="cursor">Cursor</option>
@@ -830,10 +836,10 @@ function SyncDtl({
                 </select>
               </FF>
               <FF l="Page Size">
-                <input {...f.register('pageSize', { valueAsNumber: true })} type="number" className="cfi" />
+                <input aria-label="Page size" {...f.register('pageSize', { valueAsNumber: true })} type="number" className="cfi" />
               </FF>
               <FF l="Sync Interval">
-                <select
+                <select aria-label="Sync interval minutes"
                   {...f.register('syncIntervalMinutes', { valueAsNumber: true })}
                   className="cfi appearance-none cursor-pointer"
                 >
@@ -845,7 +851,7 @@ function SyncDtl({
                 </select>
               </FF>
               <FF l="Data Array Path">
-                <input {...f.register('dataArrayPath')} placeholder="data" className="cfi font-mono" />
+                <input {...f.register('dataArrayPath')} placeholder="data" aria-label="data" className="cfi font-mono" />
               </FF>
               <div className="flex items-end pb-1">
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -860,7 +866,7 @@ function SyncDtl({
               </div>
               <div className="col-span-2">
                 <FF l="Field Mappings (JSON)">
-                  <textarea
+                  <textarea aria-label="Field mappings JSON"
                     {...f.register('fieldMappingsJson')}
                     rows={2}
                     placeholder='{"name": "product_name"}'
@@ -1187,14 +1193,25 @@ function CchDtl({ d, mut }: { d: CacheStatsDto | undefined; mut: ReturnType<type
 }
 
 /* ═══ SHARED ═══ */
+/**
+ * A field label and its control — nested, so the label names it.
+ *
+ * This was a label and a sibling `{children}`, the same shape as the
+ * fourteen `Field` helpers elsewhere in the admin: it names nothing, so
+ * every control it wraps is announced unnamed. The page's own sync-config
+ * form had two criticals from this one component.
+ */
 function FF({ l, r, children }: { l: string; r?: boolean; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="block" style={{ fontSize: 12, fontWeight: 600, color: 'rgb(var(--color-text-muted))', marginBottom: 5 }}>
-        {l} {r && <span style={{ color: 'rgb(var(--color-danger))' }}>*</span>}
-      </label>
+    <label className="block">
+      <span
+        className="block"
+        style={{ fontSize: 12, fontWeight: 600, color: 'rgb(var(--color-text-muted))', marginBottom: 5 }}
+      >
+        {l} {r && <span style={{ color: 'rgb(var(--color-danger-light))' }}>*</span>}
+      </span>
       {children}
-    </div>
+    </label>
   );
 }
 function EmpS() {

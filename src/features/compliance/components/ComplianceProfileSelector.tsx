@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import { Lock, AlertTriangle, X, Loader2 } from 'lucide-react';
 import type { ComplianceProfileSummary } from '../types/compliance.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ComplianceProfileSelectorProps {
   profiles: ComplianceProfileSummary[];
@@ -45,7 +46,7 @@ export function ComplianceProfileSelector({
             <h2 className="text-sm font-bold text-text-primary tracking-tight">Select Compliance Profile</h2>
             <p className="text-[10px] text-text-muted mt-0.5">Choose the compliance rules for your chatbot</p>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-7 h-7 rounded-sm flex items-center justify-center
                        bg-bg-elevated border border-border-subtle
@@ -63,7 +64,7 @@ export function ComplianceProfileSelector({
             const isCurrent = profile.id === currentProfileId;
 
             return (
-              <button
+              <button aria-pressed={isActive}
                 key={profile.id}
                 onClick={() => setSelectedId(profile.id)}
                 className={`
@@ -146,27 +147,20 @@ export function ComplianceProfileSelector({
           </div>
 
           <div className="flex items-center justify-end gap-2">
-            <button
+            <Button
               onClick={onClose}
-              className="px-4 py-2 rounded-[10px] bg-bg-elevated border border-border-subtle
-                         text-2xs font-semibold text-text-secondary
-                         hover:bg-glass-2 hover:border-border-medium
-                         transition-all duration-150"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => selectedId && onSelect(selectedId)}
               disabled={!selectedId || !isChanged || isAssigning}
-              className="px-4 py-2 rounded-[10px] text-2xs font-semibold text-bg
-                         bg-brand hover:bg-brand-light
-                         disabled:opacity-40 disabled:cursor-not-allowed
-                         transition-all duration-150
-                         flex items-center gap-1.5"
+              variant="primary"
             >
               {isAssigning && <Loader2 size={12} strokeWidth={2} className="animate-spin" />}
               Apply Profile
-            </button>
+            </Button>
           </div>
         </div>
       </div>

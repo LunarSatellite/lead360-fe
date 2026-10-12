@@ -13,6 +13,7 @@ import {
   type TransactionStatusValue,
   type TransactionSummary,
 } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 // Determines whether a transactionType string looks like a booking/service
 function isServiceType(type: string): boolean {
@@ -66,9 +67,9 @@ export function TransactionListSection({ transactionLabel }: Props) {
               setSearch(e.target.value);
               setPage(1);
             }}
-            placeholder="Search ID, customer name or phone…"
+            placeholder="Search ID, customer name or phone…" aria-label="Search ID, customer name or phone…"
             className="bg-transparent text-xs text-text-primary placeholder:text-text-muted
-                       focus:outline-none flex-1 min-w-0"
+                       focus:outline-none flex-1 min-w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />
         </div>
         <div className="flex items-center gap-1">
@@ -164,24 +165,22 @@ export function TransactionListSection({ transactionLabel }: Props) {
             Page {page} of {Math.max(1, Math.ceil(total / 20))}
           </span>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               type="button"
               disabled={page === 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="px-3 py-1 rounded-lg bg-glass-2 border border-border-subtle
-                         text-text-secondary hover:text-text-primary disabled:opacity-50 transition-colors"
+              variant="subtle" size="sm"
             >
               Prev
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               disabled={page * 20 >= total}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1 rounded-lg bg-glass-2 border border-border-subtle
-                         text-text-secondary hover:text-text-primary disabled:opacity-50 transition-colors"
+              variant="subtle" size="sm"
             >
               Next
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -231,7 +230,7 @@ function StatusBadge({ status }: { status: TransactionStatusValue }) {
     status === TransactionStatus.Confirmed
       ? 'bg-success-soft text-success'
       : status === TransactionStatus.Cancelled
-        ? 'bg-danger-soft text-danger'
+        ? 'bg-danger-soft text-danger-light'
         : status === TransactionStatus.Preparing
           ? 'bg-info-soft text-info'
           : status === TransactionStatus.ReadyForPickup

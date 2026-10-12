@@ -1,0 +1,87 @@
+# The checks that were only ever run locally.
+#
+# This repository had no workflows at all, so every claim about it — 497
+# passing tests, a clean typecheck, the design-system budgets — rested on
+# someone having run them on their own machine and said so. The budgets in
+# design-system-adoption.test.ts are the clearest case: they exist to stop a
+# hand-rolled button or an unnamed control being added back, and a budget
+# nothing enforces on a pull request is a comment.
+#
+# Hosted runners on this account were rejected for billing earlier in this
+# work on another repository. If that is still true the job will queue
+# rather than run, which is visible and fixable; it is not a reason to leave
+# the checks unrun.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A second push to the same branch cancels the first: the older run's answer
+# is about code nobody is looking at any more.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # 24, not 20. The first run of this workflow pinned 20 and the whole
+      # suite died on `webidl.util.markAsUncloneable is not a function`:
+      # jsdom pulls undici 8, which needs a newer Node than early 20.x. The
+      # version this project runs on was only ever recorded in whichever
+      # Node a developer happened to have installed, which is exactly the
+      # kind of thing CI is for.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # `npm ci` rather than `npm install`: it installs what the lockfile
+      # says and fails if the lockfile and package.json disagree, so CI
+      # cannot pass against a dependency tree nobody has.
+      - run: npm ci
+
+      # Types first. A type error makes the test failures that follow it
+      # noise, and tsc is the faster of the two.
+      - name: Typecheck
+        run: npx tsc --noEmit -p tsconfig.json
+
+      - name: Tests
+        run: npx vitest run --reporter=dot
+
+      # The browser half of the accessibility check. jsdom computes no
+      # layout, so axe skips colour-contrast in the unit tests — and colour
+      # contrast is where every measurable defect in this admin has been.
+      # This runs axe over all 131 pages in the nav model against a
+      # production build.
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Accessibility (WCAG 2.1 AA, in a browser)
+        run: npx playwright test
+        env:
+          VITE_API_BASE_URL: http://127.0.0.1:9/never-reached
+
+      - name: Keep the trace of a failed page
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: test-results/
+          retention-days: 7
+
+      # Lint last and advisory. The repository has pre-existing violations
+      # that predate this workflow — 8 `any`s in CampaignsPage among them —
+      # so failing the build on them would make CI red on arrival and teach
+      # everyone to ignore it. It reports, and `continue-on-error` comes off
+      # when the count reaches zero.
+      - name: Lint
+        run: npx eslint src
+        continue-on-error: true

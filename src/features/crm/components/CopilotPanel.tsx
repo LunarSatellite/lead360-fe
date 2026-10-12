@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Bot, X, Send, Loader2, Wrench, Check, AlertTriangle } from 'lucide-react';
 import { streamAgentMessage, AgentStatus, type AgentProgress, type AgentResult } from '../api/agent.api';
+import { Button } from '@/shared/ui/primitives';
 
 /** Open the CRM Copilot panel from anywhere (header button). */
 export function openCopilot() {
@@ -89,7 +90,7 @@ export function CopilotPanel() {
             <div className="text-sm font-bold text-text-primary">CRM Copilot</div>
             <div className="text-[10px] text-text-muted">Ask questions or take actions across your CRM</div>
           </div>
-          <button onClick={() => setOpen(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
+          <button aria-label="Close" onClick={() => setOpen(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -118,7 +119,7 @@ export function CopilotPanel() {
           {streaming && progress.map((p, i) => (
             <div key={`p${i}`} className="flex items-center gap-2 text-[11px] text-text-muted">
               {p.kind === 'tool_call' ? <Wrench className="w-3 h-3 text-brand" />
-                : p.kind === 'tool_result' ? <Check className={`w-3 h-3 ${p.success === false ? 'text-danger' : 'text-success'}`} />
+                : p.kind === 'tool_result' ? <Check className={`w-3 h-3 ${p.success === false ? 'text-danger-light' : 'text-success'}`} />
                 : <Loader2 className="w-3 h-3 animate-spin" />}
               <span className="truncate">
                 {p.kind === 'tool_call' ? `Calling ${p.toolName}…`
@@ -141,8 +142,8 @@ export function CopilotPanel() {
                 <span>{confirm.prompt}</span>
               </div>
               <div className="flex gap-2 justify-end">
-                <button onClick={() => setConfirm(null)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:text-text-primary transition-all">Cancel</button>
-                <button onClick={() => run('Confirmed.', true)} className="px-3 py-1.5 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">Confirm</button>
+                <Button onClick={() => setConfirm(null)} variant="secondary" size="sm">Cancel</Button>
+                <Button onClick={() => run('Confirmed.', true)} variant="primary" size="sm">Confirm</Button>
               </div>
             </div>
           )}
@@ -155,7 +156,7 @@ export function CopilotPanel() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } }}
-              placeholder="Ask the copilot…"
+              placeholder="Ask the copilot…" aria-label="Ask the copilot…"
               rows={1}
               disabled={streaming}
               className="flex-1 resize-none px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors disabled:opacity-50 max-h-32"

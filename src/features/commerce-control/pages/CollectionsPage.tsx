@@ -21,6 +21,7 @@ import {
   type CollectionStateValue,
   type CollectionSummary,
 } from '../api/stylemint-collections.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Platform-curated collections — the editorial rails on the storefront.
@@ -141,7 +142,7 @@ function CollectionRow({
   onClick: () => void;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${
         active ? 'bg-brand-soft' : ''
@@ -289,19 +290,19 @@ function CollectionEditor({
               : 'Archive this collection? It stops appearing on the storefront.'}
           </p>
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => act.mutate({ kind: confirming })}
               disabled={act.isPending}
-              className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary"
             >
               {act.isPending ? 'Applying…' : 'Confirm'}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setConfirming(null)}
-              className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       ) : (
@@ -315,12 +316,12 @@ function CollectionEditor({
             </button>
           )}
           {collection.state !== CollectionState.Archived && (
-            <button
+            <Button
               onClick={() => setConfirming('archive')}
-              className="flex items-center gap-1.5 rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-bg-elevated"
+              variant="secondary"
             >
               <Archive className="h-3.5 w-3.5" strokeWidth={1.6} /> Archive
-            </button>
+            </Button>
           )}
         </div>
       )}

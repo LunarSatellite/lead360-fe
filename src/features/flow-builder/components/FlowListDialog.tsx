@@ -24,7 +24,7 @@ export function FlowListDialog({ open, onClose, onSelect }: FlowListDialogProps)
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle">
           <h3 className="text-sm font-bold text-text-primary">Saved Flows</h3>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
+          <button aria-label="Close" onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
             <X className="w-4 h-4 text-text-muted" />
           </button>
         </div>
@@ -55,7 +55,7 @@ export function FlowListDialog({ open, onClose, onSelect }: FlowListDialogProps)
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-text-primary truncate">{f.name}</span>
                       {f.isActive && (
-                        <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold text-white bg-brand">
+                        <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold text-text-inverted bg-brand">
                           <Check className="w-2.5 h-2.5" /> Live
                         </span>
                       )}
@@ -84,7 +84,7 @@ export function FlowListDialog({ open, onClose, onSelect }: FlowListDialogProps)
                       className="p-1.5 rounded-md hover:bg-danger-soft disabled:opacity-30"
                       title={f.isActive ? 'Cannot delete active flow' : 'Delete'}
                     >
-                      <Trash2 className="w-3 h-3 text-danger" />
+                      <Trash2 className="w-3 h-3 text-danger-light" />
                     </button>
                   </div>
                 </div>

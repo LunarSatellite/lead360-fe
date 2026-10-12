@@ -614,7 +614,7 @@ function ChannelShowcase() {
                       [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
         {CHANNEL_TABS.map((c, i) => (
-          <button
+          <button aria-pressed={active === i}
             key={c.name}
             onClick={() => goTo(i)}
             className={`ch-tab whitespace-nowrap flex-shrink-0 ${active === i ? 'ch-tab-on' : ''}`}

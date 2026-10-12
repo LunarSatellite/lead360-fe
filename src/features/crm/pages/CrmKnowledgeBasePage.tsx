@@ -6,6 +6,7 @@ import {
 } from '../api/crm-kb.queries';
 import type { CrmKbArticleDto, CrmKbDraftDto } from '../types/crm-kb.types';
 import { CRM_KB_ARTICLE_STATUS_LABELS, CrmKbDraftStatus } from '../types/crm-kb.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
 
@@ -33,7 +34,7 @@ export function Component() {
         >
           Pending Review
           {drafts.length > 0 && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand text-white">{drafts.length}</span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-brand text-text-inverted">{drafts.length}</span>
           )}
         </button>
       </div>
@@ -59,7 +60,7 @@ function ArticlesTab() {
         <input
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          placeholder="Filter by category…"
+          placeholder="Filter by category…" aria-label="Filter by category…"
           className={`${inputCls} pl-9`}
         />
       </div>
@@ -135,12 +136,12 @@ function ArticleDetail({ id, onBack }: { id: string; onBack: () => void }) {
           <ArrowLeft className="w-4 h-4" /> Back
         </button>
         {!editing && (
-          <button
+          <Button
             onClick={() => startEdit(article)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3"
+            variant="subtle" size="sm"
           >
             <Pencil className="w-3.5 h-3.5" /> Edit
-          </button>
+          </Button>
         )}
       </div>
 
@@ -157,17 +158,17 @@ function ArticleDetail({ id, onBack }: { id: string; onBack: () => void }) {
 
         {editing ? (
           <div className="space-y-3">
-            <textarea
+            <textarea aria-label="Content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               rows={14}
               className={`${inputCls} resize-none font-mono`}
             />
             <div className="flex justify-end gap-2">
-              <button onClick={() => setEditing(false)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
-              <button onClick={save} disabled={update.isPending} className="px-4 py-1.5 rounded-lg text-xs font-bold bg-brand text-white hover:brightness-110 disabled:opacity-50">
+              <Button onClick={() => setEditing(false)} variant="ghost" size="sm">Cancel</Button>
+              <Button onClick={save} disabled={update.isPending} variant="primary">
                 Save
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
@@ -245,20 +246,20 @@ function DraftCard({ draft }: { draft: CrmKbDraftDto }) {
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason for rejecting…"
+            placeholder="Reason for rejecting…" aria-label="Reason for rejecting…"
             className={`${inputCls} flex-1`}
           />
           <button onClick={reject} disabled={!reason.trim() || review.isPending} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-danger text-white hover:brightness-110 disabled:opacity-50">
             Confirm reject
           </button>
-          <button onClick={() => setShowReject(false)} className="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
+          <Button onClick={() => setShowReject(false)} variant="ghost" size="sm">Cancel</Button>
         </div>
       ) : (
         <div className="flex gap-2 pt-2 border-t border-border-subtle">
-          <button onClick={approve} disabled={review.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success border border-success/20 hover:bg-success hover:text-white transition-all disabled:opacity-50">
+          <Button onClick={approve} disabled={review.isPending} variant="success" size="sm">
             <Check className="w-3.5 h-3.5" /> Approve & publish
-          </button>
-          <button onClick={() => setShowReject(true)} disabled={review.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50">
+          </Button>
+          <button onClick={() => setShowReject(true)} disabled={review.isPending} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-danger-light border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50">
             <X className="w-3.5 h-3.5" /> Reject
           </button>
         </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { CheckCircle2, ImageUp, Loader2, Save } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
+import { Button } from '@/shared/ui/primitives';
 
 type Props = { data: unknown; canOperate: boolean; onSaved: () => void };
 
@@ -88,20 +89,20 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
     >
       <div className="grid gap-5 xl:grid-cols-2">
         <Section title="Identite Kin Marche">
-          <Input
+          <Input aria-label="Business name"
             label="Nom commercial"
             value={form.businessName}
             onChange={(value) => set('businessName', value)}
             required
             disabled={!canOperate}
           />
-          <Input
+          <Input aria-label="Tagline"
             label="Signature"
             value={form.tagline}
             onChange={(value) => set('tagline', value)}
             disabled={!canOperate}
           />
-          <Input
+          <Input aria-label="Logo URL"
             label="Logo (HTTPS)"
             value={form.logoUrl}
             onChange={(value) => set('logoUrl', value)}
@@ -121,7 +122,7 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
               />
             </div>
           )}
-          <Input
+          <Input aria-label="Website URL"
             label="Site web"
             value={form.websiteUrl}
             onChange={(value) => set('websiteUrl', value)}
@@ -142,20 +143,20 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
         </Section>
         <Section title="Service and pickup">
           <div className="grid grid-cols-[1fr_110px] gap-3">
-            <Input
-              label="Ville d'origine"
+            <Input aria-label="Origin city"
+              label="Home city"
               value={form.originCity}
               onChange={(value) => set('originCity', value)}
               disabled={!canOperate}
             />
-            <Input
+            <Input aria-label="Origin country code"
               label="Pays ISO"
               value={form.originCountryCode}
               onChange={(value) => set('originCountryCode', value)}
               disabled={!canOperate}
             />
           </div>
-          <Input
+          <Input aria-label="Support URL"
             label="URL support HTTPS"
             value={form.supportUrl}
             onChange={(value) => set('supportUrl', value)}
@@ -176,13 +177,13 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
             />
             Retrait en magasin active
           </label>
-          <Input
+          <Input aria-label="Pickup address line"
             label="Pickup address"
             value={form.pickupAddressLine}
             onChange={(value) => set('pickupAddressLine', value)}
             disabled={!canOperate || !form.pickupEnabled}
           />
-          <Input
+          <Input aria-label="Pickup city"
             label="Pickup city"
             value={form.pickupCity}
             onChange={(value) => set('pickupCity', value)}
@@ -191,7 +192,7 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
         </Section>
       </div>
       {(save.isError || upload.isError) && (
-        <p className="mt-4 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-xs font-semibold text-danger">
+        <p className="mt-4 rounded-xl border border-danger/25 bg-danger-soft px-4 py-3 text-xs font-semibold text-danger-light">
           {((save.error || upload.error) as Error).message}
         </p>
       )}
@@ -203,13 +204,13 @@ export function VendorProfileEditor({ data, canOperate, onSaved }: Props) {
           </span>
         )}
         {canOperate ? (
-          <button
+          <Button
             disabled={save.isPending || !form.businessName.trim()}
-            className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+            variant="primary" size="lg"
           >
             {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save profile
-          </button>
+          </Button>
         ) : (
           <span className="text-xs text-text-muted">Read only for the Agent role</span>
         )}

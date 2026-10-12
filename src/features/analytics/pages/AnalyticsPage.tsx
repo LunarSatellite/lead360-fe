@@ -43,7 +43,7 @@ export function Component() {
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="text-center"><div className="text-lg font-extrabold text-text-primary">{h.totalCallsLast24h}</div><div className="text-2xs text-text-muted">Calls 24h</div></div>
-                  <div className="text-center"><div className="text-lg font-extrabold text-danger">{h.failedCallsLast24h}</div><div className="text-2xs text-text-muted">Failed</div></div>
+                  <div className="text-center"><div className="text-lg font-extrabold text-danger-light">{h.failedCallsLast24h}</div><div className="text-2xs text-text-muted">Failed</div></div>
                   <div className="text-center"><div className="text-lg font-extrabold text-success">{h.successRateLast24h?.toFixed(1)}%</div><div className="text-2xs text-text-muted">Success</div></div>
                 </div>
               </>

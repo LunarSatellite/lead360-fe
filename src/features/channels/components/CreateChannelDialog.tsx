@@ -4,6 +4,7 @@ import { X, Plus, Loader2 } from 'lucide-react';
 import { createChannelSchema, type CreateChannelFormData } from '../types/channels.schemas';
 import { useCreateChannel } from '../api/channels.queries';
 import { ChannelType, CHANNEL_TYPE_LABEL, CHANNEL_TYPE_COLOR } from '../types/channels.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface CreateChannelDialogProps {
   tenantId: string;
@@ -98,7 +99,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Connect a new channel to start receiving messages</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" strokeWidth={1.8} />
           </button>
         </div>
@@ -116,11 +117,11 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
                   info: 'border-info/30 bg-info-soft text-info',
                   brand: 'border-brand bg-brand-soft text-brand',
                   warning: 'border-warning/30 bg-warning-soft text-warning',
-                  danger: 'border-danger/30 bg-danger-soft text-danger',
+                  danger: 'border-danger/30 bg-danger-soft text-danger-light',
                   muted: 'border-border-medium bg-glass-2 text-text-secondary',
                 };
                 return (
-                  <button
+                  <button aria-pressed={isSelected}
                     key={opt.value}
                     type="button"
                     onClick={() => form.setValue('channelType', opt.value)}
@@ -139,19 +140,21 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
 
           {/* Channel identifier */}
           <div>
-            <label className={labelClass}>Channel identifier</label>
-            <input
-              {...form.register('channelIdentifier')}
-              placeholder={IDENTIFIER_HINTS[watchedType] ?? 'Unique channel identifier'}
-              className={inputClass}
-              style={{
-                backgroundColor: 'rgb(var(--color-glass-1))',
-                backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                borderColor: 'rgb(var(--brand-rgb) / 0.2)',
-              }}
-            />
+            <label className="flex flex-col">
+              <span className={labelClass}>Channel identifier</span>
+              <input
+                {...form.register('channelIdentifier')}
+                placeholder={IDENTIFIER_HINTS[watchedType] ?? 'Unique channel identifier'}
+                className={inputClass}
+                style={{
+                  backgroundColor: 'rgb(var(--color-glass-1))',
+                  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  borderColor: 'rgb(var(--brand-rgb) / 0.2)',
+                }}
+              />
+            </label>
             {form.formState.errors.channelIdentifier && (
-              <p className="text-xs text-danger mt-1.5">{form.formState.errors.channelIdentifier.message}</p>
+              <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.channelIdentifier.message}</p>
             )}
           </div>
 
@@ -160,7 +163,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
             <label className={labelClass}>
               Display name <span className="opacity-40">(optional)</span>
             </label>
-            <input
+            <input aria-label="Display name"
               {...form.register('displayName')}
               placeholder="e.g. Main WhatsApp, Support SMS"
               className={inputClass}
@@ -178,7 +181,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
               Advanced configuration (JSON)
             </summary>
             <div className="mt-2">
-              <textarea
+              <textarea aria-label="Configuration JSON"
                 {...form.register('configurationJson')}
                 placeholder='{"accessToken": "...", "verifyToken": "..."}'
                 rows={3}
@@ -194,7 +197,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
 
           {/* Error */}
           {create.isError && (
-            <div className="px-3.5 py-3 rounded-xl border border-brand/20 text-sm text-danger"
+            <div className="px-3.5 py-3 rounded-xl border border-brand/20 text-sm text-danger-light"
               style={{ background: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
               {create.error?.message || 'Failed to create channel.'}
             </div>
@@ -202,17 +205,17 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 pt-1">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={create.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {create.isPending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -220,7 +223,7 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
                 <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
               )}
               {create.isPending ? 'Creating...' : 'Create connection'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>

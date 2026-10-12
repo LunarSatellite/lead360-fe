@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { X, Loader2, Sparkles, Rocket, Facebook, Video, CheckCircle, LogIn, Youtube, Twitter, Linkedin } from 'lucide-react';
 import { apiClient } from '@/shared/lib/api-client';
+import { Button } from '@/shared/ui/primitives';
 
 interface AiDraft {
   name: string; objective: string; adName: string; headline: string;
@@ -205,14 +206,14 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Create ads with AI in seconds</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Body */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
-          <textarea
+          <textarea aria-label="Prompt"
             className="w-full px-3.5 py-3 rounded-xl text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-all min-h-[100px] resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', border: '1px solid rgb(var(--brand-rgb) / 0.2)' }}
             placeholder="e.g. Summer 30% off on all laptops for young professionals"
@@ -223,10 +224,10 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
           {/* Quick ideas */}
           <div className="flex flex-wrap gap-1.5">
             {['New product launch', 'Get more leads', 'Drive website traffic', 'Brand awareness'].map(s => (
-              <button key={s} onClick={() => setPrompt(s)}
-                className="px-2.5 py-1 rounded-full border border-border-subtle text-[10px] font-semibold text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
+              <Button key={s} onClick={() => setPrompt(s)}
+                variant="secondary" size="sm">
                 {s}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -264,16 +265,16 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
               ) : (
                 <div className="rounded-xl border border-border-subtle bg-bg-elevated p-3 space-y-2">
                   <input value={ttId} onChange={e => setTtId(e.target.value)}
-                    placeholder="Advertiser ID"
+                    placeholder="Advertiser ID" aria-label="Advertiser ID"
                     className="w-full px-3 py-2 rounded-lg bg-bg-card border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
                   <input value={ttToken} onChange={e => setTtToken(e.target.value)}
-                    placeholder="Access Token" type="password"
+                    placeholder="Access Token" aria-label="Access Token" type="password"
                     className="w-full px-3 py-2 rounded-lg bg-bg-card border border-border-subtle text-xs text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand" />
-                  <button onClick={() => ttConnect.mutate()}
+                  <Button onClick={() => ttConnect.mutate()}
                     disabled={ttConnect.isPending || !ttId || !ttToken}
-                    className="w-full py-2 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-40 transition-all">
+                    variant="primary" block>
                     {ttConnect.isPending ? 'Connecting...' : 'Connect TikTok'}
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
@@ -289,12 +290,12 @@ export function AiCampaignWizard({ onClose, onSetupRequired }: { onClose: () => 
         {/* Footer — sticky action button */}
         {anyReady && (
           <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
-            <button onClick={handleSubmit} disabled={createMut.isPending || !prompt.trim()}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand text-bg font-bold text-sm disabled:opacity-40 hover:opacity-90 transition-all">
+            <Button onClick={handleSubmit} disabled={createMut.isPending || !prompt.trim()}
+              variant="primary" size="lg" block>
               {createMut.isPending
                 ? <><Loader2 className="w-4 h-4 animate-spin" /> AI is creating your campaign...</>
                 : <><Rocket className="w-4 h-4" /> Create & Launch</>}
-            </button>
+            </Button>
           </div>
         )}
       </div>

@@ -23,6 +23,7 @@ import {
   type UnitMarker,
 } from '../api/stylemint-unit-markers.api';
 import { ReportPanel } from '../components/ReportPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Per-unit markers: the physical tag a seller attaches to one item, and the binding that ties
@@ -108,26 +109,26 @@ export function UnitMarkersPage() {
           <input
             value={productId}
             onChange={(e) => setProductId(e.target.value)}
-            placeholder="Product id"
+            placeholder="Product id" aria-label="Product id"
             className={`${field} font-mono`}
           />
           <input
             value={variantFilter}
             onChange={(e) => setVariantFilter(e.target.value)}
-            placeholder="Variant id"
+            placeholder="Variant id" aria-label="Variant id"
             className={`${field} font-mono`}
           />
-          <button
+          <Button
             onClick={() =>
               setFilter({
                 productId: productId.trim() || undefined,
                 productVariantId: variantFilter.trim() || undefined,
               })
             }
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary"
           >
             <Search className="h-3.5 w-3.5" strokeWidth={1.6} /> Filter
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -177,7 +178,7 @@ function MintPanel({
         <input
           value={variantId}
           onChange={(e) => setVariantId(e.target.value)}
-          placeholder="Product variant id"
+          placeholder="Product variant id" aria-label="Product variant id"
           className={`${field} font-mono`}
         />
         <input
@@ -186,13 +187,13 @@ function MintPanel({
           step={1}
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
-          placeholder="How many tags"
+          placeholder="How many tags" aria-label="How many tags"
           className={field}
         />
-        <button
+        <Button
           disabled={!ready || mint.isPending}
           onClick={() => mint.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary"
         >
           {mint.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -200,7 +201,7 @@ function MintPanel({
             <Tag className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Mint
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -249,9 +250,9 @@ function SecretsPanel({
           </p>
         </div>
         <div className="flex gap-2">
-          <button
+          <Button
             onClick={copy}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary" size="sm"
           >
             {copied ? (
               <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -259,13 +260,13 @@ function SecretsPanel({
               <Copy className="h-3.5 w-3.5" strokeWidth={1.6} />
             )}
             {copied ? 'Copied' : 'Copy all'}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={onDismiss}
-            className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             I have them
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -419,18 +420,18 @@ function MarkerRow({
         </div>
 
         <div className="flex shrink-0 flex-wrap items-center gap-1.5">
-          <button
+          <Button
             onClick={() => setOpen(open === 'bindings' ? null : 'bindings')}
-            className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             <Link2 className="h-3 w-3" strokeWidth={1.6} /> Bindings
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setOpen(open === 'scans' ? null : 'scans')}
-            className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             <ScanLine className="h-3 w-3" strokeWidth={1.6} /> Scans
-          </button>
+          </Button>
           {!revoked &&
             (confirming ? (
               <>
@@ -444,12 +445,12 @@ function MarkerRow({
                 >
                   Yes, revoke
                 </button>
-                <button
+                <Button
                   onClick={() => setConfirming(false)}
-                  className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+                  variant="secondary" size="sm"
                 >
                   Cancel
-                </button>
+                </Button>
               </>
             ) : (
               <button
@@ -546,16 +547,16 @@ function BindPanel({
         <input
           value={marker}
           onChange={(e) => setMarker(e.target.value)}
-          placeholder="Marker secret from the tag"
+          placeholder="Marker secret from the tag" aria-label="Marker secret from the tag"
           className={`${field} font-mono`}
         />
         <input
           value={lineId}
           onChange={(e) => setLineId(e.target.value)}
-          placeholder="Sub-order line id"
+          placeholder="Sub-order line id" aria-label="Sub-order line id"
           className={`${field} font-mono`}
         />
-        <select
+        <select aria-label="Stage"
           value={stage}
           onChange={(e) => setStage(Number(e.target.value) as UnitBindingStageValue)}
           className={field}
@@ -570,16 +571,16 @@ function BindPanel({
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Why the binding is being changed (required)"
+            placeholder="Why the binding is being changed (required)" aria-label="Why the binding is being changed (required)"
             className={`${field} sm:col-span-3`}
           />
         )}
       </div>
 
-      <button
+      <Button
         disabled={!ready || submit.isPending}
         onClick={() => submit.mutate()}
-        className="mt-3 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-3"
       >
         {submit.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -587,7 +588,7 @@ function BindPanel({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         {mode === 'bind' ? 'Bind the tag' : 'Correct the binding'}
-      </button>
+      </Button>
     </div>
   );
 }

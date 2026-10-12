@@ -7,6 +7,7 @@ import { CreateChannelDialog } from '../components/CreateChannelDialog';
 import { ChannelConnectModal } from '../components/ChannelConnectModal';
 import type { ChannelConnectionDto, ChannelStatsResponse, ChannelTypeValue } from '../types/channels.types';
 import { ChannelType, ChannelConnectionStatus } from '../types/channels.types';
+import { Button } from '@/shared/ui/primitives';
 
 const ALL_CHANNEL_TYPES: ChannelTypeValue[] = [
   ChannelType.WhatsApp,
@@ -55,7 +56,7 @@ export function Component() {
             <Radio className="w-4 h-4 text-brand" strokeWidth={1.6} />
           </div>
           <div>
-            <h1 className="text-lg font-extrabold text-text-primary tracking-tight leading-none">Channels</h1>
+            <h1 className="text-xl font-extrabold text-text-primary tracking-tight leading-none">Channels</h1>
             <div className="flex items-center gap-1.5 mt-1">
               {activeCount > 0 && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xs bg-glass-1 border-thin border-border-subtle text-2xs font-semibold text-success">
@@ -75,13 +76,13 @@ export function Component() {
           </div>
         </div>
 
-        <button
+        <Button
           onClick={() => setCreateOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-sm bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-4 h-4" strokeWidth={2.5} />
           Add channel
-        </button>
+        </Button>
       </div>
 
       {/* ─── Zone 1: Your channels ─── */}

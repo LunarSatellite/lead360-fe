@@ -16,6 +16,7 @@ import {
   CRM_SUBSCRIPTION_STATUS_LABELS, CRM_SUBSCRIPTION_STATUS_COLORS,
   CRM_SUBSCRIPTION_TIER_LABELS, CRM_BILLING_CADENCE_LABELS,
 } from '../types/crm.types';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
@@ -51,7 +52,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>}
@@ -63,8 +64,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>
-      {children}
+      <label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label>
     </div>
   );
 }
@@ -160,7 +160,8 @@ export function Component() {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState<EditForm>({ planName: '', planTier: '1', billingCadence: '1', amount: '', seats: '' });
 
-  const { data: raw, isLoading } = useSubscriptions(filter);
+  const subscriptionsQuery = useSubscriptions(filter);
+  const { data: raw } = subscriptionsQuery;
   const items: CrmSubscriptionSummaryDto[] = (raw as any)?.items ?? [];
 
   const createSub = useCreateSubscription();
@@ -218,18 +219,18 @@ export function Component() {
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Subscriptions</h2>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Subscription
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => { setStatusF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search..." aria-label="Search..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by status" value={statusF} onChange={e => { setStatusF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Status</option>
             {Object.entries(CRM_SUBSCRIPTION_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <select value={tierF} onChange={e => { setTierF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <select aria-label="Filter by tier" value={tierF} onChange={e => { setTierF(e.target.value); }} className="rounded-lg border border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Tiers</option>
             {Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
@@ -239,11 +240,12 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex items-center justify-center h-40 text-text-muted text-sm">No subscriptions found.</div>
-          ) : (
+          <ListState
+            query={subscriptionsQuery}
+            isEmpty={!items.length}
+            noun="subscriptions"
+            emptyTitle="No subscriptions found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -277,7 +279,7 @@ export function Component() {
                           </button>
                         )}
                         {s.status !== CrmSubscriptionStatus.Cancelled && (
-                          <button onClick={() => cancelSub.mutate(s.id)} disabled={cancelSub.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50">
+                          <button onClick={() => cancelSub.mutate(s.id)} disabled={cancelSub.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all disabled:opacity-50">
                             <XCircle className="w-4 h-4" />
                           </button>
                         )}
@@ -287,7 +289,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 
@@ -299,11 +301,11 @@ export function Component() {
         subtitle="Create a recurring subscription"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="sub-form" disabled={createSub.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="sub-form" disabled={createSub.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createSub.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Subscription'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -316,41 +318,21 @@ export function Component() {
 
           <div>
             <Field label="Contact ID *">
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={User} required value={createForm.contactId} onChange={setC('contactId')} placeholder="contact-uuid" aria-label="contact-uuid" style={inputStyle} />
             </Field>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Account ID">
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={Hash} value={createForm.accountId} onChange={setC('accountId')} placeholder="account-uuid" aria-label="account-uuid" style={inputStyle} />
             </Field>
             <Field label="Deal ID">
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={Hash} value={createForm.dealId} onChange={setC('dealId')} placeholder="deal-uuid" aria-label="deal-uuid" style={inputStyle} />
             </Field>
           </div>
 
           <Field label="Plan Name">
-            <div className="relative">
-              <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={inputStyle} />
-            </div>
+            <Input icon={Layers} required value={createForm.planName} onChange={setC('planName')} placeholder="Pro Monthly" aria-label="Pro Monthly" style={inputStyle} />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
@@ -364,39 +346,19 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Amount *">
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input aria-label="Amount" icon={DollarSign} required type="number" min="0" step="0.01" value={createForm.amount} onChange={setC('amount')} placeholder="99.00" style={inputStyle} />
             </Field>
             <Field label="Currency">
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={createForm.currency} onChange={setC('currency')} placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={DollarSign} value={createForm.currency} onChange={setC('currency')} placeholder="USD" aria-label="USD" style={inputStyle} />
             </Field>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Start Date">
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input type="date" value={createForm.startDate} onChange={setC('startDate')}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              </div>
+              <Input aria-label="Start date" icon={Calendar} type="date" value={createForm.startDate} onChange={setC('startDate')} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
             <Field label="Seats">
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input aria-label="Seats" icon={User} type="number" min="1" value={createForm.seats} onChange={setC('seats')} placeholder="5" style={inputStyle} />
             </Field>
           </div>
         </form>
@@ -436,16 +398,16 @@ export function Component() {
               </div>
             ) : (
               <form onSubmit={handleUpdate} className="space-y-4">
-                <Field label="Plan Name"><input value={editForm.planName} onChange={setE('planName')} className={inputCls} /></Field>
+                <Field label="Plan Name"><input aria-label="Plan name" value={editForm.planName} onChange={setE('planName')} className={inputCls} /></Field>
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label="Plan Tier"><select value={editForm.planTier} onChange={setE('planTier')} className={selectCls}>{Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
-                  <Field label="Billing Cadence"><select value={editForm.billingCadence} onChange={setE('billingCadence')} className={selectCls}>{Object.entries(CRM_BILLING_CADENCE_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
-                  <Field label="Amount"><input type="number" min="0" step="0.01" value={editForm.amount} onChange={setE('amount')} className={inputCls} /></Field>
-                  <Field label="Seats"><input type="number" min="1" value={editForm.seats} onChange={setE('seats')} className={inputCls} /></Field>
+                  <Field label="Plan Tier"><select aria-label="Plan tier" value={editForm.planTier} onChange={setE('planTier')} className={selectCls}>{Object.entries(CRM_SUBSCRIPTION_TIER_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
+                  <Field label="Billing Cadence"><select aria-label="Billing cadence" value={editForm.billingCadence} onChange={setE('billingCadence')} className={selectCls}>{Object.entries(CRM_BILLING_CADENCE_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}</select></Field>
+                  <Field label="Amount"><input aria-label="Amount" type="number" min="0" step="0.01" value={editForm.amount} onChange={setE('amount')} className={inputCls} /></Field>
+                  <Field label="Seats"><input aria-label="Seats" type="number" min="1" value={editForm.seats} onChange={setE('seats')} className={inputCls} /></Field>
                 </div>
-                <button type="submit" disabled={updateSub.isPending} className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+                <Button type="submit" disabled={updateSub.isPending} variant="primary" block>
                   {updateSub.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}
-                </button>
+                </Button>
               </form>
             )}
 
@@ -461,9 +423,9 @@ export function Component() {
                 </button>
               )}
               {selectedSub.status !== CrmSubscriptionStatus.Cancelled && (
-                <button onClick={() => { cancelSub.mutate(selectedSub.id, { onSuccess: () => setSelectedSub(null) }); }} disabled={cancelSub.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
+                <Button onClick={() => { cancelSub.mutate(selectedSub.id, { onSuccess: () => setSelectedSub(null) }); }} disabled={cancelSub.isPending} variant="danger">
                   <XCircle className="w-3.5 h-3.5" /> Cancel
-                </button>
+                </Button>
               )}
             </div>
           </div>

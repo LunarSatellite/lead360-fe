@@ -67,7 +67,7 @@ export function Step4DesignFlows({ onComplete }: Step4Props) {
         <div className="flex items-center p-3 gap-2">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
             style={{ background: 'linear-gradient(135deg,#047857,#059669)' }}>✨</div>
-          <input
+          <input aria-label="Input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}

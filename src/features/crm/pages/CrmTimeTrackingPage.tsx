@@ -7,6 +7,7 @@ import type {
   CrmTimeEntrySummaryDto, CrmLogTimeRequest, CrmTimeEntryFilter,
 } from '../types/crm.types';
 import { CrmTimeEntityKind, CRM_TIME_ENTITY_LABELS } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 function Badge({ value, labels, colors }: {
   value: number;
@@ -57,7 +58,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
             </h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -129,20 +130,10 @@ function LogTimeForm({ form, setForm, onSubmit }: {
       {/* Minutes + Billable */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Minutes Logged *</label>
-          <div className="relative">
-            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input
-              required
-              type="number"
-              min={1}
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              placeholder="e.g. 30"
-              value={form.minutesLogged}
-              onChange={set('minutesLogged')}
-            />
-          </div>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Minutes Logged *</span>
+            <Input icon={Clock} required type="number" min={1} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. 30" value={form.minutesLogged} onChange={set('minutesLogged')} />
+          </label>
         </div>
         <div className="flex flex-col justify-end">
           <label className="block text-xs font-semibold text-text-secondary mb-1">Billable</label>
@@ -163,18 +154,20 @@ function LogTimeForm({ form, setForm, onSubmit }: {
 
       {/* Description */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
-        <div className="relative">
-          <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <textarea
-            rows={3}
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-            placeholder="What did you work on?"
-            value={form.description ?? ''}
-            onChange={set('description')}
-          />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Description</span>
+          <div className="relative">
+            <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <textarea
+              rows={3}
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+              placeholder="What did you work on?"
+              value={form.description ?? ''}
+              onChange={set('description')}
+            />
+          </div>
+        </label>
       </div>
 
       {/* ── Link Entity ── */}
@@ -185,37 +178,31 @@ function LogTimeForm({ form, setForm, onSubmit }: {
 
       {/* Entity Type */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Entity Type *</label>
-        <div className="relative">
-          <LayersIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <select
-            required
-            value={form.entityKind}
-            onChange={set('entityKind')}
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-          >
-            {(Object.entries(CRM_TIME_ENTITY_LABELS) as [string, string][]).map(([v, l]) => (
-              <option key={v} value={v}>{l}</option>
-            ))}
-          </select>
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Entity Type *</span>
+          <div className="relative">
+            <LayersIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <select
+              required
+              value={form.entityKind}
+              onChange={set('entityKind')}
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+            >
+              {(Object.entries(CRM_TIME_ENTITY_LABELS) as [string, string][]).map(([v, l]) => (
+                <option key={v} value={v}>{l}</option>
+              ))}
+            </select>
+          </div>
+        </label>
       </div>
 
       {/* Entity ID */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Entity ID *</label>
-        <div className="relative">
-          <HashIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <input
-            required
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-            placeholder="e.g. deal-uuid or contact-uuid"
-            value={form.entityId}
-            onChange={set('entityId')}
-          />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Entity ID *</span>
+          <Input icon={HashIcon} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. deal-uuid or contact-uuid" value={form.entityId} onChange={set('entityId')} />
+        </label>
       </div>
     </form>
   );
@@ -253,20 +240,20 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Time Tracking</h2>
           <p className="text-xs text-text-muted mt-0.5">Log and review time spent on CRM entities</p>
         </div>
-        <button onClick={() => setShowLog(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setShowLog(true)}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Log Time
-        </button>
+        </Button>
       </div>
 
       <SummaryCard />
 
       {/* Filters */}
       <div className="flex flex-wrap gap-3">
-        <select
+        <select aria-label="Filter by entity type"
           value={filter.entityKind ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, entityKind: e.target.value ? Number(e.target.value) as CrmTimeEntityKind : undefined }))}
-          className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none"
+          className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
         >
           <option value="">All Entity Types</option>
           {(Object.entries(CRM_TIME_ENTITY_LABELS) as [string, string][]).map(([v, l]) => (
@@ -288,7 +275,7 @@ export function Component() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border-subtle bg-bg-subtle">
+                <tr className="border-b border-border-subtle bg-bg-sunken">
                   {['Type', 'Entity', 'Minutes', 'Billable', 'Logged By', 'Description', 'Date', ''].map((h, i) => (
                     <th key={i} className="px-4 py-3 text-left text-xs font-semibold text-text-muted">{h}</th>
                   ))}
@@ -327,8 +314,8 @@ export function Component() {
                           <button onClick={() => setConfirmDelete(null)} className="text-xs text-text-muted hover:text-text-primary">×</button>
                         </div>
                       ) : (
-                        <button onClick={() => setConfirmDelete(row.id)}
-                          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
+                        <button aria-label="Delete" onClick={() => setConfirmDelete(row.id)}
+                          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all">
                           <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       )}
@@ -348,22 +335,22 @@ export function Component() {
         subtitle="Log time spent on a CRM entity"
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button
+            <Button
               type="button"
               onClick={() => setShowLog(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               form="logtime-form"
               disabled={log.isPending || !logForm.entityId.trim()}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {log.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Log Time
-            </button>
+            </Button>
           </div>
         }
       >

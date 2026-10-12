@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { AlertTriangle, RotateCw } from 'lucide-react';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   children: ReactNode;
@@ -48,13 +49,13 @@ export class ErrorBoundary extends Component<Props, State> {
             hit an error and was contained. The rest of the app is fine.
           </p>
         </div>
-        <button
+        <Button
           onClick={this.reset}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-600 text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           <RotateCw size={13} strokeWidth={1.6} />
           Try again
-        </button>
+        </Button>
       </div>
     );
   }

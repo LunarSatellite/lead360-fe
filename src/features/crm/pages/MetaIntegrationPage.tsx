@@ -6,6 +6,7 @@ import { AlertTriangle, BarChart3, Bot, Check, CheckCircle, ChevronRight, Circle
 import { apiClient } from '@/shared/lib/api-client';
 import { AiCampaignWizard } from '../components/AiCampaignWizard';
 import { AdsReportTab } from '../components/AdsReportTab';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -167,7 +168,7 @@ const STAGE_LABELS: Record<number, string> = { 1:'New', 2:'Warm', 3:'Hot', 4:'Nu
 const STAGE_COLORS: Record<number, string> = {
   1:'text-text-secondary bg-bg-elevated border-border-subtle',
   2:'text-warning bg-warning-soft border-warning/20',
-  3:'text-danger bg-danger-soft border-danger/20',
+  3:'text-danger-light bg-danger-soft border-danger/20',
   4:'text-brand bg-brand-soft border-border-glow',
   5:'text-success bg-success-soft border-success/20',
   6:'text-text-muted bg-bg-card border-border-subtle',
@@ -209,7 +210,7 @@ function Metric({ label, value, sub, accent }: { label: string; value: string | 
 
 function CheckIcon({ status }: { status: string }) {
   if (status === 'ok')   return <CheckCircle className="w-4 h-4 text-success shrink-0" />;
-  if (status === 'fail') return <XCircle className="w-4 h-4 text-danger shrink-0" />;
+  if (status === 'fail') return <XCircle className="w-4 h-4 text-danger-light shrink-0" />;
   if (status === 'warn') return <AlertTriangle className="w-4 h-4 text-warning shrink-0" />;
   return <Circle className="w-4 h-4 text-text-muted shrink-0" />;
 }
@@ -328,14 +329,15 @@ function CampaignList({
     <div className="flex flex-col gap-2">
       {/* Actions */}
       <div className="flex gap-2">
-        <button onClick={onCreateClick}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl bg-brand text-bg hover:opacity-90 transition-all">
+        <Button onClick={onCreateClick}
+          variant="primary" className="flex-1">
           <Plus className="w-3.5 h-3.5" /> New Campaign
-        </button>
-        <button onClick={onSyncClick} disabled={isSyncing}
-          className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
+        </Button>
+        <Button onClick={onSyncClick} disabled={isSyncing}
+          aria-label={isSyncing ? 'Syncing Meta campaigns' : 'Sync Meta campaigns'}
+          variant="secondary">
           {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-        </button>
+        </Button>
       </div>
 
       {loading && (
@@ -356,7 +358,7 @@ function CampaignList({
         const isActive = selected === c.id;
         const spend = c.spend > 0 ? fmtMoney(c.spend, c.budgetCurrency || 'USD') : null;
         return (
-          <button key={c.id} onClick={() => onSelect(c.id)}
+          <button aria-pressed={isActive} key={c.id} onClick={() => onSelect(c.id)}
             className={`w-full text-left rounded-xl border p-3 transition-all ${
               isActive
                 ? 'border-brand bg-brand-soft'
@@ -512,24 +514,24 @@ function CampaignDetail({
             </div>
           ) : (
             <div className="flex items-center gap-2 flex-wrap">
-              <select value={budgetType} onChange={e => setBudgetType(e.target.value)}
+              <select aria-label="Budget type" value={budgetType} onChange={e => setBudgetType(e.target.value)}
                 className="text-xs bg-bg-elevated border border-border-subtle rounded-lg px-2 py-1.5 text-text-secondary focus:outline-none focus:border-brand">
                 <option value="daily">Daily</option>
                 <option value="lifetime">Lifetime</option>
               </select>
               <div className="relative">
                 <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-text-muted">{currency}</span>
-                <input type="number" min={1} step={0.01} value={budgetVal}
+                <input aria-label="Budget val" type="number" min={1} step={0.01} value={budgetVal}
                   onChange={e => setBudgetVal(e.target.value)}
                   className="pl-10 pr-3 py-1.5 text-sm bg-bg-elevated border border-border-subtle rounded-lg text-text-primary focus:outline-none focus:border-brand w-28"
                 />
               </div>
-              <button onClick={() => budgetMut.mutate()} disabled={budgetMut.isPending || !budgetVal}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+              <Button onClick={() => budgetMut.mutate()} disabled={budgetMut.isPending || !budgetVal}
+                variant="primary" size="sm">
                 {budgetMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
                 Save
-              </button>
-              <button onClick={() => setEditBudget(false)}
+              </Button>
+              <button aria-label="Close" onClick={() => setEditBudget(false)}
                 className="p-1.5 rounded-lg text-text-muted hover:text-text-primary">
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -741,7 +743,7 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Link your Meta ad account to run campaigns</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -770,39 +772,45 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             </ol>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Ad Account ID <span className="text-danger">*</span></label>
-            <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Ad Account ID <span className="text-danger-light">*</span></span>
+              <input value={form.adAccountId} onChange={e => setForm(f => ({ ...f, adAccountId: e.target.value }))}
               placeholder="act_123456789"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Access Token <span className="text-danger">*</span></label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Access Token <span className="text-danger-light">*</span></label>
             <div className="relative">
               <input type={showToken ? 'text' : 'password'} value={form.accessToken}
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
-                placeholder="EAABsbCS..."
+                placeholder="EAABsbCS..." aria-label="EAABsbCS..."
                 className="w-full pl-3 pr-10 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              <button type="button" onClick={() => setShowToken(v => !v)}
+              <button aria-label="Show" type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
               </button>
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Business Name</label>
-            <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Business Name</span>
+              <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
               placeholder="Acme Marketing"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-            <input value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+              <input value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value }))}
               placeholder="USD"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle flex gap-3">
@@ -812,9 +820,9 @@ function ConnectAccountDrawer({ onClose }: { onClose: () => void }) {
             {mut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Facebook className="w-4 h-4" />}
             Connect & Save
           </button>
-          <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:border-border-medium transition-all">
+          <Button onClick={onClose} variant="secondary" size="lg">
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -868,7 +876,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           <h3 className="font-bold text-text-primary flex items-center gap-2">
             <Link className="w-5 h-5 text-[#1877F2]" /> Lead Ads Webhook Setup
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -902,7 +910,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           <div>
             <label className={labelCls}>Webhook URL <span className="text-text-muted font-normal">(copy to Facebook App settings)</span></label>
             <div className="flex gap-2">
-              <input readOnly value={webhookUrl}
+              <input aria-label="Webhook URL" readOnly value={webhookUrl}
                 className={inputCls + ' flex-1 bg-bg font-mono text-[11px] text-text-secondary cursor-text select-all'} />
               <button onClick={handleCopy}
                 className="px-3 py-2.5 rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all shrink-0">
@@ -925,9 +933,11 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
 
           {/* App ID */}
           <div>
-            <label className={labelCls}>Facebook App ID *</label>
-            <input value={form.appId} onChange={e => setForm(f => ({ ...f, appId: e.target.value }))}
-              placeholder="1234567890123456" className={inputCls} />
+            <label className="flex flex-col">
+              <span className={labelCls}>Facebook App ID *</span>
+              <input value={form.appId} onChange={e => setForm(f => ({ ...f, appId: e.target.value }))}
+                placeholder="1234567890123456" className={inputCls} />
+            </label>
             {meta?.appId && <p className="text-[10px] text-text-muted mt-1">Current: {meta.appId}</p>}
           </div>
 
@@ -935,11 +945,11 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           <div>
             <label className={labelCls}>Page Access Token</label>
             <div className="relative">
-              <input type={showToken ? 'text' : 'password'} value={form.pageAccessToken}
+              <input aria-label="Page access token" type={showToken ? 'text' : 'password'} value={form.pageAccessToken}
                 onChange={e => setForm(f => ({ ...f, pageAccessToken: e.target.value }))}
                 placeholder={meta?.hasPageToken ? '••••••• (leave blank to keep current)' : 'EAABsbCS...'}
                 className={inputCls + ' pr-10'} />
-              <button type="button" onClick={() => setShowToken(v => !v)}
+              <button aria-label="Show" type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
               </button>
@@ -949,7 +959,7 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           {/* Pixel ID */}
           <div>
             <label className={labelCls}>Facebook Pixel ID <span className="text-text-muted font-normal">(optional)</span></label>
-            <input value={form.pixelId} onChange={e => setForm(f => ({ ...f, pixelId: e.target.value }))}
+            <input aria-label="Pixel ID" value={form.pixelId} onChange={e => setForm(f => ({ ...f, pixelId: e.target.value }))}
               placeholder="987654321098765" className={inputCls} />
           </div>
 
@@ -957,11 +967,11 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
           <div>
             <label className={labelCls}>Conversions API Token <span className="text-text-muted font-normal">(optional)</span></label>
             <div className="relative">
-              <input type={showCapi ? 'text' : 'password'} value={form.capiToken}
+              <input aria-label="Capi token" type={showCapi ? 'text' : 'password'} value={form.capiToken}
                 onChange={e => setForm(f => ({ ...f, capiToken: e.target.value }))}
                 placeholder={meta?.hasCapiToken ? '••••••• (leave blank to keep current)' : 'EAABsbCS...'}
                 className={inputCls + ' pr-10'} />
-              <button type="button" onClick={() => setShowCapi(v => !v)}
+              <button aria-label="Show" type="button" onClick={() => setShowCapi(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
               </button>
@@ -991,9 +1001,9 @@ function WebhookSetupDrawer({ meta, onClose }: { meta: MetaIntegration | null; o
             {mut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />}
             Save Configuration
           </button>
-          <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
+          <Button onClick={onClose} variant="secondary" size="lg">
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -1090,7 +1100,7 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
             {meta.icon}
             New {meta.label} Post
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -1109,7 +1119,7 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
               {platform === 'instagram' ? 'Caption' : 'Message'}
               {platform !== 'instagram' && <span className="text-text-muted font-normal"> *</span>}
             </label>
-            <textarea
+            <textarea aria-label="Message"
               rows={5}
               value={message}
               onChange={e => setMessage(e.target.value)}
@@ -1132,10 +1142,10 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
           <div>
             <label className={labelCls}>
               {platform === 'tiktok' ? 'Video URL' : 'Image URL'}
-              {meta.requiresImage && <span className="text-danger font-semibold"> *</span>}
+              {meta.requiresImage && <span className="text-danger-light font-semibold"> *</span>}
               {!meta.requiresImage && <span className="text-text-muted font-normal"> (optional)</span>}
             </label>
-            <input
+            <input aria-label="Image URL"
               value={imageUrl}
               onChange={e => setImageUrl(e.target.value)}
               placeholder={platform === 'tiktok' ? 'https://example.com/video.mp4' : 'https://example.com/image.jpg'}
@@ -1151,9 +1161,9 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
           <div>
             <label className={labelCls}>Schedule (optional — leave blank to post now)</label>
             <div className="flex gap-2">
-              <input type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)}
+              <input aria-label="Schedule date" type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)}
                 className={inputCls + ' flex-1'} />
-              <input type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)}
+              <input aria-label="Schedule time" type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)}
                 className={inputCls + ' w-32'} disabled={!scheduleDate} />
             </div>
             {scheduleDate && (
@@ -1164,18 +1174,18 @@ function PostComposer({ platform, onClose }: { platform: 'facebook' | 'instagram
 
         {/* Footer */}
         <div className="px-6 py-4 border-t border-border-subtle flex gap-3">
-          <button onClick={onClose}
-            className="flex-1 py-2.5 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
+          <Button onClick={onClose}
+            variant="secondary" size="lg" className="flex-1">
             Cancel
-          </button>
-          <button onClick={() => mut.mutate()} disabled={!canSubmit}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-xl bg-brand text-bg hover:opacity-90 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+          </Button>
+          <Button onClick={() => mut.mutate()} disabled={!canSubmit}
+            variant="primary" size="lg" className="flex-1">
             {mut.isPending
               ? <><Loader2 className="w-4 h-4 animate-spin" /> Posting…</>
               : scheduleDate
               ? <><Play className="w-4 h-4" /> Schedule Post</>
               : <><Zap className="w-4 h-4" /> Publish Now</>}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -1227,10 +1237,10 @@ function InstagramAdsTab({
         {account?.isActive && (
           <>
             <div className="flex gap-2">
-              <button onClick={onCreateClick}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl bg-brand text-bg hover:opacity-90 transition-all">
+              <Button onClick={onCreateClick}
+                variant="primary" className="flex-1">
                 <Plus className="w-3.5 h-3.5" /> New Campaign
-              </button>
+              </Button>
               <button onClick={onNewPost}
                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl border border-[rgba(228,64,95,0.4)] bg-[rgba(228,64,95,0.08)] text-[#E4405F] hover:bg-[rgba(228,64,95,0.14)] transition-all">
                 <Pencil className="w-3.5 h-3.5" /> New Post
@@ -1254,7 +1264,7 @@ function InstagramAdsTab({
             {campaigns.map(c => {
               const isActive = selectedId === c.id;
               return (
-                <button key={c.id} onClick={() => setSelectedId(c.id)}
+                <button aria-pressed={isActive} key={c.id} onClick={() => setSelectedId(c.id)}
                   className={`w-full text-left rounded-xl border p-3 transition-all ${
                     isActive ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium hover:bg-bg-elevated'
                   }`}>
@@ -1289,7 +1299,7 @@ function InstagramAdsTab({
                 <h3 className="font-bold text-text-primary truncate">{selected.name}</h3>
                 <StatusBadge status={selected.fbStatus} />
               </div>
-              <button onClick={() => setSelectedId(null)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated shrink-0">
+              <button aria-label="Close" onClick={() => setSelectedId(null)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated shrink-0">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -1340,7 +1350,7 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
           <h3 className="font-bold text-text-primary flex items-center gap-2">
             <Video className="w-5 h-5 text-text-secondary" strokeWidth={1.6} /> Connect TikTok Ads
           </h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -1354,38 +1364,42 @@ function TikTokConnectDrawer({ onClose }: { onClose: () => void }) {
             </ol>
           </div>
           <div>
-            <label className={labelCls}>Advertiser ID *</label>
-            <input value={form.advertiserId} onChange={e => setForm(f => ({ ...f, advertiserId: e.target.value }))}
-              placeholder="7012345678901234567" className={inputCls} />
+            <label className="flex flex-col">
+              <span className={labelCls}>Advertiser ID *</span>
+              <input value={form.advertiserId} onChange={e => setForm(f => ({ ...f, advertiserId: e.target.value }))}
+                placeholder="7012345678901234567" className={inputCls} />
+            </label>
           </div>
           <div>
             <label className={labelCls}>Access Token *</label>
             <div className="relative">
               <input type={showToken ? 'text' : 'password'} value={form.accessToken}
                 onChange={e => setForm(f => ({ ...f, accessToken: e.target.value }))}
-                placeholder="Enter your TikTok access token" className={inputCls + ' pr-10'} />
-              <button type="button" onClick={() => setShowToken(v => !v)}
+                placeholder="Enter your TikTok access token" aria-label="Enter your TikTok access token" className={inputCls + ' pr-10'} />
+              <button aria-label="Show" type="button" onClick={() => setShowToken(v => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                 <Eye className="w-4 h-4" />
               </button>
             </div>
           </div>
           <div>
-            <label className={labelCls}>Business Name</label>
-            <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
-              placeholder="Your Business" className={inputCls} />
+            <label className="flex flex-col">
+              <span className={labelCls}>Business Name</span>
+              <input value={form.businessName} onChange={e => setForm(f => ({ ...f, businessName: e.target.value }))}
+                placeholder="Your Business" className={inputCls} />
+            </label>
           </div>
         </div>
         <div className="px-6 py-4 border-t border-border-subtle flex gap-3">
-          <button onClick={() => mut.mutate()}
+          <Button onClick={() => mut.mutate()}
             disabled={mut.isPending || !form.advertiserId || !form.accessToken}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-brand text-bg font-bold text-sm disabled:opacity-50 transition-all">
+            variant="primary" size="lg" className="flex-1">
             {mut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" strokeWidth={1.6} />}
             Connect
-          </button>
-          <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
+          </Button>
+          <Button onClick={onClose} variant="secondary" size="lg">
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -1441,20 +1455,20 @@ function TikTokAdsTab({ onNewPost }: { onNewPost?: () => void }) {
         {account?.isActive && (
           <>
             <div className="flex gap-2">
-              <button onClick={() => setShowConnect(true)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl bg-brand text-bg hover:opacity-90 transition-all">
+              <Button onClick={() => setShowConnect(true)}
+                variant="primary" className="flex-1">
                 <Plus className="w-3.5 h-3.5" /> New
-              </button>
-              <button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
-                className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
+              </Button>
+              <Button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
+                variant="secondary">
                 {syncMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-              </button>
+              </Button>
             </div>
             {onNewPost && (
-              <button onClick={onNewPost}
-                className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
+              <Button onClick={onNewPost}
+                variant="secondary" block>
                 <Pencil className="w-3.5 h-3.5" /> New TikTok Post
-              </button>
+              </Button>
             )}
 
             {campaignsLoading && (
@@ -1474,7 +1488,7 @@ function TikTokAdsTab({ onNewPost }: { onNewPost?: () => void }) {
             {campaigns.map(c => {
               const isSelected = selectedId === c.id;
               return (
-                <button key={c.id} onClick={() => setSelectedId(c.id)}
+                <button aria-pressed={isSelected} key={c.id} onClick={() => setSelectedId(c.id)}
                   className={`w-full text-left rounded-xl border p-3 transition-all ${
                     isSelected ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium hover:bg-bg-elevated'
                   }`}>
@@ -1607,10 +1621,10 @@ function TikTokAdsTab({ onNewPost }: { onNewPost?: () => void }) {
                   <p className="text-sm text-text-muted">
                     Sync your TikTok campaigns, track video performance, and monitor engagement metrics.
                   </p>
-                  <button onClick={() => setShowConnect(true)}
-                    className="px-5 py-2.5 rounded-xl bg-brand text-bg font-bold text-sm hover:opacity-90 transition-all">
+                  <Button onClick={() => setShowConnect(true)}
+                    variant="primary" size="lg">
                     Connect Now
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -1807,16 +1821,16 @@ function OAuthPlatformTab({
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl text-white hover:opacity-90 transition-all disabled:opacity-60">
                 <Plus className="w-3.5 h-3.5" /> New Campaign
               </button>
-              <button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
-                className="flex items-center gap-1 px-3 py-2 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all">
+              <Button onClick={() => syncMut.mutate()} disabled={syncMut.isPending}
+                variant="secondary">
                 {syncMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-              </button>
+              </Button>
             </div>
             {onNewPost && (
-              <button onClick={onNewPost}
-                className="w-full flex items-center justify-center gap-1.5 py-2 text-xs font-bold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium hover:text-text-primary transition-all">
+              <Button onClick={onNewPost}
+                variant="secondary" block>
                 <Pencil className="w-3.5 h-3.5" /> New {platformName} Post
-              </button>
+              </Button>
             )}
 
             {campaignsLoading && (
@@ -1837,7 +1851,7 @@ function OAuthPlatformTab({
               const isSelected = selectedId === c.id;
               const statusVal = c[campaignStatusKey] ?? c.status ?? '';
               return (
-                <button key={c.id} onClick={() => setSelectedId(c.id)}
+                <button aria-pressed={isSelected} key={c.id} onClick={() => setSelectedId(c.id)}
                   className={`w-full text-left rounded-xl border p-3 transition-all ${
                     isSelected ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium hover:bg-bg-elevated'
                   }`}>
@@ -1858,7 +1872,7 @@ function OAuthPlatformTab({
             })}
 
             <button onClick={() => disconnectMut.mutate()} disabled={disconnectMut.isPending}
-              className="text-[10px] text-text-muted hover:text-danger transition-all text-center py-1">
+              className="text-[10px] text-text-muted hover:text-danger-light transition-all text-center py-1">
               Disconnect {platformName}
             </button>
           </>
@@ -1966,7 +1980,7 @@ function OAuthPlatformTab({
                       <code className="flex-1 px-2.5 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-[11px] text-brand font-mono truncate">
                         {redirectUri}
                       </code>
-                      <button onClick={() => { navigator.clipboard.writeText(redirectUri); toast.success('Copied!'); }}
+                      <button aria-label="Copy" onClick={() => { navigator.clipboard.writeText(redirectUri); toast.success('Copied!'); }}
                         className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-text-primary hover:border-border-medium transition-all shrink-0">
                         <Copy className="w-3.5 h-3.5" />
                       </button>
@@ -1987,22 +2001,24 @@ function OAuthPlatformTab({
                     <div className="pl-8 space-y-3">
                       {credentialFields.map(f => (
                         <div key={f.key}>
-                          <label className="block text-xs font-semibold text-text-secondary mb-1">{f.label}</label>
-                          <input
+                          <label className="block">
+                            <span className="block text-xs font-semibold text-text-secondary mb-1">{f.label}</span>
+                            <input
                             type={f.secret ? 'password' : 'text'}
                             placeholder={f.secret && savedCred?.hasSecret ? '•••••••• (saved — leave blank to keep)' : f.placeholder}
                             value={credValues[f.key] ?? ''}
                             onChange={e => setCredValues(v => ({ ...v, [f.key]: e.target.value }))}
                             className="w-full px-3 py-2 rounded-lg bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all"
                           />
+                          </label>
                         </div>
                       ))}
                       <div className="flex gap-2 pt-1 flex-wrap">
-                        <button onClick={handleSaveCreds} disabled={savingCreds}
-                          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all disabled:opacity-50">
+                        <Button onClick={handleSaveCreds} disabled={savingCreds}
+                          variant="primary">
                           {savingCreds ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" strokeWidth={2} />}
                           {credConfigured ? 'Update' : 'Save Credentials'}
-                        </button>
+                        </Button>
                         {credConfigured && (
                           <button onClick={handleConnect} disabled={connecting}
                             style={{ background: platformColor }}
@@ -2206,7 +2222,7 @@ export function Component() {
               <div className="flex items-center gap-2 min-w-0">
                 <h3 className="font-bold text-text-primary truncate">{selectedCampaign.name}</h3>
               </div>
-              <button onClick={() => setSelectedId(null)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated shrink-0">
+              <button aria-label="Close" onClick={() => setSelectedId(null)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated shrink-0">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -2416,9 +2432,9 @@ function YouTubeTab({ youtubeApi }: { youtubeApi: typeof youtubeApiShape }) {
           </p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending} className="px-3 py-1.5 rounded-sm bg-glass-2 border-thin border-border-subtle text-xs font-semibold text-text-primary hover:border-brand transition-colors flex items-center gap-1.5">
+          <Button onClick={() => syncMutation.mutate()} disabled={syncMutation.isPending} variant="subtle" size="sm">
             <RefreshCw className={`w-3 h-3 ${syncMutation.isPending ? 'animate-spin' : ''}`} /> Sync
-          </button>
+          </Button>
           <button onClick={() => { if (confirm('Disconnect YouTube?')) disconnectMutation.mutate(); }} className="px-3 py-1.5 rounded-sm bg-glass-2 border-thin border-border-subtle text-xs font-semibold text-red-400 hover:border-red-400 transition-colors">
             Disconnect
           </button>

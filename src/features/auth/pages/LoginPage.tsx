@@ -8,6 +8,7 @@ import { useLogin, useGoogleLogin } from '../api/auth.queries';
 import { consoleBrand } from '@/shared/config/console-brand';
 
 import { GoogleLogin } from '@react-oauth/google';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const navigate = useNavigate();
@@ -59,19 +60,19 @@ export function Component() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 sm:space-y-5">
         {/* Email */}
         <div>
-          <label className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">
-            Email address
+          <label className="block">
+            <span className="text-sm font-semibold text-text-primary block mb-1.5 sm:mb-2">Email address</span>
+            <input
+              {...form.register('email')}
+              type="email"
+              placeholder="you@company.com"
+              autoComplete="email"
+              inputMode="email"
+              className="w-full px-3.5 sm:px-4 py-3 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all"
+            />
           </label>
-          <input
-            {...form.register('email')}
-            type="email"
-            placeholder="you@company.com"
-            autoComplete="email"
-            inputMode="email"
-            className="w-full px-3.5 sm:px-4 py-3 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all"
-          />
           {form.formState.errors.email && (
-            <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
+            <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.email.message}</p>
           )}
         </div>
 
@@ -90,7 +91,7 @@ export function Component() {
             <input
               {...form.register('password')}
               type={showPw ? 'text' : 'password'}
-              placeholder="••••••••••"
+              placeholder="••••••••••" aria-label="••••••••••"
               autoComplete="current-password"
               className="w-full px-3.5 sm:px-4 py-3 pr-12 rounded-xl bg-bg-input border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all"
             />
@@ -104,28 +105,28 @@ export function Component() {
             </button>
           </div>
           {form.formState.errors.password && (
-            <p className="text-xs text-danger mt-1.5">{form.formState.errors.password.message}</p>
+            <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.password.message}</p>
           )}
         </div>
 
         {/* Error */}
         {login.isError && (
-          <div className="px-3.5 sm:px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger">
+          <div className="px-3.5 sm:px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger-light">
             {login.error?.message || 'Login failed.'}
           </div>
         )}
 
         {/* Submit */}
-        <button
+        <Button
           type="submit"
           disabled={login.isPending}
-          className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl text-bg text-base font-bold bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary" size="lg" block
         >
           {login.isPending ? (
             <span className="w-5 h-5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
           ) : null}
           {login.isPending ? 'Signing in...' : 'Sign in'}
-        </button>
+        </Button>
       </form>
 
       {/* Divider */}

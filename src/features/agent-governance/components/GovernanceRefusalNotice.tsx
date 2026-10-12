@@ -1,6 +1,7 @@
 import { AlertTriangle, Info, RefreshCcw, ShieldAlert } from 'lucide-react';
 import { GovernanceError } from '../api/agent-governance.api';
 import { describeRefusal, type GovernanceRefusal } from '../lib/governance-errors';
+import { Button } from '@/shared/ui/primitives';
 
 const TONE_STYLES: Record<GovernanceRefusal['tone'], string> = {
   danger: 'border-danger/40 bg-danger-soft',
@@ -9,7 +10,7 @@ const TONE_STYLES: Record<GovernanceRefusal['tone'], string> = {
 };
 
 const TONE_TEXT: Record<GovernanceRefusal['tone'], string> = {
-  danger: 'text-danger',
+  danger: 'text-danger-light',
   warning: 'text-warning',
   info: 'text-info',
 };
@@ -64,23 +65,23 @@ export function GovernanceRefusalNotice({
 
         <div className="mt-1 flex flex-wrap items-center gap-2">
           {refusal.recovery.kind === 'refresh' && onRefresh && (
-            <button
+            <Button
               type="button"
               onClick={onRefresh}
-              className="inline-flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               <RefreshCcw size={13} strokeWidth={1.6} />
               Refresh the record
-            </button>
+            </Button>
           )}
           {refusal.recovery.kind === 're-read' && onReRead && (
-            <button
+            <Button
               type="button"
               onClick={onReRead}
-              className="inline-flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Re-read the proposal
-            </button>
+            </Button>
           )}
           {refusal.recovery.kind === 'propose-again' && (
             <span className="text-[11px] font-semibold text-text-muted">

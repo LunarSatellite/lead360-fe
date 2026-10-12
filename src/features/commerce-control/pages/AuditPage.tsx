@@ -17,6 +17,7 @@ import {
   type AuditEntry,
   type AuditFilters,
 } from '../api/stylemint-audit.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The commerce admin audit trail — who did what, to which record, when, and from where.
@@ -87,7 +88,7 @@ export function AuditPage() {
 
       <div className="grid gap-2 rounded-frame border-thin border-border-subtle bg-bg-card p-3.5 sm:grid-cols-2 lg:grid-cols-4">
         <Field label="Action">
-          <select
+          <select aria-label="Filter by action"
             value={filters.action ?? ''}
             onChange={(e) => set({ action: e.target.value || undefined })}
             className="w-full rounded-sm border-thin border-border-subtle bg-bg-input px-2.5 py-1.5 text-xs text-text-primary focus:border-border-glow focus:outline-none"
@@ -101,7 +102,7 @@ export function AuditPage() {
           </select>
         </Field>
         <Field label="Target kind">
-          <select
+          <select aria-label="Filter by target"
             value={filters.targetKind ?? ''}
             onChange={(e) => set({ targetKind: e.target.value || undefined })}
             className="w-full rounded-sm border-thin border-border-subtle bg-bg-input px-2.5 py-1.5 text-xs text-text-primary focus:border-border-glow focus:outline-none"
@@ -173,20 +174,20 @@ export function AuditPage() {
           </div>
 
           <div className="flex items-center justify-center gap-2">
-            <button
+            <Button
               disabled={!data.hasPrevious || page.isFetching}
               onClick={() => set({ pageNumber: data.pageNumber - 1 })}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.6} /> Previous
-            </button>
-            <button
+            </Button>
+            <Button
               disabled={!data.hasNext || page.isFetching}
               onClick={() => set({ pageNumber: data.pageNumber + 1 })}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               Next <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} />
-            </button>
+            </Button>
           </div>
         </>
       )}

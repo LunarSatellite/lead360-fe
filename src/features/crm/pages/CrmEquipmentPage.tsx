@@ -11,6 +11,7 @@ import {
   CRM_EQUIPMENT_CONDITION_LABELS, CRM_EQUIPMENT_NOTE_KIND_LABELS,
   CrmEquipmentStatus, CrmEquipmentCondition, CrmEquipmentNoteKind,
 } from '../types/crm.types';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -30,7 +31,7 @@ function SlideOver({ open, onClose, title, children, width = '540px' }: { open: 
       <div className="relative h-full flex flex-col bg-bg-shell border-l border-border-subtle" style={{ width, boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
@@ -39,7 +40,7 @@ function SlideOver({ open, onClose, title, children, width = '540px' }: { open: 
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-muted mb-1.5">{label}</span>{children}</label></div>;
 }
 
 function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
@@ -74,7 +75,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
               {CRM_EQUIPMENT_CONDITION_LABELS[eq.condition as CrmEquipmentCondition]}
             </span>
           )}
-          {eq.category && <span className="text-xs text-text-muted bg-bg-surface px-2 py-0.5 rounded-full">{eq.category}</span>}
+          {eq.category && <span className="text-xs text-text-muted bg-bg-elevated px-2 py-0.5 rounded-full">{eq.category}</span>}
         </div>
       </div>
 
@@ -86,7 +87,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
 
       {tab === 'detail' && (
         <div className="space-y-4">
-          <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+          <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
             {eq.contactName && <div className="flex justify-between"><span className="text-text-muted">Contact</span><span className="text-text-primary">{eq.contactName}</span></div>}
             {eq.accountName && <div className="flex justify-between"><span className="text-text-muted">Account</span><span className="text-text-primary">{eq.accountName}</span></div>}
             {eq.siteLabel && <div className="flex justify-between"><span className="text-text-muted">Site</span><span className="text-text-primary">{eq.siteLabel}</span></div>}
@@ -116,7 +117,7 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
           <div className="pt-2 border-t border-border-subtle">
             <button onClick={() => { deleteEq.mutate(id); onClose(); }}
               disabled={deleteEq.isPending}
-              className="flex items-center gap-1.5 text-xs text-danger hover:opacity-80 disabled:opacity-50">
+              className="flex items-center gap-1.5 text-xs text-danger-light hover:opacity-80 disabled:opacity-50">
               <AlertTriangle className="w-3.5 h-3.5" /> Remove Equipment
             </button>
           </div>
@@ -127,20 +128,20 @@ function DetailPanel({ id, onClose }: { id: string; onClose: () => void }) {
         <div className="space-y-4">
           <form onSubmit={handleAddNote} className="space-y-2">
             <div className="flex gap-2">
-              <select value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none">
+              <select aria-label="Note kind" value={noteKind} onChange={e => setNoteKind(Number(e.target.value))} className="rounded-lg border border-border-subtle bg-bg-elevated px-2 py-2 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
                 {Object.entries(CRM_EQUIPMENT_NOTE_KIND_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
               </select>
-              <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." className={`${inputCls} flex-1`} />
-              <button type="submit" disabled={!noteText.trim() || addNote.isPending} className="px-3 py-2 rounded-lg bg-brand text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+              <input value={noteText} onChange={e => setNoteText(e.target.value)} placeholder="Add a note..." aria-label="Add a note..." className={`${inputCls} flex-1`} />
+              <Button type="submit" disabled={!noteText.trim() || addNote.isPending} variant="primary">
                 {addNote.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Add'}
-              </button>
+              </Button>
             </div>
           </form>
 
           <div className="space-y-2">
             {eq.notes.length === 0 && <p className="text-sm text-text-muted text-center py-6">No notes yet.</p>}
             {eq.notes.map(n => (
-              <div key={n.id} className="bg-bg-surface rounded-xl p-3 text-sm">
+              <div key={n.id} className="bg-bg-elevated rounded-xl p-3 text-sm">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-semibold text-text-secondary">{CRM_EQUIPMENT_NOTE_KIND_LABELS[n.kind as CrmEquipmentNoteKind]}</span>
                   <span className="text-xs text-text-muted">{format(parseISO(n.createdAt), 'MMM d, yyyy')}</span>
@@ -170,7 +171,8 @@ export function Component() {
   const [warrantyEnd, setWarrantyEnd] = useState('');
   const [nextService, setNextService] = useState('');
 
-  const { data: raw, isLoading } = useEquipment(filter);
+  const equipmentQuery = useEquipment(filter);
+  const { data: raw } = equipmentQuery;
   const items: CrmEquipmentSummaryDto[] = (raw as any)?.item1 ?? [];
   const total: number = (raw as any)?.item2 ?? 0;
 
@@ -211,29 +213,28 @@ export function Component() {
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Equipment</h2>
             <p className="text-xs text-text-muted mt-0.5">Manage installed assets, warranties, and service schedules</p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Register Equipment
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search serial #, model, brand..." className="flex-1 min-w-48 rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-surface px-3 py-2 text-sm text-text-primary focus:outline-none">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search serial #, model, brand..." aria-label="Search serial #, model, brand..." className="flex-1 min-w-48 rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(CRM_EQUIPMENT_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-surface text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <Button onClick={applyFilter} variant="secondary">Search</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Wrench className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No equipment registered.</p>
-            </div>
-          ) : (
+          <ListState
+            query={equipmentQuery}
+            isEmpty={!items.length}
+            noun="equipment"
+            icon={Wrench}
+            emptyTitle="No equipment registered"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -259,15 +260,15 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {total > filter.pageSize! && (
           <div className="flex items-center justify-between text-sm text-text-muted">
             <span>{total} total</span>
             <div className="flex gap-2">
-              <button disabled={filter.page === 1} onClick={() => setFilter(f => ({ ...f, page: f.page! - 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Prev</button>
-              <button disabled={filter.page! * filter.pageSize! >= total} onClick={() => setFilter(f => ({ ...f, page: f.page! + 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Next</button>
+              <Button disabled={filter.page === 1} onClick={() => setFilter(f => ({ ...f, page: f.page! - 1 }))} variant="secondary" size="sm">Prev</Button>
+              <Button disabled={filter.page! * filter.pageSize! >= total} onClick={() => setFilter(f => ({ ...f, page: f.page! + 1 }))} variant="secondary" size="sm">Next</Button>
             </div>
           </div>
         )}
@@ -275,22 +276,22 @@ export function Component() {
 
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="Register Equipment">
         <form onSubmit={handleCreate} className="space-y-4">
-          <Field label="Serial Number *"><input required value={serial} onChange={e => setSerial(e.target.value)} placeholder="SN-001234" className={inputCls} /></Field>
-          <Field label="Model *"><input required value={model} onChange={e => setModel(e.target.value)} placeholder="Machine model name" className={inputCls} /></Field>
+          <Field label="Serial Number *"><input required value={serial} onChange={e => setSerial(e.target.value)} placeholder="SN-001234" aria-label="SN-001234" className={inputCls} /></Field>
+          <Field label="Model *"><input required value={model} onChange={e => setModel(e.target.value)} placeholder="Machine model name" aria-label="Machine model name" className={inputCls} /></Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Brand"><input value={brand} onChange={e => setBrand(e.target.value)} placeholder="Brand name" className={inputCls} /></Field>
-            <Field label="Category"><input value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Espresso Machine" className={inputCls} /></Field>
+            <Field label="Brand"><input value={brand} onChange={e => setBrand(e.target.value)} placeholder="Brand name" aria-label="Brand name" className={inputCls} /></Field>
+            <Field label="Category"><input aria-label="Category" value={category} onChange={e => setCategory(e.target.value)} placeholder="e.g. Espresso Machine" className={inputCls} /></Field>
           </div>
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} /></Field>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" className={inputCls} /></Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Warranty End"><input type="date" value={warrantyEnd} onChange={e => setWarrantyEnd(e.target.value)} className={inputCls} /></Field>
-            <Field label="Next Service"><input type="date" value={nextService} onChange={e => setNextService(e.target.value)} className={inputCls} /></Field>
+            <Field label="Warranty End"><input aria-label="Warranty end" type="date" value={warrantyEnd} onChange={e => setWarrantyEnd(e.target.value)} className={inputCls} /></Field>
+            <Field label="Next Service"><input aria-label="Next service" type="date" value={nextService} onChange={e => setNextService(e.target.value)} className={inputCls} /></Field>
           </div>
           <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createEq.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+            <Button type="submit" disabled={createEq.isPending} variant="primary" className="flex-1">
               {createEq.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Register'}
-            </button>
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            </Button>
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>

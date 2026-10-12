@@ -11,6 +11,7 @@ import {
   CrmNpsClassification, CrmNpsSurveyTrigger,
   CRM_NPS_CLASSIFICATION_LABELS, CRM_NPS_CLASSIFICATION_COLORS, CRM_NPS_TRIGGER_LABELS,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
@@ -50,7 +51,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -95,7 +96,7 @@ function SummaryCard() {
   }
 
   const score: number = summary.npsScore ?? 0;
-  const scoreColor = score > 0 ? 'text-success' : 'text-danger';
+  const scoreColor = score > 0 ? 'text-success' : 'text-danger-light';
 
   return (
     <div className="rounded-2xl border border-border-subtle bg-bg-card p-5 space-y-3">
@@ -111,7 +112,7 @@ function SummaryCard() {
         <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-bg-elevated text-text-secondary border border-border-subtle">
           Passives {summary.passivePct?.toFixed(0) ?? 0}%
         </span>
-        <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-danger-soft text-danger border border-danger/20">
+        <span className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-danger-soft text-danger-light border border-danger/20">
           Detractors {summary.detractorPct?.toFixed(0) ?? 0}%
         </span>
       </div>
@@ -180,33 +181,24 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID *</label>
-        <div className="relative">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <input required value={form.contactId} onChange={set('contactId')} placeholder="contact-uuid"
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-            style={inputStyle} />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Contact ID *</span>
+          <Input icon={User} required value={form.contactId} onChange={set('contactId')} placeholder="contact-uuid" style={inputStyle} />
+        </label>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
-          <div className="relative">
-            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.dealId ?? ''} onChange={set('dealId')} placeholder="deal-uuid"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={inputStyle} />
-          </div>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</span>
+            <Input icon={Hash} value={form.dealId ?? ''} onChange={set('dealId')} placeholder="deal-uuid" style={inputStyle} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Support Case ID</label>
-          <div className="relative">
-            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="case-uuid"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={inputStyle} />
-          </div>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Support Case ID</span>
+            <Input icon={Hash} value={form.supportCaseId ?? ''} onChange={set('supportCaseId')} placeholder="case-uuid" style={inputStyle} />
+          </label>
         </div>
       </div>
 
@@ -216,13 +208,15 @@ function SendSurveyForm({ onClose }: { onClose: () => void }) {
       </div>
 
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Custom Message</label>
-        <div className="relative">
-          <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <textarea rows={3} value={form.customMessage ?? ''} onChange={set('customMessage')} placeholder="How was your experience?"
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-            style={inputStyle} />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Custom Message</span>
+          <div className="relative">
+            <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <textarea rows={3} value={form.customMessage ?? ''} onChange={set('customMessage')} placeholder="How was your experience?"
+              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+              style={inputStyle} />
+          </div>
+        </label>
       </div>
     </form>
   );
@@ -245,7 +239,7 @@ export function Component() {
     if (score === null) return 'bg-bg-elevated text-text-muted border-border-subtle';
     if (score >= 9) return 'bg-success-soft text-success border-success/20';
     if (score >= 7) return 'bg-bg-elevated text-text-secondary border-border-subtle';
-    return 'bg-danger-soft text-danger border-danger/20';
+    return 'bg-danger-soft text-danger-light border-danger/20';
   };
 
   return (
@@ -255,10 +249,10 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">NPS Surveys</h2>
           <p className="text-xs text-text-muted mt-0.5">Net Promoter Score feedback from contacts</p>
         </div>
-        <button onClick={() => setShowSend(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setShowSend(true)}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Send Survey
-        </button>
+        </Button>
       </div>
 
       <SummaryCard />
@@ -268,13 +262,13 @@ export function Component() {
         <input
           value={filter.search ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, search: e.target.value || undefined }))}
-          placeholder="Search contacts…"
+          placeholder="Search contacts…" aria-label="Search contacts…"
           className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium w-56"
         />
-        <select
+        <select aria-label="Filter by classification"
           value={filter.classification ?? ''}
           onChange={(e) => setFilter((f) => ({ ...f, classification: e.target.value ? Number(e.target.value) as CrmNpsClassification : undefined }))}
-          className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none"
+          className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
         >
           <option value="">All Classifications</option>
           {(Object.entries(CRM_NPS_CLASSIFICATION_LABELS) as [string, string][]).map(([v, l]) => (
@@ -296,7 +290,7 @@ export function Component() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-border-subtle bg-bg-subtle">
+                <tr className="border-b border-border-subtle bg-bg-sunken">
                   {['Contact', 'Score', 'Classification', 'Trigger', 'Comment', 'Sent At', 'Responded At'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-text-muted">{h}</th>
                   ))}
@@ -337,11 +331,11 @@ export function Component() {
         subtitle="Send a Net Promoter Score survey to a contact"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowSend(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="nps-form"
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowSend(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="nps-form"
+              variant="primary" size="lg" className="flex-none">
               <Send className="w-4 h-4" /> Send Survey
-            </button>
+            </Button>
           </div>
         }
       >

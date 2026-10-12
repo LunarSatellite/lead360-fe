@@ -32,6 +32,7 @@ import { AgentCard } from '../components/AgentCard';
 import { AgentEditorDialog } from '../components/AgentEditorDialog';
 import { DeleteAgentDialog } from '../components/DeleteAgentDialog';
 import { EmptyAgentsState } from '../components/EmptyAgentsState';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Status filter (separate from agentType filter) ────────────
 type StatusFilter = 'all' | 'enabled' | 'disabled';
@@ -148,14 +149,14 @@ export function Component() {
         </div>
 
         {(role.canManage || true) && (
-          <button
+          <Button
             type="button"
             onClick={openCreate}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand hover:bg-brand-light text-bg text-sm font-bold transition-all shrink-0"
+            variant="primary" size="lg" className="shrink-0"
           >
             <Plus className="w-4 h-4" strokeWidth={2.4} />
             New agent
-          </button>
+          </Button>
         )}
       </header>
 
@@ -171,7 +172,7 @@ export function Component() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or description…"
+            placeholder="Search by name or description…" aria-label="Search by name or description…"
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-bg-card border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all"
           />
         </div>
@@ -181,7 +182,7 @@ export function Component() {
           {(['all', 'enabled', 'disabled'] as StatusFilter[]).map((s) => {
             const active = statusFilter === s;
             return (
-              <button
+              <button aria-pressed={active}
                 key={s}
                 type="button"
                 onClick={() => setStatusFilter(s)}
@@ -272,7 +273,7 @@ function ErrorBlock({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
       <div className="w-12 h-12 rounded-2xl bg-danger-soft border border-danger/15 flex items-center justify-center mb-4">
-        <AlertCircle className="w-5 h-5 text-danger" strokeWidth={1.6} />
+        <AlertCircle className="w-5 h-5 text-danger-light" strokeWidth={1.6} />
       </div>
       <h3 className="text-base font-extrabold text-text-primary mb-1">
         Couldn't load agents

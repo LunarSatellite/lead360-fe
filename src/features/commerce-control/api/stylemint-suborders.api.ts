@@ -35,7 +35,7 @@ export type SubOrderStateValue = (typeof SubOrderState)[keyof typeof SubOrderSta
 export const SUB_ORDER_STATE_LABEL: Record<number, string> = {
   1: 'Pending',
   2: 'Paid',
-  3: 'Awaiting fulfilment',
+  3: 'Awaiting fulfillment',
   4: 'Ready to ship',
   5: 'Awaiting tracking',
   6: 'Shipped',
@@ -103,7 +103,7 @@ export const CANCELLATION_REASON_LABEL: Record<number, string> = {
   2: 'Found a better price',
   3: 'Changed their mind',
   4: 'Delivery was taking too long',
-  5: 'Needed a different size or colour',
+  5: 'Needed a different size or color',
   6: 'Other',
 };
 
@@ -255,7 +255,7 @@ function unwrap<T>(response: { status: number; body: unknown }): T {
       detail ?? 'Lead360 is not configured with a vendor credential for this environment.',
     );
   }
-  throw new Error(detail ?? `The fulfilment surface returned HTTP ${response.status}.`);
+  throw new Error(detail ?? `The fulfillment surface returned HTTP ${response.status}.`);
 }
 
 const BASE = 'v1/vendor/sub-orders';

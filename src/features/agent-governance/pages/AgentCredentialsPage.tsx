@@ -21,6 +21,7 @@ import {
   type AgentCredential,
   type IssuedAgentCredential,
 } from '../api/agent-credentials.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Agent credentials — the secrets an autonomous agent redeems for a short-lived token.
@@ -60,12 +61,12 @@ export function AgentCredentialsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => setIssuing(true)}
-            className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> Issue credential
-          </button>
+          </Button>
           <button
             onClick={() => credentials.refetch()}
             className="flex items-center gap-2 rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
@@ -151,21 +152,21 @@ function SecretOnce({
             It is stored only as a hash. Nothing can show it again; re-issue if it is lost.
           </p>
         </div>
-        <button
+        <Button
           onClick={onDismiss}
-          className="shrink-0 rounded-sm border-thin border-border-medium px-2.5 py-1 text-xs font-bold text-text-secondary hover:bg-glass-2"
+          variant="secondary" size="sm" className="shrink-0"
         >
           Dismiss
-        </button>
+        </Button>
       </div>
 
       <div className="mt-2 flex items-center gap-2">
         <code className="min-w-0 flex-1 break-all rounded-sm border-thin border-border-subtle bg-bg-input p-2.5 font-mono text-[11px] text-text-primary">
           {issued.secret}
         </code>
-        <button
+        <Button
           onClick={copy}
-          className="flex shrink-0 items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+          variant="primary" className="shrink-0"
         >
           {copied ? (
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -173,7 +174,7 @@ function SecretOnce({
             <Copy className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           {copied ? 'Copied' : 'Copy'}
-        </button>
+        </Button>
       </div>
 
       <p className="mt-2 font-mono text-[11px] text-text-muted">
@@ -259,10 +260,10 @@ function IssueForm({
       {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
 
       <div className="mt-3 flex items-center gap-2">
-        <button
+        <Button
           disabled={!valid || issue.isPending}
           onClick={() => issue.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {issue.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -270,13 +271,13 @@ function IssueForm({
             <KeyRound className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Issue
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -367,7 +368,7 @@ function CredentialRow({
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason"
+            placeholder="Reason" aria-label="Reason"
             className={`mt-2 ${inputClass}`}
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
@@ -380,16 +381,16 @@ function CredentialRow({
               {revoke.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm revoke
             </button>
-            <button
+            <Button
               onClick={() => {
                 setRevoking(false);
                 setReason('');
                 setError(null);
               }}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}

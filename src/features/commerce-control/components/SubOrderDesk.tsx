@@ -29,6 +29,7 @@ import {
 } from '../api/stylemint-logistics.api';
 import { PackingSlipSheet } from './PackingSlipSheet';
 import { SubOrderDetailPanel } from './SubOrderDetailPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The fulfilment desk: the sub-orders waiting on a vendor step, and the step itself.
@@ -57,7 +58,7 @@ import { SubOrderDetailPanel } from './SubOrderDetailPanel';
 const FILTERS: Array<{ label: string; state?: number }> = [
   { label: 'All' },
   { label: 'Paid', state: SubOrderState.Paid },
-  { label: 'Awaiting fulfilment', state: SubOrderState.AwaitingFulfillment },
+  { label: 'Awaiting fulfillment', state: SubOrderState.AwaitingFulfillment },
   { label: 'Accepted', state: SubOrderState.Accepted },
   { label: 'Packed', state: SubOrderState.Packed },
   { label: 'Ready to ship', state: SubOrderState.ReadyToShip },
@@ -201,34 +202,34 @@ export function SubOrderDesk() {
           <span className="text-[11px] font-bold text-brand">
             {selected.size} selected
           </span>
-          <button
+          <Button
             disabled={!canBulkAccept || bulk.isPending}
             onClick={() => bulk.mutate({ step: 'accept' })}
-            className="rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             Accept all
-          </button>
-          <button
+          </Button>
+          <Button
             disabled={!canBulkReadyToShip || bulk.isPending}
             onClick={() => bulk.mutate({ step: 'readyToShip' })}
-            className="rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             Ready to ship all
-          </button>
+          </Button>
           {/* A read, so unlike the bulk steps it applies to any selection whatever state the
               rows are in — an operator printing a run of slips does not sort them first. */}
-          <button
+          <Button
             onClick={() => setPrinting([...selected])}
-            className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             <Printer className="h-3 w-3" strokeWidth={1.6} /> Packing slips
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => setSelected(new Set())}
-            className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+            variant="secondary" size="sm"
           >
             Clear
-          </button>
+          </Button>
           {!canBulkAccept && !canBulkReadyToShip && (
             <span className="text-[11px] text-text-muted">
               The selected rows are not all in one state, so no bulk step applies to all of them.
@@ -463,7 +464,7 @@ function RejectForm({
       onCancel={onCancel}
       onSubmit={() => reject.mutate()}
     >
-      <select
+      <select aria-label="Reason"
         value={reason}
         onChange={(e) => setReason(Number(e.target.value) as VendorRejectionReasonValue)}
         className={field}
@@ -474,7 +475,7 @@ function RejectForm({
           </option>
         ))}
       </select>
-      <input
+      <input aria-label="Note"
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder={
@@ -576,7 +577,7 @@ function HandoverPartnerChooser({ subOrderId }: { subOrderId: string }) {
   return (
     <div className="space-y-1.5">
       {picks.map((pick, index) => (
-        <button
+        <button aria-pressed={chosen === pick.courierProfileId}
           key={pick.courierProfileId}
           onClick={() => {
             setChosen(pick.courierProfileId);
@@ -604,13 +605,13 @@ function HandoverPartnerChooser({ subOrderId }: { subOrderId: string }) {
       {error && <p className="text-[11px] text-rose-300">{error}</p>}
 
       {chosen && (
-        <button
+        <Button
           disabled={offer.isPending}
           onClick={() => offer.mutate(chosen)}
-          className="mt-1 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm" className="mt-1"
         >
           {offer.isPending ? 'Offering…' : 'Offer to this partner'}
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -660,19 +661,19 @@ function HandoverForm({
       <input
         value={carrier}
         onChange={(e) => setCarrier(e.target.value)}
-        placeholder="Carrier"
+        placeholder="Carrier" aria-label="Carrier"
         className={field}
       />
       <input
         value={tracking}
         onChange={(e) => setTracking(e.target.value)}
-        placeholder="Tracking number"
+        placeholder="Tracking number" aria-label="Tracking number"
         className={field}
       />
       <input
         value={note}
         onChange={(e) => setNote(e.target.value)}
-        placeholder="Handover note"
+        placeholder="Handover note" aria-label="Handover note"
         className={field}
       />
     </ExpandedForm>
@@ -712,13 +713,13 @@ function TrackingForm({
       <input
         value={carrier}
         onChange={(e) => setCarrier(e.target.value)}
-        placeholder="Carrier"
+        placeholder="Carrier" aria-label="Carrier"
         className={field}
       />
       <input
         value={tracking}
         onChange={(e) => setTracking(e.target.value)}
-        placeholder="Tracking number"
+        placeholder="Tracking number" aria-label="Tracking number"
         className={field}
       />
     </ExpandedForm>
@@ -764,12 +765,12 @@ function ExpandedForm({
           {busy && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
           {submitLabel}
         </button>
-        <button
+        <Button
           onClick={onCancel}
-          className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+          variant="secondary" size="sm"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -812,7 +813,7 @@ function Banner({ tone, message }: { tone: 'error' | 'ok'; message: string }) {
 function describe(error: unknown): string {
   if (!(error instanceof Error)) return 'Something went wrong.';
   if (error.message === 'NOT_DEPLOYED') {
-    return 'This Stylemint build does not serve the vendor fulfilment surface yet.';
+    return 'This Stylemint build does not serve the vendor fulfillment surface yet.';
   }
   if (error.message === 'NOT_FOUND') return 'No sub-order matches that identifier.';
   return error.message;

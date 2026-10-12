@@ -189,7 +189,7 @@ function PublicBookingEventPage() {
                       {daySlots.map((slot) => {
                         const isSelected = selectedSlot === slot.start;
                         return (
-                          <button
+                          <button aria-pressed={isSelected}
                             key={slot.start}
                             onClick={() => setSelectedSlot(slot.start)}
                             className={`py-2 px-3 rounded-xl text-sm font-medium border transition-all ${
@@ -241,7 +241,7 @@ function PublicBookingEventPage() {
             <form onSubmit={handleConfirm} className="space-y-3">
               <input
                 type="text"
-                placeholder="Your name *"
+                placeholder="Your name *" aria-label="Your name *"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -249,7 +249,7 @@ function PublicBookingEventPage() {
               />
               <input
                 type="email"
-                placeholder="Email address *"
+                placeholder="Email address *" aria-label="Email address *"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -257,13 +257,13 @@ function PublicBookingEventPage() {
               />
               <input
                 type="tel"
-                placeholder="Phone (optional)"
+                placeholder="Phone (optional)" aria-label="Phone (optional)"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className={inputCls}
               />
               <textarea
-                placeholder="Notes or questions (optional)"
+                placeholder="Notes or questions (optional)" aria-label="Notes or questions (optional)"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}

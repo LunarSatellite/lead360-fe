@@ -13,6 +13,7 @@ import {
   ApiSpecStatus,
 } from '../types/api-specs.types';
 import type { ApiSpecificationDto, ApiSpecStatusValue } from '../types/api-specs.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ApiSpecListProps {
   specs: ApiSpecificationDto[];
@@ -125,7 +126,7 @@ export function ApiSpecList({ specs, isLoading, onUploadClick }: ApiSpecListProp
 
             {/* Actions menu */}
             <div className="relative" onClick={(e) => e.stopPropagation()}>
-              <button
+              <button aria-label="More actions"
                 onClick={() => setOpenMenuId(openMenuId === spec.id ? null : spec.id)}
                 className="p-1.5 rounded-lg hover:bg-glass-2 text-text-muted hover:text-text-primary transition-all opacity-0 group-hover:opacity-100"
               >
@@ -190,27 +191,27 @@ function RowMenu({
       {/* Backdrop to close */}
       <div className="fixed inset-0 z-40" onClick={onClose} />
       <div className="absolute right-0 top-full mt-1 z-50 w-44 bg-bg-card border border-border-subtle rounded-xl shadow-lg overflow-hidden">
-        <button
+        <Button
           onClick={onView}
-          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-secondary hover:bg-glass-1 hover:text-text-primary transition-all"
+          variant="ghost" size="lg" block
         >
           <Eye className="w-3.5 h-3.5" strokeWidth={1.6} />
           View detail
-        </button>
+        </Button>
         {(status === ApiSpecStatus.Parsed || status === ApiSpecStatus.Failed) && (
-          <button
+          <Button
             onClick={onReparse}
             disabled={isReparsing}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-text-secondary hover:bg-glass-1 hover:text-text-primary transition-all disabled:opacity-50"
+            variant="ghost" size="lg" block
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isReparsing ? 'animate-spin' : ''}`} strokeWidth={1.6} />
             Re-parse
-          </button>
+          </Button>
         )}
         <div className="border-t border-border-subtle" />
         <button
           onClick={onDelete}
-          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger hover:bg-danger-soft transition-all"
+          className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-danger-light hover:bg-danger-soft transition-all"
         >
           <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
           Delete
@@ -237,7 +238,7 @@ function ConfirmDeleteDialog({
       <div className="relative w-full max-w-sm mx-4 bg-bg-card rounded-2xl border border-border-subtle shadow-lg p-6">
         <div className="flex items-start gap-3 mb-4">
           <div className="w-10 h-10 rounded-lg bg-danger-soft flex items-center justify-center flex-shrink-0">
-            <AlertCircle className="w-5 h-5 text-danger" strokeWidth={1.8} />
+            <AlertCircle className="w-5 h-5 text-danger-light" strokeWidth={1.8} />
           </div>
           <div>
             <h3 className="text-sm font-bold text-text-primary">Delete API Spec?</h3>
@@ -247,13 +248,13 @@ function ConfirmDeleteDialog({
           </div>
         </div>
         <div className="flex items-center justify-end gap-2">
-          <button
+          <Button
             onClick={onCancel}
             disabled={isPending}
-            className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all"
+            variant="ghost"
           >
             Cancel
-          </button>
+          </Button>
           <button
             onClick={onConfirm}
             disabled={isPending}

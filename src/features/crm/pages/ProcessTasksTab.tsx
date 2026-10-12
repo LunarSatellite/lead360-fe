@@ -14,6 +14,7 @@ import {
   PROCESS_TASK_STATUS_LABELS,
   PROCESS_TASK_STATUS_COLORS,
 } from '../types/process-workflow.types';
+import { Button } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -38,7 +39,7 @@ function SlideOver({
       <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -70,7 +71,7 @@ function CompleteModal({
       <div className="relative w-full max-w-sm bg-bg shadow-2xl rounded-2xl border border-border-subtle">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <h3 className="font-bold text-text-primary">Complete Task</h3>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -82,33 +83,33 @@ function CompleteModal({
             <p className="text-sm text-text-secondary mb-3">
               Complete <span className="font-semibold text-text-primary">"{task.stepName}"</span>?
             </p>
-            <label className="block text-xs font-semibold text-text-muted mb-1.5">
-              Completion Notes (optional)
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-muted mb-1.5">Completion Notes (optional)</span>
+              <textarea
               rows={3}
               value={notes}
               onChange={e => setNotes(e.target.value)}
               placeholder="Any notes about the outcome..."
               className={`${inputCls} resize-none`}
             />
+            </label>
           </div>
           <div className="flex gap-3 pt-1">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all"
+              variant="secondary" className="flex-1"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={complete.isPending}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-semibold hover:bg-brand-light transition-all disabled:opacity-50"
+              variant="primary" className="flex-1"
             >
               {complete.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
               Complete
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -122,7 +123,7 @@ function SlaChip({ deadline, breached }: { deadline: string | null; breached: bo
   const dt = parseISO(deadline);
   const overdue = breached || isPast(dt);
   return (
-    <span className={`inline-flex items-center gap-1 text-xs font-medium ${overdue ? 'text-danger-DEFAULT' : 'text-text-muted'}`}>
+    <span className={`inline-flex items-center gap-1 text-xs font-medium ${overdue ? 'text-danger-light' : 'text-text-muted'}`}>
       {overdue ? <AlertTriangle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
       {overdue && breached ? 'SLA breached' : format(dt, 'MMM d, HH:mm')}
     </span>
@@ -131,7 +132,7 @@ function SlaChip({ deadline, breached }: { deadline: string | null; breached: bo
 
 function TaskStatusIcon({ status }: { status: ProcessTaskStatus }) {
   if (status === ProcessTaskStatus.Completed) return <CheckCircle2 className="w-4 h-4 text-success-DEFAULT" />;
-  if (status === ProcessTaskStatus.Escalated) return <TriangleAlert className="w-4 h-4 text-danger-DEFAULT" />;
+  if (status === ProcessTaskStatus.Escalated) return <TriangleAlert className="w-4 h-4 text-danger-light" />;
   if (status === ProcessTaskStatus.InProgress) return <Play className="w-4 h-4 text-info-DEFAULT" />;
   return <Circle className="w-4 h-4 text-text-muted" />;
 }
@@ -177,7 +178,7 @@ function TaskDetail({ task, onClose }: { task: ProcessTaskDto; onClose: () => vo
           <div className="flex items-center gap-2 flex-wrap">
             <Badge label={PROCESS_TASK_STATUS_LABELS[task.status]} colorCls={PROCESS_TASK_STATUS_COLORS[task.status]} />
             {task.slaBreached && (
-              <Badge label="SLA Breached" colorCls="text-danger-DEFAULT border-danger-DEFAULT/30 bg-danger-DEFAULT/10" />
+              <Badge label="SLA Breached" colorCls="text-danger-light border-danger/30 bg-danger/10" />
             )}
             {task.escalationLevel > 0 && (
               <Badge label={`Escalation L${task.escalationLevel}`} colorCls="text-warning-DEFAULT border-warning-DEFAULT/30 bg-warning-DEFAULT/10" />
@@ -229,13 +230,13 @@ function TaskDetail({ task, onClose }: { task: ProcessTaskDto; onClose: () => vo
               </button>
             )}
             {canComplete && (
-              <button
+              <Button
                 onClick={() => setShowComplete(true)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand text-bg text-sm font-semibold hover:bg-brand-light transition-all"
+                variant="primary" size="lg" block
               >
                 <CheckCircle2 className="w-4 h-4" />
                 Complete Task
-              </button>
+              </Button>
             )}
           </div>
         )}
@@ -277,7 +278,7 @@ function TaskListView({
         {STATUS_PILLS.map(pill => {
           const isActive = pill.slaBreached ? slaBreachedOnly : (!slaBreachedOnly && pill.value === statusFilter);
           return (
-            <button
+            <button aria-pressed={isActive}
               key={pill.label}
               onClick={() => onPillClick(pill)}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
@@ -320,7 +321,7 @@ function TaskListView({
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-text-primary truncate">{task.stepName}</span>
                     {task.slaBreached && (
-                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold border text-danger-DEFAULT border-danger-DEFAULT/30 bg-danger-DEFAULT/10">
+                      <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold border text-danger-light border-danger/30 bg-danger/10">
                         <AlertTriangle className="w-2.5 h-2.5" /> SLA
                       </span>
                     )}
@@ -460,17 +461,17 @@ function TeamTasksTab({ onSelectTask }: { onSelectTask: (task: ProcessTaskDto) =
             value={teamLabel}
             onChange={e => setTeamLabel(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') handleSearch(); }}
-            placeholder="Search team label (e.g. Sales, Support)"
+            placeholder="Search team label (e.g. Sales, Support)" aria-label="Search team label (e.g. Sales, Support)"
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/40"
           />
         </div>
-        <button
+        <Button
           onClick={handleSearch}
           disabled={!teamLabel.trim() || isLoading}
-          className="px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary"
         >
           {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Search'}
-        </button>
+        </Button>
       </div>
 
       {!searchedLabel ? (

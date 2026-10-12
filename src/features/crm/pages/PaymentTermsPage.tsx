@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
 import { ApiError } from '@/shared/lib/api-client';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const PT_KEY = ['crm', 'payment-terms'] as const;
 
@@ -30,7 +31,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && (
@@ -81,13 +82,13 @@ export function Component() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Payment Terms</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Payment Terms</h1>
           <p className="text-sm text-text-secondary mt-1">Define payment terms and apply them to accounts. Invoices auto-calculate due dates.</p>
         </div>
-        <button onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setShowCreate(true)}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> New term
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
@@ -106,7 +107,7 @@ export function Component() {
                 <span className="text-sm font-bold text-text-primary">{t.name}</span>
                 <div className="flex items-center gap-1.5">
                   {t.isDefault && <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-warning-soft text-warning">Default</span>}
-                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${t.isActive ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger'}`}>{t.isActive ? 'Active' : 'Inactive'}</span>
+                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${t.isActive ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger-light'}`}>{t.isActive ? 'Active' : 'Inactive'}</span>
                 </div>
               </div>
               <div className="text-[11px] text-text-muted mt-1">Net {t.netDays}{t.depositPercent > 0 ? ` · ${t.depositPercent}% deposit` : ''}</div>
@@ -132,12 +133,12 @@ export function Component() {
                     <button onClick={() => setDefaultMut.mutate(selected)}
                       className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-warning hover:border-warning/40 transition-all">Set as default</button>
                   )}
-                  <button onClick={() => toggleMut.mutate(selected)}
-                    className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${selected.isActive ? 'text-text-secondary hover:text-danger' : 'text-success'}`}>
+                  <button aria-pressed={selected.isActive} onClick={() => toggleMut.mutate(selected)}
+                    className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${selected.isActive ? 'text-text-secondary hover:text-danger-light' : 'text-success'}`}>
                     {selected.isActive ? 'Deactivate' : 'Activate'}
                   </button>
                   <button onClick={() => confirmDialog({ message: `Delete "${selected.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteMut.mutate(selected.id); })}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger transition-all">
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger-light transition-all">
                     <Trash2 className="w-3 h-3" /> Delete
                   </button>
                 </div>
@@ -158,78 +159,54 @@ export function Component() {
         subtitle="Define payment terms for invoices"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button
               type="submit"
               form="pt-form"
               disabled={createMut.isPending || !form.name.trim()}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              variant="primary" size="lg" className="flex-none">
               {createMut.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Term'}
-            </button>
+            </Button>
           </div>
         }
       >
         <form id="pt-form" onSubmit={submit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Name *</label>
-            <div className="relative">
-              <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                required
-                placeholder="e.g. Net 30"
-                value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Name *</span>
+              <Input icon={Layers} required placeholder="e.g. Net 30" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea
-                rows={2}
-                placeholder="Optional description…"
-                value={form.description}
-                onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Description</span>
+              <div className="relative">
+                <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <textarea
+                  rows={2}
+                  placeholder="Optional description…"
+                  value={form.description}
+                  onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                />
+              </div>
+            </label>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Net Days</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  value={form.netDays}
-                  onChange={e => setForm(f => ({ ...f, netDays: Number(e.target.value) }))}
-                  min={0}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Net Days</span>
+                <Input icon={Calendar} type="number" value={form.netDays} onChange={e => setForm(f => ({ ...f, netDays: Number(e.target.value) }))} min={0} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Deposit %</label>
-              <div className="relative">
-                <Percent className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  value={form.depositPercent}
-                  onChange={e => setForm(f => ({ ...f, depositPercent: Number(e.target.value) }))}
-                  min={0}
-                  max={100}
-                  step={0.01}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Deposit %</span>
+                <Input icon={Percent} type="number" value={form.depositPercent} onChange={e => setForm(f => ({ ...f, depositPercent: Number(e.target.value) }))} min={0} max={100} step={0.01} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
           </div>
 

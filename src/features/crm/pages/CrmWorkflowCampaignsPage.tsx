@@ -3,6 +3,7 @@ import { Plus, X, Loader2, Play, Target, ChevronDown } from 'lucide-react';
 import { useWorkflowCampaigns, useCreateWorkflowCampaign, useExecuteWorkflowCampaign, useWorkflows } from '../api/crm.queries';
 import type { CrmWorkflowCampaignDto, CrmWorkflowCampaignCreateRequest, CrmWorkflowSummaryDto } from '../types/crm.types';
 import { CRM_WORKFLOW_TRIGGER_LABELS } from '../types/crm.types';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 function SlideOver({ open, onClose, title, children, footer }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
@@ -25,7 +26,7 @@ function SlideOver({ open, onClose, title, children, footer }: { open: boolean; 
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             <p className="text-xs text-text-muted mt-0.5">Create a new workflow campaign</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -49,7 +50,8 @@ export function Component() {
     name: '', description: '', targetEntityType: 'deal', segmentConditionsJson: '{}', workflowId: '', scheduleType: '',
   });
 
-  const { data: campaigns, isLoading } = useWorkflowCampaigns();
+  const workflowCampaignsQuery = useWorkflowCampaigns();
+  const { data: campaigns } = workflowCampaignsQuery;
   const items: CrmWorkflowCampaignDto[] = (campaigns as any) ?? [];
 
   const { data: workflowsRaw } = useWorkflows();
@@ -80,20 +82,19 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Workflow Campaigns</h2>
           <p className="text-xs text-text-muted mt-0.5">{items.length} campaigns</p>
         </div>
-        <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all shrink-0">
+        <Button onClick={() => setShowCreate(true)} variant="primary" className="shrink-0">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Campaign
-        </button>
+        </Button>
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-        ) : !items.length ? (
-          <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-            <Target className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No workflow campaigns found.</p>
-          </div>
-        ) : (
+        <ListState
+          query={workflowCampaignsQuery}
+          isEmpty={!items.length}
+          noun="workflow campaigns"
+          icon={Target}
+          emptyTitle="No workflow campaigns found"
+        >
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
@@ -112,15 +113,15 @@ export function Component() {
                   <td className="px-4 py-3 text-text-muted">{c.totalMatched}</td>
                   <td className="px-4 py-3 text-text-muted text-xs">{c.lastRunAt ? new Date(c.lastRunAt).toLocaleDateString() : '—'}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => executeCampaign.mutate(c.id)} disabled={executeCampaign.isPending} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-brand-soft text-brand text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-60">
+                    <Button onClick={() => executeCampaign.mutate(c.id)} disabled={executeCampaign.isPending} variant="primary" size="sm">
                       {executeCampaign.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" strokeWidth={1.5} />} Run
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        )}
+        </ListState>
       </div>
 
       {/* Create SlideOver */}
@@ -130,11 +131,11 @@ export function Component() {
         title="New Workflow Campaign"
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="create-campaign-form" disabled={createCampaign.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="create-campaign-form" disabled={createCampaign.isPending}
+              variant="primary">
               {createCampaign.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Target className="w-3.5 h-3.5" />} Create Campaign
-            </button>
+            </Button>
           </div>
         }
       >
@@ -144,19 +145,18 @@ export function Component() {
             <div className="h-px bg-brand/20" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
-            <div className="relative">
-              <Target className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger-light">*</span></span>
+              <Input icon={Target} required value={form.name} onChange={setF('name')} placeholder="Q2 Discount Campaign" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
-            <textarea value={form.description} rows={3} onChange={setF('description')} placeholder="Campaign description…"
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Description</span>
+              <textarea value={form.description} rows={3} onChange={setF('description')} placeholder="Campaign description…"
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            </label>
           </div>
           <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
             <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Target & Workflow</span>
@@ -165,8 +165,8 @@ export function Component() {
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Target Entity</label>
             <div className="relative">
-              <button type="button" onClick={() => setEntityOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              <Button type="button" onClick={() => setEntityOpen(o => !o)}
+                variant="ghost" block
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${entityOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -176,7 +176,7 @@ export function Component() {
                 }}>
                 <span className="flex-1 text-left font-medium text-text-secondary capitalize">{form.targetEntityType}</span>
                 <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${entityOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-              </button>
+              </Button>
               {entityOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                   style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -195,8 +195,8 @@ export function Component() {
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Linked Workflow</label>
             <div className="relative">
-              <button type="button" onClick={() => setWorkflowOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              <Button type="button" onClick={() => setWorkflowOpen(o => !o)}
+                variant="ghost" block
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${workflowOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -206,7 +206,7 @@ export function Component() {
                 }}>
                 <span className="flex-1 text-left font-medium text-text-secondary">{form.workflowId ? workflowsList.find(w => w.id === form.workflowId)?.name ?? 'Select workflow' : 'Select a workflow'}</span>
                 <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${workflowOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-              </button>
+              </Button>
               {workflowOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden max-h-48 overflow-y-auto"
                   style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -229,17 +229,19 @@ export function Component() {
             <div className="h-px bg-brand/20" />
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Segment Conditions <span className="text-text-muted font-normal">(JSON)</span></label>
-            <textarea value={form.segmentConditionsJson} rows={4} onChange={setF('segmentConditionsJson')}
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Segment Conditions <span className="text-text-muted font-normal">(JSON)</span></span>
+              <textarea value={form.segmentConditionsJson} rows={4} onChange={setF('segmentConditionsJson')}
               className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary font-mono placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               placeholder='{"filters":[{"field":"Status","op":"eq","value":"Open"}]}' />
+            </label>
           </div>
           <div>
             <label className="block text-xs font-semibold text-text-secondary mb-1">Schedule</label>
             <div className="relative">
-              <button type="button" onClick={() => setScheduleOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              <Button type="button" onClick={() => setScheduleOpen(o => !o)}
+                variant="ghost" block
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${scheduleOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -249,7 +251,7 @@ export function Component() {
                 }}>
                 <span className="flex-1 text-left font-medium text-text-secondary">{form.scheduleType ? (form.scheduleType.charAt(0).toUpperCase() + form.scheduleType.slice(1)) : 'Manual only'}</span>
                 <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${scheduleOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-              </button>
+              </Button>
               {scheduleOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                   style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>

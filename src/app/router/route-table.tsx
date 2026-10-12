@@ -111,6 +111,10 @@ export const routeObjects: RouteObject[] = [
       { path: 'commerce-control', lazy: () => import('@/features/commerce-control/pages/CommerceControlCenterPage') },
       { path: 'stylemint/orders', lazy: () => import('@/features/commerce-control/pages/StylemintOrdersPage') },
       { path: 'stylemint/vendor', lazy: () => import('@/features/commerce-control/pages/VendorOperationsPage') },
+      // A splat, because a vendor section key can contain a slash
+      // ('pricing/flash-sales', 'analytics/creators'). The page resolves an
+      // unknown one to its default rather than rendering an empty console.
+      { path: 'stylemint/vendor/*', lazy: () => import('@/features/commerce-control/pages/VendorOperationsPage') },
       { path: 'stylemint/content', lazy: () => import('@/features/commerce-control/pages/ContentOperationsPage') },
       { path: 'stylemint/customers', lazy: () => import('@/features/commerce-control/pages/StylemintCustomersPage') },
       { path: 'stylemint/finance', lazy: () => import('@/features/commerce-control/pages/SellerFinancePage') },
@@ -199,6 +203,7 @@ export const routeObjects: RouteObject[] = [
       // Same as bot-settings: AccountSettingsPage renders ComplianceSettings as
       // its "Compliance" section. Unlisted on purpose, kept for bookmarks.
       { path: 'compliance', lazy: () => import('@/features/compliance/pages/ComplianceSettings') },
+      { path: 'design-system', lazy: () => import('@/features/design-system/pages/DesignSystemPage') },
       // ── COMMENTED: 6-step Onboarding wizard — chat-first replaces it.
       //    Uncomment if you need the wizard back. The file
       //    src/features/onboarding/pages/OnboardingPage.tsx is intact on disk.
@@ -268,6 +273,12 @@ export const routeObjects: RouteObject[] = [
       { path: 'crm/approval-chains', lazy: () => import('@/features/crm/pages/CrmApprovalChainsPage') },
       { path: 'crm/assignment-rotation', lazy: () => import('@/features/crm/pages/CrmAssignmentRotationPage') },
       { path: 'crm/audit', lazy: () => import('@/features/crm/pages/AuditLogPage') },
+      { path: 'crm/gdpr', lazy: () => import('@/features/crm/pages/CrmGdprRequestsPage') },
+      { path: 'crm/sso', lazy: () => import('@/features/crm/pages/CrmSsoPage') },
+      { path: 'crm/currencies', lazy: () => import('@/features/crm/pages/CrmCurrenciesPage') },
+      { path: 'crm/email-sync', lazy: () => import('@/features/crm/pages/CrmEmailSyncPage') },
+      { path: 'crm/custom-objects', lazy: () => import('@/features/crm/pages/CrmCustomObjectsPage') },
+      { path: 'crm/platform', lazy: () => import('@/features/crm/pages/CrmPlatformPage') },
       { path: 'crm/customer-onboarding', lazy: () => import('@/features/crm/pages/CrmCustomerOnboardingPage') },
       { path: 'crm/deals-hub', lazy: () => import('@/features/crm/pages/CrmDealsHubPage') },
       { path: 'crm/deliveries', lazy: () => import('@/features/crm/pages/CrmDeliveriesPage') },

@@ -67,6 +67,7 @@ import { type FlowRuntimeResult, type FlowMenuItemDto } from '../types/flow-runt
 import { detectGaps, getNodeGap, unresolvedCount } from '../utils/gap-detector';
 import type { FlowNodeGap } from '../utils/gap-detector';
 import { GapPrompt } from '../components/GapPrompt';
+import { Button } from '@/shared/ui/primitives';
 
 const nodeTypes = {
   trigger: TriggerNode,
@@ -518,12 +519,12 @@ function FlowBuilderInner() {
       >
         <div className="flex items-center justify-between px-4 py-2.5 border-b border-border-subtle flex-shrink-0">
           <h3 className="text-sm font-bold text-text-primary">📱 Multi-Channel Live Preview</h3>
-          <button
+          <Button
             onClick={() => setShowPreview(false)}
-            className="px-3 py-1.5 rounded-lg text-2xs font-semibold border border-border-subtle hover:bg-glass-1 transition-colors"
+            variant="secondary" size="sm"
           >
             ← Back to Builder
-          </button>
+          </Button>
         </div>
         <PreviewPanel sessionId={simSession} />
       </div>
@@ -559,7 +560,7 @@ function FlowBuilderInner() {
                   value={nlpInput}
                   onChange={(e) => setNlpInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && processNlp()}
-                  placeholder="Describe your bot..."
+                  placeholder="Describe your bot..." aria-label="Describe your bot..."
                   disabled={generateFlow.isPending}
                   className="flex-1 bg-transparent border-none outline-none text-sm py-2.5 px-2 text-text-primary placeholder:text-text-muted"
                 />
@@ -716,13 +717,13 @@ function FlowBuilderInner() {
                 </p>
               </div>
               <div className="flex gap-2 flex-shrink-0">
-                <button
+                <Button
                   onClick={discardAiChanges}
                   disabled={saveFlow.isPending}
-                  className="px-3 py-2 rounded-xl text-2xs font-semibold text-text-muted border border-border-subtle hover:bg-glass-1 transition-colors disabled:opacity-40"
+                  variant="secondary"
                 >
                   ↩ Discard
-                </button>
+                </Button>
                 <button
                   onClick={saveAiChanges}
                   disabled={saveFlow.isPending}
@@ -751,7 +752,7 @@ function FlowBuilderInner() {
             <FolderOpen className="w-4 h-4" />
           </button>
           {editingName ? (
-            <input
+            <input aria-label="Flow name"
               autoFocus
               value={editor.flowName}
               onChange={(e) => editor.setFlowName(e.target.value)}
@@ -775,7 +776,7 @@ function FlowBuilderInner() {
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0" title="Unsaved" />
           )}
           {loadedFlow?.isActive && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold text-white bg-brand flex-shrink-0">
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold text-text-inverted bg-brand flex-shrink-0">
               LIVE
             </span>
           )}
@@ -820,7 +821,7 @@ function FlowBuilderInner() {
             </button>
             <button
               onClick={editor.clear}
-              className="p-1.5 rounded-md hover:bg-glass-1 text-danger"
+              className="p-1.5 rounded-md hover:bg-glass-1 text-danger-light"
               title="Clear"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -937,15 +938,15 @@ function FlowBuilderInner() {
                       {NODE_TYPE_META[(sel.data as FlowNodeData).nodeType]?.label}
                     </span>
                   </div>
-                  <button
+                  <Button
                     onClick={() => {
                       editor.removeNode(sel.id);
                       setSel(null);
                     }}
-                    className="mt-1.5 w-full py-1 rounded-md bg-danger-soft border border-danger/[0.12] text-2xs font-semibold text-danger cursor-pointer"
+                    variant="danger" size="sm" block className="mt-1.5"
                   >
                     Delete
-                  </button>
+                  </Button>
                 </div>
               )}
               <div className="flex-1 overflow-y-auto px-3 py-2">
@@ -1051,7 +1052,7 @@ function FlowBuilderInner() {
               )}
 
               <div className="flex items-center gap-1.5 p-2.5 border-t border-border-subtle flex-shrink-0">
-                <input
+                <input aria-label="Chat"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && sendChat()}
@@ -1071,7 +1072,7 @@ function FlowBuilderInner() {
                   disabled={!editor.flowId || chatModify.isPending}
                   size="xs"
                 />
-                <button
+                <button aria-label="Send"
                   onClick={sendChat}
                   disabled={
                     !editor.flowId ||
@@ -1157,16 +1158,19 @@ function FlowBuilderInner() {
 
                   {/* Standard fields */}
                   <div>
-                    <label className="block text-2xs font-semibold mb-1 text-text-secondary">Name</label>
-                    <input
+                    <label className="block">
+                      <span className="block text-2xs font-semibold mb-1 text-text-secondary">Name</span>
+                      <input
                       value={(sel.data as FlowNodeData).label}
                       onChange={(e) => updateNodeData(sel.id, { label: e.target.value })}
                       className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs outline-none focus:border-brand bg-bg-shell text-text-muted"
                     />
+                    </label>
                   </div>
                   <div>
-                    <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                    <input
+                    <label className="block">
+                      <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                      <input
                       value={
                         NODE_TYPE_META[(sel.data as FlowNodeData).nodeType]?.label ||
                         (sel.data as FlowNodeData).nodeType
@@ -1174,6 +1178,7 @@ function FlowBuilderInner() {
                       disabled
                       className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-xs bg-glass-1 text-text-muted"
                     />
+                    </label>
                   </div>
                   {/* ✨ AI fix this specific node — scoped to known issues */}
                   {editor.flowId && (
@@ -1215,15 +1220,15 @@ function FlowBuilderInner() {
                     </button>
                   )}
 
-                  <button
+                  <Button
                     onClick={() => {
                       editor.removeNode(sel.id);
                       setSel(null);
                     }}
-                    className="w-full py-2 rounded-lg bg-danger-soft text-2xs font-semibold text-danger flex items-center justify-center gap-1.5"
+                    variant="danger" block
                   >
                     <Trash2 className="w-3 h-3" /> Delete Node
-                  </button>
+                  </Button>
                 </div>
               ) : (
                 /* No node selected — overall health summary */
@@ -1316,7 +1321,7 @@ function FlowListOverlay({
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-border-subtle flex-shrink-0">
           <h3 className="text-sm font-bold text-text-primary">Saved Flows</h3>
-          <button onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
+          <button aria-label="Close" onClick={onClose} className="p-1 rounded-md hover:bg-glass-1">
             <X className="w-4 h-4 text-text-muted" />
           </button>
         </div>
@@ -1338,7 +1343,7 @@ function FlowListOverlay({
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-text-primary truncate">{f.name}</span>
                       {f.isActive && (
-                        <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold text-white bg-brand">
+                        <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold text-text-inverted bg-brand">
                           <Check className="w-2.5 h-2.5" /> Live
                         </span>
                       )}
@@ -1348,7 +1353,7 @@ function FlowListOverlay({
                     </div>
                   </div>
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
+                    <button aria-label="Copy"
                       onClick={(e) => {
                         e.stopPropagation();
                         onDuplicate(f.id);
@@ -1357,7 +1362,7 @@ function FlowListOverlay({
                     >
                       <Copy className="w-3 h-3 text-text-muted" />
                     </button>
-                    <button
+                    <button aria-label="Delete"
                       onClick={(e) => {
                         e.stopPropagation();
                         confirmDialog({ message: `Delete "${f.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) onDelete(f.id); });
@@ -1365,7 +1370,7 @@ function FlowListOverlay({
                       disabled={f.isActive}
                       className="p-1.5 rounded-md hover:bg-danger-soft disabled:opacity-30"
                     >
-                      <Trash2 className="w-3 h-3 text-danger" />
+                      <Trash2 className="w-3 h-3 text-danger-light" />
                     </button>
                   </div>
                 </div>
@@ -1612,7 +1617,7 @@ function PreviewPanel({ sessionId: _sessionId }: { sessionId: string }) {
                 const t = ch.apiType;
                 const chPending = pendingChannels.has(ch.key);
                 const sharedInput = (placeholder: string, textColor: string, bgColor: string) => (
-                  <input
+                  <input aria-label="Ch input"
                     value={chInput}
                     onChange={(e) => setInputs((p) => ({ ...p, [ch.key]: e.target.value }))}
                     onKeyDown={(e) => e.key === 'Enter' && send(chInput, ch.key)}
@@ -1700,7 +1705,7 @@ function PreviewPanel({ sessionId: _sessionId }: { sessionId: string }) {
                 /* ── Default dark (WebChat, Voice, Email, etc.) ── */
                 return (
                   <div className="flex items-center gap-1.5 px-2 py-2 flex-shrink-0 bg-bg" style={{ borderTop: `1px solid ${s.hdr}40` }}>
-                    <input
+                    <input aria-label="Ch input"
                       value={chInput}
                       onChange={(e) => setInputs((p) => ({ ...p, [ch.key]: e.target.value }))}
                       onKeyDown={(e) => e.key === 'Enter' && send(chInput, ch.key)}

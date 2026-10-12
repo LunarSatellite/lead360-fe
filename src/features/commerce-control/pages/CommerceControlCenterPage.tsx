@@ -28,6 +28,7 @@ import { isUsableSocialAccount } from '../lib/social-accounts';
 import { applyTenantAccent } from '@/shared/lib/tenant-theme';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 type Preferences = { locale: 'fr-CD' | 'en-CD'; currency: 'CDF' | 'USD'; timezone: 'Africa/Kinshasa' };
 const STORAGE_KEY = 'kinmarche_workspace_preferences';
@@ -43,60 +44,52 @@ function loadPreferences(): Preferences {
 
 const operations = [
   [
-    'Catalogue & products',
+    'Catalog & products',
     'Products, categories, images, pricing and availability.',
     '/dashboard/business-catalog',
     Boxes,
-    'from-emerald-500/20',
   ],
   [
     'Content & social media',
     'Import, review and publish reels and campaigns.',
     '/dashboard/stylemint/content',
     PlaySquare,
-    'from-fuchsia-500/20',
   ],
   [
     'Orders',
     'Confirm, prepare, deliver, cancel and refund.',
     '/dashboard/stylemint/orders',
     ShoppingBag,
-    'from-amber-500/20',
   ],
   [
     'Customers',
     'Profiles, consent, segments and history.',
     '/dashboard/stylemint/customers',
     Users,
-    'from-sky-500/20',
   ],
   [
     'Campaigns',
     'Promotions, audiences, calendar and performance.',
     '/dashboard/crm/campaigns',
     BadgeDollarSign,
-    'from-violet-500/20',
   ],
   [
     'Customer service',
     'Requests, disputes, returns and resolution tracking.',
     '/dashboard/crm/support',
     HeartHandshake,
-    'from-rose-500/20',
   ],
   [
     'Vendor operations',
     'Products, stores, returns, warranties and performance.',
     '/dashboard/stylemint/vendor',
     Store,
-    'from-cyan-500/20',
   ],
   [
     'Seller finance',
     'Earnings, ledger, payout requests, invoices and payment destinations.',
     '/dashboard/stylemint/finance',
     WalletCards,
-    'from-emerald-500/20',
   ],
 ] as const;
 
@@ -159,7 +152,7 @@ export function CommerceControlCenterPage() {
       ['Language, currency and timezone', true],
       ['Stylemint vendor access', integration.data?.vendor.reachable === true],
       ['Stylemint administrator access', integration.data?.admin.reachable === true],
-      [`Catalogue: ${catalogue.data?.displayableProducts ?? 0}/${catalogue.data?.requiredProducts ?? 50} products, 5 images + reel`, catalogue.data?.ready === true],
+      [`Catalog: ${catalogue.data?.displayableProducts ?? 0}/${catalogue.data?.requiredProducts ?? 50} products, 5 images + reel`, catalogue.data?.ready === true],
       ['Social accounts connected', socialConnected],
     ] as const;
   }, [catalogue.data, integration.data, social.data]);
@@ -179,53 +172,66 @@ export function CommerceControlCenterPage() {
 
   return (
     <div className="mx-auto max-w-[1500px] space-y-6">
-      <section className="relative overflow-hidden rounded-[28px] border border-emerald-400/20 bg-bg px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.28)] md:px-9 md:py-9">
-        <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-emerald-400/15 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-0 left-1/3 h-36 w-80 bg-amber-300/10 blur-3xl" />
+      {/* The header of the screen an operator opens every morning.
+
+          It used to be a product pitch — a 5xl "Your entire commercial
+          operation, in one place." over a paragraph explaining that
+          Stylemint content is managed from Lead360 and creators live in the
+          mobile app. True, and the wrong thing to read daily: it described
+          the product to someone who has already bought it, in the space
+          where the work should start, and it named both products at a point
+          where the rest of the admin no longer does.
+
+          It also painted itself in emerald-400, amber-300 and white/10 —
+          raw palette values that ignore the token layer, so this one screen
+          stayed Lead360-green under the StyleMint theme. */}
+      <section className="relative overflow-hidden rounded-card border border-border-subtle bg-bg-card px-6 py-7 md:px-9 md:py-8">
+        <div className="pointer-events-none absolute -right-16 -top-24 h-72 w-72 rounded-full bg-brand/10 blur-3xl" />
         <div className="relative grid gap-8 xl:grid-cols-[1.35fr_.65fr] xl:items-end">
           <div>
-            <div className="mb-5 flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-emerald-300">
-                Stylemint Control Center
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-border-glow bg-brand-soft px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-brand">
+                Control center
               </span>
-              <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-semibold text-white/65">
+              <span className="flex items-center gap-1.5 rounded-full border border-border-subtle bg-glass-1 px-3 py-1 text-[10px] font-semibold text-text-muted">
                 <MapPin className="h-3 w-3" /> Kinshasa, RDC
               </span>
             </div>
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-amber-300/80">Kin Marche</p>
-            <h1 className="mt-2 max-w-3xl text-3xl font-black tracking-[-0.04em] text-white md:text-5xl">
-              Your entire commercial operation, in one place.
+            <h1 className="text-3xl font-black tracking-[-0.03em] text-text-primary md:text-4xl">
+              Kin Marche
             </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-6 text-white/60 md:text-base">
-              Manage Stylemint content, products, orders, refunds and customer relationships from Lead360.
-              Creators keep their complete experience in the mobile app; Kin Marche manages only its commercial
-              partnerships with them here.
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-text-muted">
+              Products, orders, content, customers and vendor relationships. Pick an area below, or
+              use the rail on the left.
             </p>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur-xl">
+          <div className="rounded-card border border-border-subtle bg-glass-1 p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-                  Demo readiness
+                {/* "Demo readiness" on the production control centre. It
+                    counts real checks against vendor and administrator
+                    access, so the panel stays and the word goes. */}
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-text-muted">
+                  Setup readiness
                 </p>
-                <p className="mt-1 text-2xl font-black text-white">
+                <p className="mt-1 text-2xl font-black text-text-primary">
                   {readyCount}/{readiness.length}
                 </p>
               </div>
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-300 text-text-inverted">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-soft text-brand">
                 <PackageCheck className="h-5 w-5" />
               </div>
             </div>
-            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-glass-2">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-amber-300"
+                className="h-full rounded-full bg-gradient-to-r from-brand to-brand-light"
                 style={{ width: `${(readyCount / readiness.length) * 100}%` }}
               />
             </div>
-            <p className="mt-3 text-xs leading-5 text-white/50">
+            <p className="mt-3 text-xs leading-5 text-text-muted">
               {integration.data?.ready
-                ? 'Stylemint vendor and administrator access is working correctly.'
-                : 'Readiness checks vendor and administrator access independently.'}
+                ? 'Vendor and administrator access is working correctly.'
+                : 'Checks vendor and administrator access independently.'}
             </p>
           </div>
         </div>
@@ -247,18 +253,25 @@ export function CommerceControlCenterPage() {
           </Link>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {operations.map(([title, description, href, Icon, accent]) => (
+          {operations.map(([title, description, href, Icon]) => (
             <Link
               key={title}
               to={href}
               className="group relative overflow-hidden rounded-2xl border border-border-subtle bg-bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-brand/35 hover:shadow-[0_16px_40px_rgba(0,0,0,0.18)]"
             >
-              <div
-                className={`absolute inset-x-0 top-0 h-24 bg-gradient-to-b ${accent} to-transparent opacity-70`}
-              />
+              {/* One wash, in the brand, for every card.
+
+                  There were seven: emerald, amber, violet, cyan, fuchsia,
+                  sky and rose, assigned in no order anyone could state.
+                  Colour that varies without meaning still reads as meaning
+                  — "Customer service" was the rose one, which on a dark
+                  admin looks like an alert — and none of the seven came
+                  from the token layer, so the whole row stayed Lead360's
+                  palette under the StyleMint theme. */}
+              <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-brand/10 to-transparent" />
               <div className="relative">
                 <div className="flex items-start justify-between">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-black/20 text-text-primary">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border-subtle bg-glass-1 text-text-primary">
                     <Icon className="h-[18px] w-[18px]" />
                   </div>
                   <ArrowRight className="h-4 w-4 text-text-muted transition-transform group-hover:translate-x-1 group-hover:text-brand" />
@@ -288,7 +301,7 @@ export function CommerceControlCenterPage() {
           </div>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             <Field icon={Languages} label="Language">
-              <select
+              <select aria-label="Locale"
                 disabled={!canOperate}
                 value={preferences.locale}
                 onChange={(e) => update('locale', e.target.value as Preferences['locale'])}
@@ -299,7 +312,7 @@ export function CommerceControlCenterPage() {
               </select>
             </Field>
             <Field icon={BadgeDollarSign} label="Currency">
-              <select
+              <select aria-label="Currency"
                 disabled={!canOperate}
                 value={preferences.currency}
                 onChange={(e) => update('currency', e.target.value as Preferences['currency'])}
@@ -310,7 +323,7 @@ export function CommerceControlCenterPage() {
               </select>
             </Field>
             <Field icon={Clock3} label="Time zone">
-              <select
+              <select aria-label="Timezone"
                 disabled={!canOperate}
                 value={preferences.timezone}
                 onChange={(e) => update('timezone', e.target.value as Preferences['timezone'])}
@@ -356,19 +369,19 @@ export function CommerceControlCenterPage() {
               />
             </label>
             {canOperate ? (
-              <button
+              <Button
                 onClick={() => saveTenant.mutate({ preferences, branding })}
                 disabled={saveTenant.isPending || !branding.name.trim()}
-                className="rounded-xl bg-brand px-4 py-3 text-xs font-extrabold text-black disabled:opacity-40"
+                variant="primary" size="lg"
               >
                 {saveTenant.isPending ? 'Saving…' : 'Save'}
-              </button>
+              </Button>
             ) : (
               <span className="px-2 py-3 text-xs text-text-muted">Read only</span>
             )}
           </div>
           {saveTenant.isError && (
-            <p className="mt-3 text-xs font-semibold text-danger">
+            <p className="mt-3 text-xs font-semibold text-danger-light">
               Unable to save tenant settings.
             </p>
           )}
@@ -383,6 +396,7 @@ export function CommerceControlCenterPage() {
             </div>
             <Link
               to="/dashboard/channels"
+              aria-label="Configure social networks"
               className="rounded-lg border border-border-subtle p-2 text-text-muted hover:text-brand"
             >
               <Settings2 className="h-4 w-4" />

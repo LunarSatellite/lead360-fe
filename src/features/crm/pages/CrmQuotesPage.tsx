@@ -16,6 +16,7 @@ import type {
   CrmPriceBookDetailDto,
 } from '../types/crm.types';
 import { CrmQuoteStatus, CRM_QUOTE_STATUS_LABELS, CRM_QUOTE_STATUS_COLORS } from '../types/crm.types';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 // Shared input/select class
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors';
@@ -32,8 +33,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block"><span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>{children}</label>
     </div>
   );
 }
@@ -70,7 +70,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide, pad
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -203,7 +203,8 @@ export function Component() {
     setBundleId('');
   }
 
-  const { data: raw, isLoading } = useQuotes(filter);
+  const quotesQuery = useQuotes(filter);
+  const { data: raw } = quotesQuery;
   const items: CrmQuoteSummaryDto[] = (raw as any)?.items ?? [];
 
   const createQuote = useCreateQuote();
@@ -271,31 +272,32 @@ export function Component() {
       <div className="flex items-center justify-between gap-4 shrink-0">
         <div>
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Quotes</h2>
-          <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+          <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={quotesQuery} total={(raw as any)?.totalCount} />
+          </p>
         </div>
-        <button onClick={() => setCreateOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setCreateOpen(true)} variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Quote
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-2">
         <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-          placeholder="Search quotes..." className={inputCls + ' flex-1'} />
-        <select className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
+          placeholder="Search quotes..." aria-label="Search quotes..." className={inputCls + ' flex-1'} />
+        <select aria-label="Filter by status" className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
           <option value="">All Statuses</option>
           {Object.entries(CRM_QUOTE_STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-        ) : !items.length ? (
-          <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-            <FileText className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No quotes found</p>
-          </div>
-        ) : (
+        <ListState
+          query={quotesQuery}
+          isEmpty={!items.length}
+          noun="quotes"
+          icon={FileText}
+          emptyTitle="No quotes found"
+        >
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
@@ -326,7 +328,7 @@ export function Component() {
                           <Send className="w-3.5 h-3.5" strokeWidth={1.5} />
                         </button>
                       )}
-                      <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteQuote.mutate(q.id); })} title="Delete" className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors">
+                      <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteQuote.mutate(q.id); })} title="Delete" className="p-1.5 rounded-lg text-danger-light hover:bg-danger-soft transition-colors">
                         <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                       </button>
                     </div>
@@ -335,7 +337,7 @@ export function Component() {
               ))}
             </tbody>
           </table>
-        )}
+        </ListState>
       </div>
 
       {/* Detail SlideOver */}
@@ -354,7 +356,7 @@ export function Component() {
               <div>
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider mb-2">Line Items</p>
                 <table className="w-full text-sm border border-border-subtle rounded-xl overflow-hidden">
-                  <thead><tr className="bg-bg-subtle border-b border-border-subtle">
+                  <thead><tr className="bg-bg-sunken border-b border-border-subtle">
                     {['Description', 'Qty', 'Unit Price', 'Total'].map(h => <th key={h} className="text-left px-3 py-2 text-xs font-bold text-text-muted">{h}</th>)}
                   </tr></thead>
                   <tbody>{(selected as any).lineItems.map((li: any) => (
@@ -376,17 +378,17 @@ export function Component() {
                 <button onClick={() => openEdit(selected.id)} disabled={loadingEdit} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-bg-card border border-border-subtle text-text-primary text-sm font-bold hover:bg-bg-elevated disabled:opacity-60 transition-all">
                   {loadingEdit ? <Loader2 className="w-4 h-4 animate-spin" /> : <Pencil className="w-4 h-4" strokeWidth={1.5} />} Edit
                 </button>
-                <button onClick={() => { setSendPreviewQuote(selected); setSelected(null); }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all">
+                <Button onClick={() => { setSendPreviewQuote(selected); setSelected(null); }} variant="primary">
                   <Send className="w-4 h-4" strokeWidth={1.5} /> Send Quote
-                </button>
+                </Button>
               </div>
             )}
             {selected.status === 2 && ( /* Sent — customer can accept/reject */
               <div className="flex items-center gap-2">
-                <button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                <Button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
+                  variant="primary">
                   {reviseQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" strokeWidth={1.5} />} Revise
-                </button>
+                </Button>
                 <button onClick={() => { acceptQuote.mutate(selected.id); setSelected(null); }} disabled={acceptQuote.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   {acceptQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" strokeWidth={1.5} />} Accept
@@ -399,19 +401,19 @@ export function Component() {
             )}
             {selected.status === 3 && ( /* Accepted — ready to create order */
               <div className="flex items-center gap-2">
-                <button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                <Button onClick={() => { reviseQuote.mutate(selected.id); setSelected(null); }} disabled={reviseQuote.isPending}
+                  variant="primary">
                   {reviseQuote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" strokeWidth={1.5} />} Revise
-                </button>
+                </Button>
                 <button onClick={() => { setSelected(null); navigate(`/dashboard/crm/orders?quoteId=${selected.id}`); }}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-60 transition-all">
                   <Package className="w-4 h-4" strokeWidth={1.5} /> Create Order
                 </button>
               </div>
             )}
-            <button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) { deleteQuote.mutate(selected.id); setSelected(null); } })} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger text-sm font-bold hover:bg-danger hover:text-bg transition-all">
+            <Button onClick={() => confirmDialog({ message: 'Delete this quote?', confirmText: 'Delete', danger: true }).then((ok) => { if (ok) { deleteQuote.mutate(selected.id); setSelected(null); } })} variant="danger">
               <Trash2 className="w-4 h-4" strokeWidth={1.5} /> Delete Quote
-            </button>
+            </Button>
           </div>
         )}
       </SlideOver>
@@ -426,22 +428,22 @@ export function Component() {
         padRight
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button
+            <Button
               onClick={() => { setCreateOpen(false); resetForm(); }}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleSubmit}
               disabled={createQuote.isPending || updateQuote.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {createQuote.isPending || updateQuote.isPending
                 ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 : editingId ? <Pencil className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
               {editingId ? 'Save Changes' : 'Create Quote'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -461,14 +463,14 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Search existing deals…"
+                  placeholder="Search existing deals…" aria-label="Search existing deals…"
                   autoComplete="off"
                   value={dealSearch}
                   onChange={e => { setDealSearch(e.target.value); setShowDealDrop(true); }}
                   onFocus={() => setShowDealDrop(true)}
                 />
                 {dealSearch ? (
-                  <button type="button" onClick={() => { setDealSearch(''); setShowDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setDealSearch(''); setShowDealDrop(false); setDealId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -509,14 +511,14 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Search existing contacts…"
+                  placeholder="Search existing contacts…" aria-label="Search existing contacts…"
                   autoComplete="off"
                   value={contactSearch}
                   onChange={e => { setContactSearch(e.target.value); setShowContactDrop(true); }}
                   onFocus={() => setShowContactDrop(true)}
                 />
                 {contactSearch ? (
-                  <button type="button" onClick={() => { setContactSearch(''); setShowContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setContactSearch(''); setShowContactDrop(false); setContactId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -560,14 +562,14 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Select a price book…"
+                  placeholder="Select a price book…" aria-label="Select a price book…"
                   autoComplete="off"
                   value={pbSearch}
                   onChange={e => { setPbSearch(e.target.value); setShowPbDrop(true); }}
                   onFocus={() => setShowPbDrop(true)}
                 />
                 {pbSearch ? (
-                  <button type="button" onClick={() => { setPbSearch(''); setShowPbDrop(false); setPriceBookId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
+                  <button aria-label="Close" type="button" onClick={() => { setPbSearch(''); setShowPbDrop(false); setPriceBookId(''); }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     <X className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 ) : null}
@@ -606,32 +608,17 @@ export function Component() {
         {/* Currency & Validity */}
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-            <div className="relative">
-              <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                value={currency}
-                onChange={e => setCurrency(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="USD"
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+              <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" />
+            </label>
           </div>
           {!editingId && (
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Validity (days)</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  value={validityDays}
-                  onChange={e => setValidityDays(Number(e.target.value))}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  min={1}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Validity (days)</span>
+                <Input icon={Calendar} type="number" value={validityDays} onChange={e => setValidityDays(Number(e.target.value))} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} min={1} />
+              </label>
             </div>
           )}
         </div>
@@ -648,10 +635,10 @@ export function Component() {
             <div className="flex items-center gap-2">
               {!editingId && bundleList.length > 0 && (
                 <>
-                  <select
+                  <select aria-label="Bundle ID"
                     value={bundleId}
                     onChange={e => setBundleId(e.target.value)}
-                    className="text-xs py-1 px-2 rounded-lg border border-brand/20 text-text-primary focus:outline-none"
+                    className="text-xs py-1 px-2 rounded-lg border border-brand/20 text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
                   >
                     <option value="">Add bundle…</option>
@@ -677,7 +664,7 @@ export function Component() {
                     ? { ...x, productId: en.productId ?? undefined, description: en.productName, unitPrice: en.unitPrice }
                     : x));
                 }}
-                className="w-full px-3 py-2 rounded-xl border border-brand/20 text-xs text-text-primary focus:outline-none"
+                className="w-full px-3 py-2 rounded-xl border border-brand/20 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
               >
                 <option value="">＋ Pick from {bookDetail?.data?.data?.name ?? 'price book'}…</option>
@@ -695,7 +682,7 @@ export function Component() {
                   <input
                     value={l.description}
                     onChange={e => updateLine(i, 'description', e.target.value)}
-                    placeholder="Description"
+                    placeholder="Description" aria-label="Description"
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
@@ -703,7 +690,7 @@ export function Component() {
                     type="number"
                     value={l.quantity}
                     onChange={e => updateLine(i, 'quantity', Number(e.target.value))}
-                    placeholder="Qty"
+                    placeholder="Qty" aria-label="Qty"
                     min={1}
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
@@ -712,15 +699,15 @@ export function Component() {
                     type="number"
                     value={l.unitPrice}
                     onChange={e => updateLine(i, 'unitPrice', Number(e.target.value))}
-                    placeholder="Price"
+                    placeholder="Price" aria-label="Price"
                     min={0}
                     step={0.01}
                     className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   />
-                  <button
+                  <button aria-label="Close"
                     onClick={() => setLines(ls => ls.filter((_, idx) => idx !== i))}
-                    className="p-1.5 rounded-lg text-danger hover:bg-danger-soft transition-colors disabled:opacity-30"
+                    className="p-1.5 rounded-lg text-danger-light hover:bg-danger-soft transition-colors disabled:opacity-30"
                     disabled={lines.length === 1}
                   >
                     <X className="w-3.5 h-3.5" />
@@ -733,16 +720,21 @@ export function Component() {
           {/* Tax + Totals */}
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-2">
-              <label className="text-xs font-semibold text-text-secondary">Tax %</label>
-              <input
-                type="number"
-                value={taxPercent}
-                onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
-                className="w-20 px-2 py-1.5 rounded-xl border border-brand/20 text-xs text-text-primary text-right focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
-                min={0}
-                step={0.01}
-              />
+              {/* aria-label rather than nesting: the label and the input are
+                  both flex items in this row, so wrapping one in the other
+                  would change the layout. */}
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-text-secondary">Tax %</span>
+                <input
+                  type="number"
+                  value={taxPercent}
+                  onChange={e => setTaxPercent(Math.max(0, Number(e.target.value)))}
+                  className="w-20 px-2 py-1.5 rounded-xl border border-brand/20 text-xs text-text-primary text-right focus:outline-none focus:border-brand/50"
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))' }}
+                  min={0}
+                  step={0.01}
+                />
+              </label>
             </div>
             <div className="text-xs text-text-secondary text-right space-y-0.5">
               <p>Subtotal: <span className="font-bold text-text-primary">{currency} {subtotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
@@ -754,8 +746,9 @@ export function Component() {
 
         {/* Notes */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-          <textarea
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
+            <textarea
             value={notes}
             onChange={e => setNotes(e.target.value)}
             rows={3}
@@ -763,6 +756,7 @@ export function Component() {
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             placeholder="Optional notes…"
           />
+          </label>
         </div>
       </SlideOver>
 

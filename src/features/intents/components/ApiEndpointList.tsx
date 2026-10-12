@@ -71,11 +71,11 @@ export function ApiEndpointList({ endpoints, isLoading }: ApiEndpointListProps) 
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by path, summary..."
+            placeholder="Search by path, summary..." aria-label="Search by path, summary..."
             className="w-full pl-9 pr-4 py-2 rounded-lg bg-glass-1 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all"
           />
           {search && (
-            <button
+            <button aria-label="Close"
               onClick={() => setSearch('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
             >
@@ -92,7 +92,7 @@ export function ApiEndpointList({ endpoints, isLoading }: ApiEndpointListProps) 
               success: isActive ? 'bg-success text-white' : 'bg-success-soft text-success hover:brightness-110',
               info: isActive ? 'bg-info text-white' : 'bg-info-soft text-info hover:brightness-110',
               warning: isActive ? 'bg-warning text-white' : 'bg-warning-soft text-warning hover:brightness-110',
-              danger: isActive ? 'bg-danger text-white' : 'bg-danger-soft text-danger hover:brightness-110',
+              danger: isActive ? 'bg-danger text-white' : 'bg-danger-soft text-danger-light hover:brightness-110',
               brand: isActive ? 'bg-brand text-white' : 'bg-brand-soft text-brand hover:brightness-110',
             };
             const color = HTTP_METHOD_COLOR[m] ?? 'info';
@@ -265,7 +265,7 @@ function EndpointDetail({ endpoint }: { endpoint: ApiEndpointDto }) {
                   </code>
                   <span>
                     {(param.required ?? param.Required) ? (
-                      <span className="text-danger font-bold text-[10px]">Yes</span>
+                      <span className="text-danger-light font-bold text-[10px]">Yes</span>
                     ) : (
                       <span className="text-text-muted text-[10px]">No</span>
                     )}

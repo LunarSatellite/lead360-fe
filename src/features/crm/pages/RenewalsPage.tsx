@@ -9,12 +9,13 @@ import {
   RENEWAL_SEGMENT_LABELS, RENEWAL_STATUS_LABELS, RENEWAL_OUTCOME_LABELS,
   type CrmRenewalListItemDto, type CrmRenewalFilter,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const SEGMENT_STYLES: Record<RenewalSegment, string> = {
   [RenewalSegment.LowRiskRoutine]: 'text-success border-success/30 bg-success/10',
   [RenewalSegment.ExpansionCandidate]: 'text-brand border-border-glow bg-brand-soft',
   [RenewalSegment.AtRisk]: 'text-warning border-warning/30 bg-warning/10',
-  [RenewalSegment.LostCause]: 'text-danger border-danger/30 bg-danger/10',
+  [RenewalSegment.LostCause]: 'text-danger-light border-danger/30 bg-danger/10',
 };
 
 const TERMINAL: RenewalStatus[] = [
@@ -45,26 +46,26 @@ export function Component() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Renewals</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Renewals</h1>
           <p className="text-sm text-text-secondary mt-1">
             Upcoming contract renewals, risk-segmented. Reach out before they lapse and record the outcome.
           </p>
         </div>
-        <button
+        <Button
           onClick={() => evaluate.mutate()}
           disabled={evaluate.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary"
         >
           {evaluate.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" strokeWidth={2.2} />}
           Re-evaluate now
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-1.5 flex-wrap">
         {SEGMENT_FILTERS.map((f) => {
           const active = f.value === segment;
           return (
-            <button
+            <button aria-pressed={active}
               key={f.label}
               onClick={() => setSegment(f.value)}
               className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
@@ -108,7 +109,7 @@ export function Component() {
                       <td className="px-4 py-3 text-sm text-text-primary tabular-nums">
                         {new Date(r.renewalDate).toLocaleDateString()}
                       </td>
-                      <td className={`px-4 py-3 text-sm tabular-nums ${overdue ? 'text-danger font-bold' : 'text-text-secondary'}`}>
+                      <td className={`px-4 py-3 text-sm tabular-nums ${overdue ? 'text-danger-light font-bold' : 'text-text-secondary'}`}>
                         {overdue ? `${Math.abs(r.daysUntilRenewal)}d overdue` : `${r.daysUntilRenewal}d`}
                       </td>
                       <td className="px-4 py-3 text-sm font-semibold text-text-primary tabular-nums">{money(r.contractValue)}</td>
@@ -120,13 +121,13 @@ export function Component() {
                       <td className="px-4 py-3 text-xs text-text-secondary">{RENEWAL_STATUS_LABELS[r.status]}</td>
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2">
-                          <button
+                          <Button
                             onClick={() => outreach.mutate(r.id)}
                             disabled={terminal || outreach.isPending}
-                            className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold border border-border-medium text-text-secondary hover:text-text-primary hover:bg-glass-2 disabled:opacity-40 transition-all"
+                            variant="secondary" size="sm"
                           >
                             <Send className="w-3 h-3" /> Outreach
-                          </button>
+                          </Button>
                           <select
                             disabled={terminal || outcome.isPending}
                             defaultValue=""

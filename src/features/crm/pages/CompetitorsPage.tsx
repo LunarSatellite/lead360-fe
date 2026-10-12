@@ -3,6 +3,7 @@ import { Plus, X, Trash2, Pencil, TrendingUp } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 const COMP_KEY = ['crm', 'competitors'] as const;
 
@@ -42,10 +43,10 @@ export function Component() {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div><h1 className="text-xl font-extrabold text-text-primary tracking-tight">Competitors</h1>
           <p className="text-sm text-text-secondary mt-1">Track competitors across deals and analyze win/loss rates.</p></div>
-        <button onClick={() => { setEditId(null); setForm({ name: '', website: '', notes: '' }); setShowForm(true); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => { setEditId(null); setForm({ name: '', website: '', notes: '' }); setShowForm(true); }}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> Add competitor
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -65,8 +66,8 @@ export function Component() {
                   <td className="px-4 py-3 text-xs text-text-muted">{c.website || '—'}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <button onClick={() => openEdit(c)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                      <button onClick={() => deleteMut.mutate(c.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                      <button aria-label="Edit" onClick={() => openEdit(c)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
+                      <button aria-label="Delete" onClick={() => deleteMut.mutate(c.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>
@@ -98,7 +99,7 @@ export function Component() {
                     </div>
                     <div className="flex items-center gap-3 text-[10px] text-text-muted">
                       <span>Revenue won: <span className="text-success font-semibold">${(a.revenueWon || 0).toLocaleString()}</span></span>
-                      <span>Lost: <span className="text-danger font-semibold">${(a.revenueLost || 0).toLocaleString()}</span></span>
+                      <span>Lost: <span className="text-danger-light font-semibold">${(a.revenueLost || 0).toLocaleString()}</span></span>
                     </div>
                   </button>
                   {detailId === competitors.find((c: any) => c.name === a.name)?.id && detail && (
@@ -151,7 +152,7 @@ export function Component() {
                 >{editId ? 'Edit' : 'Add'} Competitor</h2>
                 <p className="text-xs text-text-muted mt-0.5">{editId ? 'Update competitor details' : 'Add a competitor to track across deals'}</p>
               </div>
-              <button onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -164,62 +165,68 @@ export function Component() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
-                <div className="relative">
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="Competitor name"
-                    value={form.name}
-                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    required
-                    autoFocus
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger-light">*</span></span>
+                  <div className="relative">
+                    <input
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="Competitor name"
+                      value={form.name}
+                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                      required
+                      autoFocus
+                    />
+                  </div>
+                </label>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
-                <div className="relative">
-                  <input
-                    type="url"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="https://competitor.com"
-                    value={form.website}
-                    onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Website</span>
+                  <div className="relative">
+                    <input
+                      type="url"
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="https://competitor.com"
+                      value={form.website}
+                      onChange={e => setForm(f => ({ ...f, website: e.target.value }))}
+                    />
+                  </div>
+                </label>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-                <div className="relative">
-                  <textarea
-                    rows={4}
-                    className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="Win/loss notes, strengths, weaknesses…"
-                    value={form.notes}
-                    onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
+                  <div className="relative">
+                    <textarea
+                      rows={4}
+                      className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                      placeholder="Win/loss notes, strengths, weaknesses…"
+                      value={form.notes}
+                      onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                    />
+                  </div>
+                </label>
               </div>
             </div>
 
             {/* Footer */}
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-              <button
+              <Button
                 onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 disabled={createMut.isPending || !form.name.trim()}
                 onClick={() => createMut.mutate({ name: form.name.trim(), website: form.website.trim() || undefined, notes: form.notes.trim() || undefined })}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createMut.isPending ? (
                   <span className="w-3.5 h-3.5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
@@ -227,7 +234,7 @@ export function Component() {
                   <Plus className="w-3.5 h-3.5" />
                 )}
                 {editId ? 'Update' : 'Add'} Competitor
-              </button>
+              </Button>
             </div>
           </div>
         </div>

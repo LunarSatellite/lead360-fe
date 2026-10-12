@@ -51,7 +51,7 @@ export function Component() {
         <div>
           <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">New password</label>
           <div className="relative">
-            <input {...form.register('newPassword')} type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" autoComplete="new-password"
+            <input {...form.register('newPassword')} type={showPw ? 'text' : 'password'} placeholder="Min 8 characters" aria-label="Min 8 characters" autoComplete="new-password"
               className="w-full px-4 py-3 pr-12 rounded-lg bg-glass-2 border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all" />
             <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary">
               {showPw ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -68,7 +68,7 @@ export function Component() {
             </div>
           )}
         </div>
-        {reset.isError && <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger">{reset.error?.message || 'Reset failed.'}</div>}
+        {reset.isError && <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger-light">{reset.error?.message || 'Reset failed.'}</div>}
         <button type="submit" disabled={reset.isPending}
           className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-lg bg-gradient-to-br from-brand to-brand-dark text-white text-base font-bold hover:brightness-110 disabled:opacity-50 transition-all">
           {reset.isPending ? <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Lock className="w-5 h-5" />}

@@ -6,6 +6,7 @@ import { crmApi } from '../api/crm.api';
 import { CrmContractStatus, ContractTemplateCategory, CONTRACT_TEMPLATE_CATEGORY_LABELS, type ContractTemplateCategoryValue } from '../types/crm.types';
 import { toast } from 'sonner';
 import { confirmDialog } from '@/shared/ui/confirm';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 
@@ -22,7 +23,7 @@ const STATUS_STYLE: Record<number, string> = {
   [CrmContractStatus.PendingSignature]: 'text-warning border-warning/30 bg-warning-soft',
   [CrmContractStatus.Active]: 'text-success border-success/30 bg-success-soft',
   [CrmContractStatus.Expired]: 'text-text-muted border-border-medium bg-glass-2',
-  [CrmContractStatus.Terminated]: 'text-danger border-danger/30 bg-danger-soft',
+  [CrmContractStatus.Terminated]: 'text-danger-light border-danger/30 bg-danger-soft',
   [CrmContractStatus.Renewed]: 'text-brand border-border-glow bg-brand-soft',
 };
 
@@ -147,16 +148,16 @@ export function Component() {
           <button onClick={() => setTab('templates')} className={`px-4 py-2 text-sm font-bold rounded-lg transition-all ${tab === 'templates' ? 'bg-brand text-white' : 'bg-glass-1 text-text-secondary hover:text-text-primary'}`}>Templates</button>
         </div>
         {tab === 'contracts' && (
-          <button onClick={() => { setForm({ title: '', value: '', currency: 'USD', startDate: '', endDate: '', autoRenew: false, templateId: '' }); setShowForm(true); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light">
+          <Button onClick={() => { setForm({ title: '', value: '', currency: 'USD', startDate: '', endDate: '', autoRenew: false, templateId: '' }); setShowForm(true); }}
+            variant="primary">
             <Plus className="w-3.5 h-3.5" /> New contract
-          </button>
+          </Button>
         )}
         {tab === 'templates' && (
-          <button onClick={() => { setEditTemplateId(null); setTemplateForm({ name: '', description: '', category: 0, subject: '', bodyHtml: '' }); setShowTemplateForm(true); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light">
+          <Button onClick={() => { setEditTemplateId(null); setTemplateForm({ name: '', description: '', category: 0, subject: '', bodyHtml: '' }); setShowTemplateForm(true); }}
+            variant="primary">
             <Plus className="w-3.5 h-3.5" /> New template
-          </button>
+          </Button>
         )}
       </div>
 
@@ -189,7 +190,7 @@ export function Component() {
                       <td className="px-4 py-3 text-xs text-text-muted">{c.signedCount != null ? `${c.signedCount}/${c.signatoryCount}` : '—'}</td>
                       <td className="px-4 py-3 text-xs text-text-muted tabular-nums">{c.startDate ? new Date(c.startDate).toLocaleDateString() : '—'}</td>
                       <td className="px-4 py-3 text-xs text-text-muted tabular-nums">{c.endDate ? new Date(c.endDate).toLocaleDateString() : '—'}</td>
-                      <td className="px-4 py-3"><button onClick={(e) => { e.stopPropagation(); confirmDialog({ message: 'Delete?', confirmText: 'Delete', danger: true }).then(ok => { if (ok) deleteMut.mutate(c.id); }); }} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button></td>
+                      <td className="px-4 py-3"><button aria-label="Delete" onClick={(e) => { e.stopPropagation(); confirmDialog({ message: 'Delete?', confirmText: 'Delete', danger: true }).then(ok => { if (ok) deleteMut.mutate(c.id); }); }} className="text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button></td>
                     </tr>
                   ))}
                 </tbody>
@@ -218,8 +219,8 @@ export function Component() {
                 </div>
                 {detailData?.status === CrmContractStatus.Draft && (
                   <div className="flex gap-1 mb-2">
-                    <input className="flex-1 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Name" value={sigForm.name} onChange={e => setSigForm(f => ({ ...f, name: e.target.value }))} />
-                    <input className="w-24 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Email" value={sigForm.email} onChange={e => setSigForm(f => ({ ...f, email: e.target.value }))} />
+                    <input className="flex-1 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Name" aria-label="Name" value={sigForm.name} onChange={e => setSigForm(f => ({ ...f, name: e.target.value }))} />
+                    <input className="w-24 px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs" placeholder="Email" aria-label="Email" value={sigForm.email} onChange={e => setSigForm(f => ({ ...f, email: e.target.value }))} />
                   </div>
                 )}
                 {sigs.length === 0 ? (
@@ -233,7 +234,7 @@ export function Component() {
                       ) : detailData?.status === CrmContractStatus.PendingSignature ? (
                         <button onClick={() => recordSigMut.mutate(s.id)} className="text-[10px] font-semibold text-brand hover:underline">Record signature</button>
                       ) : detailData?.status === CrmContractStatus.Draft ? (
-                        <button onClick={() => removeSigMut.mutate(s.id)} className="text-[10px] text-danger hover:underline">Remove</button>
+                        <button onClick={() => removeSigMut.mutate(s.id)} className="text-[10px] text-danger-light hover:underline">Remove</button>
                       ) : null}
                     </div>
                   </div>
@@ -243,8 +244,8 @@ export function Component() {
 
               <div className="flex gap-2 pt-1">
                 {detailData?.status === CrmContractStatus.Draft && (
-                  <button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.PendingSignature })}
-                    className="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-white hover:brightness-110">Send for signature</button>
+                  <Button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.PendingSignature })}
+                    variant="primary" size="sm" className="flex-1">Send for signature</Button>
                 )}
                 {detailData?.status === CrmContractStatus.PendingSignature && allSigned && (
                   <button onClick={() => updateStatusMut.mutate({ id: detailData?.id, status: CrmContractStatus.Active })}
@@ -269,8 +270,8 @@ export function Component() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-bold text-text-primary">{t.name}</span>
                   <div className="flex gap-1">
-                    <button onClick={() => { setEditTemplateId(t.id); setTemplateForm({ name: t.name, description: t.description || '', category: t.category, subject: t.subject || '', bodyHtml: t.bodyHtml }); setShowTemplateForm(true); }} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                    <button onClick={() => deleteTemplateMut.mutate(t.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Edit" onClick={() => { setEditTemplateId(t.id); setTemplateForm({ name: t.name, description: t.description || '', category: t.category, subject: t.subject || '', bodyHtml: t.bodyHtml }); setShowTemplateForm(true); }} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Delete" onClick={() => deleteTemplateMut.mutate(t.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </div>
                 <div className="text-[11px] text-text-muted">{CONTRACT_TEMPLATE_CATEGORY_LABELS[t.category as ContractTemplateCategoryValue] ?? 'General'}{t.subject ? ` · ${t.subject}` : ''}</div>
@@ -288,15 +289,15 @@ export function Component() {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <form onSubmit={(e) => { e.preventDefault(); createTemplateMut.mutate({ ...templateForm, description: templateForm.description || undefined, subject: templateForm.subject || undefined }); }} className="w-full max-w-lg bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4">
             <div className="flex items-center justify-between"><h2 className="text-sm font-bold text-text-primary">{editTemplateId ? 'Edit' : 'New'} Template</h2>
-              <button type="button" onClick={() => { setShowTemplateForm(false); setEditTemplateId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
-            <input className={inputCls} placeholder="Template name" value={templateForm.name} onChange={e => setTemplateForm(f => ({ ...f, name: e.target.value }))} required />
+              <button aria-label="Close" type="button" onClick={() => { setShowTemplateForm(false); setEditTemplateId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
+            <input className={inputCls} placeholder="Template name" aria-label="Template name" value={templateForm.name} onChange={e => setTemplateForm(f => ({ ...f, name: e.target.value }))} required />
             <div className="grid grid-cols-2 gap-3">
-              <select className={inputCls} value={templateForm.category} onChange={e => setTemplateForm(f => ({ ...f, category: Number(e.target.value) }))}>
+              <select aria-label="Category" className={inputCls} value={templateForm.category} onChange={e => setTemplateForm(f => ({ ...f, category: Number(e.target.value) }))}>
                 {Object.entries(ContractTemplateCategory).filter(([k]) => isNaN(Number(k))).map(([k, v]) => (<option key={v} value={v}>{k}</option>))}
               </select>
-              <input className={inputCls} placeholder="Subject" value={templateForm.subject} onChange={e => setTemplateForm(f => ({ ...f, subject: e.target.value }))} />
+              <input className={inputCls} placeholder="Subject" aria-label="Subject" value={templateForm.subject} onChange={e => setTemplateForm(f => ({ ...f, subject: e.target.value }))} />
             </div>
-            <input className={inputCls} placeholder="Description" value={templateForm.description} onChange={e => setTemplateForm(f => ({ ...f, description: e.target.value }))} />
+            <input className={inputCls} placeholder="Description" aria-label="Description" value={templateForm.description} onChange={e => setTemplateForm(f => ({ ...f, description: e.target.value }))} />
             <div>
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs text-text-muted">Body</span>
@@ -304,9 +305,9 @@ export function Component() {
                   {VARIABLE_HINTS.map(v => <button key={v} type="button" onClick={() => setTemplateForm(f => ({ ...f, bodyHtml: f.bodyHtml + v }))} className="px-1.5 py-0.5 rounded text-[10px] bg-glass-2 border border-border-subtle text-text-muted hover:text-brand">{v}</button>)}
                 </div>
               </div>
-              <textarea className={`${inputCls} min-h-[160px] font-mono text-xs`} value={templateForm.bodyHtml} onChange={e => setTemplateForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p>" />
+              <textarea className={`${inputCls} min-h-[160px] font-mono text-xs`} value={templateForm.bodyHtml} onChange={e => setTemplateForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p>" aria-label="<p>Hi {{ContactFirstName}},</p>" />
             </div>
-            <button type="submit" disabled={createTemplateMut.isPending || !templateForm.name.trim()} className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">{editTemplateId ? 'Update' : 'Create'} Template</button>
+            <Button type="submit" disabled={createTemplateMut.isPending || !templateForm.name.trim()} variant="primary" block>{editTemplateId ? 'Update' : 'Create'} Template</Button>
           </form>
         </div>,
         document.body
@@ -340,112 +341,69 @@ export function Component() {
                 >New Contract</h2>
                 <p className="text-xs text-text-muted mt-0.5">Create a new contract</p>
               </div>
-              <button onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => setShowForm(false)} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
             <form onSubmit={submit} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
               {/* Title */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></label>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="Contract title…"
-                    value={form.title}
-                    onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
-                    required
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger-light">*</span></span>
+                  <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contract title…" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} required />
+                </label>
               </div>
 
               {/* Template */}
               {templates.length > 0 && (
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Template</label>
-                  <div className="relative">
-                    <FileSignature className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <select
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      value={form.templateId}
-                      onChange={e => setForm(f => ({ ...f, templateId: e.target.value }))}
-                    >
-                      <option value="">No template</option>
-                      {templates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
-                    </select>
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Template</span>
+                    <div className="relative">
+                      <FileSignature className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                      <select
+                        className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
+                        style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                        value={form.templateId}
+                        onChange={e => setForm(f => ({ ...f, templateId: e.target.value }))}
+                      >
+                        <option value="">No template</option>
+                        {templates.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                      </select>
+                    </div>
+                  </label>
                 </div>
               )}
 
               {/* Value + Currency */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Value</label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="0"
-                      value={form.value}
-                      onChange={e => setForm(f => ({ ...f, value: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Value</span>
+                    <Input icon={DollarSign} type="number" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="0" value={form.value} onChange={e => setForm(f => ({ ...f, value: e.target.value }))} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-                  <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="USD"
-                      value={form.currency}
-                      onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+                    <Input icon={DollarSign} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="USD" value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))} />
+                  </label>
                 </div>
               </div>
 
               {/* Start + End Date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                    <input
-                      type="date"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{
-                        backgroundColor: 'rgb(var(--color-glass-1))',
-                        colorScheme: 'dark',
-                        backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                      }}
-                      value={form.startDate}
-                      onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Start Date</span>
+                    <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">End Date</label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                    <input
-                      type="date"
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                      style={{
-                        backgroundColor: 'rgb(var(--color-glass-1))',
-                        colorScheme: 'dark',
-                        backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                      }}
-                      value={form.endDate}
-                      onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">End Date</span>
+                    <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))} />
+                  </label>
                 </div>
               </div>
 
@@ -463,21 +421,21 @@ export function Component() {
 
             {/* Footer */}
             <div className="shrink-0 px-6 py-4 border-t border-border-subtle flex items-center justify-end gap-3">
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={createMut.isPending || !form.title.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Contract
-              </button>
+              </Button>
             </div>
           </div>
         </div>,
@@ -488,11 +446,11 @@ export function Component() {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
           <div className="w-full max-w-2xl bg-bg border-thin border-border-subtle rounded-2xl p-6 space-y-4 max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between shrink-0"><h2 className="text-sm font-bold text-text-primary flex items-center gap-2"><Eye className="w-4 h-4" /> Preview</h2>
-              <button onClick={() => setShowPreview(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
+              <button aria-label="Close" onClick={() => setShowPreview(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
             <div className="flex-1 overflow-y-auto rounded-card border-thin border-border-subtle bg-glass-1 p-4 text-sm text-text-primary" dangerouslySetInnerHTML={{ __html: previewHtml }} />
             <div className="flex gap-3 shrink-0">
-              <button onClick={confirmCreate} className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light">Confirm & Create</button>
-              <button onClick={() => setShowPreview(false)} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary">Back</button>
+              <Button onClick={confirmCreate} variant="primary" className="flex-1">Confirm & Create</Button>
+              <Button onClick={() => setShowPreview(false)} variant="secondary">Back</Button>
             </div>
           </div>
         </div>,

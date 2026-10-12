@@ -54,13 +54,13 @@ export function TestConsole({ endpoints }: TestConsoleProps) {
         <div className="flex items-center gap-4 bg-bg-card border border-border-subtle rounded-xl px-5 py-3 ">
           <div className="flex items-center gap-2">
             <Wifi
-              className={`w-4 h-4 ${health.status === 'healthy' ? 'text-success' : 'text-danger'}`}
+              className={`w-4 h-4 ${health.status === 'healthy' ? 'text-success' : 'text-danger-light'}`}
               strokeWidth={1.8}
             />
             <span className="text-xs font-bold text-text-primary">API Health</span>
           </div>
           <span
-            className={`px-2 py-0.5 rounded text-[11px] font-bold ${health.status === 'healthy' ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger'}`}
+            className={`px-2 py-0.5 rounded text-[11px] font-bold ${health.status === 'healthy' ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger-light'}`}
           >
             {health.status || 'unknown'}
           </span>
@@ -80,19 +80,21 @@ export function TestConsole({ endpoints }: TestConsoleProps) {
         {/* Left: select + params */}
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Select Endpoint</label>
-            <select
-              value={selectedId}
-              onChange={(e) => handleSelect(e.target.value)}
-              className="form-input appearance-none cursor-pointer"
-            >
-              <option value="">— Choose an endpoint —</option>
-              {endpoints.map((ep) => (
-                <option key={ep.id} value={ep.id}>
-                  {ep.httpMethod.toUpperCase()} {ep.path} {ep.summary ? `— ${ep.summary}` : ''}
-                </option>
-              ))}
-            </select>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Select Endpoint</span>
+              <select
+                value={selectedId}
+                onChange={(e) => handleSelect(e.target.value)}
+                className="form-input appearance-none cursor-pointer"
+              >
+                <option value="">— Choose an endpoint —</option>
+                {endpoints.map((ep) => (
+                  <option key={ep.id} value={ep.id}>
+                    {ep.httpMethod.toUpperCase()} {ep.path} {ep.summary ? `— ${ep.summary}` : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
 
           {selected && (
@@ -109,15 +111,15 @@ export function TestConsole({ endpoints }: TestConsoleProps) {
                   </p>
                   {paramFields.map((f) => (
                     <div key={f.name}>
-                      <label className="block text-xs font-semibold text-text-secondary mb-1">
-                        {f.name} <span className="text-[11px] text-text-muted font-normal">({f.source})</span>
-                      </label>
-                      <input
+                      <label className="block">
+                        <span className="block text-xs font-semibold text-text-secondary mb-1">{f.name} <span className="text-[11px] text-text-muted font-normal">({f.source})</span></span>
+                        <input
                         value={params[f.name] || ''}
                         onChange={(e) => setParams((prev) => ({ ...prev, [f.name]: e.target.value }))}
                         placeholder={`Enter ${f.name}...`}
                         className="form-input"
                       />
+                      </label>
                     </div>
                   ))}
                 </div>
@@ -149,10 +151,10 @@ export function TestConsole({ endpoints }: TestConsoleProps) {
                 {result.success ? (
                   <CheckCircle className="w-4 h-4 text-success" strokeWidth={1.8} />
                 ) : (
-                  <XCircle className="w-4 h-4 text-danger" strokeWidth={1.8} />
+                  <XCircle className="w-4 h-4 text-danger-light" strokeWidth={1.8} />
                 )}
                 <span
-                  className={`px-2.5 py-0.5 rounded-lg text-xs font-extrabold ${result.statusCode < 400 ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger'}`}
+                  className={`px-2.5 py-0.5 rounded-lg text-xs font-extrabold ${result.statusCode < 400 ? 'bg-success-soft text-success' : 'bg-danger-soft text-danger-light'}`}
                 >
                   {result.statusCode}
                 </span>

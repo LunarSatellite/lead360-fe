@@ -20,6 +20,7 @@ import {
   CRM_DELIVERY_STATUS_LABELS, CRM_DELIVERY_STATUS_COLORS,
   PICK_LIST_STATUS_LABELS,
 } from '../types/crm.types';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50';
 
@@ -31,7 +32,7 @@ const FULFILLMENT_COLORS: Record<number, string> = {
   5: 'text-brand bg-brand-soft border-border-glow',
   6: 'text-violet-light bg-violet-light/10 border-violet-light/20',
   7: 'text-success bg-success-soft border-success/20',
-  8: 'text-danger bg-danger-soft border-danger/20',
+  8: 'text-danger-light bg-danger-soft border-danger/20',
   9: 'text-text-muted bg-bg-card border-border-subtle',
 };
 
@@ -63,7 +64,7 @@ function SlideOver({ open, onClose, title, children, footer }: { open: boolean; 
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             <p className="text-xs text-text-muted mt-0.5">Create a new order</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -81,8 +82,7 @@ function SlideOver({ open, onClose, title, children, footer }: { open: boolean; 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>
-      {children}
+      <label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label>
     </div>
   );
 }
@@ -178,7 +178,8 @@ export function Component() {
   const [shipCarrier, setShipCarrier] = useState('');
   const [shipTracking, setShipTracking] = useState('');
 
-  const { data: raw, isLoading } = useOrders(filter);
+  const ordersQuery = useOrders(filter);
+  const { data: raw } = ordersQuery;
   const items: CrmOrderDetailDto[] = (raw as any)?.items ?? [];
 
   const { data: pendingOrder } = useOrderById(urlOrderId || undefined);
@@ -283,30 +284,29 @@ export function Component() {
     <>
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Orders</h2>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Sales orders</h2>
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Order
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search orders..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
+          <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search orders..." aria-label="Search orders..." className="flex-1 min-w-40 rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40">
             <option value="">All Status</option>
             {Object.entries(CRM_ORDER_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-surface text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <Button onClick={applyFilter} variant="secondary">Search</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Package className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No orders found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={ordersQuery}
+            isEmpty={!items.length}
+            noun="orders"
+            icon={Package}
+            emptyTitle="No orders found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -342,7 +342,7 @@ export function Component() {
                             <button onClick={() => { setSelectedOrder(o); setShowPayment(true); setPaymentAmount(String(o.totalAmount)); }} title="Record Payment" className="p-1.5 rounded-lg text-text-muted hover:text-success hover:bg-success-soft transition-all">
                               <DollarSign className="w-4 h-4" />
                             </button>
-                            <button onClick={() => cancelOrder.mutate(o.id)} disabled={cancelOrder.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50">
+                            <button onClick={() => cancelOrder.mutate(o.id)} disabled={cancelOrder.isPending} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all disabled:opacity-50">
                               <XCircle className="w-4 h-4" />
                             </button>
                           </>
@@ -353,7 +353,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 
@@ -361,22 +361,22 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Order"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="create-order-form" disabled={createOrder.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="create-order-form" disabled={createOrder.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createOrder.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Order'}
-            </button>
+            </Button>
           </div>
         }
       >
         <form id="create-order-form" onSubmit={handleCreate} className="space-y-4">
-          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
-          <Field label="Customer PO #"><input value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Contact ID *"><input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Currency"><input value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" aria-label="USD" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Customer PO #"><input aria-label="Customer po number" value={customerPONumber} onChange={e => setCustomerPONumber(e.target.value)} placeholder="e.g. ACME-PO-2026-441" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <Field label="Account">
             <div className="relative">
-              <button type="button" onClick={() => setAccountOpen(!accountOpen)}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              <Button type="button" onClick={() => setAccountOpen(!accountOpen)}
+                variant="ghost" block
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   border: `1px solid ${accountOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -389,7 +389,7 @@ export function Component() {
                   {orderAccountId ? accountsList.find((a: any) => a.id === orderAccountId)?.name ?? 'Select account' : '— Select account (optional) —'}
                 </span>
                 <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${accountOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-              </button>
+              </Button>
               {accountOpen && (
                 <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                   style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -412,30 +412,32 @@ export function Component() {
           </Field>
 
           <div className="border-t border-border-subtle pt-3">
-            <label className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary mb-2"><MapPin className="w-3 h-3" /> Shipping Address</label>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="col-span-2"><input value={shippingLine1} onChange={e => setShippingLine1(e.target.value)} placeholder="Address line 1" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></div>
-              <input value={shippingCity} onChange={e => setShippingCity(e.target.value)} placeholder="City" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              <input value={shippingState} onChange={e => setShippingState(e.target.value)} placeholder="State" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              <input value={shippingPostalCode} onChange={e => setShippingPostalCode(e.target.value)} placeholder="Postal code" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              <input value={shippingCountry} onChange={e => setShippingCountry(e.target.value)} placeholder="Country" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-            </div>
+            <label className="block">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-text-secondary mb-2"><MapPin className="w-3 h-3" /> Shipping Address</span>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="col-span-2"><input value={shippingLine1} onChange={e => setShippingLine1(e.target.value)} placeholder="Address line 1" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></div>
+                <input value={shippingCity} onChange={e => setShippingCity(e.target.value)} placeholder="City" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                <input value={shippingState} onChange={e => setShippingState(e.target.value)} placeholder="State" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                <input value={shippingPostalCode} onChange={e => setShippingPostalCode(e.target.value)} placeholder="Postal code" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                <input value={shippingCountry} onChange={e => setShippingCountry(e.target.value)} placeholder="Country" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </div>
+            </label>
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Line Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded-md border border-border-subtle text-xs text-text-secondary hover:text-text-primary hover:bg-glass-1 transition-all">
+              <Button type="button" onClick={addLine} variant="secondary" size="sm">
                 <Plus className="w-3 h-3" /> Add Row
-              </button>
+              </Button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
                 <div key={i} className="grid grid-cols-[1fr_60px_80px_28px] gap-1.5 items-center">
-                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <input type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
+                  <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" aria-label="Product name" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input aria-label="Quantity" type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)} className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <input aria-label="Unit price" type="number" min="0" step="0.01" value={l.unitPrice} onChange={e => setLine(i, 'unitPrice', e.target.value)} placeholder="0.00" className={inputCls} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                  <button aria-label="Close" type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger-light disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -447,7 +449,7 @@ export function Component() {
           </div>
 
           <Field label="Notes">
-            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls + ' resize-none'} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+            <textarea aria-label="Notes" value={notes} onChange={e => setNotes(e.target.value)} rows={3} className={inputCls + ' resize-none'} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </Field>
         </form>
       </SlideOver>
@@ -459,10 +461,10 @@ export function Component() {
             <>
               <p className="text-sm text-text-muted">Order <span className="font-mono text-text-primary">{selectedOrder.orderNumber}</span></p>
               <Field label="Amount *">
-                <input required type="number" min="0" step="0.01" value={paymentAmount} onChange={e => setPaymentAmount(e.target.value)} className={inputCls} />
+                <input aria-label="Payment amount" required type="number" min="0" step="0.01" value={paymentAmount} onChange={e => setPaymentAmount(e.target.value)} className={inputCls} />
               </Field>
               <Field label="Payment Method">
-                <select value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className={inputCls}>
+                <select aria-label="Payment method" value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)} className={inputCls}>
                   <option value="">Select...</option>
                   <option value="Cash">Cash</option>
                   <option value="Bank Transfer">Bank Transfer</option>
@@ -472,13 +474,13 @@ export function Component() {
                 </select>
               </Field>
               <Field label="Reference">
-                <input value={paymentRef} onChange={e => setPaymentRef(e.target.value)} placeholder="transaction-id" className={inputCls} />
+                <input value={paymentRef} onChange={e => setPaymentRef(e.target.value)} placeholder="transaction-id" aria-label="transaction-id" className={inputCls} />
               </Field>
               <div className="flex gap-3 pt-2">
                 <button type="submit" disabled={recordPayment.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
                   {recordPayment.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Record Payment'}
                 </button>
-                <button type="button" onClick={() => setShowPayment(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+                <Button type="button" onClick={() => setShowPayment(false)} variant="secondary">Cancel</Button>
               </div>
             </>
           )}
@@ -489,13 +491,13 @@ export function Component() {
       <SlideOver open={showNewShipment} onClose={() => setShowNewShipment(false)} title="New Shipment">
         <form onSubmit={handleCreateShipment} className="space-y-4">
           <p className="text-sm text-text-muted">Order <span className="font-mono text-text-primary">{selectedOrder?.orderNumber}</span></p>
-          <Field label="Carrier"><input value={shipCarrier} onChange={e => setShipCarrier(e.target.value)} placeholder="DHL, FedEx, etc." className={inputCls} /></Field>
-          <Field label="Tracking Number"><input value={shipTracking} onChange={e => setShipTracking(e.target.value)} placeholder="tracking-number" className={inputCls} /></Field>
+          <Field label="Carrier"><input value={shipCarrier} onChange={e => setShipCarrier(e.target.value)} placeholder="DHL, FedEx, etc." aria-label="DHL, FedEx, etc." className={inputCls} /></Field>
+          <Field label="Tracking Number"><input value={shipTracking} onChange={e => setShipTracking(e.target.value)} placeholder="tracking-number" aria-label="tracking-number" className={inputCls} /></Field>
           <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={createDelivery.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+            <Button type="submit" disabled={createDelivery.isPending} variant="primary" className="flex-1">
               {createDelivery.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Shipment'}
-            </button>
-            <button type="button" onClick={() => setShowNewShipment(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            </Button>
+            <Button type="button" onClick={() => setShowNewShipment(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>
@@ -515,7 +517,7 @@ export function Component() {
             </div>
 
             {/* Financials */}
-            <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+            <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-text-muted">Subtotal</span><span className="text-text-primary">{selectedOrder.currency} {selectedOrder.subtotal.toLocaleString()}</span></div>
               <div className="flex justify-between"><span className="text-text-muted">Tax</span><span className="text-text-primary">{selectedOrder.currency} {selectedOrder.taxAmount.toLocaleString()}</span></div>
               <div className="flex justify-between"><span className="text-text-muted">Discount</span><span className="text-text-primary">-{selectedOrder.currency} {selectedOrder.discountAmount.toLocaleString()}</span></div>
@@ -527,7 +529,7 @@ export function Component() {
             {selectedOrder.shippingAddressLine1 && (
               <div>
                 <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-1.5"><MapPin className="w-3 h-3" /> Shipping Address</label>
-                <div className="text-sm text-text-primary bg-bg-surface rounded-xl p-3">
+                <div className="text-sm text-text-primary bg-bg-elevated rounded-xl p-3">
                   <p>{selectedOrder.shippingAddressLine1}</p>
                   {selectedOrder.shippingAddressLine2 && <p>{selectedOrder.shippingAddressLine2}</p>}
                   <p>{[selectedOrder.shippingCity, selectedOrder.shippingState, selectedOrder.shippingPostalCode].filter(Boolean).join(', ')}</p>
@@ -540,7 +542,7 @@ export function Component() {
             {selectedOrder.trackingNumber && (
               <div>
                 <label className="flex items-center gap-1.5 text-xs font-semibold text-text-muted mb-1.5"><Hash className="w-3 h-3" /> Tracking</label>
-                <div className="text-sm text-text-primary bg-bg-surface rounded-xl p-3">
+                <div className="text-sm text-text-primary bg-bg-elevated rounded-xl p-3">
                   <p>Carrier: {selectedOrder.carrier ?? '-'}</p>
                   <p className="font-mono">{selectedOrder.trackingNumber}</p>
                   {selectedOrder.shippedAt && <p className="text-xs text-text-muted mt-1">Shipped: {format(parseISO(selectedOrder.shippedAt), 'MMM d, yyyy')}</p>}
@@ -555,7 +557,7 @@ export function Component() {
                 <label className="text-xs font-semibold text-text-muted mb-1.5">Shipments ({deliveryList.length})</label>
                 <div className="space-y-2">
                   {deliveryList.map(d => (
-                    <div key={d.id} className="bg-bg-surface rounded-xl p-3 text-sm space-y-1">
+                    <div key={d.id} className="bg-bg-elevated rounded-xl p-3 text-sm space-y-1">
                       <div className="flex items-center justify-between">
                         <span className="font-mono text-xs text-text-secondary">{d.shipmentNumber}</span>
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold border ${CRM_DELIVERY_STATUS_COLORS[d.status] ?? ''}`}>
@@ -566,16 +568,16 @@ export function Component() {
                       {d.trackingNumber && <div className="flex justify-between text-xs"><span className="text-text-muted">Tracking</span><span className="font-mono text-text-primary">{d.trackingNumber}</span></div>}
                       {d.shippedAt && <div className="text-xs text-text-muted">Shipped: {format(parseISO(d.shippedAt), 'MMM d, yyyy')}</div>}
                       {d.deliveredAt && <div className="text-xs text-success">Delivered: {format(parseISO(d.deliveredAt), 'MMM d, yyyy')}</div>}
-                      {d.failureReason && <div className="text-xs text-danger">Failed: {d.failureReason}</div>}
+                      {d.failureReason && <div className="text-xs text-danger-light">Failed: {d.failureReason}</div>}
                       {d.status >= 1 && d.status <= 4 && (
                         <div className="flex gap-1 mt-1.5">
-                          {d.status === 1 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 2 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">Pick Up</button>}
-                          {d.status === 2 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 3 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">In Transit</button>}
-                          {d.status === 3 && <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 4 } })} className="text-[10px] px-2 py-1 rounded border border-border-subtle text-text-secondary hover:bg-bg-elevated">Out for Delivery</button>}
+                          {d.status === 1 && <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 2 } })} variant="secondary" size="sm">Pick Up</Button>}
+                          {d.status === 2 && <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 3 } })} variant="secondary" size="sm">In Transit</Button>}
+                          {d.status === 3 && <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 4 } })} variant="secondary" size="sm">Out for Delivery</Button>}
                           {d.status === 4 && (
                             <>
-                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} className="text-[10px] px-2 py-1 rounded bg-success-soft text-success border border-success/20 hover:bg-success/20">Delivered</button>
-                              <button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} className="text-[10px] px-2 py-1 rounded bg-danger-soft text-danger border border-danger/20 hover:bg-danger/20">Failed</button>
+                              <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 5 } })} variant="success" size="sm">Delivered</Button>
+                              <Button onClick={() => updateDeliveryStatus.mutate({ deliveryId: d.id, data: { status: 6, failureReason: 'Delivery failed' } })} variant="danger" size="sm">Failed</Button>
                             </>
                           )}
                         </div>
@@ -599,7 +601,7 @@ export function Component() {
                   )}
                 </div>
                 {pickList && (
-                  <div className="bg-bg-surface rounded-xl p-3 space-y-3">
+                  <div className="bg-bg-elevated rounded-xl p-3 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-text-muted">Status: <span className="font-semibold text-text-primary">{PICK_LIST_STATUS_LABELS[pickList.status]}</span></span>
                       <div className="flex gap-1">
@@ -610,14 +612,14 @@ export function Component() {
                           </button>
                         )}
                         {pickList.status === 3 && (
-                          <button onClick={() => {
+                          <Button onClick={() => {
                             const boxC = prompt('Box count?');
                             const weight = prompt('Total weight (kg)?');
                             markPacked.mutate({ orderId: pickList.orderId, data: { boxCount: Number(boxC) || undefined, totalWeightKg: Number(weight) || undefined } }, { onSuccess: () => refetchPickList() });
                           }} disabled={markPacked.isPending}
-                            className="text-[10px] px-2 py-1 rounded border border-success/20 bg-success-soft text-success hover:bg-success/20 transition-all">
+                            variant="success" size="sm">
                             Mark Packed
-                          </button>
+                          </Button>
                         )}
                       </div>
                     </div>
@@ -653,7 +655,7 @@ export function Component() {
                             </td>
                             <td className="py-1.5">
                               {pickList.status <= 2 ? (
-                                <input placeholder="Serials (comma)" defaultValue={pi.serialNumbers || ''}
+                                <input placeholder="Serials (comma)" aria-label="Serials (comma)" defaultValue={pi.serialNumbers || ''}
                                   onBlur={(e) => {
                                     const val = e.target.value;
                                     if (val !== (pi.serialNumbers || '')) {
@@ -684,7 +686,7 @@ export function Component() {
             {selectedOrder.lineItems?.length > 0 && (
               <div>
                 <label className="text-xs font-semibold text-text-muted mb-1.5">Line Items</label>
-                <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle">
+                <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle">
                   {selectedOrder.lineItems.map(li => (
                     <div key={li.id} className="flex justify-between items-center px-3 py-2 text-sm">
                       <div>
@@ -704,7 +706,7 @@ export function Component() {
             <Field label="Customer PO #">
               {editingPOId === selectedOrder.id ? (
                 <div className="flex gap-2">
-                  <input value={editingPO} onChange={e => setEditingPO(e.target.value)} className="flex-1 px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-sm" autoFocus />
+                  <input aria-label="Editing po" value={editingPO} onChange={e => setEditingPO(e.target.value)} className="flex-1 px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-sm" autoFocus />
                   <button onClick={() => { updateOrder.mutate({ id: selectedOrder.id, data: { customerPONumber: editingPO.trim() || undefined } }); setEditingPOId(''); }} className="text-xs text-success hover:underline font-medium">Save</button>
                   <button onClick={() => setEditingPOId('')} className="text-xs text-text-muted hover:underline">Cancel</button>
                 </div>
@@ -716,8 +718,8 @@ export function Component() {
               )}
             </Field>
             {selectedOrder.acknowledgmentSentAt && <Field label="Acknowledgment Sent"><span className="text-sm text-text-muted">{format(new Date(selectedOrder.acknowledgmentSentAt), 'MMM d, yyyy HH:mm')}</span></Field>}
-            {selectedOrder.notes && <div><label className="text-xs font-semibold text-text-muted mb-1">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selectedOrder.notes}</p></div>}
-            {selectedOrder.cancellationReason && <div><label className="text-xs font-semibold text-danger mb-1">Cancellation Reason</label><p className="text-sm text-danger bg-danger-soft rounded-xl p-3">{selectedOrder.cancellationReason}</p></div>}
+            {selectedOrder.notes && <div><label className="text-xs font-semibold text-text-muted mb-1">Notes</label><p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{selectedOrder.notes}</p></div>}
+            {selectedOrder.cancellationReason && <div><label className="text-xs font-semibold text-danger-light mb-1">Cancellation Reason</label><p className="text-sm text-danger-light bg-danger-soft rounded-xl p-3">{selectedOrder.cancellationReason}</p></div>}
 
             {/* Actions */}
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
@@ -752,9 +754,9 @@ export function Component() {
                   <button onClick={() => handleFulfillStatus(selectedOrder.id, 5)} disabled={updateFulfillment.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-brand transition-all disabled:opacity-50">
                     <Truck className="w-3.5 h-3.5" /> Mark Shipped
                   </button>
-                  <button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 transition-all disabled:opacity-50">
+                  <Button onClick={() => fulfillOrder.mutate(selectedOrder.id)} disabled={fulfillOrder.isPending} variant="success">
                     <CheckCircle className="w-3.5 h-3.5" /> Mark Delivered
-                  </button>
+                  </Button>
                 </>
               )}
               {(selectedOrder.status === 2 || selectedOrder.status === 3) && (
@@ -777,9 +779,9 @@ export function Component() {
                   <button onClick={() => { setShowPayment(true); setPaymentAmount(String(selectedOrder.totalAmount)); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success transition-all">
                     <DollarSign className="w-3.5 h-3.5" /> Record Payment
                   </button>
-                  <button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 transition-all disabled:opacity-50">
+                  <Button onClick={() => cancelOrder.mutate(selectedOrder.id)} disabled={cancelOrder.isPending} variant="danger">
                     <XCircle className="w-3.5 h-3.5" /> Cancel
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
@@ -795,10 +797,10 @@ export function Component() {
               <ShieldCheck className="w-4 h-4" /> Credit Check — {creditResult.riskLevel === 1 ? 'Green' : creditResult.riskLevel === 2 ? 'Amber' : 'Red'}
             </h3>
             <div className="space-y-2 text-sm">
-              <p className="flex justify-between"><span className="text-text-muted">Overdue</span><span className={creditResult.overdueBalance > 0 ? 'text-danger font-semibold' : ''}>${creditResult.overdueBalance?.toLocaleString() ?? '0'} ({creditResult.overdueInvoiceCount} invoice{creditResult.overdueInvoiceCount !== 1 ? 's' : ''})</span></p>
+              <p className="flex justify-between"><span className="text-text-muted">Overdue</span><span className={creditResult.overdueBalance > 0 ? 'text-danger-light font-semibold' : ''}>${creditResult.overdueBalance?.toLocaleString() ?? '0'} ({creditResult.overdueInvoiceCount} invoice{creditResult.overdueInvoiceCount !== 1 ? 's' : ''})</span></p>
               <p className="flex justify-between"><span className="text-text-muted">Credit Limit</span><span>{creditResult.creditLimit ? `$${creditResult.creditLimit.toLocaleString()}` : '—'}</span></p>
               <p className="flex justify-between"><span className="text-text-muted">Utilized</span><span>${creditResult.utilizedCredit?.toLocaleString() ?? '0'}</span></p>
-              <p className="flex justify-between"><span className="text-text-muted">Available</span><span className={creditResult.availableCredit < 0 ? 'text-danger font-semibold' : 'text-success font-semibold'}>${Math.max(0, creditResult.availableCredit ?? 0).toLocaleString()}</span></p>
+              <p className="flex justify-between"><span className="text-text-muted">Available</span><span className={creditResult.availableCredit < 0 ? 'text-danger-light font-semibold' : 'text-success font-semibold'}>${Math.max(0, creditResult.availableCredit ?? 0).toLocaleString()}</span></p>
             </div>
 
             {confirmOverrideNote === PO_WARNING && (
@@ -814,16 +816,16 @@ export function Component() {
                   <p className="text-xs text-warning bg-warning-soft px-3 py-2 rounded-xl">Account has ${creditResult.overdueBalance?.toLocaleString()} overdue. Proceed with caution.</p>
                 )}
                 {creditResult.riskLevel === 3 && (
-                  <p className="text-xs text-danger bg-danger-soft px-3 py-2 rounded-xl">Account over credit limit. Order blocked — manager override required.</p>
+                  <p className="text-xs text-danger-light bg-danger-soft px-3 py-2 rounded-xl">Account over credit limit. Order blocked — manager override required.</p>
                 )}
                 {(creditResult.riskLevel >= 2 || confirmOverrideNote === PO_WARNING) && (
-                  <input value={confirmOverrideNote} onChange={e => setConfirmOverrideNote(e.target.value)} placeholder="Add a note explaining why..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" />
+                  <input value={confirmOverrideNote} onChange={e => setConfirmOverrideNote(e.target.value)} placeholder="Add a note explaining why..." aria-label="Add a note explaining why..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" />
                 )}
               </div>
             ) : null}
 
             <div className="flex gap-2 justify-end">
-              <button onClick={() => { setCreditResult(null); setConfirmOverrideNote(''); }} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+              <Button onClick={() => { setCreditResult(null); setConfirmOverrideNote(''); }} variant="secondary">Cancel</Button>
               {(creditResult.riskLevel === 1 || creditResult.riskLevel === 2) && (
                 <button onClick={() => { confirmOrder.mutate(selectedOrder!.id); setCreditResult(null); setConfirmOverrideNote(''); }} disabled={confirmOrder.isPending}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-success hover:opacity-90 disabled:opacity-50">

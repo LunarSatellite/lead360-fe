@@ -20,6 +20,7 @@ import type {
 } from '../types/crm-rbac.types';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const { data, isLoading } = useTerritories();
@@ -54,12 +55,12 @@ export function Component() {
           <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Sales Territories</h1>
           <p className="text-base text-text-secondary mt-1">Route leads automatically based on rules — round-robin within each territory</p>
         </div>
-        <button
+        <Button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" /> New territory
-        </button>
+        </Button>
       </div>
 
       {showCreate && createPortal(
@@ -80,7 +81,7 @@ export function Component() {
                 <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Territory</h2>
                 <p className="text-xs text-text-muted mt-0.5">Create a new sales territory</p>
               </div>
-              <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+              <button aria-label="Close" onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={handleSubmit} className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
               <div className="grid grid-cols-[auto_1fr] items-center gap-2">
@@ -88,31 +89,37 @@ export function Component() {
                 <div className="h-px bg-brand/20" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger">*</span></label>
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. North America"
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Name <span className="text-danger-light">*</span></span>
+                  <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. North America"
                   className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} autoFocus />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Priority</label>
-                <input type="number" min={1} value={priority} onChange={(e) => setPriority(Number(e.target.value))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Priority</span>
+                  <input type="number" min={1} value={priority} onChange={(e) => setPriority(Number(e.target.value))}
                   className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Description <span className="text-text-muted font-normal">(optional)</span></label>
-                <textarea value={description} rows={3} onChange={(e) => setDescription(e.target.value)} placeholder="What leads does this territory cover?"
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Description <span className="text-text-muted font-normal">(optional)</span></span>
+                  <textarea value={description} rows={3} onChange={(e) => setDescription(e.target.value)} placeholder="What leads does this territory cover?"
                   className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+                </label>
               </div>
             </form>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-              <button onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-              <button type="submit" disabled={create.isPending || !name.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              <Button onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+              <Button type="submit" disabled={create.isPending || !name.trim()}
+                variant="primary">
                 {create.isPending ? <span className="w-3.5 h-3.5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Territory
-              </button>
+              </Button>
             </div>
           </div>
         </div>,
@@ -185,17 +192,17 @@ function TerritoryCard({ territory, index, isExpanded, onToggle }: {
           <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" /> {territory.rules.length} rules</span>
           <span className="flex items-center gap-1"><UserPlus className="w-3.5 h-3.5" /> {territory.members.length} members</span>
         </div>
-        <button
+        <button aria-pressed={territory.isActive}
           onClick={toggleActive}
           className={`transition-colors ${territory.isActive ? 'text-brand' : 'text-text-muted'}`}
           title={territory.isActive ? 'Deactivate' : 'Activate'}
         >
           {territory.isActive ? <ToggleRight className="w-6 h-6" /> : <ToggleLeft className="w-6 h-6" />}
         </button>
-        <button
+        <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Delete territory "${territory.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) deleteTerritory.mutate(territory.id); })}
-          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -256,27 +263,27 @@ function RulesPanel({ territory }: { territory: SalesTerritoryDto }) {
       {showForm && (
         <form onSubmit={handleAdd} className="space-y-2 pt-2 border-t border-border-subtle">
           {territory.rules.length > 0 && (
-            <select value={logicGate} onChange={(e) => setLogicGate(Number(e.target.value) as TerritoryRuleLogicValue)} className={select}>
+            <select aria-label="Logic gate" value={logicGate} onChange={(e) => setLogicGate(Number(e.target.value) as TerritoryRuleLogicValue)} className={select}>
               <option value={TerritoryRuleLogic.And} className="bg-bg">AND</option>
               <option value={TerritoryRuleLogic.Or} className="bg-bg">OR</option>
             </select>
           )}
           <div className="grid grid-cols-3 gap-2">
-            <select value={field} onChange={(e) => setField(Number(e.target.value) as TerritoryRuleFieldValue)} className={select}>
+            <select aria-label="Field" value={field} onChange={(e) => setField(Number(e.target.value) as TerritoryRuleFieldValue)} className={select}>
               {Object.entries(TerritoryRuleField).map(([_k, v]) => (
                 <option key={v} value={v} className="bg-bg">{TERRITORY_RULE_FIELD_LABEL[v as TerritoryRuleFieldValue]}</option>
               ))}
             </select>
-            <select value={operator} onChange={(e) => setOperator(Number(e.target.value) as TerritoryRuleOperatorValue)} className={select}>
+            <select aria-label="Operator" value={operator} onChange={(e) => setOperator(Number(e.target.value) as TerritoryRuleOperatorValue)} className={select}>
               {Object.entries(TerritoryRuleOperator).map(([_k, v]) => (
                 <option key={v} value={v} className="bg-bg">{TERRITORY_RULE_OPERATOR_LABEL[v as TerritoryRuleOperatorValue]}</option>
               ))}
             </select>
-            <input value={value} onChange={(e) => setValue(e.target.value)} placeholder="Value..." className={`${select} placeholder:text-text-muted`} />
+            <input value={value} onChange={(e) => setValue(e.target.value)} placeholder="Value..." aria-label="Value..." className={`${select} placeholder:text-text-muted`} />
           </div>
           <div className="flex gap-2 justify-end">
-            <button type="button" onClick={() => setShowForm(false)} className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-muted hover:text-text-primary">Cancel</button>
-            <button type="submit" disabled={!value.trim() || addRule.isPending} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand text-white hover:brightness-110 disabled:opacity-50">Add</button>
+            <Button type="button" onClick={() => setShowForm(false)} variant="ghost" size="sm">Cancel</Button>
+            <Button type="submit" disabled={!value.trim() || addRule.isPending} variant="primary" size="sm">Add</Button>
           </div>
         </form>
       )}
@@ -295,7 +302,7 @@ function RuleRow({ rule, index, onRemove }: { rule: SalesTerritoryRuleDto; index
       <span className="text-text-secondary font-medium">{TERRITORY_RULE_FIELD_LABEL[rule.field]}</span>
       <span className="text-text-muted">{TERRITORY_RULE_OPERATOR_LABEL[rule.operator]}</span>
       <span className="font-semibold text-text-primary">{rule.value}</span>
-      <button onClick={onRemove} className="ml-auto p-1 rounded text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+      <button aria-label="Delete" onClick={onRemove} className="ml-auto p-1 rounded text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all">
         <Trash2 className="w-3 h-3" />
       </button>
     </div>
@@ -341,7 +348,7 @@ function MembersPanel({ territory }: { territory: SalesTerritoryDto }) {
 
       {available.length > 0 && (
         <div className="flex items-center gap-2 pt-2 border-t border-border-subtle">
-          <select
+          <select aria-label="Selected user ID"
             value={selectedUserId}
             onChange={(e) => setSelectedUserId(e.target.value)}
             className="flex-1 px-3 py-2 rounded-lg bg-bg border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
@@ -354,7 +361,7 @@ function MembersPanel({ territory }: { territory: SalesTerritoryDto }) {
           <button
             onClick={handleAdd}
             disabled={!selectedUserId || addMember.isPending}
-            className="p-2 rounded-lg bg-brand text-white hover:brightness-110 disabled:opacity-50"
+            className="p-2 rounded-lg bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50"
           >
             <UserPlus className="w-4 h-4" />
           </button>
@@ -375,7 +382,7 @@ function MemberRow({ member, onRemove }: { member: SalesTerritoryMemberDto; onRe
         <div className="text-xs font-semibold text-text-primary truncate">{member.userName}</div>
         {member.userEmail && <div className="text-xs text-text-muted truncate">{member.userEmail}</div>}
       </div>
-      <button onClick={onRemove} className="p-1 rounded text-text-muted hover:text-danger hover:bg-danger-soft transition-all flex-shrink-0">
+      <button onClick={onRemove} className="p-1 rounded text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all flex-shrink-0">
         <UserMinus className="w-3.5 h-3.5" />
       </button>
     </div>

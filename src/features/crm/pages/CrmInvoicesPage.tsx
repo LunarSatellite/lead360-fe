@@ -21,6 +21,7 @@ import {
   DunningEventKind, DunningPauseReason as PauseReasonEnum,
   DUNNING_STAGE_LABELS, DUNNING_EVENT_KIND_LABELS, DUNNING_PAUSE_REASON_LABELS,
 } from '../types/crm.types';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 function balanceDue(inv: CrmInvoiceSummaryDto): number {
   return inv.totalAmount - (inv.amountPaid ?? 0) - (inv.creditAppliedAmount ?? 0);
@@ -40,8 +41,7 @@ function Badge({ value, labels, colors }: { value: number; labels: Record<number
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block"><span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>{children}</label>
     </div>
   );
 }
@@ -56,7 +56,7 @@ function SlideOver({ open, onClose, title, children, wide }: {
       <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[520px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="text-base font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-card text-text-muted hover:text-text-primary transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -71,7 +71,8 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
   const [pauseReason, setPauseReason] = useState<DunningPauseReason>(PauseReasonEnum.ManualHold);
   const [pauseUntil, setPauseUntil] = useState('');
 
-  const { data: history, isLoading } = useDunningHistory(invoiceId);
+  const historyQuery = useDunningHistory(invoiceId);
+  const { data: history } = historyQuery;
   const events = (history as any) ?? [];
   const pause = usePauseDunning();
   const resume = useResumeDunning();
@@ -81,7 +82,7 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
   const isPaused = latest?.kind === DunningEventKind.Paused;
 
   return (
-    <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
+    <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-sunken">
       <div className="flex items-center justify-between">
         <p className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
           <Bell className="w-3.5 h-3.5" /> Reminders
@@ -114,10 +115,10 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
 
       {showPause && (
         <div className="space-y-2 pt-1">
-          <select value={pauseReason} onChange={e => setPauseReason(Number(e.target.value) as DunningPauseReason)} className={selectCls}>
+          <select aria-label="Pause reason" value={pauseReason} onChange={e => setPauseReason(Number(e.target.value) as DunningPauseReason)} className={selectCls}>
             {Object.entries(DUNNING_PAUSE_REASON_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <input type="date" value={pauseUntil} onChange={e => setPauseUntil(e.target.value)} className={inputCls} placeholder="Paused until (optional)" />
+          <input type="date" value={pauseUntil} onChange={e => setPauseUntil(e.target.value)} className={inputCls} placeholder="Paused until (optional)" aria-label="Paused until (optional)" />
           <button onClick={() => pause.mutate({ id: invoiceId, data: { reason: pauseReason, until: pauseUntil || undefined } }, { onSuccess: () => setShowPause(false) })}
             disabled={pause.isPending} className="w-full py-1.5 rounded-lg bg-warning text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50 transition-all">
             {pause.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : 'Confirm Pause'}
@@ -125,14 +126,15 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
         </div>
       )}
 
-      {isLoading ? (
-        <div className="flex items-center justify-center py-3 text-text-muted"><Loader2 className="w-4 h-4 animate-spin" /></div>
-      ) : !events.length ? (
-        <p className="text-xs text-text-muted">No reminders sent yet.</p>
-      ) : (
+      <ListState
+        query={historyQuery}
+        isEmpty={!events.length}
+        noun="reminder history"
+        emptyTitle="No reminders sent yet."
+      >
         <div className="space-y-1.5 max-h-48 overflow-y-auto">
           {events.map((e: any) => (
-            <div key={e.id} className="flex items-center justify-between text-xs px-2 py-1.5 rounded-lg bg-bg-surface">
+            <div key={e.id} className="flex items-center justify-between text-xs px-2 py-1.5 rounded-lg bg-bg-elevated">
               <div>
                 <span className="font-semibold text-text-primary">{DUNNING_EVENT_KIND_LABELS[e.kind as import('../types/crm.types').DunningEventKind] ?? e.kind}</span>
                 {e.kind === DunningEventKind.ReminderSent && (
@@ -144,7 +146,7 @@ function RemindersSection({ invoiceId }: { invoiceId: string }) {
             </div>
           ))}
         </div>
-      )}
+      </ListState>
     </div>
   );
 }
@@ -220,7 +222,7 @@ function GenInvoiceSlideOver({
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Invoice</h2>
             <p className="text-xs text-text-muted mt-0.5">Generate an invoice from a deal or order</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           {/* ── Source ── */}
@@ -231,11 +233,11 @@ function GenInvoiceSlideOver({
 
           <div className="grid grid-cols-2 gap-3">
             {(['deal', 'order'] as const).map(src => (
-              <button
+              <Button
                 key={src}
                 type="button"
                 onClick={() => setGenSource(src)}
-                className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all"
+                variant="ghost"
                 style={{
                   backgroundColor: genSource === src ? 'rgb(var(--color-surface-elevated))' : 'rgb(var(--color-glass-1))',
                   border: `1px solid ${genSource === src ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -245,50 +247,36 @@ function GenInvoiceSlideOver({
               >
                 <ShoppingCart className="w-3.5 h-3.5 shrink-0" strokeWidth={1.6} />
                 {src === 'deal' ? 'From Deal' : 'From Order'}
-              </button>
+              </Button>
             ))}
           </div>
 
           {genSource === 'deal' ? (
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID *</label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={genDealId}
-                  onChange={e => setGenDealId(e.target.value)}
-                  placeholder="Enter Deal ID"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Deal ID *</span>
+                <Input icon={Hash} value={genDealId} onChange={e => setGenDealId(e.target.value)} placeholder="Enter Deal ID" style={inputStyle} />
+              </label>
             </div>
           ) : (
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Order Number *</label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={genOrderId}
-                  onChange={e => setGenOrderId(e.target.value)}
-                  placeholder="e.g. ORD-20260701-XXXX"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Order Number *</span>
+                <Input icon={Hash} value={genOrderId} onChange={e => setGenOrderId(e.target.value)} placeholder="e.g. ORD-20260701-XXXX" style={inputStyle} />
+              </label>
             </div>
           )}
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button
+            <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
+            <Button
               type="button"
               onClick={onGenerate}
               disabled={isPending || !isValid}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+              variant="primary" size="lg" className="flex-none">
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Receipt className="w-4 h-4" />} Generate Invoice
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -322,7 +310,8 @@ export function Component() {
   const [cnReason, setCnReason] = useState('');
   const [cnApplyMethod, setCnApplyMethod] = useState<CreditNoteApplyMethod>(CNApplyMethod.AccountBalance);
 
-  const { data: raw, isLoading } = useInvoices(filter);
+  const invoicesQuery = useInvoices(filter);
+  const { data: raw } = invoicesQuery;
   const items: CrmInvoiceSummaryDto[] = (raw as any)?.items ?? [];
 
   const generateFromDeal = useGenerateInvoiceFromDeal();
@@ -369,31 +358,32 @@ export function Component() {
       <div className="flex items-center justify-between gap-4 shrink-0">
         <div>
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Invoices</h2>
-          <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+          <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={invoicesQuery} total={(raw as any)?.totalCount} />
+          </p>
         </div>
-        <button onClick={() => setGenOpen(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setGenOpen(true)} variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Invoice
-        </button>
+        </Button>
       </div>
 
       <div className="flex gap-2">
         <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-          placeholder="Search invoices..." className={inputCls + ' flex-1'} />
-        <select className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
+          placeholder="Search invoices..." aria-label="Search invoices..." className={inputCls + ' flex-1'} />
+        <select aria-label="Filter by status" className={selectCls + ' w-44'} value={filter.status ?? ''} onChange={e => setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as any : undefined, page: 1 }))}>
           <option value="">All Statuses</option>
           {Object.entries(CRM_INVOICE_STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-        ) : !items.length ? (
-          <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-            <Receipt className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No invoices found</p>
-          </div>
-        ) : (
+        <ListState
+          query={invoicesQuery}
+          isEmpty={!items.length}
+          noun="invoices"
+          icon={Receipt}
+          emptyTitle="No invoices found"
+        >
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
@@ -416,7 +406,7 @@ export function Component() {
                     <td className="px-4 py-3 text-text-secondary">{inv.currency}</td>
                     <td className="px-4 py-3">
                       {overdue
-                        ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger border-danger">Overdue</span>
+                        ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger-light border-danger">Overdue</span>
                         : <Badge value={inv.status} labels={CRM_INVOICE_STATUS_LABELS} colors={CRM_INVOICE_STATUS_COLORS} />
                       }
                     </td>
@@ -427,7 +417,7 @@ export function Component() {
               })}
             </tbody>
           </table>
-        )}
+        </ListState>
       </div>
 
       {/* Detail SlideOver */}
@@ -437,7 +427,7 @@ export function Component() {
             <div className="grid grid-cols-2 gap-4">
               <Field label="Status">
                 {isOverdue(selected)
-                  ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger border-danger">Overdue</span>
+                  ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger-light border-danger">Overdue</span>
                   : <Badge value={selected.status} labels={CRM_INVOICE_STATUS_LABELS} colors={CRM_INVOICE_STATUS_COLORS} />
                 }
               </Field>
@@ -462,28 +452,28 @@ export function Component() {
             </div>
 
             {/* Record Payment */}
-            <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
+            <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-sunken">
               <p className="text-xs font-bold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
                 <DollarSign className="w-3.5 h-3.5" /> Record Payment
               </p>
               <Field label="Amount">
-                <input type="number" value={payAmount} onChange={e => setPayAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
+                <input aria-label="Pay amount" type="number" value={payAmount} onChange={e => setPayAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
               </Field>
               <Field label="Payment Method">
-                <select value={payMethod} onChange={e => setPayMethod(Number(e.target.value) as CrmPaymentMethod)} className={selectCls}>
+                <select aria-label="Pay method" value={payMethod} onChange={e => setPayMethod(Number(e.target.value) as CrmPaymentMethod)} className={selectCls}>
                   {Object.entries(CRM_PAYMENT_METHOD_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                 </select>
               </Field>
               <Field label="Paid At">
-                <input type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} />
+                <input aria-label="Pay date" type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} />
               </Field>
               <Field label="Notes">
-                <textarea value={payNotes} onChange={e => setPayNotes(e.target.value)} rows={2} className={inputCls} placeholder="Optional notes..." />
+                <textarea value={payNotes} onChange={e => setPayNotes(e.target.value)} rows={2} className={inputCls} placeholder="Optional notes..." aria-label="Optional notes..." />
               </Field>
-              <button onClick={handleRecordPayment} disabled={recordPayment.isPending || !payAmount}
-                className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-success-soft text-success text-sm font-bold hover:bg-success hover:text-bg disabled:opacity-60 transition-all border border-success">
+              <Button onClick={handleRecordPayment} disabled={recordPayment.isPending || !payAmount}
+                variant="success" block>
                 {recordPayment.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <DollarSign className="w-4 h-4" />} Record Payment
-              </button>
+              </Button>
             </div>
 
             {/* Reminders / Dunning */}
@@ -493,10 +483,10 @@ export function Component() {
 
             {/* Send action for Draft invoices */}
             {selected.status === CrmInvoiceStatus.Draft && (
-              <button onClick={() => { setSendPreviewInvoice(selected); setSelected(null); }}
-                className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+              <Button onClick={() => { setSendPreviewInvoice(selected); setSelected(null); }}
+                variant="primary" block>
                 <Send className="w-4 h-4" /> Send Invoice
-              </button>
+              </Button>
             )}
 
             {/* Payment link — share a pay-online URL with the customer */}
@@ -539,22 +529,22 @@ export function Component() {
             </div>
 
             {showCreditNote && (
-              <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-subtle">
+              <div className="border border-border-subtle rounded-xl p-4 space-y-3 bg-bg-sunken">
                 <Field label="Amount">
-                  <input type="number" value={cnAmount} onChange={e => setCnAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
+                  <input aria-label="Cn amount" type="number" value={cnAmount} onChange={e => setCnAmount(e.target.value)} className={inputCls} placeholder="0.00" min={0} step={0.01} />
                 </Field>
                 <Field label="Apply Method">
-                  <select value={cnApplyMethod} onChange={e => setCnApplyMethod(Number(e.target.value) as CreditNoteApplyMethod)} className={selectCls}>
+                  <select aria-label="Cn apply method" value={cnApplyMethod} onChange={e => setCnApplyMethod(Number(e.target.value) as CreditNoteApplyMethod)} className={selectCls}>
                     {Object.entries(CREDIT_NOTE_APPLY_METHOD_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
                   </select>
                 </Field>
                 <Field label="Reason">
-                  <textarea value={cnReason} onChange={e => setCnReason(e.target.value)} rows={2} className={inputCls} placeholder="Why is this credit note being issued?" />
+                  <textarea value={cnReason} onChange={e => setCnReason(e.target.value)} rows={2} className={inputCls} placeholder="Why is this credit note being issued?" aria-label="Why is this credit note being issued?" />
                 </Field>
-                <button onClick={handleIssueCreditNote} disabled={issueCreditNote.isPending || !cnAmount || !cnReason.trim()}
-                  className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+                <Button onClick={handleIssueCreditNote} disabled={issueCreditNote.isPending || !cnAmount || !cnReason.trim()}
+                  variant="primary" block>
                   {issueCreditNote.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Issue Credit Note'}
-                </button>
+                </Button>
               </div>
             )}
           </div>

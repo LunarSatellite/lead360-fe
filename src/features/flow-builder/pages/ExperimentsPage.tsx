@@ -20,6 +20,7 @@ import {
   EXPERIMENT_STATUS_LABELS, EXPERIMENT_STATUS_COLORS,
 } from '@/features/crm/types/crm.types';
 import { formatDistanceToNow, format } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls =
   'w-full px-3.5 py-2 rounded-xl bg-transparent border text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-all';
@@ -59,7 +60,7 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Set up a new A/B experiment to test flow variants</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -110,14 +111,18 @@ function CreateForm({ onSave, onCancel, isSaving }: {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <label className={labelCls}>Experiment Name *</label>
-        <input required value={form.name} onChange={set('name')} placeholder="Onboarding Flow Test" className={inputCls}
-          style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
+        <label className="flex flex-col">
+          <span className={labelCls}>Experiment Name *</span>
+          <input required value={form.name} onChange={set('name')} placeholder="Onboarding Flow Test" className={inputCls}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
+        </label>
       </div>
       <div>
-        <label className={labelCls}>Description</label>
-        <textarea rows={2} value={form.description} onChange={set('description')} placeholder="What are you testing and why?" className={`${inputCls} resize-none`}
-          style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
+        <label className="flex flex-col">
+          <span className={labelCls}>Description</span>
+          <textarea rows={2} value={form.description} onChange={set('description')} placeholder="What are you testing and why?" className={`${inputCls} resize-none`}
+            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
+        </label>
       </div>
 
       {/* Flow Variants section */}
@@ -129,15 +134,19 @@ function CreateForm({ onSave, onCancel, isSaving }: {
       <div className="rounded-xl border border-brand/20 p-4 space-y-4"
         style={{ background: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
         <div>
-          <label className={labelCls}>Control Flow ID *</label>
-          <input required value={form.controlFlowId} onChange={set('controlFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
+          <label className="flex flex-col">
+            <span className={labelCls}>Control Flow ID *</span>
+            <input required value={form.controlFlowId} onChange={set('controlFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
+          </label>
           <p className="text-xs text-text-muted mt-1">The existing baseline flow</p>
         </div>
         <div>
-          <label className={labelCls}>Challenger Flow ID *</label>
-          <input required value={form.challengerFlowId} onChange={set('challengerFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
-            style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
+          <label className="flex flex-col">
+            <span className={labelCls}>Challenger Flow ID *</span>
+            <input required value={form.challengerFlowId} onChange={set('challengerFlowId')} placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" className={`${inputCls} font-mono text-xs`}
+              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }} />
+          </label>
           <p className="text-xs text-text-muted mt-1">The new variant to test</p>
         </div>
       </div>
@@ -159,7 +168,7 @@ function CreateForm({ onSave, onCancel, isSaving }: {
             {challengerPct >= 15 && `${challengerPct}%`}
           </div>
         </div>
-        <input
+        <input aria-label="Split percent"
           type="range"
           min={10}
           max={90}
@@ -174,16 +183,16 @@ function CreateForm({ onSave, onCancel, isSaving }: {
       </div>
 
       <div className="flex items-center justify-end gap-3 pt-1">
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">
+        <Button type="button" onClick={onCancel} variant="secondary">
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           type="submit"
           disabled={isSaving || !form.name.trim() || !form.controlFlowId.trim() || !form.challengerFlowId.trim()}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          variant="primary"
         >
           {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><FlaskConical className="w-3.5 h-3.5" /> Create Experiment</>}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -209,26 +218,30 @@ function EditForm({ exp, onSave, onCancel, isSaving }: {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 mt-4 pt-4 border-t border-border-subtle">
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Name</label>
-        <input value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
-      </div>
-      <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Description</label>
-        <textarea rows={2} value={description} onChange={(e) => setDescription(e.target.value)} className={`${inputCls} resize-none`} />
-      </div>
-      <div>
-        <label className="block text-xs font-semibold text-text-muted mb-2">
-          Traffic Split — Challenger {splitPercent}% / Control {100 - splitPercent}%
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Name</span>
+          <input value={name} onChange={(e) => setName(e.target.value)} className={inputCls} />
         </label>
-        <input type="range" min={10} max={90} value={splitPercent} onChange={(e) => setSplitPercent(Number(e.target.value))} className="w-full accent-brand" />
+      </div>
+      <div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Description</span>
+          <textarea rows={2} value={description} onChange={(e) => setDescription(e.target.value)} className={`${inputCls} resize-none`} />
+        </label>
+      </div>
+      <div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-2">Traffic Split — Challenger {splitPercent}% / Control {100 - splitPercent}%</span>
+          <input type="range" min={10} max={90} value={splitPercent} onChange={(e) => setSplitPercent(Number(e.target.value))} className="w-full accent-brand" />
+        </label>
       </div>
       <div className="flex gap-3">
-        <button type="submit" disabled={isSaving} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all">
+        <Button type="submit" disabled={isSaving} variant="primary">
           {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> Save</>}
-        </button>
-        <button type="button" onClick={onCancel} className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all">
+        </Button>
+        <Button type="button" onClick={onCancel} variant="secondary">
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -388,7 +401,7 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
           ) : (
             <button
               onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft hover:border-danger/20 transition-all"
+              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger-light hover:bg-danger-soft hover:border-danger/20 transition-all"
               title="Delete"
             >
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -468,85 +481,85 @@ function ExperimentCard({ exp }: { exp: FlowExperimentSummaryDto }) {
           {/* Action bar */}
           <div className="flex items-center gap-2 flex-wrap pt-1 border-t border-border-subtle">
             {isDraft && (
-              <button
+              <Button
                 onClick={() => start.mutate(exp.id)}
                 disabled={start.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50"
+                variant="primary" size="sm"
               >
                 {start.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Play className="w-3.5 h-3.5" strokeWidth={2} /> Start</>}
-              </button>
+              </Button>
             )}
             {isRunning && (
               <>
-                <button
+                <Button
                   onClick={() => pause.mutate(exp.id)}
                   disabled={pause.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all disabled:opacity-50"
+                  variant="secondary" size="sm"
                 >
                   {pause.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Pause className="w-3.5 h-3.5" strokeWidth={1.5} /> Pause</>}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => complete.mutate(exp.id)}
                   disabled={complete.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all disabled:opacity-50"
+                  variant="secondary" size="sm"
                 >
                   {complete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><CheckCircle className="w-3.5 h-3.5" strokeWidth={1.5} /> Complete</>}
-                </button>
+                </Button>
               </>
             )}
             {isPaused && (
               <>
-                <button
+                <Button
                   onClick={() => resume.mutate(exp.id)}
                   disabled={resume.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50"
+                  variant="primary" size="sm"
                 >
                   {resume.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><RotateCcw className="w-3.5 h-3.5" strokeWidth={1.5} /> Resume</>}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => complete.mutate(exp.id)}
                   disabled={complete.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all disabled:opacity-50"
+                  variant="secondary" size="sm"
                 >
                   {complete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><CheckCircle className="w-3.5 h-3.5" strokeWidth={1.5} /> Complete</>}
-                </button>
+                </Button>
               </>
             )}
             {isCompleted && !exp.winner && (
               declareOpen ? (
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs text-text-muted">Winner:</span>
-                  <button
+                  <Button
                     onClick={() => { declareWinner.mutate({ id: exp.id, winner: ExperimentVariantKind.Control }); setDeclareOpen(false); }}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-success-soft text-success border border-success/20 text-xs font-semibold hover:bg-success hover:text-bg transition-all"
+                    variant="success" size="sm"
                   >
                     <Trophy className="w-3 h-3" /> Control
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => { declareWinner.mutate({ id: exp.id, winner: ExperimentVariantKind.Challenger }); setDeclareOpen(false); }}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all"
+                    variant="primary" size="sm"
                   >
                     <Trophy className="w-3 h-3" /> Challenger
-                  </button>
+                  </Button>
                   <button onClick={() => setDeclareOpen(false)} className="text-xs text-text-muted hover:text-text-primary">×</button>
                 </div>
               ) : (
-                <button
+                <Button
                   onClick={() => setDeclareOpen(true)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+                  variant="secondary" size="sm"
                 >
                   <Trophy className="w-3.5 h-3.5" strokeWidth={1.5} /> Declare Winner
-                </button>
+                </Button>
               )
             )}
 
             {/* Stats toggle — always available */}
-            <button
+            <Button
               onClick={() => setShowStats((v) => !v)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all ml-auto"
+              variant="secondary" size="sm" className="ml-auto"
             >
               {showStats ? <><ChevronUp className="w-3.5 h-3.5" strokeWidth={1.5} /> Hide Stats</> : <><ChevronDown className="w-3.5 h-3.5" strokeWidth={1.5} /> View Stats</>}
-            </button>
+            </Button>
           </div>
 
           {/* Stats panel */}
@@ -576,12 +589,12 @@ export function Component() {
               Split traffic between two flows and measure which drives more conversions.
             </p>
           </div>
-          <button
+          <Button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Experiment
-          </button>
+          </Button>
         </div>
 
         {/* Summary chips */}
@@ -617,12 +630,12 @@ export function Component() {
             <p className="text-xs text-center max-w-xs">
               Create an experiment to split traffic between two flows and measure which drives more conversions.
             </p>
-            <button
+            <Button
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-1.5 mt-1 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+              variant="primary" className="mt-1"
             >
               <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Create First Experiment
-            </button>
+            </Button>
           </div>
         ) : (
           <div className="space-y-4">

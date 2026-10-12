@@ -10,6 +10,7 @@ import { format, parseISO } from 'date-fns';
 import { apiClient } from '@/shared/lib/api-client';
 import { crmApi } from '../api/crm.api';
 import type { WebEventSummaryDto } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── API ──────────────────────────────────────────────────────────────────────
 
@@ -63,13 +64,13 @@ function CopyButton({ value, label = 'Copy' }: { value: string; label?: string }
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <button
+    <Button
       onClick={handleCopy}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated hover:text-text-primary transition-all"
+      variant="secondary" size="sm"
     >
       {copied ? <Check className="w-3.5 h-3.5 text-brand" /> : <Copy className="w-3.5 h-3.5" />}
       {copied ? 'Copied!' : label}
-    </button>
+    </Button>
   );
 }
 
@@ -80,23 +81,23 @@ function ConfirmModal({ onConfirm, onClose, loading }: { onConfirm: () => void; 
       <div className="relative w-full max-w-sm bg-bg shadow-2xl rounded-2xl border border-border-subtle">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <h3 className="font-bold text-text-primary">Regenerate Key?</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
         <div className="px-6 py-5 space-y-4">
           <p className="text-sm text-text-secondary">
-            This will <span className="font-semibold text-danger-DEFAULT">invalidate your current key immediately</span>.
+            This will <span className="font-semibold text-danger-light">invalidate your current key immediately</span>.
             Any website using the old snippet will stop tracking until updated.
           </p>
           <div className="flex gap-3">
-            <button onClick={onClose} className="flex-1 px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:bg-bg-elevated transition-all">
+            <Button onClick={onClose} variant="secondary" className="flex-1">
               Cancel
-            </button>
+            </Button>
             <button
               onClick={onConfirm}
               disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-danger-DEFAULT/10 border border-danger-DEFAULT/30 text-danger-DEFAULT text-sm font-semibold hover:bg-danger-DEFAULT/20 transition-all disabled:opacity-50"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-danger/10 border border-danger/30 text-danger-light text-sm font-semibold hover:bg-danger/20 transition-all disabled:opacity-50"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
               Regenerate
@@ -163,7 +164,7 @@ function EventRow({ event }: { event: WebEventSummaryDto }) {
           {props && Object.keys(props).length > 0 && (
             <button
               onClick={() => setExpanded(v => !v)}
-              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-subtle transition-all"
+              className="p-1 rounded-md text-text-muted hover:text-text-primary hover:bg-bg-sunken transition-all"
             >
               {expanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
             </button>
@@ -171,7 +172,7 @@ function EventRow({ event }: { event: WebEventSummaryDto }) {
         </div>
       </div>
       {expanded && props && (
-        <div className="border-t border-border-subtle px-4 py-3 bg-bg-subtle">
+        <div className="border-t border-border-subtle px-4 py-3 bg-bg-sunken">
           <p className="text-xs font-semibold text-text-muted mb-1.5">Properties</p>
           <pre className="text-xs font-mono text-text-secondary whitespace-pre-wrap">
             {JSON.stringify(props, null, 2)}
@@ -204,14 +205,14 @@ function EventsList() {
             </span>
           )}
         </h2>
-        <button
+        <Button
           onClick={() => refetch()}
           disabled={isFetching}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated hover:text-text-primary transition-all disabled:opacity-50"
+          variant="secondary" size="sm"
         >
           <RefreshCw className={`w-3.5 h-3.5 ${isFetching ? 'animate-spin' : ''}`} />
           Refresh
-        </button>
+        </Button>
       </div>
 
       {isLoading ? (
@@ -234,21 +235,21 @@ function EventsList() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <button
+          <Button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary disabled:opacity-40 hover:bg-bg-elevated transition-all"
+            variant="secondary" size="sm"
           >
             Previous
-          </button>
+          </Button>
           <span className="text-xs text-text-muted">Page {page} of {totalPages}</span>
-          <button
+          <Button
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary disabled:opacity-40 hover:bg-bg-elevated transition-all"
+            variant="secondary" size="sm"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </div>
@@ -355,13 +356,13 @@ ${embedTag}`
             Tracking Key
           </h2>
           {hasKey && (
-            <button
+            <Button
               onClick={() => setShowConfirm(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary hover:bg-bg-elevated hover:text-text-primary transition-all"
+              variant="secondary" size="sm"
             >
               <RefreshCw className="w-3 h-3" />
               Regenerate
-            </button>
+            </Button>
           )}
         </div>
 
@@ -393,14 +394,14 @@ ${embedTag}`
             <p className="text-sm text-text-secondary text-center">
               No tracking key yet. Generate one to start embedding the tracker on your website.
             </p>
-            <button
+            <Button
               onClick={() => handleGenerate()}
               disabled={generate.isPending}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand text-bg text-sm font-semibold hover:bg-brand-light transition-all disabled:opacity-50"
+              variant="primary" size="lg"
             >
               {generate.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
               Generate Tracking Key
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -438,7 +439,7 @@ ${embedTag}`
             <code className="bg-bg-elevated px-1 rounded">email</code> or <code className="bg-bg-elevated px-1 rounded">phone</code>{' '}
             so events can create and reach a contact.
           </p>
-          <CodeBlock code={trackGuide} label="Examples — customise these" />
+          <CodeBlock code={trackGuide} label="Examples — customize these" />
         </div>
       )}
 

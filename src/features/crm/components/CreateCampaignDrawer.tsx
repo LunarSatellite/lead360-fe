@@ -7,6 +7,7 @@ import {
   DollarSign, Megaphone, Image, Globe, Users,
 } from 'lucide-react';
 import { apiClient } from '@/shared/lib/api-client';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -220,7 +221,7 @@ export function CreateCampaignDrawer({ onClose }: Props) {
             <h2 className="text-base font-extrabold text-text-primary">Create Facebook Ad Campaign</h2>
             <p className="text-xs text-text-muted mt-0.5">4 steps — takes about 2 minutes</p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-elevated text-text-muted">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg hover:bg-bg-elevated text-text-muted">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -233,7 +234,7 @@ export function CreateCampaignDrawer({ onClose }: Props) {
             const active = i === step;
             return (
               <div key={i} className="flex items-center">
-                <button
+                <button aria-pressed={active}
                   onClick={() => done && setStep(i)}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     active ? 'bg-brand-soft text-brand'
@@ -264,32 +265,32 @@ export function CreateCampaignDrawer({ onClose }: Props) {
 
         {/* Footer */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-border-subtle">
-          <button
+          <Button
             onClick={() => setStep(s => s - 1)}
             disabled={step === 0}
-            className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+            variant="secondary"
           >
             <ChevronLeft className="w-4 h-4" /> Back
-          </button>
+          </Button>
 
           {step < 3 ? (
-            <button
+            <Button
               onClick={() => setStep(s => s + 1)}
               disabled={!canNext()}
-              className="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold rounded-xl bg-brand text-bg disabled:opacity-50 hover:opacity-90 transition-all"
+              variant="primary" size="lg"
             >
               Next <ChevronRight className="w-4 h-4" />
-            </button>
+            </Button>
           ) : (
-            <button
+            <Button
               onClick={onSubmit}
               disabled={!canNext() || createMut.isPending}
-              className="flex items-center gap-1.5 px-5 py-2 text-sm font-semibold rounded-xl bg-brand text-bg disabled:opacity-50 hover:opacity-90 transition-all"
+              variant="primary" size="lg"
             >
               {createMut.isPending
                 ? <><Loader2 className="w-4 h-4 animate-spin" /> Creating…</>
                 : <><Check className="w-4 h-4" /> Launch Campaign</>}
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -319,7 +320,7 @@ function StepCampaign({ form, set }: { form: CreateCampaignRequest; set: SetFn }
   return (
     <div className="space-y-5">
       <Field label="Campaign Name">
-        <input
+        <input aria-label="Name"
           className={inputCls}
 
           value={form.name}
@@ -437,7 +438,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       {/* Age range */}
       <div className="grid grid-cols-2 gap-3">
         <Field label="Min Age">
-          <input
+          <input aria-label="Age min"
             type="number" min={13} max={65}
             className={inputCls}
   
@@ -446,7 +447,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
           />
         </Field>
         <Field label="Max Age">
-          <input
+          <input aria-label="Age max"
             type="number" min={13} max={65}
             className={inputCls}
   
@@ -487,7 +488,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
                 return (
                   <span key={code} className="flex items-center gap-1 px-2.5 py-1 bg-brand-soft text-brand border border-border-glow text-xs font-semibold rounded-full">
                     {country?.label ?? code}
-                    <button type="button" onClick={() => toggleCountry(code)}>
+                    <button aria-label="Close" type="button" onClick={() => toggleCountry(code)}>
                       <X className="w-3 h-3" />
                     </button>
                   </span>
@@ -504,7 +505,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               value={countryQ}
               onChange={e => { setCountryQ(e.target.value); setShowCountrySearch(true); }}
               onFocus={() => setShowCountrySearch(true)}
-              placeholder="Search country…"
+              placeholder="Search country…" aria-label="Search country…"
             />
           </div>
           {/* Dropdown */}
@@ -516,7 +517,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               {filteredCountries.map(c => {
                 const selected = form.countryCodes.includes(c.code);
                 return (
-                  <button
+                  <button aria-pressed={selected}
                     key={c.code}
                     type="button"
                     onClick={() => { toggleCountry(c.code); setCountryQ(''); setShowCountrySearch(false); }}
@@ -546,7 +547,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               {form.interests.map(i => (
                 <span key={i.id} className="flex items-center gap-1 px-2.5 py-1 bg-brand-soft text-brand border border-border-glow text-xs font-semibold rounded-full">
                   {i.name}
-                  <button type="button" onClick={() => removeInterest(i.id)}>
+                  <button aria-label="Close" type="button" onClick={() => removeInterest(i.id)}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -562,7 +563,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               value={interestQ}
               onChange={e => { setInterestQ(e.target.value); setShowInterestSearch(true); }}
               onFocus={() => setShowInterestSearch(true)}
-              placeholder="Search interests (e.g. fitness, travel, cooking)…"
+              placeholder="Search interests (e.g. fitness, travel, cooking)…" aria-label="Search interests (e.g. fitness, travel, cooking)…"
             />
             {searchingInterests && (
               <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted animate-spin" />
@@ -580,7 +581,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               {interests.map((i: Interest) => {
                 const selected = !!form.interests.find(x => x.id === i.id);
                 return (
-                  <button
+                  <button aria-pressed={selected}
                     key={i.id}
                     type="button"
                     onClick={() => addInterest(i)}
@@ -654,7 +655,7 @@ function StepBudget({ form, set }: { form: CreateCampaignRequest; set: SetFn }) 
       <Field label={`${form.budgetType === 'daily' ? 'Daily' : 'Lifetime'} Budget (USD)`}>
         <div className="relative">
           <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-          <input
+          <input aria-label="Budget"
             type="number" min={1} step={0.01}
             className={inputCls + ' pl-8'}
   
@@ -671,7 +672,7 @@ function StepBudget({ form, set }: { form: CreateCampaignRequest; set: SetFn }) 
       </Field>
 
       <Field label="Start Date & Time">
-        <input
+        <input aria-label="Start time"
           type="datetime-local"
           className={inputCls}
 
@@ -681,7 +682,7 @@ function StepBudget({ form, set }: { form: CreateCampaignRequest; set: SetFn }) 
       </Field>
 
       <Field label={`End Date & Time ${form.budgetType === 'lifetime' ? '(required)' : '(optional)'}`}>
-        <input
+        <input aria-label="Stop time"
           type="datetime-local"
           className={inputCls}
 
@@ -699,7 +700,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
   return (
     <div className="space-y-5">
       <Field label="Ad Name (internal reference)">
-        <input
+        <input aria-label="Ad name"
           className={inputCls}
 
           value={form.adName}
@@ -709,7 +710,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       </Field>
 
       <Field label="Headline (shown in bold on the ad)">
-        <input
+        <input aria-label="Headline"
           className={inputCls}
 
           value={form.headline}
@@ -721,7 +722,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       </Field>
 
       <Field label="Ad Body (main text above the ad)">
-        <textarea
+        <textarea aria-label="Ad body"
           className={inputCls + ' min-h-[90px] resize-none'}
 
           value={form.adBody}
@@ -735,7 +736,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       <Field label="Destination URL">
         <div className="relative">
           <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-          <input
+          <input aria-label="Destination URL"
             className={inputCls + ' pl-8'}
   
             value={form.destinationUrl}
@@ -749,7 +750,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       <Field label="Image URL (optional — leave blank for link preview)">
         <div className="relative">
           <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" />
-          <input
+          <input aria-label="Image URL"
             className={inputCls + ' pl-8'}
   
             value={form.imageUrl ?? ''}
@@ -761,7 +762,7 @@ function StepCreative({ form, set }: { form: CreateCampaignRequest; set: SetFn }
       </Field>
 
       <Field label="Call to Action Button">
-        <select
+        <select aria-label="Call to action"
           className={inputCls}
 
           value={form.callToAction}

@@ -24,6 +24,7 @@ import {
   CRM_ACCOUNT_TIER_LABELS, CRM_ACCOUNT_CONTACT_ROLE_LABELS,
 } from '../types/crm.types';
 import { formatDistanceToNow, format } from 'date-fns';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 const inputCls =
@@ -40,7 +41,7 @@ function SlideOver({
       <div className="drawer-slide-in relative w-[520px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -108,77 +109,97 @@ function AccountForm({
   return (
     <form onSubmit={(e) => { e.preventDefault(); onSave(form); }} className="space-y-4">
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Account Name *</label>
-        <input required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" className={inputCls} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Account Name *</span>
+          <input required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" className={inputCls} />
+        </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Parent Account</label>
-        <select value={form.parentAccountId} onChange={set('parentAccountId')} className={inputCls}>
-          <option value="">No parent (top-level)</option>
-          {allAccountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-        </select>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Parent Account</span>
+          <select value={form.parentAccountId} onChange={set('parentAccountId')} className={inputCls}>
+            <option value="">No parent (top-level)</option>
+            {allAccountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+          </select>
+        </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Organization</label>
-        <select value={form.organizationId} onChange={set('organizationId')} className={inputCls}>
-          <option value="">No organization</option>
-          {orgsList.map((o: any) => <option key={o.id} value={o.id}>{o.name}</option>)}
-        </select>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Organization</span>
+          <select value={form.organizationId} onChange={set('organizationId')} className={inputCls}>
+            <option value="">No organization</option>
+            {orgsList.map((o: any) => <option key={o.id} value={o.id}>{o.name}</option>)}
+          </select>
+        </label>
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Status</label>
-          <select value={form.status} onChange={set('status')} className={inputCls}>
-            {Object.entries(CRM_ACCOUNT_STATUS_LABELS).map(([k, label]) => (
-              <option key={k} value={k}>{label}</option>
-            ))}
-          </select>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Status</span>
+            <select value={form.status} onChange={set('status')} className={inputCls}>
+              {Object.entries(CRM_ACCOUNT_STATUS_LABELS).map(([k, label]) => (
+                <option key={k} value={k}>{label}</option>
+              ))}
+            </select>
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Tier</label>
-          <select value={form.tier} onChange={set('tier')} className={inputCls}>
-            <option value="">— None —</option>
-            {Object.entries(CRM_ACCOUNT_TIER_LABELS).map(([k, label]) => (
-              <option key={k} value={k}>{label}</option>
-            ))}
-          </select>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Tier</span>
+            <select value={form.tier} onChange={set('tier')} className={inputCls}>
+              <option value="">— None —</option>
+              {Object.entries(CRM_ACCOUNT_TIER_LABELS).map(([k, label]) => (
+                <option key={k} value={k}>{label}</option>
+              ))}
+            </select>
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Contract Value</label>
-          <input type="number" min="0" value={form.contractValue} onChange={set('contractValue')} placeholder="50000" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Contract Value</span>
+            <input type="number" min="0" value={form.contractValue} onChange={set('contractValue')} placeholder="50000" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Credit Limit</label>
-          <input type="number" min="0" value={form.creditLimit} onChange={set('creditLimit')} placeholder="100000" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Credit Limit</span>
+            <input type="number" min="0" value={form.creditLimit} onChange={set('creditLimit')} placeholder="100000" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Currency</label>
-          <input value={form.currency} onChange={set('currency')} placeholder="USD" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Currency</span>
+            <input value={form.currency} onChange={set('currency')} placeholder="USD" className={inputCls} />
+          </label>
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Renewal Date</label>
-        <input type="date" value={form.renewalDate} onChange={set('renewalDate')} className={inputCls} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Renewal Date</span>
+          <input type="date" value={form.renewalDate} onChange={set('renewalDate')} className={inputCls} />
+        </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Notes</label>
-        <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Notes</span>
+          <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
+        </label>
       </div>
       <div className="flex gap-3 pt-1">
-        <button
+        <Button
           type="submit"
           disabled={isSaving || !form.name.trim()}
-          className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary" className="flex-1"
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> {submitLabel}</>}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -210,13 +231,13 @@ function ContactsPanel({ accountId }: { accountId: string }) {
         <p className="text-xs font-bold text-text-muted uppercase tracking-wider">
           Contacts ({links?.length ?? 0})
         </p>
-        <button
+        <Button
           onClick={() => setShowAdd((v) => !v)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary" size="sm"
         >
           <UserPlus className="w-3.5 h-3.5" strokeWidth={1.5} />
           {showAdd ? 'Cancel' : 'Add Contact'}
-        </button>
+        </Button>
       </div>
 
       {showAdd && (
@@ -225,13 +246,13 @@ function ContactsPanel({ accountId }: { accountId: string }) {
             <input
               value={addSearch}
               onChange={(e) => setAddSearch(e.target.value)}
-              placeholder="Search contact by name..."
+              placeholder="Search contact by name..." aria-label="Search contact by name..."
               className={inputCls}
             />
-            <select
+            <select aria-label="Add role"
               value={addRole}
               onChange={(e) => setAddRole(e.target.value)}
-              className="px-2 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-xs text-text-secondary focus:outline-none"
+              className="px-2 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-xs text-text-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60"
             >
               {Object.entries(CRM_ACCOUNT_CONTACT_ROLE_LABELS).map(([k, label]) => (
                 <option key={k} value={k}>{label}</option>
@@ -252,7 +273,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
                   {linkedIds.has(c.id) ? (
                     <span className="text-xs text-text-muted shrink-0">Linked</span>
                   ) : (
-                    <button
+                    <Button
                       onClick={() =>
                         addContact.mutate({
                           accountId,
@@ -263,10 +284,10 @@ function ContactsPanel({ accountId }: { accountId: string }) {
                         })
                       }
                       disabled={addContact.isPending}
-                      className="px-2.5 py-1 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold hover:bg-brand hover:text-bg transition-all disabled:opacity-50 shrink-0"
+                      variant="primary" size="sm" className="shrink-0"
                     >
                       Add
-                    </button>
+                    </Button>
                   )}
                 </div>
               ))}
@@ -306,7 +327,7 @@ function ContactsPanel({ accountId }: { accountId: string }) {
               <button
                 onClick={() => removeContact.mutate({ accountId, linkId: l.contactId })}
                 disabled={removeContact.isPending}
-                className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all disabled:opacity-50 shrink-0"
+                className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft border border-transparent hover:border-danger/20 transition-all disabled:opacity-50 shrink-0"
                 title="Remove"
               >
                 <UserMinus className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -388,12 +409,12 @@ function AccountDetailPanel({
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <button
+          <Button
             onClick={() => { setIsEditing(true); setTab('details'); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+            variant="secondary" size="sm"
           >
             <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> Edit
-          </button>
+          </Button>
           {confirmDelete ? (
             <div className="flex items-center gap-1.5">
               <button
@@ -406,9 +427,9 @@ function AccountDetailPanel({
               <button onClick={() => setConfirmDelete(false)} className="text-xs text-text-muted hover:text-text-primary">×</button>
             </div>
           ) : (
-            <button
+            <button aria-label="Delete"
               onClick={() => setConfirmDelete(true)}
-              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+              className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
             >
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
             </button>
@@ -498,7 +519,7 @@ const ACCOUNT_STATUS_OPTS = [
   { value: '1', label: 'Prospect', dot: '#60A5FA', text: 'text-[#60A5FA]',  hover: 'hover:bg-[rgba(96,165,250,0.08)]'   },
   { value: '2', label: 'Customer', dot: '#00D97E', text: 'text-brand',       hover: 'hover:bg-brand-soft'                },
   { value: '3', label: 'Partner',  dot: '#A78BFA', text: 'text-violet-light',  hover: 'hover:bg-violet-light/[0.08]' },
-  { value: '4', label: 'Churned',  dot: '#F43F5E', text: 'text-danger',      hover: 'hover:bg-danger/[0.08]'   },
+  { value: '4', label: 'Churned',  dot: '#F43F5E', text: 'text-danger-light',      hover: 'hover:bg-danger/[0.08]'   },
 ] as const;
 
 const ACCOUNT_TIER_OPTS = [
@@ -577,7 +598,7 @@ function CreateAccountModal({
             >New Account</h2>
             <p className="text-xs text-text-muted mt-0.5">Add a new account to your CRM</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -593,28 +614,20 @@ function CreateAccountModal({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Account Name *</label>
-            <div className="relative">
-              <Building className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                required
-                value={form.name}
-                onChange={set('name')}
-                placeholder="Acme — Enterprise"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={glowInput}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Account Name *</span>
+              <Input icon={Building} required value={form.name} onChange={set('name')} placeholder="Acme — Enterprise" style={glowInput} />
+            </label>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Status</label>
               <div className="relative" ref={statusRef}>
-                <button
+                <Button
                   type="button"
                   onClick={() => setStatusOpen(o => !o)}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                  variant="ghost" block
                   style={{
                     ...glowInput,
                     border: `1px solid ${statusOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -631,7 +644,7 @@ function CreateAccountModal({
                     </>
                   ) : <span className="flex-1 text-left text-text-muted">Select status</span>; })()}
                   <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${statusOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-                </button>
+                </Button>
                 {statusOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                     style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -651,10 +664,10 @@ function CreateAccountModal({
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Tier</label>
               <div className="relative" ref={tierRef}>
-                <button
+                <Button
                   type="button"
                   onClick={() => setTierOpen(o => !o)}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                  variant="ghost" block
                   style={{
                     ...glowInput,
                     border: `1px solid ${tierOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -671,7 +684,7 @@ function CreateAccountModal({
                     </>
                   ) : <span className="flex-1 text-left text-text-muted">— None —</span>; })()}
                   <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${tierOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-                </button>
+                </Button>
                 {tierOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                     style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -695,62 +708,41 @@ function CreateAccountModal({
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Contract Value</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  min={0}
-                  value={form.contractValue}
-                  onChange={set('contractValue')}
-                  placeholder="50000"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Contract Value</span>
+                <Input icon={DollarSign} type="number" min={0} value={form.contractValue} onChange={set('contractValue')} placeholder="50000" style={glowInput} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+                <Input icon={DollarSign} value={form.currency} onChange={set('currency')} placeholder="USD" style={glowInput} />
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Renewal Date</span>
+              <Input icon={Calendar} type="date" value={form.renewalDate} onChange={set('renewalDate')} style={glowInput} />
+            </label>
+          </div>
+
+          <div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={form.currency}
-                  onChange={set('currency')}
-                  placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <textarea
+                  rows={3}
+                  value={form.notes}
+                  onChange={set('notes')}
+                  placeholder="Add any relevant notes…"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                   style={glowInput}
                 />
               </div>
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Renewal Date</label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                type="date"
-                value={form.renewalDate}
-                onChange={set('renewalDate')}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                style={glowInput}
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea
-                rows={3}
-                value={form.notes}
-                onChange={set('notes')}
-                placeholder="Add any relevant notes…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={glowInput}
-              />
-            </div>
+            </label>
           </div>
 
           {/* ── Organization Details ── */}
@@ -765,14 +757,14 @@ function CreateAccountModal({
             <input
               className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={glowInput}
-              placeholder="Search existing organizations…"
+              placeholder="Search existing organizations…" aria-label="Search existing organizations…"
               autoComplete="off"
               value={orgSearch}
               onChange={e => { setOrgSearch(e.target.value); setShowOrgDrop(true); }}
               onFocus={() => setShowOrgDrop(true)}
             />
             {orgSearch && (
-              <button
+              <button aria-label="Close"
                 type="button"
                 onClick={() => { setOrgSearch(''); setOrgQuery(''); setShowOrgDrop(false); onChange(f => ({ ...f, organizationId: '' })); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); }}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
@@ -834,127 +826,76 @@ function CreateAccountModal({
           {/* Company Name + Domain */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Company Name</label>
-              <div className="relative">
-                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="Acme Corp"
-                  value={orgDetails.name}
-                  onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Company Name</span>
+                <Input icon={Building2} style={glowInput} placeholder="Acme Corp" value={orgDetails.name} onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
-              <div className="relative">
-                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="acme.com"
-                  value={orgDetails.domain}
-                  onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Domain</span>
+                <Input icon={Layers} style={glowInput} placeholder="acme.com" value={orgDetails.domain} onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))} />
+              </label>
             </div>
           </div>
 
           {/* Industry + Employees */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
-              <div className="relative">
-                <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="SaaS, Retail…"
-                  value={orgDetails.industry}
-                  onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Industry</span>
+                <Input icon={Layers} style={glowInput} placeholder="SaaS, Retail…" value={orgDetails.industry} onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
-              <div className="relative">
-                <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="number"
-                  min={0}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="250"
-                  value={orgDetails.employeeCount}
-                  onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Employees</span>
+                <Input icon={Users} type="number" min={0} style={glowInput} placeholder="250" value={orgDetails.employeeCount} onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))} />
+              </label>
             </div>
           </div>
 
           {/* Country + City */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="US"
-                  value={orgDetails.country}
-                  onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Country</span>
+                <Input icon={MapPin} style={glowInput} placeholder="US" value={orgDetails.country} onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={glowInput}
-                  placeholder="New York"
-                  value={orgDetails.city}
-                  onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">City</span>
+                <Input icon={MapPin} style={glowInput} placeholder="New York" value={orgDetails.city} onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))} />
+              </label>
             </div>
           </div>
 
           {/* Website */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
-            <div className="relative">
-              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={glowInput}
-                placeholder="https://acme.com"
-                value={orgDetails.website}
-                onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Website</span>
+              <Input icon={Globe} style={glowInput} placeholder="https://acme.com" value={orgDetails.website} onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))} />
+            </label>
           </div>
 
           {customFieldsContent}
           <div className="flex items-center justify-end gap-3 pt-2 border-t border-border-subtle">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={isSaving || !form.name.trim()}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {isSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Create Account
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -972,7 +913,8 @@ export function Component() {
   const [createForm, setCreateForm] = useState<AccountFormState>(EMPTY_ACCOUNT);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { data: raw, isLoading } = useAccounts(filter);
+  const accountsQuery = useAccounts(filter);
+  const { data: raw } = accountsQuery;
   const data = raw;
 
   const createAccount = useCreateAccount();
@@ -1012,15 +954,15 @@ export function Component() {
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Accounts</h2>
             <p className="text-xs text-text-muted mt-0.5">
-              {data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}
+              <ResultCount query={accountsQuery} total={data?.totalCount} />
             </p>
           </div>
-          <button
+          <Button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Account
-          </button>
+          </Button>
         </div>
 
         <form
@@ -1040,11 +982,11 @@ export function Component() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search accounts..."
+              placeholder="Search accounts..." aria-label="Search accounts..."
               className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
             />
           </div>
-          <select
+          <select aria-label="Filter by status"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium"
@@ -1054,22 +996,19 @@ export function Component() {
               <option key={k} value={k}>{label}</option>
             ))}
           </select>
-          <button type="submit" className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+          <Button type="submit" variant="secondary">
             Search
-          </button>
+          </Button>
         </form>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-48 text-text-muted">
-              <Loader2 className="w-5 h-5 animate-spin" />
-            </div>
-          ) : !data?.items.length ? (
-            <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-              <Building className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No accounts found</p>
-            </div>
-          ) : (
+          <ListState
+            query={accountsQuery}
+            isEmpty={!data?.items.length}
+            noun="accounts"
+            icon={Building}
+            emptyTitle="No accounts found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -1081,7 +1020,7 @@ export function Component() {
                 </tr>
               </thead>
               <tbody>
-                {data.items.map((a: CrmAccountSummaryDto) => (
+                {data?.items.map((a: CrmAccountSummaryDto) => (
                   <tr
                     key={a.id}
                     onClick={() => setSelectedId(a.id)}
@@ -1111,7 +1050,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {totalPages > 1 && (

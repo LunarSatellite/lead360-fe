@@ -12,6 +12,7 @@ import type {
   CrmReportFilterDto, CrmReportDto, CrmReportRunResultDto, CrmReportObjectDto,
 } from '../types/crm-reports.types';
 import { REPORT_SCHEDULE_FREQUENCIES, AGGREGATE_FUNCTIONS } from '../types/crm-reports.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 async function downloadReportCsv(reportId: string, fallbackFileName: string) {
   const token = localStorage.getItem('omniflow_token');
@@ -52,12 +53,12 @@ export function Component() {
           <h1 className="text-3xl font-extrabold text-text-primary tracking-tight">Reports</h1>
           <p className="text-base text-text-secondary mt-1">Build a custom view over any CRM object — filter, group, chart, and schedule delivery</p>
         </div>
-        <button
+        <Button
           onClick={() => setShowBuilder(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" /> New report
-        </button>
+        </Button>
       </div>
 
       {showBuilder && catalog && createPortal(
@@ -220,7 +221,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
             >New report</h2>
             <p className="text-xs text-text-muted mt-0.5">Build a custom view over any CRM object</p>
           </div>
-          <button onClick={onCancel} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onCancel} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -235,16 +236,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
               <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Report Name</span>
               <div className="h-px bg-brand/20" />
             </div>
-            <div className="relative">
-              <FileBarChart className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Open deals by owner"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              />
-            </div>
+            <Input aria-label="Name" icon={FileBarChart} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Open deals by owner" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-2 mb-1.5">
@@ -347,7 +339,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 const field = object.fields.find((of) => of.key === f.field) ?? object.fields[0];
                 return (
                   <div key={i} className="grid grid-cols-[1fr_1fr_1fr_auto] gap-2">
-                    <select
+                    <select aria-label="Field"
                       value={f.field}
                       onChange={(e) => {
                         const nf = object.fields.find((of) => of.key === e.target.value);
@@ -358,7 +350,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                     >
                       {object.fields.map((of) => <option key={of.key} value={of.key} className="bg-bg">{of.label}</option>)}
                     </select>
-                    <select
+                    <select aria-label="Operator"
                       value={f.operator}
                       onChange={(e) => updateFilter(i, { operator: e.target.value })}
                       className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -381,12 +373,12 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                         value={f.value ?? ''}
                         onChange={(e) => updateFilter(i, { value: e.target.value })}
                         disabled={f.operator === 'exists'}
-                        placeholder="Value..."
+                        placeholder="Value..." aria-label="Value..."
                         className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors disabled:opacity-40"
                         style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                       />
                     )}
-                    <button onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+                    <button aria-label="Delete" onClick={() => removeFilter(i)} className="p-2 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -528,7 +520,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                 <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Chart value</span>
                 <div className="h-px bg-brand/20" />
               </div>
-              <select
+              <select aria-label="Aggregate function"
                 value={aggregateFunction}
                 onChange={(e) => setAggregateFunction(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -543,7 +535,7 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
                   <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Of field</span>
                   <div className="h-px bg-brand/20" />
                 </div>
-                <select
+                <select aria-label="Aggregate"
                   value={aggregateField}
                   onChange={(e) => setAggregateField(e.target.value)}
                   className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -559,16 +551,16 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
 
         {/* Preview */}
         <div className="flex items-center gap-3">
-          <button
+          <Button
             onClick={runPreview}
             disabled={preview.isPending || columns.length === 0}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3 disabled:opacity-50 transition-all"
+            variant="subtle"
           >
             {preview.isPending
               ? <span className="w-4 h-4 border-2 border-text-muted/30 border-t-text-muted rounded-full animate-spin" />
               : <Play className="w-4 h-4" />}
             Preview
-          </button>
+          </Button>
           <span className="text-xs text-text-muted">{columns.length} column(s) selected</span>
         </div>
 
@@ -577,20 +569,20 @@ function ReportBuilder({ catalog, onDone, onCancel }: {
 
       {/* Sticky Footer */}
       <div className="sticky bottom-0 z-10 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle bg-bg-card">
-        <button
+        <Button
           onClick={onCancel}
-          className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium hover:text-text-primary transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleSave}
           disabled={!name.trim() || create.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          variant="primary"
         >
           {create.isPending ? <span className="w-3.5 h-3.5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
           Save report
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -696,22 +688,22 @@ function ReportRow({ report }: { report: CrmReportDto }) {
           <div className="text-sm font-bold text-text-primary">{report.name}</div>
           <div className="text-xs text-text-muted mt-0.5">{report.objectType} · {report.reportType}</div>
         </div>
-        <button onClick={handleRun} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3">
+        <Button onClick={handleRun} variant="subtle" size="sm">
           <Play className="w-3.5 h-3.5" /> Run
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => downloadReportCsv(report.id, `${report.name}.csv`)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3"
+          variant="subtle" size="sm"
         >
           <Download className="w-3.5 h-3.5" /> Download
-        </button>
-        <button onClick={() => setShowSchedule((s) => !s)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-primary hover:bg-glass-3">
+        </Button>
+        <Button onClick={() => setShowSchedule((s) => !s)} variant="subtle" size="sm">
           <Calendar className="w-3.5 h-3.5" /> Schedule
-        </button>
-        <button
+        </Button>
+        <button aria-label="Delete"
           onClick={() => confirmDialog({ message: `Delete report "${report.name}"?`, confirmText: 'Delete', danger: true })
             .then((ok) => { if (ok) del.mutate(report.id); })}
-          className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+          className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
         >
           <Trash2 className="w-4 h-4" />
         </button>
@@ -752,7 +744,7 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
 
   return (
     <form onSubmit={handleSubmit} className="border-t border-border-subtle p-4 flex items-center gap-3">
-      <select
+      <select aria-label="Frequency"
         value={frequency}
         onChange={(e) => setFrequency(e.target.value)}
         className="w-32 px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50 transition-colors cursor-pointer"
@@ -763,17 +755,17 @@ function ScheduleForm({ reportId, onDone }: { reportId: string; onDone: () => vo
       <input
         value={emails}
         onChange={(e) => setEmails(e.target.value)}
-        placeholder="recipient@company.com, another@company.com"
+        placeholder="recipient@company.com, another@company.com" aria-label="recipient@company.com, another@company.com"
         className="flex-1 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
         style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
       />
-      <button
+      <Button
         type="submit"
         disabled={schedule.isPending || !emails.trim()}
-        className="px-4 py-2 rounded-lg text-sm font-bold bg-brand text-white hover:brightness-110 disabled:opacity-50"
+        variant="primary"
       >
         Save
-      </button>
+      </Button>
     </form>
   );
 }

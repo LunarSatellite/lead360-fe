@@ -14,6 +14,7 @@ import type {
   ProcessDefinitionDto,
   CreateProcessDefinitionRequest, CreateProcessStepRequest, UpdateProcessDefinitionRequest,
 } from '../types/process-workflow.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Step Row ────────────────────────────────────────────────────────────────
 
@@ -28,7 +29,7 @@ function RoleDropdown({ roleId, onChange }: { roleId: string; onChange: (id: str
   const { data: roles } = useProcessRoles();
   const list = roles ?? [];
   return (
-    <select value={roleId} onChange={e => onChange(e.target.value)}
+    <select aria-label="Role ID" value={roleId} onChange={e => onChange(e.target.value)}
       className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand">
       <option value="">No role (all users)</option>
       {list.map((r: { id: string; name: string }) => (
@@ -46,9 +47,9 @@ function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
           <GripVertical className="w-3.5 h-3.5 text-text-muted" strokeWidth={1.5} />
           <span className="text-xs font-bold text-text-muted uppercase tracking-wider">Step {index + 1}</span>
         </div>
-        <button
+        <button aria-label="Delete"
           onClick={() => onRemove(index)}
-          className="p-1 rounded text-text-muted hover:text-danger transition-colors"
+          className="p-1 rounded text-text-muted hover:text-danger-light transition-colors"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -57,14 +58,14 @@ function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
       <input
         value={step.name}
         onChange={e => onChange(index, { ...step, name: e.target.value })}
-        placeholder="Step name"
+        placeholder="Step name" aria-label="Step name"
         className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
       />
 
       <input
         value={step.description ?? ''}
         onChange={e => onChange(index, { ...step, description: e.target.value || undefined })}
-        placeholder="Description (optional)"
+        placeholder="Description (optional)" aria-label="Description (optional)"
         className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
       />
 
@@ -74,14 +75,16 @@ function StepEditor({ index, step, onChange, onRemove }: StepEditorProps) {
           <RoleDropdown roleId={step.assignedRoleId ?? ''} onChange={id => onChange(index, { ...step, assignedRoleId: id || undefined })} />
         </div>
         <div className="w-28">
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">SLA (hrs)</label>
-          <input
-            type="number"
-            min={1}
-            value={step.slaHours ?? 24}
-            onChange={e => onChange(index, { ...step, slaHours: parseInt(e.target.value) || 24 })}
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          />
+          <label className="block">
+            <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">SLA (hrs)</span>
+            <input
+              type="number"
+              min={1}
+              value={step.slaHours ?? 24}
+              onChange={e => onChange(index, { ...step, slaHours: parseInt(e.target.value) || 24 })}
+              className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+          </label>
         </div>
       </div>
     </div>
@@ -179,14 +182,14 @@ function DefinitionForm({ initial, onDone, onCancel }: DefinitionFormProps) {
         autoFocus
         value={name}
         onChange={e => setName(e.target.value)}
-        placeholder="Definition name"
+        placeholder="Definition name" aria-label="Definition name"
         className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
       />
 
       <input
         value={description}
         onChange={e => setDescription(e.target.value)}
-        placeholder="Description (optional)"
+        placeholder="Description (optional)" aria-label="Description (optional)"
         className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
       />
 
@@ -225,19 +228,19 @@ function DefinitionForm({ initial, onDone, onCancel }: DefinitionFormProps) {
       </div>
 
       <div className="flex gap-2 justify-end pt-2">
-        <button
+        <Button
           onClick={onCancel}
-          className="px-4 py-2 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleSubmit}
           disabled={!name.trim() || steps.some(s => !s.name.trim()) || isPending}
-          className="px-4 py-2 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary"
         >
           {isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : isEdit ? 'Save' : 'Create'}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -267,7 +270,7 @@ function DefinitionCard({
             <div className="flex items-center gap-2">
               <h3 className="text-sm font-bold text-text-primary">{definition.name}</h3>
               {!definition.isActive && (
-                <span className="text-[10px] font-bold text-danger uppercase tracking-wide border border-danger/30 bg-danger/10 px-1.5 py-0.5 rounded">
+                <span className="text-[10px] font-bold text-danger-light uppercase tracking-wide border border-danger/30 bg-danger/10 px-1.5 py-0.5 rounded">
                   Inactive
                 </span>
               )}
@@ -291,15 +294,15 @@ function DefinitionCard({
             >
               <Play className="w-3.5 h-3.5" />
             </button>
-            <button
+            <button aria-label="Edit"
               onClick={onEdit}
               className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors"
             >
               <Pencil className="w-3.5 h-3.5" />
             </button>
-            <button
+            <button aria-label="Delete"
               onClick={onDelete}
-              className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+              className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger/10 transition-colors"
             >
               <Trash2 className="w-3.5 h-3.5" />
             </button>
@@ -378,7 +381,7 @@ function StartInstanceModal({
       <div className="relative w-full max-w-sm bg-bg shadow-2xl rounded-2xl border border-border-subtle">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
           <h3 className="font-bold text-text-primary">Start Instance</h3>
-          <button onClick={onClose} className="p-1 rounded-lg text-text-muted hover:text-text-primary">
+          <button aria-label="Close" onClick={onClose} className="p-1 rounded-lg text-text-muted hover:text-text-primary">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -391,25 +394,25 @@ function StartInstanceModal({
           <input
             value={triggerRefKind}
             onChange={e => setTriggerRefKind(e.target.value)}
-            placeholder="Reference kind (e.g. deal, case)"
+            placeholder="Reference kind (e.g. deal, case)" aria-label="Reference kind (e.g. deal, case)"
             className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
           />
 
           <div className="flex gap-2 justify-end pt-2">
-            <button
+            <Button
               onClick={onClose}
-              className="px-4 py-2 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleStart}
               disabled={start.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50"
+              variant="primary"
             >
               {start.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
               Start
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -451,12 +454,12 @@ function ProcessWorkflowDefinitionsPage() {
             <p className="text-sm text-text-muted">Manage process workflow templates</p>
           </div>
         </div>
-        <button
+        <Button
           onClick={() => { setShowCreate(true); setEditingId(null); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Definition
-        </button>
+        </Button>
       </div>
 
       {/* Create form inline */}

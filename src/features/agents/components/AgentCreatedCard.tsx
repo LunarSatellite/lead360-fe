@@ -28,6 +28,7 @@ import {
   AGENT_TARGET_KIND_FROM_NAME,
   type AgentCreatedCard,
 } from '../types/agents.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   card: AgentCreatedCard;
@@ -100,18 +101,18 @@ export function AgentCreatedCardRenderer({ card }: Props) {
 
         {/* Actions — desktop only, kept compact */}
         <div className="hidden sm:flex items-center gap-1 shrink-0">
-          <button
+          <Button
             type="button"
             onClick={handleEdit}
-            className="px-2.5 py-1 rounded-sm text-xs font-bold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-colors"
+            variant="ghost" size="sm"
           >
             Edit
-          </button>
+          </Button>
           <button
             type="button"
             onClick={handleDisable}
             disabled={!card.enabled || toggle.isPending}
-            className="px-2.5 py-1 rounded-sm text-xs font-bold text-text-secondary hover:text-danger hover:bg-danger-soft transition-colors disabled:opacity-40 disabled:hover:text-text-secondary disabled:hover:bg-transparent inline-flex items-center gap-1.5"
+            className="px-2.5 py-1 rounded-sm text-xs font-bold text-text-secondary hover:text-danger-light hover:bg-danger-soft transition-colors disabled:opacity-40 disabled:hover:text-text-secondary disabled:hover:bg-transparent inline-flex items-center gap-1.5"
             title={card.enabled ? 'Disable this agent' : 'Already disabled'}
           >
             <PowerOff className="w-3 h-3" strokeWidth={2.2} />

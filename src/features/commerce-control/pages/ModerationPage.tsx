@@ -15,6 +15,7 @@ import {
   type ModerationActionValue,
   type ModerationItem,
 } from '../api/stylemint-moderation.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Content moderation — reported reels, reviews, comments, profiles and recommendation replies.
@@ -111,7 +112,7 @@ export function ModerationPage() {
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
           <div className="overflow-hidden rounded-frame border-thin border-border-subtle bg-bg-card">
             {(queue.data?.items ?? []).map((item) => (
-              <button
+              <button aria-pressed={selected?.id === item.id}
                 key={item.id}
                 onClick={() => setSelected(item)}
                 className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${
@@ -171,7 +172,7 @@ function Select<T extends number | undefined>({
         onChange={(event) =>
           onChange((event.target.value === '' ? undefined : Number(event.target.value)) as T)
         }
-        className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"
+        className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow font-normal"
       >
         {options.map((option) => (
           <option key={option.label} value={option.value === undefined ? '' : String(option.value)}>
@@ -264,7 +265,7 @@ function DecisionPanel({
             value={note}
             onChange={(event) => setNote(event.target.value)}
             rows={3}
-            placeholder="Note for the record (optional)"
+            placeholder="Note for the record (optional)" aria-label="Note for the record (optional)"
             className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
           />
 
@@ -286,19 +287,19 @@ function DecisionPanel({
                 </p>
               )}
               <div className="flex gap-2">
-                <button
+                <Button
                   onClick={() => decide.mutate(pending)}
                   disabled={decide.isPending}
-                  className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+                  variant="primary"
                 >
                   {decide.isPending ? 'Recording…' : 'Yes, record it'}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setPending(null)}
-                  className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+                  variant="secondary"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           ) : (

@@ -8,6 +8,7 @@ import { Plus, Pencil, Trash2, FolderTree, Loader2, ChevronRight } from 'lucide-
 import { useCategories, useDeleteCategory } from '../api/business-catalog.queries';
 import { CategoryFormDialog } from './CategoryFormDialog';
 import type { CatalogCategory } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   parentLabel: string;
@@ -38,15 +39,14 @@ export function CategoryListSection({ parentLabel, onSelectCategory }: Props) {
             Group your offerings so customers can browse efficiently.
           </p>
         </div>
-        <button
+        <Button
           type="button"
           onClick={() => setCreating(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                     bg-brand text-white hover:bg-brand/90 transition-all"
+          variant="primary" size="sm"
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} />
           Add {parentLabel.toLowerCase()}
-        </button>
+        </Button>
       </div>
 
       {isLoading ? (
@@ -120,7 +120,7 @@ export function CategoryListSection({ parentLabel, onSelectCategory }: Props) {
                              hover:bg-danger-soft transition-colors"
                   title="Delete"
                 >
-                  <Trash2 className="w-3.5 h-3.5 text-text-secondary hover:text-danger" strokeWidth={1.6} />
+                  <Trash2 className="w-3.5 h-3.5 text-text-secondary hover:text-danger-light" strokeWidth={1.6} />
                 </button>
               </div>
             </div>

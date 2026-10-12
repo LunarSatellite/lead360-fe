@@ -6,6 +6,7 @@ import {
 } from '../api/crm.queries';
 import type { GoodsReceiptDto, GoodsReceiptCreateRequest, GoodsReceiptLineItemRequest, GoodsReceiptFilter } from '../types/crm.types';
 import { GR_STATUS_LABELS, GR_STATUS_COLORS, GOODS_CONDITION_LABELS, GoodsCondition, GoodsReceiptStatus } from '../types/crm.types';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colors[value] ?? ''}`}>{labels[value] ?? value}</span>;
@@ -41,7 +42,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && (
@@ -55,7 +56,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label></div>;
 }
 
 type GrLine = { poLineItemId: string; quantityReceived: string; condition: string; rejectedQty: string; rejectionReason: string };
@@ -88,7 +89,8 @@ export function Component() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const { data: raw, isLoading } = useGoodsReceipts(filter);
+  const goodsReceiptsQuery = useGoodsReceipts(filter);
+  const { data: raw } = goodsReceiptsQuery;
   const items: GoodsReceiptDto[] = (raw as any)?.items ?? [];
 
   const createGR = useCreateGoodsReceipt();
@@ -120,32 +122,33 @@ export function Component() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Goods Receipts</h2>
-            <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+            <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={goodsReceiptsQuery} total={(raw as any)?.totalCount} />
+          </p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Receipt
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
           <input value={poFilter} onChange={e => setPoFilter(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, purchaseOrderId: poFilter.trim() || undefined, page: 1 }))}
-            placeholder="Filter by PO ID..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none">
+            placeholder="Filter by PO ID..." aria-label="Filter by PO ID..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(GR_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={() => setFilter(f => ({ ...f, purchaseOrderId: poFilter.trim() || undefined, status: statusF ? Number(statusF) as GoodsReceiptStatus : undefined, page: 1 }))} className="px-4 py-2 rounded-xl border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Filter</button>
+          <Button onClick={() => setFilter(f => ({ ...f, purchaseOrderId: poFilter.trim() || undefined, status: statusF ? Number(statusF) as GoodsReceiptStatus : undefined, page: 1 }))} variant="secondary">Filter</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <PackageCheck className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No goods receipts found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={goodsReceiptsQuery}
+            isEmpty={!items.length}
+            noun="goods receipts"
+            icon={PackageCheck}
+            emptyTitle="No goods receipts found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -169,7 +172,7 @@ export function Component() {
                           <button onClick={() => confirmGR.mutate(gr.id)} disabled={confirmGR.isPending} title="Confirm Receipt" className="p-1.5 rounded-lg text-text-muted hover:text-success hover:bg-success-soft transition-all disabled:opacity-50"><CheckCircle className="w-3.5 h-3.5" /></button>
                         )}
                         {gr.status === GoodsReceiptStatus.Confirmed && (
-                          <button onClick={() => { if (confirm('Void this receipt? Stock will be reversed.')) voidGR.mutate(gr.id); }} disabled={voidGR.isPending} title="Void Receipt" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all disabled:opacity-50"><XCircle className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => { if (confirm('Void this receipt? Stock will be reversed.')) voidGR.mutate(gr.id); }} disabled={voidGR.isPending} title="Void Receipt" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all disabled:opacity-50"><XCircle className="w-3.5 h-3.5" /></button>
                         )}
                       </div>
                     </td>
@@ -177,7 +180,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 
@@ -185,11 +188,11 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Goods Receipt" subtitle="Record incoming inventory from a purchase order"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="gr-form" disabled={createGR.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="gr-form" disabled={createGR.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createGR.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Receipt'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -201,21 +204,11 @@ export function Component() {
           </div>
 
           <Field label="Purchase Order ID *">
-            <div className="relative">
-              <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={inputStyle} />
-            </div>
+            <Input icon={Hash} required value={poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" aria-label="po-uuid" style={inputStyle} />
           </Field>
 
           <Field label="Warehouse Location">
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={inputStyle} />
-            </div>
+            <Input icon={MapPin} value={warehouse} onChange={e => setWarehouse(e.target.value)} placeholder="Warehouse A, Bay 3..." aria-label="Warehouse A, Bay 3..." style={inputStyle} />
           </Field>
 
           {/* ── Received Items ── */}
@@ -227,7 +220,7 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
+              <Button type="button" onClick={addLine} variant="secondary" size="sm"><PlusCircle className="w-3 h-3" /> Add Row</Button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
@@ -235,13 +228,13 @@ export function Component() {
                   <div className="grid grid-cols-2 gap-2">
                     <div className="relative">
                       <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                      <input value={l.poLineItemId} onChange={e => setLine(i, 'poLineItemId', e.target.value)} placeholder="PO Line Item ID"
+                      <input value={l.poLineItemId} onChange={e => setLine(i, 'poLineItemId', e.target.value)} placeholder="PO Line Item ID" aria-label="PO Line Item ID"
                         className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
                     <div className="relative">
                       <Package className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                      <input type="number" min="0" value={l.quantityReceived} onChange={e => setLine(i, 'quantityReceived', e.target.value)} placeholder="Qty received"
+                      <input type="number" min="0" value={l.quantityReceived} onChange={e => setLine(i, 'quantityReceived', e.target.value)} placeholder="Qty received" aria-label="Qty received"
                         className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
@@ -267,7 +260,7 @@ export function Component() {
                         <span className={`flex-1 font-medium ${
                           Number(l.condition) === GoodsCondition.Good ? 'text-success' :
                           Number(l.condition) === GoodsCondition.Damaged ? 'text-warning' :
-                          Number(l.condition) === GoodsCondition.Rejected ? 'text-danger' : 'text-text-secondary'
+                          Number(l.condition) === GoodsCondition.Rejected ? 'text-danger-light' : 'text-text-secondary'
                         }`}>
                           {GOODS_CONDITION_LABELS[Number(l.condition) as GoodsCondition]}
                         </span>
@@ -280,7 +273,7 @@ export function Component() {
                           {([
                             { value: GoodsCondition.Good, label: GOODS_CONDITION_LABELS[GoodsCondition.Good], dot: '#10B981', text: 'text-success', hover: 'hover:bg-success/[0.08]' },
                             { value: GoodsCondition.Damaged, label: GOODS_CONDITION_LABELS[GoodsCondition.Damaged], dot: '#F59E0B', text: 'text-warning', hover: 'hover:bg-warning-soft' },
-                            { value: GoodsCondition.Rejected, label: GOODS_CONDITION_LABELS[GoodsCondition.Rejected], dot: '#F43F5E', text: 'text-danger', hover: 'hover:bg-danger-soft' },
+                            { value: GoodsCondition.Rejected, label: GOODS_CONDITION_LABELS[GoodsCondition.Rejected], dot: '#F43F5E', text: 'text-danger-light', hover: 'hover:bg-danger-soft' },
                           ] as const).map(opt => (
                             <button
                               key={opt.value}
@@ -299,7 +292,7 @@ export function Component() {
                     {Number(l.condition) === GoodsCondition.Rejected && (
                       <div className="relative">
                         <XCircle className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                        <input type="number" min="0" value={l.rejectedQty} onChange={e => setLine(i, 'rejectedQty', e.target.value)} placeholder="Rejected qty"
+                        <input type="number" min="0" value={l.rejectedQty} onChange={e => setLine(i, 'rejectedQty', e.target.value)} placeholder="Rejected qty" aria-label="Rejected qty"
                           className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                           style={inputStyle} />
                       </div>
@@ -308,13 +301,13 @@ export function Component() {
                   {Number(l.condition) !== GoodsCondition.Good && (
                     <div className="relative">
                       <FileText className="absolute left-2.5 top-3 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                      <input value={l.rejectionReason} onChange={e => setLine(i, 'rejectionReason', e.target.value)} placeholder="Rejection/damage reason"
+                      <input value={l.rejectionReason} onChange={e => setLine(i, 'rejectionReason', e.target.value)} placeholder="Rejection/damage reason" aria-label="Rejection/damage reason"
                         className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                         style={inputStyle} />
                     </div>
                   )}
                   {lines.length > 1 && (
-                    <button type="button" onClick={() => removeLine(i)} className="flex items-center gap-1 text-xs text-danger hover:underline"><X className="w-3 h-3" /> Remove row</button>
+                    <button type="button" onClick={() => removeLine(i)} className="flex items-center gap-1 text-xs text-danger-light hover:underline"><X className="w-3 h-3" /> Remove row</button>
                   )}
                 </div>
               ))}
@@ -324,7 +317,7 @@ export function Component() {
           <Field label="Notes">
             <div className="relative">
               <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Delivery notes, carrier info, exceptions…"
+              <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Delivery notes, carrier info, exceptions…" aria-label="Delivery notes, carrier info, exceptions…"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={inputStyle} />
             </div>
@@ -353,15 +346,15 @@ export function Component() {
             {selected.lineItems?.length > 0 && (
               <div>
                 <label className="text-xs font-semibold text-text-muted mb-1.5 block">Received Items ({selected.lineItems.length})</label>
-                <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle">
+                <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle">
                   {selected.lineItems.map(li => (
                     <div key={li.id} className="px-3 py-2.5 text-sm">
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="text-text-primary font-medium">Qty: {li.quantityReceived}</span>
-                          {li.rejectedQty ? <span className="text-danger text-xs ml-2">Rejected: {li.rejectedQty}</span> : null}
+                          {li.rejectedQty ? <span className="text-danger-light text-xs ml-2">Rejected: {li.rejectedQty}</span> : null}
                         </div>
-                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${li.condition === GoodsCondition.Good ? 'text-success bg-success-soft' : li.condition === GoodsCondition.Damaged ? 'text-warning bg-warning-soft' : 'text-danger bg-danger-soft'}`}>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${li.condition === GoodsCondition.Good ? 'text-success bg-success-soft' : li.condition === GoodsCondition.Damaged ? 'text-warning bg-warning-soft' : 'text-danger-light bg-danger-soft'}`}>
                           {GOODS_CONDITION_LABELS[li.condition]}
                         </span>
                       </div>
@@ -372,18 +365,18 @@ export function Component() {
               </div>
             )}
 
-            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selected.notes}</p></div>}
+            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{selected.notes}</p></div>}
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.status === GoodsReceiptStatus.Draft && (
-                <button onClick={() => { confirmGR.mutate(selected.id); setSelected(null); }} disabled={confirmGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
+                <Button onClick={() => { confirmGR.mutate(selected.id); setSelected(null); }} disabled={confirmGR.isPending} variant="success">
                   <CheckCircle className="w-3.5 h-3.5" /> Confirm Receipt
-                </button>
+                </Button>
               )}
               {selected.status === GoodsReceiptStatus.Confirmed && (
-                <button onClick={() => { if (confirm('Void this receipt? Stock adjustments will be reversed.')) { voidGR.mutate(selected.id); setSelected(null); } }} disabled={voidGR.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 disabled:opacity-50">
+                <Button onClick={() => { if (confirm('Void this receipt? Stock adjustments will be reversed.')) { voidGR.mutate(selected.id); setSelected(null); } }} disabled={voidGR.isPending} variant="danger">
                   <XCircle className="w-3.5 h-3.5" /> Void
-                </button>
+                </Button>
               )}
             </div>
           </div>

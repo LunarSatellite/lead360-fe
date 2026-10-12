@@ -33,6 +33,7 @@ import {
   CRM_WORKFLOW_TRIGGER_LABELS, CRM_WORKFLOW_ACTION_LABELS,
   CRM_WORKFLOW_EXECUTION_STATUS_LABELS,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // ── Canvas CSS — cleaner n8n-inspired style ────────────────────────────────────
 const CANVAS_CSS = `
@@ -477,8 +478,8 @@ function FloatingPalette() {
         <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-bg border border-border-subtle">
           <Search className="w-2.5 h-2.5 text-text-muted shrink-0" strokeWidth={2} />
           <input
-            value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…"
-            className="bg-transparent text-[10px] text-text-primary placeholder:text-text-muted focus:outline-none flex-1 min-w-0 w-0"
+            value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search…" aria-label="Search…"
+            className="bg-transparent text-[10px] text-text-primary placeholder:text-text-muted focus:outline-none flex-1 min-w-0 w-0 focus-visible:ring-2 focus-visible:ring-brand/60"
           />
           {q && (
             <button onClick={() => setQ('')} className="text-text-muted hover:text-text-primary">
@@ -557,18 +558,18 @@ function GenericConditionEditor({ value, onChange }: { value: string; onChange: 
       )}
       {conditions.map((c, i) => (
         <div key={i} className="flex items-center gap-1">
-          <input className={INPUT + ' flex-1'} placeholder="properties.amount" value={String(c.field ?? '')} onChange={(e) => update(i, { field: e.target.value })} />
-          <select className={INPUT + ' w-28'} value={String(c.operator ?? 'gte')} onChange={(e) => update(i, { operator: e.target.value })}>
+          <input className={INPUT + ' flex-1'} placeholder="properties.amount" aria-label="properties.amount" value={String(c.field ?? '')} onChange={(e) => update(i, { field: e.target.value })} />
+          <select aria-label="String" className={INPUT + ' w-28'} value={String(c.operator ?? 'gte')} onChange={(e) => update(i, { operator: e.target.value })}>
             {OPERATORS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
-          <input className={INPUT + ' w-20'} placeholder="value" value={c.value == null ? '' : String(c.value)} onChange={(e) => update(i, { value: coerce(e.target.value) })} />
-          <button type="button" className="nodrag text-text-muted hover:text-danger-DEFAULT px-1 text-xs" onClick={() => remove(i)}>✕</button>
+          <input className={INPUT + ' w-20'} placeholder="value" aria-label="value" value={c.value == null ? '' : String(c.value)} onChange={(e) => update(i, { value: coerce(e.target.value) })} />
+          <button type="button" className="nodrag text-text-muted hover:text-danger-light px-1 text-xs" onClick={() => remove(i)}>✕</button>
         </div>
       ))}
       <div className="flex items-center gap-2">
         <button type="button" className="nodrag text-[10px] text-brand hover:underline" onClick={add}>+ Add condition</button>
         {conditions.length > 1 && (
-          <select className={INPUT + ' w-24'} value={logic} onChange={(e) => emit(e.target.value, conditions)}>
+          <select aria-label="Logic" className={INPUT + ' w-24'} value={logic} onChange={(e) => emit(e.target.value, conditions)}>
             <option value="AND">Match ALL</option>
             <option value="OR">Match ANY</option>
           </select>
@@ -598,7 +599,7 @@ function TriggerConditionEditor({ triggerType, value, onChange }: {
           <span className="text-[10px] text-text-muted">Score threshold</span>
           <span className="text-[12px] font-bold text-brand">{threshold}</span>
         </div>
-        <input type="range" min={0} max={100} step={5} value={threshold}
+        <input aria-label="Threshold" type="range" min={0} max={100} step={5} value={threshold}
           onChange={(e) => set('threshold', Number(e.target.value))}
           className="nodrag w-full accent-brand cursor-pointer" />
         <p className="text-[9px] text-text-muted">Fires once when the lead score crosses this value</p>
@@ -609,7 +610,7 @@ function TriggerConditionEditor({ triggerType, value, onChange }: {
   if (triggerType === 'funnel.stage_changed') {
     const funnelStages = ['Identified', 'Inquiring', 'Qualified', 'Negotiating', 'Closing', 'Customer', 'Repeat', 'Advocate', 'Dormant'];
     return (
-      <select value={String(parsed.toStage ?? 'Qualified')} onChange={(e) => set('toStage', e.target.value)} className={INPUT}>
+      <select aria-label="Filter by stage change" value={String(parsed.toStage ?? 'Qualified')} onChange={(e) => set('toStage', e.target.value)} className={INPUT}>
         <option value="">Any stage change</option>
         {funnelStages.map(s => <option key={s} value={s}>{s}</option>)}
       </select>
@@ -618,7 +619,7 @@ function TriggerConditionEditor({ triggerType, value, onChange }: {
 
   if (triggerType === 'deal.stage_changed') {
     return (
-      <select value={String(parsed.toStage ?? '')} onChange={(e) => set('toStage', e.target.value)} className={INPUT}>
+      <select aria-label="Filter by stage change" value={String(parsed.toStage ?? '')} onChange={(e) => set('toStage', e.target.value)} className={INPUT}>
         <option value="">Any stage change</option>
         {stages.map(s => <option key={s.id} value={s.name}>{s.name}{s.isClosed ? (s.isWon ? ' ✓' : ' ✗') : ''}</option>)}
       </select>
@@ -650,60 +651,78 @@ function ActionConfigEditor({ actionType, value, onChange }: {
 
   if (actionType === 'create_task') return (
     <div className="space-y-1.5">
-      <div><label className={L}>Task title *</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Task title *</span>
         <input className={F} placeholder="e.g. Follow up with lead" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
+      </label>
       </div>
-      <div><label className={L}>Priority</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Priority</span>
         <select className={F} value={String(parsed.priority ?? 'Medium')} onChange={(e) => set('priority', e.target.value)}>
-          {['Low', 'Medium', 'High'].map(p => <option key={p}>{p}</option>)}
-        </select>
+            {['Low', 'Medium', 'High'].map(p => <option key={p}>{p}</option>)}
+          </select>
+      </label>
       </div>
-      <div><label className={L}>Description (optional)</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Description (optional)</span>
         <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" value={String(parsed.description ?? '')} onChange={(e) => set('description', e.target.value)} />
+      </label>
       </div>
     </div>
   );
 
   if (actionType === 'send_notification') return (
     <div className="space-y-1.5">
-      <div><label className={L}>Alert title *</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Alert title *</span>
         <input className={F} placeholder="e.g. Hot lead alert" value={String(parsed.title ?? '')} onChange={(e) => set('title', e.target.value)} />
+      </label>
       </div>
-      <div><label className={L}>Body (optional)</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Body (optional)</span>
         <textarea rows={2} className={F + ' resize-none'} placeholder="Additional details…" value={String(parsed.body ?? '')} onChange={(e) => set('body', e.target.value)} />
+      </label>
       </div>
-      <div><label className={L}>Notify user (optional)</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Notify user (optional)</span>
         <select className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
-          <option value="">All users</option>
-          {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
-        </select>
+            <option value="">All users</option>
+            {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
+          </select>
+      </label>
       </div>
     </div>
   );
 
   if (actionType === 'update_funnel_stage') return (
-    <div><label className={L}>New stage</label>
+    <div><label className="flex flex-col">
+      <span className={L}>New stage</span>
       <select className={F} value={String(parsed.newStage ?? 'Qualified')} onChange={(e) => set('newStage', e.target.value)}>
-        {['Identified', 'Inquiring', 'Qualified', 'Negotiating', 'Closing', 'Customer', 'Repeat', 'Advocate', 'Dormant'].map(s => <option key={s}>{s}</option>)}
-      </select>
+          {['Identified', 'Inquiring', 'Qualified', 'Negotiating', 'Closing', 'Customer', 'Repeat', 'Advocate', 'Dormant'].map(s => <option key={s}>{s}</option>)}
+        </select>
+    </label>
     </div>
   );
 
   if (actionType === 'assign_to_user') return (
-    <div><label className={L}>Assign to *</label>
+    <div><label className="flex flex-col">
+      <span className={L}>Assign to *</span>
       <select className={F} value={String(parsed.userId ?? '')} onChange={(e) => set('userId', e.target.value)}>
-        <option value="">Select team member…</option>
-        {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
-      </select>
+          <option value="">Select team member…</option>
+          {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
+        </select>
+    </label>
     </div>
   );
 
   if (actionType === 'create_nurture_entry') return (
-    <div><label className={L}>Nurture sequence *</label>
+    <div><label className="flex flex-col">
+      <span className={L}>Nurture sequence *</span>
       <select className={F} value={String(parsed.sequenceId ?? '')} onChange={(e) => set('sequenceId', e.target.value)}>
-        <option value="">Select sequence…</option>
-        {sequences.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-      </select>
+          <option value="">Select sequence…</option>
+          {sequences.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+        </select>
+    </label>
     </div>
   );
 
@@ -715,26 +734,34 @@ function ActionConfigEditor({ actionType, value, onChange }: {
     const setMany = (patch: Record<string, unknown>) => onChange(JSON.stringify({ ...parsed, to, ...patch }));
     return (
       <div className="space-y-1.5">
-        <div><label className={L}>Send to *</label>
+        <div><label className="flex flex-col">
+          <span className={L}>Send to *</span>
           <select className={F} value={mode} onChange={(e) => {
-            const v = e.target.value;
-            setMany({ to: v === 'owner' ? 'owner' : v === 'customer' ? 'customer' : '' });
-          }}>
-            <option value="customer">The customer (who triggered it)</option>
-            <option value="owner">The record owner (staff)</option>
-            <option value="custom">A custom address…</option>
-          </select>
+              const v = e.target.value;
+              setMany({ to: v === 'owner' ? 'owner' : v === 'customer' ? 'customer' : '' });
+            }}>
+              <option value="customer">The customer (who triggered it)</option>
+              <option value="owner">The record owner (staff)</option>
+              <option value="custom">A custom address…</option>
+            </select>
+        </label>
         </div>
         {mode === 'custom' && (
-          <div><label className={L}>Email address *</label>
+          <div><label className="flex flex-col">
+            <span className={L}>Email address *</span>
             <input className={F} placeholder="hello@example.com" value={to} onChange={(e) => setMany({ to: e.target.value })} />
+          </label>
           </div>
         )}
-        <div><label className={L}>Subject *</label>
+        <div><label className="flex flex-col">
+          <span className={L}>Subject *</span>
           <input className={F} placeholder="e.g. Thanks for your order!" value={String(parsed.subject ?? '')} onChange={(e) => setMany({ subject: e.target.value })} />
+        </label>
         </div>
-        <div><label className={L}>Message *</label>
+        <div><label className="flex flex-col">
+          <span className={L}>Message *</span>
           <textarea rows={3} className={F + ' resize-none'} placeholder="Your email message…" value={String(parsed.body ?? '')} onChange={(e) => setMany({ body: e.target.value })} />
+        </label>
         </div>
       </div>
     );
@@ -746,9 +773,9 @@ function ActionConfigEditor({ actionType, value, onChange }: {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label className={L}>Score change</label>
-          <span className={`text-[12px] font-bold ${delta >= 0 ? 'text-success' : 'text-danger'}`}>{delta >= 0 ? `+${delta}` : delta}</span>
+          <span className={`text-[12px] font-bold ${delta >= 0 ? 'text-success' : 'text-danger-light'}`}>{delta >= 0 ? `+${delta}` : delta}</span>
         </div>
-        <input type="range" min={-50} max={50} step={5} value={delta}
+        <input aria-label="Delta" type="range" min={-50} max={50} step={5} value={delta}
           onChange={(e) => set('delta', Number(e.target.value))}
           className="nodrag w-full accent-brand cursor-pointer" />
         <p className="text-[9px] text-text-muted">Negative values reduce the score</p>
@@ -758,23 +785,31 @@ function ActionConfigEditor({ actionType, value, onChange }: {
 
   if (actionType === 'create_deal') return (
     <div className="space-y-1.5">
-      <div><label className={L}>Stage</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Stage</span>
         <select className={F} value={String(parsed.stage_name ?? '')} onChange={(e) => set('stage_name', e.target.value)}>
-          <option value="">First open stage (default)</option>
-          {stages.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-        </select>
+            <option value="">First open stage (default)</option>
+            {stages.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
+          </select>
+      </label>
       </div>
-      <div><label className={L}>Assign to (optional)</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Assign to (optional)</span>
         <select className={F} value={String(parsed.assign_to ?? '')} onChange={(e) => set('assign_to', e.target.value)}>
-          <option value="">Lead's assigned owner</option>
-          {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
-        </select>
+            <option value="">Lead's assigned owner</option>
+            {users.map(u => <option key={u.id} value={u.id}>{uLabel(u)}</option>)}
+          </select>
+      </label>
       </div>
-      <div><label className={L}>Deal name (optional)</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Deal name (optional)</span>
         <input className={F} placeholder="Auto-generated if empty" value={String(parsed.deal_name ?? '')} onChange={(e) => set('deal_name', e.target.value)} />
+      </label>
       </div>
-      <div><label className={L}>Amount (optional)</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Amount (optional)</span>
         <input type="number" min={0} className={F} placeholder="Leave blank if unknown" value={parsed.amount != null ? String(parsed.amount) : ''} onChange={(e) => set('amount', e.target.value ? Number(e.target.value) : undefined)} />
+      </label>
       </div>
     </div>
   );
@@ -782,11 +817,13 @@ function ActionConfigEditor({ actionType, value, onChange }: {
   if (actionType === 'start_process') {
     const defs = processDefsQ.data ?? [];
     return (
-      <div><label className={L}>Process Definition *</label>
+      <div><label className="flex flex-col">
+        <span className={L}>Process Definition *</span>
         <select className={F} value={String(parsed.definition_id ?? '')} onChange={(e) => set('definition_id', e.target.value)}>
-          <option value="">Select a process…</option>
-          {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-        </select>
+            <option value="">Select a process…</option>
+            {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+          </select>
+      </label>
         {!processDefsQ.data && <p className="text-[9px] text-text-muted mt-0.5">Loading…</p>}
         {defs.length === 0 && processDefsQ.isSuccess && (
           <p className="text-[9px] text-amber-400 mt-0.5">No process definitions found — create one in Process Flows first.</p>
@@ -826,20 +863,24 @@ function CreateWorkflowForm({ onGenerate }: {
 
         {/* Description */}
         <div>
-          <label className="block text-2xs font-semibold mb-1 text-text-secondary">Description</label>
-          <input value={description} onChange={(e) => setDescription(e.target.value)}
+          <label className="block">
+            <span className="block text-2xs font-semibold mb-1 text-text-secondary">Description</span>
+            <input value={description} onChange={(e) => setDescription(e.target.value)}
             placeholder="What does this workflow do?"
             className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary placeholder:text-text-muted outline-none focus:border-brand" />
+          </label>
         </div>
 
         {/* Trigger Type */}
         <div>
-          <label className="block text-2xs font-semibold mb-1 text-text-secondary">Trigger</label>
-          <select value={triggerType} onChange={(e) => { setTriggerType(e.target.value); setTriggerConditionsJson('{}'); }}
-            className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary outline-none focus:border-brand">
-            {(triggerDefs ?? Object.entries(CRM_WORKFLOW_TRIGGER_LABELS).map(([k, l]) => ({ triggerType: k, displayName: l })))
-              .map((d) => <option key={d.triggerType} value={d.triggerType}>{d.displayName}</option>)}
-          </select>
+          <label className="block">
+            <span className="block text-2xs font-semibold mb-1 text-text-secondary">Trigger</span>
+            <select value={triggerType} onChange={(e) => { setTriggerType(e.target.value); setTriggerConditionsJson('{}'); }}
+              className="nodrag w-full px-2 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg text-text-primary outline-none focus:border-brand">
+              {(triggerDefs ?? Object.entries(CRM_WORKFLOW_TRIGGER_LABELS).map(([k, l]) => ({ triggerType: k, displayName: l })))
+                .map((d) => <option key={d.triggerType} value={d.triggerType}>{d.displayName}</option>)}
+            </select>
+          </label>
         </div>
 
         {/* Trigger Conditions */}
@@ -861,12 +902,12 @@ function CreateWorkflowForm({ onGenerate }: {
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-text-muted font-semibold">Step {s.stepOrder}</span>
                     {steps.length > 1 && (
-                      <button onClick={() => removeStep(i)} className="p-0.5 rounded text-danger hover:bg-danger-soft transition-colors">
+                      <button aria-label="Close" onClick={() => removeStep(i)} className="p-0.5 rounded text-danger-light hover:bg-danger-soft transition-colors">
                         <X className="w-3 h-3" />
                       </button>
                     )}
                   </div>
-                  <select value={s.actionType} onChange={(e) => updateStep(i, { actionType: e.target.value, actionConfigJson: '{}' })}
+                  <select aria-label="Action type" value={s.actionType} onChange={(e) => updateStep(i, { actionType: e.target.value, actionConfigJson: '{}' })}
                     className="nodrag w-full px-2 py-1 border border-border-subtle rounded text-[10px] bg-bg-shell text-text-primary outline-none focus:border-brand">
                     {Object.entries(CRM_WORKFLOW_ACTION_LABELS).map(([k, l]) => (
                       <option key={k} value={k}>{l}</option>
@@ -875,7 +916,7 @@ function CreateWorkflowForm({ onGenerate }: {
                   <ActionConfigEditor actionType={s.actionType} value={s.actionConfigJson ?? '{}'} onChange={(v) => updateStep(i, { actionConfigJson: v })} />
                   <div className="flex items-center gap-1.5 pt-1 border-t border-border-subtle mt-1">
                     <Clock className="w-3 h-3 text-text-muted shrink-0" />
-                    <input type="number" min={0} value={s.delayMinutes ?? 0}
+                    <input aria-label="Delay minutes" type="number" min={0} value={s.delayMinutes ?? 0}
                       onChange={(e) => updateStep(i, { delayMinutes: Number(e.target.value) })}
                       className="nodrag w-14 px-1.5 py-1 border border-border-subtle rounded text-[10px] bg-bg-shell text-text-primary outline-none focus:border-brand" />
                     <span className="text-[9px] text-text-muted">min delay before this step</span>
@@ -934,12 +975,14 @@ function CF({ label, value, onChange, placeholder, hint, type = 'text' }: {
 }) {
   return (
     <div>
-      <label className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</label>
-      <input
+      <label className="block">
+        <span className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</span>
+        <input
         type={type} value={value} onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
       />
+      </label>
       {hint && <p className="text-[10px] text-text-muted mt-1 leading-snug">{hint}</p>}
     </div>
   );
@@ -951,13 +994,15 @@ function CS({ label, value, onChange, options, hint }: {
 }) {
   return (
     <div>
-      <label className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</label>
-      <select
-        value={value} onChange={(e) => onChange(e.target.value)}
-        className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
-      >
-        {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-      </select>
+      <label className="block">
+        <span className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</span>
+        <select
+          value={value} onChange={(e) => onChange(e.target.value)}
+          className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
+        >
+          {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+        </select>
+      </label>
       {hint && <p className="text-[10px] text-text-muted mt-1 leading-snug">{hint}</p>}
     </div>
   );
@@ -968,12 +1013,14 @@ function CArea({ label, value, onChange, placeholder, hint }: {
 }) {
   return (
     <div>
-      <label className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</label>
-      <textarea
+      <label className="block">
+        <span className="block text-2xs font-semibold mb-1 text-text-secondary">{label}</span>
+        <textarea
         value={value} onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder} rows={3}
         className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand resize-none"
       />
+      </label>
       {hint && <p className="text-[10px] text-text-muted mt-1 leading-snug">{hint}</p>}
     </div>
   );
@@ -1051,12 +1098,14 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
 
         {/* Label */}
         <div>
-          <label className="block text-2xs font-semibold mb-1 text-text-secondary">Name</label>
-          <input
+          <label className="block">
+            <span className="block text-2xs font-semibold mb-1 text-text-secondary">Name</span>
+            <input
             value={(node.data.label as string) ?? ''} onChange={(e) => onUpdateNode(node.id, { label: e.target.value })}
             className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
             placeholder="Block label…"
           />
+          </label>
         </div>
 
         {/* Type picker — 2-col grid, same pattern as flow builder node palette */}
@@ -1069,7 +1118,7 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
               {subtypeOpts.map(({ subtype: st, label, Icon, iconBg, iconText }) => {
                 const active = sub === st;
                 return (
-                  <button
+                  <button aria-pressed={active}
                     key={st}
                     onClick={() => changeSubtype(st)}
                     className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-left transition-all border text-[10px] font-medium ${
@@ -1102,11 +1151,13 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
               <div className="space-y-3">
                 {/* Type — disabled display field, mirrors flow builder */}
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input
                     value="Trigger" disabled
                     className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted"
                   />
+                  </label>
                 </div>
                 {/* Free-text description */}
                 <CArea
@@ -1172,9 +1223,11 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
               <div className="space-y-3">
                 {/* Type — disabled display, mirrors flow builder */}
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input value="Action" disabled
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input value="Action" disabled
                     className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  </label>
                 </div>
                 {/* Free-text description */}
                 <CArea
@@ -1261,15 +1314,17 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                   const defs = processDefsQ.data ?? [];
                   return (
                     <div>
-                      <label className="block text-2xs font-semibold mb-1 text-text-secondary">Process Definition *</label>
-                      <select
-                        value={cfg.definition_id ?? ''}
-                        onChange={(e) => sf('definition_id', e.target.value)}
-                        className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
-                      >
-                        <option value="">Select a process…</option>
-                        {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
-                      </select>
+                      <label className="block">
+                        <span className="block text-2xs font-semibold mb-1 text-text-secondary">Process Definition *</span>
+                        <select
+                          value={cfg.definition_id ?? ''}
+                          onChange={(e) => sf('definition_id', e.target.value)}
+                          className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
+                        >
+                          <option value="">Select a process…</option>
+                          {defs.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
+                        </select>
+                      </label>
                       {defs.length === 0 && processDefsQ.isSuccess && (
                         <p className="text-[10px] text-amber-400 mt-1">No process definitions found — create one in Process Flows first.</p>
                       )}
@@ -1283,8 +1338,10 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
             {node.type === 'condition' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input value="Condition" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input value="Condition" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  </label>
                 </div>
                 <CArea label="What is the condition?" value={cfg.description ?? ''}
                   placeholder="Describe the condition in plain language…&#10;e.g. If the lead score is above 80&#10;e.g. If the contact's status is active&#10;e.g. If the deal amount is greater than $10,000"
@@ -1341,9 +1398,11 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
                 {sub === 'wait' && <>
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="block text-2xs font-semibold mb-1 text-text-secondary">Duration</label>
-                      <input type="number" min={0} value={cfg.delayMinutes ?? '0'} onChange={(e) => sf('delayMinutes', e.target.value)} placeholder="0"
+                      <label className="block">
+                        <span className="block text-2xs font-semibold mb-1 text-text-secondary">Duration</span>
+                        <input type="number" min={0} value={cfg.delayMinutes ?? '0'} onChange={(e) => sf('delayMinutes', e.target.value)} placeholder="0"
                         className="nodrag w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand" />
+                      </label>
                     </div>
                     <CS label="Unit" value={cfg.unit ?? 'minutes'} onChange={(v) => sf('unit', v)}
                       options={[{ value: 'minutes', label: 'Minutes' }, { value: 'hours', label: 'Hours' }, { value: 'days', label: 'Days' }]} />
@@ -1363,11 +1422,13 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
             {node.type === 'ai' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input value="AI" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input value="AI" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  </label>
                 </div>
                 <CArea label="What should the AI do?" value={cfg.description ?? ''}
-                  placeholder="Describe the AI task in plain language…&#10;e.g. Classify this lead as Hot, Warm, or Cold&#10;e.g. Write a personalised follow-up email&#10;e.g. Summarise the conversation history in 3 sentences"
+                  placeholder="Describe the AI task in plain language…&#10;e.g. Classify this lead as Hot, Warm, or Cold&#10;e.g. Write a personalised follow-up email&#10;e.g. Summarize the conversation history in 3 sentences"
                   onChange={(v) => sf('description', v)} hint="Write in plain language — be as specific as you need" />
                 <CS label="AI Model Type" value={cfg.aiType ?? 'generate'} onChange={(v) => sf('aiType', v)}
                   options={[
@@ -1420,8 +1481,10 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
             {node.type === 'api' && (
               <div className="space-y-3">
                 <div>
-                  <label className="block text-2xs font-semibold mb-1 text-text-secondary">Type</label>
-                  <input value="API" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  <label className="block">
+                    <span className="block text-2xs font-semibold mb-1 text-text-secondary">Type</span>
+                    <input value="API" disabled className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-glass-1 text-text-muted" />
+                  </label>
                 </div>
                 <CArea label="What does this API call do?" value={cfg.description ?? ''}
                   placeholder="Describe the API call in plain language…&#10;e.g. Fetch the contact's subscription plan from Stripe&#10;e.g. Send a Slack message to the sales channel&#10;e.g. Create a record in the billing system"
@@ -1472,12 +1535,12 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
 
         {/* Delete — exact flow builder style */}
         {!isFixed && (
-          <button
+          <Button
             onClick={() => onDelete(node.id)}
-            className="w-full py-2 rounded-lg bg-danger-soft text-2xs font-semibold text-danger flex items-center justify-center gap-1.5"
+            variant="danger" block
           >
             <Trash2 className="w-3 h-3" /> Remove Block
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -1504,7 +1567,7 @@ function HistoryTab({ workflowId }: { workflowId: string | null }) {
     </div>
   );
 
-  const STATUS_COLOR: Record<number, string> = { 1:'text-text-muted', 2:'text-brand', 3:'text-success', 4:'text-danger', 5:'text-text-muted' };
+  const STATUS_COLOR: Record<number, string> = { 1:'text-text-muted', 2:'text-brand', 3:'text-success', 4:'text-danger-light', 5:'text-text-muted' };
   const STATUS_BG:    Record<number, string> = { 1:'bg-bg-elevated', 2:'bg-brand-soft', 3:'bg-success-soft', 4:'bg-danger-soft', 5:'bg-bg-elevated' };
 
   return (
@@ -1520,7 +1583,7 @@ function HistoryTab({ workflowId }: { workflowId: string | null }) {
             </span>
           </div>
           {ex.errorMessage ? (
-            <p className="text-[10px] text-danger truncate">{String(ex.errorMessage)}</p>
+            <p className="text-[10px] text-danger-light truncate">{String(ex.errorMessage)}</p>
           ) : null}
         </div>
       ))}
@@ -1680,7 +1743,7 @@ function WorkflowChatWidget({
         </span>
 
         {/* Input */}
-        <input
+        <input aria-label="Input"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKey}
@@ -1688,11 +1751,11 @@ function WorkflowChatWidget({
             ? 'Describe a change… e.g. "Add a 1-day wait before the task"'
             : 'Describe your workflow… e.g. "When a deal closes, send email to contact"'}
           disabled={loading}
-          className="nodrag nopan flex-1 min-w-0 bg-transparent text-[12px] text-text-primary placeholder:text-text-muted focus:outline-none disabled:opacity-50"
+          className="nodrag nopan flex-1 min-w-0 bg-transparent text-[12px] text-text-primary placeholder:text-text-muted focus:outline-none disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-brand/60"
         />
 
         {/* Send button */}
-        <button
+        <button aria-label="Send"
           onClick={handleSend}
           disabled={!input.trim() || loading}
           className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all disabled:opacity-30"
@@ -1948,7 +2011,7 @@ function WorkflowBuilder({ workflow, onBack }: { workflow: CrmWorkflowSummaryDto
             <span className="text-2xs font-bold text-text-muted uppercase tracking-wider hidden sm:block">Workflow Builder</span>
           </div>
 
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Workflow name…"
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Workflow name…" aria-label="Workflow name…"
             className="flex-1 min-w-0 px-3 py-1.5 rounded-lg text-sm font-semibold text-text-primary placeholder:text-text-muted focus:outline-none bg-transparent border border-border-subtle focus:border-brand"
           />
 
@@ -1975,12 +2038,12 @@ function WorkflowBuilder({ workflow, onBack }: { workflow: CrmWorkflowSummaryDto
           </button>
 
           {/* Active toggle */}
-          <button onClick={() => setIsActive((v) => !v)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-2xs font-semibold transition-all shrink-0"
+          <Button onClick={() => setIsActive((v) => !v)}
+            variant="ghost" size="sm" className="shrink-0"
             style={{ background: isActive ? 'rgb(var(--brand-rgb) / 0.08)' : 'transparent', border: `1px solid ${isActive ? 'rgb(var(--brand-rgb) / 0.25)' : 'rgb(var(--color-border-subtle))'}`, color: isActive ? 'rgb(var(--brand-rgb))' : 'rgb(var(--color-text-muted))' }}>
             {isActive ? <ToggleRight className="w-3.5 h-3.5" strokeWidth={1.8} /> : <ToggleLeft className="w-3.5 h-3.5" strokeWidth={1.8} />}
             {isActive ? 'Active' : 'Paused'}
-          </button>
+          </Button>
 
           {/* Save */}
           <button onClick={handleSave} disabled={isSaving || !name.trim()}
@@ -2087,11 +2150,11 @@ function WorkflowCard({ wf, onOpen, onRun, onDelete, onToggle }: {
           </button>
           {confirmDel ? (
             <div className="flex items-center gap-1">
-              <button onClick={onDelete} className="px-2 py-0.5 rounded text-[10px] font-bold bg-danger-soft text-danger border border-danger/20">Delete</button>
+              <button onClick={onDelete} className="px-2 py-0.5 rounded text-[10px] font-bold bg-danger-soft text-danger-light border border-danger/20">Delete</button>
               <button onClick={() => setConfirmDel(false)} className="text-[10px] text-text-muted px-1">✕</button>
             </div>
           ) : (
-            <button onClick={() => setConfirmDel(true)} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all">
+            <button aria-label="Delete" onClick={() => setConfirmDel(true)} className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all">
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
             </button>
           )}
@@ -2118,10 +2181,10 @@ export function Component() {
           <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Workflows</h2>
           <p className="text-xs text-text-muted mt-0.5">Automate CRM actions triggered by events</p>
         </div>
-        <button onClick={() => setBuilderTarget('new')}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setBuilderTarget('new')}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Workflow
-        </button>
+        </Button>
       </div>
 
       <div className="flex items-center gap-2">

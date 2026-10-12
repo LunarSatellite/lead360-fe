@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Loader2, Users, X } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
+import { Button } from '@/shared/ui/primitives';
 
 type Kind = 'squad' | 'retainer';
 
@@ -84,27 +85,27 @@ export function VendorCollaborationDialog({
         <div className="mt-6 space-y-4">
           {kind === 'squad' ? (
             <>
-              <Input label="Squad name" value={name} onChange={setName} />
-              <Input label="Commercial brief ID" value={briefId} onChange={setBriefId} mono />
-              <Input label="Budget total" value={amount} onChange={setAmount} type="number" suffix="CDF" />
+              <Input aria-label="Name" label="Squad name" value={name} onChange={setName} />
+              <Input aria-label="Brief ID" label="Commercial brief ID" value={briefId} onChange={setBriefId} mono />
+              <Input aria-label="Amount" label="Budget total" value={amount} onChange={setAmount} type="number" suffix="CDF" />
             </>
           ) : (
             <>
-              <Input label="Creator account ID" value={creatorAccountId} onChange={setCreatorAccountId} mono />
-              <Input label="Montant mensuel" value={amount} onChange={setAmount} type="number" suffix="CDF" />
-              <Input label="Deliverables per month" value={deliverables} onChange={setDeliverables} type="number" />
+              <Input aria-label="Creator account ID" label="Creator account ID" value={creatorAccountId} onChange={setCreatorAccountId} mono />
+              <Input aria-label="Amount" label="Monthly amount" value={amount} onChange={setAmount} type="number" suffix="CDF" />
+              <Input aria-label="Deliverables" label="Deliverables per month" value={deliverables} onChange={setDeliverables} type="number" />
             </>
           )}
         </div>
-        {error && <p className="mt-4 rounded-xl border border-danger/20 bg-danger/5 p-3 text-xs font-semibold text-danger">{error}</p>}
+        {error && <p className="mt-4 rounded-xl border border-danger/20 bg-danger/5 p-3 text-xs font-semibold text-danger-light">{error}</p>}
         <div className="mt-6 flex justify-end gap-2">
-          <button type="button" onClick={onClose} className="rounded-xl border border-border-subtle px-4 py-2.5 text-xs font-bold text-text-secondary">
+          <Button type="button" onClick={onClose} variant="secondary" size="lg">
             Cancel
-          </button>
-          <button disabled={!valid || save.isPending} className="flex items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40">
+          </Button>
+          <Button disabled={!valid || save.isPending} variant="primary" size="lg">
             {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {kind === 'squad' ? "Create squad" : 'Propose contract'}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

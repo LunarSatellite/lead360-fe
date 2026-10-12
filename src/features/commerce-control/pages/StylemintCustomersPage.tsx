@@ -15,6 +15,7 @@ import {
 import { stylemintCommerceApi, type StylemintCustomer } from '../api/stylemint-commerce.api';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function StylemintCustomersPage() {
   const { user } = useAuth();
@@ -64,7 +65,7 @@ export function StylemintCustomersPage() {
         <ShieldCheck className="mx-auto h-9 w-9 text-amber-400" />
         <h1 className="mt-4 text-xl font-black text-text-primary">Owner access required</h1>
         <p className="mt-2 text-sm leading-6 text-text-muted">
-          Les donnees clients et la suspension des comptes sont reservees au proprietaire Kin Marche.
+          Customer data and account suspension are restricted to the Kin Marche owner.
         </p>
       </div>
     );
@@ -86,7 +87,7 @@ export function StylemintCustomersPage() {
           onClick={() => query.refetch()}
           className="flex items-center gap-2 rounded-xl border border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${query.isFetching ? 'animate-spin' : ''}`} /> Actualiser
+          <RefreshCw className={`h-3.5 w-3.5 ${query.isFetching ? 'animate-spin' : ''}`} /> Refresh
         </button>
       </div>
 
@@ -112,7 +113,7 @@ export function StylemintCustomersPage() {
             className="w-full bg-transparent py-2.5 text-sm text-text-primary outline-none placeholder:text-text-muted"
           />
         </label>
-        <select
+        <select aria-label="Filter by status"
           value={status}
           onChange={(event) => setStatus(event.target.value)}
           className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm font-semibold text-text-secondary outline-none"
@@ -122,7 +123,7 @@ export function StylemintCustomersPage() {
           <option value="2">Suspendus</option>
           <option value="3">Desactives</option>
         </select>
-        <button className="rounded-xl bg-brand px-5 py-2 text-xs font-extrabold text-bg">Search</button>
+        <Button variant="primary" size="lg">Search</Button>
       </form>
 
       <div className="overflow-hidden rounded-2xl border border-border-subtle bg-bg-card">
@@ -135,7 +136,7 @@ export function StylemintCustomersPage() {
             <Users className="h-8 w-8 text-amber-400" />
             <p className="font-bold text-text-primary">Customer administration unavailable</p>
             <p className="max-w-lg text-xs leading-5 text-text-muted">
-              Le jeton Lead360 doit avoir le role administrateur Stylemint pour consulter les clients.
+              The Lead360 token needs the Stylemint administrator role to read customers.
             </p>
           </div>
         ) : !customers.length ? (
@@ -240,31 +241,31 @@ export function StylemintCustomersPage() {
               <Row label="Created" value={new Date(selected.createdUtc).toLocaleDateString('fr-CD')} />
             </div>
             {selected.status === 1 ? (
-              <button
+              <Button
                 disabled={stateAction.isPending}
                 onClick={() => stateAction.mutate({ customer: selected, action: 'suspend' })}
-                className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl border border-danger/25 bg-danger-soft py-3 text-sm font-bold text-danger disabled:opacity-50"
+                variant="danger" size="lg" block className="mt-7"
               >
                 {stateAction.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Ban className="h-4 w-4" />
                 )}{' '}
-                Suspendre le compte
-              </button>
+                Suspend account
+              </Button>
             ) : selected.status === 2 ? (
-              <button
+              <Button
                 disabled={stateAction.isPending}
                 onClick={() => stateAction.mutate({ customer: selected, action: 'reinstate' })}
-                className="mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-brand py-3 text-sm font-extrabold text-bg disabled:opacity-50"
+                variant="primary" size="lg" block className="mt-7"
               >
                 {stateAction.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <CheckCircle2 className="h-4 w-4" />
                 )}{' '}
-                Reactiver le compte
-              </button>
+                Reinstate account
+              </Button>
             ) : null}
           </aside>
         </div>
@@ -292,7 +293,7 @@ function Status({ status }: { status: number }) {
   const label = status === 1 ? 'Actif' : status === 2 ? 'Suspendu' : status === 3 ? 'Desactive' : 'Ferme';
   return (
     <span
-      className={`rounded-full border px-2.5 py-1 text-[10px] font-extrabold ${status === 1 ? 'border-success/25 bg-success-soft text-success' : 'border-danger/25 bg-danger-soft text-danger'}`}
+      className={`rounded-full border px-2.5 py-1 text-[10px] font-extrabold ${status === 1 ? 'border-success/25 bg-success-soft text-success' : 'border-danger/25 bg-danger-soft text-danger-light'}`}
     >
       {label}
     </span>

@@ -3,6 +3,7 @@ import { Loader2, Send, MessageSquare, AtSign } from 'lucide-react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { useComments, useAddComment } from '../api/crm.queries';
 import { useTeamMembers } from '@/features/team/api/team.queries';
+import { Button } from '@/shared/ui/primitives';
 
 function userLabel(u: { firstName: string | null; lastName: string | null; fullName: string | null; email: string | null }) {
   return u.fullName || [u.firstName, u.lastName].filter(Boolean).join(' ') || u.email || 'Unknown';
@@ -106,7 +107,7 @@ export function CommentsPanel({ kind, entityId }: { kind: number; entityId: stri
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Write a comment…"
+          placeholder="Write a comment…" aria-label="Write a comment…"
           rows={2}
           className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium resize-none"
         />
@@ -130,14 +131,14 @@ export function CommentsPanel({ kind, entityId }: { kind: number; entityId: stri
           </div>
         )}
         <div className="flex justify-end">
-          <button
+          <Button
             onClick={submit}
             disabled={!text.trim() || addComment.isPending}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-white text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all"
+            variant="primary"
           >
             {addComment.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Comment
-          </button>
+          </Button>
         </div>
       </div>
     </div>

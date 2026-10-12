@@ -28,6 +28,7 @@ import {
 } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow } from 'date-fns';
+import { Button, ListState, ResultCount } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -69,7 +70,7 @@ function ContactCard({
       {/* Avatar + source badge */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <button
+          <button aria-pressed={selected}
             onClick={(e) => { e.stopPropagation(); onToggle(); }}
             className={`w-5 h-5 rounded-[5px] border flex items-center justify-center transition-all shrink-0 ${
               selected ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'
@@ -112,7 +113,7 @@ function ContactCard({
             <button
               onClick={() => onDeleteConfirm(c.id)}
               disabled={isDeleting}
-              className="px-1.5 py-0.5 rounded-xs text-[10px] font-semibold bg-danger-soft text-danger border-thin border-danger/20 hover:bg-danger hover:text-bg transition-all disabled:opacity-50"
+              className="px-1.5 py-0.5 rounded-xs text-[10px] font-semibold bg-danger-soft text-danger-light border-thin border-danger/20 hover:bg-danger hover:text-bg transition-all disabled:opacity-50"
             >
               {isDeleting ? <Loader2 className="w-2.5 h-2.5 animate-spin" /> : 'Delete'}
             </button>
@@ -124,9 +125,9 @@ function ContactCard({
             </button>
           </div>
         ) : (
-          <button
+          <button aria-label="Delete"
             onClick={() => onDeleteRequest(c.id)}
-            className="p-1 rounded-xs text-text-muted opacity-0 group-hover:opacity-100 hover:text-danger hover:bg-danger-soft transition-all"
+            className="p-1 rounded-xs text-text-muted opacity-0 group-hover:opacity-100 hover:text-danger-light hover:bg-danger-soft transition-all"
           >
             <Trash2 className="w-3 h-3" strokeWidth={1.5} />
           </button>
@@ -173,7 +174,7 @@ function Modal({
             >New Contact</h2>
             <p className="text-xs text-text-muted mt-0.5">Add a new contact to your CRM</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -250,62 +251,74 @@ function ContactCreateForm({
       {/* Full Name + Phone — two columns */}
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Full Name *</label>
-          <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input required value={form.fullName} onChange={set('fullName')} placeholder="Jane Smith" className={fieldCls} style={fieldStyle} />
-          </div>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Full Name *</span>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input required value={form.fullName} onChange={set('fullName')} placeholder="Jane Smith" className={fieldCls} style={fieldStyle} />
+            </div>
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Phone</label>
-          <div className="relative">
-            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.phone} onChange={set('phone')} placeholder="+1 555 000 0000" className={fieldCls} style={fieldStyle} />
-          </div>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Phone</span>
+            <div className="relative">
+              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+              <input value={form.phone} onChange={set('phone')} placeholder="+1 555 000 0000" className={fieldCls} style={fieldStyle} />
+            </div>
+          </label>
         </div>
       </div>
 
       {/* Email */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
-        <div className="relative">
-          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <input type="email" value={form.email} onChange={set('email')} placeholder="jane@company.com" className={fieldCls} style={fieldStyle} />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Email</span>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input type="email" value={form.email} onChange={set('email')} placeholder="jane@company.com" className={fieldCls} style={fieldStyle} />
+          </div>
+        </label>
       </div>
 
       {/* Job Title */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Job Title</label>
-        <div className="relative">
-          <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <input value={form.jobTitle} onChange={set('jobTitle')} placeholder="VP of Sales" className={fieldCls} style={fieldStyle} />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Job Title</span>
+          <div className="relative">
+            <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.jobTitle} onChange={set('jobTitle')} placeholder="VP of Sales" className={fieldCls} style={fieldStyle} />
+          </div>
+        </label>
       </div>
 
       {/* LinkedIn */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">LinkedIn URL</label>
-        <div className="relative">
-          <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <input value={form.linkedIn} onChange={set('linkedIn')} placeholder="https://linkedin.com/in/..." className={fieldCls} style={fieldStyle} />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">LinkedIn URL</span>
+          <div className="relative">
+            <Link className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <input value={form.linkedIn} onChange={set('linkedIn')} placeholder="https://linkedin.com/in/..." className={fieldCls} style={fieldStyle} />
+          </div>
+        </label>
       </div>
 
       {/* Notes */}
       <div>
-        <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-        <div className="relative">
-          <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-          <textarea
-            rows={3}
-            value={form.notes}
-            onChange={set('notes')}
-            placeholder="Any additional context..."
-            className={`${fieldCls} resize-none`}
-            style={fieldStyle}
-          />
-        </div>
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
+          <div className="relative">
+            <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+            <textarea
+              rows={3}
+              value={form.notes}
+              onChange={set('notes')}
+              placeholder="Any additional context..."
+              className={`${fieldCls} resize-none`}
+              style={fieldStyle}
+            />
+          </div>
+        </label>
       </div>
 
       {hasDupes && (
@@ -317,20 +330,20 @@ function ContactCreateForm({
       )}
 
       <div className="flex gap-3 pt-2">
-        <button
+        <Button
           type="submit"
           disabled={isSaving || !form.fullName.trim() || hasDupes}
-          className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          variant="primary" className="flex-1"
         >
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : hasDupes ? 'Review duplicates above' : 'Create Contact'}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -363,7 +376,8 @@ export function Component() {
 
   const dedupCount = usePendingDedupCount();
 
-  const { data: raw, isLoading } = useContacts(filter);
+  const contactsQuery = useContacts(filter);
+  const { data: raw } = contactsQuery;
   const data = raw;
 
   const createContact = useCreateContact();
@@ -459,7 +473,7 @@ export function Component() {
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Contacts</h2>
             <p className="text-xs text-text-muted mt-0.5">
-              {data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}
+              <ResultCount query={contactsQuery} total={data?.totalCount} />
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -472,12 +486,12 @@ export function Component() {
               }}
               isImporting={importCsv.isPending}
             />
-            <button
+            <Button
               onClick={() => setShowCreate(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+              variant="primary"
             >
               <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Contact
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -531,11 +545,11 @@ export function Component() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, email or phone..."
+              placeholder="Search by name, email or phone..." aria-label="Search by name, email or phone..."
               className="w-full pl-9 pr-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium"
             />
           </div>
-          <select
+          <select aria-label="Filter by source"
             value={sourceFilter}
             onChange={(e) => setSourceFilter(e.target.value)}
             className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium"
@@ -545,25 +559,22 @@ export function Component() {
               <option key={k} value={k}>{label}</option>
             ))}
           </select>
-          <button
+          <Button
             type="submit"
-            className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all"
+            variant="secondary"
           >
             Search
-          </button>
+          </Button>
         </form>
 
         {/* Card grid */}
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48 text-text-muted">
-            <Loader2 className="w-5 h-5 animate-spin" />
-          </div>
-        ) : !data?.items.length ? (
-          <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-            <UserCheck className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No contacts found</p>
-          </div>
-        ) : (
+        <ListState
+          query={contactsQuery}
+          isEmpty={!data?.items.length}
+          noun="contacts"
+          icon={UserCheck}
+          emptyTitle="No contacts found"
+        >
           <>
             <div className="flex items-center gap-3 -mb-1">
               <button
@@ -602,7 +613,7 @@ export function Component() {
               ))}
             </div>
           </>
-        )}
+        </ListState>
 
         {/* Bulk action bar */}
         {selected.size > 0 && (
@@ -638,17 +649,17 @@ export function Component() {
             <button
               onClick={runBulkDelete}
               disabled={bulkDelete.isPending}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger-light border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
             >
               {bulkDelete.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
               Delete
             </button>
-            <button
+            <Button
               onClick={clearSelection}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+              variant="ghost" size="sm"
             >
               <X className="w-3.5 h-3.5" /> Clear
-            </button>
+            </Button>
           </div>
         )}
 

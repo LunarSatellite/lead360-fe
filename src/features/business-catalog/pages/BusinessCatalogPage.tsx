@@ -11,6 +11,7 @@ import { ItemListSection } from '../components/ItemListSection';
 import { TransactionListSection } from '../components/TransactionListSection';
 import { CatalogImportDialog } from '../components/CatalogImportDialog';
 import type { BusinessProfile, CatalogCategory } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 type Tab = 'profile' | 'catalog' | 'inbox';
 
@@ -82,14 +83,14 @@ export function BusinessCatalogPage() {
         <div className="space-y-5">
           {!selectedCategory && (
             <div className="flex justify-end">
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowImport(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold border border-border-subtle text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+                variant="secondary" size="sm"
               >
                 <FileUp className="w-3.5 h-3.5" strokeWidth={2.2} />
                 Bulk import CSV
-              </button>
+              </Button>
             </div>
           )}
           {selectedCategory ? (

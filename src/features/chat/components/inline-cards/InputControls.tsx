@@ -10,6 +10,7 @@ import type {
   DateCard,
   ButtonRowCard,
 } from '../../types/chat.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ControlProps<T> {
   card: T;
@@ -104,22 +105,22 @@ function FreeTextControl({ card, onSubmit, consumed }: ControlProps<FreeTextCard
 
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          {error && <p className="text-[11px] text-danger">{error}</p>}
+          {error && <p className="text-[11px] text-danger-light">{error}</p>}
           {card.maxLength && (
             <p className="text-[11px] text-text-muted">
               {value.length}/{card.maxLength}
             </p>
           )}
         </div>
-        <button
+        <Button
           type="button"
           onClick={handleSubmit}
           disabled={consumed}
-          className="flex items-center gap-1.5 px-4 py-1.5 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light disabled:opacity-30 transition-all"
+          variant="primary"
         >
           <Check className="w-3.5 h-3.5" strokeWidth={2.2} />
           Submit
-        </button>
+        </Button>
       </div>
       {isMultiline && !consumed && <p className="text-[10px] text-text-muted">Cmd/Ctrl + Enter to submit</p>}
     </div>
@@ -240,7 +241,7 @@ function RadioControl({ card, onSubmit, consumed }: ControlProps<RadioCard>) {
                     setOtherText(e.target.value);
                     setError(null);
                   }}
-                  placeholder="Describe your answer…"
+                  placeholder="Describe your answer…" aria-label="Describe your answer…"
                   autoFocus
                   className="w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm"
                 />
@@ -256,13 +257,13 @@ function RadioControl({ card, onSubmit, consumed }: ControlProps<RadioCard>) {
         </p>
       )}
 
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
-        className="self-end px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+        variant="primary" className="self-end"
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
@@ -341,7 +342,7 @@ function DropdownControl({ card, onSubmit, consumed }: ControlProps<DropdownCard
               setOtherText(e.target.value);
               setError(null);
             }}
-            placeholder="Describe your answer…"
+            placeholder="Describe your answer…" aria-label="Describe your answer…"
             autoFocus
             className="mt-2 w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm"
           />
@@ -354,13 +355,13 @@ function DropdownControl({ card, onSubmit, consumed }: ControlProps<DropdownCard
         </p>
       )}
 
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
-        className="self-end px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+        variant="primary" className="self-end"
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
@@ -497,7 +498,7 @@ function MultiSelectControl({ card, onSubmit, consumed }: ControlProps<MultiSele
                   type="text"
                   value={otherText}
                   onChange={(e) => { setOtherText(e.target.value); setError(null); }}
-                  placeholder="Describe your answer…"
+                  placeholder="Describe your answer…" aria-label="Describe your answer…"
                   autoFocus
                   className="w-full px-3.5 py-2.5 rounded-sm bg-glass-1 border border-border-medium text-text-primary placeholder:text-text-muted focus:border-border-glow outline-none transition-all text-sm"
                 />
@@ -514,13 +515,13 @@ function MultiSelectControl({ card, onSubmit, consumed }: ControlProps<MultiSele
             {error}
           </span>
         )}
-        <button
+        <Button
           type="button"
           onClick={handleSubmit}
-          className="px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+          variant="primary"
         >
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -608,13 +609,13 @@ function SliderControl({ card, onSubmit, consumed }: ControlProps<SliderCard>) {
         </span>
       </div>
 
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
-        className="self-end px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+        variant="primary" className="self-end"
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
@@ -663,13 +664,13 @@ function DateControl({ card, onSubmit, consumed }: ControlProps<DateCard>) {
         </p>
       )}
 
-      <button
+      <Button
         type="button"
         onClick={handleSubmit}
-        className="self-end px-4 py-2 rounded-sm bg-brand text-bg text-xs font-bold hover:bg-brand-light transition-all"
+        variant="primary" className="self-end"
       >
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
@@ -685,7 +686,7 @@ function buttonRowClass(style: string): string {
     case 'ghost':
       return 'border-thin border-border-medium text-text-secondary hover:text-text-primary hover:bg-glass-2';
     case 'danger':
-      return 'bg-danger/[0.06] text-danger hover:bg-danger/15';
+      return 'bg-danger/[0.06] text-danger-light hover:bg-danger/15';
     default:
       return 'bg-glass-2 border-thin border-border-medium text-text-primary hover:bg-glass-3';
   }

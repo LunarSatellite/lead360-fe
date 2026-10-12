@@ -4,6 +4,7 @@ import { Plus, X, Loader2, Trash2, Pencil } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 const RULES_KEY = ['crm', 'scoring-rules'] as const;
 
@@ -49,10 +50,10 @@ export function Component() {
           <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Lead Scoring Rules</h1>
           <p className="text-sm text-text-secondary mt-1">Define events and their point values.When a trigger event occurs,the lead's score increases automatically.At 50+ points, the lead is promoted to MQL and auto-assigned.</p>
         </div>
-        <button onClick={() => { setEditId(null); setForm({ eventType: '', label: '', points: 10 }); setShowForm(true); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => { setEditId(null); setForm({ eventType: '', label: '', points: 10 }); setShowForm(true); }}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> New rule
-        </button>
+        </Button>
       </div>
 
       <div className="overflow-x-auto rounded-card border-thin border-border-subtle">
@@ -73,12 +74,12 @@ export function Component() {
               <tr key={r.id} className="border-t border-border-subtle hover:bg-glass-1">
                 <td className="px-4 py-3 text-xs font-mono font-semibold text-brand">{r.eventType}</td>
                 <td className="px-4 py-3 text-sm text-text-primary">{r.label || '—'}</td>
-                <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-xs font-bold ${r.points > 0 ? 'text-success bg-success-soft' : 'text-danger bg-danger-soft'}`}>{r.points > 0 ? '+' : ''}{r.points}</span></td>
+                <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-xs font-bold ${r.points > 0 ? 'text-success bg-success-soft' : 'text-danger-light bg-danger-soft'}`}>{r.points > 0 ? '+' : ''}{r.points}</span></td>
                 <td className="px-4 py-3"><span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${r.isActive ? 'text-success border-success/30 bg-success-soft' : 'text-text-muted border-border-medium bg-glass-2'}`}>{r.isActive ? 'Active' : 'Inactive'}</span></td>
                 <td className="px-4 py-3">
                   <div className="flex gap-2">
-                    <button onClick={() => openEdit(r)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                    <button onClick={() => deleteMut.mutate(r.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Edit" onClick={() => openEdit(r)} className="p-1 text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
+                    <button aria-label="Delete" onClick={() => deleteMut.mutate(r.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </td>
               </tr>
@@ -127,15 +128,16 @@ export function Component() {
                 </h2>
                 <p className="text-xs text-text-muted mt-0.5">Define an event and its point value</p>
               </div>
-              <button type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" type="button" onClick={() => { setShowForm(false); setEditId(null); }} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
             <div className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
               {/* Event type */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Event type</label>
-                <input
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Event type</span>
+                  <input
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. email_opened"
@@ -143,46 +145,51 @@ export function Component() {
                   onChange={e => setForm(f => ({ ...f, eventType: e.target.value }))}
                   required
                 />
+                </label>
               </div>
               {/* Label */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Label</label>
-                <input
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Label</span>
+                  <input
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   placeholder="e.g. Email Opened"
                   value={form.label}
                   onChange={e => setForm(f => ({ ...f, label: e.target.value }))}
                 />
+                </label>
               </div>
               {/* Points */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Points</label>
-                <input
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Points</span>
+                  <input
                   type="number"
                   className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                   value={form.points}
                   onChange={e => setForm(f => ({ ...f, points: Number(e.target.value) }))}
                 />
+                </label>
               </div>
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-              <button
+              <Button
                 type="button"
                 onClick={() => { setShowForm(false); setEditId(null); }}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={createMut.isPending || updateMut.isPending || !form.eventType.trim()}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 <Plus className="w-3.5 h-3.5" />
                 {editId ? 'Update' : 'Create'}
-              </button>
+              </Button>
             </div>
           </form>
         </div>,

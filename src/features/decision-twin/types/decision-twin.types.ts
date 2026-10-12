@@ -70,7 +70,7 @@ export interface SimulationReproducibility {
   reRunInstruction: string;
 }
 
-export type SimulatedChangeKind = 'Search' | 'Pricing' | 'Promotion' | 'Fulfilment' | 'Policy';
+export type SimulatedChangeKind = 'Search' | 'Pricing' | 'Promotion' | 'Fulfillment' | 'Policy';
 
 export interface SimulatedChange {
   kind: SimulatedChangeKind;

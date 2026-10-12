@@ -20,6 +20,7 @@ import {
   type CampaignReviewGateValue,
 } from '../api/stylemint-campaign-workspaces.api';
 import { ReportPanel } from './ReportPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Campaign workspaces: the brand-studio pipeline from brief to live campaign.
@@ -70,9 +71,9 @@ export function CampaignWorkspacesTab() {
         <p className="text-xs text-text-muted">
           Brief to live campaign: configure, approve, activate, generate, review, measure.
         </p>
-        <button
+        <Button
           onClick={() => setCreating((v) => !v)}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+          variant="primary" size="sm"
         >
           {creating ? (
             <X className="h-3.5 w-3.5" strokeWidth={1.6} />
@@ -80,7 +81,7 @@ export function CampaignWorkspacesTab() {
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           {creating ? 'Cancel' : 'New workspace'}
-        </button>
+        </Button>
       </div>
 
       {creating && (
@@ -119,16 +120,16 @@ export function CampaignWorkspacesTab() {
           <input
             value={workspaceId}
             onChange={(e) => setWorkspaceId(e.target.value)}
-            placeholder="Workspace id from the list above"
+            placeholder="Workspace id from the list above" aria-label="Workspace id from the list above"
             className={`${field} flex-1 font-mono`}
           />
-          <button
+          <Button
             disabled={!workspaceId.trim()}
             onClick={() => setOpen(workspaceId.trim())}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary"
           >
             <Search className="h-3.5 w-3.5" strokeWidth={1.6} /> Open
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -181,13 +182,13 @@ function CreateForm({
         <input
           value={brandBriefId}
           onChange={(e) => setBrandBriefId(e.target.value)}
-          placeholder="Brand brief id"
+          placeholder="Brand brief id" aria-label="Brand brief id"
           className={`${field} font-mono sm:col-span-2`}
         />
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Name"
+          placeholder="Name" aria-label="Name"
           className={field}
         />
         <div className="flex gap-1.5">
@@ -197,20 +198,20 @@ function CreateForm({
             step="any"
             value={budget}
             onChange={(e) => setBudget(e.target.value)}
-            placeholder="Budget"
+            placeholder="Budget" aria-label="Budget"
             className={field}
           />
-          <input
+          <input aria-label="Currency"
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
             className={`${field} w-20`}
           />
         </div>
       </div>
-      <button
+      <Button
         disabled={!ready || create.isPending}
         onClick={() => create.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {create.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -218,7 +219,7 @@ function CreateForm({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Open workspace
-      </button>
+      </Button>
     </div>
   );
 }
@@ -280,52 +281,52 @@ function WorkspaceDetail({
         <span className="mr-1 text-[11px] font-bold uppercase tracking-wide text-text-secondary">
           Pipeline
         </span>
-        <button
+        <Button
           disabled={step.isPending}
           onClick={() => step.mutate('approve')}
-          className="rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           Approve
-        </button>
+        </Button>
         {confirmingActivate ? (
           <>
             <span className="text-[11px] text-amber-300">
               This puts the campaign in front of shoppers and starts spending the budget.
             </span>
-            <button
+            <Button
               disabled={step.isPending}
               onClick={() => {
                 setConfirmingActivate(false);
                 step.mutate('activate');
               }}
-              className="flex items-center gap-1 rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {step.isPending && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
               Yes, activate
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setConfirmingActivate(false)}
-              className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </>
         ) : (
-          <button
+          <Button
             disabled={step.isPending}
             onClick={() => setConfirmingActivate(true)}
-            className="flex items-center gap-1 rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             <Rocket className="h-3 w-3" strokeWidth={1.6} /> Activate
-          </button>
+          </Button>
         )}
-        <button
+        <Button
           disabled={step.isPending}
           onClick={() => step.mutate('refreshOutcome')}
-          className="rounded-sm border-thin border-border-medium px-2.5 py-1 text-[11px] font-bold text-text-secondary hover:bg-glass-2 disabled:opacity-40"
+          variant="secondary" size="sm"
         >
           Re-read outcome
-        </button>
+        </Button>
       </div>
 
       <ConfigureForm
@@ -407,10 +408,10 @@ function ConfigureForm({
         <JsonField label="Channels" value={channels} onChange={setChannels} />
         <JsonField label="Experiment" value={experiment} onChange={setExperiment} />
       </div>
-      <button
+      <Button
         disabled={!valid || configure.isPending}
         onClick={() => configure.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {configure.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -418,7 +419,7 @@ function ConfigureForm({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Save configuration
-      </button>
+      </Button>
     </div>
   );
 }
@@ -462,7 +463,7 @@ function GenerateForm({
         every review gate it was routed to.
       </p>
       <div className="mt-2 grid gap-2 sm:grid-cols-4">
-        <select
+        <select aria-label="Kind"
           value={kind}
           onChange={(e) => setKind(Number(e.target.value) as CampaignCreativeKindValue)}
           className={field}
@@ -476,13 +477,13 @@ function GenerateForm({
         <input
           value={channel}
           onChange={(e) => setChannel(e.target.value)}
-          placeholder="Channel"
+          placeholder="Channel" aria-label="Channel"
           className={field}
         />
         <input
           value={locale}
           onChange={(e) => setLocale(e.target.value)}
-          placeholder="Locale"
+          placeholder="Locale" aria-label="Locale"
           className={field}
         />
         <input
@@ -490,14 +491,14 @@ function GenerateForm({
           min={1}
           value={count}
           onChange={(e) => setCount(e.target.value)}
-          placeholder="How many"
+          placeholder="How many" aria-label="How many"
           className={field}
         />
       </div>
-      <button
+      <Button
         disabled={!ready || generate.isPending}
         onClick={() => generate.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {generate.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -505,7 +506,7 @@ function GenerateForm({
           <Sparkles className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Generate
-      </button>
+      </Button>
     </div>
   );
 }
@@ -568,10 +569,10 @@ function ReviewForm({
         <input
           value={draftId}
           onChange={(e) => setDraftId(e.target.value)}
-          placeholder="Draft id"
+          placeholder="Draft id" aria-label="Draft id"
           className={`${field} font-mono sm:col-span-2`}
         />
-        <select
+        <select aria-label="Gate"
           value={gate}
           onChange={(e) => setGate(Number(e.target.value) as CampaignReviewGateValue)}
           className={field}
@@ -594,15 +595,15 @@ function ReviewForm({
         <input
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="What you checked and what you found"
+          placeholder="What you checked and what you found" aria-label="What you checked and what you found"
           className={`${field} sm:col-span-4`}
         />
       </div>
 
-      <button
+      <Button
         disabled={!canReview || review.isPending}
         onClick={() => review.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {review.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -610,7 +611,7 @@ function ReviewForm({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Record review
-      </button>
+      </Button>
 
       <div className="mt-3 border-t-thin border-border-subtle pt-3">
         <p className="text-[11px] font-bold uppercase tracking-wide text-text-secondary">
@@ -620,7 +621,7 @@ function ReviewForm({
           <input
             value={retireReason}
             onChange={(e) => setRetireReason(e.target.value)}
-            placeholder="Why it is being retired"
+            placeholder="Why it is being retired" aria-label="Why it is being retired"
             className={`${field} flex-1`}
           />
           <button

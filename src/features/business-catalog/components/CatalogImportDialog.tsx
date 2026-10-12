@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { catalogImportApi } from '../api/business-catalog.api';
 import { businessCatalogKeys } from '../api/business-catalog.queries';
 import type { CatalogImportMode, CatalogImportPreviewResult } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   onClose: () => void;
@@ -98,7 +99,7 @@ export function CatalogImportDialog({ onClose }: Props) {
             </h2>
             <p className="text-[11px] text-text-muted mt-1">Upload categories and items together from one CSV file.</p>
           </div>
-          <button type="button" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-glass-2 hover:text-text-primary">
+          <button aria-label="Close" type="button" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-glass-2 hover:text-text-primary">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -109,10 +110,10 @@ export function CatalogImportDialog({ onClose }: Props) {
               <div className="text-xs font-bold text-text-primary">Start with the supported format</div>
               <div className="text-[11px] text-text-muted">Download the template, fill it, then upload it below.</div>
             </div>
-            <button type="button" onClick={downloadTemplate} disabled={isDownloading} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-bold text-text-secondary hover:bg-glass-2 disabled:opacity-50">
+            <Button type="button" onClick={downloadTemplate} disabled={isDownloading} variant="secondary" size="sm">
               {isDownloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
               Download template
-            </button>
+            </Button>
           </div>
 
           <div className="grid gap-4 md:grid-cols-[1fr_220px]">
@@ -124,36 +125,38 @@ export function CatalogImportDialog({ onClose }: Props) {
             </label>
 
             <div className="rounded-xl bg-glass-1 border border-border-subtle p-3">
-              <label className="text-[11px] font-bold text-text-secondary">Import behavior</label>
-              <select
-                value={mode}
-                onChange={(event) => { setMode(event.target.value as CatalogImportMode); setPreview(null); }}
-                className="mt-2 w-full appearance-none cursor-pointer rounded-lg border border-border-subtle bg-glass-2 px-3 py-2 text-xs text-text-primary outline-none focus:border-brand"
-                style={{ colorScheme: 'dark' }}
-              >
-                <option value="CreateOnly" className="bg-bg-elevated text-text-primary">Create only</option>
-                <option value="Upsert" className="bg-bg-elevated text-text-primary">Create and update</option>
-              </select>
+              <label className="flex flex-col gap-1">
+                <span className="text-[11px] font-bold text-text-secondary">Import behavior</span>
+                <select
+                  value={mode}
+                  onChange={(event) => { setMode(event.target.value as CatalogImportMode); setPreview(null); }}
+                  className="mt-2 w-full appearance-none cursor-pointer rounded-lg border border-border-subtle bg-glass-2 px-3 py-2 text-xs text-text-primary outline-none focus:border-brand"
+                  style={{ colorScheme: 'dark' }}
+                >
+                  <option value="CreateOnly" className="bg-bg-elevated text-text-primary">Create only</option>
+                  <option value="Upsert" className="bg-bg-elevated text-text-primary">Create and update</option>
+                </select>
+              </label>
               <p className="text-[10px] text-text-muted mt-2">
                 {mode === 'CreateOnly' ? 'Existing items are reported as errors.' : 'Existing items are matched by category and item name, then updated.'}
               </p>
             </div>
           </div>
 
-          <button type="button" onClick={handlePreview} disabled={!file || isPreviewing || isImporting} className="flex items-center justify-center gap-1.5 w-full px-4 py-2 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 disabled:opacity-50">
+          <Button type="button" onClick={handlePreview} disabled={!file || isPreviewing || isImporting} variant="primary" block>
             {isPreviewing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileSpreadsheet className="w-3.5 h-3.5" />}
             Preview import
-          </button>
+          </Button>
 
           {preview && <ImportPreview preview={preview} />}
         </div>
 
         <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border-subtle">
-          <button type="button" onClick={onClose} disabled={isImporting} className="px-4 py-2 rounded-lg text-xs font-bold text-text-secondary hover:bg-glass-2">Cancel</button>
-          <button type="button" onClick={handleImport} disabled={!preview || preview.invalidRows > 0 || isImporting} className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 disabled:opacity-50">
+          <Button type="button" onClick={onClose} disabled={isImporting} variant="ghost">Cancel</Button>
+          <Button type="button" onClick={handleImport} disabled={!preview || preview.invalidRows > 0 || isImporting} variant="primary">
             {isImporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
             Import catalog
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -172,7 +175,7 @@ function ImportPreview({ preview }: { preview: CatalogImportPreviewResult }) {
       </div>
 
       <div className={`rounded-xl border px-3 py-2 flex items-start gap-2 ${preview.invalidRows > 0 ? 'bg-danger-soft border-danger/30' : 'bg-success-soft border-success/30'}`}>
-        {preview.invalidRows > 0 ? <AlertCircle className="w-4 h-4 text-danger mt-0.5" /> : <CheckCircle2 className="w-4 h-4 text-success mt-0.5" />}
+        {preview.invalidRows > 0 ? <AlertCircle className="w-4 h-4 text-danger-light mt-0.5" /> : <CheckCircle2 className="w-4 h-4 text-success mt-0.5" />}
         <div className="text-[11px] text-text-secondary">
           {preview.invalidRows > 0 ? 'Correct invalid rows and preview the file again before importing.' : 'Preview passed. The file is ready to import.'}
         </div>
@@ -190,7 +193,7 @@ function ImportPreview({ preview }: { preview: CatalogImportPreviewResult }) {
                 <td className="px-3 py-2 text-text-primary font-semibold">{row.categoryName || '—'}</td>
                 <td className="px-3 py-2 text-text-primary">{row.itemName || '—'}</td>
                 <td className="px-3 py-2 text-text-secondary">{row.action === 'CreateItem' ? 'Create' : row.action === 'UpdateItem' ? 'Update' : 'Invalid'}</td>
-                <td className={`px-3 py-2 ${row.errors.length ? 'text-danger' : 'text-success'}`}>{row.errors.length ? row.errors.join(' ') : 'Valid'}</td>
+                <td className={`px-3 py-2 ${row.errors.length ? 'text-danger-light' : 'text-success'}`}>{row.errors.length ? row.errors.join(' ') : 'Valid'}</td>
               </tr>
             ))}
           </tbody>
@@ -201,5 +204,5 @@ function ImportPreview({ preview }: { preview: CatalogImportPreviewResult }) {
 }
 
 function Metric({ label, value, danger = false }: { label: string; value: number; danger?: boolean }) {
-  return <div className="rounded-lg bg-glass-1 border border-border-subtle px-3 py-2"><div className="text-[10px] text-text-muted">{label}</div><div className={`text-sm font-extrabold ${danger ? 'text-danger' : 'text-text-primary'}`}>{value}</div></div>;
+  return <div className="rounded-lg bg-glass-1 border border-border-subtle px-3 py-2"><div className="text-[10px] text-text-muted">{label}</div><div className={`text-sm font-extrabold ${danger ? 'text-danger-light' : 'text-text-primary'}`}>{value}</div></div>;
 }

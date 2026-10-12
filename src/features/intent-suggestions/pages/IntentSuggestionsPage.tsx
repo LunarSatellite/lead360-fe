@@ -10,6 +10,7 @@ import {
 import { SuggestionCard, BatchStats } from '../components/SuggestionCard';
 import { SuggestionStatus } from '../types/intent-suggestion.types';
 import type { SuggestionBatchDto, SuggestionDto } from '../types/intent-suggestion.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export function Component() {
         </div>
         <div className="flex items-center gap-2">
           {specs.length > 1 && (
-            <select value={activeSpecId} onChange={e => setSelectedSpecId(e.target.value)} className="form-input max-w-[200px] appearance-none cursor-pointer">
+            <select aria-label="Active spec ID" value={activeSpecId} onChange={e => setSelectedSpecId(e.target.value)} className="form-input max-w-[200px] appearance-none cursor-pointer">
               {specs.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
             </select>
           )}
@@ -80,14 +81,14 @@ export function Component() {
             </button>
           ) : (
             <>
-              <button
+              <Button
                 onClick={() => regenerate.mutate(activeSpecId)}
                 disabled={regenerate.isPending}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-text-secondary hover:bg-glass-2 transition-all disabled:opacity-50"
+                variant="subtle"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${regenerate.isPending ? 'animate-spin' : ''}`} strokeWidth={1.6} />
                 Regenerate
-              </button>
+              </Button>
               {pendingCount > 0 && (
                 <button
                   onClick={() => approveAll.mutate(activeSpecId)}

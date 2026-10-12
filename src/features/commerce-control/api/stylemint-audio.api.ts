@@ -65,7 +65,7 @@ function unwrap<T>(response: { status: number; body: unknown }): T {
   if (response.status === 403) {
     throw new Error(
       detail ??
-        'Curating the audio catalogue takes the Stylemint ContentMod role. ' +
+        'Curating the audio catalog takes the Stylemint ContentMod role. ' +
           'An administrator grants it.',
     );
   }

@@ -26,6 +26,7 @@ import type {
   ComplianceProfileCreateRequest,
   ComplianceProfileUpdateRequest,
 } from '../types/compliance.types';
+import { Button } from '@/shared/ui/primitives';
 
 type View = 'card' | 'rules' | 'selector' | 'create' | 'edit';
 
@@ -99,19 +100,19 @@ export function ComplianceSettings() {
             {/* Edit button — only for custom (non-system) profiles */}
             {currentProfile && !currentProfile.isSystem && (
               <>
-                <button
+                <Button
                   onClick={() => setView('edit')}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary transition-all"
+                  variant="subtle"
                 >
                   <Pencil className="w-3.5 h-3.5" /> Edit
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handleDelete}
                   disabled={deleteProfile.isPending}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-danger-soft border border-danger/15 text-danger hover:bg-danger/15 disabled:opacity-40 transition-all"
+                  variant="danger"
                 >
                   <Trash2 className="w-3.5 h-3.5" /> Delete
-                </button>
+                </Button>
               </>
             )}
             <button
@@ -135,8 +136,8 @@ export function ComplianceSettings() {
       {/* ─── Error (non-404) ─── */}
       {isTenantError && !isNoProfile && view === 'card' && (
         <div className="rounded-2xl bg-danger-soft border border-danger/15 px-5 py-3 flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-danger" />
-          <span className="text-sm text-danger">Failed to load compliance profile.</span>
+          <AlertCircle className="w-4 h-4 text-danger-light" />
+          <span className="text-sm text-danger-light">Failed to load compliance profile.</span>
         </div>
       )}
 

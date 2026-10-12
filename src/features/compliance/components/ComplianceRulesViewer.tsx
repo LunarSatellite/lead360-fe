@@ -92,7 +92,7 @@ function ProhibitedTopicsList({ topics }: { topics: string[] }) {
           key={i}
           className="flex items-center gap-2 px-2.5 py-1.5 rounded-xs bg-danger-soft border border-danger/10"
         >
-          <Ban size={10} strokeWidth={1.6} className="text-danger shrink-0" />
+          <Ban size={10} strokeWidth={1.6} className="text-danger-light shrink-0" />
           <span className="text-[10px] font-semibold text-text-secondary">{topic}</span>
         </div>
       ))}
@@ -225,8 +225,8 @@ function DataHandlingSection({ data }: { data: DataHandlingRules }) {
     danger: {
       bg: 'bg-danger-soft',
       border: 'border-danger/10',
-      text: 'text-danger',
-      icon: 'text-danger',
+      text: 'text-danger-light',
+      icon: 'text-danger-light',
     },
     warning: {
       bg: 'bg-warning-soft',

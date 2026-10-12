@@ -20,6 +20,7 @@ import {
 } from '@/features/commerce-control/api/stylemint-support.api';
 import { Component as CrmSupportCases } from '@/features/crm/pages/CrmSupportPage';
 import { CareThemesPanel } from '@/features/commerce-control/components/CareThemesPanel';
+import { Button } from '@/shared/ui/primitives';
 
 type Queue = 'commerce' | 'crm' | 'themes';
 
@@ -93,7 +94,7 @@ function QueueTab({
   label: string;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`flex flex-1 items-center justify-center gap-2 rounded-sm px-4 py-2 text-xs font-bold transition ${
         active
@@ -177,7 +178,7 @@ function CommerceQueue() {
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_380px]">
           <div className="overflow-hidden rounded-frame border-thin border-border-subtle bg-bg-card">
             {(queue.data?.items ?? []).map((ticket) => (
-              <button
+              <button aria-pressed={selected?.id === ticket.id}
                 key={ticket.id}
                 onClick={() => setSelected(ticket)}
                 className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${
@@ -303,7 +304,7 @@ function TicketDetail({
         value={reply}
         onChange={(event) => setReply(event.target.value)}
         rows={4}
-        placeholder="Write a reply to the customer…"
+        placeholder="Write a reply to the customer…" aria-label="Write a reply to the customer…"
         className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
       />
 
@@ -315,10 +316,10 @@ function TicketDetail({
       )}
 
       <div className="flex flex-wrap gap-2">
-        <button
+        <Button
           onClick={() => act.mutate('reply')}
           disabled={act.isPending || !reply.trim()}
-          className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary"
         >
           {act.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -326,14 +327,14 @@ function TicketDetail({
             <Send className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Reply
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => act.mutate('waiting')}
           disabled={act.isPending}
-          className="flex items-center gap-1.5 rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:text-text-primary disabled:opacity-40"
+          variant="secondary"
         >
           <Clock className="h-3.5 w-3.5" strokeWidth={1.6} /> Waiting on customer
-        </button>
+        </Button>
         <button
           onClick={() => act.mutate('resolve')}
           disabled={act.isPending}

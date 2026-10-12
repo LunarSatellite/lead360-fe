@@ -89,31 +89,33 @@ export function SpecUploadZone({ onSuccess }: SpecUploadZoneProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         {/* Name */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-            Name <span className="text-danger">*</span>
-          </label>
-          <input
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1.5">Name <span className="text-danger-light">*</span></span>
+            <input
             {...form.register('name')}
             placeholder="e.g. Petstore API v3"
             className="form-input"
             disabled={upload.isPending}
           />
+          </label>
           {form.formState.errors.name && (
-            <p className="text-xs text-danger mt-1">{form.formState.errors.name.message}</p>
+            <p className="text-xs text-danger-light mt-1">{form.formState.errors.name.message}</p>
           )}
         </div>
 
         {/* Format */}
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1.5">Format</label>
-          <select
-            {...form.register('fileFormat')}
-            className="form-input appearance-none cursor-pointer"
-            disabled={upload.isPending}
-          >
-            <option value="json">JSON</option>
-            <option value="yaml">YAML</option>
-          </select>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1.5">Format</span>
+            <select
+              {...form.register('fileFormat')}
+              className="form-input appearance-none cursor-pointer"
+              disabled={upload.isPending}
+            >
+              <option value="json">JSON</option>
+              <option value="yaml">YAML</option>
+            </select>
+          </label>
         </div>
 
         {mode === 'drop' ? (
@@ -162,26 +164,26 @@ export function SpecUploadZone({ onSuccess }: SpecUploadZoneProps) {
         ) : (
           /* Paste area */
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Spec Content <span className="text-danger">*</span>
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Spec Content <span className="text-danger-light">*</span></span>
+              <textarea
               {...form.register('specContent')}
               placeholder="Paste your OpenAPI / Swagger JSON or YAML here..."
               rows={12}
               className="form-input resize-none font-mono text-[11px] leading-relaxed"
               disabled={upload.isPending}
             />
+            </label>
             {form.formState.errors.specContent && (
-              <p className="text-xs text-danger mt-1">{form.formState.errors.specContent.message}</p>
+              <p className="text-xs text-danger-light mt-1">{form.formState.errors.specContent.message}</p>
             )}
           </div>
         )}
 
         {errMsg && (
           <div className="flex items-start gap-3 p-3 rounded-lg bg-danger-soft border border-danger/15">
-            <AlertCircle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" strokeWidth={1.8} />
-            <p className="text-xs text-danger font-medium">{errMsg}</p>
+            <AlertCircle className="w-4 h-4 text-danger-light flex-shrink-0 mt-0.5" strokeWidth={1.8} />
+            <p className="text-xs text-danger-light font-medium">{errMsg}</p>
           </div>
         )}
 

@@ -49,6 +49,7 @@ import {
   type ProposedBotMenuCard,
 } from '../types/chat.types';
 import { InputCard } from '../components/inline-cards/InputControls';
+import { Button } from '@/shared/ui/primitives';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    Chat (primary surface)
@@ -463,7 +464,7 @@ export function Component() {
                     >
                       {thread.uploadFlash.kind === 'error' ? (
                         <AlertCircle
-                          className="w-3.5 h-3.5 mt-0.5 shrink-0 text-danger"
+                          className="w-3.5 h-3.5 mt-0.5 shrink-0 text-danger-light"
                           strokeWidth={1.8}
                         />
                       ) : (
@@ -510,7 +511,7 @@ export function Component() {
                           <span style={{ color: 'rgba(160,160,160,0.75)' }}>{ghostText}</span>
                         </div>
                       )}
-                      <textarea
+                      <textarea aria-label="Draft"
                         value={draft}
                         onChange={(e) => {
                           const v = e.target.value;
@@ -790,7 +791,7 @@ function SessionDropdown({
                 const isCurrent = s.id === currentSessionId;
                 const title = s.title?.trim() || 'Untitled chat';
                 return (
-                  <button
+                  <button aria-pressed={isCurrent}
                     key={s.id}
                     type="button"
                     role="menuitem"
@@ -1386,7 +1387,7 @@ function NewChatButton({
               setConfirming(false);
               onNewChat();
             }}
-            className="flex-1 h-7 rounded-xs border-thin border-danger/35 text-[10.5px] font-bold text-danger hover:bg-danger-soft transition-colors"
+            className="flex-1 h-7 rounded-xs border-thin border-danger/35 text-[10.5px] font-bold text-danger-light hover:bg-danger-soft transition-colors"
           >
             Restart anyway
           </button>
@@ -2011,14 +2012,14 @@ function WebsiteIngestionPreviewCard({ card, actions }: { card: InlineCard; acti
         <Stat label="topics" value={topics} />
       </div>
       {draftFlowId && (
-        <button
+        <Button
           type="button"
           onClick={() => actions.onNavigate(`/dashboard/flows/${draftFlowId}`)}
-          className="mt-3 w-full flex items-center justify-center gap-1.5 rounded-sm border-thin border-border-medium hover:bg-glass-2 px-3 py-2 text-xs font-bold text-text-primary transition-colors"
+          variant="secondary" block className="mt-3"
         >
           Open flow canvas
           <ExternalLink className="w-3 h-3" strokeWidth={1.8} />
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -2072,14 +2073,14 @@ function WebsiteIngestionFailedCard({ card, actions }: { card: InlineCard; actio
       </div>
       {url && <div className="text-xs text-text-secondary break-all mb-2">{url}</div>}
       <div className="text-xs text-text-primary leading-relaxed mb-3 whitespace-pre-wrap">{message}</div>
-      <button
+      <Button
         type="button"
         onClick={actions.onPasteManually}
-        className="w-full flex items-center justify-center gap-1.5 rounded-sm border-thin border-border-medium hover:bg-glass-2 px-3 py-2 text-xs font-bold text-text-primary transition-colors"
+        variant="secondary" block
       >
         Add menu manually instead
         <ArrowRight className="w-3 h-3" strokeWidth={1.8} />
-      </button>
+      </Button>
     </div>
   );
 }

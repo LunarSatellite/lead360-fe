@@ -6,14 +6,15 @@ import { Loader2, Plus, Check, X, Send, Clock, Calendar, FileText } from 'lucide
 import { toast } from 'sonner';
 import { crmApi } from '../api/crm.api';
 import { CrmTimePeriodStatus, CRM_TIME_PERIOD_STATUS_LABELS } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-lg border border-border-subtle bg-bg-elevated text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
 const STATUS_COLORS: Record<number, string> = {
-  [CrmTimePeriodStatus.Draft]:     'bg-bg-subtle text-text-muted',
+  [CrmTimePeriodStatus.Draft]:     'bg-bg-sunken text-text-muted',
   [CrmTimePeriodStatus.Submitted]: 'bg-warning-soft text-warning',
   [CrmTimePeriodStatus.Approved]:  'bg-success-soft text-success',
-  [CrmTimePeriodStatus.Rejected]:  'bg-danger-soft text-danger',
+  [CrmTimePeriodStatus.Rejected]:  'bg-danger-soft text-danger-light',
 };
 
 function SlideOver({ open, onClose, title, subtitle, children, footer }: {
@@ -51,7 +52,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: {
             </h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -123,12 +124,12 @@ export function Component() {
           <h1 className="text-2xl font-bold text-text-primary">Time Periods</h1>
           <p className="text-xs text-text-muted mt-0.5">Group time entries into reporting periods for review and approval.</p>
         </div>
-        <button
+        <Button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Period
-        </button>
+        </Button>
       </div>
 
       {/* Create form */}
@@ -140,21 +141,21 @@ export function Component() {
           subtitle="Create a time period for tracking and approval"
           footer={
             <div className="flex items-center justify-end gap-3">
-              <button
+              <Button
                 type="button"
                 onClick={() => { setShowCreate(false); setName(''); setPeriodStart(''); setPeriodEnd(''); }}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => createMutation.mutate({ periodStart, periodEnd, notes: name || undefined })}
                 disabled={!canCreate || createMutation.isPending}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create
-              </button>
+              </Button>
             </div>
           }
         >
@@ -167,58 +168,29 @@ export function Component() {
 
             {/* Name / Label */}
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Name / Label</label>
-              <div className="relative">
-                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="e.g. June 2026, Q2 Week 3"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Name / Label</span>
+                <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. June 2026, Q2 Week 3" value={name} onChange={e => setName(e.target.value)} />
+              </label>
             </div>
 
             {/* Start Date + End Date */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date *</label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                  <input
-                    type="date"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                    style={{
-                      backgroundColor: 'rgb(var(--color-glass-1))',
-                      colorScheme: 'dark',
-                      backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                    }}
-                    value={periodStart}
-                    onChange={e => setPeriodStart(e.target.value)}
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Start Date *</span>
+                  <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={periodStart} onChange={e => setPeriodStart(e.target.value)} />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">End Date *</label>
-                <div className="relative">
-                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                  <input
-                    type="date"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                    style={{
-                      backgroundColor: 'rgb(var(--color-glass-1))',
-                      colorScheme: 'dark',
-                      backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                    }}
-                    value={periodEnd}
-                    onChange={e => setPeriodEnd(e.target.value)}
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">End Date *</span>
+                  <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} />
+                </label>
               </div>
             </div>
             {periodStart && periodEnd && periodStart >= periodEnd && (
-              <p className="text-xs text-danger">End date must be after start date.</p>
+              <p className="text-xs text-danger-light">End date must be after start date.</p>
             )}
           </form>
         </SlideOver>
@@ -230,7 +202,7 @@ export function Component() {
           <button
             key={String(s)}
             onClick={() => setFilter(s as any)}
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${filter === s ? 'bg-brand text-white' : 'bg-bg-elevated border border-border-subtle text-text-secondary hover:bg-bg-subtle'}`}
+            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${filter === s ? 'bg-brand text-white' : 'bg-bg-elevated border border-border-subtle text-text-secondary hover:bg-bg-sunken'}`}
           >
             {s == null ? 'All' : CRM_TIME_PERIOD_STATUS_LABELS[s]}
           </button>
@@ -266,7 +238,7 @@ export function Component() {
                 </div>
 
                 {p.rejectionReason && (
-                  <p className="text-xs text-danger bg-danger-soft rounded-lg px-3 py-2">
+                  <p className="text-xs text-danger-light bg-danger-soft rounded-lg px-3 py-2">
                     Rejected: {p.rejectionReason}
                   </p>
                 )}
@@ -277,26 +249,26 @@ export function Component() {
                     <button
                       onClick={() => submitMutation.mutate(p.id)}
                       disabled={submitMutation.isPending}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-subtle border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-bg-sunken border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary transition-colors disabled:opacity-50"
                     >
                       <Send className="w-3.5 h-3.5" /> Submit for Approval
                     </button>
                   )}
                   {p.status === CrmTimePeriodStatus.Submitted && (
                     <>
-                      <button
+                      <Button
                         onClick={() => approveMutation.mutate(p.id)}
                         disabled={approveMutation.isPending}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success-soft text-success text-xs font-semibold border border-success/20 hover:bg-success hover:text-white transition-colors disabled:opacity-50"
+                        variant="success" size="sm"
                       >
                         <Check className="w-3.5 h-3.5" /> Approve
-                      </button>
-                      <button
+                      </Button>
+                      <Button
                         onClick={() => { setRejectId(p.id); setRejectReason(''); }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-danger-soft text-danger text-xs font-semibold border border-[rgba(239,68,68,0.2)] hover:bg-danger hover:text-white transition-colors"
+                        variant="danger" size="sm"
                       >
                         <X className="w-3.5 h-3.5" /> Reject
-                      </button>
+                      </Button>
                     </>
                   )}
                 </div>
@@ -308,7 +280,7 @@ export function Component() {
                       autoFocus
                       value={rejectReason}
                       onChange={e => setRejectReason(e.target.value)}
-                      placeholder="Reason for rejection..."
+                      placeholder="Reason for rejection..." aria-label="Reason for rejection..."
                       className={inputCls}
                     />
                     <button
@@ -318,9 +290,9 @@ export function Component() {
                     >
                       {rejectMutation.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : 'Confirm'}
                     </button>
-                    <button onClick={() => setRejectId(null)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary shrink-0">
+                    <Button onClick={() => setRejectId(null)} variant="secondary" size="sm" className="shrink-0">
                       Cancel
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>

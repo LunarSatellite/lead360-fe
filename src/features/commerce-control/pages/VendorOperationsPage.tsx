@@ -1,30 +1,23 @@
 import { lazy, Suspense, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Activity,
-  BadgeCheck,
-  BarChart3,
-  Boxes,
   Building2,
-  ChevronRight,
   CircleDollarSign,
-  ClipboardList,
-  LayoutDashboard,
   Loader2,
   PackageOpen,
-  MessageSquareText,
   Plus,
-  QrCode,
   RefreshCw,
-  RotateCcw,
   ShieldCheck,
-  Store,
-  Tags,
-  TrendingUp,
-  Users,
   X,
 } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
+import { VendorSideMenu } from '../components/VendorSideMenu';
+import {
+  resolveVendorSection,
+  vendorSections,
+} from '../vendor-sections';
 import { ProductComposer } from '../components/ProductComposer';
 import { VendorProfileEditor } from '../components/VendorProfileEditor';
 import { VendorResourceEditDialog } from '../components/VendorResourceEditDialog';
@@ -38,6 +31,7 @@ import { VendorInsightDialog } from '../components/VendorInsightDialog';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { buildVendorRecipePayload } from '../lib/vendor-recipe';
+import { Button, IconButton } from '@/shared/ui/primitives';
 
 const VendorAnalyticsPanel = lazy(() =>
   import('../components/VendorAnalyticsPanel').then((module) => ({
@@ -45,194 +39,11 @@ const VendorAnalyticsPanel = lazy(() =>
   })),
 );
 
-const resources = [
-  {
-    key: 'dashboard',
-    label: 'Vendor dashboard',
-    description: 'Complete view of commercial operations.',
-    icon: LayoutDashboard,
-  },
-  {
-    key: 'synchronization',
-    label: 'Synchronization',
-    description: 'Live status of catalogue, orders, content and customers.',
-    icon: RefreshCw,
-  },
-  {
-    key: 'products',
-    label: 'Products',
-    description: 'Catalogue, variants, stock, media and publishing.',
-    icon: Boxes,
-  },
-  {
-    key: 'collections',
-    label: 'Collections',
-    description: 'Assortments, ordering and publishing.',
-    icon: Tags,
-  },
-  {
-    key: 'stores',
-    label: 'Stores',
-    description: 'Kin Marche retail locations and availability.',
-    icon: Store,
-  },
-  {
-    key: 'team',
-    label: 'Seller team',
-    description: 'Invitations, roles and operational access.',
-    icon: Users,
-  },
-  {
-    key: 'profile',
-    label: 'Seller profile',
-    description: 'Commercial identity and store pickup.',
-    icon: Building2,
-  },
-  {
-    key: 'codes',
-    label: 'Store codes',
-    description: 'Product QR codes and scan statistics.',
-    icon: QrCode,
-  },
-  {
-    key: 'returns',
-    label: 'Returns',
-    description: 'Accept, reject and complete returns.',
-    icon: RotateCcw,
-  },
-  {
-    key: 'warranties/claims',
-    label: 'Warranties',
-    description: 'Policies and warranty claim handling.',
-    icon: ShieldCheck,
-  },
-  {
-    key: 'inquiries',
-    label: 'Customer inquiries',
-    description: 'Answer product inquiries from Lead360.',
-    icon: MessageSquareText,
-  },
-  {
-    key: 'campaigns',
-    label: 'Campaigns',
-    description: 'Briefs, approval, activation and results.',
-    icon: ClipboardList,
-  },
-  {
-    key: 'briefs',
-    label: 'Campaign briefs',
-    description: 'Scope, locking, variants and expected-return calculation.',
-    icon: ClipboardList,
-  },
-  {
-    key: 'recipes',
-    label: 'Content recipes',
-    description: 'Reusable templates for producing commercial reels.',
-    icon: PackageOpen,
-  },
-  {
-    key: 'partnerships',
-    label: 'Seller partnerships',
-    description: 'Invitations, commissions and contracts; creators respond in the mobile app.',
-    icon: Users,
-  },
-  {
-    key: 'squads',
-    label: 'Campaign squads',
-    description: 'CDF budgets and seller invitations; creators participate in the mobile app.',
-    icon: Users,
-  },
-  {
-    key: 'retainers',
-    label: 'Monthly retainers',
-    description: 'Recurring engagements, deliverables, suspension and resumption.',
-    icon: ClipboardList,
-  },
-  {
-    key: 'matches',
-    label: 'Opportunities',
-    description: 'Commercial recommendations to invite or dismiss.',
-    icon: BadgeCheck,
-  },
-  {
-    key: 'pricing/suggestions',
-    label: 'Recommended pricing',
-    description: 'Demand-based pricing suggestions with controlled application.',
-    icon: CircleDollarSign,
-  },
-  {
-    key: 'pricing/flash-sales',
-    label: 'Flash sales',
-    description: 'Limited promotions, volume controls and incrementality measurement.',
-    icon: Tags,
-  },
-  {
-    key: 'store/sponsored',
-    label: 'Sponsored products',
-    description: 'Exposure limits, schedules and transparent pause controls.',
-    icon: Store,
-  },
-  {
-    key: 'store/actions',
-    label: 'Recommended actions',
-    description: 'Stock, content and promotion priorities with estimated value.',
-    icon: ClipboardList,
-  },
-  {
-    key: 'store/digital-twin',
-    label: 'Store twin',
-    description: 'Real-time stock, sales and commercial capacity.',
-    icon: Activity,
-  },
-  {
-    key: 'demand-signals',
-    label: 'Demand signals',
-    description: 'Popular searches and unmet demand to replenish.',
-    icon: BarChart3,
-  },
-  {
-    key: 'intent-decision-board',
-    label: 'Assortment decisions',
-    description: 'Ranked customer intent to guide catalogue and stock.',
-    icon: BadgeCheck,
-  },
-  {
-    key: 'analytics',
-    label: 'Seller analytics',
-    description: 'Sales, conversion, products and quality.',
-    icon: BarChart3,
-  },
-  {
-    key: 'analytics/products',
-    label: 'Product performance',
-    description: 'Detailed catalogue conversion and performance.',
-    icon: BarChart3,
-  },
-  {
-    key: 'analytics/creators',
-    label: 'Partner performance',
-    description: 'Attribution, conversions and commercial returns without managing creator profiles.',
-    icon: Users,
-  },
-  {
-    key: 'creator-performance',
-    label: 'Sales attribution',
-    description: 'Sales and orders generated by partner content.',
-    icon: TrendingUp,
-  },
-  {
-    key: 'activity',
-    label: 'Activity',
-    description: 'Audited history of vendor actions.',
-    icon: Activity,
-  },
-  {
-    key: 'growth-quality',
-    label: 'Growth & quality',
-    description: 'Operational performance indicators.',
-    icon: BadgeCheck,
-  },
-] as const;
+/**
+ * The section list moved to `vendor-sections.ts`, where it is grouped.
+ * This alias keeps the index-based lookups below reading as they did.
+ */
+const resources = vendorSections;
 
 function countRows(value: unknown): number | null {
   if (Array.isArray(value)) return value.length;
@@ -261,7 +72,13 @@ function toRows(value: unknown): Record<string, unknown>[] {
 export function VendorOperationsPage() {
   const { user } = useAuth();
   const canOperate = user?.role === UserRole.Owner || user?.role === UserRole.Admin;
-  const [selectedKey, setSelectedKey] = useState<string>('dashboard');
+  // The section is a route parameter, so it can be linked, bookmarked and
+  // reached with Back. It was component state, which none of those worked
+  // with: every vendor section shared one URL.
+  const { '*': sectionPath } = useParams();
+  const selectedSection = resolveVendorSection(sectionPath);
+  const selectedKey = selectedSection.key;
+  const hrefFor = (key: string) => `/dashboard/stylemint/vendor/${key}`;
   const [actionMessage, setActionMessage] = useState('');
   const [showStoreForm, setShowStoreForm] = useState(false);
   const [showProductComposer, setShowProductComposer] = useState(false);
@@ -344,13 +161,28 @@ export function VendorOperationsPage() {
     row: Record<string, unknown>;
   } | null>(null);
   const queryClient = useQueryClient();
+  // `enabled` on the open section only. Every one of the 31 ran on mount
+  // before, because the card grid showed a row count for each — 31 requests
+  // to draw numbers on cards an operator had not clicked. Sections visited
+  // earlier stay in the cache, so their counts persist in the side menu.
   const queries = useQueries({
     queries: resources.map((resource) => ({
       queryKey: ['stylemint-vendor', resource.key],
       queryFn: () => stylemintCommerceApi.vendorResource(resource.key),
+      enabled: resource.key === selectedKey,
       retry: false,
     })),
   });
+  // A count for each section the cache has already seen. Sections not yet
+  // opened simply have none, which is the honest thing to show and the
+  // reason this page no longer fetches 31 endpoints to fill in numbers.
+  const sectionCounts = useMemo(
+    () =>
+      Object.fromEntries(
+        resources.map((resource, index) => [resource.key, countRows(queries[index]?.data)]),
+      ),
+    [queries],
+  );
   const selectedIndex = resources.findIndex((item) => item.key === selectedKey);
   const selected = resources[selectedIndex];
   const selectedQuery = queries[selectedIndex];
@@ -390,7 +222,7 @@ export function VendorOperationsPage() {
           const approve = action === 'approve';
           const resolutionKind = approve
             ? Number(
-                window.prompt('Resolution: 1 reparation, 2 remplacement, 3 remboursement, 4 conseil') || '0',
+                window.prompt('Resolution: 1 repair, 2 replacement, 3 refund, 4 advice') || '0',
               )
             : undefined;
           if (approve && ![1, 2, 3, 4].includes(resolutionKind!))
@@ -517,7 +349,7 @@ export function VendorOperationsPage() {
         return stylemintCommerceApi.applyPricingSuggestion(id);
       if (selectedKey === 'pricing/flash-sales')
         return stylemintCommerceApi.flashSaleIncrementality(id).then((result) => {
-          setActionMessage(`Analyse: ${JSON.stringify(result).slice(0, 280)}`);
+          setActionMessage(`Analyze: ${JSON.stringify(result).slice(0, 280)}`);
           return result;
         });
       if (selectedKey === 'store/sponsored') {
@@ -749,7 +581,7 @@ export function VendorOperationsPage() {
             <h1 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">
               Kin Marche Vendor Operations
             </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/55">
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-text-muted">
               Products, stores, campaigns, returns, warranties and performance without exposing creator tools
               reserved for the mobile app.
             </p>
@@ -757,7 +589,7 @@ export function VendorOperationsPage() {
           <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
             <Building2 className="h-5 w-5 text-amber-300" />
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-wider text-white/40">Workspace</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-text-muted">Workspace</p>
               <p className="text-sm font-extrabold text-white">Kin Marche · RDC</p>
             </div>
           </div>
@@ -782,831 +614,802 @@ export function VendorOperationsPage() {
         </span>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        {resources.map((resource, index) => {
-          const query = queries[index];
-          const count = countRows(query.data);
-          const Icon = resource.icon;
-          return (
-            <button
-              key={resource.key}
-              onClick={() => setSelectedKey(resource.key)}
-              className={`group rounded-2xl border p-4 text-left transition-all ${selectedKey === resource.key ? 'border-brand/40 bg-brand-soft shadow-[0_12px_35px_rgb(var(--brand-rgb)/0.08)]' : 'border-border-subtle bg-bg-card hover:border-border-medium'}`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-bg-elevated">
-                  <Icon
-                    className={`h-4 w-4 ${selectedKey === resource.key ? 'text-brand' : 'text-text-muted'}`}
-                  />
-                </div>
-                {query.isLoading ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-text-muted" />
-                ) : query.isError ? (
-                  <span className="h-2 w-2 rounded-full bg-amber-400" />
-                ) : (
-                  <span className="h-2 w-2 rounded-full bg-success" />
-                )}
-              </div>
-              <p className="mt-4 text-sm font-extrabold text-text-primary">{resource.label}</p>
-              <p className="mt-1 min-h-8 text-[11px] leading-4 text-text-muted">{resource.description}</p>
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
-                  {count === null ? (query.isSuccess ? 'Disponible' : 'A relier') : `${count} elements`}
-                </span>
-                <ChevronRight className="h-3.5 w-3.5 text-text-muted transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </button>
-          );
-        })}
-      </section>
+      {/* The side menu replaces a grid of 31 cards that stood between the
+          page header and any actual content. */}
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
+        <VendorSideMenu current={selectedSection} hrefFor={hrefFor} counts={sectionCounts} />
 
-      <section className="overflow-hidden rounded-2xl border border-border-subtle bg-bg-card">
-        <div className="flex items-center justify-between border-b border-border-subtle px-5 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-soft">
-              <selected.icon className="h-4 w-4 text-brand" />
+        <div className="min-w-0 flex-1 space-y-5">
+        <section className="overflow-hidden rounded-2xl border border-border-subtle bg-bg-card">
+          <div className="flex items-center justify-between border-b border-border-subtle px-5 py-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-soft">
+                <selected.icon className="h-4 w-4 text-brand" />
+              </div>
+              <div>
+                <h2 className="text-sm font-extrabold text-text-primary">{selected.label}</h2>
+                <p className="text-[11px] text-text-muted">{selected.description}</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-sm font-extrabold text-text-primary">{selected.label}</h2>
-              <p className="text-[11px] text-text-muted">{selected.description}</p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {canOperate && selectedKey === 'store/digital-twin' && (
-              <button
-                onClick={async () => {
-                  const name = window.prompt('Scenario name', 'Peak demand resilience')?.trim();
-                  if (!name) return;
-                  try {
-                    const result = await stylemintCommerceApi.runVendorScenario({ name, seed: Date.now() % 2147483647, customerAgents: Number(window.prompt('Customer agents', '500') || '500'), days: Number(window.prompt('Simulation days', '30') || '30'), demandShockPercent: Number(window.prompt('Demand shock %', '25') || '25'), inventoryLossPercent: Number(window.prompt('Inventory loss %', '10') || '10'), fulfillmentCapacityLossPercent: Number(window.prompt('Fulfilment capacity loss %', '15') || '15') });
-                    setInsightDialog({ title: 'Digital-twin scenario', subtitle: 'Simulated demand, stock and fulfilment resilience.', data: result });
-                  } catch { setActionMessage('The scenario could not be completed. Check the simulation values.'); }
-                }}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Activity className="h-3.5 w-3.5" /> Run scenario
-              </button>
-            )}
-            {canOperate && selectedKey === 'products' && (
-              <button
-                onClick={() => setShowProductComposer(true)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                New product
-              </button>
-            )}
-            {canOperate && selectedKey === 'collections' && (
-              <button
-                onClick={() => setShowCollectionForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                New collection
-              </button>
-            )}
-            {canOperate && selectedKey === 'briefs' && (
-              <button
-                onClick={() => setShowBriefForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                New brief
-              </button>
-            )}
-            {canOperate && selectedKey === 'campaigns' && (
-              <button
-                onClick={() => setShowCampaignForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                New campaign
-              </button>
-            )}
-            {canOperate && selectedKey === 'partnerships' && (
-              <>
-                <button
+            <div className="flex gap-2">
+              {canOperate && selectedKey === 'store/digital-twin' && (
+                <Button
                   onClick={async () => {
-                    const audience = window.prompt('Who can join? Separate criteria with commas') || '';
-                    const rules = window.prompt('Reel rules. Separate rules with commas') || '';
-                    const whoCanJoin = audience.split(',').map((value) => value.trim()).filter(Boolean);
-                    const reelRules = rules.split(',').map((value) => value.trim()).filter(Boolean);
-                    if (!whoCanJoin.length || !reelRules.length) return;
+                    const name = window.prompt('Scenario name', 'Peak demand resilience')?.trim();
+                    if (!name) return;
                     try {
-                      await stylemintCommerceApi.publishVendorPartnershipTerms({
-                        whoCanJoin: { heading: 'Who can join', bullets: whoCanJoin },
-                        reelContentRules: {
-                          heading: 'Reel content rules',
-                          bullets: reelRules.map((text) => ({ text, inlineLinks: [] })),
-                        },
-                      });
-                      setActionMessage('New terms version published.');
-                    } catch { setActionMessage('Could not publish. Check the criteria and the rules.'); }
+                      const result = await stylemintCommerceApi.runVendorScenario({ name, seed: Date.now() % 2147483647, customerAgents: Number(window.prompt('Customer agents', '500') || '500'), days: Number(window.prompt('Simulation days', '30') || '30'), demandShockPercent: Number(window.prompt('Demand shock %', '25') || '25'), inventoryLossPercent: Number(window.prompt('Inventory loss %', '10') || '10'), fulfillmentCapacityLossPercent: Number(window.prompt('Fulfillment capacity loss %', '15') || '15') });
+                      setInsightDialog({ title: 'Digital-twin scenario', subtitle: 'Simulated demand, stock and fulfillment resilience.', data: result });
+                    } catch { setActionMessage('The scenario could not be completed. Check the simulation values.'); }
                   }}
-                  className="flex items-center gap-1.5 rounded-lg border border-brand/30 px-3 py-2 text-[11px] font-extrabold text-brand"
+                  variant="primary" size="sm"
                 >
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  Publier les conditions
-                </button>
-                <button
-                  onClick={() => setShowPartnershipForm((value) => !value)}
-                  className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
+                  <Activity className="h-3.5 w-3.5" /> Run scenario
+                </Button>
+              )}
+              {canOperate && selectedKey === 'products' && (
+                <Button
+                  onClick={() => setShowProductComposer(true)}
+                  variant="primary" size="sm"
                 >
                   <Plus className="h-3.5 w-3.5" />
-                  Inviter un partenaire
-                </button>
-              </>
-            )}
-            {canOperate && selectedKey === 'squads' && (
-              <button
-                onClick={() => setCollaborationDialog('squad')}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" /> New squad
-              </button>
-            )}
-            {canOperate && selectedKey === 'retainers' && (
-              <button
-                onClick={() => setCollaborationDialog('retainer')}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" /> New contract
-              </button>
-            )}
-            {canOperate && selectedKey === 'recipes' && (
-              <button
-                onClick={() => setShowRecipeForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                New recipe
-              </button>
-            )}
-            {canOperate && selectedKey === 'stores' && (
-              <button
-                onClick={() => setShowStoreForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                New store
-              </button>
-            )}
-            {canOperate && selectedKey === 'team' && (
-              <button
-                onClick={() => setShowTeamForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Inviter
-              </button>
-            )}
-            {canOperate && selectedKey === 'codes' && (
-              <button
-                onClick={() => setShowCodeForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                New code
-              </button>
-            )}
-            {canOperate && selectedKey === 'warranties/claims' && (
-              <button
-                onClick={() => setShowWarrantyPolicyForm((value) => !value)}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Politique de garantie
-              </button>
-            )}
-            {canOperate && selectedKey === 'pricing/flash-sales' && (
-              <button
-                onClick={async () => {
-                  const productId = window.prompt('Product ID');
-                  const salePrice = Number(window.prompt('Prix promotionnel CDF') || '0');
-                  const start = window.prompt('Debut (AAAA-MM-JJTHH:mm)');
-                  const end = window.prompt('Fin (AAAA-MM-JJTHH:mm)');
-                  const maxUnits = Number(window.prompt('Nombre maximal d’unites', '100') || '0');
-                  if (!productId || !salePrice || !start || !end || !maxUnits) return;
-                  try {
-                    await stylemintCommerceApi.createFlashSale({ productId, salePrice, startUtc: new Date(start).toISOString(), endUtc: new Date(end).toISOString(), maxUnits });
-                    setActionMessage('Vente flash creee.');
-                    await selectedQuery.refetch();
-                  } catch { setActionMessage('Could not create. Check the product, the dates and the price.'); }
-                }}
-                className="flex items-center gap-1.5 rounded-lg bg-brand px-3 py-2 text-[11px] font-extrabold text-black"
-              >
-                <Plus className="h-3.5 w-3.5" /> New flash sale
-              </button>
-            )}
-            <button
-              onClick={() => selectedQuery.refetch()}
-              className="rounded-lg border border-border-subtle p-2 text-text-muted hover:text-brand"
-            >
-              <RefreshCw className={`h-4 w-4 ${selectedQuery.isFetching ? 'animate-spin' : ''}`} />
-            </button>
+                  New product
+                </Button>
+              )}
+              {canOperate && selectedKey === 'collections' && (
+                <Button
+                  onClick={() => setShowCollectionForm((value) => !value)}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  New collection
+                </Button>
+              )}
+              {canOperate && selectedKey === 'briefs' && (
+                <Button
+                  onClick={() => setShowBriefForm((value) => !value)}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  New brief
+                </Button>
+              )}
+              {canOperate && selectedKey === 'campaigns' && (
+                <Button
+                  onClick={() => setShowCampaignForm((value) => !value)}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  New campaign
+                </Button>
+              )}
+              {canOperate && selectedKey === 'partnerships' && (
+                <>
+                  <button
+                    onClick={async () => {
+                      const audience = window.prompt('Who can join? Separate criteria with commas') || '';
+                      const rules = window.prompt('Reel rules. Separate rules with commas') || '';
+                      const whoCanJoin = audience.split(',').map((value) => value.trim()).filter(Boolean);
+                      const reelRules = rules.split(',').map((value) => value.trim()).filter(Boolean);
+                      if (!whoCanJoin.length || !reelRules.length) return;
+                      try {
+                        await stylemintCommerceApi.publishVendorPartnershipTerms({
+                          whoCanJoin: { heading: 'Who can join', bullets: whoCanJoin },
+                          reelContentRules: {
+                            heading: 'Reel content rules',
+                            bullets: reelRules.map((text) => ({ text, inlineLinks: [] })),
+                          },
+                        });
+                        setActionMessage('New terms version published.');
+                      } catch { setActionMessage('Could not publish. Check the criteria and the rules.'); }
+                    }}
+                    className="flex items-center gap-1.5 rounded-lg border border-brand/30 px-3 py-2 text-[11px] font-extrabold text-brand"
+                  >
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    Publish terms
+                  </button>
+                  <Button
+                    onClick={() => setShowPartnershipForm((value) => !value)}
+                    variant="primary" size="sm"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Inviter un partenaire
+                  </Button>
+                </>
+              )}
+              {canOperate && selectedKey === 'squads' && (
+                <Button
+                  onClick={() => setCollaborationDialog('squad')}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" /> New squad
+                </Button>
+              )}
+              {canOperate && selectedKey === 'retainers' && (
+                <Button
+                  onClick={() => setCollaborationDialog('retainer')}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" /> New contract
+                </Button>
+              )}
+              {canOperate && selectedKey === 'recipes' && (
+                <Button
+                  onClick={() => setShowRecipeForm((value) => !value)}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  New recipe
+                </Button>
+              )}
+              {canOperate && selectedKey === 'stores' && (
+                <Button
+                  onClick={() => setShowStoreForm((value) => !value)}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  New store
+                </Button>
+              )}
+              {canOperate && selectedKey === 'team' && (
+                <Button
+                  onClick={() => setShowTeamForm((value) => !value)}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Inviter
+                </Button>
+              )}
+              {canOperate && selectedKey === 'codes' && (
+                <Button
+                  onClick={() => setShowCodeForm((value) => !value)}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  New code
+                </Button>
+              )}
+              {canOperate && selectedKey === 'warranties/claims' && (
+                <Button
+                  onClick={() => setShowWarrantyPolicyForm((value) => !value)}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Politique de garantie
+                </Button>
+              )}
+              {canOperate && selectedKey === 'pricing/flash-sales' && (
+                <Button
+                  onClick={async () => {
+                    const productId = window.prompt('Product ID');
+                    const salePrice = Number(window.prompt('Promotional price CDF') || '0');
+                    const start = window.prompt('Debut (AAAA-MM-JJTHH:mm)');
+                    const end = window.prompt('Fin (AAAA-MM-JJTHH:mm)');
+                    const maxUnits = Number(window.prompt('Nombre maximal d’unites', '100') || '0');
+                    if (!productId || !salePrice || !start || !end || !maxUnits) return;
+                    try {
+                      await stylemintCommerceApi.createFlashSale({ productId, salePrice, startUtc: new Date(start).toISOString(), endUtc: new Date(end).toISOString(), maxUnits });
+                      setActionMessage('Vente flash creee.');
+                      await selectedQuery.refetch();
+                    } catch { setActionMessage('Could not create. Check the product, the dates and the price.'); }
+                  }}
+                  variant="primary" size="sm"
+                >
+                  <Plus className="h-3.5 w-3.5" /> New flash sale
+                </Button>
+              )}
+              <IconButton
+                icon={RefreshCw}
+                label={`Refresh ${selectedSection.label.toLowerCase()}`}
+                variant="secondary"
+                onClick={() => selectedQuery.refetch()}
+                className={selectedQuery.isFetching ? '[&_svg]:animate-spin' : undefined}
+              />
+            </div>
           </div>
-        </div>
-        {selectedKey === 'campaigns' && showCampaignForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              createCampaign.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-4"
-          >
-            <Field
-              label="Brand brief ID"
-              value={campaignForm.brandBriefId}
-              onChange={(value) => setCampaignForm((form) => ({ ...form, brandBriefId: value }))}
-              required
-            />
-            <Field
-              label="Campaign name"
-              value={campaignForm.name}
-              onChange={(value) => setCampaignForm((form) => ({ ...form, name: value }))}
-              required
-            />
-            <Field
-              label="Budget"
-              value={campaignForm.budgetAmount}
-              onChange={(value) => setCampaignForm((form) => ({ ...form, budgetAmount: value }))}
-              type="number"
-              required
-            />
-            <label className="space-y-1.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Currency</span>
-              <select
-                value={campaignForm.budgetCurrency}
-                onChange={(event) => setCampaignForm((form) => ({ ...form, budgetCurrency: event.target.value }))}
-                className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
-              >
-                <option value="CDF">CDF</option>
-                <option value="USD">USD</option>
-              </select>
-            </label>
-            <div className="flex justify-end md:col-span-2 xl:col-span-4">
-              <button
-                disabled={createCampaign.isPending || !campaignForm.brandBriefId.trim() || !campaignForm.name.trim() || Number(campaignForm.budgetAmount) <= 0}
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
-              >
-                {createCampaign.isPending ? 'Creating…' : 'Create campaign workspace'}
-              </button>
-            </div>
-          </form>
-        )}
-        {selectedKey === 'briefs' && showBriefForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              createBrief.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-3"
-          >
-            <Field
-              label="Brief title"
-              value={briefForm.title}
-              onChange={(value) => setBriefForm((form) => ({ ...form, title: value }))}
-              required
-            />
-            <label className="space-y-1.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Objectif</span>
-              <select
-                value={briefForm.primaryGoal}
-                onChange={(event) => setBriefForm((form) => ({ ...form, primaryGoal: event.target.value }))}
-                className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
-              >
-                <option value="1">Premier achat</option>
-                <option value="2">Re-engage customers</option>
-                <option value="3">Launch a variant</option>
-                <option value="4">Clear slow stock</option>
-                <option value="5">Notoriete saisonniere</option>
-                <option value="6">Educate on ’usage</option>
-                <option value="7">Test an audience</option>
-              </select>
-            </label>
-            <Field
-              label="Variant IDs, comma separated"
-              value={briefForm.productVariantIds}
-              onChange={(value) => setBriefForm((form) => ({ ...form, productVariantIds: value }))}
-              required
-            />
-            <div className="md:col-span-3 flex justify-end">
-              <button
-                disabled={createBrief.isPending || !briefForm.title.trim() || !briefForm.productVariantIds.trim()}
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
-              >
-                {createBrief.isPending ? 'Creation…' : 'Creer en CDF'}
-              </button>
-            </div>
-          </form>
-        )}
-        {selectedKey === 'partnerships' && showPartnershipForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              invitePartnership.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-5"
-          >
-            <Field
-              label="Search for a partner"
-              value={creatorSearch}
-              onChange={setCreatorSearch}
-            />
-            <label className="space-y-1.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Partner</span>
-              <select
-                required
-                value={partnershipForm.creatorProfileId}
-                onChange={(event) =>
-                  setPartnershipForm((form) => ({ ...form, creatorProfileId: event.target.value }))
-                }
-                className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
-              >
-                <option value="">
-                  {partnershipCreators.isLoading ? 'Chargement…' : 'Select a partner'}
-                </option>
-                {creatorOptions.map((creator, index) => {
-                  const id = String(creator.creatorProfileId ?? creator.id ?? '');
-                  const name = String(
-                    creator.displayName ?? creator.handle ?? creator.name ?? `Partenaire ${index + 1}`,
-                  );
-                  return id ? <option key={id} value={id}>{name}</option> : null;
-                })}
-              </select>
-            </label>
-            <Field
-              label="Commission min. %"
-              value={partnershipForm.commissionMinPercent}
-              onChange={(value) => setPartnershipForm((form) => ({ ...form, commissionMinPercent: value }))}
-              type="number"
-              required
-            />
-            <Field
-              label="Commission max. %"
-              value={partnershipForm.commissionMaxPercent}
-              onChange={(value) => setPartnershipForm((form) => ({ ...form, commissionMaxPercent: value }))}
-              type="number"
-              required
-            />
-            <Field
-              label="ID brief (optionnel)"
-              value={partnershipForm.brandBriefId}
-              onChange={(value) => setPartnershipForm((form) => ({ ...form, brandBriefId: value }))}
-            />
-            <div className="md:col-span-2 xl:col-span-5 flex justify-end">
-              <button
-                disabled={invitePartnership.isPending || !partnershipForm.creatorProfileId.trim()}
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
-              >
-                {invitePartnership.isPending ? 'Envoi…' : 'Envoyer l’invitation'}
-              </button>
-            </div>
-          </form>
-        )}
-        {selectedKey === 'recipes' && showRecipeForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              createRecipe.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-3"
-          >
-            <Field label="Recipe title" value={recipeForm.title} onChange={(value) => setRecipeForm((form) => ({ ...form, title: value }))} required />
-            <Field label="Music track ID" value={recipeForm.musicTrackRefId} onChange={(value) => setRecipeForm((form) => ({ ...form, musicTrackRefId: value }))} required />
-            <Field label="Variant IDs, comma separated" value={recipeForm.productVariantIds} onChange={(value) => setRecipeForm((form) => ({ ...form, productVariantIds: value }))} required />
-            <Field label="Anchor for the ’product story" value={recipeForm.brandStoryAnchor} onChange={(value) => setRecipeForm((form) => ({ ...form, brandStoryAnchor: value }))} required />
-            <Field label="Ambiance" value={recipeForm.moodLabel} onChange={(value) => setRecipeForm((form) => ({ ...form, moodLabel: value }))} required />
-            <Field label="Duree en secondes" value={recipeForm.durationSeconds} onChange={(value) => setRecipeForm((form) => ({ ...form, durationSeconds: value }))} type="number" required />
-            <Field label="Music title" value={recipeForm.songTitle} onChange={(value) => setRecipeForm((form) => ({ ...form, songTitle: value }))} required />
-            <Field label="Artiste" value={recipeForm.artist} onChange={(value) => setRecipeForm((form) => ({ ...form, artist: value }))} required />
-            <Field label="Legende principale" value={recipeForm.caption} onChange={(value) => setRecipeForm((form) => ({ ...form, caption: value }))} required />
-            <div className="md:col-span-2 xl:col-span-3 rounded-xl border border-brand/20 bg-brand-soft px-4 py-3 text-xs leading-5 text-text-secondary">
-              Lead360 genere automatiquement trois scenes narratives, trois legendes, les adaptations Instagram, TikTok, YouTube Shorts et Facebook, ainsi que les signaux de raisonnement necessaires au verrouillage.
-            </div>
-            <div className="md:col-span-2 xl:col-span-3 flex justify-end">
-              <button
-                disabled={createRecipe.isPending || !recipeForm.title.trim() || !recipeForm.musicTrackRefId.trim() || !recipeForm.productVariantIds.trim() || !recipeForm.brandStoryAnchor.trim() || !recipeForm.songTitle.trim() || !recipeForm.artist.trim() || !recipeForm.caption.trim()}
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
-              >
-                {createRecipe.isPending ? 'Creation…' : 'Generate the full recipe'}
-              </button>
-            </div>
-          </form>
-        )}
-        {selectedKey === 'stores' && showStoreForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              createStore.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-3"
-          >
-            <Field
-              label="Nom"
-              value={storeForm.name}
-              onChange={(value) => setStoreForm((form) => ({ ...form, name: value }))}
-              required
-            />
-            <Field
-              label="Adresse"
-              value={storeForm.addressLine}
-              onChange={(value) => setStoreForm((form) => ({ ...form, addressLine: value }))}
-              required
-            />
-            <Field
-              label="Ville"
-              value={storeForm.city}
-              onChange={(value) => setStoreForm((form) => ({ ...form, city: value }))}
-              required
-            />
-            <Field
-              label="Telephone"
-              value={storeForm.phone}
-              onChange={(value) => setStoreForm((form) => ({ ...form, phone: value }))}
-            />
-            <Field
-              label="Latitude"
-              value={storeForm.latitude}
-              onChange={(value) => setStoreForm((form) => ({ ...form, latitude: value }))}
-              type="number"
-            />
-            <Field
-              label="Longitude"
-              value={storeForm.longitude}
-              onChange={(value) => setStoreForm((form) => ({ ...form, longitude: value }))}
-              type="number"
-            />
-            <div className="md:col-span-2 xl:col-span-3 flex justify-end">
-              <button
-                disabled={
-                  createStore.isPending ||
-                  !storeForm.name.trim() ||
-                  !storeForm.addressLine.trim() ||
-                  !storeForm.city.trim()
-                }
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
-              >
-                {createStore.isPending ? 'Creation…' : 'Create store'}
-              </button>
-            </div>
-          </form>
-        )}
-        {selectedKey === 'collections' && showCollectionForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              createCollection.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-3"
-          >
-            <Field
-              label="Title"
-              value={collectionForm.title}
-              onChange={(value) => {
-                setCollectionForm((form) => ({
-                  ...form,
-                  title: value,
-                  slug:
-                    form.slug ||
-                    value
-                      .toLowerCase()
-                      .replace(/[^a-z0-9]+/g, '-')
-                      .replace(/^-|-$/g, ''),
-                }));
+          {selectedKey === 'campaigns' && showCampaignForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                createCampaign.mutate();
               }}
-              required
-            />
-            <Field
-              label="Slug"
-              value={collectionForm.slug}
-              onChange={(value) => setCollectionForm((form) => ({ ...form, slug: value }))}
-              required
-            />
-            <Field
-              label="Subtitle"
-              value={collectionForm.subtitle}
-              onChange={(value) => setCollectionForm((form) => ({ ...form, subtitle: value }))}
-            />
-            <Field
-              label="Cover image (HTTPS)"
-              value={collectionForm.coverImageUrl}
-              onChange={(value) => setCollectionForm((form) => ({ ...form, coverImageUrl: value }))}
-            />
-            <Field
-              label="Description"
-              value={collectionForm.description}
-              onChange={(value) => setCollectionForm((form) => ({ ...form, description: value }))}
-            />
-            <Field
-              label="Ordre"
-              type="number"
-              value={collectionForm.sortOrder}
-              onChange={(value) => setCollectionForm((form) => ({ ...form, sortOrder: value }))}
-            />
-            <div className="md:col-span-2 xl:col-span-3 flex justify-end">
-              <button
-                disabled={
-                  createCollection.isPending || !collectionForm.title.trim() || !collectionForm.slug.trim()
-                }
-                className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
-              >
-                {createCollection.isPending ? 'Creation…' : 'Create collection'}
-              </button>
-            </div>
-          </form>
-        )}
-        {selectedKey === 'team' && showTeamForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              inviteTeamMember.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-[1fr_220px_auto] md:items-end"
-          >
-            <Field
-              label="Member account ID"
-              value={teamForm.memberAccountId}
-              onChange={(value) => setTeamForm((form) => ({ ...form, memberAccountId: value }))}
-              required
-            />
-            <label className="space-y-1.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">
-                Role vendeur
-              </span>
-              <select
-                value={teamForm.role}
-                onChange={(event) => setTeamForm((form) => ({ ...form, role: event.target.value }))}
-                className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none"
-              >
-                <option value="3">Member</option>
-                <option value="2">Administrateur</option>
-              </select>
-            </label>
-            <button
-              disabled={inviteTeamMember.isPending || !teamForm.memberAccountId.trim()}
-              className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-4"
             >
-              {inviteTeamMember.isPending ? 'Invitation…' : 'Envoyer invitation'}
-            </button>
-          </form>
-        )}
-        {selectedKey === 'codes' && showCodeForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              createCode.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-4 xl:items-end"
-          >
-            <label className="space-y-1.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">
-                Type de code
-              </span>
-              <select
-                value={codeForm.kind}
-                onChange={(event) =>
-                  setCodeForm((form) => ({ ...form, kind: event.target.value as 'Store' | 'ProductTag' }))
-                }
-                className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none"
-              >
-                <option value="Store">Store</option>
-                <option value="ProductTag">In-store product</option>
-              </select>
-            </label>
-            <Field
-              label="ID magasin"
-              value={codeForm.storeId}
-              onChange={(value) => setCodeForm((form) => ({ ...form, storeId: value }))}
-              required
-            />
-            {codeForm.kind === 'ProductTag' && (
               <Field
-                label="Product ID"
-                value={codeForm.productId}
-                onChange={(value) => setCodeForm((form) => ({ ...form, productId: value }))}
+                label="Brand brief ID"
+                value={campaignForm.brandBriefId}
+                onChange={(value) => setCampaignForm((form) => ({ ...form, brandBriefId: value }))}
                 required
               />
-            )}
-            <Field
-              label="Libelle"
-              value={codeForm.label}
-              onChange={(value) => setCodeForm((form) => ({ ...form, label: value }))}
-            />
-            <button
-              disabled={
-                createCode.isPending ||
-                !codeForm.storeId.trim() ||
-                (codeForm.kind === 'ProductTag' && !codeForm.productId.trim())
-              }
-              className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
-            >
-              {createCode.isPending ? 'Creation…' : 'Create code'}
-            </button>
-          </form>
-        )}
-        {selectedKey === 'warranties/claims' && showWarrantyPolicyForm && (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              saveWarrantyPolicy.mutate();
-            }}
-            className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-[1fr_160px_2fr_auto] md:items-end"
-          >
-            <Field
-              label="ID variante"
-              value={warrantyPolicyForm.variantId}
-              onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, variantId: value }))}
-              required
-            />
-            <Field
-              label="Coverage (days)"
-              type="number"
-              value={warrantyPolicyForm.coverageDays}
-              onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, coverageDays: value }))}
-              required
-            />
-            <Field
-              label="Warranty terms"
-              value={warrantyPolicyForm.terms}
-              onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, terms: value }))}
-              required
-            />
-            <button
-              disabled={
-                saveWarrantyPolicy.isPending ||
-                !warrantyPolicyForm.variantId.trim() ||
-                Number(warrantyPolicyForm.coverageDays) < 1 ||
-                !warrantyPolicyForm.terms.trim()
-              }
-              className="rounded-xl bg-brand px-5 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
-            >
-              {saveWarrantyPolicy.isPending ? 'Saving…' : 'Save'}
-            </button>
-          </form>
-        )}
-        {actionMessage && (
-          <div className="border-b border-border-subtle bg-bg-elevated px-5 py-2 text-xs font-semibold text-text-secondary">
-            {actionMessage}
-          </div>
-        )}
-        {selectedQuery.isLoading ? (
-          <div className="flex h-56 items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-brand" />
-          </div>
-        ) : selectedQuery.isError ? (
-          <div className="flex h-56 flex-col items-center justify-center gap-2 px-6 text-center">
-            <PackageOpen className="h-8 w-8 text-amber-400" />
-            <p className="text-sm font-bold text-text-primary">Vendor connection unavailable</p>
-            <p className="max-w-lg text-xs leading-5 text-text-muted">
-              Configurez le jeton operateur Stylemint dans Lead360. Ce module utilisera ensuite les donnees
-              reelles du vendeur.
-            </p>
-          </div>
-        ) : selectedKey === 'profile' ? (
-          <VendorProfileEditor
-            data={selectedQuery.data}
-            canOperate={canOperate}
-            onSaved={() => selectedQuery.refetch()}
-          />
-        ) : rows.length ? (
-          <ResourceTable
-            rows={rows.slice(0, 25)}
-            resource={selectedKey}
-            busy={rowAction.isPending}
-            canOperate={canOperate}
-            onAction={(id, action, row) => {
-              if (action === 'manage') setCollectionManageId(id);
-              else if (action === 'edit' && selectedKey === 'collections') setCollectionEditTarget({ id, row });
-              else if (action === 'configure' && selectedKey === 'campaigns') setCampaignConfigId(id);
-              else if (action === 'edit' && selectedKey === 'briefs') setBriefEditId(id);
-              else if (action === 'attachments' && selectedKey === 'recipes') setRecipeAttachmentId(id);
-              else if (action === 'edit' && selectedKey === 'recipes') setRecipeEditId(id);
-              else if (action === 'edit' && (selectedKey === 'products' || selectedKey === 'stores'))
-                setEditTarget({ kind: selectedKey === 'products' ? 'product' : 'store', id, row });
-              else rowAction.mutate({ id, action });
-            }}
-          />
-        ) : selectedKey === 'analytics' ? (
-          <Suspense
-            fallback={
-              <div className="flex h-56 items-center justify-center">
-                <Loader2 className="h-6 w-6 animate-spin text-brand" />
+              <Field
+                label="Campaign name"
+                value={campaignForm.name}
+                onChange={(value) => setCampaignForm((form) => ({ ...form, name: value }))}
+                required
+              />
+              <Field
+                label="Budget"
+                value={campaignForm.budgetAmount}
+                onChange={(value) => setCampaignForm((form) => ({ ...form, budgetAmount: value }))}
+                type="number"
+                required
+              />
+              <label className="space-y-1.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Currency</span>
+                <select
+                  value={campaignForm.budgetCurrency}
+                  onChange={(event) => setCampaignForm((form) => ({ ...form, budgetCurrency: event.target.value }))}
+                  className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
+                >
+                  <option value="CDF">CDF</option>
+                  <option value="USD">USD</option>
+                </select>
+              </label>
+              <div className="flex justify-end md:col-span-2 xl:col-span-4">
+                <Button
+                  disabled={createCampaign.isPending || !campaignForm.brandBriefId.trim() || !campaignForm.name.trim() || Number(campaignForm.budgetAmount) <= 0}
+                  variant="primary"
+                >
+                  {createCampaign.isPending ? 'Creating…' : 'Create campaign workspace'}
+                </Button>
               </div>
-            }
-          >
-            <VendorAnalyticsPanel data={selectedQuery.data} />
-          </Suspense>
-        ) : ['dashboard', 'growth-quality'].includes(selectedKey) ? (
-          <MetricsPanel data={selectedQuery.data} />
-        ) : (
-          <div className="flex h-48 flex-col items-center justify-center gap-2">
-            <CircleDollarSign className="h-8 w-8 text-brand/50" />
-            <p className="text-sm font-bold text-text-primary">Connected module</p>
-            <p className="text-xs text-text-muted">No records to display yet.</p>
-          </div>
+            </form>
+          )}
+          {selectedKey === 'briefs' && showBriefForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                createBrief.mutate();
+              }}
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-3"
+            >
+              <Field
+                label="Brief title"
+                value={briefForm.title}
+                onChange={(value) => setBriefForm((form) => ({ ...form, title: value }))}
+                required
+              />
+              <label className="space-y-1.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Objectif</span>
+                <select
+                  value={briefForm.primaryGoal}
+                  onChange={(event) => setBriefForm((form) => ({ ...form, primaryGoal: event.target.value }))}
+                  className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
+                >
+                  <option value="1">Premier achat</option>
+                  <option value="2">Re-engage customers</option>
+                  <option value="3">Launch a variant</option>
+                  <option value="4">Clear slow stock</option>
+                  <option value="5">Notoriete saisonniere</option>
+                  <option value="6">Educate on ’usage</option>
+                  <option value="7">Test an audience</option>
+                </select>
+              </label>
+              <Field
+                label="Variant IDs, comma separated"
+                value={briefForm.productVariantIds}
+                onChange={(value) => setBriefForm((form) => ({ ...form, productVariantIds: value }))}
+                required
+              />
+              <div className="md:col-span-3 flex justify-end">
+                <Button
+                  disabled={createBrief.isPending || !briefForm.title.trim() || !briefForm.productVariantIds.trim()}
+                  variant="primary"
+                >
+                  {createBrief.isPending ? 'Creation…' : 'Creer en CDF'}
+                </Button>
+              </div>
+            </form>
+          )}
+          {selectedKey === 'partnerships' && showPartnershipForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                invitePartnership.mutate();
+              }}
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-5"
+            >
+              <Field
+                label="Search for a partner"
+                value={creatorSearch}
+                onChange={setCreatorSearch}
+              />
+              <label className="space-y-1.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">Partner</span>
+                <select
+                  required
+                  value={partnershipForm.creatorProfileId}
+                  onChange={(event) =>
+                    setPartnershipForm((form) => ({ ...form, creatorProfileId: event.target.value }))
+                  }
+                  className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
+                >
+                  <option value="">
+                    {partnershipCreators.isLoading ? 'Chargement…' : 'Select a partner'}
+                  </option>
+                  {creatorOptions.map((creator, index) => {
+                    const id = String(creator.creatorProfileId ?? creator.id ?? '');
+                    const name = String(
+                      creator.displayName ?? creator.handle ?? creator.name ?? `Partenaire ${index + 1}`,
+                    );
+                    return id ? <option key={id} value={id}>{name}</option> : null;
+                  })}
+                </select>
+              </label>
+              <Field
+                label="Commission min. %"
+                value={partnershipForm.commissionMinPercent}
+                onChange={(value) => setPartnershipForm((form) => ({ ...form, commissionMinPercent: value }))}
+                type="number"
+                required
+              />
+              <Field
+                label="Commission max. %"
+                value={partnershipForm.commissionMaxPercent}
+                onChange={(value) => setPartnershipForm((form) => ({ ...form, commissionMaxPercent: value }))}
+                type="number"
+                required
+              />
+              <Field
+                label="ID brief (optionnel)"
+                value={partnershipForm.brandBriefId}
+                onChange={(value) => setPartnershipForm((form) => ({ ...form, brandBriefId: value }))}
+              />
+              <div className="md:col-span-2 xl:col-span-5 flex justify-end">
+                <Button
+                  disabled={invitePartnership.isPending || !partnershipForm.creatorProfileId.trim()}
+                  variant="primary"
+                >
+                  {invitePartnership.isPending ? 'Sending…' : 'Send invitation'}
+                </Button>
+              </div>
+            </form>
+          )}
+          {selectedKey === 'recipes' && showRecipeForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                createRecipe.mutate();
+              }}
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-3"
+            >
+              <Field label="Recipe title" value={recipeForm.title} onChange={(value) => setRecipeForm((form) => ({ ...form, title: value }))} required />
+              <Field label="Music track ID" value={recipeForm.musicTrackRefId} onChange={(value) => setRecipeForm((form) => ({ ...form, musicTrackRefId: value }))} required />
+              <Field label="Variant IDs, comma separated" value={recipeForm.productVariantIds} onChange={(value) => setRecipeForm((form) => ({ ...form, productVariantIds: value }))} required />
+              <Field label="Anchor for the ’product story" value={recipeForm.brandStoryAnchor} onChange={(value) => setRecipeForm((form) => ({ ...form, brandStoryAnchor: value }))} required />
+              <Field label="Ambiance" value={recipeForm.moodLabel} onChange={(value) => setRecipeForm((form) => ({ ...form, moodLabel: value }))} required />
+              <Field label="Duration in seconds" value={recipeForm.durationSeconds} onChange={(value) => setRecipeForm((form) => ({ ...form, durationSeconds: value }))} type="number" required />
+              <Field label="Music title" value={recipeForm.songTitle} onChange={(value) => setRecipeForm((form) => ({ ...form, songTitle: value }))} required />
+              <Field label="Artist" value={recipeForm.artist} onChange={(value) => setRecipeForm((form) => ({ ...form, artist: value }))} required />
+              <Field label="Main caption" value={recipeForm.caption} onChange={(value) => setRecipeForm((form) => ({ ...form, caption: value }))} required />
+              <div className="md:col-span-2 xl:col-span-3 rounded-xl border border-brand/20 bg-brand-soft px-4 py-3 text-xs leading-5 text-text-secondary">
+                Lead360 generates three narrative scenes, three captions, the Instagram, TikTok, YouTube Shorts and Facebook adaptations, and the reasoning signals needed to lock the recipe.
+              </div>
+              <div className="md:col-span-2 xl:col-span-3 flex justify-end">
+                <Button
+                  disabled={createRecipe.isPending || !recipeForm.title.trim() || !recipeForm.musicTrackRefId.trim() || !recipeForm.productVariantIds.trim() || !recipeForm.brandStoryAnchor.trim() || !recipeForm.songTitle.trim() || !recipeForm.artist.trim() || !recipeForm.caption.trim()}
+                  variant="primary"
+                >
+                  {createRecipe.isPending ? 'Creation…' : 'Generate the full recipe'}
+                </Button>
+              </div>
+            </form>
+          )}
+          {selectedKey === 'stores' && showStoreForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                createStore.mutate();
+              }}
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-3"
+            >
+              <Field
+                label="Nom"
+                value={storeForm.name}
+                onChange={(value) => setStoreForm((form) => ({ ...form, name: value }))}
+                required
+              />
+              <Field
+                label="Adresse"
+                value={storeForm.addressLine}
+                onChange={(value) => setStoreForm((form) => ({ ...form, addressLine: value }))}
+                required
+              />
+              <Field
+                label="City"
+                value={storeForm.city}
+                onChange={(value) => setStoreForm((form) => ({ ...form, city: value }))}
+                required
+              />
+              <Field
+                label="Telephone"
+                value={storeForm.phone}
+                onChange={(value) => setStoreForm((form) => ({ ...form, phone: value }))}
+              />
+              <Field
+                label="Latitude"
+                value={storeForm.latitude}
+                onChange={(value) => setStoreForm((form) => ({ ...form, latitude: value }))}
+                type="number"
+              />
+              <Field
+                label="Longitude"
+                value={storeForm.longitude}
+                onChange={(value) => setStoreForm((form) => ({ ...form, longitude: value }))}
+                type="number"
+              />
+              <div className="md:col-span-2 xl:col-span-3 flex justify-end">
+                <Button
+                  disabled={
+                    createStore.isPending ||
+                    !storeForm.name.trim() ||
+                    !storeForm.addressLine.trim() ||
+                    !storeForm.city.trim()
+                  }
+                  variant="primary"
+                >
+                  {createStore.isPending ? 'Creation…' : 'Create store'}
+                </Button>
+              </div>
+            </form>
+          )}
+          {selectedKey === 'collections' && showCollectionForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                createCollection.mutate();
+              }}
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-3"
+            >
+              <Field
+                label="Title"
+                value={collectionForm.title}
+                onChange={(value) => {
+                  setCollectionForm((form) => ({
+                    ...form,
+                    title: value,
+                    slug:
+                      form.slug ||
+                      value
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-|-$/g, ''),
+                  }));
+                }}
+                required
+              />
+              <Field
+                label="Slug"
+                value={collectionForm.slug}
+                onChange={(value) => setCollectionForm((form) => ({ ...form, slug: value }))}
+                required
+              />
+              <Field
+                label="Subtitle"
+                value={collectionForm.subtitle}
+                onChange={(value) => setCollectionForm((form) => ({ ...form, subtitle: value }))}
+              />
+              <Field
+                label="Cover image (HTTPS)"
+                value={collectionForm.coverImageUrl}
+                onChange={(value) => setCollectionForm((form) => ({ ...form, coverImageUrl: value }))}
+              />
+              <Field
+                label="Description"
+                value={collectionForm.description}
+                onChange={(value) => setCollectionForm((form) => ({ ...form, description: value }))}
+              />
+              <Field
+                label="Ordre"
+                type="number"
+                value={collectionForm.sortOrder}
+                onChange={(value) => setCollectionForm((form) => ({ ...form, sortOrder: value }))}
+              />
+              <div className="md:col-span-2 xl:col-span-3 flex justify-end">
+                <Button
+                  disabled={
+                    createCollection.isPending || !collectionForm.title.trim() || !collectionForm.slug.trim()
+                  }
+                  variant="primary"
+                >
+                  {createCollection.isPending ? 'Creation…' : 'Create collection'}
+                </Button>
+              </div>
+            </form>
+          )}
+          {selectedKey === 'team' && showTeamForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                inviteTeamMember.mutate();
+              }}
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-[1fr_220px_auto] md:items-end"
+            >
+              <Field
+                label="Member account ID"
+                value={teamForm.memberAccountId}
+                onChange={(value) => setTeamForm((form) => ({ ...form, memberAccountId: value }))}
+                required
+              />
+              <label className="space-y-1.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">
+                  Vendor role
+                </span>
+                <select
+                  value={teamForm.role}
+                  onChange={(event) => setTeamForm((form) => ({ ...form, role: event.target.value }))}
+                  className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none"
+                >
+                  <option value="3">Member</option>
+                  <option value="2">Administrator</option>
+                </select>
+              </label>
+              <Button
+                disabled={inviteTeamMember.isPending || !teamForm.memberAccountId.trim()}
+                variant="primary"
+              >
+                {inviteTeamMember.isPending ? 'Invitation…' : 'Envoyer invitation'}
+              </Button>
+            </form>
+          )}
+          {selectedKey === 'codes' && showCodeForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                createCode.mutate();
+              }}
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-2 xl:grid-cols-4 xl:items-end"
+            >
+              <label className="space-y-1.5">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">
+                  Type de code
+                </span>
+                <select
+                  value={codeForm.kind}
+                  onChange={(event) =>
+                    setCodeForm((form) => ({ ...form, kind: event.target.value as 'Store' | 'ProductTag' }))
+                  }
+                  className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none"
+                >
+                  <option value="Store">Store</option>
+                  <option value="ProductTag">In-store product</option>
+                </select>
+              </label>
+              <Field
+                label="ID magasin"
+                value={codeForm.storeId}
+                onChange={(value) => setCodeForm((form) => ({ ...form, storeId: value }))}
+                required
+              />
+              {codeForm.kind === 'ProductTag' && (
+                <Field
+                  label="Product ID"
+                  value={codeForm.productId}
+                  onChange={(value) => setCodeForm((form) => ({ ...form, productId: value }))}
+                  required
+                />
+              )}
+              <Field
+                label="Libelle"
+                value={codeForm.label}
+                onChange={(value) => setCodeForm((form) => ({ ...form, label: value }))}
+              />
+              <Button
+                disabled={
+                  createCode.isPending ||
+                  !codeForm.storeId.trim() ||
+                  (codeForm.kind === 'ProductTag' && !codeForm.productId.trim())
+                }
+                variant="primary"
+              >
+                {createCode.isPending ? 'Creation…' : 'Create code'}
+              </Button>
+            </form>
+          )}
+          {selectedKey === 'warranties/claims' && showWarrantyPolicyForm && (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                saveWarrantyPolicy.mutate();
+              }}
+              className="grid gap-3 border-b border-border-subtle bg-bg-elevated p-5 md:grid-cols-[1fr_160px_2fr_auto] md:items-end"
+            >
+              <Field
+                label="ID variante"
+                value={warrantyPolicyForm.variantId}
+                onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, variantId: value }))}
+                required
+              />
+              <Field
+                label="Coverage (days)"
+                type="number"
+                value={warrantyPolicyForm.coverageDays}
+                onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, coverageDays: value }))}
+                required
+              />
+              <Field
+                label="Warranty terms"
+                value={warrantyPolicyForm.terms}
+                onChange={(value) => setWarrantyPolicyForm((form) => ({ ...form, terms: value }))}
+                required
+              />
+              <Button
+                disabled={
+                  saveWarrantyPolicy.isPending ||
+                  !warrantyPolicyForm.variantId.trim() ||
+                  Number(warrantyPolicyForm.coverageDays) < 1 ||
+                  !warrantyPolicyForm.terms.trim()
+                }
+                variant="primary"
+              >
+                {saveWarrantyPolicy.isPending ? 'Saving…' : 'Save'}
+              </Button>
+            </form>
+          )}
+          {actionMessage && (
+            <div className="border-b border-border-subtle bg-bg-elevated px-5 py-2 text-xs font-semibold text-text-secondary">
+              {actionMessage}
+            </div>
+          )}
+          {selectedQuery.isLoading ? (
+            <div className="flex h-56 items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-brand" />
+            </div>
+          ) : selectedQuery.isError ? (
+            <div className="flex h-56 flex-col items-center justify-center gap-2 px-6 text-center">
+              <PackageOpen className="h-8 w-8 text-amber-400" />
+              <p className="text-sm font-bold text-text-primary">Vendor connection unavailable</p>
+              <p className="max-w-lg text-xs leading-5 text-text-muted">
+                Configure the Stylemint operator token in Lead360. This module will then show real
+                vendor data.
+              </p>
+            </div>
+          ) : selectedKey === 'profile' ? (
+            <VendorProfileEditor
+              data={selectedQuery.data}
+              canOperate={canOperate}
+              onSaved={() => selectedQuery.refetch()}
+            />
+          ) : rows.length ? (
+            <ResourceTable
+              rows={rows.slice(0, 25)}
+              resource={selectedKey}
+              busy={rowAction.isPending}
+              canOperate={canOperate}
+              onAction={(id, action, row) => {
+                if (action === 'manage') setCollectionManageId(id);
+                else if (action === 'edit' && selectedKey === 'collections') setCollectionEditTarget({ id, row });
+                else if (action === 'configure' && selectedKey === 'campaigns') setCampaignConfigId(id);
+                else if (action === 'edit' && selectedKey === 'briefs') setBriefEditId(id);
+                else if (action === 'attachments' && selectedKey === 'recipes') setRecipeAttachmentId(id);
+                else if (action === 'edit' && selectedKey === 'recipes') setRecipeEditId(id);
+                else if (action === 'edit' && (selectedKey === 'products' || selectedKey === 'stores'))
+                  setEditTarget({ kind: selectedKey === 'products' ? 'product' : 'store', id, row });
+                else rowAction.mutate({ id, action });
+              }}
+            />
+          ) : selectedKey === 'analytics' ? (
+            <Suspense
+              fallback={
+                <div className="flex h-56 items-center justify-center">
+                  <Loader2 className="h-6 w-6 animate-spin text-brand" />
+                </div>
+              }
+            >
+              <VendorAnalyticsPanel data={selectedQuery.data} />
+            </Suspense>
+          ) : ['dashboard', 'growth-quality'].includes(selectedKey) ? (
+            <MetricsPanel data={selectedQuery.data} />
+          ) : (
+            <div className="flex h-48 flex-col items-center justify-center gap-2">
+              <CircleDollarSign className="h-8 w-8 text-brand/50" />
+              <p className="text-sm font-bold text-text-primary">Connected module</p>
+              <p className="text-xs text-text-muted">No records to display yet.</p>
+            </div>
+          )}
+        </section>
+        {showProductComposer && (
+          <ProductComposer
+            onClose={() => setShowProductComposer(false)}
+            onDone={async () => {
+              setShowProductComposer(false);
+              setActionMessage('Product created and synchronized with Stylemint.');
+              await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'products'] });
+            }}
+          />
         )}
-      </section>
-      {showProductComposer && (
-        <ProductComposer
-          onClose={() => setShowProductComposer(false)}
-          onDone={async () => {
-            setShowProductComposer(false);
-            setActionMessage('Product created and synchronized with Stylemint.');
-            await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'products'] });
-          }}
-        />
-      )}
-      {collectionManageId && (
-        <CollectionItemsDialog
-          collectionId={collectionManageId}
-          busy={collectionItems.isPending}
-          onClose={() => setCollectionManageId(null)}
-          onAction={(action, productId, productIds) =>
-            collectionItems.mutate({ action, productId, productIds })
-          }
-        />
-      )}
-      {collectionEditTarget && (
-        <CollectionEditDialog
-          id={collectionEditTarget.id}
-          initial={collectionEditTarget.row}
-          onClose={() => setCollectionEditTarget(null)}
-          onSaved={async () => {
-            setCollectionEditTarget(null);
-            setActionMessage('Collection updated and synchronized with Stylemint.');
-            await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'collections'] });
-          }}
-        />
-      )}
-      {campaignConfigId && (
-        <CampaignConfigDialog
-          id={campaignConfigId}
-          onClose={() => setCampaignConfigId(null)}
-          onSaved={async () => {
-            setCampaignConfigId(null);
-            setActionMessage('Campaign configuration synchronized with Stylemint.');
-            await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'campaigns'] });
-          }}
-        />
-      )}
-      {briefEditId && (
-        <BriefEditDialog
-          id={briefEditId}
-          onClose={() => setBriefEditId(null)}
-          onSaved={async () => {
-            setBriefEditId(null);
-            setActionMessage('Commercial brief updated in Stylemint.');
-            await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'briefs'] });
-          }}
-        />
-      )}
-      {recipeAttachmentId && (
-        <RecipeAttachmentDialog
-          recipeId={recipeAttachmentId}
-          onClose={() => setRecipeAttachmentId(null)}
-          onDone={async (message) => {
-            setRecipeAttachmentId(null);
-            setActionMessage(message);
-            await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'recipes'] });
-          }}
-        />
-      )}
-      {recipeEditId && (
-        <RecipeEditDialog id={recipeEditId} onClose={() => setRecipeEditId(null)} onSaved={async () => { setRecipeEditId(null); setActionMessage('Recipe updated and synchronized with Stylemint.'); await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'recipes'] }); }} />
-      )}
-      {editTarget && (
-        <VendorResourceEditDialog
-          kind={editTarget.kind}
-          id={editTarget.id}
-          initial={editTarget.row}
-          onClose={() => setEditTarget(null)}
-          onSaved={async () => {
-            const key = editTarget.kind === 'product' ? 'products' : 'stores';
-            setEditTarget(null);
-            setActionMessage('Changes synchronized with Stylemint.');
-            await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', key] });
-          }}
-        />
-      )}
-      {collaborationDialog && (
-        <VendorCollaborationDialog
-          kind={collaborationDialog}
-          onClose={() => setCollaborationDialog(null)}
-          onDone={async () => {
-            const key = collaborationDialog === 'squad' ? 'squads' : 'retainers';
-            setActionMessage(collaborationDialog === 'squad' ? 'Escouade creee en CDF.' : 'Contrat mensuel propose.');
-            setCollaborationDialog(null);
-            await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', key] });
-          }}
-        />
-      )}
-      {insightDialog && (
-        <VendorInsightDialog
-          {...insightDialog}
-          onClose={() => setInsightDialog(null)}
-        />
-      )}
+        {collectionManageId && (
+          <CollectionItemsDialog
+            collectionId={collectionManageId}
+            busy={collectionItems.isPending}
+            onClose={() => setCollectionManageId(null)}
+            onAction={(action, productId, productIds) =>
+              collectionItems.mutate({ action, productId, productIds })
+            }
+          />
+        )}
+        {collectionEditTarget && (
+          <CollectionEditDialog
+            id={collectionEditTarget.id}
+            initial={collectionEditTarget.row}
+            onClose={() => setCollectionEditTarget(null)}
+            onSaved={async () => {
+              setCollectionEditTarget(null);
+              setActionMessage('Collection updated and synchronized with Stylemint.');
+              await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'collections'] });
+            }}
+          />
+        )}
+        {campaignConfigId && (
+          <CampaignConfigDialog
+            id={campaignConfigId}
+            onClose={() => setCampaignConfigId(null)}
+            onSaved={async () => {
+              setCampaignConfigId(null);
+              setActionMessage('Campaign configuration synchronized with Stylemint.');
+              await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'campaigns'] });
+            }}
+          />
+        )}
+        {briefEditId && (
+          <BriefEditDialog
+            id={briefEditId}
+            onClose={() => setBriefEditId(null)}
+            onSaved={async () => {
+              setBriefEditId(null);
+              setActionMessage('Commercial brief updated in Stylemint.');
+              await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'briefs'] });
+            }}
+          />
+        )}
+        {recipeAttachmentId && (
+          <RecipeAttachmentDialog
+            recipeId={recipeAttachmentId}
+            onClose={() => setRecipeAttachmentId(null)}
+            onDone={async (message) => {
+              setRecipeAttachmentId(null);
+              setActionMessage(message);
+              await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'recipes'] });
+            }}
+          />
+        )}
+        {recipeEditId && (
+          <RecipeEditDialog id={recipeEditId} onClose={() => setRecipeEditId(null)} onSaved={async () => { setRecipeEditId(null); setActionMessage('Recipe updated and synchronized with Stylemint.'); await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', 'recipes'] }); }} />
+        )}
+        {editTarget && (
+          <VendorResourceEditDialog
+            kind={editTarget.kind}
+            id={editTarget.id}
+            initial={editTarget.row}
+            onClose={() => setEditTarget(null)}
+            onSaved={async () => {
+              const key = editTarget.kind === 'product' ? 'products' : 'stores';
+              setEditTarget(null);
+              setActionMessage('Changes synchronized with Stylemint.');
+              await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', key] });
+            }}
+          />
+        )}
+        {collaborationDialog && (
+          <VendorCollaborationDialog
+            kind={collaborationDialog}
+            onClose={() => setCollaborationDialog(null)}
+            onDone={async () => {
+              const key = collaborationDialog === 'squad' ? 'squads' : 'retainers';
+              setActionMessage(collaborationDialog === 'squad' ? 'Squad created in CDF.' : 'Monthly contract proposed.');
+              setCollaborationDialog(null);
+              await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', key] });
+            }}
+          />
+        )}
+        {insightDialog && (
+          <VendorInsightDialog
+            {...insightDialog}
+            onClose={() => setInsightDialog(null)}
+          />
+        )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -1640,7 +1443,7 @@ function CollectionItemsDialog({
             <h3 className="mt-1 text-lg font-black text-text-primary">Collection products</h3>
             <p className="mt-1 font-mono text-[10px] text-text-muted">{collectionId}</p>
           </div>
-          <button onClick={onClose}>
+          <button aria-label="Close" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </div>
@@ -1650,20 +1453,20 @@ function CollectionItemsDialog({
             <input
               value={productId}
               onChange={(event) => setProductId(event.target.value)}
-              placeholder="Product ID"
+              placeholder="Product ID" aria-label="Product ID"
               className="min-w-0 flex-1 rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none focus:border-brand/50"
             />
-            <button
+            <Button
               disabled={busy || !productId.trim()}
               onClick={() => onAction('add', productId.trim())}
-              className="rounded-xl bg-brand px-4 py-2 text-xs font-extrabold text-black disabled:opacity-40"
+              variant="primary"
             >
               Add
-            </button>
+            </Button>
             <button
               disabled={busy || !productId.trim()}
               onClick={() => onAction('remove', productId.trim())}
-              className="rounded-xl border border-danger/25 px-4 py-2 text-xs font-bold text-danger disabled:opacity-40"
+              className="rounded-xl border border-danger/25 px-4 py-2 text-xs font-bold text-danger-light disabled:opacity-40"
             >
               Remove
             </button>
@@ -1672,21 +1475,21 @@ function CollectionItemsDialog({
         <section className="mt-3 rounded-xl border border-border-subtle bg-bg-elevated p-4">
           <p className="text-xs font-extrabold text-text-primary">Reorder collection</p>
           <p className="mt-1 text-[11px] text-text-muted">
-            Entrez tous les identifiants produit dans l’ordre souhaite, separes par des virgules.
+            Enter every product id in the order you want, separated by commas.
           </p>
-          <textarea
+          <textarea aria-label="Ordered ids"
             rows={4}
             value={orderedIds}
             onChange={(event) => setOrderedIds(event.target.value)}
             className="mt-3 w-full resize-y rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 font-mono text-xs text-text-primary outline-none focus:border-brand/50"
           />
-          <button
+          <Button
             disabled={busy || order.length === 0}
             onClick={() => onAction('reorder', undefined, order)}
-            className="mt-3 w-full rounded-xl bg-brand px-4 py-2.5 text-xs font-extrabold text-black disabled:opacity-40"
+            variant="primary" block className="mt-3"
           >
             Save new order
-          </button>
+          </Button>
         </section>
       </div>
     </div>
@@ -1927,10 +1730,10 @@ const FIELD_LABELS: Record<string, string> = {
   role: 'Role',
   email: 'E-mail',
   displayName: 'Name',
-  subject: 'Sujet',
+  subject: 'Subject',
   message: 'Message',
-  orderNumber: 'Commande',
-  totalAmount: 'Montant',
+  orderNumber: 'Order',
+  totalAmount: 'Amount',
   currency: 'Currency',
   reason: 'Reason',
 };

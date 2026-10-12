@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 const PERIOD_PRESETS = [
   { label: 'This Month', code: new Date().toISOString().slice(0, 7) },
@@ -36,14 +37,20 @@ function PayoutModal({ payout, onClose }: { payout: CrmCommissionPayoutDto; onCl
         <h3 className="text-sm font-bold text-text-primary">Payout — {payout.label || payout.periodCode}</h3>
         <div className="space-y-2 text-sm">
           <p className="flex justify-between"><span className="text-text-muted">Gross</span><span className="font-semibold">{payout.currency} {payout.totalCommissionAmount.toLocaleString()}</span></p>
-          <p className="flex justify-between"><span className="text-text-muted">Deductions</span><span className="font-semibold text-danger">{payout.deductions ? `-${payout.currency} ${payout.deductions.toLocaleString()}` : '—'}</span></p>
+          <p className="flex justify-between"><span className="text-text-muted">Deductions</span><span className="font-semibold text-danger-light">{payout.deductions ? `-${payout.currency} ${payout.deductions.toLocaleString()}` : '—'}</span></p>
           <p className="flex justify-between border-t border-border-subtle pt-2"><span className="text-text-muted">Net</span><span className="font-bold text-lg">{payout.currency} {payout.netPayAmount.toLocaleString()}</span></p>
         </div>
 
         {payout.status === CrmCommissionRunStatus.Draft && (
           <div className="space-y-3">
-            <div><label className="text-xs text-text-muted block mb-1">Deductions</label><input type="number" value={deductions} onChange={e => setDeductions(e.target.value)} placeholder="0.00" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Notes</label><textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Optional notes..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm resize-none" /></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Deductions</span>
+  <input type="number" value={deductions} onChange={e => setDeductions(e.target.value)} placeholder="0.00" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Notes</span>
+  <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Optional notes..." className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm resize-none" />
+</label></div>
             <button onClick={handleApprove} disabled={finalize.isPending} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {finalize.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />} Approve & Finalize
             </button>
@@ -51,12 +58,12 @@ function PayoutModal({ payout, onClose }: { payout: CrmCommissionPayoutDto; onCl
         )}
 
         {payout.status === CrmCommissionRunStatus.Finalized && (
-          <button onClick={handleMarkPaid} disabled={markPaid.isPending} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">
+          <Button onClick={handleMarkPaid} disabled={markPaid.isPending} variant="primary" size="lg" block>
             {markPaid.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wallet className="w-4 h-4" />} Record Payout
-          </button>
+          </Button>
         )}
 
-        <button onClick={onClose} className="w-full py-2 rounded-xl text-sm text-text-secondary border border-border-subtle hover:bg-bg-elevated">Close</button>
+        <Button onClick={onClose} variant="secondary" block>Close</Button>
       </div>
     </div>
   );
@@ -97,10 +104,10 @@ export function Component() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button onClick={() => runCommission.mutate()} disabled={runCommission.isPending}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-brand text-bg text-xs font-bold hover:bg-brand-light disabled:opacity-50">
+          <Button onClick={() => runCommission.mutate()} disabled={runCommission.isPending}
+            variant="primary">
             {runCommission.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />} Run Commission
-          </button>
+          </Button>
           <button onClick={() => {
             const p = crmApi.createCommissionPlan({ name: 'Default Plan', rateType: 1, rateValue: 5, targetEntity: 1 });
             toast.promise(p, { loading: 'Creating plan...', success: 'Commission plan created.', error: (e) => e?.message || 'Error' });
@@ -110,7 +117,7 @@ export function Component() {
         </div>
 
         {/* Period filter */}
-        <select value={periodCode} onChange={e => setPeriodCode(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+        <select aria-label="Period code" value={periodCode} onChange={e => setPeriodCode(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
           {PERIOD_PRESETS.map(p => <option key={p.code} value={p.code}>{p.label}</option>)}
         </select>
       </div>
@@ -170,7 +177,7 @@ export function Component() {
                     <td className="px-4 py-3 font-semibold text-text-primary">{p.periodCode}</td>
                     <td className="px-4 py-3 text-text-secondary">{p.label || '—'}</td>
                     <td className="px-4 py-3 text-text-primary">{p.currency} {p.totalCommissionAmount.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-danger">{p.deductions ? `${p.currency} ${p.deductions.toLocaleString()}` : '—'}</td>
+                    <td className="px-4 py-3 text-danger-light">{p.deductions ? `${p.currency} ${p.deductions.toLocaleString()}` : '—'}</td>
                     <td className="px-4 py-3 font-semibold text-text-primary">{p.currency} {p.netPayAmount.toLocaleString()}</td>
                     <td className="px-4 py-3"><span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border ${CRM_COMMISSION_STATUS_COLORS[p.status]}`}>
                       {p.status === 1 && <Clock className="w-3 h-3" />}

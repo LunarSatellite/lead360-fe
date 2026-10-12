@@ -23,7 +23,7 @@ const INSTANCE_STATUS_CONFIG: Record<ProcessInstanceStatus, { label: string; col
   [ProcessInstanceStatus.Active]:    { label: 'Active',    color: 'text-info-DEFAULT',    icon: Play },
   [ProcessInstanceStatus.Completed]: { label: 'Completed', color: 'text-success-DEFAULT', icon: CheckCircle2 },
   [ProcessInstanceStatus.Cancelled]: { label: 'Cancelled', color: 'text-text-muted',     icon: XCircle },
-  [ProcessInstanceStatus.Failed]:    { label: 'Failed',    color: 'text-danger-DEFAULT',  icon: AlertTriangle },
+  [ProcessInstanceStatus.Failed]:    { label: 'Failed',    color: 'text-danger-light',  icon: AlertTriangle },
 };
 
 // ─── Instance Detail Slide-Over ─────────────────────────────────────────────
@@ -32,7 +32,7 @@ function TaskItem({ task }: { task: ProcessTaskDto }) {
   const statusIcon = () => {
     if (task.status === ProcessTaskStatus.Completed) return <CheckCircle2 className="w-3.5 h-3.5 text-success-DEFAULT" />;
     if (task.status === ProcessTaskStatus.InProgress) return <Play className="w-3.5 h-3.5 text-info-DEFAULT" />;
-    if (task.status === ProcessTaskStatus.Escalated) return <AlertTriangle className="w-3.5 h-3.5 text-danger-DEFAULT" />;
+    if (task.status === ProcessTaskStatus.Escalated) return <AlertTriangle className="w-3.5 h-3.5 text-danger-light" />;
     if (task.status === ProcessTaskStatus.Skipped) return <Ban className="w-3.5 h-3.5 text-text-muted" />;
     return <Circle className="w-3.5 h-3.5 text-text-muted" />;
   };
@@ -123,7 +123,7 @@ function InstanceDetail({ instanceId, onClose }: { instanceId: string; onClose: 
             <button
               onClick={() => confirmDialog({ message: 'Cancel this process instance? Pending tasks will be skipped.', confirmText: 'Cancel instance', danger: true }).then((ok) => { if (ok) cancel.mutate(instance.id, { onSuccess: onClose }); })}
               disabled={cancel.isPending}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-danger/30 text-danger text-sm font-semibold hover:bg-danger/10 transition-all disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-danger/30 text-danger-light text-sm font-semibold hover:bg-danger/10 transition-all disabled:opacity-50"
             >
               {cancel.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Ban className="w-4 h-4" />}
               Cancel Instance
@@ -159,7 +159,7 @@ function SlideOver({ title, onClose, children }: { title: string; onClose: () =>
       <div className="relative w-full max-w-md bg-bg shadow-2xl flex flex-col border-l border-border-subtle h-full">
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -226,7 +226,7 @@ function ProcessWorkflowInstancesPage() {
         {STATUS_PILLS.map(pill => {
           const isActive = pill.value === statusFilter;
           return (
-            <button
+            <button aria-pressed={isActive}
               key={pill.label}
               onClick={() => { setStatusFilter(pill.value); setPage(1); }}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${

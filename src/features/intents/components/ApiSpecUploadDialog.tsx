@@ -11,6 +11,7 @@ import {
   type ApiSpecUploadFormData,
   type ApiSpecFileUploadFormData,
 } from '../types/api-specs.schemas';
+import { Button } from '@/shared/ui/primitives';
 
 type TabId = 'paste' | 'file';
 
@@ -131,7 +132,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               <p className="text-xs text-text-muted mt-0.5">Swagger / OpenAPI 2.0 or 3.x</p>
             </div>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={handleClose}
             disabled={isPending}
             className="p-1.5 rounded-lg hover:bg-glass-1 text-text-muted hover:text-text-primary transition-all"
@@ -162,7 +163,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
           {tab === 'paste' ? (
             <form id="paste-form" onSubmit={pasteForm.handleSubmit(handlePasteSubmit)} className="space-y-4">
               <Field label="Name" error={pasteForm.formState.errors.name?.message} required>
-                <input
+                <input aria-label="Name"
                   {...pasteForm.register('name')}
                   placeholder="e.g. Petstore API v3"
                   className="form-input"
@@ -173,7 +174,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               <Field label="Description" error={pasteForm.formState.errors.description?.message}>
                 <textarea
                   {...pasteForm.register('description')}
-                  placeholder="Optional description..."
+                  placeholder="Optional description..." aria-label="Optional description..."
                   rows={2}
                   className="form-input resize-none"
                   disabled={isPending}
@@ -181,7 +182,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               </Field>
 
               <Field label="Format">
-                <select
+                <select aria-label="File format"
                   {...pasteForm.register('fileFormat')}
                   className="form-input appearance-none cursor-pointer"
                   disabled={isPending}
@@ -193,7 +194,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               </Field>
 
               <Field label="Spec Content" error={pasteForm.formState.errors.specContent?.message} required>
-                <textarea
+                <textarea aria-label="Spec content"
                   {...pasteForm.register('specContent')}
                   placeholder='Paste your OpenAPI / Swagger JSON or YAML here...'
                   rows={10}
@@ -209,7 +210,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
           ) : (
             <form id="file-form" onSubmit={fileForm.handleSubmit(handleFileSubmit)} className="space-y-4">
               <Field label="Name" error={fileForm.formState.errors.name?.message} required>
-                <input
+                <input aria-label="Name"
                   {...fileForm.register('name')}
                   placeholder="e.g. Petstore API v3"
                   className="form-input"
@@ -220,7 +221,7 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
               <Field label="Description" error={fileForm.formState.errors.description?.message}>
                 <textarea
                   {...fileForm.register('description')}
-                  placeholder="Optional description..."
+                  placeholder="Optional description..." aria-label="Optional description..."
                   rows={2}
                   className="form-input resize-none"
                   disabled={isPending}
@@ -281,14 +282,14 @@ export function ApiSpecUploadDialog({ open, onClose }: ApiSpecUploadDialogProps)
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle bg-glass-1">
-          <button
+          <Button
             type="button"
             onClick={handleClose}
             disabled={isPending}
-            className="px-4 py-2.5 rounded-lg text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+            variant="ghost" size="lg"
           >
             Cancel
-          </button>
+          </Button>
           <button
             type="submit"
             form={tab === 'paste' ? 'paste-form' : 'file-form'}
@@ -344,10 +345,10 @@ function Field({
     <div>
       <label className="block text-xs font-semibold text-text-secondary mb-1.5">
         {label}
-        {required && <span className="text-danger ml-0.5">*</span>}
+        {required && <span className="text-danger-light ml-0.5">*</span>}
       </label>
       {children}
-      {error && <p className="text-xs text-danger mt-1">{error}</p>}
+      {error && <p className="text-xs text-danger-light mt-1">{error}</p>}
     </div>
   );
 }
@@ -355,8 +356,8 @@ function Field({
 function ErrorBanner({ message }: { message: string }) {
   return (
     <div className="flex items-start gap-3 p-3 rounded-lg bg-danger-soft border border-danger/15">
-      <AlertCircle className="w-4 h-4 text-danger flex-shrink-0 mt-0.5" strokeWidth={1.8} />
-      <p className="text-xs text-danger font-medium">{message}</p>
+      <AlertCircle className="w-4 h-4 text-danger-light flex-shrink-0 mt-0.5" strokeWidth={1.8} />
+      <p className="text-xs text-danger-light font-medium">{message}</p>
     </div>
   );
 }

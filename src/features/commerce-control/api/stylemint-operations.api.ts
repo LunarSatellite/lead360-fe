@@ -91,7 +91,7 @@ export const stylemintOperationsApi = {
     const response = await rawClient.get(`/v1/stylemint/operations-catalog`);
     if (response.status >= 400) {
       throw new Error(
-        `Could not load the operations catalogue (HTTP ${response.status}). ` +
+        `Could not load the operations catalog (HTTP ${response.status}). ` +
           `You may not have the Stylemint operator role.`,
       );
     }

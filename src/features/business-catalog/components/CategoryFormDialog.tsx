@@ -12,6 +12,7 @@ import {
   CatalogCategoryType,
 } from '../types/business-catalog.types';
 import type { CatalogCategory, CatalogCategoryTypeValue } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   parentLabel: string;
@@ -141,7 +142,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
               Group your offerings — e.g. specialties, departments, brands.
             </p>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-7 h-7 rounded-sm flex items-center justify-center
                        hover:bg-glass-2 transition-colors"
@@ -152,7 +153,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
 
         <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           <Field label="Name">
-            <input
+            <input aria-label="Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Mountain Bikes, Repair Services"
@@ -163,7 +164,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
           </Field>
 
           <Field label="Description (optional)">
-            <textarea
+            <textarea aria-label="Description"
               value={description}
               rows={2}
               onChange={(e) => setDescription(e.target.value)}
@@ -204,7 +205,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
 
           {/* Transaction label — overrides the profile-level label for this category only */}
           <Field label="Button label (optional)">
-            <input
+            <input aria-label="Transaction label"
               value={transactionLabel}
               onChange={(e) => setTransactionLabel(e.target.value)}
               placeholder={
@@ -220,7 +221,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
           </Field>
 
           <Field label="Parent (optional)">
-            <select
+            <select aria-label="Parent ID"
               value={parentId ?? ''}
               onChange={(e) => setParentId(e.target.value || null)}
               className="w-full rounded-lg px-3 py-2 text-xs bg-glass-2 border border-border-subtle
@@ -240,7 +241,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
               <input
                 value={color}
                 onChange={(e) => setColor(e.target.value)}
-                placeholder="#3498DB"
+                placeholder="#3498DB" aria-label="#3498DB"
                 maxLength={7}
                 className="w-full rounded-lg px-3 py-2 text-xs bg-glass-2 border border-border-subtle
                            text-text-primary placeholder:text-text-muted
@@ -248,7 +249,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
               />
             </Field>
             <Field label="Sort order">
-              <input
+              <input aria-label="Sort order"
                 type="number"
                 value={sortOrder}
                 onChange={(e) => setSortOrder(Number(e.target.value) || 0)}
@@ -259,7 +260,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
           </div>
 
           <Field label="Icon URL (optional)">
-            <input
+            <input aria-label="Icon URL"
               value={iconUrl}
               onChange={(e) => setIconUrl(e.target.value)}
               placeholder="https://..."
@@ -271,17 +272,16 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
 
           {/* Advanced behavior overrides — collapsed by default */}
           <div className="border border-border-subtle rounded-lg overflow-hidden">
-            <button
+            <Button
               type="button"
               onClick={() => setShowAdvanced(v => !v)}
-              className="w-full flex items-center justify-between px-3 py-2
-                         text-[11px] font-bold text-text-secondary hover:bg-glass-2 transition-colors"
+              variant="ghost" block
             >
               <span>Advanced behavior overrides</span>
               <ChevronDown
                 className={`w-3.5 h-3.5 transition-transform ${showAdvanced ? 'rotate-180' : ''}`}
               />
-            </button>
+            </Button>
             {showAdvanced && (
               <div className="px-3 pb-3 space-y-2 border-t border-border-subtle pt-2">
                 <p className="text-[10px] text-text-muted">
@@ -305,7 +305,7 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
                           className={`px-2 py-0.5 rounded text-[10px] font-bold border transition-all
                             ${value === opt
                               ? opt === 'true' ? 'bg-success-soft border-success text-success'
-                              : opt === 'false' ? 'bg-danger-soft border-danger text-danger'
+                              : opt === 'false' ? 'bg-danger-soft border-danger text-danger-light'
                               : 'bg-brand-soft border-brand text-brand'
                               : 'bg-glass-2 border-border-subtle text-text-muted hover:border-border-medium'
                             }`}
@@ -332,24 +332,22 @@ export function CategoryFormDialog({ parentLabel, category, categories, onClose 
         </div>
 
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
-          <button
+          <Button
             type="button"
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg text-xs font-bold text-text-secondary
-                       hover:text-text-primary hover:bg-glass-2 transition-colors"
+            variant="ghost" size="sm"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             disabled={isPending || !name.trim()}
             onClick={handleSubmit}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold
-                       bg-brand text-white hover:bg-brand/90 disabled:opacity-50 transition-all"
+            variant="primary"
           >
             {isPending && <Loader2 className="w-3 h-3 animate-spin" />}
             {editing ? 'Save changes' : 'Add'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

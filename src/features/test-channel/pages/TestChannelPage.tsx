@@ -108,7 +108,7 @@ export function Component() {
             <button
               onClick={chat.resetSession}
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-glass-1 border border-border-medium
-                         text-xs font-semibold text-danger hover:bg-danger-soft hover:border-danger/15
+                         text-xs font-semibold text-danger-light hover:bg-danger-soft hover:border-danger/15
                          transition-all duration-150"
             >
               <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.8} />
@@ -183,7 +183,7 @@ export function Component() {
             {rightTabs.map((tab) => {
               const isActive = rightTab === tab.id;
               return (
-                <button
+                <button aria-pressed={isActive}
                   key={tab.id}
                   onClick={() => setRightTab(tab.id)}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 text-[10px] font-bold

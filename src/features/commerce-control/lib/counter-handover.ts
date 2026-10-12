@@ -19,7 +19,7 @@ export type FulfillmentChannelValue =
 export const SUB_ORDER_STATE_LABEL: Record<number, string> = {
   1: 'Pending',
   2: 'Paid',
-  3: 'Awaiting fulfilment',
+  3: 'Awaiting fulfillment',
   4: 'Ready to ship',
   5: 'Awaiting tracking',
   6: 'Shipped',

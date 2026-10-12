@@ -14,6 +14,7 @@ import {
   formatUtc,
 } from '../components/ReportPrimitives';
 import { WindowPicker } from './ExecutiveCockpitPage';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The decision memory ledger.
@@ -37,19 +38,19 @@ function DecisionLedgerPage() {
     <div className="flex flex-col gap-4 p-4">
       <SurfaceHeader
         icon={<BookOpen size={20} strokeWidth={1.6} className="text-brand" />}
-        title="Decision memory ledger"
+        title="Decision ledger"
         blurb="What was decided, what else was on the table, when the work was meant to run, and what was measured afterwards. The last three are things only a person can record — where nobody has, the ledger says so."
         actions={
           <>
             <WindowPicker days={days} onChange={setDays} />
-            <button
+            <Button
               type="button"
               onClick={() => void ledger.refetch()}
-              className="inline-flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary"
             >
               <RefreshCcw size={13} strokeWidth={1.6} />
               Refresh
-            </button>
+            </Button>
           </>
         }
       />

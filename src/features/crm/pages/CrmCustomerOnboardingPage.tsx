@@ -15,6 +15,7 @@ import {
   CRM_MILESTONE_KIND_LABELS,
   CrmOnboardingStatus, CrmOnboardingMilestoneKind,
 } from '../types/crm.types';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
 
@@ -48,7 +49,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, width = '
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && <div className="shrink-0 px-6 py-4 border-t border-border-subtle">{footer}</div>}
@@ -58,7 +59,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, width = '
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label></div>;
 }
 
 function ProgressBar({ percent }: { percent: number }) {
@@ -90,7 +91,7 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
   const isBlocked = m.status === CrmOnboardingStatus.Blocked;
 
   return (
-    <div className={`rounded-xl border p-3 transition-all ${isComplete ? 'border-success/20 bg-success/[0.04]' : isBlocked ? 'border-danger/20 bg-danger-soft' : 'border-border-subtle bg-bg-surface'}`}>
+    <div className={`rounded-xl border p-3 transition-all ${isComplete ? 'border-success/20 bg-success/[0.04]' : isBlocked ? 'border-danger/20 bg-danger-soft' : 'border-border-subtle bg-bg-elevated'}`}>
       <div className="flex items-start gap-3">
         <button onClick={() => toggle(isComplete ? CrmOnboardingStatus.InProgress : CrmOnboardingStatus.Completed)}
           disabled={update.isPending}
@@ -102,16 +103,16 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
             <span className={`text-sm font-medium ${isComplete ? 'line-through text-text-muted' : 'text-text-primary'}`}>{m.title}</span>
             <div className="flex items-center gap-1.5 flex-shrink-0">
               <span className="text-[10px] text-text-muted bg-bg-elevated px-1.5 py-0.5 rounded">{CRM_MILESTONE_KIND_LABELS[m.kind as CrmOnboardingMilestoneKind]}</span>
-              {m.dueDate && <span className={`text-[10px] ${new Date(m.dueDate) < new Date() && !isComplete ? 'text-danger' : 'text-text-muted'}`}>{format(parseISO(m.dueDate), 'MMM d')}</span>}
+              {m.dueDate && <span className={`text-[10px] ${new Date(m.dueDate) < new Date() && !isComplete ? 'text-danger-light' : 'text-text-muted'}`}>{format(parseISO(m.dueDate), 'MMM d')}</span>}
             </div>
           </div>
           {m.description && <p className="text-xs text-text-muted mt-0.5">{m.description}</p>}
           {m.completedAt && <p className="text-xs text-success mt-0.5">Completed {format(parseISO(m.completedAt), 'MMM d, yyyy')}</p>}
-          {isBlocked && m.blockerReason && <p className="text-xs text-danger mt-0.5">Blocked: {m.blockerReason}</p>}
+          {isBlocked && m.blockerReason && <p className="text-xs text-danger-light mt-0.5">Blocked: {m.blockerReason}</p>}
 
           {!isComplete && (
             <div className="flex gap-1.5 mt-2">
-              <button onClick={() => setExpanded(v => !v)} className={`text-[10px] px-2 py-0.5 rounded border transition-all ${isBlocked ? 'text-text-secondary border-border-subtle hover:bg-bg-elevated' : 'text-danger border-danger/20 hover:bg-danger-soft'}`}>
+              <button onClick={() => setExpanded(v => !v)} className={`text-[10px] px-2 py-0.5 rounded border transition-all ${isBlocked ? 'text-text-secondary border-border-subtle hover:bg-bg-elevated' : 'text-danger-light border-danger/20 hover:bg-danger-soft'}`}>
                 {isBlocked ? 'Unblock' : 'Mark Blocked'}
               </button>
             </div>
@@ -120,15 +121,15 @@ function MilestoneItem({ m, onboardingId }: { m: CrmOnboardingMilestoneDto; onbo
           {expanded && !isComplete && (
             <div className="mt-2 flex gap-2">
               {isBlocked ? (
-                <button onClick={() => { toggle(CrmOnboardingStatus.InProgress); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-bg-elevated border border-border-subtle text-text-secondary hover:text-text-primary">
+                <Button onClick={() => { toggle(CrmOnboardingStatus.InProgress); setExpanded(false); }} variant="secondary" size="sm">
                   Unblock
-                </button>
+                </Button>
               ) : (
                 <>
-                  <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none" />
-                  <button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} className="text-[10px] px-2 py-1 rounded bg-danger-soft border border-danger/20 text-danger hover:opacity-80">
+                  <input value={blockerReason} onChange={e => setBlockerReason(e.target.value)} placeholder="Blocker reason..." aria-label="Blocker reason..." className="flex-1 rounded-lg border border-danger/30 bg-bg-elevated px-2 py-1 text-xs text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60" />
+                  <Button onClick={() => { toggle(CrmOnboardingStatus.Blocked); setExpanded(false); }} variant="danger" size="sm">
                     Set Blocked
-                  </button>
+                  </Button>
                 </>
               )}
             </div>
@@ -166,11 +167,11 @@ function DetailPanel({ id }: { id: string }) {
         </div>
       </div>
 
-      <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+      <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
         <div className="flex justify-between"><span className="text-text-muted">Started</span><span>{format(parseISO(d.startedAt), 'MMM d, yyyy')}</span></div>
         {d.completedAt && <div className="flex justify-between"><span className="text-text-muted">Completed</span><span className="text-success">{format(parseISO(d.completedAt), 'MMM d, yyyy')}</span></div>}
         {d.notes && <div><span className="text-text-muted block text-xs mb-1">Notes</span><p className="text-text-secondary text-xs">{d.notes}</p></div>}
-        {d.blockerReason && <div><span className="text-danger block text-xs mb-1">Blocker</span><p className="text-danger text-xs">{d.blockerReason}</p></div>}
+        {d.blockerReason && <div><span className="text-danger-light block text-xs mb-1">Blocker</span><p className="text-danger-light text-xs">{d.blockerReason}</p></div>}
       </div>
 
       <div className="space-y-2">
@@ -210,7 +211,8 @@ export function Component() {
   const [contactId, setContactId] = useState('');
   const [milestones, setMilestones] = useState<MilestoneDraft[]>(DEFAULT_MILESTONES);
 
-  const { data: raw, isLoading } = useOnboardings(filter);
+  const onboardingsQuery = useOnboardings(filter);
+  const { data: raw } = onboardingsQuery;
   const items: CrmCustomerOnboardingDto[] = (raw as any)?.item1 ?? [];
   const total: number = (raw as any)?.item2 ?? 0;
 
@@ -258,28 +260,27 @@ export function Component() {
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Customer Onboarding</h2>
             <p className="text-xs text-text-muted mt-0.5">Track post-sale onboarding milestones per customer</p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Start Onboarding
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none">
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(CRM_ONBOARDING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={applyFilter} className="px-4 py-2 rounded-xl border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Apply</button>
+          <Button onClick={applyFilter} variant="secondary">Apply</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Users className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No onboardings in progress.</p>
-            </div>
-          ) : (
+          <ListState
+            query={onboardingsQuery}
+            isEmpty={!items.length}
+            noun="onboardings in progress"
+            icon={Users}
+            emptyTitle="No onboardings in progress"
+          >
             <div className="divide-y divide-border-subtle">
               {items.map(ob => {
                 const total_ms = ob.milestones.length;
@@ -291,7 +292,7 @@ export function Component() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="font-semibold text-text-primary text-sm truncate">{ob.title}</span>
-                          {hasBlocker && <AlertCircle className="w-3.5 h-3.5 text-danger flex-shrink-0" />}
+                          {hasBlocker && <AlertCircle className="w-3.5 h-3.5 text-danger-light flex-shrink-0" />}
                         </div>
                         <div className="flex items-center gap-3 mt-1.5">
                           <Badge value={ob.status} labels={CRM_ONBOARDING_STATUS_LABELS} colors={CRM_ONBOARDING_STATUS_COLORS} />
@@ -310,15 +311,15 @@ export function Component() {
                 );
               })}
             </div>
-          )}
+          </ListState>
         </div>
 
         {total > (filter.pageSize ?? 20) && (
           <div className="flex items-center justify-between text-sm text-text-muted">
             <span>{total} total</span>
             <div className="flex gap-2">
-              <button disabled={(filter.page ?? 1) === 1} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) - 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Prev</button>
-              <button disabled={(filter.page ?? 1) * (filter.pageSize ?? 20) >= total} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) + 1 }))} className="px-3 py-1.5 rounded-lg border border-border-subtle hover:bg-bg-elevated disabled:opacity-40 transition-all">Next</button>
+              <Button disabled={(filter.page ?? 1) === 1} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) - 1 }))} variant="secondary" size="sm">Prev</Button>
+              <Button disabled={(filter.page ?? 1) * (filter.pageSize ?? 20) >= total} onClick={() => setFilter(f => ({ ...f, page: (f.page ?? 1) + 1 }))} variant="secondary" size="sm">Next</Button>
             </div>
           </div>
         )}
@@ -331,11 +332,11 @@ export function Component() {
         subtitle="Launch a new customer onboarding journey"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="ob-form" disabled={start.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="ob-form" disabled={start.isPending}
+              variant="primary" size="lg" className="flex-none">
               {start.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Start Onboarding'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -347,30 +348,15 @@ export function Component() {
           </div>
 
           <Field label="Title *">
-            <div className="relative">
-              <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input required value={obTitle} onChange={e => setObTitle(e.target.value)} placeholder="e.g. Acme Corp Onboarding"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={inputStyle} />
-            </div>
+            <Input aria-label="Ob title" icon={Users} required value={obTitle} onChange={e => setObTitle(e.target.value)} placeholder="e.g. Acme Corp Onboarding" style={inputStyle} />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Deal ID *">
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required value={dealId} onChange={e => setDealId(e.target.value)} placeholder="deal-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={Hash} required value={dealId} onChange={e => setDealId(e.target.value)} placeholder="deal-uuid" aria-label="deal-uuid" style={inputStyle} />
             </Field>
             <Field label="Contact ID *">
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <Input icon={User} required value={contactId} onChange={e => setContactId(e.target.value)} placeholder="contact-uuid" aria-label="contact-uuid" style={inputStyle} />
             </Field>
           </div>
 
@@ -383,22 +369,22 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Steps</label>
-              <button type="button" onClick={() => setMilestones(ms => [...ms, emptyMilestone(ms.length)])}
-                className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all">
+              <Button type="button" onClick={() => setMilestones(ms => [...ms, emptyMilestone(ms.length)])}
+                variant="secondary" size="sm">
                 <Plus className="w-3 h-3" /> Add
-              </button>
+              </Button>
             </div>
             <div className="space-y-2">
               {milestones.map((m, i) => (
                 <div key={i} className="grid grid-cols-[1fr_1fr_28px] gap-1.5 items-center">
-                  <input value={m.title} onChange={e => setMs(i, 'title', e.target.value)} placeholder="Milestone title"
+                  <input value={m.title} onChange={e => setMs(i, 'title', e.target.value)} placeholder="Milestone title" aria-label="Milestone title"
                     className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={inputStyle} />
-                  <input type="date" value={m.dueDate} onChange={e => setMs(i, 'dueDate', e.target.value)}
+                  <input aria-label="Due date" type="date" value={m.dueDate} onChange={e => setMs(i, 'dueDate', e.target.value)}
                     className="px-3 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <button type="button" onClick={() => setMilestones(ms => ms.filter((_, idx) => idx !== i))} disabled={milestones.length === 1}
-                    className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30 transition-all">
+                  <button aria-label="Close" type="button" onClick={() => setMilestones(ms => ms.filter((_, idx) => idx !== i))} disabled={milestones.length === 1}
+                    className="p-1 rounded text-text-muted hover:text-danger-light disabled:opacity-30 transition-all">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>

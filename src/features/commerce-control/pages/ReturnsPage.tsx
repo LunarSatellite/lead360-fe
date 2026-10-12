@@ -15,6 +15,7 @@ import {
   type ReturnQueueItem,
   type ReturnStateValue,
 } from '../api/stylemint-returns.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The platform returns queue, and the evidence snapshot behind any one return.
@@ -123,7 +124,7 @@ export function ReturnsPage() {
                 {data.totalCount} {data.totalCount === 1 ? 'return' : 'returns'}
               </p>
               {data.items.map((item) => (
-                <button
+                <button aria-pressed={selected?.id === item.id}
                   key={item.id}
                   onClick={() => setSelected(item)}
                   className={`flex w-full items-start gap-3 rounded-card border-thin p-3 text-left ${
@@ -168,20 +169,20 @@ export function ReturnsPage() {
               ))}
 
               <div className="flex items-center justify-center gap-2 pt-1">
-                <button
+                <Button
                   disabled={skip === 0 || queue.isFetching}
                   onClick={() => setSkip(Math.max(0, skip - PAGE_SIZE))}
-                  className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+                  variant="secondary" size="sm"
                 >
                   <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.6} /> Previous
-                </button>
-                <button
+                </Button>
+                <Button
                   disabled={skip + PAGE_SIZE >= data.totalCount || queue.isFetching}
                   onClick={() => setSkip(skip + PAGE_SIZE)}
-                  className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+                  variant="secondary" size="sm"
                 >
                   Next <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} />
-                </button>
+                </Button>
               </div>
             </>
           )}

@@ -36,6 +36,7 @@ import {
   matchesApplicantKind,
   reasonCodesFor,
 } from '../lib/kyc-review';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Creator, vendor and (EMI phase 1) buyer identity review.
@@ -205,7 +206,7 @@ function Filter<T extends number | string | undefined>({
           );
           onChange(option ? option.value : (undefined as T));
         }}
-        className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"
+        className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow font-normal"
       >
         {options.map((option) => (
           <option key={option.label} value={option.value === undefined ? '' : String(option.value)}>
@@ -258,7 +259,7 @@ function QueueRow({
   const overdue = isOverdue(item);
 
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${
         active ? 'bg-brand-soft' : ''
@@ -463,19 +464,19 @@ function DecisionPanel({
               )}
 
               <div className="flex gap-2">
-                <button
+                <Button
                   onClick={() => decide.mutate(pending)}
                   disabled={decide.isPending || (isRejection && !reasonCode)}
-                  className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+                  variant="primary"
                 >
                   {decide.isPending ? 'Recording…' : 'Yes, record it'}
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setPending(null)}
-                  className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+                  variant="secondary"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           ) : (

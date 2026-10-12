@@ -135,7 +135,11 @@ export default defineConfig(({ mode }) => {
     // Agent worktrees under .claude/ are whole checkouts of this repo. Without this every
     // suite is collected once per worktree, so one failure reports N times and each run pays
     // for trees that are not this one.
-    exclude: ['**/node_modules/**', '**/dist/**', '.claude/**'],
+    // `tests/` is Playwright's, and a Playwright spec throws if vitest
+    // loads it. The two suites answer different questions: vitest for
+    // everything jsdom can decide, Playwright for the rules that need
+    // layout — colour contrast above all.
+    exclude: ['**/node_modules/**', '**/dist/**', '.claude/**', 'tests/**'],
   },
   build: {
     rollupOptions: {

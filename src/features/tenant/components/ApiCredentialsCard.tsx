@@ -9,6 +9,7 @@ import { ApiError } from '@/shared/lib/api-client';
 import type { ApiAuthType } from '../types/settings.types';
 import { UserRole } from '@/features/auth/types/auth.types';
 import { useAuth } from '@/shared/hooks/useAuth';
+import { Button } from '@/shared/ui/primitives';
 
 /* ─── Helpers ───────────────────────────────────────────────────── */
 
@@ -25,7 +26,7 @@ function relativeTime(iso: string): string {
 const HEALTH_STYLES: Record<string, string> = {
   Healthy: 'text-success bg-success-soft border border-success/25',
   Degraded: 'text-warning bg-warning-soft border border-warning/25',
-  Unhealthy: 'text-danger bg-danger-soft border border-danger/25',
+  Unhealthy: 'text-danger-light bg-danger-soft border border-danger/25',
   Unknown: 'text-text-muted bg-glass-1 border border-border-subtle',
 };
 
@@ -114,7 +115,7 @@ function SecretInput({
           {show ? <EyeOff className="w-4 h-4" strokeWidth={1.5} /> : <Eye className="w-4 h-4" strokeWidth={1.5} />}
         </button>
       </div>
-      {error && <p className="text-[10px] text-danger mt-1">{error}</p>}
+      {error && <p className="text-[10px] text-danger-light mt-1">{error}</p>}
     </div>
   );
 }
@@ -167,7 +168,7 @@ function CredentialFields({
           <input
             id="f-headerName"
             className="form-input"
-            placeholder="X-API-Key"
+            placeholder="X-API-Key" aria-label="X-API-Key"
             autoComplete="off"
             {...register('headerName')}
           />
@@ -186,11 +187,11 @@ function CredentialFields({
           <input
             id="f-username"
             className={`form-input ${errors.username ? '!border-danger/60' : ''}`}
-            placeholder="username"
+            placeholder="username" aria-label="username"
             autoComplete="off"
             {...register('username')}
           />
-          {errors.username && <p className="text-[10px] text-danger mt-1">{errors.username.message}</p>}
+          {errors.username && <p className="text-[10px] text-danger-light mt-1">{errors.username.message}</p>}
         </div>
         <div>
           <label htmlFor="f-password" className="text-2xs font-semibold text-text-secondary uppercase tracking-wider block mb-1.5">
@@ -327,7 +328,7 @@ function CredentialsModal({
               {mode === 'configure' ? 'Configure external API' : 'Update credentials'}
             </h2>
           </div>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             disabled={save.isPending}
@@ -341,7 +342,7 @@ function CredentialsModal({
         <form onSubmit={form.handleSubmit(onSubmit)} className="overflow-y-auto flex-1">
           <div className="px-6 py-5 space-y-5">
             {form.formState.errors.root && (
-              <div className="px-3.5 py-2.5 rounded-[10px] bg-danger/[0.08] border border-danger/25 text-[11px] text-danger">
+              <div className="px-3.5 py-2.5 rounded-[10px] bg-danger/[0.08] border border-danger/25 text-[11px] text-danger-light">
                 {form.formState.errors.root.message}
               </div>
             )}
@@ -360,7 +361,7 @@ function CredentialsModal({
                 {...form.register('baseUrl')}
               />
               {form.formState.errors.baseUrl && (
-                <p className="text-[10px] text-danger mt-1">{form.formState.errors.baseUrl.message}</p>
+                <p className="text-[10px] text-danger-light mt-1">{form.formState.errors.baseUrl.message}</p>
               )}
             </div>
 
@@ -429,14 +430,14 @@ function CredentialsModal({
             >
               Cancel
             </button>
-            <button
+            <Button
               type="submit"
               disabled={save.isPending}
-              className="flex items-center gap-2 px-5 py-2 rounded-[10px] text-xs font-semibold bg-brand text-bg hover:bg-brand-light disabled:opacity-40 transition-all"
+              variant="primary" size="lg"
             >
               {save.isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               {mode === 'configure' ? 'Save credentials' : 'Update credentials'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -474,16 +475,16 @@ function DisconnectDialog({ onClose, onConfirm, isPending }: { onClose: () => vo
           >
             Cancel
           </button>
-          <button
+          <Button
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="flex items-center gap-2 px-4 py-2 rounded-[10px] text-xs font-semibold transition-all disabled:opacity-40"
+            variant="ghost"
             style={{ background: 'rgb(var(--color-danger) / 0.15)', color: 'rgb(var(--color-danger))', border: '1px solid rgb(var(--color-danger) / 0.3)' }}
           >
             {isPending && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             Disconnect
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -584,13 +585,13 @@ export function ApiCredentialsCard() {
         <div className="flex items-center justify-end gap-2 mt-4">
           {!configured ? (
             canEdit && (
-              <button
+              <Button
                 type="button"
                 onClick={() => setModal('configure')}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-[10px] text-xs font-semibold bg-brand text-bg hover:bg-brand-light transition-all"
+                variant="primary"
               >
                 + Configure API
-              </button>
+              </Button>
             )
           ) : (
             <>
@@ -624,7 +625,7 @@ export function ApiCredentialsCard() {
               {/* ⋯ menu */}
               {canEdit && (
                 <div className="relative" ref={menuRef}>
-                  <button
+                  <button aria-label="More actions"
                     type="button"
                     onClick={() => setMenuOpen((v) => !v)}
                     className="w-8 h-8 flex items-center justify-center rounded-[9px] border border-border-subtle text-text-muted hover:text-text-primary hover:bg-glass-2 transition-colors"
@@ -639,7 +640,7 @@ export function ApiCredentialsCard() {
                       <button
                         type="button"
                         onClick={() => { setMenuOpen(false); setDisconnectOpen(true); }}
-                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-danger hover:bg-danger/[0.06] transition-colors"
+                        className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs text-danger-light hover:bg-danger/[0.06] transition-colors"
                       >
                         <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
                         Disconnect

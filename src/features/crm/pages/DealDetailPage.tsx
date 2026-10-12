@@ -5,7 +5,8 @@ import { ArrowLeft, Loader2, Briefcase, DollarSign, Calendar, Tag, FileText, Cli
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { toast } from 'sonner';
-import { DEAL_COMPETITOR_OUTCOME_LABELS } from '../types/crm.types';
+import { RecordAuditTrail } from '../components/RecordAuditTrail';
+import { CrmActivityEntityKind, DEAL_COMPETITOR_OUTCOME_LABELS } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
 import { useDealById, useTimeline, useLogActivity, useDealStrategy, useUpdateDealStrategy, useMoveDealStage, useDealStages, useRefreshDealSummary, useUpdateDeal, useAccounts } from '../api/crm.queries';
 import type { CrmDealUpdateRequest } from '../types/crm.types';
@@ -17,6 +18,7 @@ import { HandoverSection } from '../components/HandoverSection';
 
 import { ApprovalEntityType, CrmEntityType } from '../types/crm.types';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const { id } = useParams<{ id: string }>();
@@ -170,7 +172,7 @@ export function Component() {
           <div className="flex items-center gap-2 text-sm">
             <Tag className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
             {stages.length > 0 ? (
-              <select
+              <select aria-label="Stage ID"
                 value={deal.stageId ?? ''}
                 onChange={(e) => {
                   if (id && e.target.value) moveStage.mutate({ id, data: { stageId: e.target.value } });
@@ -238,7 +240,7 @@ export function Component() {
               <p className="text-sm text-text-primary">{aiSummary.headline}</p>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className={`text-2xs px-2 py-0.5 rounded-full font-medium border ${
-                  aiSummary.riskLevel === 'High' ? 'bg-danger-soft text-danger border-danger/20'
+                  aiSummary.riskLevel === 'High' ? 'bg-danger-soft text-danger-light border-danger/20'
                   : aiSummary.riskLevel === 'Medium' ? 'bg-warning-soft text-warning border-warning/20'
                   : 'bg-success-soft text-success border-success/20'
                 }`}>
@@ -269,7 +271,7 @@ export function Component() {
               )}
             </div>
           ) : (
-            <p className="text-xs text-text-muted italic">No summary yet. Click Generate to have AI analyse this deal.</p>
+            <p className="text-xs text-text-muted italic">No summary yet. Click Generate to have AI analyze this deal.</p>
           )}
         </div>
 
@@ -288,7 +290,7 @@ export function Component() {
         )}
         {deal.lostReason && (
           <div className="mt-4 p-3 rounded-xl bg-danger-soft border border-danger/20">
-            <p className="text-xs text-danger font-semibold">Lost reason</p>
+            <p className="text-xs text-danger-light font-semibold">Lost reason</p>
             <p className="text-sm text-text-secondary mt-0.5">{deal.lostReason}</p>
           </div>
         )}
@@ -324,10 +326,10 @@ export function Component() {
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card p-4">
         <div className="flex items-center gap-3">
-          <button onClick={() => navigate(`${ROUTES.dashboard.crmQuotes}?dealId=${id}`)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all">
+          <Button onClick={() => navigate(`${ROUTES.dashboard.crmQuotes}?dealId=${id}`)}
+            variant="primary" size="lg">
             <FileText className="w-4 h-4" strokeWidth={1.5} /> Create Quote
-          </button>
+          </Button>
           <button onClick={() => navigate(`${ROUTES.dashboard.crmProposals}?dealId=${id}`)}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-elevated border border-border-subtle text-text-primary text-sm font-bold hover:bg-bg-card transition-all">
             <ClipboardList className="w-4 h-4" strokeWidth={1.5} /> Generate Proposal
@@ -359,18 +361,26 @@ export function Component() {
         </div>
         {stratEdit ? (
           <div className="space-y-3">
-            <div><label className="text-xs text-text-muted block mb-1">Champion</label>
-              <input value={stratForm.champion ?? ''} onChange={e => setStratForm({ ...stratForm, champion: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who is our champion?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Competition</label>
-              <input value={stratForm.competition ?? ''} onChange={e => setStratForm({ ...stratForm, competition: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who are we competing against?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Win Plan</label>
-              <textarea value={stratForm.winPlan ?? ''} onChange={e => setStratForm({ ...stratForm, winPlan: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="How will we win?" /></div>
-            <div><label className="text-xs text-text-muted block mb-1">Next Steps</label>
-              <textarea value={stratForm.nextSteps ?? ''} onChange={e => setStratForm({ ...stratForm, nextSteps: e.target.value })}
-                className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="What are the next actions?" /></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Champion</span>
+  <input value={stratForm.champion ?? ''} onChange={e => setStratForm({ ...stratForm, champion: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who is our champion?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Competition</span>
+  <input value={stratForm.competition ?? ''} onChange={e => setStratForm({ ...stratForm, competition: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary" placeholder="Who are we competing against?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Win Plan</span>
+  <textarea value={stratForm.winPlan ?? ''} onChange={e => setStratForm({ ...stratForm, winPlan: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="How will we win?" />
+</label></div>
+            <div><label className="block">
+  <span className="text-xs text-text-muted block mb-1">Next Steps</span>
+  <textarea value={stratForm.nextSteps ?? ''} onChange={e => setStratForm({ ...stratForm, nextSteps: e.target.value })}
+                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]" placeholder="What are the next actions?" />
+</label></div>
           </div>
         ) : (
           <div className="space-y-2 text-sm">
@@ -395,14 +405,14 @@ export function Component() {
         </div>
 
         {logOpen && (
-          <div className="p-3 rounded-xl bg-bg-subtle border border-border-subtle space-y-2">
-            <textarea autoFocus value={logText} onChange={e => setLogText(e.target.value)}
+          <div className="p-3 rounded-xl bg-bg-sunken border border-border-subtle space-y-2">
+            <textarea aria-label="Log" autoFocus value={logText} onChange={e => setLogText(e.target.value)}
               className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary min-h-[60px]"
               placeholder={logOpen === 'call' ? 'Describe the call...' : logOpen === 'meeting' ? 'Describe the meeting...' : 'Write a note...'} />
             <div className="flex gap-2">
-              <button onClick={() => handleLog(logOpen)} disabled={logActivity.isPending || !logText.trim()}
-                className="px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold hover:opacity-90 disabled:opacity-50">{logActivity.isPending ? 'Saving...' : 'Save'}</button>
-              <button onClick={() => { setLogOpen(null); setLogText(''); }} className="px-3 py-1.5 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-muted">Cancel</button>
+              <Button onClick={() => handleLog(logOpen)} disabled={logActivity.isPending || !logText.trim()}
+                variant="primary" size="sm">{logActivity.isPending ? 'Saving...' : 'Save'}</Button>
+              <Button onClick={() => { setLogOpen(null); setLogText(''); }} variant="secondary" size="sm">Cancel</Button>
             </div>
           </div>
         )}
@@ -410,7 +420,7 @@ export function Component() {
         <div className="space-y-2 min-h-[120px] max-h-[500px] overflow-y-auto">
           {timeline.length === 0 && <p className="text-xs text-text-muted italic">No activity yet.</p>}
           {timeline.map((e: any) => (
-            <div key={e.id} className="p-3 rounded-xl bg-bg-subtle border border-border-subtle">
+            <div key={e.id} className="p-3 rounded-xl bg-bg-sunken border border-border-subtle">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs font-semibold text-text-muted">
                   {e.eventKind === 17 ? '📞 Call'
@@ -435,6 +445,12 @@ export function Component() {
         </div>
       </div>
 
+      {/* Field-level history. `RecordAuditTrail` was written and then never
+          mounted anywhere — CRM-REMAINING-GAPS.md lists it as dead code, and
+          "who changed this deal's value and when" as a Tier C gap. Same
+          component, now on the record it was written for. */}
+      {id && <RecordAuditTrail kind={CrmActivityEntityKind.Deal} entityId={id} />}
+
       </div>{/* end right column */}
       </div>{/* end grid */}
 
@@ -445,65 +461,79 @@ export function Component() {
           <div className="drawer-slide-in relative w-[480px] h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle" style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
             <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
               <h3 className="font-bold text-text-primary">Edit Deal</h3>
-              <button onClick={() => setShowEdit(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors">
+              <button aria-label="Close" onClick={() => setShowEdit(false)} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors">
                 <X className="w-4 h-4" />
               </button>
             </div>
             <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Deal Name</label>
-                <input value={editForm.name ?? ''} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Deal Name</span>
+                  <input value={editForm.name ?? ''} onChange={e => setEditForm(f => ({ ...f, name: e.target.value }))}
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Account</label>
-                <select value={editForm.accountId ?? ''} onChange={e => setEditForm(f => ({ ...f, accountId: e.target.value || undefined }))}
-                  className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                  <option value="">— No account —</option>
-                  {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
-                </select>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Account</span>
+                  <select value={editForm.accountId ?? ''} onChange={e => setEditForm(f => ({ ...f, accountId: e.target.value || undefined }))}
+                    className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                    <option value="">— No account —</option>
+                    {accountsList.map((a: any) => <option key={a.id} value={a.id}>{a.name}</option>)}
+                  </select>
+                </label>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Amount</label>
-                  <input type="number" min={0} value={editForm.amount ?? ''} onChange={e => setEditForm(f => ({ ...f, amount: e.target.value ? Number(e.target.value) : undefined }))}
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-muted mb-1.5">Amount</span>
+                    <input type="number" min={0} value={editForm.amount ?? ''} onChange={e => setEditForm(f => ({ ...f, amount: e.target.value ? Number(e.target.value) : undefined }))}
                     placeholder="0"
                     className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-muted mb-1.5">Currency</label>
-                  <select value={editForm.currency ?? 'USD'} onChange={e => setEditForm(f => ({ ...f, currency: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                    {['USD', 'EUR', 'GBP', 'INR', 'AUD', 'CAD'].map(c => <option key={c}>{c}</option>)}
-                  </select>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-muted mb-1.5">Currency</span>
+                    <select value={editForm.currency ?? 'USD'} onChange={e => setEditForm(f => ({ ...f, currency: e.target.value }))}
+                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                      {['USD', 'EUR', 'GBP', 'INR', 'AUD', 'CAD'].map(c => <option key={c}>{c}</option>)}
+                    </select>
+                  </label>
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Close Date</label>
-                <input type="date" value={editForm.closeDate ?? ''} onChange={e => setEditForm(f => ({ ...f, closeDate: e.target.value }))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Close Date</span>
+                  <input type="date" value={editForm.closeDate ?? ''} onChange={e => setEditForm(f => ({ ...f, closeDate: e.target.value }))}
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Source</label>
-                <input value={editForm.source ?? ''} onChange={e => setEditForm(f => ({ ...f, source: e.target.value }))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Source</span>
+                  <input value={editForm.source ?? ''} onChange={e => setEditForm(f => ({ ...f, source: e.target.value }))}
                   placeholder="e.g. Referral, Inbound, Campaign"
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                </label>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-1.5">Notes</label>
-                <textarea rows={3} value={editForm.notes ?? ''} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-muted mb-1.5">Notes</span>
+                  <textarea rows={3} value={editForm.notes ?? ''} onChange={e => setEditForm(f => ({ ...f, notes: e.target.value }))}
                   className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow resize-none" />
+                </label>
               </div>
             </div>
             <div className="px-6 py-4 border-t border-border-subtle shrink-0 flex gap-3">
-              <button onClick={saveEdit} disabled={updateDeal.isPending}
-                className="flex-1 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+              <Button onClick={saveEdit} disabled={updateDeal.isPending}
+                variant="primary" className="flex-1">
                 {updateDeal.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save
-              </button>
-              <button onClick={() => setShowEdit(false)}
-                className="px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">
+              </Button>
+              <Button onClick={() => setShowEdit(false)}
+                variant="secondary">
                 Cancel
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -556,15 +586,15 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
       </div>
       {showAdd && (
         <div className="space-y-2">
-          <select value={compId} onChange={e => setCompId(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+          <select aria-label="Comp ID" value={compId} onChange={e => setCompId(e.target.value)} className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             <option value="">Select competitor</option>
             {allComps.filter((c: any) => !usedIds.has(c.id)).map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          <input value={ourS} onChange={e => setOurS(e.target.value)} placeholder="Our strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
-          <input value={theirS} onChange={e => setTheirS(e.target.value)} placeholder="Their strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
-          <button onClick={() => compId && addMut.mutate()} disabled={addMut.isPending || !compId} className="w-full py-2 rounded-xl bg-brand text-bg text-xs font-bold disabled:opacity-50">
+          <input value={ourS} onChange={e => setOurS(e.target.value)} placeholder="Our strengths" aria-label="Our strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
+          <input value={theirS} onChange={e => setTheirS(e.target.value)} placeholder="Their strengths" aria-label="Their strengths" className="w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary" />
+          <Button onClick={() => compId && addMut.mutate()} disabled={addMut.isPending || !compId} variant="primary" block>
             {addMut.isPending ? 'Adding...' : 'Add to deal'}
-          </button>
+          </Button>
         </div>
       )}
       {dealComps.length === 0 ? (
@@ -577,16 +607,16 @@ function DealCompetitorsSection({ dealId }: { dealId: string }) {
               <div className="text-xs text-text-muted mt-0.5">
                 {dc.ourStrengths && <span className="text-success">Us: {dc.ourStrengths}</span>}
                 {dc.ourStrengths && dc.theirStrengths && <span> · </span>}
-                {dc.theirStrengths && <span className="text-danger">Them: {dc.theirStrengths}</span>}
+                {dc.theirStrengths && <span className="text-danger-light">Them: {dc.theirStrengths}</span>}
               </div>
             )}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <select value={dc.outcome} onChange={e => updateOutcomeMut.mutate({ id: dc.id, outcome: Number(e.target.value) })}
+            <select aria-label="Outcome" value={dc.outcome} onChange={e => updateOutcomeMut.mutate({ id: dc.id, outcome: Number(e.target.value) })}
               className="px-2 py-1 rounded bg-bg-input border border-border-subtle text-xs text-text-primary">
               {Object.entries(DEAL_COMPETITOR_OUTCOME_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
-            <button onClick={() => removeMut.mutate(dc.id)} className="p-1 text-text-muted hover:text-danger"><Trash2 className="w-3 h-3" /></button>
+            <button aria-label="Delete" onClick={() => removeMut.mutate(dc.id)} className="p-1 text-text-muted hover:text-danger-light"><Trash2 className="w-3 h-3" /></button>
           </div>
         </div>
       ))}
@@ -627,12 +657,12 @@ function DealContactsSection({ dealId }: { dealId: string }) {
 
       {showAdd && (
         <div className="flex gap-2">
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
-          <select value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Contact ID..." aria-label="Contact ID..." className="flex-1 px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-medium" />
+          <select aria-label="Role" value={role} onChange={e => setRole(e.target.value)} className="px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary">
             {DEAL_CONTACT_ROLES.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
-          <button onClick={() => search.trim() && addMut.mutate({ contactId: search.trim(), role })} disabled={addMut.isPending || !search.trim()}
-            className="px-3 py-2 rounded-xl bg-brand text-bg text-xs font-bold disabled:opacity-50">Add</button>
+          <Button onClick={() => search.trim() && addMut.mutate({ contactId: search.trim(), role })} disabled={addMut.isPending || !search.trim()}
+            variant="primary">Add</Button>
         </div>
       )}
 
@@ -649,7 +679,7 @@ function DealContactsSection({ dealId }: { dealId: string }) {
                   <span className="text-xs px-1.5 py-0.5 rounded bg-brand-soft border border-border-glow text-brand font-medium">{dc.role || 'User'}</span>
                 </div>
               </div>
-              <button onClick={() => removeMut.mutate(dc.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+              <button aria-label="Delete" onClick={() => removeMut.mutate(dc.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
             </div>
           ))}
         </div>

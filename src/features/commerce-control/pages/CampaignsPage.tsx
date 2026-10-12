@@ -23,6 +23,7 @@ import {
   type CampaignStateValue,
   type UpsertCampaign,
 } from '../api/stylemint-campaigns.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Campaigns — the hero placements above the storefront's home and discover screens.
@@ -86,15 +87,15 @@ export function CampaignsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => {
               setCreating(true);
               setEditing(null);
             }}
-            className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> New campaign
-          </button>
+          </Button>
           <button
             onClick={() => campaigns.refetch()}
             className="flex items-center gap-2 rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
@@ -182,7 +183,7 @@ function Chip({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`rounded-sm border-thin px-3 py-1.5 text-xs font-bold ${
         active
@@ -280,27 +281,27 @@ function CampaignRow({
         </div>
 
         <div className="flex shrink-0 items-center gap-1.5">
-          <button
+          <Button
             onClick={onEdit}
-            className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             Edit
-          </button>
+          </Button>
           {campaign.state === CampaignState.Draft && (
-            <button
+            <Button
               onClick={() => { setConfirming('publish'); setError(null); }}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+              variant="primary" size="sm"
             >
               <Send className="h-3.5 w-3.5" strokeWidth={1.6} /> Publish
-            </button>
+            </Button>
           )}
           {campaign.state !== CampaignState.Archived && (
-            <button
+            <Button
               onClick={() => { setConfirming('archive'); setError(null); }}
-              className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               <Archive className="h-3.5 w-3.5" strokeWidth={1.6} /> Archive
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -317,20 +318,20 @@ function CampaignRow({
           </p>
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={act.isPending}
               onClick={() => act.mutate(confirming)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setConfirming(null)}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -399,12 +400,12 @@ function CampaignEditor({
           <input
             value={form.slug}
             onChange={(e) => set('slug', e.target.value)}
-            placeholder="spring-drop"
+            placeholder="spring-drop" aria-label="spring-drop"
             className={inputClass}
           />
         </Field>
         <Field label="Placement">
-          <select
+          <select aria-label="Placement"
             value={form.placement}
             onChange={(e) => set('placement', Number(e.target.value))}
             className={inputClass}
@@ -420,26 +421,26 @@ function CampaignEditor({
           <input
             value={form.eyebrow ?? ''}
             onChange={(e) => set('eyebrow', e.target.value)}
-            placeholder="Now in public beta"
+            placeholder="Now in public beta" aria-label="Now in public beta"
             className={inputClass}
           />
         </Field>
         <Field label="Title">
-          <input
+          <input aria-label="Title"
             value={form.title}
             onChange={(e) => set('title', e.target.value)}
             className={inputClass}
           />
         </Field>
         <Field label="Subtitle">
-          <input
+          <input aria-label="Subtitle"
             value={form.subtitle ?? ''}
             onChange={(e) => set('subtitle', e.target.value)}
             className={inputClass}
           />
         </Field>
         <Field label="Priority">
-          <input
+          <input aria-label="Priority"
             type="number"
             value={form.priority}
             onChange={(e) => set('priority', Number(e.target.value))}
@@ -447,7 +448,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Hero image URL">
-          <input
+          <input aria-label="Hero image URL"
             value={form.heroImageUrl}
             onChange={(e) => set('heroImageUrl', e.target.value)}
             placeholder="https://…"
@@ -458,12 +459,12 @@ function CampaignEditor({
           <input
             value={form.collectionId ?? ''}
             onChange={(e) => set('collectionId', e.target.value || null)}
-            placeholder="GUID"
+            placeholder="GUID" aria-label="GUID"
             className={inputClass}
           />
         </Field>
         <Field label="Starts">
-          <input
+          <input aria-label="Slice"
             type="datetime-local"
             value={form.startsUtc.slice(0, 16)}
             onChange={(e) => set('startsUtc', new Date(e.target.value).toISOString())}
@@ -471,7 +472,7 @@ function CampaignEditor({
           />
         </Field>
         <Field label="Ends">
-          <input
+          <input aria-label="Slice"
             type="datetime-local"
             value={form.endsUtc.slice(0, 16)}
             onChange={(e) => set('endsUtc', new Date(e.target.value).toISOString())}
@@ -493,10 +494,10 @@ function CampaignEditor({
       </p>
 
       <div className="mt-3 flex items-center gap-2">
-        <button
+        <Button
           disabled={!valid || save.isPending}
           onClick={() => save.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {save.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -504,13 +505,13 @@ function CampaignEditor({
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Save
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

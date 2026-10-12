@@ -20,6 +20,7 @@ import {
   CRM_MEETING_STATUS_LABELS, CRM_MEETING_STATUS_COLORS,
   CRM_CALL_SUMMARY_STATUS_LABELS, CrmCallSummaryStatus,
 } from '../types/crm.types';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -65,7 +66,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
             </h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -80,8 +81,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1">
-      <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</label>
-      {children}
+      <label className="block"><span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{label}</span>{children}</label>
     </div>
   );
 }
@@ -90,7 +90,7 @@ const CALL_STATUS_COLORS: Record<number, string> = {
   1: 'text-warning bg-warning-soft border-warning/20',
   2: 'text-brand bg-brand-soft border-border-glow',
   3: 'text-success bg-success-soft border-success/20',
-  4: 'text-danger bg-danger-soft border-danger/20',
+  4: 'text-danger-light bg-danger-soft border-danger/20',
 };
 
 // ─── Meetings Tab ─────────────────────────────────────────────────────────────
@@ -113,7 +113,8 @@ function MeetingsTab() {
   const [bookTime, setBookTime] = useState('');
   const [bookDuration, setBookDuration] = useState('30');
 
-  const { data: raw, isLoading } = useMeetings(filter);
+  const meetingsQuery = useMeetings(filter);
+  const { data: raw } = meetingsQuery;
   const items: CrmMeetingSummaryDto[] = (raw as any)?.items ?? [];
 
   const { data: meetingDetail, isLoading: detailLoading } = useMeetingById(selectedId ?? undefined);
@@ -201,26 +202,25 @@ function MeetingsTab() {
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4 shrink-0">
           <div className="flex gap-2 flex-1">
-            <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search meetings..." className={inputCls + ' flex-1'} />
-            <select value={statusF} onChange={e => setStatusF(e.target.value)} className={selectCls + ' w-44'}>
+            <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && applyFilter()} placeholder="Search meetings..." aria-label="Search meetings..." className={inputCls + ' flex-1'} />
+            <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className={selectCls + ' w-44'}>
               <option value="">All Statuses</option>
               {Object.entries(CRM_MEETING_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
             </select>
           </div>
-          <button onClick={() => setShowInitiate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all shrink-0">
+          <Button onClick={() => setShowInitiate(true)} variant="primary" className="shrink-0">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Initiate Meeting
-          </button>
+          </Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <CalendarCheck className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No meetings found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={meetingsQuery}
+            isEmpty={!items.length}
+            noun="meetings"
+            icon={CalendarCheck}
+            emptyTitle="No meetings found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -241,7 +241,7 @@ function MeetingsTab() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 
@@ -253,21 +253,21 @@ function MeetingsTab() {
         subtitle="Schedule a new meeting with a contact"
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button
+            <Button
               onClick={() => setShowInitiate(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={initiateMeeting.isPending}
               onClick={handleInitiate}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {initiateMeeting.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
               Initiate
-            </button>
+            </Button>
           </div>
         }
       >
@@ -281,18 +281,10 @@ function MeetingsTab() {
           {/* Title + Duration */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Title *</label>
-              <div className="relative">
-                <CalendarCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  required
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Discovery Call"
-                  value={initForm.title}
-                  onChange={setI('title')}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Title *</span>
+                <Input icon={CalendarCheck} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Discovery Call" value={initForm.title} onChange={setI('title')} />
+              </label>
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Duration</label>
@@ -346,18 +338,20 @@ function MeetingsTab() {
 
           {/* Agenda */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Agenda</label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea
-                rows={3}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="Meeting agenda..."
-                value={initForm.agendaText}
-                onChange={setI('agendaText')}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Agenda</span>
+              <div className="relative">
+                <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <textarea
+                  rows={3}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
+                  placeholder="Meeting agenda..."
+                  value={initForm.agendaText}
+                  onChange={setI('agendaText')}
+                />
+              </div>
+            </label>
           </div>
 
           {/* ── Participants ── */}
@@ -415,17 +409,10 @@ function MeetingsTab() {
 
           {/* Additional Attendees */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Additional Attendees</label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                value={attendeeQuery}
-                onChange={(e) => setAttendeeQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="Type name or email..."
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Additional Attendees</span>
+              <Input icon={User} value={attendeeQuery} onChange={(e) => setAttendeeQuery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Type name or email..." />
+            </label>
 
             {/* The picker only lists people once you have typed, so the primary-contact
                 field above stays the fast path for the common one-attendee meeting. */}
@@ -475,21 +462,10 @@ function MeetingsTab() {
           {/* Date + Deal */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Date</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-10" strokeWidth={1.6} />
-                <input
-                  type="date"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{
-                    backgroundColor: 'rgb(var(--color-glass-1))',
-                    colorScheme: 'dark',
-                    backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                  }}
-                  value={initForm.scheduledAt}
-                  onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Date</span>
+                <Input icon={Calendar} type="date" style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} value={initForm.scheduledAt} onChange={e => setInitForm(f => ({ ...f, scheduledAt: e.target.value }))} />
+              </label>
             </div>
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Linked Deal</label>
@@ -552,17 +528,10 @@ function MeetingsTab() {
 
           {/* Join Link */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Join Link</label>
-            <div className="relative">
-              <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="https://zoom.us/j/..."
-                value={initForm.joinUrl}
-                onChange={setI('joinUrl')}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Join Link</span>
+              <Input icon={LinkIcon} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="https://zoom.us/j/..." value={initForm.joinUrl} onChange={setI('joinUrl')} />
+            </label>
           </div>
 
           {/* Google Calendar checkbox */}
@@ -634,7 +603,7 @@ function MeetingsTab() {
             )}
 
             <Field label="Notes">
-              <textarea value={notes || detail.notes || ''} onChange={e => setNotes(e.target.value)} placeholder="Meeting notes..." rows={4} className={inputCls + ' min-h-[80px]'} />
+              <textarea value={notes || detail.notes || ''} onChange={e => setNotes(e.target.value)} placeholder="Meeting notes..." aria-label="Meeting notes..." rows={4} className={inputCls + ' min-h-[80px]'} />
               {notes !== (detail.notes ?? '') && (
                 <button onClick={() => updateMeeting.mutate({ id: detail.id, data: { notes } })} disabled={updateMeeting.isPending} className="mt-1 text-xs text-brand hover:underline">
                   {updateMeeting.isPending ? 'Saving...' : 'Save notes'}
@@ -644,10 +613,10 @@ function MeetingsTab() {
 
             {detail.status === CrmMeetingStatus.ProposalDrafted && (
               <div className="grid grid-cols-2 gap-3">
-                <Field label="Date"><input type="date" value={bookDate} onChange={e => setBookDate(e.target.value)} className={inputCls} /></Field>
-                <Field label="Time"><input type="time" value={bookTime} onChange={e => setBookTime(e.target.value)} className={inputCls} /></Field>
+                <Field label="Date"><input aria-label="Book date" type="date" value={bookDate} onChange={e => setBookDate(e.target.value)} className={inputCls} /></Field>
+                <Field label="Time"><input aria-label="Book time" type="time" value={bookTime} onChange={e => setBookTime(e.target.value)} className={inputCls} /></Field>
                 <Field label="Duration">
-                  <select value={bookDuration} onChange={e => setBookDuration(e.target.value)} className={selectCls}>
+                  <select aria-label="Book duration" value={bookDuration} onChange={e => setBookDuration(e.target.value)} className={selectCls}>
                     <option value="15">15 min</option>
                     <option value="30">30 min</option>
                     <option value="45">45 min</option>
@@ -671,18 +640,18 @@ function MeetingsTab() {
 
             {/* Complete with summary prompt */}
             {detail.status === CrmMeetingStatus.Booked && showCompleteSummary && (
-              <div className="p-4 rounded-xl bg-bg-subtle border border-border-subtle space-y-3">
+              <div className="p-4 rounded-xl bg-bg-sunken border border-border-subtle space-y-3">
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Meeting Summary</p>
                 <textarea
                   autoFocus
                   value={completeSummaryText}
                   onChange={e => setCompleteSummaryText(e.target.value)}
-                  placeholder="What was discussed? Key outcomes, decisions, next steps..."
+                  placeholder="What was discussed? Key outcomes, decisions, next steps..." aria-label="What was discussed? Key outcomes, decisions, next steps..."
                   rows={4}
                   className={inputCls + ' min-h-[80px]'}
                 />
                 <div className="flex gap-2">
-                  <button
+                  <Button
                     disabled={updateMeeting.isPending || logActivity.isPending}
                     onClick={() => {
                       updateMeeting.mutate({ id: detail.id, data: { status: CrmMeetingStatus.Completed } }, {
@@ -700,13 +669,13 @@ function MeetingsTab() {
                         },
                       });
                     }}
-                    className="px-4 py-2 rounded-xl bg-success-soft text-success text-sm font-bold hover:bg-success hover:text-bg disabled:opacity-60 transition-all"
+                    variant="success"
                   >
                     {updateMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Complete & Log'}
-                  </button>
-                  <button onClick={() => { setShowCompleteSummary(false); setCompleteSummaryText(''); }} className="px-4 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-xs text-text-muted transition-all">
+                  </Button>
+                  <Button onClick={() => { setShowCompleteSummary(false); setCompleteSummaryText(''); }} variant="secondary">
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -714,14 +683,14 @@ function MeetingsTab() {
             {showRequestSummary ? (
               <div className="rounded-xl border border-border-subtle bg-bg-elevated p-4 space-y-3">
                 <p className="text-xs font-bold text-text-muted uppercase tracking-wider">Request AI Call Summary</p>
-                <input value={reqSummaryText} onChange={e => setReqSummaryText(e.target.value)} placeholder="What happened in this call / meeting?" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                <input value={reqSummaryText} onChange={e => setReqSummaryText(e.target.value)} placeholder="What happened in this call / meeting?" aria-label="What happened in this call / meeting?" className="w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
                 <div className="flex gap-2">
-                  <button onClick={() => {
+                  <Button onClick={() => {
                     requestSummary.mutate({ contactId: detail.contactId, meetingId: detail.id, trigger: 1 }, { onSuccess: () => { setShowRequestSummary(false); setReqSummaryText(''); toast.success('Summary requested.'); } });
-                  }} disabled={requestSummary.isPending} className="px-3 py-1.5 rounded-lg bg-brand text-bg text-xs font-bold disabled:opacity-50">
+                  }} disabled={requestSummary.isPending} variant="primary" size="sm">
                     {requestSummary.isPending ? 'Requesting...' : 'Request Summary'}
-                  </button>
-                  <button onClick={() => setShowRequestSummary(false)} className="px-3 py-1.5 rounded-lg border border-border-subtle text-xs text-text-secondary">Cancel</button>
+                  </Button>
+                  <Button onClick={() => setShowRequestSummary(false)} variant="secondary" size="sm">Cancel</Button>
                 </div>
               </div>
             ) : (
@@ -731,7 +700,7 @@ function MeetingsTab() {
             )}
             <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border-subtle">
               {detail.status === CrmMeetingStatus.ProposalDrafted && bookDate && bookTime && (
-                <button
+                <Button
                   onClick={() => bookMeeting.mutate(
                     { id: detail.id, selectedSlot: `${bookDate}T${bookTime}:00`, durationMinutes: Number(bookDuration) },
                     {
@@ -748,32 +717,32 @@ function MeetingsTab() {
                     }
                   )}
                   disabled={bookMeeting.isPending}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all"
+                  variant="primary"
                 >
                   {bookMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <CalendarCheck className="w-4 h-4" strokeWidth={1.5} />} Book
-                </button>
+                </Button>
               )}
               {detail.status === CrmMeetingStatus.Booked && !showCompleteSummary && (
-                <button
+                <Button
                   onClick={() => { setShowCompleteSummary(true); setCompleteSummaryText(''); }}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-success-soft text-success text-sm font-bold hover:bg-success hover:text-bg transition-all"
+                  variant="success"
                 >
                   <CalendarCheck className="w-4 h-4" strokeWidth={1.5} /> Mark Completed
-                </button>
+                </Button>
               )}
               <div className="space-y-2">
                 <div className="flex gap-2 items-center">
-                  <input value={taskTitle} onChange={e => setTaskTitle(e.target.value)} placeholder="Task description..."
+                  <input value={taskTitle} onChange={e => setTaskTitle(e.target.value)} placeholder="Task description..." aria-label="Task description..."
                     className="flex-1 px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
-                  <button onClick={() => taskTitle.trim() && createTask.mutate({ id: detail.id, title: taskTitle.trim(), assignedToUserId: taskAssigneeId || undefined })}
+                  <Button onClick={() => taskTitle.trim() && createTask.mutate({ id: detail.id, title: taskTitle.trim(), assignedToUserId: taskAssigneeId || undefined })}
                     disabled={createTask.isPending || !taskTitle.trim()}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all shrink-0">
+                    variant="primary" className="shrink-0">
                     {createTask.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={1.5} />}
                     {createTask.isPending ? 'Creating...' : 'Create Task'}
-                  </button>
+                  </Button>
                 </div>
                 <div className="flex justify-end">
-                  <select value={taskAssigneeId} onChange={e => setTaskAssigneeId(e.target.value)}
+                  <select aria-label="Task assignee ID" value={taskAssigneeId} onChange={e => setTaskAssigneeId(e.target.value)}
                     className="px-2 py-1 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-border-glow w-48">
                     <option value="">Assign to me (default)</option>
                     {teamMembers.filter((u: any) => u.role !== 1).map((u: any) => (
@@ -783,9 +752,9 @@ function MeetingsTab() {
                 </div>
               </div>
               {detail.status !== CrmMeetingStatus.Cancelled && detail.status !== CrmMeetingStatus.Completed && (
-                <button onClick={() => { cancelMeeting.mutate(detail.id, { onSuccess: () => setSelectedId(null) }); }} disabled={cancelMeeting.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-danger-soft text-danger text-sm font-bold hover:bg-danger hover:text-bg transition-all disabled:opacity-60">
+                <Button onClick={() => { cancelMeeting.mutate(detail.id, { onSuccess: () => setSelectedId(null) }); }} disabled={cancelMeeting.isPending} variant="danger">
                   {cancelMeeting.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <X className="w-4 h-4" strokeWidth={1.5} />} Cancel
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -803,7 +772,8 @@ function CallSummariesTab() {
   const [reqForm, setReqForm] = useState<{ signalId: string; contactId: string; dealId: string }>({ signalId: '', contactId: '', dealId: '' });
   const [selectedCs, setSelectedCs] = useState<CrmCallSummarySummaryDto | null>(null);
 
-  const { data: raw, isLoading } = useCallSummaries(filter);
+  const callSummariesQuery = useCallSummaries(filter);
+  const { data: raw } = callSummariesQuery;
   const items: CrmCallSummarySummaryDto[] = (raw as any)?.items ?? [];
 
   const requestSummary = useRequestCallSummary();
@@ -827,20 +797,19 @@ function CallSummariesTab() {
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-4 shrink-0">
           <div />
-          <button onClick={() => setShowRequest(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+          <Button onClick={() => setShowRequest(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Request Summary
-          </button>
+          </Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <PhoneCall className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No call summaries found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={callSummariesQuery}
+            isEmpty={!items.length}
+            noun="call summaries"
+            icon={PhoneCall}
+            emptyTitle="No call summaries found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -861,7 +830,7 @@ function CallSummariesTab() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 
@@ -873,22 +842,22 @@ function CallSummariesTab() {
         subtitle="Generate an AI summary from a recorded call"
         footer={
           <div className="flex items-center justify-end gap-3">
-            <button
+            <Button
               onClick={() => setShowRequest(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               disabled={requestSummary.isPending}
               onClick={handleRequest}
               form="request-summary-form"
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {requestSummary.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" strokeWidth={2} />}
               {requestSummary.isPending ? 'Requesting…' : 'Request Summary'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -901,18 +870,10 @@ function CallSummariesTab() {
 
           {/* Signal ID — required */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger">*</span></label>
-            <div className="relative">
-              <PhoneCall className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                required
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                placeholder="Signal ID from recorded call (required)"
-                value={reqForm.signalId}
-                onChange={setR('signalId')}
-              />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Signal ID <span className="text-danger-light">*</span></span>
+              <Input icon={PhoneCall} required style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Signal ID from recorded call (required)" value={reqForm.signalId} onChange={setR('signalId')} />
+            </label>
           </div>
 
           {/* ── Links ── */}
@@ -924,30 +885,16 @@ function CallSummariesTab() {
           {/* Contact ID + Deal ID */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Contact ID</label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Contact ID (optional)"
-                  value={reqForm.contactId}
-                  onChange={setR('contactId')}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Contact ID</span>
+                <Input icon={User} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Contact ID (optional)" value={reqForm.contactId} onChange={setR('contactId')} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</label>
-              <div className="relative">
-                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Deal ID (optional)"
-                  value={reqForm.dealId}
-                  onChange={setR('dealId')}
-                />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Deal ID</span>
+                <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Deal ID (optional)" value={reqForm.dealId} onChange={setR('dealId')} />
+              </label>
             </div>
           </div>
 
@@ -976,9 +923,9 @@ function CallSummariesTab() {
             )}
 
             {selectedCs.status === CrmCallSummaryStatus.Pending && (
-              <button onClick={() => generateSummary.mutate(selectedCs.id)} disabled={generateSummary.isPending} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-60 transition-all">
+              <Button onClick={() => generateSummary.mutate(selectedCs.id)} disabled={generateSummary.isPending} variant="primary">
                 {generateSummary.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Play className="w-4 h-4" strokeWidth={1.5} /> Generate</>}
-              </button>
+              </Button>
             )}
 
             <p className="text-xs text-text-muted">Created {format(parseISO(selectedCs.createdAt), 'MMM d, yyyy HH:mm')}</p>

@@ -265,7 +265,7 @@ export const stylemintLogisticsApi = {
     unwrap<GuardianRecord>(
       await stylemintOperationsApi.invoke({
         method: 'GET',
-        path: `v1/admin/fulfilment/${encodeURIComponent(packageId)}/assessment`,
+        path: `v1/admin/fulfillment/${encodeURIComponent(packageId)}/assessment`,
       }),
     ),
 
@@ -273,7 +273,7 @@ export const stylemintLogisticsApi = {
     unwrap<GuardianRecord[]>(
       await stylemintOperationsApi.invoke({
         method: 'GET',
-        path: `v1/admin/fulfilment/${encodeURIComponent(packageId)}/decisions`,
+        path: `v1/admin/fulfillment/${encodeURIComponent(packageId)}/decisions`,
       }),
     ),
 

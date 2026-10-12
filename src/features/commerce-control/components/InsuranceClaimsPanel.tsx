@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { AlertTriangle, Check, Loader2, Search, ShieldQuestion } from 'lucide-react';
 import { stylemintInsuranceApi } from '../api/stylemint-insurance.api';
 import { ReportPanel } from './ReportPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Partnership insurance, and the PayoutsOps decision on a claim.
@@ -51,16 +52,16 @@ export function InsuranceClaimsPanel() {
           <input
             value={partnershipDraft}
             onChange={(e) => setPartnershipDraft(e.target.value)}
-            placeholder="Partnership id"
+            placeholder="Partnership id" aria-label="Partnership id"
             className={`${field} flex-1 font-mono`}
           />
-          <button
+          <Button
             disabled={!partnershipDraft.trim()}
             onClick={() => setPartnershipId(partnershipDraft.trim())}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary"
           >
             <Search className="h-3.5 w-3.5" strokeWidth={1.6} /> Open
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -118,7 +119,7 @@ function ReviewForm() {
         <input
           value={claimId}
           onChange={(e) => setClaimId(e.target.value)}
-          placeholder="Claim id from the claims above"
+          placeholder="Claim id from the claims above" aria-label="Claim id from the claims above"
           className={`${field} font-mono sm:col-span-2`}
         />
         <input
@@ -127,7 +128,7 @@ function ReviewForm() {
           min={0}
           value={settlement}
           onChange={(e) => setSettlement(e.target.value)}
-          placeholder="Settlement (optional)"
+          placeholder="Settlement (optional)" aria-label="Settlement (optional)"
           className={field}
         />
         <div className="flex gap-1.5 sm:col-span-3">
@@ -152,7 +153,7 @@ function ReviewForm() {
             Refuse
           </button>
         </div>
-        <input
+        <input aria-label="Notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder={approved ? 'Notes (optional)' : 'Why it is refused (required)'}
@@ -160,10 +161,10 @@ function ReviewForm() {
         />
       </div>
 
-      <button
+      <Button
         disabled={!ready || review.isPending}
         onClick={() => review.mutate()}
-        className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-2"
       >
         {review.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -171,7 +172,7 @@ function ReviewForm() {
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         Record decision
-      </button>
+      </Button>
 
       {review.isError && (
         <div className="mt-2 flex items-start gap-2 rounded-sm border-thin border-rose-400/25 bg-rose-400/5 p-2.5">

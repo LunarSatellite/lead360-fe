@@ -55,7 +55,7 @@ const btnGhost =
   "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated border border-border-subtle transition-all";
 
 const btnDanger =
-  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-danger border border-danger/30 hover:bg-danger-soft transition-all";
+  "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-danger-light border border-danger/30 hover:bg-danger-soft transition-all";
 
 interface ComponentProps {
   inline?: boolean;
@@ -177,7 +177,7 @@ function CardTile({
 }) {
   const missing = !card.phone || !card.jobTitle;
   return (
-    <button
+    <button aria-pressed={card.isActive}
       type="button"
       onClick={onClick}
       className={`text-left rounded-card border-thin p-4 transition-all hover:border-border-glow ${
@@ -371,7 +371,7 @@ function PreviewSection({ card }: { card: CrmContactCardDto }) {
             className="w-48 h-48 rounded-md bg-white p-1"
           />
         ) : qrError ? (
-          <div className="w-48 h-48 rounded-md bg-danger-soft border border-danger/30 flex items-center justify-center px-3 text-center text-[10px] text-danger">
+          <div className="w-48 h-48 rounded-md bg-danger-soft border border-danger/30 flex items-center justify-center px-3 text-center text-[10px] text-danger-light">
             {qrError}
           </div>
         ) : (
@@ -710,15 +710,15 @@ function SettingsSection({ card }: { card: CrmContactCardDto }) {
         </div>
 
         <div>
-          <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
-            Internal notes
+          <label className="flex flex-col gap-1">
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Internal notes</span>
+            <textarea
+              className={inputCls + " mt-1 min-h-[64px]"}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="(only visible to your team)"
+            />
           </label>
-          <textarea
-            className={inputCls + " mt-1 min-h-[64px]"}
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="(only visible to your team)"
-          />
           <div className="flex items-center justify-end gap-2 mt-2">
             <button
               type="button"

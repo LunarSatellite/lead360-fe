@@ -19,6 +19,7 @@ import {
   stylemintFeatureFlagsApi,
   type FeatureFlag,
 } from '../api/stylemint-feature-flags.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Platform feature flags, and the overrides layered on top of them.
@@ -58,12 +59,12 @@ export function FeatureFlagsPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => setCreating(true)}
-            className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> New flag
-          </button>
+          </Button>
           <button
             onClick={() => flags.refetch()}
             className="flex items-center gap-2 rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
@@ -126,13 +127,13 @@ function NewFlagCard({ onDone }: { onDone: () => void }) {
         <input
           value={key}
           onChange={(event) => setKey(event.target.value)}
-          placeholder="flag.key"
+          placeholder="flag.key" aria-label="flag.key"
           className="rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 font-mono text-xs text-text-primary outline-none focus:border-border-glow"
         />
         <input
           value={description}
           onChange={(event) => setDescription(event.target.value)}
-          placeholder="What does this switch do?"
+          placeholder="What does this switch do?" aria-label="What does this switch do?"
           className="rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
         />
       </div>
@@ -149,19 +150,19 @@ function NewFlagCard({ onDone }: { onDone: () => void }) {
       {error && <p className="text-xs text-rose-300">{error}</p>}
 
       <div className="flex gap-2">
-        <button
+        <Button
           onClick={() => create.mutate()}
           disabled={create.isPending || !key.trim()}
-          className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary"
         >
           {create.isPending ? 'Saving…' : 'Create flag'}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onDone}
-          className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+          variant="secondary"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -230,19 +231,19 @@ function FlagCard({ flag, onChanged }: { flag: FeatureFlag; onChanged: () => voi
             This takes effect immediately for everyone without an override.
           </p>
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => toggleDefault.mutate()}
               disabled={toggleDefault.isPending}
-              className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary"
             >
               {toggleDefault.isPending ? 'Applying…' : 'Yes, change it'}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setConfirmToggle(false)}
-              className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -312,12 +313,12 @@ function FlagCard({ flag, onChanged }: { flag: FeatureFlag; onChanged: () => voi
             onCancel={() => setAdding(false)}
           />
         ) : (
-          <button
+          <Button
             onClick={() => setAdding(true)}
-            className="mt-2 flex items-center gap-1.5 rounded-card border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:text-text-primary"
+            variant="secondary" size="sm" className="mt-2"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> Add override
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -356,7 +357,7 @@ function AddOverride({
   return (
     <div className="mt-2 space-y-2 rounded-card border-thin border-border-subtle bg-bg-elevated p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <select
+        <select aria-label="Audience"
           value={audience}
           onChange={(event) => setAudience(Number(event.target.value))}
           className="rounded-card border-thin border-border-subtle bg-bg-card px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"
@@ -366,7 +367,7 @@ function AddOverride({
         </select>
 
         {audience === FlagAudience.Role ? (
-          <select
+          <select aria-label="Role kind"
             value={roleKind}
             onChange={(event) => setRoleKind(Number(event.target.value))}
             className="rounded-card border-thin border-border-subtle bg-bg-card px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"
@@ -379,7 +380,7 @@ function AddOverride({
           <input
             value={accountId}
             onChange={(event) => setAccountId(event.target.value)}
-            placeholder="Account id"
+            placeholder="Account id" aria-label="Account id"
             className="min-w-[280px] flex-1 rounded-card border-thin border-border-subtle bg-bg-card px-2 py-1.5 font-mono text-xs text-text-primary outline-none focus:border-border-glow"
           />
         )}
@@ -398,19 +399,19 @@ function AddOverride({
       {error && <p className="text-xs text-rose-300">{error}</p>}
 
       <div className="flex gap-2">
-        <button
+        <Button
           onClick={() => save.mutate()}
           disabled={save.isPending || incomplete}
-          className="rounded-card bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {save.isPending ? 'Saving…' : 'Save override'}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onCancel}
-          className="rounded-card border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary"
+          variant="secondary" size="sm"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

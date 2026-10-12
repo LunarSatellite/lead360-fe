@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { crmApi } from '../api/crm.api';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 const ENTITY_TYPES = ['Lead', 'SupportCase', 'WorkOrder', 'Return', 'Onboarding'] as const;
 const ENTITY_LABELS: Record<string, string> = {
@@ -80,7 +81,7 @@ export function Component() {
 
       {/* Add member */}
       <div className="flex gap-2">
-        <select
+        <select aria-label="Selected user ID"
           value={selectedUserId}
           onChange={e => setSelectedUserId(e.target.value)}
           className="flex-1 px-3 py-2 rounded-lg border border-border-subtle bg-bg-input text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-brand/40"
@@ -90,13 +91,13 @@ export function Component() {
             <option key={u.id} value={u.id}>{userName(u)}</option>
           ))}
         </select>
-        <button
+        <Button
           onClick={() => selectedUserId && addMutation.mutate(selectedUserId)}
           disabled={!selectedUserId || addMutation.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand text-white text-sm font-medium disabled:opacity-50"
+          variant="primary"
         >
           {addMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><UserPlus className="w-4 h-4" /> Add</>}
-        </button>
+        </Button>
       </div>
 
       {/* Pool members */}
@@ -123,10 +124,10 @@ export function Component() {
                   <p className="text-sm font-medium text-text-primary">{displayName}</p>
                   {email && <p className="text-xs text-text-muted">{email}</p>}
                 </div>
-                <button
+                <button aria-label="Delete"
                   onClick={() => removeMutation.mutate(userId)}
                   disabled={removeMutation.isPending}
-                  className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger transition-colors shrink-0"
+                  className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger-light transition-colors shrink-0"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

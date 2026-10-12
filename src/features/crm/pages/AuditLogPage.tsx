@@ -80,7 +80,7 @@ export function Component() {
         {ENTITY_TABS.map((t) => {
           const active = entityKind === t.value;
           return (
-            <button
+            <button aria-pressed={active}
               key={t.label}
               onClick={() => setEntityKind(t.value)}
               className={`px-3 py-1.5 rounded-full text-sm border transition-all ${

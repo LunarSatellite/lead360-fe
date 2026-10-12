@@ -28,7 +28,7 @@ export const REPUTATION_FACET_LABEL: Record<number, string> = {
   2: 'Reviewer credibility',
   3: 'Creator engagement',
   4: 'Courier reliability',
-  5: 'Vendor fulfilment',
+  5: 'Vendor fulfillment',
 };
 
 /** Mirrors PassportAssurance. `Recorded` means nobody looked, so a check cannot end there. */

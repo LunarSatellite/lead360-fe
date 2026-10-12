@@ -11,6 +11,7 @@ import type {
   CrmPipelineSummaryDto, CrmDealStageSummaryDto, CrmStageGateSummaryDto, CustomFieldDefinitionDto,
 } from '../types/crm.types';
 import { StageGateType, STAGE_GATE_TYPE_LABELS, GATE_REQUIRED_FIELDS, CrmEntityType } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const DEAL_TYPE_LABELS: Record<number, string> = { 1: 'Sales', 2: 'Service', 3: 'Support', 4: 'Renewal' };
 const DEAL_TYPE_COLORS: Record<number, string> = { 1: '#3B82F6', 2: '#8B5CF6', 3: '#EF4444', 4: '#10B981' };
@@ -59,15 +60,17 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
 
       <div className="flex gap-2">
         <div className="flex-1">
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Type</label>
-          <select
-            value={gateType}
-            onChange={(e) => setGateType(Number(e.target.value) as StageGateType)}
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          >
-            <option value={StageGateType.ManualCheck}>{STAGE_GATE_TYPE_LABELS[StageGateType.ManualCheck]}</option>
-            <option value={StageGateType.RequiredField}>{STAGE_GATE_TYPE_LABELS[StageGateType.RequiredField]}</option>
-          </select>
+          <label className="block">
+            <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Type</span>
+            <select
+              value={gateType}
+              onChange={(e) => setGateType(Number(e.target.value) as StageGateType)}
+              className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              <option value={StageGateType.ManualCheck}>{STAGE_GATE_TYPE_LABELS[StageGateType.ManualCheck]}</option>
+              <option value={StageGateType.RequiredField}>{STAGE_GATE_TYPE_LABELS[StageGateType.RequiredField]}</option>
+            </select>
+          </label>
         </div>
         <label className="flex items-center gap-1.5 mt-5 cursor-pointer select-none">
           <input
@@ -82,32 +85,36 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
 
       {gateType === StageGateType.RequiredField ? (
         <div>
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Field</label>
-          <select
-            value={fieldName}
-            onChange={(e) => setFieldName(e.target.value)}
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          >
-            {allRequiredFields.map((f) => (
-              <option key={f.value} value={f.value}>{f.label}</option>
-            ))}
-          </select>
+          <label className="block">
+            <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Field</span>
+            <select
+              value={fieldName}
+              onChange={(e) => setFieldName(e.target.value)}
+              className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
+            >
+              {allRequiredFields.map((f) => (
+                <option key={f.value} value={f.value}>{f.label}</option>
+              ))}
+            </select>
+          </label>
         </div>
       ) : (
         <div>
-          <label className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Label</label>
-          <input
-            autoFocus
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            placeholder="e.g. Contract signed"
-            className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
-          />
+          <label className="block">
+            <span className="text-[10px] text-text-muted font-semibold uppercase tracking-wide block mb-1">Label</span>
+            <input
+              autoFocus
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="e.g. Contract signed"
+              className="w-full px-2 py-1.5 rounded-lg text-xs border border-border-subtle bg-bg-elevated text-text-primary focus:outline-none focus:ring-1 focus:ring-brand"
+            />
+          </label>
         </div>
       )}
 
       {gateType === StageGateType.RequiredField && (
-        <input
+        <input aria-label="Label"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder={`Label (e.g. "${allRequiredFields.find(f => f.value === fieldName)?.label ?? fieldName}")`}
@@ -116,19 +123,19 @@ function AddGateForm({ stageId, onDone }: AddGateFormProps) {
       )}
 
       <div className="flex gap-2 justify-end">
-        <button
+        <Button
           onClick={onDone}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated"
+          variant="secondary" size="sm"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleSubmit}
           disabled={!label.trim() || create.isPending}
-          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50"
+          variant="primary" size="sm"
         >
           {create.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Plus className="w-3 h-3" /> Add</>}
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -163,14 +170,14 @@ function StageGateList({ stageId }: { stageId: string }) {
             {STAGE_GATE_TYPE_LABELS[gate.gateType as keyof typeof STAGE_GATE_TYPE_LABELS]}
           </span>
           {gate.isRequired ? (
-            <span className="text-[10px] text-danger font-bold shrink-0">required</span>
+            <span className="text-[10px] text-danger-light font-bold shrink-0">required</span>
           ) : (
             <span className="text-[10px] text-text-muted shrink-0">optional</span>
           )}
-          <button
+          <button aria-label="Delete"
             onClick={() => deleteGate.mutate({ gateId: gate.id, stageId })}
             disabled={deleteGate.isPending}
-            className="p-1 rounded text-text-muted hover:text-danger opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+            className="p-1 rounded text-text-muted hover:text-danger-light opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
           >
             <Trash2 className="w-3 h-3" />
           </button>
@@ -279,7 +286,7 @@ function EditPipelineModal({ pipeline, onClose }: EditPipelineModalProps) {
             <Pencil className="w-4 h-4 text-brand" strokeWidth={1.5} />
             <h3 className="text-sm font-bold text-text-primary">Edit Pipeline</h3>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -290,23 +297,27 @@ function EditPipelineModal({ pipeline, onClose }: EditPipelineModalProps) {
         {/* Body */}
         <div className="px-6 py-5 space-y-4">
           <div>
-            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</label>
-            <input
-              autoFocus
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
-            />
+            <label className="block">
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</span>
+              <input
+                autoFocus
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+                className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+              />
+            </label>
           </div>
           <div>
-            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></label>
-            <input
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-              placeholder="Short description…"
-              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
-            />
+            <label className="block">
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></span>
+              <input
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Short description…"
+                className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+              />
+            </label>
           </div>
           <div>
             <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-2">Color</label>
@@ -325,19 +336,19 @@ function EditPipelineModal({ pipeline, onClose }: EditPipelineModalProps) {
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border-subtle">
-          <button
+          <Button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated transition-all"
+            variant="secondary"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
             disabled={!editName.trim() || update.isPending}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+            variant="primary"
           >
             {update.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Check className="w-3.5 h-3.5" /> Save</>}
-          </button>
+          </Button>
         </div>
       </div>
     </div>,
@@ -418,9 +429,9 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
                 <Pencil className="w-3.5 h-3.5" />
               </button>
               {!pipeline.isDefault && (
-                <button
+                <button aria-label="Delete"
                   onClick={handleDelete}
-                  className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger/10 transition-colors"
+                  className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger/10 transition-colors"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -441,7 +452,7 @@ function PipelineRow({ pipeline, expanded, onToggle }: PipelineRowProps) {
 
           <div className="flex items-center gap-4 mt-2 ml-6 text-xs text-text-muted">
             <span>{pipeline.stageCount} stage{pipeline.stageCount !== 1 ? 's' : ''}</span>
-            {!pipeline.isActive && <span className="text-danger font-semibold">Inactive</span>}
+            {!pipeline.isActive && <span className="text-danger-light font-semibold">Inactive</span>}
           </div>
 
           {expanded && <StageGateConfigPanel pipelineId={pipeline.id} />}
@@ -481,7 +492,7 @@ function CreatePipelineModal({ onCreated, onCancel }: CreateFormProps) {
             <GitBranch className="w-4 h-4 text-brand" strokeWidth={1.5} />
             <h3 className="text-sm font-bold text-text-primary">New Pipeline</h3>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onCancel}
             className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"
           >
@@ -492,24 +503,28 @@ function CreatePipelineModal({ onCreated, onCancel }: CreateFormProps) {
         {/* Body */}
         <div className="px-6 py-5 space-y-4">
           <div>
-            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</label>
-            <input
-              autoFocus
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-              placeholder="e.g. Sales Pipeline"
-              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
-            />
+            <label className="block">
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Pipeline name</span>
+              <input
+                autoFocus
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                placeholder="e.g. Sales Pipeline"
+                className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+              />
+            </label>
           </div>
           <div>
-            <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></label>
-            <input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Short description…"
-              className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
-            />
+            <label className="block">
+              <span className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-1.5">Description <span className="normal-case font-normal">(optional)</span></span>
+              <input
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Short description…"
+                className="w-full px-3 py-2.5 rounded-xl text-sm border border-border-subtle bg-bg-elevated text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow focus:bg-glass-1 transition-colors"
+              />
+            </label>
           </div>
           <div>
             <label className="text-[10px] font-semibold text-text-muted uppercase tracking-wide block mb-2">Color</label>
@@ -528,19 +543,19 @@ function CreatePipelineModal({ onCreated, onCancel }: CreateFormProps) {
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-2 px-6 py-4 border-t border-border-subtle">
-          <button
+          <Button
             onClick={onCancel}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated transition-all"
+            variant="secondary"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSubmit}
             disabled={!name.trim() || create.isPending}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 transition-all"
+            variant="primary"
           >
             {create.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Create</>}
-          </button>
+          </Button>
         </div>
       </div>
     </div>,
@@ -578,12 +593,12 @@ export function Component() {
             Manage pipelines and configure stage exit gates.
           </p>
         </div>
-        <button
+        <Button
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Pipeline
-        </button>
+        </Button>
       </div>
 
       {showCreate && (

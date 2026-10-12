@@ -30,6 +30,7 @@ import {
   TransactionStatus,
   type TransactionStatusValue,
 } from '../types/business-catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   transactionId: string;
@@ -80,7 +81,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
               </p>
             )}
           </div>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-7 h-7 rounded-sm flex items-center justify-center
                        hover:bg-glass-2 transition-colors"
@@ -207,10 +208,9 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
               {/* Status note input */}
               {tx.status === TransactionStatus.Pending && (
                 <div>
-                  <label className="block text-[11px] font-bold text-text-secondary mb-1">
-                    Internal note (optional)
-                  </label>
-                  <textarea
+                  <label className="block">
+                    <span className="block text-[11px] font-bold text-text-secondary mb-1">Internal note (optional)</span>
+                    <textarea
                     value={note}
                     rows={2}
                     placeholder="e.g. 'Called customer, confirmed for Friday.'"
@@ -219,6 +219,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                                text-text-primary placeholder:text-text-muted
                                focus:outline-none focus:border-brand transition-colors resize-none"
                   />
+                  </label>
                 </div>
               )}
             </div>
@@ -232,7 +233,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                   onClick={() => setStatus(TransactionStatus.Cancelled)}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
                              border border-border-medium text-text-secondary
-                             hover:bg-danger-soft hover:text-danger hover:border-danger
+                             hover:bg-danger-soft hover:text-danger-light hover:border-danger
                              disabled:opacity-50 transition-all"
                 >
                   <Ban className="w-3.5 h-3.5" strokeWidth={2} /> Cancel
@@ -256,17 +257,14 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
 
             {tx.status === TransactionStatus.Confirmed && (
               <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
-                <button
+                <Button
                   type="button"
                   disabled={notifyMutation.isPending}
                   onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                             border border-border-medium text-text-secondary
-                             hover:bg-glass-2 hover:text-text-primary
-                             disabled:opacity-50 transition-all"
+                  variant="secondary" size="sm"
                 >
                   <Send className="w-3.5 h-3.5" strokeWidth={2} /> Resend confirmation
-                </button>
+                </Button>
                 <button
                   type="button"
                   disabled={statusMutation.isPending}
@@ -286,23 +284,19 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
 
             {tx.status === TransactionStatus.Preparing && (
               <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle">
-                <button
+                <Button
                   type="button"
                   disabled={notifyMutation.isPending}
                   onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                             border border-border-medium text-text-secondary
-                             hover:bg-glass-2 hover:text-text-primary
-                             disabled:opacity-50 transition-all"
+                  variant="secondary" size="sm"
                 >
                   <Send className="w-3.5 h-3.5" strokeWidth={2} /> Resend "preparing" update
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   disabled={statusMutation.isPending}
                   onClick={() => setStatus(TransactionStatus.ReadyForPickup)}
-                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold
-                             bg-brand text-white hover:bg-brand/90 disabled:opacity-50 transition-all"
+                  variant="primary"
                 >
                   {statusMutation.isPending ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -310,7 +304,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                     <PackageCheck className="w-3.5 h-3.5" strokeWidth={2} />
                   )}
                   Mark ready for pickup &amp; notify
-                </button>
+                </Button>
               </div>
             )}
 
@@ -319,14 +313,11 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                 <span className="flex items-center gap-1.5 text-xs font-bold text-brand">
                   <PackageCheck className="w-3.5 h-3.5" strokeWidth={2} /> Ready — awaiting pickup
                 </span>
-                <button
+                <Button
                   type="button"
                   disabled={notifyMutation.isPending}
                   onClick={() => notifyMutation.mutate({ id: transactionId, data: {} })}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold
-                             border border-border-medium text-text-secondary
-                             hover:bg-glass-2 hover:text-text-primary
-                             disabled:opacity-50 transition-all"
+                  variant="secondary" size="sm"
                 >
                   {notifyMutation.isPending ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -334,7 +325,7 @@ export function TransactionDetailDialog({ transactionId, onClose }: Props) {
                     <Send className="w-3.5 h-3.5" strokeWidth={2} />
                   )}
                   Resend "ready for pickup"
-                </button>
+                </Button>
               </div>
             )}
           </>
@@ -358,7 +349,7 @@ function StatusPill({ status }: { status: TransactionStatusValue }) {
     status === TransactionStatus.Confirmed
       ? 'bg-success-soft text-success'
       : status === TransactionStatus.Cancelled
-        ? 'bg-danger-soft text-danger'
+        ? 'bg-danger-soft text-danger-light'
         : status === TransactionStatus.Preparing
           ? 'bg-info-soft text-info'
           : status === TransactionStatus.ReadyForPickup

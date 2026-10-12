@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { crmApi } from '../api/crm.api';
 import { ContractTemplateCategory, CONTRACT_TEMPLATE_CATEGORY_LABELS, type ContractTemplateCategoryValue } from '../types/crm.types';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 
@@ -65,10 +66,10 @@ export function Component() {
           <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Contract Templates</h1>
           <p className="text-sm text-text-secondary mt-1">Reusable agreement templates with {'{{variable}}'} placeholders. Create a contract from a template to auto-fill deal and customer details.</p>
         </div>
-        <button onClick={() => { resetForm(); setShowForm(true); setEditingId(null); }}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => { resetForm(); setShowForm(true); setEditingId(null); }}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> New template
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
@@ -92,15 +93,15 @@ export function Component() {
           {showForm ? (
             <form onSubmit={submit} className="space-y-4">
               <div className="flex items-center justify-between"><h2 className="text-sm font-bold text-text-primary">{editingId ? 'Edit' : 'New'} Template</h2>
-                <button type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
-              <input className={inputCls} placeholder="Template name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
+                <button aria-label="Close" type="button" onClick={() => { setShowForm(false); setEditingId(null); }} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button></div>
+              <input className={inputCls} placeholder="Template name" aria-label="Template name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
               <div className="grid grid-cols-2 gap-3">
-                <select className={inputCls} value={form.category} onChange={e => setForm(f => ({ ...f, category: Number(e.target.value) as ContractTemplateCategoryValue }))}>
+                <select aria-label="Category" className={inputCls} value={form.category} onChange={e => setForm(f => ({ ...f, category: Number(e.target.value) as ContractTemplateCategoryValue }))}>
                   {Object.entries(ContractTemplateCategory).filter(([k]) => isNaN(Number(k))).map(([k, v]) => (<option key={v} value={v}>{k}</option>))}
                 </select>
-                <input className={inputCls} placeholder="Subject line (optional)" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} />
+                <input className={inputCls} placeholder="Subject line (optional)" aria-label="Subject line (optional)" value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} />
               </div>
-              <input className={inputCls} placeholder="Description (optional)" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+              <input className={inputCls} placeholder="Description (optional)" aria-label="Description (optional)" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs text-text-muted">Body (HTML)</label>
@@ -108,12 +109,12 @@ export function Component() {
                     {VARIABLE_HINTS.map(v => <button key={v} type="button" onClick={() => insertVar(v)} className="px-1.5 py-0.5 rounded text-[10px] bg-glass-2 border border-border-subtle text-text-muted hover:text-brand hover:border-brand/40 transition-all">{v}</button>)}
                   </div>
                 </div>
-                <textarea className={`${inputCls} min-h-[180px] font-mono text-xs`} value={form.bodyHtml} onChange={e => setForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p><p>Your {{ContractTitle}} is ready...</p>" />
+                <textarea className={`${inputCls} min-h-[180px] font-mono text-xs`} value={form.bodyHtml} onChange={e => setForm(f => ({ ...f, bodyHtml: e.target.value }))} placeholder="<p>Hi {{ContactFirstName}},</p><p>Your {{ContractTitle}} is ready...</p>" aria-label="<p>Hi {{ContactFirstName}},</p><p>Your {{ContractTitle}} is ready...</p>" />
               </div>
-              <button type="submit" disabled={createMut.isPending || updateMut.isPending || !form.name.trim()}
-                className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50">
+              <Button type="submit" disabled={createMut.isPending || updateMut.isPending || !form.name.trim()}
+                variant="primary" block>
                 {editingId ? 'Update' : 'Create'} Template
-              </button>
+              </Button>
             </form>
           ) : selected ? (
             <div className="space-y-4">
@@ -121,8 +122,8 @@ export function Component() {
                 <div><h2 className="text-base font-bold text-text-primary">{selected.name}</h2>
                   <p className="text-xs text-text-muted">{CONTRACT_TEMPLATE_CATEGORY_LABELS[selected.category as ContractTemplateCategoryValue] ?? 'General'}</p></div>
                 <div className="flex gap-2">
-                  <button onClick={() => openEdit(selected)} className="p-1.5 rounded-lg text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
-                  <button onClick={() => deleteMut.mutate(selected.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Edit" onClick={() => openEdit(selected)} className="p-1.5 rounded-lg text-text-muted hover:text-brand"><Pencil className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Delete" onClick={() => deleteMut.mutate(selected.id)} className="p-1.5 rounded-lg text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               </div>
               {selected.subject && <div className="text-xs"><span className="text-text-muted">Subject: </span><span className="text-text-primary">{selected.subject}</span></div>}

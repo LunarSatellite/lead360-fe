@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   AlertTriangle,
@@ -19,6 +20,7 @@ import {
 } from '../api/stylemint-operations.api';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { UserRole } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 const METHOD_STYLES: Record<string, string> = {
   GET: 'bg-sky-400/10 text-sky-300 border-sky-400/25',
@@ -43,7 +45,17 @@ export function CommerceOperationsPage() {
   const canOperate = user?.role === UserRole.Owner || user?.role === UserRole.Admin;
 
   const [areaFilter, setAreaFilter] = useState('');
-  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  // The open area is a query parameter, so it can be linked and survives a
+  // refresh. As component state it did neither: one URL served the whole
+  // catalogue, which is the defect the vendor console had too.
+  const [params, setParams] = useSearchParams();
+  const selectedArea = params.get('area');
+  const setSelectedArea = (area: string | null) => {
+    const next = new URLSearchParams(params);
+    if (area) next.set('area', area);
+    else next.delete('area');
+    setParams(next, { replace: true });
+  };
   const [openOperation, setOpenOperation] = useState<string | null>(null);
 
   const catalog = useQuery({
@@ -143,7 +155,7 @@ export function CommerceOperationsPage() {
               {visibleAreas.map((area) => {
                 const isActive = area.area === active?.area;
                 return (
-                  <button
+                  <button aria-pressed={isActive}
                     key={area.area}
                     onClick={() => {
                       setSelectedArea(area.area);
@@ -324,18 +336,18 @@ function OperationRow({
                 >
                   Yes, run {operation.method}
                 </button>
-                <button
+                <Button
                   onClick={() => setConfirming(false)}
-                  className="rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary"
+                  variant="secondary"
                 >
                   Cancel
-                </button>
+                </Button>
               </>
             ) : (
-              <button
+              <Button
                 onClick={() => (mutation ? setConfirming(true) : run())}
                 disabled={running || missing.length > 0}
-                className="flex items-center gap-2 rounded-card bg-brand px-3 py-2 text-xs font-bold text-white disabled:opacity-40"
+                variant="primary"
               >
                 {running ? (
                   <Loader2 strokeWidth={1.6} className="h-3.5 w-3.5 animate-spin" />
@@ -343,7 +355,7 @@ function OperationRow({
                   <Play strokeWidth={1.6} className="h-3.5 w-3.5" />
                 )}
                 Run
-              </button>
+              </Button>
             )}
 
             {missing.length > 0 && (

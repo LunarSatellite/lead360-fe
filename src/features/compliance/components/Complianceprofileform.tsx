@@ -23,6 +23,7 @@ import type {
   DisclaimerRule,
   MandatoryReferenceRule,
 } from '../types/compliance.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ComplianceProfileFormProps {
   /** If provided, we're editing. If null, we're creating. */
@@ -128,40 +129,40 @@ export function ComplianceProfileForm({
         <div className="text-xs font-bold uppercase tracking-[2px] text-brand">Basic info</div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">
-              Profile name *
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">Profile name *</span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. My Healthcare Custom"
+                className={input}
+              />
             </label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. My Healthcare Custom"
-              className={input}
-            />
           </div>
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">
-              Industry *
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">Industry *</span>
+              <input
+                value={industry}
+                onChange={(e) => setIndustry(e.target.value)}
+                placeholder="e.g. Healthcare"
+                disabled={isEdit}
+                className={`${input} ${isEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
+              />
             </label>
-            <input
-              value={industry}
-              onChange={(e) => setIndustry(e.target.value)}
-              placeholder="e.g. Healthcare"
-              disabled={isEdit}
-              className={`${input} ${isEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
-            />
           </div>
         </div>
         <div>
-          <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">
-            Description
+          <label className="block">
+            <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-1.5">Description</span>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe what this compliance profile is for..."
+              rows={2}
+              className={`${input} resize-none`}
+            />
           </label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe what this compliance profile is for..."
-            rows={2}
-            className={`${input} resize-none`}
-          />
         </div>
         <div className="flex items-center gap-6">
           <label className="flex items-center gap-2 cursor-pointer">
@@ -175,25 +176,29 @@ export function ComplianceProfileForm({
           </label>
           {requiresAgeVerification && (
             <div className="flex items-center gap-2">
-              <label className="text-xs font-semibold text-text-muted">Min age:</label>
-              <input
-                type="number"
-                value={minimumAge}
-                onChange={(e) => setMinimumAge(e.target.value ? Number(e.target.value) : '')}
-                placeholder="18"
-                className="w-16 px-2 py-1 rounded-lg bg-glass-2 border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
-              />
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-semibold text-text-muted">Min age:</span>
+                <input
+                  type="number"
+                  value={minimumAge}
+                  onChange={(e) => setMinimumAge(e.target.value ? Number(e.target.value) : '')}
+                  placeholder="18"
+                  className="w-16 px-2 py-1 rounded-lg bg-glass-2 border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
+                />
+              </label>
             </div>
           )}
           <div className="flex items-center gap-2">
-            <label className="text-xs font-semibold text-text-muted">Max response length:</label>
-            <input
-              type="number"
-              value={maxResponseLength}
-              onChange={(e) => setMaxResponseLength(e.target.value ? Number(e.target.value) : '')}
-              placeholder="500"
-              className="w-20 px-2 py-1 rounded-lg bg-glass-2 border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
-            />
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold text-text-muted">Max response length:</span>
+              <input
+                type="number"
+                value={maxResponseLength}
+                onChange={(e) => setMaxResponseLength(e.target.value ? Number(e.target.value) : '')}
+                placeholder="500"
+                className="w-20 px-2 py-1 rounded-lg bg-glass-2 border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
+              />
+            </label>
           </div>
         </div>
       </div>
@@ -261,7 +266,7 @@ export function ComplianceProfileForm({
       >
         <div className="space-y-4">
           <div>
-            <div className="text-xs font-bold text-danger mb-1.5">Never collect</div>
+            <div className="text-xs font-bold text-danger-light mb-1.5">Never collect</div>
             <TagListEditor
               items={dhProhibited}
               setItems={setDhProhibited}
@@ -298,12 +303,12 @@ export function ComplianceProfileForm({
 
       {/* ─── Actions ─── */}
       <div className="flex items-center justify-end gap-3 pt-2">
-        <button
+        <Button
           onClick={onCancel}
-          className="px-5 py-2.5 rounded-xl text-sm font-semibold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary transition-all"
+          variant="subtle" size="lg"
         >
           Cancel
-        </button>
+        </Button>
         <button
           onClick={handleSubmit}
           disabled={isSubmitting || (!isEdit && (!name || !industry))}
@@ -335,7 +340,7 @@ function RuleSection({
   children: React.ReactNode;
 }) {
   const colorMap: Record<string, string> = {
-    danger: 'text-danger',
+    danger: 'text-danger-light',
     warning: 'text-warning',
     info: 'text-info',
     brand: 'text-brand',
@@ -373,7 +378,7 @@ function TagListEditor({
   color: string;
 }) {
   const colorMap: Record<string, string> = {
-    danger: 'bg-danger-soft text-danger border-danger/15',
+    danger: 'bg-danger-soft text-danger-light border-danger/15',
     warning: 'bg-warning-soft text-warning border-warning/15',
     success: 'bg-success-soft text-success border-[rgba(6,214,160,0.15)]',
     info: 'bg-info-soft text-info border-info/15',
@@ -397,7 +402,7 @@ function TagListEditor({
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border ${colorMap[color] || colorMap.brand}`}
           >
             {item}
-            <button
+            <button aria-label="Close"
               onClick={() => setItems(items.filter((_, j) => j !== i))}
               className="opacity-60 hover:opacity-100"
             >
@@ -408,20 +413,20 @@ function TagListEditor({
         {items.length === 0 && <span className="text-xs text-text-muted italic">No items added</span>}
       </div>
       <div className="flex gap-2">
-        <input
+        <input aria-label="New"
           value={newValue}
           onChange={(e) => setNewValue(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
           placeholder={placeholder}
           className={smallInput}
         />
-        <button
+        <Button aria-label="Add"
           onClick={add}
           disabled={!newValue.trim()}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"
+          variant="subtle" size="sm"
         >
           <Plus className="w-3.5 h-3.5" />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -460,9 +465,9 @@ function DisclaimerEditor({
                 <div className="text-xs font-bold text-info font-mono">{d.trigger}</div>
                 <div className="text-xs text-text-secondary mt-0.5">{d.text}</div>
               </div>
-              <button
+              <button aria-label="Close"
                 onClick={() => setItems(items.filter((_, j) => j !== i))}
-                className="text-text-muted hover:text-danger shrink-0"
+                className="text-text-muted hover:text-danger-light shrink-0"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -474,23 +479,23 @@ function DisclaimerEditor({
         <input
           value={trigger}
           onChange={(e) => setTrigger(e.target.value)}
-          placeholder="Trigger"
+          placeholder="Trigger" aria-label="Trigger"
           className={smallInput}
         />
         <input
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
-          placeholder="Disclaimer text..."
+          placeholder="Disclaimer text..." aria-label="Disclaimer text..."
           className={smallInput}
         />
-        <button
+        <Button aria-label="Add"
           onClick={add}
           disabled={!trigger.trim() || !text.trim()}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"
+          variant="subtle" size="sm"
         >
           <Plus className="w-3.5 h-3.5" />
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -538,9 +543,9 @@ function MandatoryRefEditor({
                 </div>
                 <div className="text-xs text-text-secondary mt-0.5">{r.message}</div>
               </div>
-              <button
+              <button aria-label="Close"
                 onClick={() => setItems(items.filter((_, j) => j !== i))}
-                className="text-text-muted hover:text-danger shrink-0"
+                className="text-text-muted hover:text-danger-light shrink-0"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -553,7 +558,7 @@ function MandatoryRefEditor({
           <input
             value={trigger}
             onChange={(e) => setTrigger(e.target.value)}
-            placeholder="Trigger"
+            placeholder="Trigger" aria-label="Trigger"
             className={smallInput}
           />
         </div>
@@ -562,7 +567,7 @@ function MandatoryRefEditor({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), add())}
-            placeholder="Reference message..."
+            placeholder="Reference message..." aria-label="Reference message..."
             className={smallInput}
           />
         </div>
@@ -575,13 +580,13 @@ function MandatoryRefEditor({
           />
           <span className="text-[10px] font-semibold text-text-muted">Handoff</span>
         </label>
-        <button
+        <Button aria-label="Add"
           onClick={add}
           disabled={!trigger.trim() || !message.trim()}
-          className="px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary disabled:opacity-30 transition-all"
+          variant="subtle" size="sm"
         >
           <Plus className="w-3.5 h-3.5" />
-        </button>
+        </Button>
       </div>
     </div>
   );

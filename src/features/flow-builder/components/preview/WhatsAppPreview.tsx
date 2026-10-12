@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { List, X, Phone, Video, MoreVertical, Smile, Paperclip, Mic, ChevronLeft, CheckCheck } from 'lucide-react';
+import { Button } from '@/shared/ui/primitives';
 
 export interface WaMenuItem {
   label: string;
@@ -225,16 +226,16 @@ export function WhatsAppPreview({ messages, onButtonClick, botName = 'Business B
                   {/* List trigger (4+ items) */}
                   {isList && (
                     <div style={{ borderTop: '1px solid #e8e8e8' }}>
-                      <button
+                      <Button
                         onClick={() => openSheet(m.items ?? [])}
-                        className="w-full py-1.5 text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors"
+                        variant="ghost" size="sm" block
                         style={{ color: '#0484d5', background: 'transparent' }}
                         onMouseEnter={e => (e.currentTarget.style.background = '#f5f5f5')}
                         onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
                       >
                         <List className="w-3 h-3" strokeWidth={2.5} />
                         View Options
-                      </button>
+                      </Button>
                     </div>
                   )}
                 </div>
@@ -291,7 +292,7 @@ export function WhatsAppPreview({ messages, onButtonClick, botName = 'Business B
           <div className="mx-auto mb-3 rounded-full" style={{ width: 36, height: 4, background: '#d1d1d1' }} />
           <div className="flex items-center justify-between">
             <span className="text-[13px] font-bold" style={{ color: '#111' }}>Select an option</span>
-            <button onClick={closeSheet} className="p-1 rounded-full" style={{ background: '#f2f2f2' }}>
+            <button aria-label="Close" onClick={closeSheet} className="p-1 rounded-full" style={{ background: '#f2f2f2' }}>
               <X className="w-3.5 h-3.5" style={{ color: '#666' }} strokeWidth={2.5} />
             </button>
           </div>

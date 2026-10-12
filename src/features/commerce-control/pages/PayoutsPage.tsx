@@ -23,6 +23,7 @@ import {
   type PayoutStateValue,
 } from '../api/stylemint-payouts.api';
 import { InsuranceClaimsPanel } from '../components/InsuranceClaimsPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The platform payout queue, with the two money actions an operator can actually take here.
@@ -184,20 +185,20 @@ function PayoutQueue() {
           </div>
 
           <div className="flex items-center justify-center gap-2">
-            <button
+            <Button
               disabled={skip === 0 || page.isFetching}
               onClick={() => setSkip(Math.max(0, skip - PAGE_SIZE))}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.6} /> Previous
-            </button>
-            <button
+            </Button>
+            <Button
               disabled={skip + PAGE_SIZE >= data.totalCount || page.isFetching}
               onClick={() => setSkip(skip + PAGE_SIZE)}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               Next <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} />
-            </button>
+            </Button>
           </div>
         </>
       )}
@@ -215,7 +216,7 @@ function FilterChip({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`rounded-sm border-thin px-3 py-1.5 text-xs font-bold ${
         active
@@ -291,26 +292,26 @@ function PayoutRow({ payout, onChanged }: { payout: Payout; onChanged: () => voi
 
         <div className="flex shrink-0 items-center gap-1.5">
           {canHold && (
-            <button
+            <Button
               onClick={() => {
                 setActing('hold');
                 setError(null);
               }}
-              className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               <PauseCircle className="h-3.5 w-3.5" strokeWidth={1.6} /> Hold
-            </button>
+            </Button>
           )}
           {canRelease && (
-            <button
+            <Button
               onClick={() => {
                 setActing('release');
                 setError(null);
               }}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+              variant="primary" size="sm"
             >
               <PlayCircle className="h-3.5 w-3.5" strokeWidth={1.6} /> Release
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -328,29 +329,29 @@ function PayoutRow({ payout, onChanged }: { payout: Payout; onChanged: () => voi
           <input
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Reason"
+            placeholder="Reason" aria-label="Reason"
             className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={!reason.trim() || act.isPending}
               onClick={() => act.mutate(acting)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm {acting}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => {
                 setActing(null);
                 setReason('');
                 setError(null);
               }}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}

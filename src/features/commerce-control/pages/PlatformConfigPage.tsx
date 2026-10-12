@@ -16,6 +16,7 @@ import {
   stylemintPlatformConfigApi,
   type PlatformConfigEntry,
 } from '../api/stylemint-platform-config.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Platform configuration — the key/value settings the commerce platform reads at runtime.
@@ -62,7 +63,7 @@ export function PlatformConfigPage() {
           </p>
           <h1 className="mt-2 flex items-center gap-2 text-2xl font-black tracking-tight text-text-primary">
             <Settings2 className="h-5 w-5 text-brand" strokeWidth={1.6} />
-            Platform configuration
+            Commerce platform
           </h1>
           <p className="mt-1 text-sm text-text-muted">
             Runtime settings the commerce platform reads. Each value is JSON, and a save applies
@@ -70,12 +71,12 @@ export function PlatformConfigPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => setCreating(true)}
-            className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> New setting
-          </button>
+          </Button>
           <button
             onClick={() => entries.refetch()}
             className="flex items-center gap-2 rounded-card border-thin border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
@@ -97,7 +98,7 @@ export function PlatformConfigPage() {
         <input
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          placeholder="Filter by key or description"
+          placeholder="Filter by key or description" aria-label="Filter by key or description"
           className="w-full rounded-card border-thin border-border-subtle bg-bg-input py-2 pl-9 pr-3 text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 focus:outline-none"
         />
       </div>
@@ -180,12 +181,12 @@ function ConfigRow({ entry, onEdit }: { entry: PlatformConfigEntry; onEdit: () =
             Updated {new Date(entry.updatedUtc).toLocaleString()}
           </p>
         </div>
-        <button
+        <Button
           onClick={onEdit}
-          className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           Edit
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -291,10 +292,10 @@ function ConfigEditor({
       </p>
 
       <div className="mt-3 flex items-center gap-2">
-        <button
+        <Button
           disabled={!valueValid || !keyValid || !changed || save.isPending}
           onClick={() => save.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {save.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -302,13 +303,13 @@ function ConfigEditor({
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Save
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );

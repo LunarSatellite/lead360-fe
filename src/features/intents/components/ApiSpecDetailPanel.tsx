@@ -13,6 +13,7 @@ import {
   parseJsonField,
 } from '../types/api-specs.types';
 import type { ApiSpecificationDetailDto, ApiSpecStatusValue } from '../types/api-specs.types';
+import { Button } from '@/shared/ui/primitives';
 
 type TabId = 'endpoints' | 'raw';
 
@@ -58,10 +59,10 @@ export function ApiSpecDetailPanel({ spec, onDeleted }: ApiSpecDetailPanelProps)
       {/* Error banner for failed specs */}
       {spec.status === ApiSpecStatus.Failed && spec.parseError && (
         <div className="flex items-start gap-3 p-4 rounded-xl bg-danger-soft border border-danger/15">
-          <AlertCircle className="w-5 h-5 text-danger flex-shrink-0 mt-0.5" strokeWidth={1.8} />
+          <AlertCircle className="w-5 h-5 text-danger-light flex-shrink-0 mt-0.5" strokeWidth={1.8} />
           <div>
-            <p className="text-sm font-bold text-danger">Parsing failed</p>
-            <p className="text-xs text-danger/80 mt-1 font-mono leading-relaxed">{spec.parseError}</p>
+            <p className="text-sm font-bold text-danger-light">Parsing failed</p>
+            <p className="text-xs text-danger-light/80 mt-1 font-mono leading-relaxed">{spec.parseError}</p>
           </div>
         </div>
       )}
@@ -82,30 +83,30 @@ export function ApiSpecDetailPanel({ spec, onDeleted }: ApiSpecDetailPanelProps)
             </StatusBadge>
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => reparseSpec.mutate(spec.id)}
               disabled={reparseSpec.isPending}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all disabled:opacity-50"
+              variant="subtle"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${reparseSpec.isPending ? 'animate-spin' : ''}`} strokeWidth={1.6} />
               Re-parse
-            </button>
+            </Button>
             {spec.rawSpecContent && (
-              <button
+              <Button
                 onClick={handleDownloadRaw}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-glass-1 border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+                variant="subtle"
               >
                 <Download className="w-3.5 h-3.5" strokeWidth={1.6} />
                 Download
-              </button>
+              </Button>
             )}
-            <button
+            <Button
               onClick={() => setConfirmDelete(true)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-danger-soft border border-danger/[0.12] text-xs font-semibold text-danger hover:brightness-110 transition-all"
+              variant="danger"
             >
               <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
               Delete
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -208,7 +209,7 @@ export function ApiSpecDetailPanel({ spec, onDeleted }: ApiSpecDetailPanelProps)
           <div className="relative w-full max-w-sm mx-4 bg-bg-card rounded-2xl border border-border-subtle shadow-lg p-6">
             <div className="flex items-start gap-3 mb-4">
               <div className="w-10 h-10 rounded-lg bg-danger-soft flex items-center justify-center flex-shrink-0">
-                <AlertCircle className="w-5 h-5 text-danger" strokeWidth={1.8} />
+                <AlertCircle className="w-5 h-5 text-danger-light" strokeWidth={1.8} />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-text-primary">Delete "{spec.name}"?</h3>
@@ -218,13 +219,13 @@ export function ApiSpecDetailPanel({ spec, onDeleted }: ApiSpecDetailPanelProps)
               </div>
             </div>
             <div className="flex items-center justify-end gap-2">
-              <button
+              <Button
                 onClick={() => setConfirmDelete(false)}
                 disabled={deleteSpec.isPending}
-                className="px-4 py-2 rounded-lg text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all"
+                variant="ghost"
               >
                 Cancel
-              </button>
+              </Button>
               <button
                 onClick={handleDelete}
                 disabled={deleteSpec.isPending}

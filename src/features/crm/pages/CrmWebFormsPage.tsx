@@ -14,6 +14,7 @@ import type { CrmWebFormFilter, WebFormDto, WebFormStatus } from "../types/webfo
 import { ROUTES } from "@/app/router/route-paths";
 import { useTenantDomains } from "@/features/tenant/api/tenant-domains.queries";
 import { getActiveTenantDomainOrigin } from "@/features/tenant/types/tenant-domain.types";
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls =
   "w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow";
@@ -61,12 +62,12 @@ export function Component() {
             Public-facing forms embedded on your site. New submissions create contacts and leads automatically.
           </p>
         </div>
-        <button
+        <Button
           onClick={() => navigate(ROUTES.dashboard.crmWebFormNew)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" /> New form
-        </button>
+        </Button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -74,7 +75,7 @@ export function Component() {
           <Search className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Search by name…"
+            placeholder="Search by name…" aria-label="Search by name…"
             className={inputCls + " pl-9"}
             value={filter.search ?? ""}
             onChange={(e) => setFilter((f) => ({ ...f, search: e.target.value, page: 1 }))}
@@ -82,7 +83,7 @@ export function Component() {
         </div>
         <div className="relative w-full sm:w-52">
           <Filter className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
-          <select
+          <select aria-label="Filter by status"
             className={inputCls + " pl-9 appearance-none"}
             value={filter.status ?? "All"}
             onChange={(e) =>
@@ -190,7 +191,7 @@ export function Component() {
                           deleteMut.mutate(form.id);
                         }
                       }}
-                      className="p-1 text-text-muted hover:text-danger" title="Delete"
+                      className="p-1 text-text-muted hover:text-danger-light" title="Delete"
                     ><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 </td>
@@ -202,21 +203,21 @@ export function Component() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-end gap-2 text-sm">
-          <button
+          <Button
             disabled={(filter.page ?? 1) <= 1}
             onClick={() => setFilter((f) => ({ ...f, page: Math.max(1, (f.page ?? 1) - 1) }))}
-            className="px-3 py-1 rounded-md border border-border-subtle text-text-muted hover:text-text-primary disabled:opacity-40"
+            variant="secondary" size="sm"
           >
             Prev
-          </button>
+          </Button>
           <span className="text-text-muted">Page {filter.page ?? 1} of {totalPages}</span>
-          <button
+          <Button
             disabled={(filter.page ?? 1) >= totalPages}
             onClick={() => setFilter((f) => ({ ...f, page: Math.min(totalPages, (f.page ?? 1) + 1) }))}
-            className="px-3 py-1 rounded-md border border-border-subtle text-text-muted hover:text-text-primary disabled:opacity-40"
+            variant="secondary" size="sm"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </div>

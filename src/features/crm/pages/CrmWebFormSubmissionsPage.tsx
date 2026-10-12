@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useWebForm, useWebFormSubmissions } from "../api/webforms.queries";
 import type { WebFormSubmissionFilter } from "../types/webforms.types";
 import { ROUTES } from "@/app/router/route-paths";
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls =
   "w-full px-3 py-2 rounded-xl bg-bg-input border-thin border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow";
@@ -38,7 +39,7 @@ export function Component() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative w-full sm:w-52">
           <Filter className="w-4 h-4 text-text-muted absolute left-3 top-1/2 -translate-y-1/2" />
-          <select
+          <select aria-label="Is spam"
             className={inputCls + " pl-9"}
             value={filter.isSpam === undefined ? "all" : filter.isSpam ? "spam" : "inbox"}
             onChange={(e) => {
@@ -77,7 +78,7 @@ export function Component() {
             ) : items.map((s) => (
               <tr key={s.id} className="border-t border-border-subtle hover:bg-glass-1">
                 <td className="px-4 py-3">
-                  <span className={"text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded border " + (s.isSpam ? "text-danger border-danger/30 bg-danger/10" : "text-brand border-border-glow bg-brand-soft")}>
+                  <span className={"text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded border " + (s.isSpam ? "text-danger-light border-danger/30 bg-danger/10" : "text-brand border-border-glow bg-brand-soft")}>
                     {s.isSpam ? "Spam" : "Inbox"}
                   </span>
                 </td>
@@ -112,12 +113,12 @@ export function Component() {
                   )}
                 </td>
                 <td className="px-4 py-3">
-                  <button
+                  <Button
                     onClick={() => navigate(ROUTES.dashboard.crmWebFormSubmissionDetail(id!, s.id))}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs border border-border-subtle text-text-primary hover:bg-glass-2"
+                    variant="secondary" size="sm"
                   >
                     <FileText className="w-3.5 h-3.5" /> Open
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))}
@@ -127,21 +128,21 @@ export function Component() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-end gap-2 text-sm">
-          <button
+          <Button
             disabled={(filter.page ?? 1) <= 1}
             onClick={() => setFilter((f) => ({ ...f, page: Math.max(1, (f.page ?? 1) - 1) }))}
-            className="px-3 py-1 rounded-md border border-border-subtle text-text-muted hover:text-text-primary disabled:opacity-40"
+            variant="secondary" size="sm"
           >
             Prev
-          </button>
+          </Button>
           <span className="text-text-muted">Page {filter.page ?? 1} of {totalPages}</span>
-          <button
+          <Button
             disabled={(filter.page ?? 1) >= totalPages}
             onClick={() => setFilter((f) => ({ ...f, page: Math.min(totalPages, (f.page ?? 1) + 1) }))}
-            className="px-3 py-1 rounded-md border border-border-subtle text-text-muted hover:text-text-primary disabled:opacity-40"
+            variant="secondary" size="sm"
           >
             Next
-          </button>
+          </Button>
         </div>
       )}
     </div>

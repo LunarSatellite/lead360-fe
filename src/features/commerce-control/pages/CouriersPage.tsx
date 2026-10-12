@@ -25,6 +25,7 @@ import {
   type CourierProfile,
   type CourierStateValue,
 } from '../api/stylemint-couriers.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Courier onboarding and standing.
@@ -84,7 +85,7 @@ export function CouriersPage() {
           const numeric = Number(value) as CourierStateValue;
           const active = state === numeric;
           return (
-            <button
+            <button aria-pressed={active}
               key={value}
               onClick={() => { setState(numeric); setSelected(null); }}
               className={`rounded-sm px-3 py-1.5 text-xs font-bold transition ${
@@ -117,7 +118,7 @@ export function CouriersPage() {
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px]">
           <div className="overflow-hidden rounded-frame border-thin border-border-subtle bg-bg-card">
             {(couriers.data ?? []).map((courier) => (
-              <button
+              <button aria-pressed={selected?.id === courier.id}
                 key={courier.id}
                 onClick={() => setSelected(courier)}
                 className={`flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0 hover:bg-bg-elevated ${
@@ -347,7 +348,7 @@ function CourierPanel({
               value={reason}
               onChange={(event) => setReason(event.target.value)}
               rows={2}
-              placeholder="Reason (required)"
+              placeholder="Reason (required)" aria-label="Reason (required)"
               className="w-full rounded-card border-thin border-border-subtle bg-bg-elevated px-3 py-2 text-xs text-text-primary outline-none focus:border-border-glow"
             />
           )}
@@ -393,23 +394,23 @@ function CourierPanel({
           )}
 
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => run.mutate(confirming)}
               disabled={
                 run.isPending ||
                 (needsReason && !reason.trim()) ||
                 (approving && !canApprove)
               }
-              className="rounded-card bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary"
             >
               {run.isPending ? 'Applying…' : 'Confirm'}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setConfirming(null)}
-              className="rounded-card border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary"
+              variant="secondary"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       ) : (

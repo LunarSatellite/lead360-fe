@@ -16,6 +16,7 @@ import {
   useProvenAdminRoles,
 } from '../hooks/agent-governance.queries';
 import { HaltScope, type AgentHaltView } from '../types/governance.types';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The emergency stop.
@@ -53,7 +54,7 @@ function AgentEmergencyStopPage() {
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex max-w-2xl flex-col gap-1.5">
           <h1 className="flex items-center gap-2 text-2xl font-black tracking-tight text-text-primary">
-            <OctagonX size={20} strokeWidth={1.6} className="text-danger" />
+            <OctagonX size={20} strokeWidth={1.6} className="text-danger-light" />
             Emergency stop
           </h1>
           <p className="text-xs font-medium leading-relaxed text-text-secondary">
@@ -63,15 +64,15 @@ function AgentEmergencyStopPage() {
           </p>
           <HaltAuthorityNote authority={authority} />
         </div>
-        <button
+        <Button
           type="button"
           data-testid="engage-halt"
           onClick={() => setEngaging(true)}
-          className="inline-flex items-center gap-1.5 rounded-sm border-thin border-danger/40 bg-danger-soft px-3.5 py-2 text-xs font-black text-danger hover:bg-danger/20"
+          variant="danger"
         >
           <OctagonX size={14} strokeWidth={1.6} />
           Engage a stop…
-        </button>
+        </Button>
       </header>
 
       {halts.isError && (
@@ -160,14 +161,14 @@ function AgentEmergencyStopPage() {
               />
             </label>
             <div className="flex items-center justify-end gap-2">
-              <button
+              <Button
                 type="button"
                 onClick={() => setClearing(null)}
-                className="rounded-sm border-thin border-border-medium px-3.5 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+                variant="secondary"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 data-testid="clear-confirm"
                 disabled={clearReason.trim().length < 12 || clear.isPending}
@@ -181,10 +182,10 @@ function AgentEmergencyStopPage() {
                     { onSuccess: () => setClearing(null) },
                   )
                 }
-                className="rounded-sm bg-brand px-3.5 py-2 text-xs font-black text-bg disabled:cursor-not-allowed disabled:opacity-40 hover:bg-brand-light"
+                variant="primary"
               >
                 {clear.isPending ? 'Clearing…' : 'Clear the stop'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>

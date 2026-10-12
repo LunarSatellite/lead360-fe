@@ -57,6 +57,7 @@ import {
   type CreateAgentRequest,
   type UpdateAgentRequest,
 } from '../types/agents.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   open: boolean;
@@ -294,7 +295,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
   const inputCls =
     'w-full px-3.5 py-2 rounded-xl bg-transparent border text-sm text-text-primary placeholder:text-text-muted focus:outline-none transition-all';
   const labelCls = 'text-xs font-semibold text-text-secondary mb-1';
-  const errCls = 'text-xs text-danger mt-1';
+  const errCls = 'text-xs text-danger-light mt-1';
   const sectionCls = 'pt-5 border-t border-border-subtle first:pt-0 first:border-t-0';
 
   return (
@@ -331,7 +332,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
               {isEdit ? 'Modify agent settings and configuration' : 'Create a new agent to automate workflows'}
             </p>
           </div>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             disabled={isPending}
@@ -376,7 +377,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                 id="agent-description"
                 value={form.description}
                 onChange={(e) => setField('description', e.target.value)}
-                placeholder="What does this agent do?"
+                placeholder="What does this agent do?" aria-label="What does this agent do?"
                 rows={2}
                 maxLength={500}
                 className={`${inputCls} resize-none`}
@@ -411,7 +412,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
                   const isActive = form.agentType === opt.value;
                   const disabled = !opt.available || (isEdit && opt.value !== editAgent?.agentType);
                   return (
-                    <button
+                    <button aria-pressed={isActive}
                       key={opt.value}
                       type="button"
                       disabled={disabled}
@@ -547,7 +548,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
 
           {/* Submit error banner */}
           {errors.submit && (
-            <div className="px-3.5 py-3 rounded-xl border border-brand/20 flex gap-2.5 text-sm text-danger"
+            <div className="px-3.5 py-3 rounded-xl border border-brand/20 flex gap-2.5 text-sm text-danger-light"
               style={{ background: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}>
               <Info className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={2} />
               <span>{errors.submit}</span>
@@ -557,19 +558,19 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
 
         {/* Footer */}
         <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle flex-shrink-0">
-          <button
+          <Button
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all disabled:opacity-50"
+            variant="secondary"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={handleSubmit}
             disabled={isPending}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            variant="primary"
           >
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" strokeWidth={2.4} />
@@ -579,7 +580,7 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
               <Plus className="w-3.5 h-3.5" strokeWidth={2.4} />
             )}
             {isPending ? 'Saving…' : isEdit ? 'Save changes' : 'Create agent'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -1027,7 +1028,7 @@ function TargetPayload({
           type="email"
           value={form.targetEmail}
           onChange={(e) => setField('targetEmail', e.target.value)}
-          placeholder="manager@company.com"
+          placeholder="manager@company.com" aria-label="manager@company.com"
           className={inputCls}
           style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', borderColor: 'rgb(var(--brand-rgb) / 0.2)' }}
         />

@@ -9,6 +9,7 @@ import type {
   QuestionItem,
   AnalysisDto,
 } from '../types/api-connection.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface AnalysisViewProps {
   specId: string;
@@ -161,7 +162,7 @@ export function AnalysisView({ specId }: AnalysisViewProps) {
 // ─── GapCard ───
 
 const SEVERITY_STYLES: Record<string, { badge: string; border: string }> = {
-  critical: { badge: 'bg-danger-soft text-danger', border: 'border-l-danger' },
+  critical: { badge: 'bg-danger-soft text-danger-light', border: 'border-l-danger' },
   important: { badge: 'bg-warning-soft text-warning', border: 'border-l-warning' },
   minor: { badge: 'bg-info-soft text-info', border: 'border-l-info' },
 };
@@ -234,14 +235,14 @@ function QuestionCard({
         <input
           value={answer}
           onChange={(e) => setAnswer(e.target.value)}
-          placeholder="Type your answer..."
+          placeholder="Type your answer..." aria-label="Type your answer..."
           className="form-input flex-1"
           disabled={submit.isPending}
         />
-        <button
+        <Button
           onClick={handleSubmit}
           disabled={submit.isPending || !answer.trim()}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-brand text-xs font-bold text-white hover:brightness-110 transition-all disabled:opacity-50"
+          variant="primary"
         >
           {submit.isPending ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -249,7 +250,7 @@ function QuestionCard({
             <Send className="w-3.5 h-3.5" strokeWidth={1.8} />
           )}
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import {
   type PatchVendorPolicy,
   type VendorBrandStudioPolicy,
 } from '../api/stylemint-brand-studio.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * A vendor's brand-studio limits: how many model calls a month, the commission ceiling, and the
@@ -97,13 +98,13 @@ export function VendorPolicyPanel() {
         <input
           value={vendorId}
           onChange={(e) => setVendorId(e.target.value)}
-          placeholder="Vendor profile id"
+          placeholder="Vendor profile id" aria-label="Vendor profile id"
           className="flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
         />
-        <button
+        <Button
           disabled={!vendorId.trim() || load.isPending}
           onClick={() => load.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary"
         >
           {load.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -111,14 +112,14 @@ export function VendorPolicyPanel() {
             <Search className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Load
-        </button>
+        </Button>
       </div>
 
       {policy && (
         <>
           <div className="mt-3 grid gap-2 sm:grid-cols-3">
             <Field label="Monthly model calls">
-              <input
+              <input aria-label="Quota"
                 type="number"
                 min={0}
                 value={quota}
@@ -127,7 +128,7 @@ export function VendorPolicyPanel() {
               />
             </Field>
             <Field label="Commission ceiling %">
-              <input
+              <input aria-label="Ceiling"
                 type="number"
                 min={0}
                 step="0.1"
@@ -137,7 +138,7 @@ export function VendorPolicyPanel() {
               />
             </Field>
             <Field label="Default currency">
-              <input
+              <input aria-label="Currency"
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value)}
                 className={field}
@@ -149,10 +150,10 @@ export function VendorPolicyPanel() {
             Last updated {new Date(policy.updatedUtc).toLocaleString()}
           </p>
 
-          <button
+          <Button
             disabled={!changed || save.isPending}
             onClick={() => save.mutate()}
-            className="mt-2 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm" className="mt-2"
           >
             {save.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -160,7 +161,7 @@ export function VendorPolicyPanel() {
               <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
             )}
             Save changes
-          </button>
+          </Button>
         </>
       )}
 

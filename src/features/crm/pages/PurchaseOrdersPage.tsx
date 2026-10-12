@@ -8,6 +8,7 @@ import {
 } from '../api/crm.queries';
 import type { PurchaseOrderDto, PurchaseOrderCreateRequest, PurchaseOrderLineItemRequest, PurchaseOrderFilter, VendorDto } from '../types/crm.types';
 import { PO_STATUS_LABELS, PO_STATUS_COLORS, PurchaseOrderStatus } from '../types/crm.types';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colors[value] ?? ''}`}>{labels[value] ?? value}</span>;
@@ -43,7 +44,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide }: {
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && (
@@ -57,7 +58,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer, wide }: {
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label></div>;
 }
 
 type LineItem = { productName: string; sku: string; quantity: string; unitCost: string; notes: string };
@@ -94,7 +95,8 @@ export function Component() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const { data: raw, isLoading } = usePurchaseOrders(filter);
+  const purchaseOrdersQuery = usePurchaseOrders(filter);
+  const { data: raw } = purchaseOrdersQuery;
   const items: PurchaseOrderDto[] = (raw as any)?.items ?? [];
   const { data: vendors } = useActiveVendors();
   const vendorList: VendorDto[] = (vendors as any) ?? [];
@@ -142,32 +144,33 @@ export function Component() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Purchase Orders</h2>
-            <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+            <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={purchaseOrdersQuery} total={(raw as any)?.totalCount} />
+          </p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New PO
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2 flex-wrap">
           <input value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && setFilter(f => ({ ...f, search: search || undefined, page: 1 }))}
-            placeholder="Search POs..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
-          <select value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none">
+            placeholder="Search POs..." aria-label="Search POs..." className="flex-1 min-w-40 rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40" />
+          <select aria-label="Filter by status" value={statusF} onChange={e => setStatusF(e.target.value)} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Status</option>
             {Object.entries(PO_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
-          <button onClick={() => setFilter(f => ({ ...f, search: search || undefined, status: statusF ? Number(statusF) as PurchaseOrderStatus : undefined, page: 1 }))} className="px-4 py-2 rounded-xl border border-border-subtle bg-bg-elevated text-sm text-text-secondary hover:text-text-primary transition-all">Search</button>
+          <Button onClick={() => setFilter(f => ({ ...f, search: search || undefined, status: statusF ? Number(statusF) as PurchaseOrderStatus : undefined, page: 1 }))} variant="secondary">Search</Button>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <ShoppingCart className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No purchase orders found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={purchaseOrdersQuery}
+            isEmpty={!items.length}
+            noun="purchase orders"
+            icon={ShoppingCart}
+            emptyTitle="No purchase orders found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -193,17 +196,17 @@ export function Component() {
                         {po.status === PurchaseOrderStatus.PendingApproval && (
                           <>
                             <button onClick={() => approvePO.mutate(po.id)} disabled={approvePO.isPending} title="Approve" className="p-1.5 rounded-lg text-text-muted hover:text-success hover:bg-success-soft transition-all disabled:opacity-50"><CheckCircle className="w-3.5 h-3.5" /></button>
-                            <button onClick={() => { setSelected(po); setShowReject(true); }} title="Reject" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
+                            <button onClick={() => { setSelected(po); setShowReject(true); }} title="Reject" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
                           </>
                         )}
                         {po.status === PurchaseOrderStatus.Approved && (
                           <button onClick={() => sendToVendor.mutate(po.id)} disabled={sendToVendor.isPending} title="Mark Sent to Vendor" className="p-1.5 rounded-lg text-text-muted hover:text-brand hover:bg-brand-soft transition-all disabled:opacity-50"><Send className="w-3.5 h-3.5" /></button>
                         )}
                         {(po.status === PurchaseOrderStatus.FullyReceived) && (
-                          <button onClick={() => closePO.mutate(po.id)} disabled={closePO.isPending} title="Close PO" className="p-1.5 rounded-lg text-text-muted hover:text-text-secondary hover:bg-bg-surface transition-all disabled:opacity-50"><Lock className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => closePO.mutate(po.id)} disabled={closePO.isPending} title="Close PO" className="p-1.5 rounded-lg text-text-muted hover:text-text-secondary hover:bg-bg-elevated transition-all disabled:opacity-50"><Lock className="w-3.5 h-3.5" /></button>
                         )}
                         {po.status <= PurchaseOrderStatus.Approved && (
-                          <button onClick={() => { setSelected(po); setShowCancel(true); }} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => { setSelected(po); setShowCancel(true); }} title="Cancel" className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"><XCircle className="w-3.5 h-3.5" /></button>
                         )}
                       </div>
                     </td>
@@ -211,7 +214,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 
@@ -219,11 +222,11 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Purchase Order" subtitle="Create a new purchase order for a vendor" wide
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="po-form" disabled={createPO.isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="po-form" disabled={createPO.isPending}
+              variant="primary" size="lg" className="flex-none">
               {createPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Purchase Order'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -282,28 +285,10 @@ export function Component() {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Expected Delivery">
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  type="date"
-                  value={expectedDelivery}
-                  onChange={e => setExpectedDelivery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                />
-              </div>
+              <Input aria-label="Expected delivery" icon={Calendar} type="date" value={expectedDelivery} onChange={e => setExpectedDelivery(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
             <Field label="Currency">
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={currency}
-                  onChange={e => setCurrency(e.target.value)}
-                  placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                />
-              </div>
+              <Input icon={DollarSign} value={currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" aria-label="USD" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
             </Field>
           </div>
 
@@ -314,7 +299,7 @@ export function Component() {
                 value={shippingAddress}
                 onChange={e => setShippingAddress(e.target.value)}
                 rows={2}
-                placeholder="123 Industrial Ave, Suite 400, New York, NY 10001"
+                placeholder="123 Industrial Ave, Suite 400, New York, NY 10001" aria-label="123 Industrial Ave, Suite 400, New York, NY 10001"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
@@ -330,30 +315,30 @@ export function Component() {
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-text-secondary">Items</label>
-              <button type="button" onClick={addLine} className="flex items-center gap-1 px-2 py-1 rounded border border-border-subtle text-xs text-text-secondary hover:bg-bg-surface transition-all"><PlusCircle className="w-3 h-3" /> Add Row</button>
+              <Button type="button" onClick={addLine} variant="secondary" size="sm"><PlusCircle className="w-3 h-3" /> Add Row</Button>
             </div>
             <div className="space-y-2">
               {lines.map((l, i) => (
                 <div key={i} className="grid grid-cols-[1fr_70px_70px_80px_28px] gap-1.5 items-center">
                   <div className="relative">
                     <ShoppingBag className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name"
+                    <input value={l.productName} onChange={e => setLine(i, 'productName', e.target.value)} placeholder="Product name" aria-label="Product name"
                       className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                       style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
                   <div className="relative">
                     <Hash className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input value={l.sku} onChange={e => setLine(i, 'sku', e.target.value)} placeholder="SKU"
+                    <input value={l.sku} onChange={e => setLine(i, 'sku', e.target.value)} placeholder="SKU" aria-label="SKU"
                       className="w-full pl-8 pr-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                       style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
                   </div>
-                  <input type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)}
+                  <input aria-label="Quantity" type="number" min="1" value={l.quantity} onChange={e => setLine(i, 'quantity', e.target.value)}
                     className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <input type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00"
+                  <input aria-label="Unit cost" type="number" min="0" step="0.01" value={l.unitCost} onChange={e => setLine(i, 'unitCost', e.target.value)} placeholder="0.00"
                     className="w-full px-2 py-1.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                     style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-                  <button type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger disabled:opacity-30"><X className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Close" type="button" onClick={() => removeLine(i)} disabled={lines.length === 1} className="p-1 rounded text-text-muted hover:text-danger-light disabled:opacity-30"><X className="w-3.5 h-3.5" /></button>
                 </div>
               ))}
             </div>
@@ -369,7 +354,7 @@ export function Component() {
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 rows={2}
-                placeholder="Special instructions, delivery requirements…"
+                placeholder="Special instructions, delivery requirements…" aria-label="Special instructions, delivery requirements…"
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                 style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
               />
@@ -388,7 +373,7 @@ export function Component() {
               <div className="mt-2"><Badge value={selected.status} labels={PO_STATUS_LABELS} colors={PO_STATUS_COLORS} /></div>
             </div>
 
-            <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+            <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-text-muted">Subtotal</span><span>{selected.currency} {selected.subTotal.toLocaleString()}</span></div>
               <div className="flex justify-between"><span className="text-text-muted">Tax</span><span>{selected.currency} {selected.taxAmount.toLocaleString()}</span></div>
               <div className="flex justify-between font-bold border-t border-border-subtle pt-2"><span>Total</span><span>{selected.currency} {selected.totalAmount.toLocaleString()}</span></div>
@@ -397,12 +382,12 @@ export function Component() {
             {selected.expectedDeliveryDate && <div className="text-sm text-text-secondary">Expected: {format(parseISO(selected.expectedDeliveryDate), 'MMM d, yyyy')}</div>}
             {selected.approvedAt && <div className="text-sm text-success">Approved: {format(parseISO(selected.approvedAt), 'MMM d, yyyy')} by {selected.approvedByName}</div>}
             {selected.sentToVendorAt && <div className="text-sm text-brand">Sent to vendor: {format(parseISO(selected.sentToVendorAt), 'MMM d, yyyy')}</div>}
-            {selected.cancellationReason && <div className="text-sm text-danger bg-danger-soft rounded-xl p-3">Cancelled: {selected.cancellationReason}</div>}
+            {selected.cancellationReason && <div className="text-sm text-danger-light bg-danger-soft rounded-xl p-3">Cancelled: {selected.cancellationReason}</div>}
 
             {selected.lineItems?.length > 0 && (
               <div>
                 <label className="text-xs font-semibold text-text-muted mb-1.5 block">Line Items</label>
-                <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle">
+                <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle">
                   {selected.lineItems.map(li => (
                     <div key={li.id} className="flex items-center justify-between px-3 py-2.5 text-sm">
                       <div>
@@ -420,7 +405,7 @@ export function Component() {
               </div>
             )}
 
-            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selected.notes}</p></div>}
+            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{selected.notes}</p></div>}
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.status === PurchaseOrderStatus.Draft && (
@@ -430,12 +415,12 @@ export function Component() {
               )}
               {selected.status === PurchaseOrderStatus.PendingApproval && (
                 <>
-                  <button onClick={() => { approvePO.mutate(selected.id); setSelected(null); }} disabled={approvePO.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
+                  <Button onClick={() => { approvePO.mutate(selected.id); setSelected(null); }} disabled={approvePO.isPending} variant="success">
                     <CheckCircle className="w-3.5 h-3.5" /> Approve
-                  </button>
-                  <button onClick={() => setShowReject(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-danger bg-danger-soft border border-danger/20 hover:opacity-80">
+                  </Button>
+                  <Button onClick={() => setShowReject(true)} variant="danger">
                     <XCircle className="w-3.5 h-3.5" /> Reject
-                  </button>
+                  </Button>
                 </>
               )}
               {selected.status === PurchaseOrderStatus.Approved && (
@@ -444,14 +429,14 @@ export function Component() {
                 </button>
               )}
               {selected.status === PurchaseOrderStatus.FullyReceived && (
-                <button onClick={() => { closePO.mutate(selected.id); setSelected(null); }} disabled={closePO.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary transition-all disabled:opacity-50">
+                <Button onClick={() => { closePO.mutate(selected.id); setSelected(null); }} disabled={closePO.isPending} variant="secondary">
                   <Lock className="w-3.5 h-3.5" /> Close PO
-                </button>
+                </Button>
               )}
               {selected.status <= PurchaseOrderStatus.Approved && (
-                <button onClick={() => setShowCancel(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80">
+                <Button onClick={() => setShowCancel(true)} variant="danger">
                   <XCircle className="w-3.5 h-3.5" /> Cancel
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -462,12 +447,12 @@ export function Component() {
       <SlideOver open={showReject} onClose={() => setShowReject(false)} title="Reject Purchase Order">
         <form onSubmit={handleReject} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Rejection Reason *"><textarea required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
+          <Field label="Rejection Reason *"><textarea aria-label="Reject reason" required value={rejectReason} onChange={e => setRejectReason(e.target.value)} rows={4} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={rejectPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {rejectPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Reject'}
             </button>
-            <button type="button" onClick={() => setShowReject(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowReject(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>
@@ -476,12 +461,12 @@ export function Component() {
       <SlideOver open={showCancel} onClose={() => setShowCancel(false)} title="Cancel Purchase Order">
         <form onSubmit={handleCancel} className="space-y-4">
           <p className="text-sm text-text-muted">PO <span className="font-mono text-text-primary">{selected?.poNumber}</span></p>
-          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." /></Field>
+          <Field label="Reason (optional)"><textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} rows={3} className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Optional cancellation reason..." aria-label="Optional cancellation reason..." /></Field>
           <div className="flex gap-3">
             <button type="submit" disabled={cancelPO.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-danger text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {cancelPO.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancel Order'}
             </button>
-            <button type="button" onClick={() => setShowCancel(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Back</button>
+            <Button type="button" onClick={() => setShowCancel(false)} variant="secondary">Back</Button>
           </div>
         </form>
       </SlideOver>

@@ -8,6 +8,7 @@ import {
 } from '../api/crm.queries';
 import type { SupplierInvoiceDto, SupplierInvoiceCreateRequest, SupplierInvoiceFilter, VendorDto, ThreeWayMatchResult } from '../types/crm.types';
 import { SI_STATUS_LABELS, SI_STATUS_COLORS, SupplierInvoiceStatus, THREE_WAY_MATCH_RISK_LABELS } from '../types/crm.types';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -23,7 +24,7 @@ function SlideOver({ open, onClose, title, wide, children }: { open: boolean; on
       <div className={`drawer-slide-in relative ${wide ? 'w-[600px]' : 'w-[520px]'} h-full flex flex-col bg-bg-shell border-l border-thin border-border-subtle`} style={{ boxShadow: '-8px 0 40px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center justify-between px-6 py-4 border-b border-border-subtle shrink-0">
           <h3 className="font-bold text-text-primary">{title}</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-surface transition-all"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-elevated transition-all"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
       </div>
@@ -32,7 +33,7 @@ function SlideOver({ open, onClose, title, wide, children }: { open: boolean; on
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-muted mb-1.5">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-muted mb-1.5">{label}</span>{children}</label></div>;
 }
 
 function isOverdue(inv: SupplierInvoiceDto): boolean {
@@ -88,7 +89,7 @@ function NewSupplierInvoiceSlideOver({
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>New Supplier Invoice</h2>
             <p className="text-xs text-text-muted mt-0.5">Record an incoming invoice from a vendor</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           <form id="si-form" onSubmit={onSubmit}>
@@ -144,43 +145,31 @@ function NewSupplierInvoiceSlideOver({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Invoice Number *</label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required value={form.invNumber} onChange={e => setInvNumber(e.target.value)} placeholder="INV-2024-001"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Invoice Number *</span>
+                <Input icon={Hash} required value={form.invNumber} onChange={e => setInvNumber(e.target.value)} placeholder="INV-2024-001" style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">PO ID (optional)</label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={form.poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">PO ID (optional)</span>
+                <Input icon={Hash} value={form.poId} onChange={e => setPoId(e.target.value)} placeholder="po-uuid" style={inputStyle} />
+              </label>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Issued Date *</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required type="date" value={form.issuedDate} onChange={e => setIssuedDate(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Issued Date *</span>
+                <Input icon={Calendar} required type="date" value={form.issuedDate} onChange={e => setIssuedDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Due Date *</label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required type="date" value={form.dueDate} onChange={e => setDueDate(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-                  style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Due Date *</span>
+                <Input icon={Calendar} required type="date" value={form.dueDate} onChange={e => setDueDate(e.target.value)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+              </label>
             </div>
           </div>
 
@@ -192,31 +181,22 @@ function NewSupplierInvoiceSlideOver({
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Subtotal *</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input required type="number" min="0" step="0.01" value={form.subTotal} onChange={e => setSubTotal(e.target.value)} placeholder="0.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Subtotal *</span>
+                <Input icon={DollarSign} required type="number" min="0" step="0.01" value={form.subTotal} onChange={e => setSubTotal(e.target.value)} placeholder="0.00" style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Tax Amount</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input type="number" min="0" step="0.01" value={form.taxAmount} onChange={e => setTaxAmount(e.target.value)} placeholder="0.00"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Tax Amount</span>
+                <Input icon={DollarSign} type="number" min="0" step="0.01" value={form.taxAmount} onChange={e => setTaxAmount(e.target.value)} placeholder="0.00" style={inputStyle} />
+              </label>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-secondary mb-1">Currency</label>
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input value={form.currency} onChange={e => setCurrency(e.target.value)} placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle} />
-              </div>
+              <label className="block">
+                <span className="block text-xs font-semibold text-text-secondary mb-1">Currency</span>
+                <Input icon={DollarSign} value={form.currency} onChange={e => setCurrency(e.target.value)} placeholder="USD" style={inputStyle} />
+              </label>
             </div>
           </div>
 
@@ -227,23 +207,25 @@ function NewSupplierInvoiceSlideOver({
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-            <div className="relative">
-              <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <textarea value={form.notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Invoice notes, payment terms reminder…"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                style={inputStyle} />
-            </div>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
+              <div className="relative">
+                <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                <textarea value={form.notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="Invoice notes, payment terms reminder…"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
+                  style={inputStyle} />
+              </div>
+            </label>
           </div>
           </form>
         </div>
         <div className="shrink-0 px-6 py-4 border-t border-border-subtle">
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="si-form" disabled={isPending}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={onClose} variant="secondary">Cancel</Button>
+            <Button type="submit" form="si-form" disabled={isPending}
+              variant="primary" size="lg" className="flex-none">
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Invoice'}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -274,7 +256,8 @@ export function Component() {
   const [currency, setCurrency] = useState('USD');
   const [notes, setNotes] = useState('');
 
-  const { data: raw, isLoading } = useSupplierInvoices(filter);
+  const supplierInvoicesQuery = useSupplierInvoices(filter);
+  const { data: raw } = supplierInvoicesQuery;
   const items: SupplierInvoiceDto[] = (raw as any)?.items ?? [];
   const { data: vendors } = useActiveVendors();
   const vendorList: VendorDto[] = (vendors as any) ?? [];
@@ -322,29 +305,30 @@ export function Component() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Supplier Invoices</h2>
-            <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+            <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={supplierInvoicesQuery} total={(raw as any)?.totalCount} />
+          </p>
           </div>
-          <button onClick={() => setShowCreate(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:opacity-90 transition-all">
+          <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Invoice
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-2">
-          <select value={statusF} onChange={e => { setStatusF(e.target.value); setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as SupplierInvoiceStatus : undefined, page: 1 })); }} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none w-48">
+          <select aria-label="Filter by status" value={statusF} onChange={e => { setStatusF(e.target.value); setFilter(f => ({ ...f, status: e.target.value ? Number(e.target.value) as SupplierInvoiceStatus : undefined, page: 1 })); }} className="rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary focus:outline-none w-48 focus-visible:ring-2 focus-visible:ring-brand/60">
             <option value="">All Statuses</option>
             {Object.entries(SI_STATUS_LABELS).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <FileText className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No supplier invoices found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={supplierInvoicesQuery}
+            isEmpty={!items.length}
+            noun="supplier invoices"
+            icon={FileText}
+            emptyTitle="No supplier invoices found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -363,7 +347,7 @@ export function Component() {
                       <td className="px-4 py-3 font-semibold text-text-primary">{inv.currency} {inv.totalAmount.toLocaleString()}</td>
                       <td className="px-4 py-3">
                         {overdue
-                          ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger border-danger">Overdue</span>
+                          ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger-light border-danger">Overdue</span>
                           : <Badge value={inv.status} labels={SI_STATUS_LABELS} colors={SI_STATUS_COLORS} />
                         }
                       </td>
@@ -385,7 +369,7 @@ export function Component() {
                 })}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 
@@ -411,14 +395,14 @@ export function Component() {
               <div className="font-extrabold text-lg text-text-primary">{selected.vendorName}</div>
               <div className="flex items-center gap-2 mt-2">
                 {isOverdue(selected)
-                  ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger border-danger">Overdue</span>
+                  ? <span className="px-2 py-0.5 rounded-md text-xs font-semibold border bg-danger-soft text-danger-light border-danger">Overdue</span>
                   : <Badge value={selected.status} labels={SI_STATUS_LABELS} colors={SI_STATUS_COLORS} />
                 }
                 {selected.poNumber && <span className="text-xs text-text-muted font-mono">PO: {selected.poNumber}</span>}
               </div>
             </div>
 
-            <div className="bg-bg-surface rounded-xl p-4 space-y-2 text-sm">
+            <div className="bg-bg-elevated rounded-xl p-4 space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-text-muted">Subtotal</span><span>{selected.currency} {selected.subTotal.toLocaleString()}</span></div>
               <div className="flex justify-between"><span className="text-text-muted">Tax</span><span>{selected.currency} {selected.taxAmount.toLocaleString()}</span></div>
               <div className="flex justify-between font-bold border-t border-border-subtle pt-2"><span>Total</span><span>{selected.currency} {selected.totalAmount.toLocaleString()}</span></div>
@@ -427,10 +411,10 @@ export function Component() {
 
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div><span className="text-text-muted block text-xs">Issued</span><span className="text-text-primary">{format(parseISO(selected.issuedDate), 'MMM d, yyyy')}</span></div>
-              <div><span className="text-text-muted block text-xs">Due</span><span className={isOverdue(selected) ? 'text-danger font-semibold' : 'text-text-primary'}>{format(parseISO(selected.dueDate), 'MMM d, yyyy')}</span></div>
+              <div><span className="text-text-muted block text-xs">Due</span><span className={isOverdue(selected) ? 'text-danger-light font-semibold' : 'text-text-primary'}>{format(parseISO(selected.dueDate), 'MMM d, yyyy')}</span></div>
             </div>
 
-            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-surface rounded-xl p-3">{selected.notes}</p></div>}
+            {selected.notes && <div><label className="text-xs font-semibold text-text-muted mb-1 block">Notes</label><p className="text-sm text-text-secondary bg-bg-elevated rounded-xl p-3">{selected.notes}</p></div>}
 
             <div className="flex flex-wrap gap-2 pt-3 border-t border-border-subtle">
               {selected.purchaseOrderId && (selected.status === SupplierInvoiceStatus.Received || selected.status === SupplierInvoiceStatus.Approved) && (
@@ -439,9 +423,9 @@ export function Component() {
                 </button>
               )}
               {selected.status === SupplierInvoiceStatus.Received && (
-                <button onClick={() => { approveSI.mutate(selected.id); setSelected(null); }} disabled={approveSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-success bg-success-soft border border-success/20 hover:opacity-80 disabled:opacity-50">
+                <Button onClick={() => { approveSI.mutate(selected.id); setSelected(null); }} disabled={approveSI.isPending} variant="success">
                   <CheckCircle className="w-3.5 h-3.5" /> Approve
-                </button>
+                </Button>
               )}
               {(selected.status === SupplierInvoiceStatus.Approved || selected.status === SupplierInvoiceStatus.Overdue || selected.status === SupplierInvoiceStatus.PartiallyPaid) && (
                 <button onClick={() => setShowPay(true)} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-success transition-all">
@@ -454,9 +438,9 @@ export function Component() {
                 </button>
               )}
               {selected.status !== SupplierInvoiceStatus.Void && selected.status !== SupplierInvoiceStatus.Paid && (
-                <button onClick={() => { if (confirm('Void this invoice?')) { voidSI.mutate(selected.id); setSelected(null); } }} disabled={voidSI.isPending} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-danger/20 text-xs font-semibold text-danger bg-danger-soft hover:opacity-80 disabled:opacity-50">
+                <Button onClick={() => { if (confirm('Void this invoice?')) { voidSI.mutate(selected.id); setSelected(null); } }} disabled={voidSI.isPending} variant="danger">
                   <XCircle className="w-3.5 h-3.5" /> Void
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -467,13 +451,13 @@ export function Component() {
       <SlideOver open={showPay} onClose={() => setShowPay(false)} title="Record Payment">
         <form onSubmit={handlePay} className="space-y-4">
           {selected && <p className="text-sm text-text-muted">Invoice <span className="font-semibold text-text-primary">{selected.invoiceNumber}</span> — {selected.currency} {selected.totalAmount.toLocaleString()}</p>}
-          <Field label="Payment Reference"><input value={payRef} onChange={e => setPayRef(e.target.value)} placeholder="Bank ref, cheque no..." className={inputCls} /></Field>
-          <Field label="Paid At"><input type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} /></Field>
+          <Field label="Payment Reference"><input value={payRef} onChange={e => setPayRef(e.target.value)} placeholder="Bank ref, cheque no..." aria-label="Bank ref, cheque no..." className={inputCls} /></Field>
+          <Field label="Paid At"><input aria-label="Pay date" type="date" value={payDate} onChange={e => setPayDate(e.target.value)} className={inputCls} /></Field>
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={paySI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-success text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {paySI.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><DollarSign className="w-4 h-4" /> Mark Paid</>}
             </button>
-            <button type="button" onClick={() => setShowPay(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowPay(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>
@@ -482,12 +466,12 @@ export function Component() {
       <SlideOver open={showDispute} onClose={() => setShowDispute(false)} title="Dispute Invoice">
         <form onSubmit={handleDispute} className="space-y-4">
           {selected && <p className="text-sm text-text-muted">Invoice <span className="font-semibold text-text-primary">{selected.invoiceNumber}</span></p>}
-          <Field label="Dispute Reason *"><textarea required value={disputeReason} onChange={e => setDisputeReason(e.target.value)} rows={4} className={`${inputCls} resize-none`} placeholder="Describe the dispute..." /></Field>
+          <Field label="Dispute Reason *"><textarea required value={disputeReason} onChange={e => setDisputeReason(e.target.value)} rows={4} className={`${inputCls} resize-none`} placeholder="Describe the dispute..." aria-label="Describe the dispute..." /></Field>
           <div className="flex gap-3 pt-2">
             <button type="submit" disabled={disputeSI.isPending} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-warning text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50">
               {disputeSI.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Submit Dispute'}
             </button>
-            <button type="button" onClick={() => setShowDispute(false)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Cancel</button>
+            <Button type="button" onClick={() => setShowDispute(false)} variant="secondary">Cancel</Button>
           </div>
         </form>
       </SlideOver>
@@ -509,14 +493,14 @@ export function Component() {
                   <div className="flex justify-between"><span className="text-text-muted">Expected (PO × Received)</span><span className="text-text-primary font-medium">{matchResult.expectedAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                   <div className="flex justify-between font-bold border-t border-border-subtle pt-2">
                     <span>Variance</span>
-                    <span className={matchResult.varianceAmount === 0 ? 'text-text-primary' : matchResult.varianceAmount > 0 ? 'text-danger' : 'text-success'}>
+                    <span className={matchResult.varianceAmount === 0 ? 'text-text-primary' : matchResult.varianceAmount > 0 ? 'text-danger-light' : 'text-success'}>
                       {matchResult.varianceAmount > 0 ? '+' : ''}{matchResult.varianceAmount.toLocaleString(undefined, { minimumFractionDigits: 2 })} ({matchResult.variancePercent}%)
                     </span>
                   </div>
                 </div>
 
                 {matchResult.lines.length > 0 && (
-                  <div className="bg-bg-surface rounded-xl divide-y divide-border-subtle max-h-48 overflow-y-auto">
+                  <div className="bg-bg-elevated rounded-xl divide-y divide-border-subtle max-h-48 overflow-y-auto">
                     {matchResult.lines.map(l => (
                       <div key={l.poLineItemId} className="flex justify-between items-center px-3 py-2 text-xs">
                         <div>
@@ -530,7 +514,7 @@ export function Component() {
                 )}
 
                 {matchResult.riskLevel === 3 && (
-                  <div className="px-3 py-2 rounded-lg bg-danger-soft border border-danger text-xs text-danger">
+                  <div className="px-3 py-2 rounded-lg bg-danger-soft border border-danger text-xs text-danger-light">
                     Major variance — verify with the vendor before approving payment.
                   </div>
                 )}
@@ -543,7 +527,7 @@ export function Component() {
             )}
 
             <div className="flex gap-2 justify-end">
-              <button onClick={() => setMatchResult(null)} className="px-4 py-2 rounded-lg border border-border-subtle text-sm text-text-secondary hover:text-text-primary transition-all">Close</button>
+              <Button onClick={() => setMatchResult(null)} variant="secondary">Close</Button>
             </div>
           </div>
         </div>

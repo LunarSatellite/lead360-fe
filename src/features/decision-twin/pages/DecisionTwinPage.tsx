@@ -481,7 +481,7 @@ function DecisionTwinPage() {
                     }
                     className={FIELD}
                   >
-                    {(['Search', 'Pricing', 'Promotion', 'Fulfilment', 'Policy'] as const).map(
+                    {(['Search', 'Pricing', 'Promotion', 'Fulfillment', 'Policy'] as const).map(
                       (kind) => (
                         <option key={kind} value={kind}>
                           {kind}

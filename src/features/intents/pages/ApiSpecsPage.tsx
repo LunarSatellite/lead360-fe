@@ -87,7 +87,7 @@ function StatCard({
     success: 'text-success',
     info: 'text-info',
     warning: 'text-warning',
-    danger: 'text-danger',
+    danger: 'text-danger-light',
     muted: 'text-text-muted',
   };
 

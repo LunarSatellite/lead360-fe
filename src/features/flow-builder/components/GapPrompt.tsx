@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FlowNodeGap } from '../utils/gap-detector';
 import type { NodeGapResolution } from '../types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface Props {
   gap:           FlowNodeGap;
@@ -85,7 +86,7 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
                 <button key={m} className={yes(method === m)} onClick={() => setMethod(m)}>{m}</button>
               ))}
             </div>
-            <input
+            <input aria-label="API URL"
               value={apiUrl}
               onChange={e => setApiUrl(e.target.value)}
               placeholder="https://your-api.com/endpoint"
@@ -94,22 +95,22 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
             <input
               value={successMsg}
               onChange={e => setSuccessMsg(e.target.value)}
-              placeholder="Success message (optional)"
+              placeholder="Success message (optional)" aria-label="Success message (optional)"
               className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
             />
             <input
               value={errorMsg}
               onChange={e => setErrorMsg(e.target.value)}
-              placeholder="Error message if call fails (optional)"
+              placeholder="Error message if call fails (optional)" aria-label="Error message if call fails (optional)"
               className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand"
             />
-            <button
+            <Button
               onClick={saveApiUrl}
               disabled={!apiUrl.trim()}
-              className="w-full py-2 rounded-lg text-[11px] font-bold bg-brand text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+              variant="primary" block
             >
               Save
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -131,7 +132,7 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
                 value={customMsg}
                 onChange={e => setCustomMsg(e.target.value)}
                 rows={3}
-                placeholder="Message to show the customer at this step..."
+                placeholder="Message to show the customer at this step..." aria-label="Message to show the customer at this step..."
                 className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand resize-none mt-2"
               />
               {gap.gapType === 'dead-end' && (
@@ -139,17 +140,17 @@ export function GapPrompt({ gap, currentConfig: saved, onSave }: Props) {
                   value={followUp}
                   onChange={e => setFollowUp(e.target.value)}
                   rows={2}
-                  placeholder="Follow-up prompt (optional — e.g. 'What else can I help with?')"
+                  placeholder="Follow-up prompt (optional — e.g. 'What else can I help with?')" aria-label="Follow-up prompt (optional — e.g. 'What else can I help with?')"
                   className="w-full px-2.5 py-1.5 border border-border-subtle rounded-lg text-[11px] bg-bg-shell text-text-muted outline-none focus:border-brand resize-none"
                 />
               )}
-              <button
+              <Button
                 onClick={saveCustomMsg}
                 disabled={!customMsg.trim()}
-                className="w-full py-2 rounded-lg text-[11px] font-bold bg-brand text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                variant="primary" block
               >
                 Save
-              </button>
+              </Button>
             </div>
           )}
         </div>

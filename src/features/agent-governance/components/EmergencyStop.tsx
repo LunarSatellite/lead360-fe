@@ -18,6 +18,7 @@ import {
   type AgentHaltView,
   type HaltScopeValue,
 } from '../types/governance.types';
+import { Button } from '@/shared/ui/primitives';
 
 const formatUtc = (value: string | null) =>
   value ? new Date(value).toLocaleString(undefined, { timeZoneName: 'short' }) : '—';
@@ -64,14 +65,14 @@ export function HaltRow({
           )}
         </div>
         {halt.isEngaged && canClear && (
-          <button
+          <Button
             type="button"
             data-testid="halt-clear"
             onClick={() => onClear(halt)}
-            className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             Clear this stop
-          </button>
+          </Button>
         )}
       </div>
 
@@ -139,7 +140,7 @@ export function EngageHaltDialog({
         className="flex max-h-[90vh] w-full max-w-2xl flex-col gap-3 overflow-auto rounded-frame border-thin border-danger/40 bg-bg-elevated p-4"
       >
         <div className="flex items-start justify-between gap-4">
-          <h2 className="flex items-center gap-2 text-lg font-black text-danger">
+          <h2 className="flex items-center gap-2 text-lg font-black text-danger-light">
             <OctagonX size={18} strokeWidth={1.6} />
             Engage the emergency stop
           </h2>
@@ -214,7 +215,7 @@ export function EngageHaltDialog({
             data-scope={form.scope}
             className="flex flex-col gap-1.5 rounded-card border-thin border-danger/40 bg-danger-soft p-3"
           >
-            <span className="text-[11px] font-black uppercase tracking-wide text-danger">
+            <span className="text-[11px] font-black uppercase tracking-wide text-danger-light">
               What this stops
             </span>
             <p className="text-xs font-medium leading-relaxed text-text-primary">{radius.stops}</p>
@@ -259,13 +260,13 @@ export function EngageHaltDialog({
         {error != null && <GovernanceRefusalNotice error={error} />}
 
         <div className="flex items-center justify-end gap-2">
-          <button
+          <Button
             type="button"
             onClick={onCancel}
-            className="rounded-sm border-thin border-border-medium px-3.5 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary"
           >
             Cancel
-          </button>
+          </Button>
           <button
             type="button"
             data-testid="halt-confirm"

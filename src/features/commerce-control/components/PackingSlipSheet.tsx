@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, Loader2, Printer, X } from 'lucide-react';
 import type { PackingSlip } from '../api/stylemint-suborders.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The packing slips for one or more sub-orders, as a sheet the operator prints.
@@ -53,13 +54,13 @@ export function PackingSlipSheet({
               : `${slips.length} packing ${slips.length === 1 ? 'slip' : 'slips'}`}
           </p>
           <div className="flex gap-2">
-            <button
+            <Button
               disabled={loading || slips.length === 0}
               onClick={print}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               <Printer className="h-3.5 w-3.5" strokeWidth={1.6} /> Print
-            </button>
+            </Button>
             <button
               onClick={onClose}
               className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium bg-bg-card px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"

@@ -26,6 +26,7 @@ import {
   CrmFeature, CRM_FEATURE_LABEL, CRM_FEATURE_GROUPS,
 } from '@/features/crm/types/crm-rbac.types';
 import type { CrmRoleDto, CrmRolePermissionDto, CrmFeatureValue } from '@/features/crm/types/crm-rbac.types';
+import { Button } from '@/shared/ui/primitives';
 
 type Tab = 'members' | 'contact-cards' | 'roles';
 
@@ -48,12 +49,12 @@ export function Component() {
           <p className="text-base text-text-secondary mt-1">Manage team members, contact cards, roles and permissions</p>
         </div>
         {tab === 'members' && (
-          <button
+          <Button
             onClick={() => setShowInviteForm(!showInviteForm)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> Invite member
-          </button>
+          </Button>
         )}
       </div>
 
@@ -145,23 +146,25 @@ function InviteForm({ onClose }: { onClose: () => void }) {
             </h2>
             <p className="text-xs text-text-muted mt-0.5">Invite a team member to your workspace</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 px-6 py-5 space-y-4 overflow-y-auto">
           {/* Email */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
-            <input
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Email</span>
+              <input
               {...form.register('email')}
               type="email"
               placeholder="team@company.com"
               className={inputCls}
               style={inputBg}
             />
+            </label>
             {form.formState.errors.email && (
-              <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>
+              <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.email.message}</p>
             )}
           </div>
 
@@ -172,7 +175,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
               <button
                 type="button"
                 onClick={() => setRoleOpen(o => !o)}
-                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-brand/20 focus:outline-none transition-all"
+                className="w-full flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary border border-brand/20 focus:outline-none transition-all focus-visible:ring-2 focus-visible:ring-brand/60"
                 style={{
                   backgroundColor: 'rgb(var(--color-glass-1))',
                   backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
@@ -216,37 +219,37 @@ function InviteForm({ onClose }: { onClose: () => void }) {
 
           {/* Personal message */}
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1">
-              Personal message <span className="opacity-40">(optional)</span>
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1">Personal message <span className="opacity-40">(optional)</span></span>
+              <textarea
               {...form.register('personalMessage')}
               placeholder="Hey, join our team!"
               rows={3}
               className="w-full px-4 py-2.5 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={inputBg}
             />
+            </label>
           </div>
 
           {send.isError && (
-            <div className="px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger">
+            <div className="px-4 py-3 rounded-xl bg-danger-soft border border-danger/15 text-sm text-danger-light">
               {send.error?.message || 'Failed.'}
             </div>
           )}
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+              variant="secondary"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
               disabled={send.isPending}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              variant="primary"
             >
               {send.isPending ? (
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -254,7 +257,7 @@ function InviteForm({ onClose }: { onClose: () => void }) {
                 <Plus className="w-3.5 h-3.5" />
               )}
               {send.isPending ? 'Sending...' : 'Send invitation'}
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -285,7 +288,7 @@ function MembersSection() {
   const statusBadge: Record<number, string> = {
     [UserStatus.Active]: 'bg-success-soft text-success',
     [UserStatus.Deactivated]: 'bg-glass-2 text-text-muted',
-    [UserStatus.Suspended]: 'bg-danger-soft text-danger',
+    [UserStatus.Suspended]: 'bg-danger-soft text-danger-light',
     [UserStatus.Pending]: 'bg-warning-soft text-warning',
   };
 
@@ -357,7 +360,7 @@ function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrm
                 <option value={UserRole.Agent} className="bg-bg">Agent</option>
               </select>
               {roles.length > 0 && (
-                <select
+                <select aria-label="Crm role ID"
                   value={user.crmRoleId ?? ''}
                   onChange={(e) => assignCrmRole.mutate({ userId: user.id, roleId: e.target.value || null })}
                   className="px-2 py-1 rounded-lg bg-bg border border-border-subtle text-xs text-text-primary focus:outline-none focus:border-brand"
@@ -378,19 +381,19 @@ function MemberRow({ user, roles, roleBadge, statusBadge, adminUpdate, assignCrm
               </button>
               <button
                 onClick={() => confirmDialog({ message: `Deactivate ${user.firstName}?`, confirmText: 'Deactivate', danger: true }).then((ok) => { if (ok) adminUpdate.mutate({ userId: user.id, data: { status: UserStatus.Deactivated } }); })}
-                className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+                className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
                 title="Deactivate"
               >
                 <UserMinus className="w-4 h-4" />
               </button>
             </>
           ) : (
-            <button
+            <Button
               onClick={() => confirmDialog({ message: `Reactivate ${user.firstName}?`, confirmText: 'Reactivate' }).then((ok) => { if (ok) adminUpdate.mutate({ userId: user.id, data: { status: UserStatus.Active } }); })}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success hover:brightness-110 transition-all"
+              variant="success" size="sm"
             >
               <RefreshCw className="w-3.5 h-3.5" /> Reactivate
-            </button>
+            </Button>
           )}
         </div>
       )}
@@ -408,7 +411,7 @@ function InvitationsSection() {
     [InvitationStatus.Pending]: 'bg-warning-soft text-warning',
     [InvitationStatus.Accepted]: 'bg-success-soft text-success',
     [InvitationStatus.Cancelled]: 'bg-glass-2 text-text-muted',
-    [InvitationStatus.Expired]: 'bg-danger-soft text-danger',
+    [InvitationStatus.Expired]: 'bg-danger-soft text-danger-light',
   };
   if (isLoading || invitations.length === 0) return null;
   return (
@@ -441,7 +444,7 @@ function InvitationsSection() {
                     <RefreshCw className="w-4 h-4" />
                   </button>
                   {isPending && !inv.isExpired && (
-                    <button onClick={() => cancel.mutate(inv.id)} disabled={cancel.isPending} className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all" title="Cancel">
+                    <button onClick={() => cancel.mutate(inv.id)} disabled={cancel.isPending} className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all" title="Cancel">
                       <XCircle className="w-4 h-4" />
                     </button>
                   )}
@@ -471,12 +474,12 @@ function RolesSection() {
       <div className="col-span-1 bg-glass-1 border border-border-subtle rounded-2xl overflow-hidden">
         <div className="px-4 py-3 border-b border-border-subtle flex items-center justify-between">
           <span className="text-sm font-bold text-text-primary">Roles</span>
-          <button
+          <Button
             onClick={() => setShowCreateForm(true)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold bg-glass-2 border border-border-medium text-text-secondary hover:text-text-primary transition-all"
+            variant="subtle" size="sm"
           >
             <Plus className="w-3.5 h-3.5" /> New
-          </button>
+          </Button>
         </div>
         <div className="divide-y divide-border-subtle">
           {roles.map((role) => (
@@ -527,14 +530,14 @@ function RoleListItem({ role, isSelected, onClick }: { role: CrmRoleDto; isSelec
       </div>
       <ChevronRight className="w-4 h-4 text-text-muted flex-shrink-0" />
       {!role.isSystem && (
-        <button
+        <button aria-label="Delete"
           onClick={(e) => {
             e.stopPropagation();
             confirmDialog({ message: `Delete role "${role.name}"?`, confirmText: 'Delete', danger: true }).then(
               (ok) => { if (ok) deleteRole.mutate(role.id); },
             );
           }}
-          className="p-1 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all flex-shrink-0"
+          className="p-1 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all flex-shrink-0"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
@@ -557,13 +560,13 @@ function CreateRoleForm({ onDone, onCancel }: { onDone: (id: string) => void; on
         autoFocus
         value={name}
         onChange={(e) => setName(e.target.value)}
-        placeholder="Role name..."
+        placeholder="Role name..." aria-label="Role name..."
         className="flex-1 px-3 py-2 rounded-lg bg-bg border border-border-medium text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand"
       />
-      <button type="submit" disabled={create.isPending || !name.trim()} className="p-2 rounded-lg bg-brand text-white hover:brightness-110 disabled:opacity-50">
+      <button aria-label="Confirm" type="submit" disabled={create.isPending || !name.trim()} className="p-2 rounded-lg bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50">
         <Check className="w-4 h-4" />
       </button>
-      <button type="button" onClick={onCancel} className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2">
+      <button aria-label="Close" type="button" onClick={onCancel} className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-glass-2">
         <X className="w-4 h-4" />
       </button>
     </form>
@@ -702,8 +705,8 @@ function PermissionMatrix({ role }: { role: CrmRoleDto }) {
         <div className="flex items-center gap-2">
           {!role.isSystem && (
             <>
-              <button onClick={allowAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-success-soft text-success hover:brightness-110 transition-all">Allow All</button>
-              <button onClick={denyAll} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-danger-soft text-danger hover:brightness-110 transition-all">Deny All</button>
+              <Button onClick={allowAll} variant="success" size="sm">Allow All</Button>
+              <Button onClick={denyAll} variant="danger" size="sm">Deny All</Button>
             </>
           )}
           {!role.isSystem && dirty && (

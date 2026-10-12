@@ -227,7 +227,7 @@ const COLOR_MAP: Record<string, { bg: string; text: string; border: string }> = 
   brand:   { bg: 'bg-brand-soft',   text: 'text-brand',   border: 'border-brand' },
   info:    { bg: 'bg-info-soft',    text: 'text-info',     border: 'border-info/[0.12]' },
   warning: { bg: 'bg-warning-soft', text: 'text-warning',  border: 'border-warning/[0.12]' },
-  danger:  { bg: 'bg-danger-soft',  text: 'text-danger',   border: 'border-danger/[0.12]' },
+  danger:  { bg: 'bg-danger-soft',  text: 'text-danger-light',   border: 'border-danger/[0.12]' },
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────

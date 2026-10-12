@@ -4,6 +4,7 @@ import type { PortalMeDto } from '../types/portal.types';
 import { Loader2, Mail, Zap, ArrowRight } from 'lucide-react';
 import { usePortalRequestLink, usePortalExchange } from '../api/portal.queries';
 import { persistPortalTokens } from '../hooks/usePortalAuth';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const [searchParams] = useSearchParams();
@@ -122,16 +123,16 @@ function LoginForm({ tenantId }: { tenantId: string }) {
         <input
           type="email"
           required
-          placeholder="you@company.com"
+          placeholder="you@company.com" aria-label="you@company.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full px-3.5 py-2.5 rounded-sm bg-bg-input border-thin border-border-subtle text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1 outline-none transition-all text-sm"
           autoFocus
         />
-        <button
+        <Button
           type="submit"
           disabled={requestLink.isPending || !email.trim()}
-          className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-sm bg-brand text-bg font-bold hover:bg-brand-light transition-all disabled:opacity-30 text-sm"
+          variant="primary" size="lg"
         >
           {requestLink.isPending ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -141,7 +142,7 @@ function LoginForm({ tenantId }: { tenantId: string }) {
               <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.8} />
             </>
           )}
-        </button>
+        </Button>
       </form>
     </AuthShell>
   );

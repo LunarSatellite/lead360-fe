@@ -52,7 +52,7 @@ export function VelocityWidget() {
       {v?.slowestStage && (
         <p className="text-xs text-text-muted">
           Slowest stage:{' '}
-          <button onClick={() => goToStage(v.slowestStage)} className="font-bold text-danger hover:underline" title={`List open ${v.slowestStage} deals`}>
+          <button onClick={() => goToStage(v.slowestStage)} className="font-bold text-danger-light hover:underline" title={`List open ${v.slowestStage} deals`}>
             {v.slowestStage}
           </button>
           {v.fastestStage && (

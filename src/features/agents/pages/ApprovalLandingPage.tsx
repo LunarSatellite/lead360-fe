@@ -224,7 +224,7 @@ export function Component() {
               {decision === ApprovalDecision.Approved ? (
                 <ShieldCheck className="w-5 h-5 text-success" strokeWidth={2} />
               ) : (
-                <ShieldX className="w-5 h-5 text-danger" strokeWidth={2} />
+                <ShieldX className="w-5 h-5 text-danger-light" strokeWidth={2} />
               )}
             </div>
             <div className="min-w-0">
@@ -235,7 +235,7 @@ export function Component() {
                 You're about to{' '}
                 <span
                   className={
-                    decision === ApprovalDecision.Approved ? 'text-success' : 'text-danger'
+                    decision === ApprovalDecision.Approved ? 'text-success' : 'text-danger-light'
                   }
                 >
                   {decision === ApprovalDecision.Approved ? 'approve' : 'reject'}
@@ -280,11 +280,11 @@ export function Component() {
               id="approval-note"
               {...form.register('note')}
               rows={3}
-              placeholder="Anything the team should know about this decision…"
+              placeholder="Anything the team should know about this decision…" aria-label="Anything the team should know about this decision…"
               className="w-full px-3.5 py-2.5 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand focus:shadow-[0_0_0_3px_rgb(var(--color-brand-glow)/0.1)] transition-all resize-none"
             />
             {form.formState.errors.note && (
-              <p className="text-xs text-danger mt-1.5">
+              <p className="text-xs text-danger-light mt-1.5">
                 {form.formState.errors.note.message}
               </p>
             )}
@@ -292,7 +292,7 @@ export function Component() {
 
           {/* Error banner */}
           {submitError && (
-            <div className="px-3.5 py-3 rounded-xl bg-danger-soft border border-danger/15 flex gap-2.5 text-sm text-danger">
+            <div className="px-3.5 py-3 rounded-xl bg-danger-soft border border-danger/15 flex gap-2.5 text-sm text-danger-light">
               <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" strokeWidth={2} />
               <span>{submitError.message}</span>
             </div>
@@ -435,7 +435,7 @@ function ThanksShell({ decision }: { decision: ApprovalDecisionValue }) {
             {approved ? (
               <ShieldCheck className="w-6 h-6 text-success" strokeWidth={1.8} />
             ) : (
-              <ShieldX className="w-6 h-6 text-danger" strokeWidth={1.8} />
+              <ShieldX className="w-6 h-6 text-danger-light" strokeWidth={1.8} />
             )}
           </div>
           <h1 className="text-xl font-extrabold text-text-primary">Thanks — recorded</h1>
@@ -484,7 +484,7 @@ function DecisionToggle({
       {opts.map((opt) => {
         const active = value === opt.v;
         return (
-          <button
+          <button aria-pressed={active}
             key={opt.v}
             type="button"
             onClick={() => onChange(opt.v)}
@@ -492,7 +492,7 @@ function DecisionToggle({
               active
                 ? opt.tone === 'success'
                   ? 'bg-success-soft text-success'
-                  : 'bg-danger-soft text-danger'
+                  : 'bg-danger-soft text-danger-light'
                 : 'text-text-secondary hover:text-text-primary'
             }`}
           >

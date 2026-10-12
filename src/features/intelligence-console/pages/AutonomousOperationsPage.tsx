@@ -21,6 +21,7 @@ import {
   formatUtc,
 } from '../components/ReportPrimitives';
 import { MeasuredValue } from '../components/FigureValue';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Autonomous operations: what ran on its own, what was expected of it, and
@@ -50,18 +51,18 @@ function AutonomousOperationsPage() {
         title="Autonomous operations"
         blurb="Decisions that executed without a person in the loop, the expectations declared for them in advance, and whether anyone measured what actually happened."
         actions={
-          <button
+          <Button
             type="button"
             onClick={() => {
               void monitor.refetch();
               void maintenance.refetch();
               void limits.refetch();
             }}
-            className="inline-flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-2 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary"
           >
             <RefreshCcw size={13} strokeWidth={1.6} />
             Refresh
-          </button>
+          </Button>
         }
       />
 
@@ -306,7 +307,7 @@ const COMPARISON_WORDING: Record<
 > = {
   Unspecified: {
     headline: 'The server sent no comparison state for this expectation.',
-    tone: 'border-danger/40 bg-danger-soft text-danger',
+    tone: 'border-danger/40 bg-danger-soft text-danger-light',
   },
   NotYetObservable: {
     headline: 'The observation window has not closed yet, so there is nothing to compare.',

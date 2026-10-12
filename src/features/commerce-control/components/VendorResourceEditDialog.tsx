@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Image, Loader2, Package, Save, Truck, Upload, X } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
+import { Button } from '@/shared/ui/primitives';
 
 type Props = {
   kind: 'product' | 'store';
@@ -76,7 +77,7 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
         const wrapped =
           result.data && typeof result.data === 'object' ? (result.data as Record<string, unknown>) : result;
         const url = String(wrapped.url ?? '');
-        if (!url) throw new Error(`URL absente apres l'envoi de ${file.name}.`);
+        if (!url) throw new Error(`No URL came back after uploading ${file.name}.`);
         urls.push(url);
       }
       return urls;
@@ -237,11 +238,11 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
             </h3>
             {kind === 'product' && (
               <p className="mt-1 text-xs text-text-muted">
-                Activez uniquement les blocs que vous souhaitez remplacer.
+                Turn on only the blocks you want to replace.
               </p>
             )}
           </div>
-          <button type="button" onClick={onClose}>
+          <button aria-label="Close" type="button" onClick={onClose}>
             <X className="h-4 w-4 text-text-muted" />
           </button>
         </header>
@@ -253,9 +254,9 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
           <div className="grid gap-4 p-5 lg:grid-cols-2">
             {kind === 'product' ? (
               <>
-                <Section title="Identite produit">
+                <Section title="Product identity">
                   <Field label="Category">
-                    <select
+                    <select aria-label="Category ID"
                       required
                       value={form.categoryId}
                       onChange={(e) => set('categoryId', e.target.value)}
@@ -269,8 +270,8 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                       ))}
                     </select>
                   </Field>
-                  <Input label="Nom" value={form.name} onChange={(v) => set('name', v)} />
-                  <Input
+                  <Input aria-label="Name" label="Nom" value={form.name} onChange={(v) => set('name', v)} />
+                  <Input aria-label="Short description"
                     label="Description courte"
                     value={form.shortDescription}
                     onChange={(v) => set('shortDescription', v)}
@@ -312,26 +313,26 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                     />
                   </label>
                   <Area
-                    label={`URLs images, une par ligne (${images.length}/5 minimum)`}
+                    label={`Image URLs, one per line (${images.length}/5 minimum)`}
                     value={form.imageUrls}
                     onChange={(v) => set('imageUrls', v)}
                     rows={6}
                   />
-                  <Input
+                  <Input aria-label="Video URL"
                     label="Reel URL"
                     value={form.videoUrl}
                     onChange={(v) => set('videoUrl', v)}
                     required={false}
                   />
                   <div className="grid grid-cols-2 gap-3">
-                    <Input
+                    <Input aria-label="Poster URL"
                       label="Poster"
                       value={form.posterUrl}
                       onChange={(v) => set('posterUrl', v)}
                       required={false}
                     />
-                    <Input
-                      label="Duree sec."
+                    <Input aria-label="Duration"
+                      label="Duration sec."
                       type="number"
                       value={form.duration}
                       onChange={(v) => set('duration', v)}
@@ -344,21 +345,21 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                   enabled={sections.pricing}
                   onToggle={(value) => setSections((s) => ({ ...s, pricing: value }))}
                 >
-                  <Input label="SKU" value={form.sku} onChange={(v) => set('sku', v)} />
+                  <Input aria-label="SKU" label="SKU" value={form.sku} onChange={(v) => set('sku', v)} />
                   <div className="grid grid-cols-3 gap-3">
-                    <Input
+                    <Input aria-label="Price"
                       label="Price (CDF)"
                       type="number"
                       value={form.price}
                       onChange={(v) => set('price', v)}
                     />
-                    <Input
+                    <Input aria-label="Cost"
                       label="Cout CDF"
                       type="number"
                       value={form.cost}
                       onChange={(v) => set('cost', v)}
                     />
-                    <Input
+                    <Input aria-label="Quantity"
                       label="Stock"
                       type="number"
                       value={form.quantity}
@@ -380,18 +381,18 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                 </OptionalSection>
                 <OptionalSection
                   icon={<Truck className="h-4 w-4" />}
-                  title="Livraison"
+                  title="Delivery"
                   enabled={sections.shipping}
                   onToggle={(value) => setSections((s) => ({ ...s, shipping: value }))}
                 >
                   <div className="grid grid-cols-2 gap-3">
-                    <Input
-                      label="Preparation jours"
+                    <Input aria-label="Processing days"
+                      label="Preparation days"
                       type="number"
                       value={form.processingDays}
                       onChange={(v) => set('processingDays', v)}
                     />
-                    <Input
+                    <Input aria-label="Weight grams"
                       label="Poids g"
                       type="number"
                       value={form.weightGrams}
@@ -399,19 +400,19 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                     />
                   </div>
                   <div className="grid grid-cols-3 gap-3">
-                    <Input
+                    <Input aria-label="Length cm"
                       label="Longueur cm"
                       type="number"
                       value={form.lengthCm}
                       onChange={(v) => set('lengthCm', v)}
                     />
-                    <Input
+                    <Input aria-label="Width cm"
                       label="Largeur cm"
                       type="number"
                       value={form.widthCm}
                       onChange={(v) => set('widthCm', v)}
                     />
-                    <Input
+                    <Input aria-label="Height cm"
                       label="Hauteur cm"
                       type="number"
                       value={form.heightCm}
@@ -419,19 +420,19 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                     />
                   </div>
                   <div className="grid grid-cols-3 gap-3">
-                    <Input
-                      label="Frais CDF"
+                    <Input aria-label="Shipping fee"
+                      label="Fee CDF"
                       type="number"
                       value={form.shippingFee}
                       onChange={(v) => set('shippingFee', v)}
                     />
-                    <Input
+                    <Input aria-label="Shipping min"
                       label="Delai min"
                       type="number"
                       value={form.shippingMin}
                       onChange={(v) => set('shippingMin', v)}
                     />
-                    <Input
+                    <Input aria-label="Shipping max"
                       label="Delai max"
                       type="number"
                       value={form.shippingMax}
@@ -443,24 +444,24 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
             ) : (
               <Section title="Store contact details">
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Input label="Nom" value={form.name} onChange={(v) => set('name', v)} />
-                  <Input label="Ville" value={form.city} onChange={(v) => set('city', v)} />
+                  <Input aria-label="Name" label="Nom" value={form.name} onChange={(v) => set('name', v)} />
+                  <Input aria-label="City" label="City" value={form.city} onChange={(v) => set('city', v)} />
                   <div className="md:col-span-2">
-                    <Input label="Adresse" value={form.addressLine} onChange={(v) => set('addressLine', v)} />
+                    <Input aria-label="Address line" label="Adresse" value={form.addressLine} onChange={(v) => set('addressLine', v)} />
                   </div>
-                  <Input
+                  <Input aria-label="Phone"
                     label="Telephone"
                     value={form.phone}
                     onChange={(v) => set('phone', v)}
                     required={false}
                   />
-                  <Input
+                  <Input aria-label="Latitude"
                     label="Latitude"
                     value={form.latitude}
                     onChange={(v) => set('latitude', v)}
                     required={false}
                   />
-                  <Input
+                  <Input aria-label="Longitude"
                     label="Longitude"
                     value={form.longitude}
                     onChange={(v) => set('longitude', v)}
@@ -472,18 +473,18 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
           </div>
         )}
         {(save.isError || uploadImages.isError) && (
-          <p className="mx-5 mb-4 rounded-xl bg-danger-soft px-4 py-3 text-xs font-semibold text-danger">
+          <p className="mx-5 mb-4 rounded-xl bg-danger-soft px-4 py-3 text-xs font-semibold text-danger-light">
             {((save.error || uploadImages.error) as Error).message}
           </p>
         )}
         <footer className="sticky bottom-0 border-t border-border-subtle bg-bg-card/95 px-5 py-4 backdrop-blur-xl">
-          <button
+          <Button
             disabled={save.isPending || details.isLoading || !valid}
-            className="ml-auto flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-extrabold text-black disabled:opacity-40"
+            variant="primary" size="lg" className="ml-auto"
           >
             {save.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save and synchronize
-          </button>
+          </Button>
         </footer>
       </form>
     </div>
@@ -523,7 +524,7 @@ function OptionalSection({
           {title}
         </span>
         <span className="flex items-center gap-2 text-[10px] font-bold uppercase text-text-muted">
-          Remplacer
+          Replace
           <input
             type="checkbox"
             checked={enabled}

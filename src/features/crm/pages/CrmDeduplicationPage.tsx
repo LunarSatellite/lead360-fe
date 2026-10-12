@@ -3,6 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { useDedupPending, useResolveDedup, useScanDedup } from '../api/crm.queries';
 import type { CrmDedupCandidateDto, CrmDedupContactInfo } from '../types/crm.types';
 import { CRM_CONTACT_SOURCE_LABELS } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const NULL_GUID = '00000000-0000-0000-0000-000000000000';
 
@@ -112,27 +113,27 @@ function CandidateCard({
 
       {/* Actions */}
       <div className="flex gap-2 flex-wrap pt-1">
-        <button
+        <Button
           onClick={onKeepA}
           disabled={resolving}
-          className="flex-1 min-w-[120px] py-2 rounded-xl text-xs font-bold border border-brand text-brand hover:bg-brand hover:text-bg disabled:opacity-50 transition-all"
+          variant="primary" className="flex-1 min-w-[120px]"
         >
           {resolving ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : `Keep "${candidate.contactAName}"`}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onKeepB}
           disabled={resolving}
-          className="flex-1 min-w-[120px] py-2 rounded-xl text-xs font-bold border border-brand text-brand hover:bg-brand hover:text-bg disabled:opacity-50 transition-all"
+          variant="primary" className="flex-1 min-w-[120px]"
         >
           {resolving ? <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" /> : `Keep "${candidate.contactBName}"`}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onNotDup}
           disabled={resolving}
-          className="px-4 py-2 rounded-xl text-xs font-semibold border border-border-subtle text-text-muted hover:text-text-primary hover:border-border-medium disabled:opacity-50 transition-all"
+          variant="secondary"
         >
           <X className="w-3.5 h-3.5 inline mr-1" />Not a duplicate
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -162,16 +163,16 @@ export function Component() {
             {isLoading ? 'Loading…' : `${pending.length} pair${pending.length !== 1 ? 's' : ''} pending review`}
           </p>
         </div>
-        <button
+        <Button
           onClick={() => scan.mutate()}
           disabled={scan.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium disabled:opacity-50 transition-all"
+          variant="secondary"
         >
           {scan.isPending
             ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
             : <RefreshCw className="w-3.5 h-3.5" />}
           Scan for duplicates
-        </button>
+        </Button>
       </div>
 
       {/* List */}

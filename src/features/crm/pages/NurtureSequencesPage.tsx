@@ -22,6 +22,7 @@ import {
   NURTURE_SEQUENCE_TYPE_DESCRIPTIONS,
   NurtureTriggerType,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // Format a delay (minutes, with hours fallback for legacy data) into a compact badge with a separator.
 const delayBadge = (mins: number, hoursFallback: number, sep: string) => {
@@ -153,10 +154,10 @@ function StepCard({
       {/* Step header */}
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-text-primary">Step {index + 1}</span>
-        <button
+        <button aria-label="Close"
           type="button"
           onClick={onRemove}
-          className="text-text-muted hover:text-danger transition-colors p-1 rounded-lg hover:bg-danger-soft"
+          className="text-text-muted hover:text-danger-light transition-colors p-1 rounded-lg hover:bg-danger-soft"
         >
           <X className="w-4 h-4" />
         </button>
@@ -164,10 +165,9 @@ function StepCard({
 
       {/* Delay */}
       <div>
-        <label className="block text-xs font-medium text-text-secondary mb-1">
-          Delay (minutes after previous step)
-        </label>
-        <input
+        <label className="block">
+          <span className="block text-xs font-medium text-text-secondary mb-1">Delay (minutes after previous step)</span>
+          <input
           type="number"
           min={0}
           value={step.delayMinutes}
@@ -175,16 +175,17 @@ function StepCard({
           className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
           style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
         />
+        </label>
       </div>
 
       {/* Action type */}
       <div>
         <label className="block text-xs font-medium text-text-secondary mb-1">Action</label>
         <div className="relative">
-          <button
+          <Button
             type="button"
             onClick={() => setActionOpen(o => !o)}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+            variant="ghost" block
             style={{
               backgroundColor: 'rgb(var(--color-surface-elevated))',
               border: `1px solid ${actionOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -197,7 +198,7 @@ function StepCard({
               {NURTURE_ACTION_LABELS[step.actionType]}
             </span>
             <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${actionOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-          </button>
+          </Button>
           {actionOpen && (
             <div
               className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
@@ -222,8 +223,9 @@ function StepCard({
       {/* Conditional extra fields */}
       {step.actionType === NurtureStepAction.SendMessage && (
         <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1">Message Template</label>
-          <textarea
+          <label className="block">
+            <span className="block text-xs font-medium text-text-secondary mb-1">Message Template</span>
+            <textarea
             rows={3}
             value={step.messageTemplate}
             onChange={(e) => set('messageTemplate', e.target.value)}
@@ -231,6 +233,7 @@ function StepCard({
             className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
+          </label>
           <p className="text-xs text-text-muted mt-1">
             Available tokens:{' '}
             <code className="text-brand">{'{{CustomerName}}'}</code>{' '}
@@ -244,10 +247,10 @@ function StepCard({
         <div>
           <label className="block text-xs font-medium text-text-secondary mb-1">New Stage</label>
           <div className="relative">
-            <button
+            <Button
               type="button"
               onClick={() => setNewStageOpen(o => !o)}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+              variant="ghost" block
               style={{
                 backgroundColor: 'rgb(var(--color-surface-elevated))',
                 border: `1px solid ${newStageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -260,7 +263,7 @@ function StepCard({
                 {step.newStage === '' ? 'Select stage…' : LEAD_STAGE_LABELS[step.newStage as LeadStage]}
               </span>
               <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${newStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-            </button>
+            </Button>
             {newStageOpen && (
               <div
                 className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
@@ -292,8 +295,9 @@ function StepCard({
 
       {step.actionType === NurtureStepAction.AddTag && (
         <div>
-          <label className="block text-xs font-medium text-text-secondary mb-1">Tag</label>
-          <input
+          <label className="block">
+            <span className="block text-xs font-medium text-text-secondary mb-1">Tag</span>
+            <input
             type="text"
             value={step.tagToAdd}
             onChange={(e) => set('tagToAdd', e.target.value)}
@@ -301,6 +305,7 @@ function StepCard({
             className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
+          </label>
         </div>
       )}
     </div>
@@ -392,7 +397,7 @@ function SequenceModal({
               {editing ? 'Update this nurture sequence settings' : 'Configure an automated nurture sequence for your leads'}
             </p>
           </div>
-          <button
+          <button aria-label="Close"
             type="button"
             onClick={onClose}
             className="text-text-muted hover:text-text-primary mt-0.5"
@@ -405,10 +410,9 @@ function SequenceModal({
         <div className="overflow-y-auto px-6 py-5 flex-1 min-h-0 space-y-4">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Name <span className="text-danger">*</span>
-            </label>
-            <input
+            <label className="block">
+              <span className="block text-sm font-medium text-text-secondary mb-1">Name <span className="text-danger-light">*</span></span>
+              <input
               type="text"
               required
               value={form.name}
@@ -417,6 +421,7 @@ function SequenceModal({
               className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
+            </label>
           </div>
 
           {/* Sequence Type */}
@@ -429,7 +434,7 @@ function SequenceModal({
                 const numVal = Number(val) as NurtureSequenceType;
                 const isSelected = form.sequenceType === numVal;
                 return (
-                  <button
+                  <button aria-pressed={isSelected}
                     key={val}
                     type="button"
                     onClick={() => setField('sequenceType', numVal)}
@@ -451,10 +456,9 @@ function SequenceModal({
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
-              Description <span className="text-text-muted">(optional)</span>
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-sm font-medium text-text-secondary mb-1">Description <span className="text-text-muted">(optional)</span></span>
+              <textarea
               rows={2}
               value={form.description}
               onChange={(e) => setField('description', e.target.value)}
@@ -462,6 +466,7 @@ function SequenceModal({
               className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
+            </label>
           </div>
 
           {/* Trigger Type */}
@@ -476,7 +481,7 @@ function SequenceModal({
               ] as const).map(([val, label, desc]) => {
                 const isSelected = form.triggerType === val;
                 return (
-                  <button
+                  <button aria-pressed={isSelected}
                     key={val}
                     type="button"
                     onClick={() => setField('triggerType', val)}
@@ -500,10 +505,10 @@ function SequenceModal({
               <div>
                 <label className="block text-sm font-medium text-text-secondary mb-1">Trigger Stage</label>
                 <div className="relative">
-                  <button
+                  <Button
                     type="button"
                     onClick={() => setTriggerStageOpen(o => !o)}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+                    variant="ghost" block
                     style={{
                       backgroundColor: 'rgb(var(--color-surface-elevated))',
                       border: `1px solid ${triggerStageOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -516,7 +521,7 @@ function SequenceModal({
                       {LEAD_STAGE_LABELS[form.triggerStage]}
                     </span>
                     <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${triggerStageOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-                  </button>
+                  </Button>
                   {triggerStageOpen && (
                     <div
                       className="absolute top-full left-0 right-0 mt-1.5 z-20 overflow-hidden"
@@ -538,8 +543,9 @@ function SequenceModal({
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</label>
-                <input
+                <label className="block">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</span>
+                  <input
                   type="number"
                   min={0}
                   value={form.triggerDelayMinutes}
@@ -547,6 +553,7 @@ function SequenceModal({
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
+                </label>
               </div>
             </div>
           )}
@@ -555,10 +562,9 @@ function SequenceModal({
           {(form.triggerType === NurtureTriggerType.ScoreDropped || form.triggerType === NurtureTriggerType.ScoreRaised) && (
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">
-                  {form.triggerType === NurtureTriggerType.ScoreDropped ? 'Score drops to or below' : 'Score rises to or above'}
-                </label>
-                <input
+                <label className="block">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">{form.triggerType === NurtureTriggerType.ScoreDropped ? 'Score drops to or below' : 'Score rises to or above'}</span>
+                  <input
                   type="number"
                   min={0}
                   max={100}
@@ -570,10 +576,12 @@ function SequenceModal({
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
+                </label>
               </div>
               <div>
-                <label className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</label>
-                <input
+                <label className="block">
+                  <span className="block text-sm font-medium text-text-secondary mb-1">Delay (minutes)</span>
+                  <input
                   type="number"
                   min={0}
                   value={form.triggerDelayMinutes}
@@ -581,6 +589,7 @@ function SequenceModal({
                   className="w-full border border-brand/20 rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-brand/50"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
                 />
+                </label>
               </div>
             </div>
           )}
@@ -646,14 +655,14 @@ function SequenceModal({
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-text-primary">Steps</h3>
-              <button
+              <Button
                 type="button"
                 onClick={addStep}
-                className="flex items-center gap-1.5 text-xs font-medium text-brand hover:text-brand/80 bg-brand-soft px-3 py-1.5 rounded-xl transition-colors"
+                variant="soft" size="sm"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add Step
-              </button>
+              </Button>
             </div>
 
             {form.steps.length === 0 && (
@@ -675,21 +684,21 @@ function SequenceModal({
 
         </div>
         <div className="shrink-0 flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-          <button
+          <Button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+            variant="secondary"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
             disabled={isLoading}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            variant="primary"
           >
             {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
             {editing ? 'Save Changes' : 'Create Sequence'}
-          </button>
+          </Button>
         </div>
         </form>
       </div>
@@ -780,14 +789,14 @@ function SequenceCard({
       {/* Actions */}
       {confirmDelete ? (
         <div className="flex items-center gap-2 pt-0.5 border-t border-thin border-border-subtle">
-          <span className="text-[10px] text-danger flex-1">Delete?</span>
-          <button
+          <span className="text-[10px] text-danger-light flex-1">Delete?</span>
+          <Button
             type="button"
             onClick={() => setConfirmDelete(false)}
-            className="text-[10px] font-medium text-text-secondary hover:text-text-primary px-2 py-1 rounded-xs bg-bg-elevated border-thin border-border-subtle transition-colors"
+            variant="secondary" size="sm"
           >
             Cancel
-          </button>
+          </Button>
           <button
             type="button"
             disabled={deleteMutation.isPending}
@@ -811,7 +820,7 @@ function SequenceCard({
           <button
             type="button"
             onClick={() => setConfirmDelete(true)}
-            className="flex items-center gap-1 text-[10px] font-medium text-danger/70 hover:text-danger transition-colors"
+            className="flex items-center gap-1 text-[10px] font-medium text-danger-light/70 hover:text-danger-light transition-colors"
           >
             <Trash2 className="w-3 h-3" />
             Delete
@@ -840,14 +849,14 @@ export function Component() {
             Automatically follow up with leads who go silent
           </p>
         </div>
-        <button
+        <Button
           type="button"
           onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-3.5 h-3.5" />
           New Sequence
-        </button>
+        </Button>
       </div>
 
       {/* Loading */}

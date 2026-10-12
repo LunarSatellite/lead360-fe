@@ -12,6 +12,7 @@ import {
   CrmEntityType, CRM_ENTITY_TYPE_LABELS,
   CustomFieldType, CUSTOM_FIELD_TYPE_LABELS,
 } from '../types/crm.types';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const ENTITY_TABS = [
   { type: CrmEntityType.Contact, label: 'Contacts' },
@@ -75,7 +76,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
             >New Field</h2>
             <p className="text-xs text-text-muted mt-0.5">Add a custom field to {CRM_ENTITY_TYPE_LABELS[entityType as keyof typeof CRM_ENTITY_TYPE_LABELS]}</p>
           </div>
-          <button onClick={onDone} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onDone} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -90,16 +91,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
               <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Name</span>
               <div className="h-px bg-brand/20" />
             </div>
-            <div className="relative">
-              <SlidersHorizontal className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="e.g. Case Reference"
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
-                style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-              />
-            </div>
+            <Input aria-label="Name" icon={SlidersHorizontal} value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Case Reference" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
           </div>
           <div>
             <div className="grid grid-cols-[auto_1fr] items-center gap-2 mb-1.5">
@@ -167,7 +159,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
           <input
             value={description}
             onChange={e => setDescription(e.target.value)}
-            placeholder="Optional hint for users"
+            placeholder="Optional hint for users" aria-label="Optional hint for users"
             className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
           />
@@ -183,7 +175,7 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
             <input
               value={options}
               onChange={e => setOptions(e.target.value)}
-              placeholder="Option A, Option B, Option C"
+              placeholder="Option A, Option B, Option C" aria-label="Option A, Option B, Option C"
               className="w-full px-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
               style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
             />
@@ -217,20 +209,20 @@ function AddFieldDrawer({ entityType, onDone }: { entityType: CrmEntityType; onD
 
       {/* Footer */}
       <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-        <button
+        <Button
           onClick={onDone}
-          className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium hover:text-text-primary transition-all"
+          variant="secondary"
         >
           Cancel
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleSubmit}
           disabled={!name.trim() || create.isPending}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          variant="primary"
         >
           {create.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
           Add Field
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -261,7 +253,7 @@ function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; enti
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-text-primary">{field.name}</span>
-          {field.isRequired && <span className="text-2xs text-danger font-bold">REQUIRED</span>}
+          {field.isRequired && <span className="text-2xs text-danger-light font-bold">REQUIRED</span>}
           {!field.isActive && <span className="text-2xs text-text-muted font-bold">INACTIVE</span>}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
@@ -282,18 +274,18 @@ function FieldRow({ field, entityType }: { field: CustomFieldDefinitionDto; enti
           {field.isActive ? 'Disable' : 'Enable'}
         </button>
         {!deleting ? (
-          <button
+          <button aria-label="Delete"
             onClick={() => setDeleting(true)}
-            className="p-1.5 rounded-lg text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+            className="p-1.5 rounded-lg text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         ) : (
           <div className="flex items-center gap-1">
-            <button onClick={handleDelete} disabled={deleteField.isPending} className="text-xs text-danger font-semibold px-2 py-1 rounded-lg hover:bg-danger-soft transition-all">
+            <button onClick={handleDelete} disabled={deleteField.isPending} className="text-xs text-danger-light font-semibold px-2 py-1 rounded-lg hover:bg-danger-soft transition-all">
               {deleteField.isPending ? '…' : 'Delete'}
             </button>
-            <button onClick={() => setDeleting(false)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-card transition-all">
+            <button aria-label="Close" onClick={() => setDeleting(false)} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-card transition-all">
               <X className="w-3 h-3" />
             </button>
           </div>
@@ -309,7 +301,8 @@ export function Component() {
   const [activeEntity, setActiveEntity] = useState<CrmEntityType>(CrmEntityType.Contact);
   const [showAdd, setShowAdd] = useState(false);
 
-  const { data: fields, isLoading } = useCustomFieldDefinitions(activeEntity);
+  const definitionsQuery = useCustomFieldDefinitions(activeEntity);
+  const { data: fields } = definitionsQuery;
   const fieldList = ((fields as any)?.data ?? []) as CustomFieldDefinitionDto[];
 
   return (
@@ -322,12 +315,12 @@ export function Component() {
             <p className="text-sm text-text-muted mt-0.5">Add per-tenant fields to any CRM entity</p>
           </div>
         </div>
-        <button
+        <Button
           onClick={() => setShowAdd(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light transition-all"
+          variant="primary"
         >
           <Plus className="w-4 h-4" /> Add Field
-        </button>
+        </Button>
       </div>
 
       {/* Entity type tabs */}
@@ -364,21 +357,24 @@ export function Component() {
         document.body,
       )}
 
-      {isLoading ? (
-        <div className="flex justify-center py-10"><Loader2 className="w-5 h-5 animate-spin text-text-muted" /></div>
-      ) : fieldList.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-3 text-text-muted">
-          <SlidersHorizontal className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-          <p className="text-sm">No custom fields for {CRM_ENTITY_TYPE_LABELS[activeEntity as keyof typeof CRM_ENTITY_TYPE_LABELS]} yet.</p>
-          <button onClick={() => setShowAdd(true)} className="text-xs text-brand hover:underline">Add the first field</button>
-        </div>
-      ) : (
+      <ListState
+        query={definitionsQuery}
+        isEmpty={fieldList.length === 0}
+        noun="custom fields"
+        icon={SlidersHorizontal}
+        emptyTitle={`No custom fields for ${CRM_ENTITY_TYPE_LABELS[activeEntity as keyof typeof CRM_ENTITY_TYPE_LABELS]} yet.`}
+        emptyAction={
+          <button onClick={() => setShowAdd(true)} className="text-xs text-brand hover:underline">
+            Add the first field
+          </button>
+        }
+      >
         <div className="space-y-2">
           {fieldList.map(f => (
             <FieldRow key={f.id} field={f} entityType={activeEntity} />
           ))}
         </div>
-      )}
+      </ListState>
     </div>
   );
 }

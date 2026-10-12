@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { crmApi } from '../api/crm.api';
 import { useTeamMembers } from '@/features/team/api/team.queries';
 import type { UserDto } from '@/features/auth/types/auth.types';
+import { Button } from '@/shared/ui/primitives';
 
 export function Component() {
   const qc = useQueryClient();
@@ -86,9 +87,9 @@ export function Component() {
             Define multi-step approval templates. When a Quote, Deal, or other entity is submitted for approval, the matching chain determines who reviews it and in what order.
           </p>
         </div>
-        <button onClick={() => { resetForm(); setShowForm(true); }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-white text-sm font-medium">
+        <Button onClick={() => { resetForm(); setShowForm(true); }} variant="primary" size="sm">
           <Plus className="w-4 h-4" /> New Chain
-        </button>
+        </Button>
       </div>
 
       {showForm && (
@@ -96,19 +97,25 @@ export function Component() {
           <h3 className="text-sm font-semibold">{editingId ? 'Edit' : 'New'} Approval Chain</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-text-muted block mb-1">Name *</label>
-              <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Quote Approval" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
+              <label className="block">
+                <span className="text-xs text-text-muted block mb-1">Name *</span>
+                <input value={name} onChange={e => setName(e.target.value)} placeholder="e.g. Quote Approval" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
+              </label>
             </div>
             <div>
-              <label className="text-xs text-text-muted block mb-1">Applies To</label>
-              <select value={entityType} onChange={e => setEntityType(Number(e.target.value))} className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm">
-                {Object.entries(entityTypeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-              </select>
+              <label className="block">
+                <span className="text-xs text-text-muted block mb-1">Applies To</span>
+                <select value={entityType} onChange={e => setEntityType(Number(e.target.value))} className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm">
+                  {Object.entries(entityTypeLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                </select>
+              </label>
             </div>
           </div>
           <div>
-            <label className="text-xs text-text-muted block mb-1">Description</label>
-            <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Optional description" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
+            <label className="block">
+              <span className="text-xs text-text-muted block mb-1">Description</span>
+              <input value={desc} onChange={e => setDesc(e.target.value)} placeholder="Optional description" className="w-full px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm" />
+            </label>
           </div>
 
           {/* Steps */}
@@ -123,10 +130,10 @@ export function Component() {
                 <input
                   value={s.stepName}
                   onChange={e => updateStep(i, 'stepName', e.target.value)}
-                  placeholder="Step name (e.g. Sales Manager Review)"
+                  placeholder="Step name (e.g. Sales Manager Review)" aria-label="Step name (e.g. Sales Manager Review)"
                   className="flex-1 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm"
                 />
-                <select
+                <select aria-label="Approver user ID"
                   value={s.approverUserId ?? ''}
                   onChange={e => updateStep(i, 'approverUserId', e.target.value)}
                   className="w-56 px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-input text-sm"
@@ -137,7 +144,7 @@ export function Component() {
                   ))}
                 </select>
                 {steps.length > 1 && (
-                  <button onClick={() => removeStep(i)} className="p-1 text-danger hover:bg-danger/10 rounded shrink-0">
+                  <button aria-label="Delete" onClick={() => removeStep(i)} className="p-1 text-danger-light hover:bg-danger/10 rounded shrink-0">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 )}
@@ -149,14 +156,14 @@ export function Component() {
           </div>
 
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => saveMutation.mutate({ name, description: desc || undefined, entityType, steps: steps.map(s => ({ ...s, approverUserId: s.approverUserId || undefined, requiredApprovals: 1 })) })}
               disabled={!canSave || saveMutation.isPending}
-              className="px-4 py-1.5 rounded-lg bg-brand text-white text-sm font-medium disabled:opacity-50"
+              variant="primary"
             >
               {saveMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : editingId ? 'Update Chain' : 'Create Chain'}
-            </button>
-            <button onClick={resetForm} className="px-3 py-1.5 rounded-lg border border-border-subtle text-sm text-text-secondary">Cancel</button>
+            </Button>
+            <Button onClick={resetForm} variant="secondary" size="sm">Cancel</Button>
           </div>
         </div>
       )}
@@ -186,10 +193,10 @@ export function Component() {
                     {chain.description && <p className="text-xs text-text-muted mt-0.5">{chain.description}</p>}
                   </div>
                   <div className="flex gap-1 shrink-0">
-                    <button onClick={() => handleEdit(chain)} className="p-1.5 rounded-lg hover:bg-bg-subtle text-text-muted hover:text-text-primary">
+                    <button aria-label="Edit" onClick={() => handleEdit(chain)} className="p-1.5 rounded-lg hover:bg-bg-sunken text-text-muted hover:text-text-primary">
                       <Pencil className="w-4 h-4" />
                     </button>
-                    <button onClick={() => { if (confirm('Delete this chain?')) deleteMutation.mutate(chain.id); }} className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger">
+                    <button aria-label="Delete" onClick={() => { if (confirm('Delete this chain?')) deleteMutation.mutate(chain.id); }} className="p-1.5 rounded-lg hover:bg-danger/10 text-text-muted hover:text-danger-light">
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -202,7 +209,7 @@ export function Component() {
                     const approverName = approver ? (approver.fullName || `${approver.firstName ?? ''} ${approver.lastName ?? ''}`.trim() || approver.email) : null;
                     return (
                       <div key={s.id ?? idx} className="flex items-center gap-1">
-                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-bg-subtle border border-border-subtle text-text-secondary font-medium">
+                        <span className="text-[10px] px-2.5 py-1 rounded-full bg-bg-sunken border border-border-subtle text-text-secondary font-medium">
                           {s.stepOrder}. {s.stepName}
                           {approverName && <span className="text-text-muted"> → {approverName}</span>}
                         </span>

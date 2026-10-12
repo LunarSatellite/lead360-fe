@@ -52,6 +52,7 @@ import {
   LEAD_STAGE_COLORS,
   CHANNEL_LABELS,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -278,18 +279,18 @@ export function Component() {
       {/* Page heading */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Leads</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Leads</h1>
           <p className="text-sm text-text-secondary mt-1">
             Track and manage leads captured from bot conversations, campaigns, and nurture sequences
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => { setForm({ stage: LeadStage.New }); setContactSearch(''); setOrgSearch(''); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); setShowCreate(true); }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all"
+            variant="primary"
           >
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Lead
-          </button>
+          </Button>
           <CsvLeadsToolbar />
         </div>
       </div>
@@ -323,7 +324,7 @@ export function Component() {
                 >New Lead</h2>
                 <p className="text-xs text-text-muted mt-0.5">Capture a new lead into your pipeline</p>
               </div>
-              <button onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5">
+              <button aria-label="Close" onClick={() => setShowCreate(false)} className="text-text-muted hover:text-text-primary mt-0.5">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -340,14 +341,14 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Search existing contacts…"
+                  placeholder="Search existing contacts…" aria-label="Search existing contacts…"
                   autoComplete="off"
                   value={contactSearch}
                   onChange={e => { setContactSearch(e.target.value); setShowContactDrop(true); }}
                   onFocus={() => setShowContactDrop(true)}
                 />
                 {contactSearch && (
-                  <button
+                  <button aria-label="Close"
                     type="button"
                     onClick={() => { setContactSearch(''); setContactQuery(''); setShowContactDrop(false); }}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
@@ -417,47 +418,25 @@ export function Component() {
               {/* Full Name + Phone — two columns */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Full Name</label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="John Doe"
-                      value={form.customerName ?? ''}
-                      onChange={e => setForm(f => ({ ...f, customerName: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Full Name</span>
+                    <Input icon={User} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="John Doe" value={form.customerName ?? ''} onChange={e => setForm(f => ({ ...f, customerName: e.target.value }))} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Phone</label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="+977 98XXXXXXXX"
-                      value={form.customerPhone ?? ''}
-                      onChange={e => setForm(f => ({ ...f, customerPhone: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Phone</span>
+                    <Input icon={Phone} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="+977 98XXXXXXXX" value={form.customerPhone ?? ''} onChange={e => setForm(f => ({ ...f, customerPhone: e.target.value }))} />
+                  </label>
                 </div>
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    type="email"
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="john@example.com"
-                    value={form.customerEmail ?? ''}
-                    onChange={e => setForm(f => ({ ...f, customerEmail: e.target.value }))}
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Email</span>
+                  <Input icon={Mail} type="email" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="john@example.com" value={form.customerEmail ?? ''} onChange={e => setForm(f => ({ ...f, customerEmail: e.target.value }))} />
+                </label>
               </div>
               {/* ── Organization Details ── */}
               <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
@@ -471,14 +450,14 @@ export function Component() {
                 <input
                   className="w-full pl-9 pr-8 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 transition-colors"
                   style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                  placeholder="Search existing organizations…"
+                  placeholder="Search existing organizations…" aria-label="Search existing organizations…"
                   autoComplete="off"
                   value={orgSearch}
                   onChange={e => { setOrgSearch(e.target.value); setShowOrgDrop(true); }}
                   onFocus={() => setShowOrgDrop(true)}
                 />
                 {orgSearch && (
-                  <button
+                  <button aria-label="Close"
                     type="button"
                     onClick={() => { setOrgSearch(''); setOrgQuery(''); setShowOrgDrop(false); setForm(f => ({ ...f, organizationId: undefined })); setOrgDetails({ name: '', domain: '', industry: '', employeeCount: '', country: '', city: '', website: '' }); }}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
@@ -540,104 +519,54 @@ export function Component() {
               {/* Company Name + Domain */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Company Name</label>
-                  <div className="relative">
-                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="Acme Corp"
-                      value={orgDetails.name}
-                      onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Company Name</span>
+                    <Input icon={Building2} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Acme Corp" value={orgDetails.name} onChange={e => setOrgDetails(d => ({ ...d, name: e.target.value }))} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Domain</label>
-                  <div className="relative">
-                    <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="acme.com"
-                      value={orgDetails.domain}
-                      onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Domain</span>
+                    <Input icon={Layers} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="acme.com" value={orgDetails.domain} onChange={e => setOrgDetails(d => ({ ...d, domain: e.target.value }))} />
+                  </label>
                 </div>
               </div>
               {/* Industry + Employees */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Industry</label>
-                  <div className="relative">
-                    <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="SaaS, Retail…"
-                      value={orgDetails.industry}
-                      onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Industry</span>
+                    <Input icon={Layers} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="SaaS, Retail…" value={orgDetails.industry} onChange={e => setOrgDetails(d => ({ ...d, industry: e.target.value }))} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Employees</label>
-                  <div className="relative">
-                    <Users className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number" min={0}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="250"
-                      value={orgDetails.employeeCount}
-                      onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Employees</span>
+                    <Input icon={Users} type="number" min={0} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="250" value={orgDetails.employeeCount} onChange={e => setOrgDetails(d => ({ ...d, employeeCount: e.target.value }))} />
+                  </label>
                 </div>
               </div>
               {/* Country + City */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
-                  <div className="relative">
-                    <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="US"
-                      value={orgDetails.country}
-                      onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Country</span>
+                    <Input icon={Radio} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="US" value={orgDetails.country} onChange={e => setOrgDetails(d => ({ ...d, country: e.target.value }))} />
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
-                  <div className="relative">
-                    <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                      style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="New York"
-                      value={orgDetails.city}
-                      onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))}
-                    />
-                  </div>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">City</span>
+                    <Input icon={Radio} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="New York" value={orgDetails.city} onChange={e => setOrgDetails(d => ({ ...d, city: e.target.value }))} />
+                  </label>
                 </div>
               </div>
               {/* Website */}
               <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Website</label>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="https://acme.com"
-                    value={orgDetails.website}
-                    onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))}
-                  />
-                </div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Website</span>
+                  <Input icon={FileText} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="https://acme.com" value={orgDetails.website} onChange={e => setOrgDetails(d => ({ ...d, website: e.target.value }))} />
+                </label>
               </div>
 
               {/* ── Lead ── */}
@@ -666,7 +595,7 @@ export function Component() {
                     >
                       <Layers className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
                       <span className={`flex-1 text-left font-medium ${
-                        form.stage === LeadStage.Hot  ? 'text-danger' :
+                        form.stage === LeadStage.Hot  ? 'text-danger-light' :
                         form.stage === LeadStage.Warm ? 'text-warning' : 'text-text-secondary'
                       }`}>
                         {LEAD_STAGE_LABELS[form.stage ?? LeadStage.New]}
@@ -680,7 +609,7 @@ export function Component() {
                         {([
                           { value: LeadStage.New,  label: 'New',  dot: '#B8E6D5', hover: 'hover:bg-text-secondary/[0.08]',  text: 'text-text-secondary' },
                           { value: LeadStage.Warm, label: 'Warm', dot: '#F59E0B', hover: 'hover:bg-warning-soft',   text: 'text-warning' },
-                          { value: LeadStage.Hot,  label: 'Hot',  dot: '#F43F5E', hover: 'hover:bg-danger-soft',    text: 'text-danger' },
+                          { value: LeadStage.Hot,  label: 'Hot',  dot: '#F43F5E', hover: 'hover:bg-danger-soft',    text: 'text-danger-light' },
                         ] as const).map(opt => (
                           <button
                             key={opt.value}
@@ -698,48 +627,33 @@ export function Component() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary mb-1">Lead Score (0–100)</label>
+                  <label className="block">
+                    <span className="block text-xs font-semibold text-text-secondary mb-1">Lead Score (0–100)</span>
+                    <Input icon={Star} type="number" min={0} max={100} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="e.g. 75" value={form.score ?? ''} onChange={e => setForm(f => ({ ...f, score: e.target.value ? Math.min(100, Math.max(0, Number(e.target.value))) : undefined }))} />
+                  </label>
+                </div>
+              </div>
+              <div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Source / How did you meet?</span>
+                  <Input icon={Radio} style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} placeholder="Trade show, Referral, Cold outreach…" value={form.adSource ?? ''} onChange={e => setForm(f => ({ ...f, adSource: e.target.value }))} />
+                </label>
+              </div>
+              <div>
+                <label className="block">
+                  <span className="block text-xs font-semibold text-text-secondary mb-1">Notes</span>
                   <div className="relative">
-                    <Star className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                    <input
-                      type="number"
-                      min={0}
-                      max={100}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
+                    <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
+                    <textarea
+                      rows={3}
+                      className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
                       style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                      placeholder="e.g. 75"
-                      value={form.score ?? ''}
-                      onChange={e => setForm(f => ({ ...f, score: e.target.value ? Math.min(100, Math.max(0, Number(e.target.value))) : undefined }))}
+                      placeholder="Interested in enterprise plan, follow up next week…"
+                      value={form.notes ?? ''}
+                      onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                     />
                   </div>
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Source / How did you meet?</label>
-                <div className="relative">
-                  <Radio className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <input
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="Trade show, Referral, Cold outreach…"
-                    value={form.adSource ?? ''}
-                    onChange={e => setForm(f => ({ ...f, adSource: e.target.value }))}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-text-secondary mb-1">Notes</label>
-                <div className="relative">
-                  <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                  <textarea
-                    rows={3}
-                    className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
-                    style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }}
-                    placeholder="Interested in enterprise plan, follow up next week…"
-                    value={form.notes ?? ''}
-                    onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                  />
-                </div>
+                </label>
               </div>
               {leadMatches.length > 0 && (
                 <DuplicateWarning
@@ -769,13 +683,13 @@ export function Component() {
               <CustomFieldsInline entityType={CrmEntityType.Lead} onValuesChange={setLeadCustomFields} />
             </div>
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-border-subtle">
-              <button
+              <Button
                 onClick={() => setShowCreate(false)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 disabled={createLead.isPending || (!form.customerName && !form.customerPhone && !form.customerEmail)}
                 onClick={() => createLead.mutate({
                   ...form,
@@ -794,11 +708,11 @@ export function Component() {
                   }
                   setShowCreate(false);
                 }})}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                variant="primary"
               >
                 {createLead.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                 Create Lead
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -814,8 +728,8 @@ export function Component() {
           <StatCard label="Total Leads"     value={stats?.total ?? 0}                         valueClass="text-text-primary" />
           <StatCard label="New"             value={stats?.newCount ?? 0}                       valueClass="text-[#60A5FA]" />
           <StatCard label="Warm"            value={stats?.warmCount ?? 0}                      valueClass="text-warning" />
-          <StatCard label="Hot"             value={stats?.hotCount ?? 0}                       valueClass="text-danger"
-            icon={<Flame className="w-4 h-4 text-danger" />} />
+          <StatCard label="Hot"             value={stats?.hotCount ?? 0}                       valueClass="text-danger-light"
+            icon={<Flame className="w-4 h-4 text-danger-light" />} />
           <StatCard label="Converted"       value={stats?.convertedCount ?? 0}                 valueClass="text-success" />
           <StatCard label="Conversion Rate" value={`${(stats?.conversionRate ?? 0).toFixed(1)}%`} valueClass="text-brand" />
           <StatCard label="From Chatbot"    value={stats?.chatbotCount ?? 0}                   valueClass="text-brand"
@@ -833,7 +747,7 @@ export function Component() {
           const isActive = activeTab === key;
           const count    = tabCounts[key];
           return (
-            <button
+            <button aria-pressed={isActive}
               key={key}
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
@@ -865,7 +779,7 @@ export function Component() {
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search name, phone, intent..."
+            placeholder="Search name, phone, intent..." aria-label="Search name, phone, intent..."
             className="w-full pl-9 pr-4 py-2 text-sm bg-bg-elevated border border-border-subtle rounded-xl text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors"
           />
         </div>
@@ -875,7 +789,7 @@ export function Component() {
           {STAGE_PILLS.map((pill) => {
             const isActive = pill.value === selectedStage;
             return (
-              <button
+              <button aria-pressed={isActive}
                 key={pill.label}
                 onClick={() => setSelectedStage(pill.value)}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
@@ -892,6 +806,7 @@ export function Component() {
 
         {/* Min score */}
         <select
+          aria-label="Filter by minimum score"
           value={minScore ?? ''}
           onChange={(e) => setMinScore(e.target.value ? Number(e.target.value) : undefined)}
           className="text-xs bg-bg-elevated border border-border-subtle rounded-xl px-3 py-2 text-text-secondary focus:outline-none focus:border-border-glow transition-colors cursor-pointer"
@@ -998,17 +913,17 @@ export function Component() {
           <button
             onClick={runBulkDelete}
             disabled={bulkAction.isPending}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-danger-light border border-border-subtle hover:bg-danger-soft hover:border-danger transition-all disabled:opacity-50"
           >
             {bulkAction.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
             Delete
           </button>
-          <button
+          <Button
             onClick={clearSelection}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
+            variant="ghost" size="sm"
           >
             <X className="w-3.5 h-3.5" /> Clear
-          </button>
+          </Button>
         </div>
       )}
 
@@ -1019,22 +934,22 @@ export function Component() {
             Showing {fromItem}–{toItem} of {totalCount} leads
           </span>
           <div className="flex gap-2">
-            <button
+            <Button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+              variant="secondary" size="sm"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               Prev
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary disabled:opacity-40 hover:border-border-medium transition-all"
+              variant="secondary" size="sm"
             >
               Next
               <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -1096,7 +1011,7 @@ function LeadCard({ lead, onClick, selected, onToggle }: LeadCardProps) {
       {/* Avatar + stage badge */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <button
+          <button aria-pressed={selected}
             onClick={(e) => { e.stopPropagation(); onToggle(); }}
             className={`w-5 h-5 rounded-[5px] border flex items-center justify-center transition-all shrink-0 ${
               selected ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'

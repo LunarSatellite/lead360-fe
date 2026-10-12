@@ -3,6 +3,7 @@ import { Plus, Trash2, Save, Loader2, ChevronDown, ChevronUp } from 'lucide-reac
 import { toast } from 'sonner';
 import { flowApi } from '../api/flow.api';
 import type { BotSettings, NegotiationPlaybook } from '../types/flow.types';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow transition-colors';
 
@@ -91,23 +92,30 @@ export function Component() {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-xs text-text-muted mb-1 block">Max Discount Bot Can Offer (%)</label>
-            <input type="number" min={0} max={100} value={settings.maxDiscountPercent ?? ''}
-              onChange={e => setSettings(s => ({ ...s, maxDiscountPercent: e.target.value ? Number(e.target.value) : null }))}
-              placeholder="e.g. 5" className={inputCls} />
+            <label className="block">
+              <span className="text-xs text-text-muted mb-1 block">Max Discount Bot Can Offer (%)</span>
+              <input type="number" min={0} max={100} value={settings.maxDiscountPercent ?? ''}
+                onChange={e => setSettings(s => ({ ...s, maxDiscountPercent: e.target.value ? Number(e.target.value) : null }))}
+                placeholder="e.g. 5" className={inputCls} />
+            </label>
             <p className="text-2xs text-text-muted mt-1">Requests above this → handoff</p>
           </div>
           <div>
-            <label className="text-xs text-text-muted mb-1 block">Max Order Amount Bot Can Handle</label>
-            <input type="number" min={0} value={settings.maxOrderAmount ?? ''}
-              onChange={e => setSettings(s => ({ ...s, maxOrderAmount: e.target.value ? Number(e.target.value) : null }))}
-              placeholder="e.g. 500000" className={inputCls} />
+            <label className="block">
+              <span className="text-xs text-text-muted mb-1 block">Max Order Amount Bot Can Handle</span>
+              <input type="number" min={0} value={settings.maxOrderAmount ?? ''}
+                onChange={e => setSettings(s => ({ ...s, maxOrderAmount: e.target.value ? Number(e.target.value) : null }))}
+                placeholder="e.g. 500000" className={inputCls} />
+            </label>
             <p className="text-2xs text-text-muted mt-1">Orders above this → handoff</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <button type="button"
+            role="switch"
+            aria-checked={settings.handoffOnComplaint}
+            aria-label="Always handoff on complaints"
             onClick={() => setSettings(s => ({ ...s, handoffOnComplaint: !s.handoffOnComplaint }))}
             className={`w-10 h-5 rounded-full transition-colors ${settings.handoffOnComplaint ? 'bg-brand' : 'bg-bg-elevated border border-border-subtle'}`}>
             <span className={`block w-4 h-4 rounded-full bg-white shadow transition-transform mx-0.5 ${settings.handoffOnComplaint ? 'translate-x-5' : 'translate-x-0'}`} />
@@ -116,28 +124,30 @@ export function Component() {
         </div>
 
         <div>
-          <label className="text-xs text-text-muted mb-1 block">Custom Handoff Message</label>
-          <input value={settings.handoffMessage ?? ''}
-            onChange={e => setSettings(s => ({ ...s, handoffMessage: e.target.value || null }))}
-            placeholder="Let me connect you with our team..."
-            className={inputCls} />
+          <label className="block">
+            <span className="text-xs text-text-muted mb-1 block">Custom Handoff Message</span>
+            <input value={settings.handoffMessage ?? ''}
+              onChange={e => setSettings(s => ({ ...s, handoffMessage: e.target.value || null }))}
+              placeholder="Let me connect you with our team..."
+              className={inputCls} />
+          </label>
         </div>
 
         <div>
           <label className="text-xs text-text-muted mb-2 block">Custom Trigger Phrases (always handoff)</label>
           <div className="flex gap-2 mb-2">
-            <input value={newPhrase} onChange={e => setNewPhrase(e.target.value)}
+            <input aria-label="New phrase" value={newPhrase} onChange={e => setNewPhrase(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && addPhrase()}
               placeholder="e.g. speak to manager" className={`${inputCls} flex-1`} />
-            <button onClick={addPhrase} className="px-3 py-2 rounded-xl bg-brand-soft text-brand border border-border-glow text-sm font-semibold">
+            <Button onClick={addPhrase} variant="soft">
               Add
-            </button>
+            </Button>
           </div>
           <div className="flex flex-wrap gap-2">
             {settings.handoffPhrases?.map((p, i) => (
               <span key={i} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-bg-elevated border border-border-subtle text-xs text-text-secondary">
                 {p}
-                <button onClick={() => removePhrase(i)} className="text-text-muted hover:text-danger"><Trash2 className="w-3 h-3" /></button>
+                <button aria-label="Delete" onClick={() => removePhrase(i)} className="text-text-muted hover:text-danger-light"><Trash2 className="w-3 h-3" /></button>
               </span>
             ))}
           </div>
@@ -151,10 +161,10 @@ export function Component() {
             <h2 className="text-sm font-bold text-text-primary">Negotiation Playbooks</h2>
             <p className="text-xs text-text-muted mt-0.5">Bot follows these step-by-step before handing off</p>
           </div>
-          <button onClick={addPlaybook}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-brand-soft text-brand border border-border-glow text-xs font-semibold">
+          <Button onClick={addPlaybook}
+            variant="soft" size="sm">
             <Plus className="w-3 h-3" /> Add Playbook
-          </button>
+          </Button>
         </div>
 
         {settings.negotiationPlaybooks?.length === 0 && (
@@ -171,8 +181,8 @@ export function Component() {
               <span className="flex-1 text-sm text-text-primary truncate">{pb.trigger || 'No trigger set'}</span>
               <span className="text-xs text-text-muted">{pb.moves.length} moves</span>
               {expandedPlaybook === pi ? <ChevronUp className="w-4 h-4 text-text-muted" /> : <ChevronDown className="w-4 h-4 text-text-muted" />}
-              <button onClick={e => { e.stopPropagation(); removePlaybook(pi); }}
-                className="p-1 text-text-muted hover:text-danger transition-colors">
+              <button aria-label="Delete" onClick={e => { e.stopPropagation(); removePlaybook(pi); }}
+                className="p-1 text-text-muted hover:text-danger-light transition-colors">
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -180,11 +190,13 @@ export function Component() {
             {expandedPlaybook === pi && (
               <div className="p-4 space-y-3 border-t border-border-subtle">
                 <div>
-                  <label className="text-xs text-text-muted mb-1 block">Trigger (when does this playbook fire?)</label>
-                  <input value={pb.trigger}
-                    onChange={e => updatePlaybook(pi, { trigger: e.target.value })}
-                    placeholder="e.g. customer asks for discount or lower price"
-                    className={inputCls} />
+                  <label className="block">
+                    <span className="text-xs text-text-muted mb-1 block">Trigger (when does this playbook fire?)</span>
+                    <input value={pb.trigger}
+                      onChange={e => updatePlaybook(pi, { trigger: e.target.value })}
+                      placeholder="e.g. customer asks for discount or lower price"
+                      className={inputCls} />
+                  </label>
                 </div>
 
                 <div>
@@ -193,12 +205,12 @@ export function Component() {
                     {pb.moves.map((move, mi) => (
                       <div key={mi} className="flex items-center gap-2">
                         <span className="text-xs text-text-muted w-5 flex-shrink-0">{mi + 1}.</span>
-                        <input value={move}
+                        <input aria-label="Move" value={move}
                           onChange={e => updateMove(pi, mi, e.target.value)}
                           placeholder={mi === pb.moves.length - 1 ? 'e.g. Connect to human sales team' : 'e.g. Offer 5% discount'}
                           className={`${inputCls} flex-1`} />
                         {pb.moves.length > 1 && (
-                          <button onClick={() => removeMove(pi, mi)} className="p-1 text-text-muted hover:text-danger">
+                          <button aria-label="Delete" onClick={() => removeMove(pi, mi)} className="p-1 text-text-muted hover:text-danger-light">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         )}
@@ -217,11 +229,11 @@ export function Component() {
         ))}
       </div>
 
-      <button onClick={save} disabled={saving}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-brand text-bg font-bold hover:opacity-90 disabled:opacity-50 transition-all">
+      <Button onClick={save} disabled={saving}
+        variant="primary" size="lg" block>
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
         Save Settings
-      </button>
+      </Button>
     </div>
   );
 }

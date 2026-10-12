@@ -27,10 +27,12 @@ export function Component() {
       ) : (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <div>
-            <label className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Email address</label>
-            <input {...form.register('email')} type="email" placeholder="you@company.com" autoComplete="email"
-              className="w-full px-4 py-3 rounded-lg bg-glass-2 border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all" />
-            {form.formState.errors.email && <p className="text-xs text-danger mt-1.5">{form.formState.errors.email.message}</p>}
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-[2px] text-text-muted block mb-2">Email address</span>
+              <input {...form.register('email')} type="email" placeholder="you@company.com" autoComplete="email"
+                className="w-full px-4 py-3 rounded-lg bg-glass-2 border border-border-subtle text-base text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all" />
+            </label>
+            {form.formState.errors.email && <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.email.message}</p>}
           </div>
           <button type="submit" disabled={forgot.isPending}
             className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-lg bg-gradient-to-br from-brand to-brand-dark text-white text-base font-bold hover:brightness-110 disabled:opacity-50 transition-all">

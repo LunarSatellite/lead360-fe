@@ -8,6 +8,7 @@ import {
 import { useCreateChannel, useActivateChannel } from '../api/channels.queries';
 import { ChannelType, CHANNEL_TYPE_LABEL } from '../types/channels.types';
 import type { ChannelTypeValue, ChannelConnectionCreateResponseDto } from '../types/channels.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface ChannelConnectModalProps {
   open: boolean;
@@ -254,7 +255,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
               </p>
             </div>
           </div>
-          <button
+          <button aria-label="Close"
             onClick={handleClose}
             className="w-8 h-8 rounded-sm bg-glass-1 border-thin border-border-subtle flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-glass-2 transition-all"
           >
@@ -278,7 +279,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                 <div key={field.name} className={field.fullWidth ? 'col-span-2' : ''}>
                   <label className={labelClass}>
                     {field.label}
-                    {field.required && <span className="text-danger ml-0.5">*</span>}
+                    {field.required && <span className="text-danger-light ml-0.5">*</span>}
                   </label>
                   <input
                     {...form.register(field.name, {
@@ -289,7 +290,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                     className={inputClass}
                   />
                   {form.formState.errors[field.name] && (
-                    <p className="text-2xs text-danger mt-1">
+                    <p className="text-2xs text-danger-light mt-1">
                       {form.formState.errors[field.name]?.message as string}
                     </p>
                   )}
@@ -299,7 +300,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
 
             {/* Submit error */}
             {create.isError && (
-              <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-card bg-glass-1 border-thin border-border-subtle text-sm text-danger">
+              <div className="flex items-center gap-2.5 px-3.5 py-3 rounded-card bg-glass-1 border-thin border-border-subtle text-sm text-danger-light">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" strokeWidth={1.6} />
                 {create.error?.message || 'Failed to create channel.'}
               </div>
@@ -307,13 +308,13 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
 
             {/* Actions */}
             <div className="flex justify-end gap-2.5 pt-1">
-              <button
+              <Button
                 type="button"
                 onClick={handleClose}
-                className="px-4 py-2 rounded-sm border-thin border-border-medium text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+                variant="secondary"
               >
                 Cancel
-              </button>
+              </Button>
               <button
                 type="submit"
                 disabled={create.isPending}
@@ -358,9 +359,9 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                   <span className="text-xs font-mono text-brand truncate flex-1">
                     {createdChannel.webhookUrl}
                   </span>
-                  <button
+                  <Button
                     onClick={handleCopyWebhook}
-                    className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-xs border-thin border-border-medium text-2xs font-bold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+                    variant="secondary" size="sm" className="flex-shrink-0"
                   >
                     {copied ? (
                       <>
@@ -373,7 +374,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                         Copy
                       </>
                     )}
-                  </button>
+                  </Button>
                 </div>
               </div>
             )}
@@ -387,9 +388,9 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                   <span className="text-xs font-mono text-brand truncate flex-1">
                     {createdChannel.webhookVerifyToken}
                   </span>
-                  <button
+                  <Button
                     onClick={handleCopyToken}
-                    className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-xs border-thin border-border-medium text-2xs font-bold text-text-secondary hover:text-text-primary hover:bg-glass-2 transition-all"
+                    variant="secondary" size="sm" className="flex-shrink-0"
                   >
                     {tokenCopied ? (
                       <>
@@ -402,7 +403,7 @@ export function ChannelConnectModal({ open, onClose, tenantId, channelType }: Ch
                         Copy
                       </>
                     )}
-                  </button>
+                  </Button>
                 </div>
                 <p className="text-2xs text-text-muted mt-1 pl-2">
                   Shown once — save it now. You'll need it if you ever have to re-verify this webhook.

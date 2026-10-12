@@ -11,6 +11,7 @@ import {
   type SyncConfigDto,
   type SyncLogDto,
 } from '../types/catalog.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface SyncConfigFormProps {
   config: SyncConfigDto | undefined;
@@ -52,11 +53,11 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
           {health && (
             <div className="flex items-center gap-2">
               <Wifi
-                className={`w-3.5 h-3.5 ${health.status === 'healthy' ? 'text-success' : 'text-danger'}`}
+                className={`w-3.5 h-3.5 ${health.status === 'healthy' ? 'text-success' : 'text-danger-light'}`}
                 strokeWidth={1.8}
               />
               <span
-                className={`text-[11px] font-bold ${health.status === 'healthy' ? 'text-success' : 'text-danger'}`}
+                className={`text-[11px] font-bold ${health.status === 'healthy' ? 'text-success' : 'text-danger-light'}`}
               >
                 {health.status}
               </span>
@@ -69,65 +70,73 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
 
         <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Product Endpoint Path <span className="text-danger">*</span>
-            </label>
-            <input
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Product Endpoint Path <span className="text-danger-light">*</span></span>
+              <input
               {...form.register('productEndpointPath')}
               placeholder="/api/products"
               className="form-input"
             />
+            </label>
             {form.formState.errors.productEndpointPath && (
-              <p className="text-xs text-danger mt-1">{form.formState.errors.productEndpointPath.message}</p>
+              <p className="text-xs text-danger-light mt-1">{form.formState.errors.productEndpointPath.message}</p>
             )}
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Pagination Type</label>
-            <select
-              {...form.register('paginationType')}
-              className="form-input appearance-none cursor-pointer"
-            >
-              <option value="page">Page</option>
-              <option value="offset">Offset</option>
-              <option value="cursor">Cursor</option>
-              <option value="none">None</option>
-            </select>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Pagination Type</span>
+              <select
+                {...form.register('paginationType')}
+                className="form-input appearance-none cursor-pointer"
+              >
+                <option value="page">Page</option>
+                <option value="offset">Offset</option>
+                <option value="cursor">Cursor</option>
+                <option value="none">None</option>
+              </select>
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Page Size</label>
-            <input
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Page Size</span>
+              <input
               {...form.register('pageSize', { valueAsNumber: true })}
               type="number"
               className="form-input"
             />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Data Array Path</label>
-            <input {...form.register('dataArrayPath')} placeholder="data" className="form-input" />
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Data Array Path</span>
+              <input {...form.register('dataArrayPath')} placeholder="data" className="form-input" />
+            </label>
           </div>
           <div className="md:col-span-2">
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">
-              Field Mappings (JSON)
-            </label>
-            <textarea
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Field Mappings (JSON)</span>
+              <textarea
               {...form.register('fieldMappingsJson')}
               rows={3}
               placeholder='{"name": "product_name", "price": "unit_price"}'
               className="form-input resize-none font-mono text-[11px]"
             />
+            </label>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-text-secondary mb-1.5">Sync Interval</label>
-            <select
-              {...form.register('syncIntervalMinutes', { valueAsNumber: true })}
-              className="form-input appearance-none cursor-pointer"
-            >
-              <option value={60}>Every 1 hour</option>
-              <option value={180}>Every 3 hours</option>
-              <option value={360}>Every 6 hours</option>
-              <option value={720}>Every 12 hours</option>
-              <option value={1440}>Every 24 hours</option>
-            </select>
+            <label className="block">
+              <span className="block text-xs font-semibold text-text-secondary mb-1.5">Sync Interval</span>
+              <select
+                {...form.register('syncIntervalMinutes', { valueAsNumber: true })}
+                className="form-input appearance-none cursor-pointer"
+              >
+                <option value={60}>Every 1 hour</option>
+                <option value={180}>Every 3 hours</option>
+                <option value={360}>Every 6 hours</option>
+                <option value={720}>Every 12 hours</option>
+                <option value={1440}>Every 24 hours</option>
+              </select>
+            </label>
           </div>
           <div className="flex items-center gap-3 pt-5">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -152,18 +161,18 @@ export function SyncConfigForm({ config, isLoading }: SyncConfigFormProps) {
               )}
               Save Config
             </button>
-            <button
+            <Button
               type="button"
               onClick={() => triggerSync.mutate()}
               disabled={triggerSync.isPending}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-glass-1 border border-border-subtle text-sm font-semibold text-text-secondary hover:bg-glass-2 transition-all disabled:opacity-50"
+              variant="subtle" size="lg"
             >
               <RefreshCw
                 className={`w-4 h-4 ${triggerSync.isPending ? 'animate-spin' : ''}`}
                 strokeWidth={1.6}
               />
               Sync Now
-            </button>
+            </Button>
           </div>
         </form>
       </div>
@@ -204,7 +213,7 @@ function SyncHistoryTable() {
           <span className="text-text-muted">{log.durationMs}ms</span>
           <span className="font-bold text-success">{log.newProducts > 0 ? `+${log.newProducts}` : '0'}</span>
           <span className="font-bold text-info">{log.updatedProducts > 0 ? log.updatedProducts : '0'}</span>
-          <span className="font-bold text-danger">
+          <span className="font-bold text-danger-light">
             {log.removedProducts > 0 ? `-${log.removedProducts}` : '0'}
           </span>
           <StatusBadge

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2, Plus, Scissors, Trash2 } from 'lucide-react';
 import { stylemintHotSegmentsApi, type HotSegment } from '../api/stylemint-hot-segments.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The hot segments on one track — the parts creators are pointed at when they cut a reel.
@@ -97,23 +98,23 @@ export function HotSegmentsEditor({ trackId }: { trackId: string }) {
             min={0}
             value={start}
             onChange={(e) => setStart(Number(e.target.value))}
-            placeholder="Start s"
+            placeholder="Start s" aria-label="Start s"
             className={field}
           />
-          <input
+          <input aria-label="Label"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
             placeholder={`Label (ordinal ${nextOrdinal})`}
             className={field}
           />
-          <button
+          <Button
             disabled={!label.trim() || add.isPending}
             onClick={() => add.mutate()}
-            className="flex items-center gap-1 rounded-sm bg-brand px-2.5 py-1 text-[11px] font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             {add.isPending && <Loader2 className="h-3 w-3 animate-spin" strokeWidth={1.6} />}
             Save
-          </button>
+          </Button>
         </div>
       )}
 
@@ -138,7 +139,7 @@ function SegmentRow({
         <span className="font-mono text-text-muted">{formatSeconds(segment.segmentStartSeconds)}</span>{' '}
         {segment.label}
       </span>
-      <button
+      <button aria-label="Delete"
         disabled={busy}
         onClick={onRemove}
         className="shrink-0 rounded-sm p-1 text-text-muted hover:bg-glass-2 hover:text-rose-300 disabled:opacity-40"

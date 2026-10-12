@@ -20,6 +20,7 @@ import {
   type DataRightsRequest,
   type DataRightsStatusValue,
 } from '../api/stylemint-privacy.api';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Data-rights requests — GDPR Articles 15 to 22.
@@ -147,20 +148,20 @@ export function PrivacyRequestsPage() {
             ))}
           </div>
           <div className="flex items-center justify-center gap-2">
-            <button
+            <Button
               disabled={skip === 0 || page.isFetching}
               onClick={() => setSkip(Math.max(0, skip - PAGE_SIZE))}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.6} /> Previous
-            </button>
-            <button
+            </Button>
+            <Button
               disabled={skip + PAGE_SIZE >= data.totalCount || page.isFetching}
               onClick={() => setSkip(skip + PAGE_SIZE)}
-              className="flex items-center gap-1 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-30"
+              variant="secondary" size="sm"
             >
               Next <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} />
-            </button>
+            </Button>
           </div>
         </>
       )}
@@ -178,7 +179,7 @@ function Chip({
   children: React.ReactNode;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`rounded-sm border-thin px-3 py-1.5 text-xs font-bold ${
         active
@@ -322,31 +323,31 @@ function RequestRow({
           </p>
           <p className="mt-0.5 text-[11px] text-text-muted">
             {completing
-              ? 'A fulfilment reference is optional but is what links this to the export or deletion you ran.'
+              ? 'A fulfillment reference is optional but is what links this to the export or deletion you ran.'
               : 'The reason goes on the record — a legal hold, for example — and is visible in the audit trail.'}
           </p>
-          <input
+          <input aria-label="Completing"
             value={completing ? reference : reason}
             onChange={(e) => (completing ? setReference(e.target.value) : setReason(e.target.value))}
-            placeholder={completing ? 'Fulfilment reference (optional)' : 'Reason'}
+            placeholder={completing ? 'Fulfillment reference (optional)' : 'Reason'}
             className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={act.isPending || (rejecting && !reason.trim())}
               onClick={() => act.mutate(completing ? 'complete' : 'reject')}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={done}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}

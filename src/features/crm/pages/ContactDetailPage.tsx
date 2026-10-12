@@ -20,12 +20,14 @@ import type { CrmCsatRecordDto } from '../types/crm-csat.types';
 import { CrmCsatRecordType, CRM_NPS_CLASSIFICATION_LABELS } from '../types/crm-csat.types';
 import {
   EnrollmentStatus, CRM_CONTACT_SOURCE_LABELS,
-  CrmSignalKind, CrmSignalSource, CrmEntityType,
+  CrmSignalKind, CrmSignalSource, CrmEntityType, CrmActivityEntityKind,
   CRM_DEAL_STATUS_LABELS, CRM_DEAL_STATUS_COLORS,
 } from '../types/crm.types';
+import { RecordAuditTrail } from '../components/RecordAuditTrail';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
 import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow, format } from 'date-fns';
+import { Button } from '@/shared/ui/primitives';
 
 const inputCls =
   'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
@@ -96,47 +98,59 @@ function EditForm({
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Full Name *</label>
-          <input required value={form.fullName} onChange={set('fullName')} className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Full Name *</span>
+            <input required value={form.fullName} onChange={set('fullName')} className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Job Title</label>
-          <input value={form.jobTitle} onChange={set('jobTitle')} placeholder="VP of Sales" className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Job Title</span>
+            <input value={form.jobTitle} onChange={set('jobTitle')} placeholder="VP of Sales" className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Email</label>
-          <input type="email" value={form.email} onChange={set('email')} className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Email</span>
+            <input type="email" value={form.email} onChange={set('email')} className={inputCls} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-muted mb-1.5">Phone</label>
-          <input value={form.phone} onChange={set('phone')} className={inputCls} />
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-muted mb-1.5">Phone</span>
+            <input value={form.phone} onChange={set('phone')} className={inputCls} />
+          </label>
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">LinkedIn URL</label>
-        <input value={form.linkedIn} onChange={set('linkedIn')} placeholder="https://linkedin.com/in/..." className={inputCls} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">LinkedIn URL</span>
+          <input value={form.linkedIn} onChange={set('linkedIn')} placeholder="https://linkedin.com/in/..." className={inputCls} />
+        </label>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Notes</label>
-        <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
+        <label className="block">
+          <span className="block text-xs font-semibold text-text-muted mb-1.5">Notes</span>
+          <textarea rows={3} value={form.notes} onChange={set('notes')} className={`${inputCls} resize-none`} />
+        </label>
       </div>
       <div className="flex gap-3 pt-1">
-        <button
+        <Button
           type="submit"
           disabled={isSaving || !form.fullName.trim()}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 transition-all"
+          variant="primary"
         >
           {isSaving
             ? <Loader2 className="w-4 h-4 animate-spin" />
             : <><Check className="w-3.5 h-3.5" /> Save</>}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={onCancel}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-border-subtle text-sm text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+          variant="secondary"
         >
           <X className="w-3.5 h-3.5" /> Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -355,7 +369,7 @@ function CsatScoreBar({ score }: { score: number }) {
 const NPS_BADGE_CLASS: Record<number, string> = {
   1: 'text-success bg-success-soft border-success/20',
   2: 'text-text-muted bg-bg-elevated border-border-subtle',
-  3: 'text-danger bg-danger-soft border-[rgba(239,68,68,0.2)]',
+  3: 'text-danger-light bg-danger-soft border-[rgba(239,68,68,0.2)]',
 };
 
 function CsatRecordRow({ record }: { record: CrmCsatRecordDto }) {
@@ -530,12 +544,12 @@ export function Component() {
                         </span>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
-                        <button
+                        <Button
                           onClick={() => setIsEditing(true)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border-subtle text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-elevated transition-all"
+                          variant="secondary" size="sm"
                         >
                           <Pencil className="w-3.5 h-3.5" strokeWidth={1.5} /> Edit
-                        </button>
+                        </Button>
                         {confirmDelete ? (
                           <div className="flex items-center gap-1.5">
                             <button
@@ -555,7 +569,7 @@ export function Component() {
                         ) : (
                           <button
                             onClick={() => setConfirmDelete(true)}
-                            className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger hover:border-danger/30 hover:bg-danger-soft transition-all"
+                            className="p-1.5 rounded-lg border border-border-subtle text-text-muted hover:text-danger-light hover:border-danger/30 hover:bg-danger-soft transition-all"
                             title="Delete contact"
                           >
                             <Trash2 className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -651,7 +665,7 @@ export function Component() {
                   <button
                     onClick={() => cancelEnrollments.mutate(contact.id)}
                     disabled={cancelEnrollments.isPending}
-                    className="text-xs text-danger font-semibold opacity-70 hover:opacity-100 transition-opacity disabled:opacity-40"
+                    className="text-xs text-danger-light font-semibold opacity-70 hover:opacity-100 transition-opacity disabled:opacity-40"
                   >
                     Cancel all
                   </button>
@@ -683,6 +697,16 @@ export function Component() {
 
           {/* Custom fields */}
           {!isEditing && <CustomFieldsPanel recordId={contact.id} entityType={CrmEntityType.Contact} />}
+
+          {/* Field-level history — `RecordAuditTrail` existed but was mounted
+              nowhere; "who changed this and when" is a Tier C gap in
+              CRM-REMAINING-GAPS.md. */}
+          {!isEditing && (
+            <RecordAuditTrail
+              kind={CrmActivityEntityKind.Contact}
+              entityId={contact.id}
+            />
+          )}
 
         </div>
       </div>

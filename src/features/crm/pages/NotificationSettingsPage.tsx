@@ -9,6 +9,7 @@ import {
   NOTIFICATION_DIGEST_LABELS,
   type CrmNotifPreferenceDto,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 // Defaults match the backend: absent preference = enabled, in-app+email, instant.
 const DEFAULT: Omit<CrmNotifPreferenceDto, 'notificationType'> = {
@@ -45,7 +46,7 @@ export function Component() {
           <Bell className="w-6 h-6 text-brand" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-text-primary">Notification preferences</h1>
+          <h1 className="text-xl font-bold text-text-primary">Notification settings</h1>
           <p className="text-sm text-text-muted">Choose how and how often you're notified for each event.</p>
         </div>
       </div>
@@ -75,7 +76,7 @@ export function Component() {
                     On
                   </label>
 
-                  <select
+                  <select aria-label="Delivery channel"
                     value={p.deliveryChannel}
                     disabled={!p.enabled}
                     onChange={(e) => update(t.value, { deliveryChannel: Number(e.target.value) as NotificationDeliveryChannel })}
@@ -86,7 +87,7 @@ export function Component() {
                     ))}
                   </select>
 
-                  <select
+                  <select aria-label="Digest mode"
                     value={p.digestMode}
                     disabled={!p.enabled}
                     onChange={(e) => update(t.value, { digestMode: Number(e.target.value) as NotificationDigestMode })}
@@ -102,14 +103,14 @@ export function Component() {
           </div>
 
           <div className="flex justify-end">
-            <button
+            <Button
               onClick={onSave}
               disabled={save.isPending}
-              className="inline-flex items-center gap-2 rounded-xl bg-brand text-white px-4 py-2 text-sm font-semibold hover:opacity-90 disabled:opacity-60"
+              variant="primary"
             >
               {save.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save preferences
-            </button>
+            </Button>
           </div>
         </>
       )}

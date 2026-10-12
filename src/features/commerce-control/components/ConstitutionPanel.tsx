@@ -8,6 +8,7 @@ import {
   type AgentActionRiskTierValue,
 } from '../api/stylemint-autonomy.api';
 import { ReportPanel } from './ReportPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The commerce constitution: the rules an agent action is assessed against, and the dry run that
@@ -64,7 +65,7 @@ export function ConstitutionTab() {
         submitLabel="Assess"
       >
         <Field label="Action key" span>
-          <input
+          <input aria-label="Action key"
             value={actionKey}
             onChange={(e) => setActionKey(e.target.value)}
             placeholder="e.g. pricing.reprice"
@@ -72,7 +73,7 @@ export function ConstitutionTab() {
           />
         </Field>
         <Field label="Risk tier">
-          <select
+          <select aria-label="Risk tier"
             value={riskTier}
             onChange={(e) => setRiskTier(Number(e.target.value) as AgentActionRiskTierValue)}
             className={field}
@@ -148,10 +149,10 @@ function FormPanel({
 
       <div className="mt-3 grid gap-2 sm:grid-cols-3">{children}</div>
 
-      <button
+      <Button
         disabled={!ready || mutation.isPending}
         onClick={onSubmit}
-        className="mt-3 flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+        variant="primary" size="sm" className="mt-3"
       >
         {mutation.isPending ? (
           <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -159,7 +160,7 @@ function FormPanel({
           <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
         )}
         {submitLabel}
-      </button>
+      </Button>
 
       {mutation.isError && (
         <div className="mt-2 flex items-start gap-2 rounded-sm border-thin border-rose-400/25 bg-rose-400/5 p-2.5">

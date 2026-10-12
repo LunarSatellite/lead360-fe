@@ -9,6 +9,7 @@ import {
 import type {
   CrmProductBundleDto, CrmProductBundleDetailDto, CrmProductBundleItemDto, CrmProductBundleItemRequest,
 } from '../types/crm.types';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const money = (n: number, ccy: string) =>
   new Intl.NumberFormat(undefined, { style: 'currency', currency: ccy || 'USD' }).format(n || 0);
@@ -43,7 +44,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
             >{title}</h2>
             {subtitle && <p className="text-xs text-text-muted mt-0.5">{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5"><X className="w-4 h-4" /></button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
         {footer && (
@@ -57,7 +58,7 @@ function SlideOver({ open, onClose, title, subtitle, children, footer }: { open:
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-semibold text-text-secondary mb-1">{label}</label>{children}</div>;
+  return <div><label className="block"><span className="block text-xs font-semibold text-text-secondary mb-1">{label}</span>{children}</label></div>;
 }
 
 const inputStyle = { backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' } as const;
@@ -84,13 +85,13 @@ export function Component() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM — Product Bundles</h1>
+          <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Product Bundles</h1>
           <p className="text-sm text-text-secondary mt-1">Reusable groups of products. Add a bundle to a quote to drop in all its line items at once.</p>
         </div>
-        <button onClick={() => setShowCreate(true)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+        <Button onClick={() => setShowCreate(true)}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New bundle
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
@@ -130,7 +131,7 @@ export function Component() {
                     </div>
                     <button
                       onClick={() => confirmDialog({ message: `Delete bundle "${bundle.name}"?`, confirmText: 'Delete', danger: true }).then((ok) => { if (ok) deleteBundle.mutate(bundle.id, { onSuccess: () => setSelectedId(undefined) }); })}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger hover:border-danger/40 transition-all">
+                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-danger-light hover:border-danger/40 transition-all">
                       <Trash2 className="w-3 h-3" /> Delete bundle
                     </button>
                   </div>
@@ -146,11 +147,11 @@ export function Component() {
       <SlideOver open={showCreate} onClose={() => setShowCreate(false)} title="New Bundle" subtitle="Create a reusable product bundle"
         footer={
           <div className="flex gap-3 justify-end">
-            <button type="button" onClick={() => setShowCreate(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-            <button type="submit" form="bundle-form" disabled={createBundle.isPending || !form.name.trim()}
-              className="flex-none px-6 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:bg-brand-light disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+            <Button type="button" onClick={() => setShowCreate(false)} variant="secondary">Cancel</Button>
+            <Button type="submit" form="bundle-form" disabled={createBundle.isPending || !form.name.trim()}
+              variant="primary" size="lg" className="flex-none">
               {createBundle.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Bundle'}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -162,32 +163,12 @@ export function Component() {
           </div>
 
           <Field label="Name *">
-            <div className="relative">
-              <Layers className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-              <input
-                required
-                placeholder="e.g. Starter Kit"
-                value={form.name}
-                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                style={inputStyle}
-              />
-            </div>
+            <Input aria-label="Name" icon={Layers} required placeholder="e.g. Starter Kit" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={inputStyle} />
           </Field>
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Currency">
-              <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-                <input
-                  value={form.currency}
-                  onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))}
-                  maxLength={10}
-                  placeholder="USD"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-                  style={inputStyle}
-                />
-              </div>
+              <Input icon={DollarSign} value={form.currency} onChange={e => setForm(f => ({ ...f, currency: e.target.value.toUpperCase() }))} maxLength={10} placeholder="USD" aria-label="USD" style={inputStyle} />
             </Field>
           </div>
 
@@ -196,7 +177,7 @@ export function Component() {
               <FileText className="absolute left-3 top-3 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
               <textarea
                 rows={3}
-                placeholder="Optional description…"
+                placeholder="Optional description…" aria-label="Optional description…"
                 value={form.description}
                 onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                 className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
@@ -246,7 +227,7 @@ function ItemEditor({ bundleId, currency, items }: { bundleId: string; currency:
                 <td className="px-3 py-2 text-sm text-text-primary tabular-nums">{money(it.unitPrice, currency)}</td>
                 <td className="px-3 py-2 text-sm font-semibold text-text-primary tabular-nums">{money(it.unitPrice * it.quantity, currency)}</td>
                 <td className="px-3 py-2 text-right">
-                  <button onClick={() => delItem.mutate(it.id)} className="text-text-muted hover:text-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                  <button aria-label="Delete" onClick={() => delItem.mutate(it.id)} className="text-text-muted hover:text-danger-light"><Trash2 className="w-3.5 h-3.5" /></button>
                 </td>
               </tr>
             ))}
@@ -255,18 +236,18 @@ function ItemEditor({ bundleId, currency, items }: { bundleId: string; currency:
       </div>
 
       <form onSubmit={add} className="flex flex-wrap gap-2 items-center">
-        <input className="flex-1 min-w-[150px] pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="Product name" value={form.productName}
+        <input className="flex-1 min-w-[150px] pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="Product name" aria-label="Product name" value={form.productName}
           onChange={(e) => setForm((f) => ({ ...f, productName: e.target.value }))} />
-        <input className="w-24 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="SKU" value={form.sku}
+        <input className="w-24 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} placeholder="SKU" aria-label="SKU" value={form.sku}
           onChange={(e) => setForm((f) => ({ ...f, sku: e.target.value }))} />
-        <input className="w-20 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="1" step="1" placeholder="Qty" value={form.quantity}
+        <input className="w-20 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="1" step="1" placeholder="Qty" aria-label="Qty" value={form.quantity}
           onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))} />
-        <input className="w-28 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="0" step="0.01" placeholder="Price" value={form.unitPrice}
+        <input className="w-28 pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50" style={inputStyle} type="number" min="0" step="0.01" placeholder="Price" aria-label="Price" value={form.unitPrice}
           onChange={(e) => setForm((f) => ({ ...f, unitPrice: e.target.value }))} />
-        <button type="submit" disabled={addItem.isPending}
-          className="flex items-center gap-1 px-3 py-2 rounded-xl bg-brand text-bg text-xs font-bold hover:bg-brand-light disabled:opacity-50">
+        <Button type="submit" disabled={addItem.isPending}
+          variant="primary">
           <Plus className="w-3.5 h-3.5" /> Add
-        </button>
+        </Button>
       </form>
     </div>
   );

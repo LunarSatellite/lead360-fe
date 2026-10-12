@@ -7,6 +7,7 @@ import type { CrmApprovalSummaryDto, CrmApprovalChainDefinitionDto } from '../ty
 import { ApprovalEntityType } from '../types/crm.types';
 import { useAuth } from '@/shared/hooks/useAuth';
 import { toast } from 'sonner';
+import { Button } from '@/shared/ui/primitives';
 
 function ReviewModal({ mode, approvalId, onClose }: {
   mode: 'approve' | 'reject'; approvalId: string; onClose: () => void;
@@ -20,18 +21,18 @@ function ReviewModal({ mode, approvalId, onClose }: {
       <div className="w-full max-w-md rounded-2xl bg-bg border border-border-subtle shadow-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-bold text-text-primary">{mode === 'approve' ? 'Approve' : 'Reject'} Request</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated"><X className="w-4 h-4" /></button>
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:bg-bg-elevated"><X className="w-4 h-4" /></button>
         </div>
         <div>
-          <label className="text-xs text-text-muted font-semibold uppercase tracking-wide block mb-1.5">
-            Comment {mode === 'reject' ? '(required)' : '(optional)'}
+          <label className="block">
+            <span className="text-xs text-text-muted font-semibold uppercase tracking-wide block mb-1.5">Comment {mode === 'reject' ? '(required)' : '(optional)'}</span>
+            <textarea autoFocus value={comment} onChange={e => setComment(e.target.value)} rows={3}
+              placeholder={mode === 'approve' ? 'Add a note…' : 'Reason for rejection…'}
+              className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-input text-text-primary focus:outline-none focus:ring-1 focus:ring-brand resize-none" />
           </label>
-          <textarea autoFocus value={comment} onChange={e => setComment(e.target.value)} rows={3}
-            placeholder={mode === 'approve' ? 'Add a note…' : 'Reason for rejection…'}
-            className="w-full px-3 py-2 rounded-xl text-sm border border-border-subtle bg-bg-input text-text-primary focus:outline-none focus:ring-1 focus:ring-brand resize-none" />
         </div>
         <div className="flex gap-2 justify-end">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl text-sm font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated">Cancel</button>
+          <Button onClick={onClose} variant="secondary">Cancel</Button>
           <button onClick={() => mutation.mutate({ id: approvalId, data: { comment: comment.trim() || undefined } }, { onSuccess: onClose })}
             disabled={mutation.isPending || (mode === 'reject' && !comment.trim())}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white disabled:opacity-50 ${mode === 'approve' ? 'bg-success hover:bg-success/80' : 'bg-danger hover:bg-danger/80'}`}>
@@ -108,7 +109,7 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
               <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-semibold border ${
                 approval.status === 1 ? 'text-warning border-warning/30 bg-warning/10' :
                 approval.status === 2 ? 'text-success border-success/30 bg-success/10' :
-                'text-danger border-danger/30 bg-danger/10'
+                'text-danger-light border-danger/30 bg-danger/10'
               }`}>
                 {approval.status === 1 && <><Clock className="w-3 h-3" /> Pending</>}
                 {approval.status === 2 && <><CheckCircle2 className="w-3 h-3" /> Approved</>}
@@ -149,10 +150,10 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
             ) : (
               <div className="flex items-center justify-between gap-3">
                 <p className="text-xs text-text-muted">Submit via <span className="text-text-secondary font-semibold">{matchingChain.name}</span></p>
-                <button onClick={() => submitChainMut.mutate(matchingChain.id)} disabled={submitChainMut.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light disabled:opacity-50">
+                <Button onClick={() => submitChainMut.mutate(matchingChain.id)} disabled={submitChainMut.isPending}
+                  variant="primary" size="sm">
                   {submitChainMut.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <><Send className="w-3.5 h-3.5" /> Submit for Approval</>}
-                </button>
+                </Button>
               </div>
             )}
           </>
@@ -181,10 +182,10 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
                 </>
               )}
               {user?.id === approval.requestedByUserId && (
-                <button onClick={() => cancelMut.mutate(approval.id)} disabled={cancelMut.isPending}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated disabled:opacity-50 ml-auto">
+                <Button onClick={() => cancelMut.mutate(approval.id)} disabled={cancelMut.isPending}
+                  variant="secondary" size="sm" className="ml-auto">
                   Cancel Request
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -200,10 +201,10 @@ export function ApprovalPanel({ entityType, entityId, entityName }: Props) {
               <p className="text-xs text-text-muted">Waiting for next step in chain...</p>
             )}
             {approval.status === 3 && (
-              <button onClick={() => submitChainMut.mutate(matchingChain!.id)} disabled={submitChainMut.isPending}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:bg-bg-elevated disabled:opacity-50">
+              <Button onClick={() => submitChainMut.mutate(matchingChain!.id)} disabled={submitChainMut.isPending}
+                variant="secondary" size="sm">
                 <Send className="w-3.5 h-3.5" /> Resubmit
-              </button>
+              </Button>
             )}
           </div>
         )}

@@ -86,7 +86,7 @@ export function Component() {
         <>
           <div className="flex justify-center">
             <div className="w-16 h-16 rounded-full bg-danger-soft flex items-center justify-center">
-              <XCircle className="w-8 h-8 text-danger" />
+              <XCircle className="w-8 h-8 text-danger-light" />
             </div>
           </div>
           <h1 className="text-2xl font-extrabold text-text-primary tracking-tight">Verification failed</h1>

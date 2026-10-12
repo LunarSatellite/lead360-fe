@@ -20,8 +20,10 @@ import type {
   LeadStage as LeadStageType, ConvertLeadRequest,
    NurtureEnrollmentDto,
 } from '../types/crm.types';
-import { LeadStage, LEAD_STAGE_LABELS, LEAD_STAGE_COLORS, CHANNEL_LABELS, CrmEntityType } from '../types/crm.types';
+import { LeadStage, LEAD_STAGE_LABELS, LEAD_STAGE_COLORS, CHANNEL_LABELS, CrmEntityType, CrmActivityEntityKind } from '../types/crm.types';
 import { CustomFieldsPanel } from '../components/CustomFieldsPanel';
+import { RecordAuditTrail } from '../components/RecordAuditTrail';
+import { Button } from '@/shared/ui/primitives';
 
 // ─── Activity type color helper ───────────────────────────────────────────────
 
@@ -162,7 +164,7 @@ export function Component() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-danger opacity-60" />
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-danger" />
                   </span>
-                  <Flame className="w-3.5 h-3.5 text-danger" />
+                  <Flame className="w-3.5 h-3.5 text-danger-light" />
                 </span>
               )}
             </div>
@@ -232,53 +234,53 @@ export function Component() {
                       disabled={updateStage.isPending}
                       autoFocus
                       onBlur={() => setStageEdit(false)}
-                      className="text-sm bg-bg-elevated border border-border-glow rounded-xl px-3 py-2 text-text-primary focus:outline-none transition-colors"
+                      className="text-sm bg-bg-elevated border border-border-glow rounded-xl px-3 py-2 text-text-primary focus:outline-none transition-colors focus-visible:ring-2 focus-visible:ring-brand/60"
                     >
                       {(Object.entries(LEAD_STAGE_LABELS) as [string, string][]).map(([val, label]) => (
                         <option key={val} value={val}>{label}</option>
                       ))}
                     </select>
                   ) : (
-                    <button
+                    <Button
                       onClick={() => setStageEdit(true)}
-                      className="px-4 py-2 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium transition-all"
+                      variant="secondary"
                     >
                       Change Stage
-                    </button>
+                    </Button>
                   )}
                 </div>
               )}
 
               {/* Add Note */}
-              <button
+              <Button
                 onClick={() => setShowNoteBox((v) => !v)}
-                className="px-4 py-2 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium transition-all"
+                variant="secondary"
               >
                 {showNoteBox ? 'Cancel Note' : 'Add Note'}
-              </button>
+              </Button>
 
               {/* Enroll in Sequence */}
               {!isConverted && (
-                <button
+                <Button
                   onClick={() => setShowEnrollModal(true)}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl border border-border-subtle bg-bg-elevated text-text-secondary hover:border-border-medium transition-all"
+                  variant="secondary"
                 >
                   <GitMerge className="w-3.5 h-3.5" />
                   Enroll in Sequence
-                </button>
+                </Button>
               )}
 
               {/* Convert to Deal — shown for Hot/Warm/New leads not yet converted */}
               {!isConverted && (
-                <button
+                <Button
                   onClick={() => {
                     setConvertForm({ dealName: lead.intentSummary ? `Deal — ${lead.intentSummary}` : `Deal — ${displayName}` });
                     setShowConvertForm((v) => !v);
                   }}
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl border border-border-glow bg-brand-soft text-brand hover:bg-brand hover:text-bg transition-all"
+                  variant="primary"
                 >
                   <Zap className="w-3.5 h-3.5" /> Convert to Deal
-                </button>
+                </Button>
               )}
             </div>
 
@@ -288,17 +290,17 @@ export function Component() {
                 <textarea
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
-                  placeholder="Write a note..."
+                  placeholder="Write a note..." aria-label="Write a note..."
                   rows={3}
                   className="w-full text-sm bg-bg-elevated border border-border-subtle rounded-xl px-3 py-2 text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow resize-none transition-colors"
                 />
-                <button
+                <Button
                   onClick={handleAddNote}
                   disabled={!noteText.trim() || addNote.isPending}
-                  className="px-4 py-2 text-sm font-semibold rounded-xl bg-brand text-bg disabled:opacity-50 hover:opacity-90 transition-opacity"
+                  variant="primary"
                 >
                   {addNote.isPending ? 'Saving…' : 'Save Note'}
-                </button>
+                </Button>
               </div>
             )}
 
@@ -307,52 +309,62 @@ export function Component() {
               <div className="border border-border-glow bg-bg-elevated rounded-xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-brand uppercase tracking-wider">Convert to Contact + Account + Deal</span>
-                  <button onClick={() => setShowConvertForm(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
+                  <button aria-label="Close" onClick={() => setShowConvertForm(false)} className="text-text-muted hover:text-text-primary"><X className="w-4 h-4" /></button>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2">
-                    <label className="text-xs text-text-muted mb-1 block">Deal Name</label>
-                    <input value={convertForm.dealName ?? `Deal — ${displayName}`} onChange={(e) => setConvertForm((f) => ({ ...f, dealName: e.target.value }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Deal Name</span>
+                      <input value={convertForm.dealName ?? `Deal — ${displayName}`} onChange={(e) => setConvertForm((f) => ({ ...f, dealName: e.target.value }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                    </label>
                   </div>
                   <div>
-                    <label className="text-xs text-text-muted mb-1 block">Amount</label>
-                    <input type="number" min={0} value={convertForm.dealAmount ?? ''}
-                      onChange={(e) => setConvertForm((f) => ({ ...f, dealAmount: e.target.value ? Number(e.target.value) : undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" placeholder="0" />
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Amount</span>
+                      <input type="number" min={0} value={convertForm.dealAmount ?? ''}
+                        onChange={(e) => setConvertForm((f) => ({ ...f, dealAmount: e.target.value ? Number(e.target.value) : undefined }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" placeholder="0" />
+                    </label>
                   </div>
                   <div>
-                    <label className="text-xs text-text-muted mb-1 block">Close Date</label>
-                    <input type="date" value={convertForm.closeDate ?? ''}
-                      onChange={(e) => setConvertForm((f) => ({ ...f, closeDate: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Close Date</span>
+                      <input type="date" value={convertForm.closeDate ?? ''}
+                        onChange={(e) => setConvertForm((f) => ({ ...f, closeDate: e.target.value || undefined }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+                    </label>
                   </div>
                   <div>
-                    <label className="text-xs text-text-muted mb-1 block">Stage</label>
-                    <select value={convertForm.stageId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, stageId: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                      <option value="">First open stage</option>
-                      {(dealStages as any[]).filter((s: any) => !s.isClosed).map((s: any) => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
-                      ))}
-                    </select>
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Stage</span>
+                      <select value={convertForm.stageId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, stageId: e.target.value || undefined }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                        <option value="">First open stage</option>
+                        {(dealStages as any[]).filter((s: any) => !s.isClosed).map((s: any) => (
+                          <option key={s.id} value={s.id}>{s.name}</option>
+                        ))}
+                      </select>
+                    </label>
                   </div>
                   <div>
-                    <label className="text-xs text-text-muted mb-1 block">Assign Owner</label>
-                    <select value={convertForm.ownedByUserId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, ownedByUserId: e.target.value || undefined }))}
-                      className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
-                      <option value="">Assign to me (default)</option>
-                      {teamMembers.map((u) => (<option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>))}
-                    </select>
+                    <label className="block">
+                      <span className="text-xs text-text-muted mb-1 block">Assign Owner</span>
+                      <select value={convertForm.ownedByUserId ?? ''} onChange={(e) => setConvertForm((f) => ({ ...f, ownedByUserId: e.target.value || undefined }))}
+                        className="w-full px-3 py-2 rounded-xl bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow">
+                        <option value="">Assign to me (default)</option>
+                        {teamMembers.map((u) => (<option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>))}
+                      </select>
+                    </label>
                   </div>
                 </div>
-                <button disabled={convertLead.isPending}
+                <Button disabled={convertLead.isPending}
                   onClick={() => convertLead.mutate({ id: lead.id, data: convertForm }, {
                     onSuccess: () => { setShowConvertForm(false); qc.invalidateQueries({ queryKey: ['lead', lead.id] }); toast.success('Lead converted!'); },
                   })}
-                  className="w-full py-2 rounded-xl bg-brand text-bg text-sm font-bold hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2">
+                  variant="primary" block>
                   {convertLead.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Zap className="w-4 h-4" /> Confirm Convert</>}
-                </button>
+                </Button>
               </div>
             )}
 
@@ -406,6 +418,13 @@ export function Component() {
       </div>
     </div>
     {lead && <CustomFieldsPanel recordId={lead.id} entityType={CrmEntityType.Lead} />}
+
+    {/* Field-level history — `RecordAuditTrail` existed but was mounted
+        nowhere; "who changed this and when" is a Tier C gap in
+        CRM-REMAINING-GAPS.md. */}
+    {lead && (
+      <RecordAuditTrail kind={CrmActivityEntityKind.Lead} entityId={lead.id} />
+    )}
     {showEnrollModal && lead && (
       <EnrollModal leadId={lead.id} onClose={() => setShowEnrollModal(false)} />
     )}
@@ -483,7 +502,7 @@ function EnrollModal({ leadId, onClose }: { leadId: string; onClose: () => void 
       <div className="relative w-full max-w-sm bg-bg-elevated border border-border-subtle rounded-card shadow-2xl p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-bold text-text-primary">Enroll in Sequence</h3>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg transition-all">
+          <button aria-label="Close" onClick={onClose} className="p-1.5 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg transition-all">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -532,20 +551,20 @@ function EnrollModal({ leadId, onClose }: { leadId: string; onClose: () => void 
         )}
 
         <div className="flex justify-end gap-3 pt-1">
-          <button
+          <Button
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-text-secondary bg-bg-elevated border border-border-subtle rounded-xl hover:border-border-medium transition-colors"
+            variant="secondary"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleEnroll}
             disabled={!selected || enrollMutation.isPending}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-brand hover:bg-brand/90 rounded-xl disabled:opacity-50 transition-colors"
+            variant="primary"
           >
             {enrollMutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             Enroll
-          </button>
+          </Button>
         </div>
       </div>
     </div>,
@@ -714,15 +733,15 @@ function TriggerScoreEvent({ leadId }: { leadId: string }) {
   if (rules.length === 0) return null;
   return (
     <div className="flex gap-2 items-center">
-      <select value={eventType} onChange={e => setEventType(e.target.value)} className="flex-1 px-2 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary">
+      <select aria-label="Event type" value={eventType} onChange={e => setEventType(e.target.value)} className="flex-1 px-2 py-1.5 rounded-lg bg-bg-input border border-border-subtle text-xs text-text-primary">
         <option value="">— Trigger scoring event —</option>
         {rules.map((r: any) => <option key={r.id} value={r.eventType}>{r.label || r.eventType} (+{r.points})</option>)}
       </select>
-      <button onClick={() => eventType && triggerMut.mutate({ eventType })}
+      <Button onClick={() => eventType && triggerMut.mutate({ eventType })}
         disabled={!eventType || triggerMut.isPending}
-        className="px-3 py-1.5 rounded-lg bg-brand text-white text-xs font-bold disabled:opacity-50">
+        variant="primary" size="sm">
         {triggerMut.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : 'Fire'}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -737,17 +756,17 @@ function ScoreHistory({ leadId }: { leadId: string }) {
   if (events.length === 0) return null;
   return (
     <div className="border border-border-subtle rounded-xl overflow-hidden">
-      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between px-4 py-2.5 bg-glass-2 text-xs font-semibold text-text-muted hover:text-text-primary transition-all">
+      <Button onClick={() => setOpen(!open)} variant="subtle" size="lg" block>
         <span>Score History ({events.length} events)</span>
         <span className={`transition-transform ${open ? 'rotate-180' : ''}`}>▼</span>
-      </button>
+      </Button>
       {open && (
         <div className="divide-y divide-border-subtle max-h-48 overflow-y-auto">
           {events.map((e: any) => (
             <div key={e.id} className="px-4 py-2 text-xs space-y-0.5">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-brand font-semibold">{e.eventType}</span>
-                <span className={`font-bold ${e.points > 0 ? 'text-success' : 'text-danger'}`}>{e.points > 0 ? '+' : ''}{e.points}</span>
+                <span className={`font-bold ${e.points > 0 ? 'text-success' : 'text-danger-light'}`}>{e.points > 0 ? '+' : ''}{e.points}</span>
               </div>
               <div className="text-text-muted">{e.reason || ''}</div>
               <div className="text-text-muted text-[10px]">{e.scoreBefore} → {e.scoreAfter} · {e.eventAt ? new Date(e.eventAt).toLocaleString() : ''}</div>

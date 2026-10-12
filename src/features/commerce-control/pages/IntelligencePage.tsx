@@ -6,6 +6,7 @@ import { ROUTES } from '@/app/router/route-paths';
 import { stylemintIntelligenceApi } from '../api/stylemint-intelligence.api';
 import { ReportPanel } from '../components/ReportPanel';
 import { ConstitutionTab } from '../components/ConstitutionPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * The two decision-intelligence surfaces that have no page of their own.
@@ -129,16 +130,16 @@ function SimulationTab() {
           <input
             value={runId}
             onChange={(e) => setRunId(e.target.value)}
-            placeholder="Run id"
+            placeholder="Run id" aria-label="Run id"
             className="flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
-          <button
+          <Button
             disabled={!runId.trim()}
             onClick={() => setLookup(runId.trim())}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-2 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary"
           >
             <Search className="h-3.5 w-3.5" strokeWidth={1.6} /> Open
-          </button>
+          </Button>
         </div>
         <p className="mt-2 text-[11px] text-text-muted">
           Opening a study takes a scenario definition with its parameters - that form is on the

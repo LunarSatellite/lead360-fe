@@ -25,6 +25,7 @@ import {
   type UpsertPopularSearch,
 } from '../api/stylemint-discovery.api';
 import { ReportPanel } from '../components/ReportPanel';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * What the platform promotes before a shopper searches, and the check on whether it promotes
@@ -120,12 +121,12 @@ function SearchesTab() {
           {searches.data?.length ?? 0} suggestion chips
         </p>
         <div className="flex items-center gap-2">
-          <button
+          <Button
             onClick={() => setCreating(true)}
-            className="flex items-center gap-1.5 rounded-card bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary" size="sm"
           >
             <Plus className="h-3.5 w-3.5" strokeWidth={1.6} /> New chip
-          </button>
+          </Button>
           <button
             onClick={() => searches.refetch()}
             className="flex items-center gap-1.5 text-xs font-bold text-text-secondary hover:text-brand"
@@ -206,7 +207,7 @@ function SearchRow({ search, onChanged }: { search: PopularSearch; onChanged: ()
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
-          <button
+          <button aria-pressed={search.isActive}
             disabled={act.isPending}
             onClick={() => act.mutate('toggle')}
             className={`flex items-center gap-1.5 rounded-sm border-thin px-3 py-1.5 text-xs font-bold disabled:opacity-40 ${
@@ -222,7 +223,7 @@ function SearchRow({ search, onChanged }: { search: PopularSearch; onChanged: ()
             )}
             {search.isActive ? 'Active' : 'Inactive'}
           </button>
-          <button
+          <button aria-label="Delete"
             onClick={() => { setConfirmDelete(true); setError(null); }}
             className="rounded-sm border-thin border-border-medium p-1.5 text-text-secondary hover:bg-glass-2 hover:text-rose-300"
           >
@@ -244,12 +245,12 @@ function SearchRow({ search, onChanged }: { search: PopularSearch; onChanged: ()
             >
               Delete
             </button>
-            <button
+            <Button
               onClick={() => setConfirmDelete(false)}
-              className="rounded-sm border-thin border-border-medium px-3 py-1 text-xs font-bold text-text-secondary hover:bg-glass-2"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -290,35 +291,35 @@ function SearchEditor({ onCancel, onSaved }: { onCancel: () => void; onSaved: ()
         <input
           value={form.label}
           onChange={(e) => setForm({ ...form, label: e.target.value })}
-          placeholder="Label shown"
+          placeholder="Label shown" aria-label="Label shown"
           className={inputClass}
         />
         <input
           value={form.query}
           onChange={(e) => setForm({ ...form, query: e.target.value })}
-          placeholder="Search it runs"
+          placeholder="Search it runs" aria-label="Search it runs"
           className={inputClass}
         />
         <input
           type="number"
           value={form.displayOrder}
           onChange={(e) => setForm({ ...form, displayOrder: Number(e.target.value) })}
-          placeholder="Order"
+          placeholder="Order" aria-label="Order"
           className={inputClass}
         />
         <input
           value={form.regionCode ?? ''}
           onChange={(e) => setForm({ ...form, regionCode: e.target.value })}
-          placeholder="Region (optional)"
+          placeholder="Region (optional)" aria-label="Region (optional)"
           className={inputClass}
         />
       </div>
       {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
       <div className="mt-2 flex items-center gap-2">
-        <button
+        <Button
           disabled={!valid || save.isPending}
           onClick={() => save.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {save.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -326,13 +327,13 @@ function SearchEditor({ onCancel, onSaved }: { onCancel: () => void; onSaved: ()
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Create
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={onCancel}
-          className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
+          variant="secondary" size="sm"
         >
           <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Cancel
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -423,18 +424,18 @@ function FeaturedRow({
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
-          <button
+          <Button
             onClick={() => { setMode('approve'); setError(null); }}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light"
+            variant="primary" size="sm"
           >
             <Check className="h-3.5 w-3.5" strokeWidth={1.6} /> Approve
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => { setMode('reject'); setError(null); }}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary"
+            variant="secondary" size="sm"
           >
             <X className="h-3.5 w-3.5" strokeWidth={1.6} /> Reject
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -448,7 +449,7 @@ function FeaturedRow({
               ? 'A note is optional.'
               : 'A note is required — the matcher learns from why this was wrong.'}
           </p>
-          <input
+          <input aria-label="Note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder={mode === 'approve' ? 'Note (optional)' : 'Why this pairing is wrong'}
@@ -456,20 +457,20 @@ function FeaturedRow({
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}
           <div className="mt-2 flex items-center gap-2">
-            <button
+            <Button
               disabled={act.isPending || (mode === 'reject' && !note.trim())}
               onClick={() => act.mutate(mode)}
-              className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+              variant="primary" size="sm"
             >
               {act.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
               Confirm
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => { setMode(null); setNote(''); }}
-              className="rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2"
+              variant="secondary" size="sm"
             >
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -507,10 +508,10 @@ function FairnessTab() {
             same accounts.
           </p>
         </div>
-        <button
+        <Button
           disabled={run.isPending}
           onClick={() => run.mutate()}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+          variant="primary" size="sm"
         >
           {run.isPending ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />
@@ -518,7 +519,7 @@ function FairnessTab() {
             <Scale className="h-3.5 w-3.5" strokeWidth={1.6} />
           )}
           Run audit
-        </button>
+        </Button>
       </div>
 
       {error && <ErrorBox error={new Error(error)} />}
@@ -584,22 +585,22 @@ function ReachTab() {
           </p>
         </div>
         <div className="flex items-center gap-1.5">
-          <button
+          <Button
             disabled={tick.isPending}
             onClick={() => tick.mutate()}
-            className="flex items-center gap-1.5 rounded-sm border-thin border-border-medium px-3 py-1.5 text-xs font-bold text-text-secondary hover:bg-glass-2 hover:text-text-primary disabled:opacity-40"
+            variant="secondary" size="sm"
           >
             {tick.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
             Decision tick
-          </button>
-          <button
+          </Button>
+          <Button
             disabled={drain.isPending}
             onClick={() => drain.mutate()}
-            className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-40"
+            variant="primary" size="sm"
           >
             {drain.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" strokeWidth={1.6} />}
             Drain publishes
-          </button>
+          </Button>
         </div>
       </div>
 

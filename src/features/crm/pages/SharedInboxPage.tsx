@@ -8,6 +8,7 @@ import {
   CRM_INBOX_KIND_LABELS,
   type CrmInboxItemDto,
 } from '../types/crm.types';
+import { Button } from '@/shared/ui/primitives';
 
 const KIND_ICON: Record<number, typeof Users> = {
   1: Users,
@@ -50,14 +51,14 @@ function ItemRow({ item, onClaim, claiming }: {
         </div>
       </div>
 
-      <button
+      <Button
         onClick={() => onClaim(item)}
         disabled={claiming}
-        className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand text-white text-sm font-semibold hover:opacity-90 disabled:opacity-50 transition-all"
+        variant="primary" className="shrink-0"
       >
         {claiming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Hand className="w-4 h-4" />}
         Claim
-      </button>
+      </Button>
     </div>
   );
 }
@@ -66,7 +67,7 @@ function Stat({ label, value, active, onClick }: {
   label: string; value: number; active: boolean; onClick: () => void;
 }) {
   return (
-    <button
+    <button aria-pressed={active}
       onClick={onClick}
       className={`flex-1 min-w-[120px] rounded-2xl border px-4 py-3 text-left transition-all ${
         active ? 'border-brand bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium'

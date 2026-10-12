@@ -63,7 +63,7 @@ describe('engaging the stop is deliberate', () => {
     expect(screen.getByTestId('halt-confirm')).toBeDisabled();
 
     fireEvent.change(screen.getByTestId('halt-reason'), {
-      target: { value: 'Repricing loop suspected on the whole catalogue.' },
+      target: { value: 'Repricing loop suspected on the whole catalog.' },
     });
     expect(screen.getByTestId('halt-confirm')).toBeDisabled();
 
@@ -74,7 +74,7 @@ describe('engaging the stop is deliberate', () => {
     expect(onConfirm).toHaveBeenCalledWith({
       scope: HaltScope.Agent,
       scopeKey: 'pricing-agent',
-      reason: 'Repricing loop suspected on the whole catalogue.',
+      reason: 'Repricing loop suspected on the whole catalog.',
     });
   });
 

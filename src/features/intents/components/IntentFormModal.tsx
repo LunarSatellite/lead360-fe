@@ -9,6 +9,7 @@ import {
   IntentOperationType, OPERATION_TYPE_LABEL,
 } from '../types/intents.types';
 import type { IntentDto, IntentOperationTypeValue, IntentTrackValue } from '../types/intents.types';
+import { Button } from '@/shared/ui/primitives';
 
 interface IntentFormModalProps {
   open: boolean;
@@ -132,7 +133,7 @@ export function IntentFormModal({
   const input =
     'w-full px-4 py-2.5 rounded-lg bg-glass-2 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all';
   const label = 'text-2xs font-bold uppercase tracking-[2px] text-text-muted block mb-2';
-  const errorText = 'text-2xs text-danger mt-1';
+  const errorText = 'text-2xs text-danger-light mt-1';
 
   // Filter parent options: only intents with level < 4 (max 5 levels: 0-4)
   const availableParents = parentOptions.filter((p) => {
@@ -149,7 +150,7 @@ export function IntentFormModal({
           <h2 className="text-lg font-extrabold text-text-primary tracking-tight">
             {isEdit ? 'Edit intent' : 'Create intent'}
           </h2>
-          <button
+          <button aria-label="Close"
             onClick={onClose}
             className="w-8 h-8 rounded-lg bg-glass-2 flex items-center justify-center text-text-muted hover:text-text-primary transition-all"
           >
@@ -161,20 +162,24 @@ export function IntentFormModal({
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 overflow-y-auto p-6 space-y-4">
           {/* Name */}
           <div>
-            <label className={label}>Name *</label>
-            <input {...form.register('name')} placeholder="e.g. Track Order" className={input} />
+            <label className="flex flex-col">
+              <span className={label}>Name *</span>
+              <input {...form.register('name')} placeholder="e.g. Track Order" className={input} />
+            </label>
             {form.formState.errors.name && <p className={errorText}>{form.formState.errors.name.message}</p>}
           </div>
 
           {/* Description */}
           <div>
-            <label className={label}>Description</label>
-            <textarea
-              {...form.register('description')}
-              placeholder="What does this intent do?"
-              rows={2}
-              className={`${input} resize-none`}
-            />
+            <label className="flex flex-col">
+              <span className={label}>Description</span>
+              <textarea
+                {...form.register('description')}
+                placeholder="What does this intent do?"
+                rows={2}
+                className={`${input} resize-none`}
+              />
+            </label>
           </div>
 
           {/* Track: visual pill selector */}
@@ -228,27 +233,31 @@ export function IntentFormModal({
           {/* Two columns: Parent + Sort Order */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={label}>Parent intent</label>
-              <select {...form.register('parentIntentId')} className={input}>
-                <option value="" className="bg-bg-card">
-                  None (root level)
-                </option>
-                {availableParents.map((p) => (
-                  <option key={p.id} value={p.id} className="bg-bg-card">
-                    {'—'.repeat(p.level)} {p.name}
+              <label className="flex flex-col">
+                <span className={label}>Parent intent</span>
+                <select {...form.register('parentIntentId')} className={input}>
+                  <option value="" className="bg-bg-card">
+                    None (root level)
                   </option>
-                ))}
-              </select>
+                  {availableParents.map((p) => (
+                    <option key={p.id} value={p.id} className="bg-bg-card">
+                      {'—'.repeat(p.level)} {p.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
             <div>
-              <label className={label}>Sort order</label>
-              <input
-                type="number"
-                {...form.register('sortOrder', { valueAsNumber: true })}
-                className={input}
-                min={0}
-                max={999}
-              />
+              <label className="flex flex-col">
+                <span className={label}>Sort order</span>
+                <input
+                  type="number"
+                  {...form.register('sortOrder', { valueAsNumber: true })}
+                  className={input}
+                  min={0}
+                  max={999}
+                />
+              </label>
             </div>
           </div>
 
@@ -257,7 +266,7 @@ export function IntentFormModal({
             <label className={label}>Keywords <span className="opacity-40">(comma-separated)</span></label>
             <textarea
               {...form.register('keywords')}
-              placeholder="track, order, delivery, shipping, status"
+              placeholder="track, order, delivery, shipping, status" aria-label="track, order, delivery, shipping, status"
               rows={2}
               className={`${input} resize-none`}
             />
@@ -296,32 +305,38 @@ export function IntentFormModal({
               <div className="space-y-3">
                 <div className="grid grid-cols-[1fr_120px] gap-3">
                   <div>
-                    <label className={label}>API Endpoint</label>
-                    <input
-                      {...form.register('apiEndpoint')}
-                      placeholder="GET /orders/{order_id}/status"
-                      className={input}
-                    />
+                    <label className="flex flex-col">
+                      <span className={label}>API Endpoint</span>
+                      <input
+                        {...form.register('apiEndpoint')}
+                        placeholder="GET /orders/{order_id}/status"
+                        className={input}
+                      />
+                    </label>
                   </div>
                   <div>
-                    <label className={label}>Method</label>
-                    <select {...form.register('apiMethod')} className={input}>
-                      {API_METHODS.map((m) => (
-                        <option key={m} value={m} className="bg-bg-card">
-                          {m}
-                        </option>
-                      ))}
-                    </select>
+                    <label className="flex flex-col">
+                      <span className={label}>Method</span>
+                      <select {...form.register('apiMethod')} className={input}>
+                        {API_METHODS.map((m) => (
+                          <option key={m} value={m} className="bg-bg-card">
+                            {m}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                   </div>
                 </div>
                 <div>
-                  <label className={label}>Parameters JSON</label>
-                  <textarea
-                    {...form.register('apiParametersJson')}
-                    placeholder='{"order_id": "string"}'
-                    rows={3}
-                    className={`${input} resize-none font-mono text-2xs`}
-                  />
+                  <label className="flex flex-col">
+                    <span className={label}>Parameters JSON</span>
+                    <textarea
+                      {...form.register('apiParametersJson')}
+                      placeholder='{"order_id": "string"}'
+                      rows={3}
+                      className={`${input} resize-none font-mono text-2xs`}
+                    />
+                  </label>
                 </div>
               </div>
             )}
@@ -329,25 +344,29 @@ export function IntentFormModal({
             {/* StaticResponse fields */}
             {watchedOp === IntentOperationType.StaticResponse && (
               <div>
-                <label className={label}>Response text</label>
-                <textarea
-                  {...form.register('staticResponseText')}
-                  placeholder="The response your chatbot will send..."
-                  rows={4}
-                  className={`${input} resize-none`}
-                />
+                <label className="flex flex-col">
+                  <span className={label}>Response text</span>
+                  <textarea
+                    {...form.register('staticResponseText')}
+                    placeholder="The response your chatbot will send..."
+                    rows={4}
+                    className={`${input} resize-none`}
+                  />
+                </label>
               </div>
             )}
 
             {/* AgentHandoff fields */}
             {watchedOp === IntentOperationType.AgentHandoff && (
               <div>
-                <label className={label}>Handoff target</label>
-                <input
-                  {...form.register('handoffTarget')}
-                  placeholder="e.g. support-team, billing-dept"
-                  className={input}
-                />
+                <label className="flex flex-col">
+                  <span className={label}>Handoff target</span>
+                  <input
+                    {...form.register('handoffTarget')}
+                    placeholder="e.g. support-team, billing-dept"
+                    className={input}
+                  />
+                </label>
               </div>
             )}
 
@@ -355,12 +374,14 @@ export function IntentFormModal({
             {(watchedOp === IntentOperationType.ProductSearch ||
               watchedOp === IntentOperationType.CategoryBrowse) && (
               <div>
-                <label className={label}>Search scope</label>
-                <input
-                  {...form.register('searchScope')}
-                  placeholder="e.g. electronics, all, category:phones"
-                  className={input}
-                />
+                <label className="flex flex-col">
+                  <span className={label}>Search scope</span>
+                  <input
+                    {...form.register('searchScope')}
+                    placeholder="e.g. electronics, all, category:phones"
+                    className={input}
+                  />
+                </label>
               </div>
             )}
 
@@ -386,7 +407,7 @@ export function IntentFormModal({
               Advanced: Regex patterns (JSON array)
             </summary>
             <div className="mt-2">
-              <textarea
+              <textarea aria-label="Patterns JSON"
                 {...form.register('patternsJson')}
                 placeholder='["order\\s*(ORD-\\d+)"]'
                 rows={2}
@@ -397,20 +418,20 @@ export function IntentFormModal({
 
           {/* Error */}
           {(createMutation.isError || updateMutation.isError) && (
-            <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger">
+            <div className="px-4 py-3 rounded-lg bg-danger-soft border border-danger/15 text-sm text-danger-light">
               {createMutation.error?.message || updateMutation.error?.message || 'Operation failed.'}
             </div>
           )}
 
           {/* Actions */}
           <div className="flex justify-end gap-3 pt-2">
-            <button
+            <Button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-lg bg-glass-2 border border-border-medium text-sm font-semibold text-text-secondary hover:text-text-primary transition-all"
+              variant="subtle" size="lg"
             >
               Cancel
-            </button>
+            </Button>
             <button
               type="submit"
               disabled={isPending}

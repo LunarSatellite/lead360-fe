@@ -57,11 +57,11 @@ export function EndpointTable({ endpoints, isLoading }: EndpointTableProps) {
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search path, summary..."
+            placeholder="Search path, summary..." aria-label="Search path, summary..."
             className="w-full pl-9 pr-4 py-2 rounded-lg bg-glass-1 border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand transition-all"
           />
           {search && (
-            <button
+            <button aria-label="Close"
               onClick={() => setSearch('')}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary"
             >
@@ -73,7 +73,7 @@ export function EndpointTable({ endpoints, isLoading }: EndpointTableProps) {
           {METHODS.filter((m) => methodCounts[m]).map((m) => {
             const active = methodFilter === m;
             return (
-              <button
+              <button aria-pressed={active}
                 key={m}
                 onClick={() => setMethodFilter(active ? null : m)}
                 className={`px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wide transition-all ${active ? 'bg-brand text-white' : 'bg-glass-1 text-text-secondary hover:bg-glass-2'}`}
@@ -202,7 +202,7 @@ function EndpointDetail({ endpoint }: { endpoint: EndpointDto }) {
                   </code>
                   <span>
                     {(p.required ?? p.Required) ? (
-                      <span className="text-danger font-bold text-[10px]">Yes</span>
+                      <span className="text-danger-light font-bold text-[10px]">Yes</span>
                     ) : (
                       <span className="text-text-muted text-[10px]">No</span>
                     )}

@@ -11,6 +11,7 @@ import {
   ANNOUNCEMENT_TYPE_LABELS, ANNOUNCEMENT_STATUS_LABELS, ANNOUNCEMENT_STATUS_COLORS,
 } from '../types/crm.types';
 import { format, parseISO } from 'date-fns';
+import { Button, Input } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-medium';
 const selectCls = 'px-3 py-2 rounded-xl bg-bg-input border border-border-subtle text-sm text-text-secondary focus:outline-none focus:border-border-medium';
@@ -41,7 +42,7 @@ function SlideOver({ title, onClose, children, footer }: { title: string; onClos
             <h2 className="text-base font-extrabold leading-tight" style={{ background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--primary) 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{title}</h2>
             <p className="text-xs text-text-muted mt-0.5">Create a new announcement</p>
           </div>
-          <button onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
+          <button aria-label="Close" onClick={onClose} className="text-text-muted hover:text-text-primary mt-0.5">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -68,19 +69,18 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
           <div className="h-px bg-brand/20" />
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger">*</span></label>
-          <div className="relative">
-            <Newspaper className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" strokeWidth={1.6} />
-            <input value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1"
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50"
-              style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
-          </div>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Title <span className="text-danger-light">*</span></span>
+            <Input icon={Newspaper} value={form.title} onChange={e => set('title', e.target.value)} placeholder="e.g. Q3 Pricing Effective July 1" style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </label>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Content <span className="text-danger">*</span></label>
-          <textarea value={form.content} rows={4} onChange={e => set('content', e.target.value)} placeholder="Write your announcement…"
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Content <span className="text-danger-light">*</span></span>
+            <textarea value={form.content} rows={4} onChange={e => set('content', e.target.value)} placeholder="Write your announcement…"
             className="w-full pl-3 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand/50 resize-none"
             style={{ backgroundColor: 'rgb(var(--color-glass-1))', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)' }} />
+          </label>
         </div>
         <div className="grid grid-cols-[auto_1fr] items-center gap-2 pt-1">
           <span className="text-[10px] font-bold text-brand uppercase tracking-widest">Settings</span>
@@ -89,8 +89,8 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
         <div>
           <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
           <div className="relative">
-            <button type="button" onClick={() => setTypeOpen(!typeOpen)}
-              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-primary"
+            <Button type="button" onClick={() => setTypeOpen(!typeOpen)}
+              variant="ghost" block
               style={{
                 backgroundColor: 'rgb(var(--color-glass-1))',
                 border: `1px solid ${typeOpen ? 'rgb(var(--brand-rgb) / 0.5)' : 'rgb(var(--brand-rgb) / 0.2)'}`,
@@ -101,7 +101,7 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
               <Tag className="w-3.5 h-3.5 text-text-muted shrink-0" strokeWidth={1.6} />
               <span className="flex-1 text-left font-medium text-text-secondary">{ANNOUNCEMENT_TYPE_LABELS[form.type]}</span>
               <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-200 ${typeOpen ? 'rotate-180' : ''}`} strokeWidth={1.6} />
-            </button>
+            </Button>
             {typeOpen && (
               <div className="absolute top-full left-0 right-0 mt-1.5 z-10 overflow-hidden"
                 style={{ borderRadius: 12, background: 'var(--bg-card)', border: '1px solid rgb(var(--brand-rgb) / 0.2)', boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 0 12px rgb(var(--brand-rgb) / 0.08)' }}>
@@ -118,17 +118,10 @@ function CreateForm({ form, set, typeOpen, setTypeOpen }: { form: AnnouncementCr
           </div>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-text-secondary mb-1">Schedule for <span className="text-text-muted font-normal">(optional)</span></label>
-          <div className="relative">
-            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none z-0" strokeWidth={1.6} />
-            <input type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)}
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-brand/20 text-sm text-text-primary focus:outline-none focus:border-brand/50"
-              style={{
-                backgroundColor: 'rgb(var(--color-glass-1))',
-                colorScheme: 'dark',
-                backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-              }} />
-          </div>
+          <label className="block">
+            <span className="block text-xs font-semibold text-text-secondary mb-1">Schedule for <span className="text-text-muted font-normal">(optional)</span></span>
+            <Input icon={Calendar} type="datetime-local" value={form.scheduledAt ?? ''} onChange={e => set('scheduledAt', e.target.value || undefined)} style={{ backgroundColor: 'rgb(var(--color-glass-1))', colorScheme: 'dark', backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)', }} />
+          </label>
         </div>
       </div>
     </>
@@ -285,14 +278,14 @@ function DetailPanel({ item, onClose }: { item: AnnouncementSummaryDto; onClose:
             </>
           ) : (
             <div className="flex flex-col gap-4">
-              <div>{lbl('Title')}<input className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} /></div>
-              <div>{lbl('Content')}<textarea className={`${inputCls} min-h-[120px] resize-y`} value={form.content} onChange={e => set('content', e.target.value)} /></div>
+              <div>{lbl('Title')}<input aria-label="Title" className={inputCls} value={form.title} onChange={e => set('title', e.target.value)} /></div>
+              <div>{lbl('Content')}<textarea aria-label="Content" className={`${inputCls} min-h-[120px] resize-y`} value={form.content} onChange={e => set('content', e.target.value)} /></div>
               <div>{lbl('Type')}
-                <select className={selectCls} value={form.type} onChange={e => set('type', Number(e.target.value))}>
+                <select aria-label="Type" className={selectCls} value={form.type} onChange={e => set('type', Number(e.target.value))}>
                   {Object.entries(ANNOUNCEMENT_TYPE_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
                 </select>
               </div>
-              <div>{lbl('Reschedule')}<input type="datetime-local" className={inputCls} value={form.scheduledAt} onChange={e => set('scheduledAt', e.target.value)} /></div>
+              <div>{lbl('Reschedule')}<input aria-label="Scheduled at" type="datetime-local" className={inputCls} value={form.scheduledAt} onChange={e => set('scheduledAt', e.target.value)} /></div>
               <div className="flex gap-2 justify-end">
                 <button className={btnGhost} onClick={() => setEditing(false)}>Cancel</button>
                 <button className={btnPrimary} onClick={saveEdit} disabled={update.isPending}>{update.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : null}Save</button>
@@ -314,7 +307,7 @@ function DetailPanel({ item, onClose }: { item: AnnouncementSummaryDto; onClose:
             )}
             {item.status !== AnnouncementStatus.Published && item.status !== AnnouncementStatus.Archived && (
               <div className="flex gap-2 items-center">
-                <input type="datetime-local" className={`${inputCls} flex-1`} value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} />
+                <input aria-label="Schedule time" type="datetime-local" className={`${inputCls} flex-1`} value={scheduleTime} onChange={e => setScheduleTime(e.target.value)} />
                 <button className={btnPrimary} disabled={!scheduleTime || schedule.isPending} onClick={() => schedule.mutateAsync({ id: item.id, scheduledAt: scheduleTime })}>
                   <Calendar className="w-4 h-4" />Schedule
                 </button>
@@ -366,7 +359,7 @@ export function Component() {
         <div className="flex items-center gap-3">
           <Newspaper className="w-5 h-5 text-accent" />
           <div>
-            <h1 className="text-lg font-bold text-text-primary">Announcements</h1>
+            <h1 className="text-xl font-extrabold tracking-tight text-text-primary">Announcements</h1>
             <p className="text-xs text-text-muted">Broadcast updates to your users</p>
           </div>
         </div>
@@ -443,16 +436,16 @@ export function Component() {
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-text-muted">Choose what happens after creating:</p>
             <div className="flex gap-3">
-              <button onClick={() => setCreating(false)} className="px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">Cancel</button>
-              <button onClick={() => handleCreate('draft')}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-text-secondary border border-border-subtle hover:border-border-medium transition-all">
+              <Button onClick={() => setCreating(false)} variant="secondary">Cancel</Button>
+              <Button onClick={() => handleCreate('draft')}
+                variant="secondary">
                 <Clock className="w-3.5 h-3.5" /> Save as Draft
-              </button>
+              </Button>
               {!form.scheduledAt && (
-                <button onClick={() => handleCreate('publish')}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-bg bg-brand hover:bg-brand-light transition-all">
+                <Button onClick={() => handleCreate('publish')}
+                  variant="primary">
                   <Send className="w-3.5 h-3.5" /> Publish
-                </button>
+                </Button>
               )}
             </div>
           </div>

@@ -94,10 +94,10 @@ export function SpecListTable({ specs, isLoading, onSelect }: SpecListTableProps
               className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all"
               onClick={(e) => e.stopPropagation()}
             >
-              <button onClick={() => onSelect(s)} className="p-1 rounded" style={{ color: 'rgb(var(--color-text-muted))' }}>
+              <button aria-label="Show" onClick={() => onSelect(s)} className="p-1 rounded" style={{ color: 'rgb(var(--color-text-muted))' }}>
                 <Eye className="w-3.5 h-3.5" strokeWidth={1.6} />
               </button>
-              <button onClick={() => setConfirmId(s.id)} className="p-1 rounded" style={{ color: 'rgb(var(--color-text-muted))' }}>
+              <button aria-label="Delete" onClick={() => setConfirmId(s.id)} className="p-1 rounded" style={{ color: 'rgb(var(--color-text-muted))' }}>
                 <Trash2 className="w-3.5 h-3.5" strokeWidth={1.6} />
               </button>
             </div>

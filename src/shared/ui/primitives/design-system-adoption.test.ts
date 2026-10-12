@@ -141,7 +141,7 @@ describe('defects that must not come back', () => {
      *
      * Lower it when you fix some. It may not go up.
      */
-    const BUDGET_ORPHAN_LABELS = 134;
+    const BUDGET_ORPHAN_LABELS = 129;
     const orphans: string[] = [];
 
     for (const [file, source] of Object.entries(TSX)) {

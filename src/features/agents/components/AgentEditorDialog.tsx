@@ -406,8 +406,8 @@ export function AgentEditorDialog({ open, editAgent, onClose }: Props) {
 
             {/* Type — only Approval + Notification enabled in v1 */}
             <div>
-              <label className={labelCls}>Type *</label>
-              <div className="grid grid-cols-3 gap-2">
+              <span className={labelCls}>Type *</span>
+              <div role="group" aria-label="Type" className="grid grid-cols-3 gap-2">
                 {typeOptions.map((opt) => {
                   const isActive = form.agentType === opt.value;
                   const disabled = !opt.available || (isEdit && opt.value !== editAgent?.agentType);

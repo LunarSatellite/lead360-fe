@@ -217,8 +217,8 @@ function B2BCreateForm({ onSave, onCancel, isSaving }: {
 
       {/* Channel */}
       <div>
-        <label className="block text-xs font-semibold text-text-muted mb-1.5">Channel</label>
-        <div className="flex gap-2">
+        <span className="block text-xs font-semibold text-text-muted mb-1.5">Channel</span>
+        <div role="group" aria-label="Channel" className="flex gap-2">
           {([CrmCampaignChannelType.Email, CrmCampaignChannelType.WhatsApp, CrmCampaignChannelType.SMS] as CrmCampaignChannelType[]).map((ch) => {
             const Icon = CHANNEL_ICONS[ch] ?? ChannelIconFallback;
             const active = form.channelType === ch;

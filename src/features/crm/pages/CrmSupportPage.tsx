@@ -19,7 +19,7 @@ import {
   CRM_SUPPORT_PRIORITY_LABELS, CRM_SUPPORT_PRIORITY_COLORS,
 } from '../types/crm.types';
 import { format, parseISO, differenceInMinutes } from 'date-fns';
-import { Button } from '@/shared/ui/primitives';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -392,7 +392,8 @@ export function Component() {
   const [showSla, setShowSla] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { data: raw, isLoading } = useSupportCases(filter);
+  const supportCasesQuery = useSupportCases(filter);
+  const { data: raw } = supportCasesQuery;
   const data = raw;
   const items: CrmSupportCaseSummaryDto[] = (raw as any)?.items ?? [];
 
@@ -445,14 +446,13 @@ export function Component() {
         </form>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-              <LifeBuoy className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No support cases found</p>
-            </div>
-          ) : (
+          <ListState
+            query={supportCasesQuery}
+            isEmpty={!items.length}
+            noun="support cases"
+            icon={LifeBuoy}
+            emptyTitle="No support cases found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -476,7 +476,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {totalPages > 1 && (

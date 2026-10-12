@@ -12,7 +12,7 @@ import type {
 } from '../types/crm.types';
 import { CrmProposalStatus, CRM_PROPOSAL_STATUS_LABELS, CRM_PROPOSAL_STATUS_COLORS, PROPOSAL_SECTION_KINDS, ApprovalEntityType } from '../types/crm.types';
 import { ApprovalPanel } from '../components/ApprovalPanel';
-import { Button } from '@/shared/ui/primitives';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -176,7 +176,8 @@ export function Component() {
     }
   }, []);
 
-  const { data: raw, isLoading } = useProposals(filter);
+  const proposalsQuery = useProposals(filter);
+  const { data: raw } = proposalsQuery;
   const items: CrmProposalSummaryDto[] = (raw as any)?.items ?? [];
 
   const { data: detail, isLoading: detailLoading } = useProposalById(selectedId ?? undefined);
@@ -280,14 +281,13 @@ export function Component() {
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-        ) : !items.length ? (
-          <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-            <ClipboardList className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No proposals found</p>
-          </div>
-        ) : (
+        <ListState
+          query={proposalsQuery}
+          isEmpty={!items.length}
+          noun="proposals"
+          icon={ClipboardList}
+          emptyTitle="No proposals found"
+        >
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
@@ -310,7 +310,7 @@ export function Component() {
               ))}
             </tbody>
           </table>
-        )}
+        </ListState>
       </div>
 
       {/* Detail SlideOver */}

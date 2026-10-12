@@ -55,12 +55,13 @@ function blindReadsIn(source: string): string[] {
 }
 
 /**
- * 180 when `ListState` was introduced; 162 after the fourteen uniform
- * CRM lists and the custom-fields page moved onto it. Lower this
- * number; never raise it. (Counted over `src/features`, which is why it
- * differs by one from a count taken over all of `src`.)
+ * 180 when `ListState` was introduced; 156 now. The fourteen uniform
+ * CRM lists went first, then the custom-fields page, then six more the
+ * same codemod found once its file whitelist came off -- the shape ran
+ * well past the pages it was written for. Lower this number; never
+ * raise it. (Counted over `src/features`.)
  */
-const BUDGET_BLIND_READS = 162;
+const BUDGET_BLIND_READS = 156;
 
 /**
  * The larger and quieter half.

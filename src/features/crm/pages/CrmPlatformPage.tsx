@@ -573,7 +573,7 @@ export function Component() {
           <Icon className="w-6 h-6 text-brand" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-text-primary">Platform configuration</h1>
+          <h1 className="text-xl font-bold text-text-primary">CRM platform</h1>
           <p className="text-sm text-text-muted">
             Validation rules, formula fields and rollup summaries for your records.
           </p>

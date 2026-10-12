@@ -264,7 +264,7 @@ export function Component() {
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Returns / RMA</h2>
+            <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Return authorizations</h2>
             <p className="text-xs text-text-muted mt-0.5">Manage return requests, inspections, and resolutions</p>
           </div>
         </div>

@@ -53,7 +53,7 @@ const BUDGET_PAGES_WITH_NO_HEADING = 9;
  * (`/dashboard/crm/organizations` was listed as "Organisations"), so
  * those were brought into line separately.
  */
-const BUDGET_NAME_DISAGREEMENTS = 36;
+const BUDGET_NAME_DISAGREEMENTS = 29;
 const HOUSE_SIZE = '20px';
 
 test('the page heading is converging on one size', async ({ page }) => {

@@ -63,7 +63,7 @@ export function PlatformConfigPage() {
           </p>
           <h1 className="mt-2 flex items-center gap-2 text-2xl font-black tracking-tight text-text-primary">
             <Settings2 className="h-5 w-5 text-brand" strokeWidth={1.6} />
-            Platform configuration
+            Commerce platform
           </h1>
           <p className="mt-1 text-sm text-text-muted">
             Runtime settings the commerce platform reads. Each value is JSON, and a save applies

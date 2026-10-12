@@ -38,7 +38,7 @@ function DecisionLedgerPage() {
     <div className="flex flex-col gap-4 p-4">
       <SurfaceHeader
         icon={<BookOpen size={20} strokeWidth={1.6} className="text-brand" />}
-        title="Decision memory ledger"
+        title="Decision ledger"
         blurb="What was decided, what else was on the table, when the work was meant to run, and what was measured afterwards. The last three are things only a person can record — where nobody has, the ledger says so."
         actions={
           <>

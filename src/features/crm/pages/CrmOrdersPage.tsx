@@ -284,7 +284,7 @@ export function Component() {
     <>
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
-          <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Orders</h2>
+          <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Sales orders</h2>
           <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Order
           </Button>

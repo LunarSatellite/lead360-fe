@@ -46,7 +46,7 @@ export function Component() {
           <Bell className="w-6 h-6 text-brand" />
         </div>
         <div>
-          <h1 className="text-xl font-bold text-text-primary">Notification preferences</h1>
+          <h1 className="text-xl font-bold text-text-primary">Notification settings</h1>
           <p className="text-sm text-text-muted">Choose how and how often you're notified for each event.</p>
         </div>
       </div>

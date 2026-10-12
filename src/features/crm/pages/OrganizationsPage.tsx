@@ -172,17 +172,27 @@ function OrgDetailPanel({
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const { data: raw, isLoading } = useOrganizationById(orgId);
+  const orgQuery = useOrganizationById(orgId);
+  const raw = orgQuery.data;
   const org = raw;
 
   const updateOrg = useUpdateOrganization();
   const deleteOrg = useDeleteOrganization();
 
-  if (isLoading) {
+  if (orgQuery.isPending) {
     return (
       <div className="flex items-center justify-center h-48 text-text-muted">
         <Loader2 className="w-5 h-5 animate-spin" />
       </div>
+    );
+  }
+  // See AccountsPage: "Not found" is a claim about the record, and a
+  // failed request is not evidence for it.
+  if (orgQuery.isError) {
+    return (
+      <p className="text-sm text-text-secondary">
+        Could not load this organization. That is not the same as it not existing.
+      </p>
     );
   }
   if (!org) return <p className="text-sm text-text-muted">Not found.</p>;

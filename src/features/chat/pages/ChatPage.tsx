@@ -1067,6 +1067,7 @@ function SourcePreview({ source, onBack }: { source: SourceItem; onBack: () => v
       {/* Back header */}
       <div className="px-3 py-2.5 flex items-center gap-2 border-b border-thin border-border-subtle">
         <button
+          aria-label="Back"
           type="button"
           onClick={onBack}
           className="w-6 h-6 flex items-center justify-center rounded-xs hover:bg-glass-2 transition-colors text-text-muted hover:text-text-primary shrink-0"

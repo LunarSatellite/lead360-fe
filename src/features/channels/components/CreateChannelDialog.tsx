@@ -108,8 +108,8 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           {/* Channel type */}
           <div>
-            <label className={labelClass}>Channel type</label>
-            <div className="grid grid-cols-4 gap-2">
+            <span className={labelClass}>Channel type</span>
+            <div role="group" aria-label="Channel type" className="grid grid-cols-4 gap-2">
               {CHANNEL_OPTIONS.map((opt) => {
                 const isSelected = watchedType === opt.value;
                 const colorMap: Record<string, string> = {

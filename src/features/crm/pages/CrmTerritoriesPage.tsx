@@ -359,6 +359,7 @@ function MembersPanel({ territory }: { territory: SalesTerritoryDto }) {
             ))}
           </select>
           <button
+            aria-label="Add the selected person to this territory"
             onClick={handleAdd}
             disabled={!selectedUserId || addMember.isPending}
             className="p-2 rounded-lg bg-brand text-text-inverted hover:brightness-110 disabled:opacity-50"
@@ -382,7 +383,7 @@ function MemberRow({ member, onRemove }: { member: SalesTerritoryMemberDto; onRe
         <div className="text-xs font-semibold text-text-primary truncate">{member.userName}</div>
         {member.userEmail && <div className="text-xs text-text-muted truncate">{member.userEmail}</div>}
       </div>
-      <button onClick={onRemove} className="p-1 rounded text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all flex-shrink-0">
+      <button aria-label="Remove from this territory" onClick={onRemove} className="p-1 rounded text-text-muted hover:text-danger-light hover:bg-danger-soft transition-all flex-shrink-0">
         <UserMinus className="w-3.5 h-3.5" />
       </button>
     </div>

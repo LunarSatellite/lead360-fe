@@ -61,7 +61,7 @@ function blindReadsIn(source: string): string[] {
  * well past the pages it was written for. Lower this number; never
  * raise it. (Counted over `src/features`.)
  */
-const BUDGET_BLIND_READS = 156;
+const BUDGET_BLIND_READS = 153;
 
 /**
  * The larger and quieter half.
@@ -77,7 +77,7 @@ const BUDGET_BLIND_READS = 156;
  * the two have different fixes; merging them would let one get worse
  * while the other improved and still show a falling total.
  */
-const BUDGET_READS_WITH_NO_STATE = 162;
+const BUDGET_READS_WITH_NO_STATE = 158;
 
 describe('a failed list is not an empty list', () => {
   it('is reading the pages at all', () => {

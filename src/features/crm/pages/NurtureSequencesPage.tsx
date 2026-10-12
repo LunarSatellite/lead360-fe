@@ -426,10 +426,10 @@ function SequenceModal({
 
           {/* Sequence Type */}
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1">
+            <span className="block text-sm font-medium text-text-secondary mb-1">
               Sequence Type
-            </label>
-            <div className="grid grid-cols-2 gap-2">
+            </span>
+            <div role="group" aria-label="Sequence type" className="grid grid-cols-2 gap-2">
               {(Object.entries(NURTURE_SEQUENCE_TYPE_LABELS) as [string, string][]).map(([val, label]) => {
                 const numVal = Number(val) as NurtureSequenceType;
                 const isSelected = form.sequenceType === numVal;
@@ -471,8 +471,8 @@ function SequenceModal({
 
           {/* Trigger Type */}
           <div>
-            <label className="block text-sm font-medium text-text-secondary mb-1.5">Trigger</label>
-            <div className="grid grid-cols-2 gap-2">
+            <span className="block text-sm font-medium text-text-secondary mb-1.5">Trigger</span>
+            <div role="group" aria-label="Trigger" className="grid grid-cols-2 gap-2">
               {([
                 [NurtureTriggerType.StageEntered, 'Stage Entered', 'Lead reaches a specific stage'],
                 [NurtureTriggerType.ScoreDropped, 'Score Dropped', 'Score falls to or below threshold'],

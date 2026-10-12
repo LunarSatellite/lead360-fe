@@ -141,7 +141,7 @@ describe('defects that must not come back', () => {
      *
      * Lower it when you fix some. It may not go up.
      */
-    const BUDGET_ORPHAN_LABELS = 134;
+    const BUDGET_ORPHAN_LABELS = 103;
     const orphans: string[] = [];
 
     for (const [file, source] of Object.entries(TSX)) {
@@ -153,9 +153,22 @@ describe('defects that must not come back', () => {
         if (close === -1) continue;
 
         const body = source.slice(at, close);
-        if (!/<(input|select|textarea|Input|SearchInput)\b/.test(body)) {
-          orphans.push(`${file.replace('/src/', '')}: ${body.replace(/\s+/g, ' ').slice(0, 70)}…`);
-        }
+        if (/<(input|select|textarea|Input|SearchInput)\b/.test(body)) continue;
+
+        /**
+         * A label whose control arrives as `children` is correct, and
+         * this check could not see it.
+         *
+         * `<label className="block"><span>{label}</span>{children}</label>`
+         * is the field wrapper twenty-five files here use, and the
+         * control is nested inside it at every call site. Counting
+         * those inflated this budget by a fifth, and anyone driving
+         * the number to zero would have "fixed" working code into
+         * something worse.
+         */
+        if (/\{\s*(children|render|control|field|element)\b/.test(body)) continue;
+
+        orphans.push(`${file.replace('/src/', '')}: ${body.replace(/\s+/g, ' ').slice(0, 70)}…`);
       }
     }
 
@@ -200,7 +213,7 @@ describe('defects that must not come back', () => {
      * no binding, an index, a loop variable. Those need someone to decide
      * what the control is for.
      */
-    const BUDGET_UNNAMED_CONTROLS = 58;
+    const BUDGET_UNNAMED_CONTROLS = 52;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 
@@ -229,6 +242,21 @@ describe('defects that must not come back', () => {
 
         const id = /\bid="([^"]+)"/.exec(tag) ?? /\bid=\{([^}]+)\}/.exec(tag);
         if (id && pointedAt.has(id[1])) continue;
+
+        /**
+         * A control handed to a wrapper that takes a `label` is named
+         * by it, and this scan cannot see that.
+         *
+         * Several files define a local `Field` as
+         * `<label><span>{label}</span>{children}</label>`. The control
+         * really is nested inside a label at runtime; the label and the
+         * control simply sit at different places in the source, so
+         * comparing positions says otherwise. Same blind spot as the
+         * orphan-label count above, and found the same way — by opening
+         * one of the files the number was pointing at.
+         */
+        const enclosing = source.slice(Math.max(0, at - 500), at);
+        if (/<[A-Z]\w*[^<>]{0,300}\blabel=/.test(enclosing)) continue;
 
         unnamed += 1;
       }
@@ -259,8 +287,14 @@ describe('defects that must not come back', () => {
      * next and previous in this codebase, and putting a wrong name in front
      * of someone who cannot see the screen is worse than the nothing they
      * get now. They are in the budget until a person decides.
+     *
+     * Seven that were not chevrons -- a back arrow, a refresh, add and
+     * remove person, a run button -- were named later, from what their
+     * handler does rather than from the glyph: `onRun` on a workflow row
+     * is "Run this workflow now", which the icon alone does not say.
+     * Of the twenty left, eighteen are chevrons.
      */
-    const BUDGET_UNNAMED_ICON_BUTTONS = 27;
+    const BUDGET_UNNAMED_ICON_BUTTONS = 20;
     const ONLY_ICON = /^\s*<[A-Z]\w*\b[^<>]*\/>\s*$/;
     let unnamed = 0;
 

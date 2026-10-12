@@ -37,23 +37,52 @@ export function Component() {
   const p = (profile ?? null) as { firstName?: string } | null;
   const firstName = p?.firstName || 'there';
 
-  const { data: leadStatsRaw } = useLeadStats();
-  const leadStats = leadStatsRaw as unknown as LeadStatsDto | undefined;
-  const { data: dealStatsRaw } = useDealStatsAnalytics();
-  const dealStats = dealStatsRaw as unknown as DealStatsDto | undefined;
-  const { data: recentRaw } = useLeads({ pageSize: 5 });
-  const recent = (recentRaw as unknown as { items?: LeadSummaryDto[] } | undefined)?.items ?? [];
+  const leadStatsQuery = useLeadStats();
+  const leadStats = leadStatsQuery.data as unknown as LeadStatsDto | undefined;
+  const dealStatsQuery = useDealStatsAnalytics();
+  const dealStats = dealStatsQuery.data as unknown as DealStatsDto | undefined;
+  const recentQuery = useLeads({ pageSize: 5 });
+  const recent =
+    (recentQuery.data as unknown as { items?: LeadSummaryDto[] } | undefined)?.items ?? [];
   const { data: channelsRaw } = useChannels();
   const channels = (channelsRaw as unknown as ChannelConnectionDto[]) ?? [];
   const isLive = channels.some((c) => c.status === ChannelConnectionStatus.Active);
 
-  const { data: sessionsRaw } = useActiveSessions();
-  const recentConversations = ((sessionsRaw as unknown as SessionDto[]) ?? [])
+  const sessionsQuery = useActiveSessions();
+  const recentConversations = ((sessionsQuery.data as unknown as SessionDto[]) ?? [])
     .slice()
     .sort((a, b) => new Date(b.lastActivityAt).getTime() - new Date(a.lastActivityAt).getTime())
     .slice(0, 5);
 
-  const num = (n?: number) => (n ?? 0).toLocaleString();
+  /**
+   * A figure, or a dash if we never got one.
+   *
+   * This page is the first thing an operator sees after signing in,
+   * and every number on it used to be `?? 0`. With the API
+   * unreachable it greeted them with 0 leads, 0 hot leads, 0 open
+   * deals and 0% conversion -- a confident report that their pipeline
+   * is empty, delivered before they have clicked anything. A dash is
+   * not informative, but it is not a lie.
+   *
+   * It shows a number only when there is one. The first version of
+   * this checked `isError` and `isPending` and still printed 0 for a
+   * paused query -- React Query reports those as pending and not
+   * failed, so the cards read "0 leads" again. Caught by looking at
+   * the page rather than by reading the helper.
+   */
+  const stat = (query: { isError: boolean }, n?: number) =>
+    query.isError || n === undefined ? '—' : n.toLocaleString();
+
+  /**
+   * Has this query actually answered?
+   *
+   * `isPending` alone is not enough and `isError` alone is not
+   * either: React Query reports a paused query -- one it has given up
+   * reaching for now -- as pending and not failed. A list keyed off
+   * `isError` shows "none yet" for it, which is the whole bug.
+   */
+  const answered = (query: { isPending: boolean; isError: boolean }) =>
+    !query.isPending && !query.isError;
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -83,10 +112,18 @@ export function Component() {
 
       {/* ─── Stat cards (live CRM data) ─── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <StatCard icon={Users} label="Total leads" value={num(leadStats?.total)} />
-        <StatCard icon={Flame} label="Hot leads" value={num(leadStats?.hotCount)} />
-        <StatCard icon={Briefcase} label="Open deals" value={num(dealStats?.openCount)} />
-        <StatCard icon={TrendingUp} label="Conversion" value={`${(leadStats?.conversionRate ?? 0).toFixed(0)}%`} />
+        <StatCard icon={Users} label="Total leads" value={stat(leadStatsQuery, leadStats?.total)} />
+        <StatCard icon={Flame} label="Hot leads" value={stat(leadStatsQuery, leadStats?.hotCount)} />
+        <StatCard icon={Briefcase} label="Open deals" value={stat(dealStatsQuery, dealStats?.openCount)} />
+        <StatCard
+          icon={TrendingUp}
+          label="Conversion"
+          value={
+            leadStatsQuery.isError || leadStats?.conversionRate === undefined
+              ? '—'
+              : `${leadStats.conversionRate.toFixed(0)}%`
+          }
+        />
       </div>
 
       {/* ─── Two-column content ─── */}
@@ -96,7 +133,11 @@ export function Component() {
             <h2 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-3">
               Recent leads
             </h2>
-            {recent.length === 0 ? (
+            {!answered(recentQuery) ? (
+              <p className="text-xs text-text-secondary text-center py-6">
+                Could not load your recent leads. This does not mean there are none.
+              </p>
+            ) : recent.length === 0 ? (
               <p className="text-xs text-text-muted text-center py-6">
                 No leads yet — they'll appear here as they come in.
               </p>
@@ -125,7 +166,11 @@ export function Component() {
             <h2 className="text-[10px] font-bold text-text-muted uppercase tracking-[1.5px] mb-3">
               Recent conversations
             </h2>
-            {recentConversations.length === 0 ? (
+            {!answered(sessionsQuery) ? (
+              <p className="text-xs text-text-secondary text-center py-6">
+                Could not load your conversations. This does not mean there are none.
+              </p>
+            ) : recentConversations.length === 0 ? (
               <p className="text-xs text-text-muted text-center py-6">
                 No conversations yet — they'll appear here as customers message your bot.
               </p>

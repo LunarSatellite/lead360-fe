@@ -31,6 +31,7 @@ export const ROUTES = {
     returns: '/dashboard/stylemint/returns',
     counterHandover: '/dashboard/stylemint/counter-handover',
     payouts: '/dashboard/stylemint/payouts',
+    creditRisk: '/dashboard/stylemint/credit',
     privacyRequests: '/dashboard/stylemint/privacy',
     recipes: '/dashboard/stylemint/recipes',
     logistics: '/dashboard/stylemint/logistics',

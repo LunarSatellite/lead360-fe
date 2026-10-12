@@ -61,9 +61,11 @@ function backendRoutes() {
       const head = source.slice(i > 0 ? marks[i - 1] : 0, start);
       const body = source.slice(start, end);
       const base = head.match(/\bRoute\("([^"]*)"\)/);
-      if (!base) return;
       for (const m of body.matchAll(/\bHttp(Get|Post|Put|Patch|Delete)(?:\("([^"]*)"\))?/g)) {
-        routes.add(`${m[1].toUpperCase()} ${canon(base[1] + (m[2] ? `/${m[2]}` : ''))}`);
+        // No class [Route]: only an action that spells out its whole route is reachable.
+        if (!base && !/^(v\{version|api\/)/.test(m[2] ?? '')) continue;
+        const template = base ? base[1] + (m[2] ? `/${m[2]}` : '') : m[2];
+        routes.add(`${m[1].toUpperCase()} ${canon(template)}`);
       }
     });
   }
@@ -83,16 +85,49 @@ function frontendCalls() {
       path = path.replace(/\$\{[^}]*\}/g, '{*}').split('?')[0];
       calls.push({ verb: m[1].toUpperCase(), path: canon(path), file: basename(file), unresolved });
     }
+    // The operator pass-through: `stylemintOperationsApi.invoke({ method: 'GET', path: ... })`
+    // forwards `path` to the commerce surface as-is, so a wrong path there is the same silent
+    // 404 one level further down. Only literal methods and paths are checked; the operations
+    // console builds its paths at runtime and is out of reach by design.
+    for (const m of source.matchAll(/stylemintOperationsApi\.invoke\(\{([\s\S]*?)\}\)/g)) {
+      const method = m[1].match(/method:\s*'([A-Z]+)'/);
+      const literal = m[1].match(/path:\s*((?:`[^`]*`|'[^']*')(?:\s*\+\s*(?:`[^`]*`|'[^']*'))*)/);
+      if (!method || !literal) continue;
+      let path = [...literal[1].matchAll(/`([^`]*)`|'([^']*)'/g)].map((p) => p[1] ?? p[2]).join('');
+      for (const [, name, value] of consts) path = path.split('${' + name + '}').join(value);
+      path = path.replace(/\$\{[^}]*\}/g, '{*}').split('?')[0];
+      calls.push({ verb: method[1], path: canon(path), file: basename(file), unresolved: false });
+    }
   }
   return calls;
 }
 
 const routes = backendRoutes();
 const calls = frontendCalls();
+
+/** Routes by verb and segment count, for matching a call whose segments may be wildcards. */
+const routeIndex = new Map();
+for (const route of routes) {
+  const [verb, path] = route.split(' ');
+  const segments = path.split('/');
+  const key = `${verb} ${segments.length}`;
+  if (!routeIndex.has(key)) routeIndex.set(key, []);
+  routeIndex.get(key).push(segments);
+}
+
+function served(verb, path) {
+  if (routes.has(`${verb} ${path}`)) return true;
+  const segments = path.split('/');
+  return (routeIndex.get(`${verb} ${segments.length}`) ?? []).some((route) =>
+    route.every((part, i) => part === segments[i] || part === '{*}' || segments[i] === '{*}'),
+  );
+}
+
 const missing = new Map();
 for (const c of calls) {
   const key = `${c.verb} ${c.path}`;
-  if (routes.has(key)) continue;
+  // A leading wildcard is an unresolved base constant: never let it match everything.
+  if (!c.path.startsWith('{*}') && served(c.verb, c.path)) continue;
   // A path that still holds a wildcard where a CONSTANT should be is this script's blind
   // spot, not a defect: report it separately rather than as a broken call.
   const blind = c.path.startsWith('{*}');

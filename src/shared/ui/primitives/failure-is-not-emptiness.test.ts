@@ -61,7 +61,7 @@ function blindReadsIn(source: string): string[] {
  * well past the pages it was written for. Lower this number; never
  * raise it. (Counted over `src/features`.)
  */
-const BUDGET_BLIND_READS = 155;
+const BUDGET_BLIND_READS = 153;
 
 /**
  * The larger and quieter half.

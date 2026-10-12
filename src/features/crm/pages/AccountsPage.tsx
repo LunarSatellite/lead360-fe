@@ -351,17 +351,27 @@ function AccountDetailPanel({
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const { data: raw, isLoading } = useAccountById(accountId);
-  const account = raw;
+  const accountQuery = useAccountById(accountId);
+  const account = accountQuery.data;
 
   const updateAccount = useUpdateAccount();
   const deleteAccount = useDeleteAccount();
 
-  if (isLoading) {
+  if (accountQuery.isPending) {
     return (
       <div className="flex items-center justify-center h-48 text-text-muted">
         <Loader2 className="w-5 h-5 animate-spin" />
       </div>
+    );
+  }
+  // "Not found" is a statement about the record. When the request
+  // failed we do not know whether it exists, and a support agent
+  // told an account is missing may go and create a second one.
+  if (accountQuery.isError) {
+    return (
+      <p className="text-sm text-text-secondary">
+        Could not load this account. That is not the same as it not existing.
+      </p>
     );
   }
   if (!account) return <p className="text-sm text-text-muted">Not found.</p>;

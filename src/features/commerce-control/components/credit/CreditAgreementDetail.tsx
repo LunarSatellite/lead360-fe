@@ -24,6 +24,7 @@ import {
 } from '../../lib/credit-console';
 import { StateBadge } from './CreditBadges';
 import { CreditPlanRefunds } from './CreditPlanRefunds';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * One agreement, and the decision behind it.
@@ -265,14 +266,15 @@ function LateFeeLine({
             placeholder="Why it is waived"
             className="min-w-[12rem] flex-1 rounded-sm border-thin border-border-subtle bg-bg-input px-2 py-1 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow"
           />
-          <button
-            type="button"
-            disabled={!reason.trim() || waive.isPending}
+          <Button
+            variant="primary"
+            size="sm"
+            disabled={!reason.trim()}
+            loading={waive.isPending}
             onClick={() => waive.mutate()}
-            className="rounded-sm bg-brand px-2.5 py-1 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-50"
           >
             Waive {npr(instalment.lateFeeDue)}
-          </button>
+          </Button>
           {waive.isError && <ErrorLine message={(waive.error as Error).message} />}
         </div>
       )}
@@ -321,14 +323,15 @@ function ReviewActions({ agreement, onDecided }: { agreement: CreditAgreement; o
       </div>
       {decide.isError && <ErrorLine message={(decide.error as Error).message} />}
       <div className="mt-3 flex gap-2">
-        <button
-          type="button"
-          disabled={decide.isPending}
+        <Button
+          variant="primary"
+          size="sm"
+          icon={CheckCircle2}
+          loading={decide.isPending}
           onClick={() => decide.mutate(true)}
-          className="flex items-center gap-1.5 rounded-sm bg-brand px-3 py-1.5 text-xs font-bold text-bg hover:bg-brand-light disabled:opacity-50"
         >
-          <CheckCircle2 className="h-3.5 w-3.5" strokeWidth={1.6} /> Approve
-        </button>
+          Approve
+        </Button>
         <button
           type="button"
           disabled={decide.isPending || reasons.length === 0}

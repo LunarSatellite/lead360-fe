@@ -164,7 +164,7 @@ function Select({
       <select
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs text-text-primary outline-none focus:border-border-glow"
+        className="rounded-card border-thin border-border-subtle bg-bg-elevated px-2 py-1.5 text-xs font-normal text-text-primary outline-none focus:border-border-glow"
       >
         <option value={0}>Any</option>
         {options.map((option) => (

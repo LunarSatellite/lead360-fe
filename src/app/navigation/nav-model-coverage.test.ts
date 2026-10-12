@@ -73,8 +73,8 @@ describe('unified navigation model', () => {
     // pages were listed twice under two names (see navAliases), and four were
     // in a mobile sheet only. Plus the seven that had a page and no entry
     // anywhere, found by the unreachable-route check below. A drop here means
-    // a page lost its only way in.
-    expect(allNavItems).toHaveLength(131);
+    // a page lost its only way in. 132 since Payment plans (the credit console).
+    expect(allNavItems).toHaveLength(132);
   });
 
   it('lists each page once, under one name', () => {

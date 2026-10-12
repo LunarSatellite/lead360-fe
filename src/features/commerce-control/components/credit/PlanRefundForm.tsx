@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Loader2 } from 'lucide-react';
+
 import { useDebounce } from '@/shared/hooks/useDebounce';
 import { stylemintCreditApi } from '../../api/stylemint-credit.api';
 import { npr } from '../../lib/credit-console';
 import { ErrorLine } from './CreditAgreementDetail';
+import { Button } from '@/shared/ui/primitives';
 
 /**
  * Refunding part of a plan order's price while the buyer keeps the item — the order refund screen,
@@ -63,7 +64,12 @@ export function PlanRefundForm({
   };
 
   const ready =
-    withinMost && reason.trim().length > 0 && confirmed && !!quote.data && quote.data.amount === value && !refund.isPending;
+    withinMost &&
+    reason.trim().length > 0 &&
+    confirmed &&
+    !!quote.data &&
+    quote.data.amount === value &&
+    !refund.isPending;
 
   return (
     <form
@@ -74,15 +80,16 @@ export function PlanRefundForm({
       className="mt-4 space-y-3"
     >
       <p className="text-xs leading-5 text-text-muted">
-        A payment plan pays for this order. A refund here comes off what the buyer still owes first; only the rest goes
-        back to them. The seller bears all of it.
+        A payment plan pays for this order. A refund here comes off what the buyer still owes first; only the
+        rest goes back to them. The seller bears all of it.
       </p>
 
       {most.isLoading && <p className="text-xs text-text-muted">Checking the plan…</p>}
       {most.isError && <ErrorLine message={(most.error as Error).message} />}
       {most.data && (
         <p className="text-xs text-text-secondary">
-          Order {orderNumber} · up to <strong className="text-text-primary">{npr(maximum)}</strong> can be refunded
+          Order {orderNumber} · up to <strong className="text-text-primary">{npr(maximum)}</strong> can be
+          refunded
           {most.data.priceReduced > 0 ? ` (${npr(most.data.priceReduced)} already refunded)` : ''}.
         </p>
       )}
@@ -98,7 +105,7 @@ export function PlanRefundForm({
               step="0.01"
               value={amount}
               onChange={(event) => change(() => setAmount(event.target.value))}
-              className="mt-1 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary focus:border-border-glow focus:bg-glass-1"
+              className="mt-1 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-sm font-normal text-text-primary focus:border-border-glow focus:bg-glass-1"
             />
           </label>
           {entered && value > maximum && (
@@ -112,7 +119,7 @@ export function PlanRefundForm({
               maxLength={500}
               onChange={(event) => change(() => setReason(event.target.value))}
               placeholder="Arrived scratched — ticket #"
-              className="mt-1 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1"
+              className="mt-1 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-sm font-normal text-text-primary placeholder:text-text-muted focus:border-border-glow focus:bg-glass-1"
             />
           </label>
         </>
@@ -120,7 +127,10 @@ export function PlanRefundForm({
 
       {quote.isError && <ErrorLine message={(quote.error as Error).message} />}
       {quote.data && quote.data.amount === value && (
-        <dl className="space-y-1 rounded-card border-thin border-border-subtle bg-glass-1 p-3 text-xs" aria-label="What this refund does">
+        <dl
+          className="space-y-1 rounded-card border-thin border-border-subtle bg-glass-1 p-3 text-xs"
+          aria-label="What this refund does"
+        >
           <Row label="Off what the buyer still owes" value={npr(quote.data.credited)} />
           <Row
             label={`Back to the buyer${quote.data.payments.length > 1 ? `, across ${quote.data.payments.length} payments` : ''}`}
@@ -139,20 +149,23 @@ export function PlanRefundForm({
             className="mt-0.5"
           />
           <span>
-            Refund <strong>{npr(value)}</strong> on order <strong>{orderNumber}</strong>. Money goes back to the buyer and
-            is taken from the seller; this cannot be undone.
+            Refund <strong>{npr(value)}</strong> on order <strong>{orderNumber}</strong>. Money goes back to
+            the buyer and is taken from the seller; this cannot be undone.
           </span>
         </label>
       )}
 
       {refund.isError && <ErrorLine message={(refund.error as Error).message} />}
-      <button
+      <Button
         type="submit"
+        variant="primary"
+        size="lg"
+        className="w-full"
         disabled={!ready}
-        className="flex w-full items-center justify-center gap-2 rounded-sm bg-brand py-2.5 text-sm font-extrabold text-bg hover:bg-brand-light disabled:opacity-40"
+        loading={refund.isPending}
       >
-        {refund.isPending && <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.6} />} Refund part of the price
-      </button>
+        Refund part of the price
+      </Button>
     </form>
   );
 }

@@ -334,7 +334,7 @@ export function ContentOperationsPage() {
           <div>
             <h2 className="text-base font-extrabold text-text-primary">Reels Stylemint & diffusion</h2>
             <p className="mt-0.5 text-xs text-text-muted">
-              Publiez dans Mall/Discovery, ajustez les legendes et programmez la diffusion sociale.
+              Publish to Mall/Discovery, adjust the captions and schedule the social rollout.
             </p>
           </div>
           <div className="rounded-lg bg-brand-soft px-3 py-2 text-[10px] font-extrabold uppercase text-brand">
@@ -487,7 +487,7 @@ function ManagedReelCard({
               onClick={() => onAction('caption')}
               variant="secondary"
             >
-              Legende
+              Caption
             </Button>
             <Button
               disabled={busy}
@@ -561,23 +561,23 @@ function SchedulePublishDialog({
           </button>
         </div>
         <label className="mt-5 block text-[10px] font-bold uppercase text-text-muted">
-          Date et heure Kinshasa
+          Kinshasa date and time
           <input
             required
             type="datetime-local"
             value={when}
             onChange={(event) => setWhen(event.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary"
+            className="mt-1.5 w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary font-normal"
           />
         </label>
         <label className="mt-3 block text-[10px] font-bold uppercase text-text-muted">
-          Legende
+          Caption
           <textarea
             required
             rows={4}
             value={caption}
             onChange={(event) => setCaption(event.target.value)}
-            className="mt-1.5 w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary"
+            className="mt-1.5 w-full rounded-xl border border-border-subtle bg-bg-elevated px-3 py-2.5 text-sm text-text-primary font-normal"
           />
         </label>
         <div className="mt-3 grid grid-cols-2 gap-2">
@@ -600,7 +600,7 @@ function SchedulePublishDialog({
           disabled={busy || !when || !caption.trim() || platforms.length === 0}
           variant="primary" size="lg" block className="mt-5"
         >
-          {busy && <Loader2 className="h-4 w-4 animate-spin" />}Programmer la diffusion
+          {busy && <Loader2 className="h-4 w-4 animate-spin" />}Schedule rollout
         </Button>
       </form>
     </div>

@@ -222,7 +222,7 @@ export function VendorOperationsPage() {
           const approve = action === 'approve';
           const resolutionKind = approve
             ? Number(
-                window.prompt('Resolution: 1 reparation, 2 remplacement, 3 remboursement, 4 conseil') || '0',
+                window.prompt('Resolution: 1 repair, 2 replacement, 3 refund, 4 advice') || '0',
               )
             : undefined;
           if (approve && ![1, 2, 3, 4].includes(resolutionKind!))
@@ -349,7 +349,7 @@ export function VendorOperationsPage() {
         return stylemintCommerceApi.applyPricingSuggestion(id);
       if (selectedKey === 'pricing/flash-sales')
         return stylemintCommerceApi.flashSaleIncrementality(id).then((result) => {
-          setActionMessage(`Analyse: ${JSON.stringify(result).slice(0, 280)}`);
+          setActionMessage(`Analyze: ${JSON.stringify(result).slice(0, 280)}`);
           return result;
         });
       if (selectedKey === 'store/sponsored') {
@@ -638,8 +638,8 @@ export function VendorOperationsPage() {
                     const name = window.prompt('Scenario name', 'Peak demand resilience')?.trim();
                     if (!name) return;
                     try {
-                      const result = await stylemintCommerceApi.runVendorScenario({ name, seed: Date.now() % 2147483647, customerAgents: Number(window.prompt('Customer agents', '500') || '500'), days: Number(window.prompt('Simulation days', '30') || '30'), demandShockPercent: Number(window.prompt('Demand shock %', '25') || '25'), inventoryLossPercent: Number(window.prompt('Inventory loss %', '10') || '10'), fulfillmentCapacityLossPercent: Number(window.prompt('Fulfilment capacity loss %', '15') || '15') });
-                      setInsightDialog({ title: 'Digital-twin scenario', subtitle: 'Simulated demand, stock and fulfilment resilience.', data: result });
+                      const result = await stylemintCommerceApi.runVendorScenario({ name, seed: Date.now() % 2147483647, customerAgents: Number(window.prompt('Customer agents', '500') || '500'), days: Number(window.prompt('Simulation days', '30') || '30'), demandShockPercent: Number(window.prompt('Demand shock %', '25') || '25'), inventoryLossPercent: Number(window.prompt('Inventory loss %', '10') || '10'), fulfillmentCapacityLossPercent: Number(window.prompt('Fulfillment capacity loss %', '15') || '15') });
+                      setInsightDialog({ title: 'Digital-twin scenario', subtitle: 'Simulated demand, stock and fulfillment resilience.', data: result });
                     } catch { setActionMessage('The scenario could not be completed. Check the simulation values.'); }
                   }}
                   variant="primary" size="sm"
@@ -706,7 +706,7 @@ export function VendorOperationsPage() {
                     className="flex items-center gap-1.5 rounded-lg border border-brand/30 px-3 py-2 text-[11px] font-extrabold text-brand"
                   >
                     <ShieldCheck className="h-3.5 w-3.5" />
-                    Publier les conditions
+                    Publish terms
                   </button>
                   <Button
                     onClick={() => setShowPartnershipForm((value) => !value)}
@@ -782,7 +782,7 @@ export function VendorOperationsPage() {
                 <Button
                   onClick={async () => {
                     const productId = window.prompt('Product ID');
-                    const salePrice = Number(window.prompt('Prix promotionnel CDF') || '0');
+                    const salePrice = Number(window.prompt('Promotional price CDF') || '0');
                     const start = window.prompt('Debut (AAAA-MM-JJTHH:mm)');
                     const end = window.prompt('Fin (AAAA-MM-JJTHH:mm)');
                     const maxUnits = Number(window.prompt('Nombre maximal d’unites', '100') || '0');
@@ -960,7 +960,7 @@ export function VendorOperationsPage() {
                   disabled={invitePartnership.isPending || !partnershipForm.creatorProfileId.trim()}
                   variant="primary"
                 >
-                  {invitePartnership.isPending ? 'Envoi…' : 'Envoyer l’invitation'}
+                  {invitePartnership.isPending ? 'Sending…' : 'Send invitation'}
                 </Button>
               </div>
             </form>
@@ -978,12 +978,12 @@ export function VendorOperationsPage() {
               <Field label="Variant IDs, comma separated" value={recipeForm.productVariantIds} onChange={(value) => setRecipeForm((form) => ({ ...form, productVariantIds: value }))} required />
               <Field label="Anchor for the ’product story" value={recipeForm.brandStoryAnchor} onChange={(value) => setRecipeForm((form) => ({ ...form, brandStoryAnchor: value }))} required />
               <Field label="Ambiance" value={recipeForm.moodLabel} onChange={(value) => setRecipeForm((form) => ({ ...form, moodLabel: value }))} required />
-              <Field label="Duree en secondes" value={recipeForm.durationSeconds} onChange={(value) => setRecipeForm((form) => ({ ...form, durationSeconds: value }))} type="number" required />
+              <Field label="Duration in seconds" value={recipeForm.durationSeconds} onChange={(value) => setRecipeForm((form) => ({ ...form, durationSeconds: value }))} type="number" required />
               <Field label="Music title" value={recipeForm.songTitle} onChange={(value) => setRecipeForm((form) => ({ ...form, songTitle: value }))} required />
-              <Field label="Artiste" value={recipeForm.artist} onChange={(value) => setRecipeForm((form) => ({ ...form, artist: value }))} required />
-              <Field label="Legende principale" value={recipeForm.caption} onChange={(value) => setRecipeForm((form) => ({ ...form, caption: value }))} required />
+              <Field label="Artist" value={recipeForm.artist} onChange={(value) => setRecipeForm((form) => ({ ...form, artist: value }))} required />
+              <Field label="Main caption" value={recipeForm.caption} onChange={(value) => setRecipeForm((form) => ({ ...form, caption: value }))} required />
               <div className="md:col-span-2 xl:col-span-3 rounded-xl border border-brand/20 bg-brand-soft px-4 py-3 text-xs leading-5 text-text-secondary">
-                Lead360 genere automatiquement trois scenes narratives, trois legendes, les adaptations Instagram, TikTok, YouTube Shorts et Facebook, ainsi que les signaux de raisonnement necessaires au verrouillage.
+                Lead360 generates three narrative scenes, three captions, the Instagram, TikTok, YouTube Shorts and Facebook adaptations, and the reasoning signals needed to lock the recipe.
               </div>
               <div className="md:col-span-2 xl:col-span-3 flex justify-end">
                 <Button
@@ -1016,7 +1016,7 @@ export function VendorOperationsPage() {
                 required
               />
               <Field
-                label="Ville"
+                label="City"
                 value={storeForm.city}
                 onChange={(value) => setStoreForm((form) => ({ ...form, city: value }))}
                 required
@@ -1133,7 +1133,7 @@ export function VendorOperationsPage() {
               />
               <label className="space-y-1.5">
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-text-muted">
-                  Role vendeur
+                  Vendor role
                 </span>
                 <select
                   value={teamForm.role}
@@ -1141,7 +1141,7 @@ export function VendorOperationsPage() {
                   className="w-full rounded-xl border border-border-subtle bg-bg-card px-3 py-2.5 text-sm text-text-primary outline-none"
                 >
                   <option value="3">Member</option>
-                  <option value="2">Administrateur</option>
+                  <option value="2">Administrator</option>
                 </select>
               </label>
               <Button
@@ -1260,8 +1260,8 @@ export function VendorOperationsPage() {
               <PackageOpen className="h-8 w-8 text-amber-400" />
               <p className="text-sm font-bold text-text-primary">Vendor connection unavailable</p>
               <p className="max-w-lg text-xs leading-5 text-text-muted">
-                Configurez le jeton operateur Stylemint dans Lead360. Ce module utilisera ensuite les donnees
-                reelles du vendeur.
+                Configure the Stylemint operator token in Lead360. This module will then show real
+                vendor data.
               </p>
             </div>
           ) : selectedKey === 'profile' ? (
@@ -1396,7 +1396,7 @@ export function VendorOperationsPage() {
             onClose={() => setCollaborationDialog(null)}
             onDone={async () => {
               const key = collaborationDialog === 'squad' ? 'squads' : 'retainers';
-              setActionMessage(collaborationDialog === 'squad' ? 'Escouade creee en CDF.' : 'Contrat mensuel propose.');
+              setActionMessage(collaborationDialog === 'squad' ? 'Squad created in CDF.' : 'Monthly contract proposed.');
               setCollaborationDialog(null);
               await queryClient.invalidateQueries({ queryKey: ['stylemint-vendor', key] });
             }}
@@ -1475,7 +1475,7 @@ function CollectionItemsDialog({
         <section className="mt-3 rounded-xl border border-border-subtle bg-bg-elevated p-4">
           <p className="text-xs font-extrabold text-text-primary">Reorder collection</p>
           <p className="mt-1 text-[11px] text-text-muted">
-            Entrez tous les identifiants produit dans l’ordre souhaite, separes par des virgules.
+            Enter every product id in the order you want, separated by commas.
           </p>
           <textarea aria-label="Ordered ids"
             rows={4}
@@ -1730,10 +1730,10 @@ const FIELD_LABELS: Record<string, string> = {
   role: 'Role',
   email: 'E-mail',
   displayName: 'Name',
-  subject: 'Sujet',
+  subject: 'Subject',
   message: 'Message',
-  orderNumber: 'Commande',
-  totalAmount: 'Montant',
+  orderNumber: 'Order',
+  totalAmount: 'Amount',
   currency: 'Currency',
   reason: 'Reason',
 };

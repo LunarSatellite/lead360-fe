@@ -28,7 +28,7 @@ import {
 } from '../types/crm.types';
 import { ROUTES } from '@/app/router/route-paths';
 import { formatDistanceToNow } from 'date-fns';
-import { Button } from '@/shared/ui/primitives';
+import { Button, ListState, ResultCount } from '@/shared/ui/primitives';
 
 const PAGE_SIZE = 20;
 
@@ -376,7 +376,8 @@ export function Component() {
 
   const dedupCount = usePendingDedupCount();
 
-  const { data: raw, isLoading } = useContacts(filter);
+  const contactsQuery = useContacts(filter);
+  const { data: raw } = contactsQuery;
   const data = raw;
 
   const createContact = useCreateContact();
@@ -472,7 +473,7 @@ export function Component() {
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Contacts</h2>
             <p className="text-xs text-text-muted mt-0.5">
-              {data ? `${data.totalCount.toLocaleString()} total` : 'Loading...'}
+              <ResultCount query={contactsQuery} total={data?.totalCount} />
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -567,16 +568,13 @@ export function Component() {
         </form>
 
         {/* Card grid */}
-        {isLoading ? (
-          <div className="flex items-center justify-center h-48 text-text-muted">
-            <Loader2 className="w-5 h-5 animate-spin" />
-          </div>
-        ) : !data?.items.length ? (
-          <div className="flex flex-col items-center justify-center h-48 gap-3 text-text-muted">
-            <UserCheck className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No contacts found</p>
-          </div>
-        ) : (
+        <ListState
+          query={contactsQuery}
+          isEmpty={!data?.items.length}
+          noun="contacts"
+          icon={UserCheck}
+          emptyTitle="No contacts found"
+        >
           <>
             <div className="flex items-center gap-3 -mb-1">
               <button
@@ -615,7 +613,7 @@ export function Component() {
               ))}
             </div>
           </>
-        )}
+        </ListState>
 
         {/* Bulk action bar */}
         {selected.size > 0 && (

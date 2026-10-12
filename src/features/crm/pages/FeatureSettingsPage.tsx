@@ -64,7 +64,7 @@ export function Component() {
         <div>
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="w-5 h-5 text-brand" strokeWidth={1.8} />
-            <h1 className="text-xl font-extrabold text-text-primary tracking-tight">Feature Settings</h1>
+            <h1 className="text-xl font-extrabold text-text-primary tracking-tight">CRM feature toggles</h1>
           </div>
           <p className="text-sm text-text-secondary mt-1">
             Turn capture channels and AI features on or off for your workspace. Changes take effect within a minute.

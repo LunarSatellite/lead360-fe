@@ -92,7 +92,7 @@ export function VendorCollaborationDialog({
           ) : (
             <>
               <Input aria-label="Creator account ID" label="Creator account ID" value={creatorAccountId} onChange={setCreatorAccountId} mono />
-              <Input aria-label="Amount" label="Montant mensuel" value={amount} onChange={setAmount} type="number" suffix="CDF" />
+              <Input aria-label="Amount" label="Monthly amount" value={amount} onChange={setAmount} type="number" suffix="CDF" />
               <Input aria-label="Deliverables" label="Deliverables per month" value={deliverables} onChange={setDeliverables} type="number" />
             </>
           )}

@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect, type ReactNode } from 'react';
 import { useTokenAutoRefresh } from '@/features/auth/hooks/useTokenAutoRefresh';
 import { Outlet, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { CounterpartNotice } from '@/app/navigation/CounterpartNotice';
+import { documentTitleFor } from './document-title';
 import {
   BadgeCheck,
   Banknote,
@@ -81,9 +83,9 @@ import { Button } from '@/shared/ui/primitives';
 // ═══════════════════════════════════════════════════════════════════════════
 export const primaryNav = [
   { label: 'Control center', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
-  { label: 'Products & catalogue', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
+  { label: 'Products & catalog', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
   { label: 'Content & media', href: ROUTES.dashboard.contentOperations, icon: Images },
-  { label: 'Orders & fulfilment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
+  { label: 'Orders & fulfillment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
   { label: 'Vendor operations', href: ROUTES.dashboard.vendorOperations, icon: Building2 },
   { label: 'Seller finance', href: ROUTES.dashboard.sellerFinance, icon: WalletCards },
   { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
@@ -153,7 +155,7 @@ const FALLBACK_LOGO_SRC = '/Lead360logo/1.png';
 export const primaryMobileTabs = [
   { label: 'Home', href: ROUTES.dashboard.commerceControl, icon: LayoutGrid },
   { label: 'Products', href: ROUTES.dashboard.businessCatalog, icon: Boxes },
-  { label: 'Orders & fulfilment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
+  { label: 'Orders & fulfillment', href: ROUTES.dashboard.stylemintOrders, icon: ShoppingBag },
   { label: 'Customers', href: ROUTES.dashboard.stylemintCustomers, icon: Users },
 ];
 
@@ -280,7 +282,7 @@ export function DashboardLayout() {
     const named = EXACT_NAV_PAGE.get(path);
     if (named) return named.label;
     if (path.includes('/commerce-control')) return 'Stylemint Control Center';
-    if (path.includes('/stylemint/orders')) return 'Orders & Fulfilment';
+    if (path.includes('/stylemint/orders')) return 'Orders & Fulfillment';
     // Before the broader /stylemint/vendor test, which would otherwise swallow it.
     if (path.includes('/stylemint/unit-markers')) return 'Unit Markers';
     if (path.includes('/stylemint/vendor-desk')) return 'Vendor Desk';
@@ -319,8 +321,8 @@ export function DashboardLayout() {
     if (path.includes('/test-channel')) return 'Simulator';
     if (path.includes('/setup')) return 'Configuration';
     if (path.includes('/api-connection')) return 'API Connection';
-    if (path.includes('/business-catalog')) return 'Products & Catalogue';
-    if (path.includes('/catalog')) return 'Catalogue';
+    if (path.includes('/business-catalog')) return 'Products & Catalog';
+    if (path.includes('/catalog')) return 'Catalog';
     if (path.includes('/intents')) return 'Intents';
     if (path.includes('/channels')) return 'Channels';
     if (path.includes('/conversations')) return 'Conversations';
@@ -331,7 +333,7 @@ export function DashboardLayout() {
     if (path.includes('/crm/dedup')) return 'Duplicate Contacts';
     if (path.includes('/crm/contacts')) return 'Contacts';
     if (path.includes('/crm/leads')) return 'Leads';
-    if (path.includes('/crm/returns')) return 'Return authorisations';
+    if (path.includes('/crm/returns')) return 'Return authorizations';
     if (path.includes('/crm/deals-hub')) return 'Deals hub';
     if (path.includes('/crm/deals')) return 'Deals';
     if (path.includes('/crm/organizations')) return 'Stores';
@@ -386,6 +388,19 @@ export function DashboardLayout() {
       (part, index, all) => part && all.indexOf(part) === index,
     );
   })();
+
+  /**
+   * Name the tab, and say out loud that the page changed.
+   *
+   * Both halves matter and neither is optional. Without the title every
+   * tab reads "Lead360"; without the announcement a screen reader user
+   * gets nothing at all on navigation, because a single-page app does
+   * not reload and the title alone is not reliably spoken.
+   */
+  const title = documentTitleFor(breadcrumb);
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
 
   const getPageIcon = () => {
     const path = location.pathname;
@@ -640,7 +655,18 @@ export function DashboardLayout() {
             true today; making the region itself focusable fixes those and
             every future page like them. `main` also gives the admin the
             landmark it has been missing. */}
+        {/* Route changes are silent in a single-page app. This says what
+            was opened, for anyone who cannot see that the page replaced
+            itself. */}
+        <p aria-live="polite" className="sr-only">
+          {breadcrumb[breadcrumb.length - 1]}
+        </p>
         <main tabIndex={0} className="flex-1 overflow-auto p-4 pb-20 md:p-6 lg:pb-6">
+          {/* Four page names exist twice in this admin and read different
+              backends. Saying so here rather than in the eight pages means
+              a pair added to `navCounterparts` is covered automatically
+              and none of them can be missed. */}
+          <CounterpartNotice />
           <Outlet />
         </main>
       </main>

@@ -594,7 +594,7 @@ const OPERATIONS_SURFACES: Array<{ Icon: LucideIcon; title: string; detail: stri
   {
     Icon: PackageCheck,
     title: 'Orders and returns',
-    detail: 'Follow suborders through fulfilment, and settle returns and refunds.',
+    detail: 'Follow suborders through fulfillment, and settle returns and refunds.',
   },
   {
     Icon: Wallet,
@@ -603,7 +603,7 @@ const OPERATIONS_SURFACES: Array<{ Icon: LucideIcon; title: string; detail: stri
   },
   {
     Icon: Store,
-    title: 'Vendors and catalogue',
+    title: 'Vendors and catalog',
     detail: 'Vendor accounts, products, collections and campaign workspaces.',
   },
   {

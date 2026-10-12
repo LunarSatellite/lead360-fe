@@ -8,7 +8,7 @@ import {
 } from '../api/crm.queries';
 import type { PurchaseOrderDto, PurchaseOrderCreateRequest, PurchaseOrderLineItemRequest, PurchaseOrderFilter, VendorDto } from '../types/crm.types';
 import { PO_STATUS_LABELS, PO_STATUS_COLORS, PurchaseOrderStatus } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 function Badge({ value, labels, colors }: { value: number; labels: Record<number, string>; colors: Record<number, string> }) {
   return <span className={`px-2 py-0.5 rounded-md text-xs font-semibold border ${colors[value] ?? ''}`}>{labels[value] ?? value}</span>;
@@ -95,7 +95,8 @@ export function Component() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const { data: raw, isLoading } = usePurchaseOrders(filter);
+  const purchaseOrdersQuery = usePurchaseOrders(filter);
+  const { data: raw } = purchaseOrdersQuery;
   const items: PurchaseOrderDto[] = (raw as any)?.items ?? [];
   const { data: vendors } = useActiveVendors();
   const vendorList: VendorDto[] = (vendors as any) ?? [];
@@ -143,7 +144,9 @@ export function Component() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Purchase Orders</h2>
-            <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+            <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={purchaseOrdersQuery} total={(raw as any)?.totalCount} />
+          </p>
           </div>
           <Button onClick={() => setShowCreate(true)} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New PO
@@ -161,14 +164,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <ShoppingCart className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No purchase orders found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={purchaseOrdersQuery}
+            isEmpty={!items.length}
+            noun="purchase orders"
+            icon={ShoppingCart}
+            emptyTitle="No purchase orders found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -212,7 +214,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 

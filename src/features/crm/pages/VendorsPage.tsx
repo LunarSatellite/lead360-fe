@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Plus, X, Loader2, Building2, Pencil, Trash2, User, Mail, Phone, Globe, CreditCard, MapPin, FileText, DollarSign } from 'lucide-react';
 import { useVendors, useCreateVendor, useUpdateVendor, useDeleteVendor } from '../api/crm.queries';
 import type { VendorDto, VendorCreateRequest, VendorUpdateRequest, VendorFilter } from '../types/crm.types';
-import { Button, IconButton, Input } from '@/shared/ui/primitives';
+import { Button, IconButton, Input, ListState, ResultCount } from '@/shared/ui/primitives';
 
 function SlideOver({ open, onClose, title, subtitle, children, footer }: { open: boolean; onClose: () => void; title: string; subtitle?: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
@@ -152,7 +152,8 @@ export function Component() {
   const [editing, setEditing] = useState<VendorDto | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm());
 
-  const { data: raw, isLoading } = useVendors(filter);
+  const vendorsQuery = useVendors(filter);
+  const { data: raw } = vendorsQuery;
   const items: VendorDto[] = (raw as any)?.items ?? [];
 
   const createVendor = useCreateVendor();
@@ -190,7 +191,9 @@ export function Component() {
         <div className="flex items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-extrabold text-text-primary tracking-tight">Vendors</h2>
-            <p className="text-xs text-text-muted mt-0.5">{(raw as any)?.totalCount?.toLocaleString() ?? 0} total</p>
+            <p className="text-xs text-text-muted mt-0.5">
+            <ResultCount query={vendorsQuery} total={(raw as any)?.totalCount} />
+          </p>
           </div>
           <Button onClick={openCreate} variant="primary">
             <Plus className="w-3.5 h-3.5" strokeWidth={2.5} /> New Vendor
@@ -209,14 +212,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-glass-1 overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Building2 className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No vendors found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={vendorsQuery}
+            isEmpty={!items.length}
+            noun="vendors"
+            icon={Building2}
+            emptyTitle="No vendors found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -249,7 +251,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 

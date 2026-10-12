@@ -65,7 +65,7 @@ export function StylemintCustomersPage() {
         <ShieldCheck className="mx-auto h-9 w-9 text-amber-400" />
         <h1 className="mt-4 text-xl font-black text-text-primary">Owner access required</h1>
         <p className="mt-2 text-sm leading-6 text-text-muted">
-          Les donnees clients et la suspension des comptes sont reservees au proprietaire Kin Marche.
+          Customer data and account suspension are restricted to the Kin Marche owner.
         </p>
       </div>
     );
@@ -87,7 +87,7 @@ export function StylemintCustomersPage() {
           onClick={() => query.refetch()}
           className="flex items-center gap-2 rounded-xl border border-border-subtle px-3 py-2 text-xs font-bold text-text-secondary hover:text-brand"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${query.isFetching ? 'animate-spin' : ''}`} /> Actualiser
+          <RefreshCw className={`h-3.5 w-3.5 ${query.isFetching ? 'animate-spin' : ''}`} /> Refresh
         </button>
       </div>
 
@@ -136,7 +136,7 @@ export function StylemintCustomersPage() {
             <Users className="h-8 w-8 text-amber-400" />
             <p className="font-bold text-text-primary">Customer administration unavailable</p>
             <p className="max-w-lg text-xs leading-5 text-text-muted">
-              Le jeton Lead360 doit avoir le role administrateur Stylemint pour consulter les clients.
+              The Lead360 token needs the Stylemint administrator role to read customers.
             </p>
           </div>
         ) : !customers.length ? (
@@ -251,7 +251,7 @@ export function StylemintCustomersPage() {
                 ) : (
                   <Ban className="h-4 w-4" />
                 )}{' '}
-                Suspendre le compte
+                Suspend account
               </Button>
             ) : selected.status === 2 ? (
               <Button
@@ -264,7 +264,7 @@ export function StylemintCustomersPage() {
                 ) : (
                   <CheckCircle2 className="h-4 w-4" />
                 )}{' '}
-                Reactiver le compte
+                Reinstate account
               </Button>
             ) : null}
           </aside>

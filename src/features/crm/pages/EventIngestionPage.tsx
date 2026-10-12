@@ -439,7 +439,7 @@ ${embedTag}`
             <code className="bg-bg-elevated px-1 rounded">email</code> or <code className="bg-bg-elevated px-1 rounded">phone</code>{' '}
             so events can create and reach a contact.
           </p>
-          <CodeBlock code={trackGuide} label="Examples — customise these" />
+          <CodeBlock code={trackGuide} label="Examples — customize these" />
         </div>
       )}
 

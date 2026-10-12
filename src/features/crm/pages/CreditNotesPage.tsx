@@ -4,7 +4,7 @@ import { format, parseISO } from 'date-fns';
 import { useCreditNotes, useApplyCreditNote, useRefundCreditNote, useInvoices } from '../api/crm.queries';
 import type { CrmCreditNoteDto, CrmCreditNoteFilter } from '../types/crm.types';
 import { CREDIT_NOTE_STATUS_LABELS, CREDIT_NOTE_STATUS_COLORS, CREDIT_NOTE_APPLY_METHOD_LABELS, CreditNoteStatus, CreditNoteApplyMethod } from '../types/crm.types';
-import { Button } from '@/shared/ui/primitives';
+import { Button, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full rounded-lg border border-border-subtle bg-bg-elevated px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-brand/40';
 
@@ -133,7 +133,8 @@ export function Component() {
   const [statusF, setStatusF] = useState('');
   const [selected, setSelected] = useState<CrmCreditNoteDto | null>(null);
 
-  const { data: raw, isLoading } = useCreditNotes(filter);
+  const creditNotesQuery = useCreditNotes(filter);
+  const { data: raw } = creditNotesQuery;
   const items: CrmCreditNoteDto[] = (raw as any)?.items ?? [];
   const total: number = (raw as any)?.totalCount ?? 0;
 
@@ -155,14 +156,13 @@ export function Component() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <Receipt className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No credit notes.</p>
-            </div>
-          ) : (
+          <ListState
+            query={creditNotesQuery}
+            isEmpty={!items.length}
+            noun="credit notes"
+            icon={Receipt}
+            emptyTitle="No credit notes"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -184,7 +184,7 @@ export function Component() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
 
         {total > (filter.pageSize ?? 20) && (

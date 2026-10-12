@@ -3,7 +3,7 @@ import { Plus, X, Loader2, Play, Target, ChevronDown } from 'lucide-react';
 import { useWorkflowCampaigns, useCreateWorkflowCampaign, useExecuteWorkflowCampaign, useWorkflows } from '../api/crm.queries';
 import type { CrmWorkflowCampaignDto, CrmWorkflowCampaignCreateRequest, CrmWorkflowSummaryDto } from '../types/crm.types';
 import { CRM_WORKFLOW_TRIGGER_LABELS } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 function SlideOver({ open, onClose, title, children, footer }: { open: boolean; onClose: () => void; title: string; children: React.ReactNode; footer?: React.ReactNode }) {
   if (!open) return null;
@@ -50,7 +50,8 @@ export function Component() {
     name: '', description: '', targetEntityType: 'deal', segmentConditionsJson: '{}', workflowId: '', scheduleType: '',
   });
 
-  const { data: campaigns, isLoading } = useWorkflowCampaigns();
+  const workflowCampaignsQuery = useWorkflowCampaigns();
+  const { data: campaigns } = workflowCampaignsQuery;
   const items: CrmWorkflowCampaignDto[] = (campaigns as any) ?? [];
 
   const { data: workflowsRaw } = useWorkflows();
@@ -87,14 +88,13 @@ export function Component() {
       </div>
 
       <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-        ) : !items.length ? (
-          <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-            <Target className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-            <p className="text-sm">No workflow campaigns found.</p>
-          </div>
-        ) : (
+        <ListState
+          query={workflowCampaignsQuery}
+          isEmpty={!items.length}
+          noun="workflow campaigns"
+          icon={Target}
+          emptyTitle="No workflow campaigns found"
+        >
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border-subtle">
@@ -121,7 +121,7 @@ export function Component() {
               ))}
             </tbody>
           </table>
-        )}
+        </ListState>
       </div>
 
       {/* Create SlideOver */}

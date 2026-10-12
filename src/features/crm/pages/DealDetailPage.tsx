@@ -271,7 +271,7 @@ export function Component() {
               )}
             </div>
           ) : (
-            <p className="text-xs text-text-muted italic">No summary yet. Click Generate to have AI analyse this deal.</p>
+            <p className="text-xs text-text-muted italic">No summary yet. Click Generate to have AI analyze this deal.</p>
           )}
         </div>
 

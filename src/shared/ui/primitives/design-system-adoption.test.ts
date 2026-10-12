@@ -121,9 +121,27 @@ describe('defects that must not come back', () => {
      * an absolute check — unlike the contrast and focus rules above, which
      * are absolute because their fixes were unambiguous.
      *
+     * Sixty of them are one control immediately after the label with
+     * nothing in between, and nesting those does need one extra step,
+     * measured rather than assumed. Given
+     *
+     *     <label className="text-xs font-semibold uppercase tracking-wider">
+     *     <input className="… text-sm …">
+     *
+     * nesting gives the control `font-weight: 600` and
+     * `letter-spacing: 0.6px`, because Tailwind's preflight sets both to
+     * `inherit` on form elements and the shared input classes set only a
+     * font size. `text-transform` does *not* follow: the browser's own
+     * stylesheet sets `text-transform: none` on form controls, so the
+     * uppercase stays on the label where it belongs.
+     *
+     * So the control needs `font-normal tracking-normal` when the label
+     * carries either, and the check below this one enforces that nobody
+     * forgets.
+     *
      * Lower it when you fix some. It may not go up.
      */
-    const BUDGET_ORPHAN_LABELS = 185;
+    const BUDGET_ORPHAN_LABELS = 134;
     const orphans: string[] = [];
 
     for (const [file, source] of Object.entries(TSX)) {
@@ -182,7 +200,7 @@ describe('defects that must not come back', () => {
      * no binding, an index, a loop variable. Those need someone to decide
      * what the control is for.
      */
-    const BUDGET_UNNAMED_CONTROLS = 59;
+    const BUDGET_UNNAMED_CONTROLS = 58;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 

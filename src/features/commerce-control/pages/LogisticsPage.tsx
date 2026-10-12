@@ -42,7 +42,7 @@ import { Button } from '@/shared/ui/primitives';
 type Tab = 'subOrders' | 'awaiting' | 'stuck' | 'metrics' | 'guardian';
 
 const TABS: Array<{ id: Tab; label: string; icon: typeof Route }> = [
-  { id: 'subOrders', label: 'Fulfilment desk', icon: ClipboardList },
+  { id: 'subOrders', label: 'Fulfillment desk', icon: ClipboardList },
   { id: 'awaiting', label: 'Awaiting courier', icon: PackageSearch },
   { id: 'stuck', label: 'Stuck offers', icon: AlertTriangle },
   { id: 'metrics', label: 'Routing metrics', icon: Activity },

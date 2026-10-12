@@ -434,27 +434,33 @@ export function Component() {
       {showFilters && (
         <div className="flex flex-wrap items-end gap-3 p-3 rounded-xl bg-bg-elevated border border-border-subtle shrink-0">
           <div className="flex flex-col gap-1 min-w-[180px]">
-            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Owner / Rep</label>
-            <select aria-label="Filter by rep"
-              value={filterOwnerId}
-              onChange={e => setFilterOwnerId(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
-            >
-              <option value="">All reps</option>
-              {teamMembers.map(u => (
-                <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
-              ))}
-            </select>
+            <label className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Owner / Rep</span>
+              <select
+                value={filterOwnerId}
+                onChange={e => setFilterOwnerId(e.target.value)}
+                className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow"
+              >
+                <option value="">All reps</option>
+                {teamMembers.map(u => (
+                  <option key={u.id} value={u.id}>{u.fullName ?? `${u.firstName} ${u.lastName}`}</option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date From</label>
-            <input aria-label="Filter close date from" type="date" value={filterCloseDateFrom} onChange={e => setFilterCloseDateFrom(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+            <label className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date From</span>
+              <input type="date" value={filterCloseDateFrom} onChange={e => setFilterCloseDateFrom(e.target.value)}
+                className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+            </label>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date To</label>
-            <input aria-label="Filter close date to" type="date" value={filterCloseDateTo} onChange={e => setFilterCloseDateTo(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+            <label className="flex flex-col gap-1">
+              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Close Date To</span>
+              <input type="date" value={filterCloseDateTo} onChange={e => setFilterCloseDateTo(e.target.value)}
+                className="px-3 py-1.5 rounded-lg bg-bg border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow" />
+            </label>
           </div>
           <div className="flex flex-col gap-1 justify-end">
             <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Stale Deals</label>

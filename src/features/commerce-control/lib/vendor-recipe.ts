@@ -63,14 +63,14 @@ export function buildVendorRecipePayload(draft: VendorRecipeDraft) {
         order: 0, reelTimeStartMs: 0, reelTimeEndMs: firstEnd,
         songTimeStartMs: 0, songTimeEndMs: firstEnd, kind: 1,
         label: 'Accroche', direction: "Show the everyday need and catch attention.",
-        shotHints: ['Plan humain', 'Produit en contexte'], captionOverlay: 'One need, one solution',
+        shotHints: ['Human shot', 'Product in context'], captionOverlay: 'One need, one solution',
         productFocus: brandStoryAnchor, emphasisScore: 0.9,
       },
       {
         order: 1, reelTimeStartMs: firstEnd, reelTimeEndMs: secondEnd,
         songTimeStartMs: firstEnd, songTimeEndMs: secondEnd, kind: 2,
         label: 'Story', direction: "Show the product in use and its concrete benefit.",
-        shotHints: ['Demonstration', 'Reaction authentique'], captionOverlay: 'Simple, frais, utile',
+        shotHints: ['Demonstration', 'Genuine reaction'], captionOverlay: 'Simple, fresh, useful',
         productFocus: brandStoryAnchor, emphasisScore: 0.75,
       },
       {
@@ -83,7 +83,7 @@ export function buildVendorRecipePayload(draft: VendorRecipeDraft) {
     ],
     captionVariants: captions.map((text, index) => ({
       text,
-      tone: index === 0 ? 'authentique' : index === 1 ? 'inspirant' : 'direct',
+      tone: index === 0 ? 'authentic' : index === 1 ? 'inspiring' : 'direct',
       characterLength: text.length,
       hashtagCount: 3,
       recommendedForPlatform: index === 0 ? 'Instagram' : index === 1 ? 'Facebook' : 'TikTok',
@@ -95,7 +95,7 @@ export function buildVendorRecipePayload(draft: VendorRecipeDraft) {
       { platform: 4, findSoundInstructions: 'Search for the track in Facebook Music', segmentUsageNote: 'Show subtitles', aspectRatio: 1, recommendedDurationSeconds: durationSeconds, hashtagSet: ['KinMarche', 'RDC', 'Stylemint'] },
     ],
     reasoning: {
-      headlineRationale: 'Structure narrative en trois temps adaptee a une demonstration commerciale Kin Marche.',
+      headlineRationale: 'Three-beat narrative structure, tuned for a Kin Marche product demonstration.',
       signalsUsed: [
         { featureKey: 'story_hook', contribution: 0.34, plainLanguage: "A human hook holds attention." },
         { featureKey: 'product_use', contribution: 0.33, plainLanguage: 'The demonstration makes the value concrete.' },

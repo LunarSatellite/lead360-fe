@@ -20,7 +20,7 @@ import {
   CRM_MEETING_STATUS_LABELS, CRM_MEETING_STATUS_COLORS,
   CRM_CALL_SUMMARY_STATUS_LABELS, CrmCallSummaryStatus,
 } from '../types/crm.types';
-import { Button, Input } from '@/shared/ui/primitives';
+import { Button, Input, ListState } from '@/shared/ui/primitives';
 
 const inputCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-border-glow';
 const selectCls = 'w-full px-3 py-2 rounded-xl bg-bg-elevated border border-border-subtle text-sm text-text-primary focus:outline-none focus:border-border-glow';
@@ -113,7 +113,8 @@ function MeetingsTab() {
   const [bookTime, setBookTime] = useState('');
   const [bookDuration, setBookDuration] = useState('30');
 
-  const { data: raw, isLoading } = useMeetings(filter);
+  const meetingsQuery = useMeetings(filter);
+  const { data: raw } = meetingsQuery;
   const items: CrmMeetingSummaryDto[] = (raw as any)?.items ?? [];
 
   const { data: meetingDetail, isLoading: detailLoading } = useMeetingById(selectedId ?? undefined);
@@ -213,14 +214,13 @@ function MeetingsTab() {
         </div>
 
         <div className="rounded-2xl border border-border-subtle bg-bg-card overflow-hidden">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-40 text-text-muted"><Loader2 className="w-5 h-5 animate-spin" /></div>
-          ) : !items.length ? (
-            <div className="flex flex-col items-center justify-center h-40 gap-3 text-text-muted">
-              <CalendarCheck className="w-8 h-8 opacity-30" strokeWidth={1.2} />
-              <p className="text-sm">No meetings found.</p>
-            </div>
-          ) : (
+          <ListState
+            query={meetingsQuery}
+            isEmpty={!items.length}
+            noun="meetings"
+            icon={CalendarCheck}
+            emptyTitle="No meetings found"
+          >
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border-subtle">
@@ -241,7 +241,7 @@ function MeetingsTab() {
                 ))}
               </tbody>
             </table>
-          )}
+          </ListState>
         </div>
       </div>
 

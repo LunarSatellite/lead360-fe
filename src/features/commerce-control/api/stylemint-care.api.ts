@@ -4,7 +4,7 @@ import { stylemintOperationsApi } from './stylemint-operations.api';
  * Order-care themes: what is going wrong with orders, grouped by cause, over a window.
  *
  * Each theme names the area accountable for it, which is the point — this is the read that turns
- * a pile of individual support tickets into "fulfilment is behind" or "the carrier is dropping
+ * a pile of individual support tickets into "fulfillment is behind" or "the carrier is dropping
  * handovers". SupportAgent.
  */
 

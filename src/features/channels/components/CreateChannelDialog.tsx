@@ -140,17 +140,19 @@ export function CreateChannelDialog({ tenantId, open, onClose }: CreateChannelDi
 
           {/* Channel identifier */}
           <div>
-            <label className={labelClass}>Channel identifier</label>
-            <input aria-label="Channel identifier"
-              {...form.register('channelIdentifier')}
-              placeholder={IDENTIFIER_HINTS[watchedType] ?? 'Unique channel identifier'}
-              className={inputClass}
-              style={{
-                backgroundColor: 'rgb(var(--color-glass-1))',
-                backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
-                borderColor: 'rgb(var(--brand-rgb) / 0.2)',
-              }}
-            />
+            <label className="flex flex-col">
+              <span className={labelClass}>Channel identifier</span>
+              <input
+                {...form.register('channelIdentifier')}
+                placeholder={IDENTIFIER_HINTS[watchedType] ?? 'Unique channel identifier'}
+                className={inputClass}
+                style={{
+                  backgroundColor: 'rgb(var(--color-glass-1))',
+                  backgroundImage: 'linear-gradient(to bottom, rgb(var(--color-violet) / 0.11) 0%, rgb(var(--color-violet) / 0.03) 40%, rgba(0,0,0,0.08) 100%)',
+                  borderColor: 'rgb(var(--brand-rgb) / 0.2)',
+                }}
+              />
+            </label>
             {form.formState.errors.channelIdentifier && (
               <p className="text-xs text-danger-light mt-1.5">{form.formState.errors.channelIdentifier.message}</p>
             )}

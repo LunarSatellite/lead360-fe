@@ -112,7 +112,7 @@ export function Component() {
         style={{ background: 'rgb(var(--color-surface-sunken))', borderRight: '1px solid rgb(var(--color-border-subtle))' }}
       >
         <div style={{ padding: '20px 20px 16px' }}>
-          <h1 style={{ fontSize: 15, fontWeight: 700, color: 'rgb(var(--color-text-primary))' }}>Pipeline</h1>
+          <h1 className="text-xl font-extrabold tracking-tight text-text-primary">Pipeline</h1>
           {/* Fat segmented bar */}
           <div
             style={{

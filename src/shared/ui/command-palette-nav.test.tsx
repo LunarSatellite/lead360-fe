@@ -116,7 +116,7 @@ describe('the command palette offers the whole admin', () => {
     setQuery('orders');
 
     const labels = rowLabels();
-    expect(labels.some((t) => t.includes('Commerce · Orders & fulfilment'))).toBe(true);
+    expect(labels.some((t) => t.includes('Commerce · Orders & fulfillment'))).toBe(true);
     expect(labels.some((t) => t.includes('CRM · Orders & stock'))).toBe(true);
   });
 

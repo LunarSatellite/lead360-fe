@@ -125,16 +125,18 @@ export function CatalogImportDialog({ onClose }: Props) {
             </label>
 
             <div className="rounded-xl bg-glass-1 border border-border-subtle p-3">
-              <label className="text-[11px] font-bold text-text-secondary">Import behavior</label>
-              <select aria-label="Mode"
-                value={mode}
-                onChange={(event) => { setMode(event.target.value as CatalogImportMode); setPreview(null); }}
-                className="mt-2 w-full appearance-none cursor-pointer rounded-lg border border-border-subtle bg-glass-2 px-3 py-2 text-xs text-text-primary outline-none focus:border-brand"
-                style={{ colorScheme: 'dark' }}
-              >
-                <option value="CreateOnly" className="bg-bg-elevated text-text-primary">Create only</option>
-                <option value="Upsert" className="bg-bg-elevated text-text-primary">Create and update</option>
-              </select>
+              <label className="flex flex-col gap-1">
+                <span className="text-[11px] font-bold text-text-secondary">Import behavior</span>
+                <select
+                  value={mode}
+                  onChange={(event) => { setMode(event.target.value as CatalogImportMode); setPreview(null); }}
+                  className="mt-2 w-full appearance-none cursor-pointer rounded-lg border border-border-subtle bg-glass-2 px-3 py-2 text-xs text-text-primary outline-none focus:border-brand"
+                  style={{ colorScheme: 'dark' }}
+                >
+                  <option value="CreateOnly" className="bg-bg-elevated text-text-primary">Create only</option>
+                  <option value="Upsert" className="bg-bg-elevated text-text-primary">Create and update</option>
+                </select>
+              </label>
               <p className="text-[10px] text-text-muted mt-2">
                 {mode === 'CreateOnly' ? 'Existing items are reported as errors.' : 'Existing items are matched by category and item name, then updated.'}
               </p>

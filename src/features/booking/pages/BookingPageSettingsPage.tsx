@@ -88,37 +88,43 @@ function EventTypeModal({
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Title *</label>
-            <input aria-label="Title"
-              type="text"
-              placeholder="e.g. 30 min intro call"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className={inputCls}
-            />
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Title *</span>
+              <input
+                type="text"
+                placeholder="e.g. 30 min intro call"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                className={inputCls}
+              />
+            </label>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Description</label>
-            <textarea
-              placeholder="What is this meeting for?" aria-label="What is this meeting for?"
-              value={description ?? ''}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-              className={`${inputCls} resize-none`}
-            />
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Description</span>
+              <textarea
+                placeholder="What is this meeting for?"
+                value={description ?? ''}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={2}
+                className={`${inputCls} resize-none`}
+              />
+            </label>
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Duration</label>
-            <select aria-label="Duration"
-              value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
-              className={inputCls}
-            >
-              {[15, 20, 30, 45, 60, 90].map((d) => (
-                <option key={d} value={d}>{d} minutes</option>
-              ))}
-            </select>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Duration</span>
+              <select
+                value={duration}
+                onChange={(e) => setDuration(Number(e.target.value))}
+                className={inputCls}
+              >
+                {[15, 20, 30, 45, 60, 90].map((d) => (
+                  <option key={d} value={d}>{d} minutes</option>
+                ))}
+              </select>
+            </label>
           </div>
           <div className="space-y-2">
             <label className="text-xs font-semibold text-text-muted uppercase tracking-wider">Color</label>

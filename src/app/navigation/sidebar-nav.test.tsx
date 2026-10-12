@@ -156,7 +156,7 @@ describe('filtering the rail', () => {
      * one has not learned a wrong thing and should not be left searching.
      *
      * Driven from navAliases rather than naming a pair here: an earlier
-     * version asserted that searching "organisations" surfaced the page
+     * version asserted that searching "organizations" surfaced the page
      * labelled "Stores", and when that call was made the other way round
      * the test failed for being out of date rather than for being wrong.
      */
@@ -247,7 +247,7 @@ describe('the rail is the same rail in both builds', () => {
     expect(automation).toContain('/dashboard/flows');
     expect(automation).toContain('/dashboard/agents');
 
-    fireEvent.click(groupButton('Orders & fulfilment'));
+    fireEvent.click(groupButton('Orders & fulfillment'));
     expect(hrefs()).toContain('/dashboard/stylemint/orders');
   });
 

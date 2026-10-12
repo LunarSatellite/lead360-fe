@@ -323,13 +323,13 @@ function RequestRow({
           </p>
           <p className="mt-0.5 text-[11px] text-text-muted">
             {completing
-              ? 'A fulfilment reference is optional but is what links this to the export or deletion you ran.'
+              ? 'A fulfillment reference is optional but is what links this to the export or deletion you ran.'
               : 'The reason goes on the record — a legal hold, for example — and is visible in the audit trail.'}
           </p>
           <input aria-label="Completing"
             value={completing ? reference : reason}
             onChange={(e) => (completing ? setReference(e.target.value) : setReason(e.target.value))}
-            placeholder={completing ? 'Fulfilment reference (optional)' : 'Reason'}
+            placeholder={completing ? 'Fulfillment reference (optional)' : 'Reason'}
             className="mt-2 w-full rounded-sm border-thin border-border-subtle bg-bg-input px-3 py-2 text-xs text-text-primary placeholder:text-text-muted focus:border-border-glow focus:outline-none"
           />
           {error && <p className="mt-2 text-xs text-rose-300">{error}</p>}

@@ -133,7 +133,7 @@ export function Component() {
                     <button onClick={() => setDefaultMut.mutate(selected)}
                       className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium text-text-secondary hover:text-warning hover:border-warning/40 transition-all">Set as default</button>
                   )}
-                  <button onClick={() => toggleMut.mutate(selected)}
+                  <button aria-pressed={selected.isActive} onClick={() => toggleMut.mutate(selected)}
                     className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${selected.isActive ? 'text-text-secondary hover:text-danger-light' : 'text-success'}`}>
                     {selected.isActive ? 'Deactivate' : 'Activate'}
                   </button>

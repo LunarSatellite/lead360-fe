@@ -247,7 +247,7 @@ export function ContentOperationsPage() {
           const isConnected = connected.has(entry.slug);
           const active = provider.slug === entry.slug;
           return (
-            <button
+            <button aria-pressed={active}
               key={entry.slug}
               onClick={() => setProvider(entry)}
               className={`relative overflow-hidden rounded-2xl border p-4 text-left transition-all ${active ? 'border-brand/40 bg-brand-soft' : 'border-border-subtle bg-bg-card hover:border-border-medium'}`}

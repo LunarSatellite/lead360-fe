@@ -106,7 +106,7 @@ export function Component() {
                           <Star className="w-3 h-3" /> Set as default
                         </button>
                       )}
-                      <button onClick={() => updateBook.mutate({ id: book.id, data: { isActive: !book.isActive } })}
+                      <button aria-pressed={book.isActive} onClick={() => updateBook.mutate({ id: book.id, data: { isActive: !book.isActive } })}
                         className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold border-thin border-border-medium transition-all ${
                           book.isActive ? 'text-text-secondary hover:text-danger-light hover:border-danger/40' : 'text-success hover:text-success'
                         }`}>

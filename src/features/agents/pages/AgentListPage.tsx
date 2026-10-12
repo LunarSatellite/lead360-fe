@@ -182,7 +182,7 @@ export function Component() {
           {(['all', 'enabled', 'disabled'] as StatusFilter[]).map((s) => {
             const active = statusFilter === s;
             return (
-              <button
+              <button aria-pressed={active}
                 key={s}
                 type="button"
                 onClick={() => setStatusFilter(s)}

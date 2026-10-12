@@ -17,7 +17,7 @@ export function OnboardingProgressBar({ currentStep, completedSteps, onStepClick
         return (
           <div key={step.number} className="flex items-center">
             {/* Step circle */}
-            <button
+            <button aria-pressed={isCurrent}
               onClick={() => onStepClick(step.number)}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-xs font-semibold ${
                 isCurrent

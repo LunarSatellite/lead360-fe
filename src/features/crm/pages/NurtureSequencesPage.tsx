@@ -434,7 +434,7 @@ function SequenceModal({
                 const numVal = Number(val) as NurtureSequenceType;
                 const isSelected = form.sequenceType === numVal;
                 return (
-                  <button
+                  <button aria-pressed={isSelected}
                     key={val}
                     type="button"
                     onClick={() => setField('sequenceType', numVal)}
@@ -481,7 +481,7 @@ function SequenceModal({
               ] as const).map(([val, label, desc]) => {
                 const isSelected = form.triggerType === val;
                 return (
-                  <button
+                  <button aria-pressed={isSelected}
                     key={val}
                     type="button"
                     onClick={() => setField('triggerType', val)}

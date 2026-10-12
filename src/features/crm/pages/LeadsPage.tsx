@@ -747,7 +747,7 @@ export function Component() {
           const isActive = activeTab === key;
           const count    = tabCounts[key];
           return (
-            <button
+            <button aria-pressed={isActive}
               key={key}
               onClick={() => setActiveTab(key)}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-all ${
@@ -789,7 +789,7 @@ export function Component() {
           {STAGE_PILLS.map((pill) => {
             const isActive = pill.value === selectedStage;
             return (
-              <button
+              <button aria-pressed={isActive}
                 key={pill.label}
                 onClick={() => setSelectedStage(pill.value)}
                 className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${
@@ -1011,7 +1011,7 @@ function LeadCard({ lead, onClick, selected, onToggle }: LeadCardProps) {
       {/* Avatar + stage badge */}
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-2">
-          <button
+          <button aria-pressed={selected}
             onClick={(e) => { e.stopPropagation(); onToggle(); }}
             className={`w-5 h-5 rounded-[5px] border flex items-center justify-center transition-all shrink-0 ${
               selected ? 'bg-brand border-brand text-bg' : 'border-border-medium text-transparent hover:border-brand'

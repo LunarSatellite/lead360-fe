@@ -234,7 +234,7 @@ export function CreateCampaignDrawer({ onClose }: Props) {
             const active = i === step;
             return (
               <div key={i} className="flex items-center">
-                <button
+                <button aria-pressed={active}
                   onClick={() => done && setStep(i)}
                   className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     active ? 'bg-brand-soft text-brand'
@@ -517,7 +517,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               {filteredCountries.map(c => {
                 const selected = form.countryCodes.includes(c.code);
                 return (
-                  <button
+                  <button aria-pressed={selected}
                     key={c.code}
                     type="button"
                     onClick={() => { toggleCountry(c.code); setCountryQ(''); setShowCountrySearch(false); }}
@@ -581,7 +581,7 @@ function StepAudience({ form, set }: { form: CreateCampaignRequest; set: SetFn }
               {interests.map((i: Interest) => {
                 const selected = !!form.interests.find(x => x.id === i.id);
                 return (
-                  <button
+                  <button aria-pressed={selected}
                     key={i.id}
                     type="button"
                     onClick={() => addInterest(i)}

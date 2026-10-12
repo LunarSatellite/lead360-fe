@@ -123,7 +123,7 @@ function IntentTreeNode({
         {/* Actions */}
         <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
           {/* Toggle active */}
-          <button
+          <button aria-pressed={intent.isActive}
             onClick={() => toggleActive.mutate({ id: intent.id, isActive: !intent.isActive })}
             disabled={isToggling}
             className={`p-2 rounded-lg border text-xs transition-all ${

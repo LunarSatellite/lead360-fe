@@ -189,7 +189,7 @@ function PublicBookingEventPage() {
                       {daySlots.map((slot) => {
                         const isSelected = selectedSlot === slot.start;
                         return (
-                          <button
+                          <button aria-pressed={isSelected}
                             key={slot.start}
                             onClick={() => setSelectedSlot(slot.start)}
                             className={`py-2 px-3 rounded-xl text-sm font-medium border transition-all ${

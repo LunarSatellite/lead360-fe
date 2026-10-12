@@ -74,7 +74,38 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   block?: boolean;
   /** Square padding, for a control whose whole content is one icon. */
   square?: boolean;
+  /**
+   * This is the chosen one of a set — a filter chip, a view switch, a
+   * segmented control.
+   *
+   * It exists because 78 buttons in this admin said so with colour and
+   * nothing else. A screen reader read the same name whether the filter
+   * was on or off, so the single thing those controls exist to
+   * communicate was the thing that never reached anyone who could not
+   * see them. axe cannot catch it: a `<button>` carrying no state
+   * attribute is valid markup, and nothing in the DOM says it was meant
+   * to be a toggle — only the ternary in its className does.
+   *
+   * Passing it sets `aria-pressed`, so the state is announced, and
+   * styles the two cases so a page cannot drift from the house look
+   * while re-deciding what "selected" is for the ninth time.
+   *
+   * Leave it undefined for an ordinary button: `aria-pressed="false"`
+   * on a Save button tells a screen reader it is an unpressed toggle,
+   * which is worse than saying nothing.
+   */
+  selected?: boolean;
 }
+
+/**
+ * The two faces of a chosen button. Deliberately only two: every
+ * hand-rolled version of this picked its own pair, and the point of
+ * having it here is that they stop differing.
+ */
+const SELECTION = {
+  on: 'bg-brand text-bg hover:bg-brand',
+  off: 'bg-transparent text-text-muted hover:bg-glass-1 hover:text-text-primary',
+} as const;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
@@ -84,6 +115,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     loading = false,
     block = false,
     square = false,
+    selected,
     className,
     children,
     disabled,
@@ -109,6 +141,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       // hand, and reported the design system as rendering at eight heights
       // when it renders at three.
       data-ui="button"
+      aria-pressed={selected}
       className={cn(
         // `border border-transparent` on every variant, including the ones
         // that draw no border. Without it a bordered variant is 2px taller
@@ -119,7 +152,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         RADIUS.control,
         square ? CONTROL_PADDING_SQUARE[size] : CONTROL_PADDING[size],
         CONTROL_TYPE[size],
-        VARIANT[variant],
+        // A chosen button overrides its variant's fill rather than
+        // composing with it: "selected but ghost" is not a thing anyone
+        // wants to look at, and letting both through is how the eight
+        // different selected-chip styles in this admin happened.
+        selected === undefined ? VARIANT[variant] : SELECTION[selected ? 'on' : 'off'],
         FOCUS_RING,
         DISABLED,
         block && 'w-full',

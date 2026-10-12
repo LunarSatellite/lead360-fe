@@ -64,7 +64,7 @@ export function ComplianceProfileSelector({
             const isCurrent = profile.id === currentProfileId;
 
             return (
-              <button
+              <button aria-pressed={isActive}
                 key={profile.id}
                 onClick={() => setSelectedId(profile.id)}
                 className={`

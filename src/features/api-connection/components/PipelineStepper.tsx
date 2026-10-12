@@ -17,7 +17,7 @@ export function PipelineStepper({ currentStep, completedSteps, onStepClick }: Pi
 
         return (
           <div key={step.id} className="flex items-center">
-            <button
+            <button aria-pressed={isActive}
               onClick={() => isClickable && onStepClick(step.id)}
               disabled={!isClickable}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[12px] font-semibold transition-all ${

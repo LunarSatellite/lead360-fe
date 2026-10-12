@@ -207,7 +207,7 @@ function SearchRow({ search, onChanged }: { search: PopularSearch; onChanged: ()
           </div>
         </div>
         <div className="flex shrink-0 items-center gap-1.5">
-          <button
+          <button aria-pressed={search.isActive}
             disabled={act.isPending}
             onClick={() => act.mutate('toggle')}
             className={`flex items-center gap-1.5 rounded-sm border-thin px-3 py-1.5 text-xs font-bold disabled:opacity-40 ${

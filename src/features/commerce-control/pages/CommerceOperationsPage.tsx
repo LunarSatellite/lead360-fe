@@ -155,7 +155,7 @@ export function CommerceOperationsPage() {
               {visibleAreas.map((area) => {
                 const isActive = area.area === active?.area;
                 return (
-                  <button
+                  <button aria-pressed={isActive}
                     key={area.area}
                     onClick={() => {
                       setSelectedArea(area.area);

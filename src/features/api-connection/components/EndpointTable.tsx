@@ -73,7 +73,7 @@ export function EndpointTable({ endpoints, isLoading }: EndpointTableProps) {
           {METHODS.filter((m) => methodCounts[m]).map((m) => {
             const active = methodFilter === m;
             return (
-              <button
+              <button aria-pressed={active}
                 key={m}
                 onClick={() => setMethodFilter(active ? null : m)}
                 className={`px-2.5 py-1 rounded-md text-[10px] font-bold tracking-wide transition-all ${active ? 'bg-brand text-white' : 'bg-glass-1 text-text-secondary hover:bg-glass-2'}`}

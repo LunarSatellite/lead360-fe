@@ -107,7 +107,7 @@ function StepDots({
         const done = completed.includes(s.number);
         const active = s.number === current;
         return (
-          <button
+          <button aria-pressed={active}
             key={s.number}
             onClick={() => (done || s.number <= current) && onStep(s.number)}
             className={`
@@ -143,7 +143,7 @@ function SidebarSteps({
         const locked = !done && s.number > current;
 
         return (
-          <button
+          <button aria-pressed={active}
             key={s.number}
             onClick={() => !locked && onStep(s.number)}
             className={`

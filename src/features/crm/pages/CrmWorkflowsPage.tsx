@@ -1118,7 +1118,7 @@ function ConfigureTab({ selectedId, nodes, onUpdateNode }: {
               {subtypeOpts.map(({ subtype: st, label, Icon, iconBg, iconText }) => {
                 const active = sub === st;
                 return (
-                  <button
+                  <button aria-pressed={active}
                     key={st}
                     onClick={() => changeSubtype(st)}
                     className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-left transition-all border text-[10px] font-medium ${

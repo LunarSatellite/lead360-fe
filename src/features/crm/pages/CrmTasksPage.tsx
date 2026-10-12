@@ -439,7 +439,7 @@ export function Component() {
             {STATUS_PILLS.map((pill) => {
               const isActive = pill.value === selectedStatus;
               return (
-                <button
+                <button aria-pressed={isActive}
                   key={pill.label}
                   onClick={() => setSelectedStatus(pill.value)}
                   className={`px-3 py-1.5 text-xs font-semibold rounded-full border transition-all ${

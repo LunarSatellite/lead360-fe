@@ -213,7 +213,7 @@ describe('defects that must not come back', () => {
      * no binding, an index, a loop variable. Those need someone to decide
      * what the control is for.
      */
-    const BUDGET_UNNAMED_CONTROLS = 58;
+    const BUDGET_UNNAMED_CONTROLS = 52;
     const CONTROL = /<(input|select|textarea|Input|SearchInput)\b/g;
     let unnamed = 0;
 
@@ -242,6 +242,21 @@ describe('defects that must not come back', () => {
 
         const id = /\bid="([^"]+)"/.exec(tag) ?? /\bid=\{([^}]+)\}/.exec(tag);
         if (id && pointedAt.has(id[1])) continue;
+
+        /**
+         * A control handed to a wrapper that takes a `label` is named
+         * by it, and this scan cannot see that.
+         *
+         * Several files define a local `Field` as
+         * `<label><span>{label}</span>{children}</label>`. The control
+         * really is nested inside a label at runtime; the label and the
+         * control simply sit at different places in the source, so
+         * comparing positions says otherwise. Same blind spot as the
+         * orphan-label count above, and found the same way — by opening
+         * one of the files the number was pointing at.
+         */
+        const enclosing = source.slice(Math.max(0, at - 500), at);
+        if (/<[A-Z]\w*[^<>]{0,300}\blabel=/.test(enclosing)) continue;
 
         unnamed += 1;
       }

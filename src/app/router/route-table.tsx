@@ -145,6 +145,8 @@ export const routeObjects: RouteObject[] = [
       { path: 'stylemint/cart-offers', lazy: () => import('@/features/commerce-control/pages/CartOfferIncrementalityPage') },
       { path: 'stylemint/goal-templates', lazy: () => import('@/features/commerce-control/pages/GoalTemplatesPage') },
       { path: 'stylemint/trust', lazy: () => import('@/features/commerce-control/pages/TrustPage') },
+      { path: 'stylemint/order-risk', lazy: () => import('@/features/commerce-control/pages/OrderRiskReviewPage') },
+      { path: 'stylemint/shop-insights', lazy: () => import('@/features/commerce-control/pages/VendorMlInsightsPage') },
       // ── Agent governance ──
       { path: 'agent-governance/approvals', lazy: () => import('@/features/agent-governance/pages/AgentApprovalsPage') },
       { path: 'agent-governance/actions/:id', lazy: () => import('@/features/agent-governance/pages/AgentActionRecordPage') },

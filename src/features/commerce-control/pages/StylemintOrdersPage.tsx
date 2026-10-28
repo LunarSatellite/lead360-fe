@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   AlertTriangle,
@@ -67,7 +68,9 @@ export function StylemintOrdersPage() {
   const canRefund = user?.role === UserRole.Owner;
   const client = useQueryClient();
   const [state, setState] = useState('');
-  const [search, setSearch] = useState('');
+  // `?q=` seeds the filter so other pages (e.g. the order-risk review queue) can link to an order.
+  const [searchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => searchParams.get('q') ?? '');
   const [selected, setSelected] = useState<StylemintOrder | null>(null);
   const [refundOpen, setRefundOpen] = useState(false);
   const [operation, setOperation] = useState<'tracking' | 'handover' | 'reject' | null>(null);
@@ -163,7 +166,9 @@ export function StylemintOrdersPage() {
     return term
       ? all.filter(
           (order) =>
-            order.orderNumber.toLowerCase().includes(term) || order.receiverName.toLowerCase().includes(term),
+            order.id.toLowerCase() === term ||
+            order.orderNumber.toLowerCase().includes(term) ||
+            order.receiverName.toLowerCase().includes(term),
         )
       : all;
   }, [ordersQuery.data, search]);

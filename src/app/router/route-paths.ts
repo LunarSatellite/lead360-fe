@@ -48,6 +48,8 @@ export const ROUTES = {
     cartOfferIncrementality: '/dashboard/stylemint/cart-offers',
     goalTemplates: '/dashboard/stylemint/goal-templates',
     trust: '/dashboard/stylemint/trust',
+    orderRiskReview: '/dashboard/stylemint/order-risk',
+    shopInsights: '/dashboard/stylemint/shop-insights',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,

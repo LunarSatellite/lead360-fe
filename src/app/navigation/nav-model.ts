@@ -69,6 +69,7 @@ import {
   Settings,
   Settings2,
   ShieldAlert,
+  Sparkles,
   ShieldCheck,
   ShoppingBag,
   ShoppingCart,
@@ -301,6 +302,7 @@ export const navGroups: NavGroup[] = [
       { label: 'Counter handover', href: '/dashboard/stylemint/counter-handover', icon: Store },
       { label: 'Payment plans', href: '/dashboard/stylemint/credit', icon: CreditCard },
       { label: 'Commerce operations', href: '/dashboard/stylemint/operations', icon: SlidersHorizontal },
+      { label: 'Order risk review', href: '/dashboard/stylemint/order-risk', icon: ShieldAlert },
     ],
   },
   {
@@ -325,6 +327,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { label: 'Vendor operations', href: '/dashboard/stylemint/vendor', icon: Building2 },
       { label: 'Vendor desk', href: '/dashboard/stylemint/vendor-desk', icon: Store },
+      { label: 'Shop insights', href: '/dashboard/stylemint/shop-insights', icon: Sparkles },
       { label: 'Applications', href: '/dashboard/stylemint/applications', icon: ShieldCheck },
       { label: 'Seller finance', href: '/dashboard/stylemint/finance', icon: WalletCards },
       { label: 'Payouts', href: '/dashboard/stylemint/payouts', icon: Banknote },

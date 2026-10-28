@@ -74,7 +74,8 @@ describe('unified navigation model', () => {
     // in a mobile sheet only. Plus the seven that had a page and no entry
     // anywhere, found by the unreachable-route check below. A drop here means
     // a page lost its only way in. 132 since Payment plans (the credit console).
-    expect(allNavItems).toHaveLength(132);
+    // 134 since Order risk review and Shop insights (stylemint-ai outputs).
+    expect(allNavItems).toHaveLength(134);
   });
 
   it('lists each page once, under one name', () => {

@@ -329,6 +329,7 @@ export const navGroups: NavGroup[] = [
       { label: 'Vendor desk', href: '/dashboard/stylemint/vendor-desk', icon: Store },
       { label: 'Shop insights', href: '/dashboard/stylemint/shop-insights', icon: Sparkles },
       { label: 'Applications', href: '/dashboard/stylemint/applications', icon: ShieldCheck },
+      { label: 'Claim verification', href: '/dashboard/stylemint/claim-verification', icon: BadgeCheck },
       { label: 'Seller finance', href: '/dashboard/stylemint/finance', icon: WalletCards },
       { label: 'Payouts', href: '/dashboard/stylemint/payouts', icon: Banknote },
     ],

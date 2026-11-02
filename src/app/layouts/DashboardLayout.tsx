@@ -294,6 +294,7 @@ export function DashboardLayout() {
     if (path.includes('/stylemint/finance')) return 'Seller Finance';
     if (path.includes('/stylemint/operations')) return 'Commerce Operations';
     if (path.includes('/stylemint/applications')) return 'KYC Review';
+    if (path.includes('/stylemint/claim-verification')) return 'Claim Verification';
     if (path.includes('/stylemint/access')) return 'Operator Access';
     if (path.includes('/stylemint/moderation')) return 'Moderation';
     if (path.includes('/stylemint/feature-flags')) return 'Feature Flags';

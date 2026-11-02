@@ -3,6 +3,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Image, Loader2, Package, Save, Truck, Upload, X } from 'lucide-react';
 import { stylemintCommerceApi } from '../api/stylemint-commerce.api';
 import { Button } from '@/shared/ui/primitives';
+import { ProductDimensionsPanel } from './ProductDimensionsPanel';
 
 type Props = {
   kind: 'product' | 'store';
@@ -470,6 +471,12 @@ export function VendorResourceEditDialog({ kind, id, initial, onClose, onSaved }
                 </div>
               </Section>
             )}
+          </div>
+        )}
+        {kind === 'product' && (
+          // Saved on its own (PUT dimension-tags), not by the product form's submit.
+          <div className="px-5 pb-5">
+            <ProductDimensionsPanel productId={id} />
           </div>
         )}
         {(save.isError || uploadImages.isError) && (

@@ -50,6 +50,7 @@ export const ROUTES = {
     trust: '/dashboard/stylemint/trust',
     orderRiskReview: '/dashboard/stylemint/order-risk',
     shopInsights: '/dashboard/stylemint/shop-insights',
+    claimVerification: '/dashboard/stylemint/claim-verification',
     // ── Agent governance — the human half of the approval machinery ──
     agentApprovals: '/dashboard/agent-governance/approvals',
     agentActionRecord: (id: string) => `/dashboard/agent-governance/actions/${id}`,

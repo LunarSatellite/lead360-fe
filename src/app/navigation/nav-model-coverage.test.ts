@@ -75,7 +75,8 @@ describe('unified navigation model', () => {
     // anywhere, found by the unreachable-route check below. A drop here means
     // a page lost its only way in. 132 since Payment plans (the credit console).
     // 134 since Order risk review and Shop insights (stylemint-ai outputs).
-    expect(allNavItems).toHaveLength(134);
+    // 135 since Claim verification (dimension-store verifiable claims).
+    expect(allNavItems).toHaveLength(135);
   });
 
   it('lists each page once, under one name', () => {
